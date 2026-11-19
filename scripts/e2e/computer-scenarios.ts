@@ -197,6 +197,46 @@ export const computerScenarios: Scenario[] = [
     },
   },
   {
+    // Scratch only (#3213 design review): a finished turn of three calls, one failed.
+    name: 'shots: #3213 a turn of three calls with one failed, closed and opened',
+    run: async (page) => {
+      const ok1 = join(artifacts, `there-${randomUUID()}.txt`)
+      const ok2 = join(artifacts, `there-${randomUUID()}.txt`)
+      writeFileSync(ok1, 'one')
+      writeFileSync(ok2, 'two')
+      const missing = join(artifacts, `not-there-${randomUUID()}.txt`)
+      const lines = [
+        `Bring them in E2E_SHOWN E2E_DELIVERY:three-calls`,
+        `E2E_CALL local_upload ${JSON.stringify({ label: 'Upload the notes', path: ok1 })}`,
+        `E2E_CALL local_upload ${JSON.stringify({ label: 'Upload a file that is not there', path: missing })}`,
+        `E2E_CALL local_upload ${JSON.stringify({ label: 'Upload the summary', path: ok2 })}`,
+      ]
+      await newTask(page)
+      await page.getByRole('textbox', { name: 'Message' }).click()
+      for (const [i, line] of lines.entries()) {
+        if (i) await page.keyboard.press('Shift+Enter')
+        await page.keyboard.type(line)
+      }
+      await page.keyboard.press('Enter')
+      await page.getByText('ACK E2E_DELIVERY:three-calls').waitFor()
+      await page.mouse.move(900, 600)
+      await page.waitForTimeout(1_500)
+      const worked = page.getByRole('button', { name: /^Worked/ }).last()
+      await page.screenshot({ path: join(artifacts, '3213-three-calls-closed.png') })
+      await worked.screenshot({ path: join(artifacts, '3213-three-calls-closed-line.png') })
+      await worked.click()
+      await page.waitForTimeout(800)
+      await page.screenshot({ path: join(artifacts, '3213-three-calls-opened.png') })
+      // A run of calls may fold into its own line; open it too when it shows.
+      const run = page.locator('button', { hasText: /failed/i, visible: true }).last()
+      if (await run.isVisible().catch(() => false)) {
+        await run.click().catch(() => undefined)
+        await page.waitForTimeout(800)
+        await page.screenshot({ path: join(artifacts, '3213-three-calls-opened-run.png') })
+      }
+    },
+  },
+  {
     // #3186: the agent saves a file onto the computer the app runs on; that computer fetches it.
     name: 'an agent saves a file onto the computer the app runs on, and asks before replacing it',
     run: async (page, stack) => {
