@@ -27,7 +27,7 @@ export type RelayTokenClaims = {
 const TOKEN_PREFIX = 'nr1_'
 
 /** Kept out of the token namespace so a status header cannot be replayed as one. */
-const STATUS_CREDENTIAL_LABEL = 'nuphos-relay-status-v1'
+const STATUS_CREDENTIAL_LABEL = 'cerin-relay-status-v1'
 
 const AGENT_TOKEN_TTL_DAYS = 365
 /**
@@ -83,7 +83,7 @@ function relaySecret(): string {
     throw new AppError(
       503,
       'relay_not_configured',
-      'On-prem cluster relay is not configured on this deployment (NUPHOS_RELAY_TOKEN_SECRET).',
+      'On-prem cluster relay is not configured on this deployment (CERIN_RELAY_TOKEN_SECRET).',
     )
   }
 
@@ -130,7 +130,7 @@ export function relayProxyUrl(clusterKey: string, sessionId: string, now = new D
     throw new AppError(
       503,
       'relay_not_configured',
-      'On-prem cluster relay is not configured on this deployment (NUPHOS_RELAY_PROXY_ENDPOINT).',
+      'On-prem cluster relay is not configured on this deployment (CERIN_RELAY_PROXY_ENDPOINT).',
     )
   }
   // Bare host:port means https, which is the only thing a real deployment

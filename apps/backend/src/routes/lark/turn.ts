@@ -84,7 +84,7 @@ export async function executeLarkAgentTurn(args: {
   teamId: string
   agentUserId: string
   sessionId: string
-  nuphosToken: string
+  cerinToken: string
   messages: UIMessage[]
   firstMessage: string
   sender: { openId: string; displayName?: string | null }
@@ -107,7 +107,7 @@ export async function executeLarkAgentTurn(args: {
   try {
     const outcome = await turnRunner.runAgentForTrigger({
       userId: args.agentUserId,
-      nuphosToken: args.nuphosToken,
+      cerinToken: args.cerinToken,
       teamId: args.teamId,
       sessionId: args.sessionId,
       messages: args.messages,
@@ -147,7 +147,7 @@ export async function executeLarkAgentTurn(args: {
       await replyNotice(
         args.ctx,
         args.chatId,
-        'Nuphos hit an error handling this request — diagnostic info was captured for the team to look into.',
+        'Cerin hit an error handling this request — diagnostic info was captured for the team to look into.',
       )
     } catch {
       // The failure notice itself failed; the turn error is already logged.

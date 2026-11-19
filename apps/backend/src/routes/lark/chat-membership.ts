@@ -21,7 +21,7 @@ export async function handleBotAddedToChat(
 ): Promise<void> {
   const { ctx, binding } = app
   const appId = binding.appId
-  const teamId = app.nuphosTeamId
+  const teamId = app.cerinTeamId
   const eventId = body.header?.event_id
   const chatId = body.event?.chat_id
 
@@ -57,7 +57,7 @@ export async function handleBotRemovedFromChat(
   body: LarkChatMemberEvent,
 ): Promise<void> {
   const appId = app.binding.appId
-  const teamId = app.nuphosTeamId
+  const teamId = app.cerinTeamId
   const eventId = body.header?.event_id
   const chatId = body.event?.chat_id
 

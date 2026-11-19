@@ -32,9 +32,9 @@ export function messagingConfig() {
       publicKey: optional('DISCORD_PUBLIC_KEY'),
     },
     lark: {
-      // Lark (Feishu) connector is CUSTOM-APP-ONLY: each Nuphos team registers its
+      // Lark (Feishu) connector is CUSTOM-APP-ONLY: each Cerin team registers its
       // own Feishu 企业自建应用 and stores that app's app_secret + event Encrypt Key
-      // encrypted in its binding (there is no global Nuphos Lark app). This key
+      // encrypted in its binding (there is no global Cerin Lark app). This key
       // encrypts those per-team secrets at rest (AES-256-GCM); falls back to the
       // shared Linear/Slack token key so a single key can cover all connectors.
       encryptionKey:
@@ -53,7 +53,7 @@ export function messagingConfig() {
     apns: {
       keyId: optional('APNS_KEY_ID'),
       teamId: optional('APNS_TEAM_ID'),
-      bundleId: optional('APNS_BUNDLE_ID') ?? 'ai.nuphos.ios',
+      bundleId: optional('APNS_BUNDLE_ID') ?? 'ai.cerin.ios',
       privateKey: optional('APNS_PRIVATE_KEY')?.replaceAll(String.raw`\n`, '\n'),
       environment:
         optional('APNS_ENV') === 'sandbox' ? ('sandbox' as const) : ('production' as const),

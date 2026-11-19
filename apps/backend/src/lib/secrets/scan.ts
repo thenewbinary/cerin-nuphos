@@ -1,16 +1,16 @@
 // The one secret scanner in the backend. Detection is secretlint: its
-// recommended preset for provider keys, plus our own rule (nuphos-rule.ts) for
+// recommended preset for provider keys, plus our own rule (cerin-rule.ts) for
 // what the preset leaves out, whose scan we call directly (see findSecrets). Redaction replaces the ranges secretlint reports.
 
 import { lintSource } from '@secretlint/core'
 import { rules as recommendedRules } from '@secretlint/secretlint-rule-preset-recommend'
 
-import { findNuphosSecrets } from './nuphos-rule'
+import { findCerinSecrets } from './cerin-rule'
 
-import type { NuphosRuleOptions } from './nuphos-rule'
+import type { CerinRuleOptions } from './cerin-rule'
 import type { SecretLintCoreConfig, SecretLintRuleCreator } from '@secretlint/types'
 
-export { shannonEntropy } from './nuphos-rule'
+export { shannonEntropy } from './cerin-rule'
 
 export type SecretFinding = { kind: string; range: readonly [number, number] }
 
@@ -45,7 +45,7 @@ const KIND_ORDER = [
   'pem-private-key',
   'aws-access-key-id',
   'jwt',
-  'nuphos-token',
+  'cerin-token',
   'github-token',
   'slack-token',
   'instabox-api-key',
@@ -75,7 +75,7 @@ const PROFILES = {
   tokenShapes: {},
   storedContent: { pemHeaders: true },
   everything: { contextual: true, pemHeaders: true },
-} satisfies Record<string, NuphosRuleOptions>
+} satisfies Record<string, CerinRuleOptions>
 
 type ScanProfile = keyof typeof PROFILES
 
@@ -87,7 +87,7 @@ function kindOf(message: { ruleId: string }): string {
 
 // secretlint drops duplicate messages by comparing every pair, so one lint of
 // a large input full of findings is quadratic and blocks the event loop. The
-// Nuphos rule, whose matches have no length bound, therefore scans the whole
+// Cerin rule, whose matches have no length bound, therefore scans the whole
 // text in one linear pass outside lintSource. The preset matches bounded token
 // shapes, so for it large inputs are linted in chunks of about 32 KB, cut at a newline when one
 // is near and mid-line otherwise (compact JSON has none); a PEM block is never
@@ -143,7 +143,7 @@ export async function findSecrets(
   profile: ScanProfile = 'everything',
 ): Promise<SecretFinding[]> {
   if (text.length === 0) return []
-  const findings: SecretFinding[] = findNuphosSecrets(text, PROFILES[profile])
+  const findings: SecretFinding[] = findCerinSecrets(text, PROFILES[profile])
 
   for (const [chunk, [chunkStart, end]] of chunkBounds(text).entries()) {
     // Let other requests run between the synchronous parts of each lint.
@@ -225,11 +225,11 @@ export async function redactSecrets(text: string): Promise<RedactionResult> {
 
 /**
  * `redactSecrets` without the secretlint preset, for a caller that cannot
- * await: every structured log line. The Nuphos rule is one linear pass and
+ * await: every structured log line. The Cerin rule is one linear pass and
  * already covers the key shapes, assignments, auth headers and entropy sweep.
  */
 export function redactSecretsSync(text: string): string {
-  return replaceFindings(text, mergeFindings(findNuphosSecrets(text, PROFILES.everything)))
+  return replaceFindings(text, mergeFindings(findCerinSecrets(text, PROFILES.everything)))
 }
 
 /** Replaces only well-known token shapes; leaves everything else readable. */

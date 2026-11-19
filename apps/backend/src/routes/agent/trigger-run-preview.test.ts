@@ -1,4 +1,4 @@
-// Headless entry points (triggers, channel bridges, MCP nuphos_ask) fork to the
+// Headless entry points (triggers, channel bridges, MCP cerin_ask) fork to the
 // Claude Code runtime through runAgentForTrigger: the caller-supplied frame
 // sink still mirrors the run, and the outcome keeps the classic shape.
 import '@/routes/agent'
@@ -111,7 +111,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
     const outcome = await runAgentForTrigger({
       userId: 'actor-1',
       conversationOwnerUserId: 'owner-1',
-      nuphosToken: 'tok',
+      cerinToken: 'tok',
       teamId: 'team-1',
       sessionId: 'conv-1',
       messages,
@@ -158,7 +158,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
     traceEvents.length = 0
     await runAgentForTrigger({
       userId: 'actor-1',
-      nuphosToken: 'tok',
+      cerinToken: 'tok',
       teamId: 'team-1',
       sessionId: 'conv-trace',
       messages,
@@ -188,7 +188,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
     await runAgentForTrigger({
       userId: 'owner-1',
       conversationOwnerUserId: 'owner-1',
-      nuphosToken: 'tok',
+      cerinToken: 'tok',
       teamId: 'team-1',
       sessionId: 'conv-2',
       messages: [message],
@@ -214,7 +214,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
       await runAgentForTrigger({
         userId: 'actor',
         conversationOwnerUserId: 'owner',
-        nuphosToken: 'token',
+        cerinToken: 'token',
         teamId: 'team-1',
         sessionId: 'channel-session',
         source,
@@ -233,7 +233,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
       initializedModes.length = 0
       await runAgentForTrigger({
         userId: 'principal',
-        nuphosToken: 'token',
+        cerinToken: 'token',
         teamId: 'team-1',
         sessionId: `${origin}-session`,
         origin,
@@ -251,7 +251,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
     initializedModes.length = 0
     await runAgentForTrigger({
       userId: 'principal',
-      nuphosToken: 'token',
+      cerinToken: 'token',
       teamId: 'team-1',
       sessionId: 'resource-session',
       origin: 'trigger',
@@ -268,7 +268,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
     initializedModes.length = 0
     await runAgentForTrigger({
       userId: 'principal',
-      nuphosToken: 'token',
+      cerinToken: 'token',
       teamId: 'team-1',
       sessionId: 'user-session',
       origin: 'user',
@@ -281,7 +281,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
   const mcpTurn = (sessionId: string, extra: Record<string, unknown> = {}) =>
     runAgentForTrigger({
       userId: 'caller',
-      nuphosToken: 'token',
+      cerinToken: 'token',
       teamId: 'team-1',
       sessionId,
       source: 'mcp',
@@ -332,7 +332,7 @@ describe('runAgentForTrigger on the Claude Code runtime', () => {
       await expect(
         runAgentForTrigger({
           userId: 'actor-1',
-          nuphosToken: 'tok',
+          cerinToken: 'tok',
           teamId: 'team-1',
           sessionId: 'conv-failure',
           messages,

@@ -24,7 +24,7 @@ projectScoped.route('/firebase', firebaseRoutes)
 
 /**
  * The connector can't be used until the team fixes it: its service account is gone,
- * or Nuphos may not mint its tokens. A 503 would tell an agent to retry, which never helps.
+ * or Cerin may not mint its tokens. A 503 would tell an agent to retry, which never helps.
  */
 function connectorUnusable(error: unknown, serviceAccountEmail: string): AppError | undefined {
   const message = error instanceof Error ? error.message : ''
@@ -39,7 +39,7 @@ function connectorUnusable(error: unknown, serviceAccountEmail: string): AppErro
     return new AppError(
       409,
       'gcp_connector_permission_missing',
-      `Nuphos can't mint tokens for ${serviceAccountEmail}: the team's workload identity principal lacks roles/iam.serviceAccountTokenCreator on it. Someone with IAM access to the project needs to grant that role to the principal shown in the GCP binding wizard; retrying won't help until it's granted. If you just granted it, wait a couple of minutes and try once more.`,
+      `Cerin can't mint tokens for ${serviceAccountEmail}: the team's workload identity principal lacks roles/iam.serviceAccountTokenCreator on it. Someone with IAM access to the project needs to grant that role to the principal shown in the GCP binding wizard; retrying won't help until it's granted. If you just granted it, wait a couple of minutes and try once more.`,
     )
 
   return undefined

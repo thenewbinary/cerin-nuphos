@@ -32,9 +32,9 @@ final class ChannelBubbleFillUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release",
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release",
             "-AppleInterfaceStyle", "Light"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         // Cells: the timestamp, the Bot's post, the teammate's, then the viewer's.
         let transcript = app.collectionViews["chat.transcript"]
@@ -85,7 +85,7 @@ final class ChannelBubbleFillUITests: XCTestCase {
                 "Question: Ship it?", "Options: Ship | Wait", "Answer:", "- Ship it? → Ship",
                 "Continue the task with this answer."].joined(separator: "\n")]],
              "metadata": ["version": 1, "source": "agent.resource", "sentAt": "2026-11-14T01:47:00Z",
-                          "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Nuphos"]]],
+                          "sender": ["type": "system", "id": "cerin:decision", "displayName": "Cerin"]]],
         ]
         conversation["body"] = body
         responses["GET /agent/conversations/push-a"] = conversation
@@ -96,8 +96,8 @@ final class ChannelBubbleFillUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let line = app.buttons.matching(identifier: "answered.line").firstMatch
         XCTAssertTrue(line.waitForExistence(timeout: 15))

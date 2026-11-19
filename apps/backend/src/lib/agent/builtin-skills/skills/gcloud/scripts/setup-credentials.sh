@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <projectId> [serviceAccountId]
 
-Fetches a short-lived GCP access token from Nuphos backend (using the user's
-NUPHOS_TOKEN) and configures gcloud to use it for the bound project. The token
+Fetches a short-lived GCP access token from Cerin backend (using the user's
+CERIN_TOKEN) and configures gcloud to use it for the bound project. The token
 is saved under CLOUDSDK_CONFIG (default: ~/.config/gcloud) and gcloud's
 auth/access_token_file is pointed at it. Token lifetime is ~1h.
 
-Required env: NUPHOS_TOKEN. Optional env: CLOUDSDK_CONFIG, NUPHOS_BACKEND_URL (defaults to https://api.nuphos.ai).
+Required env: CERIN_TOKEN. Optional env: CLOUDSDK_CONFIG, CERIN_BACKEND_URL (defaults to https://platform.cerin.ai).
 EOF
   exit 1
 }
@@ -25,8 +25,8 @@ team_id="$1"
 project_id="$2"
 service_account_id="${3:-}"
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set in this sandbox" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is not set in this sandbox" >&2
   exit 1
 fi
 if ! command -v python3 >/dev/null 2>&1; then
@@ -34,7 +34,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${CERIN_BACKEND_URL:-https://platform.cerin.ai}"
 base="${base%/}"
 # The ordinary team API recognizes a conversation token and applies the
 # session's service-account selection and permission-admin prohibition.
@@ -46,7 +46,7 @@ fi
 tmp="$(mktemp)"
 trap 'rm -f "$tmp"' EXIT
 
-echo "Fetching Nuphos-managed GCP access token" >&2
+echo "Fetching Cerin-managed GCP access token" >&2
 http_code=""
 curl_status=0
 for attempt in 1 2 3; do
@@ -55,7 +55,7 @@ for attempt in 1 2 3; do
   http_code="$(curl --http1.1 -sS -o "$tmp" -w '%{http_code}' \
     --connect-timeout 10 \
     --max-time 30 \
-    -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+    -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
     -H 'Accept: application/json' \
     "$url")"
   curl_status=$?
@@ -72,7 +72,7 @@ for attempt in 1 2 3; do
 done
 
 if [ "$http_code" != "200" ]; then
-  echo "Nuphos backend returned HTTP ${http_code} for ${url}:" >&2
+  echo "Cerin backend returned HTTP ${http_code} for ${url}:" >&2
   cat "$tmp" >&2
   echo >&2
   exit 1
@@ -96,8 +96,8 @@ safe_config_name="$(printf '%s' "${service_account_id:-${projectId}-${serviceAcc
 if [ -z "$safe_config_name" ]; then
   safe_config_name="default"
 fi
-config_name="nuphos-${safe_config_name}"
-token_path="$token_dir/nuphos-access-token-${safe_config_name}"
+config_name="cerin-${safe_config_name}"
+token_path="$token_dir/cerin-access-token-${safe_config_name}"
 config_path="$config_dir/config_${config_name}"
 active_config_path="$token_dir/active_config"
 
@@ -120,7 +120,7 @@ project = $projectId
 EOF
 
 echo "Wrote gcloud access-token config" >&2
-echo "Configured gcloud with Nuphos-managed token"
+echo "Configured gcloud with Cerin-managed token"
 echo "  project:         ${projectId}"
 echo "  service account: ${serviceAccountEmail}"
 echo "  expires at:      ${expiresAt}"

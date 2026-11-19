@@ -84,7 +84,7 @@ export function ChatLink({
       ? [
           {
             key: 'open-in-app',
-            label: t('Open in Nuphos'),
+            label: t('Open in Cerin'),
             icon: PanelRight,
             onSelect: () => menuActions.openInApp(link),
           },
@@ -133,7 +133,7 @@ function createComponents(
   return {
     img: ({ src, alt, width, height }) => {
       const url = typeof src === 'string' ? src : undefined
-      const groupId = /^https:\/\/nuphos\.ai\/_reply-images\/([a-f0-9]{24})$/.exec(url ?? '')?.[1]
+      const groupId = /^https:\/\/platform\.cerin\.ai\/_reply-images\/([a-f0-9]{24})$/.exec(url ?? '')?.[1]
 
       return groupId ? (
         <ReplyImage
@@ -178,7 +178,7 @@ function createComponents(
 
         if (custom != null) return <>{custom}</>
       }
-      // Mention links above are matched on an explicit `https://nuphos.ai/`, so
+      // Mention links above are matched on an explicit `https://platform.cerin.ai/`, so
       // they are never mistaken for a GFM-synthesized one.
       if (link && isSynthesizedAutolink(link, extractText(children))) {
         return <>{children}</>

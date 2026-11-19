@@ -13,10 +13,10 @@ import { serializeConversationDoc } from './transcript'
 
 import type { ConversationAccess } from '@/lib/agent/db/access'
 import type { AgentConversation } from '@/lib/agent/db'
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 import type { SlackAgentThread } from '@/lib/slack/agent-bot'
 
-export type ConversationOwner = Pick<NuphosUser, 'id' | 'name' | 'email' | 'avatarURL'> & {
+export type ConversationOwner = Pick<CerinUser, 'id' | 'name' | 'email' | 'avatarURL'> & {
   // Former member (removed from the team, or account deleted). Clients render
   // these dimmed with a "Deactivated" tag.
   deactivated?: boolean
@@ -147,7 +147,7 @@ export async function buildConversationOwnerMap(
 
 export function serializeConversationForViewer(
   conversation: Record<string, unknown> & { userId: string },
-  viewer: NuphosUser,
+  viewer: CerinUser,
   ownerById: Map<string, ConversationOwner>,
   slackThread: Pick<SlackAgentThread, 'origin'> | null | undefined,
   /** From resolveConversationAccess: a participant replies while they may use its computer. */

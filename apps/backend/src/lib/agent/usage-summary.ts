@@ -4,7 +4,7 @@ import { providerCostUsd } from '@/lib/agent/model-pricing'
 import { agentTokenUsage } from '@/lib/agent/token-usage'
 import { KIND_TOKEN_SUMS } from '@/lib/agent/usage-aggregation'
 
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 
 // One member's spend on a single day.
 export type MemberDayUsage = {
@@ -110,7 +110,7 @@ function topSessions(rows: UsageGroupRow[]): Omit<SessionUsage, 'title'>[] {
 /** Every member sees the whole team's usage; `canSeeConversationName` decides which titles. */
 export async function getTeamUsageSeries(
   teamId: string,
-  viewer: { userId: string; teamRole: NuphosTeamRole },
+  viewer: { userId: string; teamRole: CerinTeamRole },
 ): Promise<TeamUsageSeries> {
   const scope = { teamId }
   const ranges = {

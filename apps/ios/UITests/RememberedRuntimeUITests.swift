@@ -66,8 +66,8 @@ final class RememberedRuntimeUITests: XCTestCase {
         let account = SHA256.hash(data: Data("preview-only".utf8)).map { String(format: "%02x", $0) }.joined()
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent",
-                               "-nuphos.agent.runtimeInstance.\(account).\(team)", gone]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+                               "-cerin.agent.runtimeInstance.\(account).\(team)", gone]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         return app
     }

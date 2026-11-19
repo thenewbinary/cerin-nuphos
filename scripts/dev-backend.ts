@@ -191,12 +191,12 @@ export async function startBackend(local: LocalStack) {
       ...baseEnv,
       ...localBackendEnv(local),
       PORT: String(backend.port),
-      NUPHOS_DEV_LAUNCHER_PID: String(process.pid),
+      CERIN_DEV_LAUNCHER_PID: String(process.pid),
       FORCE_COLOR: '1',
-      NUPHOS_BACKEND_URL: `http://host.docker.internal:${String(backend.port)}`,
-      NUPHOS_PUBLIC_BACKEND_URL: tunnelUrl ?? '',
+      CERIN_BACKEND_URL: `http://host.docker.internal:${String(backend.port)}`,
+      CERIN_PUBLIC_BACKEND_URL: tunnelUrl ?? '',
       ...(storageUrl
-        ? { NUPHOS_FILE_TRANSFER_S3_ENDPOINT: storageUrl, ATLAS_SKILLS_S3_ENDPOINT: storageUrl }
+        ? { CERIN_FILE_TRANSFER_S3_ENDPOINT: storageUrl, ATLAS_SKILLS_S3_ENDPOINT: storageUrl }
         : {}),
     },
     detached: true, // new process group so quit() can kill the whole tree

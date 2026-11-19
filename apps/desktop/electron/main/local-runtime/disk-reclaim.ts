@@ -3,12 +3,12 @@ import { lstat, readdir, readFile, realpath, rmdir, unlink, writeFile } from 'no
 import path from 'node:path'
 
 /**
- * A session workspace is a directory Nuphos makes inside a workspace for one
+ * A session workspace is a directory Cerin makes inside a workspace for one
  * conversation, named after that conversation and carrying a marker naming the same
  * one. Both have to agree before anything here is deleted: a hashed name can be a
  * coincidence, and a marker on its own can be copied.
  */
-export const SESSION_WORKSPACE_MARKER = '.nuphos-workspace'
+export const SESSION_WORKSPACE_MARKER = '.cerin-workspace'
 export const SESSION_WORKSPACE_NAME = /^[0-9a-f]{64}$/u
 export const SESSION_WORKSPACE_MARKER_VERSION = 1
 /**

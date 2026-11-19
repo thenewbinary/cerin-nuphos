@@ -38,7 +38,7 @@ export function localSigner(privateKeyPem: string): InternalTokenSigner {
   const privateKey = createPrivateKey(privateKeyPem)
   const publicKey = createPublicKey(privateKey)
 
-  assertP256(publicKey, 'NUPHOS_INTERNAL_TOKEN_PRIVATE_KEY_BASE64')
+  assertP256(publicKey, 'CERIN_INTERNAL_TOKEN_PRIVATE_KEY_BASE64')
 
   return {
     sign: (signingInput) =>
@@ -99,7 +99,7 @@ export function kmsSigner(keyId: string, client: KmsLike): InternalTokenSigner {
           type: 'spki',
         })
 
-        assertP256(publicKey, 'NUPHOS_INTERNAL_TOKEN_KMS_KEY_ID')
+        assertP256(publicKey, 'CERIN_INTERNAL_TOKEN_KMS_KEY_ID')
 
         return { keyId: response.KeyId, publicKey }
       })
@@ -149,7 +149,7 @@ const GCP_KEY_VERSION =
 export function gcpKmsSigner(keyVersion: string, call: GcpKmsCall): InternalTokenSigner {
   if (!GCP_KEY_VERSION.test(keyVersion)) {
     throw new Error(
-      'NUPHOS_INTERNAL_TOKEN_GCP_KMS_KEY_VERSION must be a full key version name ' +
+      'CERIN_INTERNAL_TOKEN_GCP_KMS_KEY_VERSION must be a full key version name ' +
         '(projects/…/locations/…/keyRings/…/cryptoKeys/…/cryptoKeyVersions/N)',
     )
   }
@@ -174,12 +174,12 @@ export function gcpKmsSigner(keyVersion: string, call: GcpKmsCall): InternalToke
           if (!pem) throw new Error('Cloud KMS getPublicKey returned no key')
           if (algorithm !== 'EC_SIGN_P256_SHA256') {
             throw new Error(
-              `NUPHOS_INTERNAL_TOKEN_GCP_KMS_KEY_VERSION must be an EC_SIGN_P256_SHA256 key, got ${String(algorithm)}`,
+              `CERIN_INTERNAL_TOKEN_GCP_KMS_KEY_VERSION must be an EC_SIGN_P256_SHA256 key, got ${String(algorithm)}`,
             )
           }
           const publicKey = createPublicKey(pem)
 
-          assertP256(publicKey, 'NUPHOS_INTERNAL_TOKEN_GCP_KMS_KEY_VERSION')
+          assertP256(publicKey, 'CERIN_INTERNAL_TOKEN_GCP_KMS_KEY_VERSION')
 
           return publicKey
         })

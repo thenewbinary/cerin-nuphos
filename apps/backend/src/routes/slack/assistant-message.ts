@@ -4,7 +4,7 @@ import type { SlackEventEnvelope, SlackRuntime } from '@/routes/slack/types'
 
 import { getConversation } from '@/lib/agent/db'
 import { appendMessageOriginLine, buildSlackMessageOrigin } from '@/lib/agent/message-origin'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import { logEvent } from '@/lib/observability'
 import {
   getOrCreateSlackAgentThread,
@@ -76,15 +76,15 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
     return
   }
 
-  const nuphosTeamId = botContext.nuphosTeamId
+  const cerinTeamId = botContext.cerinTeamId
   const threadTs = event.thread_ts ?? event.ts
 
-  if (!nuphosTeamId) {
+  if (!cerinTeamId) {
     await postThreadMessage(
       runtime,
       event.channel,
       threadTs,
-      'Nuphos is not fully installed for this Slack workspace yet.',
+      'Cerin is not fully installed for this Slack workspace yet.',
     )
     await markSlackEvent(eventId, 'completed')
 
@@ -101,7 +101,7 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
 
   const { mapping: userMapping, email } = await resolveSlackUserMapping(
     slackWorkspaceId,
-    nuphosTeamId,
+    cerinTeamId,
     event.user,
     runtime.botToken,
   )
@@ -112,8 +112,8 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
       event.channel,
       threadTs,
       email
-        ? "Your Slack email doesn't match any Nuphos user on this team. Link your account in Nuphos → Settings → Slack."
-        : 'Your Slack account is not linked to Nuphos yet. Link it in Nuphos → Settings → Slack.',
+        ? "Your Slack email doesn't match any Cerin user on this team. Link your account in Cerin → Settings → Slack."
+        : 'Your Slack account is not linked to Cerin yet. Link it in Cerin → Settings → Slack.',
     )
     await markSlackEvent(eventId, 'completed')
 
@@ -124,8 +124,8 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
     slackWorkspaceId,
     slackChannelId: event.channel,
     slackThreadTs: threadTs,
-    teamId: nuphosTeamId,
-    agentUserId: userMapping.nuphosUserId,
+    teamId: cerinTeamId,
+    agentUserId: userMapping.cerinUserId,
     createdBySlackUserId: event.user,
     lastSlackEventId: eventId,
   })
@@ -135,7 +135,7 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
     !(await checkNotificationReplyAccess({
       runtime,
       thread,
-      senderNuphosUserId: userMapping.nuphosUserId,
+      senderCerinUserId: userMapping.cerinUserId,
       senderSlackUserId: event.user,
       channelId: event.channel,
       threadTs,
@@ -144,7 +144,7 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
   ) {
     return
   }
-  const turnIdentity = getSlackThreadTurnIdentity(thread, userMapping.nuphosUserId)
+  const turnIdentity = getSlackThreadTurnIdentity(thread, userMapping.cerinUserId)
 
   // Name new threads after the user's opening message so the Messages-tab
   // timeline stays navigable.
@@ -230,7 +230,7 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
       messageId: `slack-${event.event_ts ?? event.ts ?? randomUUID()}`,
       renderedText,
       carried: claim.carried,
-      actorUserId: userMapping.nuphosUserId,
+      actorUserId: userMapping.cerinUserId,
       attachmentParts: dmAttachments.parts,
       origin: messageOrigin,
     })
@@ -244,7 +244,7 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
       teamId: thread.teamId,
       channel: event.channel,
       threadTs,
-      nuphosToken: signNuphosToken(turnIdentity.actorUserId, 60 * 60 * 8),
+      cerinToken: signCerinToken(turnIdentity.actorUserId, 60 * 60 * 8),
       sender: { slackUserId: event.user, displayName: senderName },
       messages,
       firstMessage: text,

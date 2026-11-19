@@ -60,8 +60,8 @@ export async function registerPlaudClient(redirectUri: string): Promise<string> 
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({
-      client_name: 'Nuphos',
-      client_uri: 'https://nuphos.ai',
+      client_name: 'Cerin',
+      client_uri: 'https://platform.cerin.ai',
       redirect_uris: [redirectUri],
       grant_types: ['authorization_code', 'refresh_token'],
       response_types: ['code'],

@@ -24,11 +24,11 @@ export const LOCAL_AGENT_NAMES: Record<LocalAgentProvider, string> = {
  * HOME, so the shim and the wrapper are both told the CLI and the home.
  */
 export function shimEnv(cliPath: string, home: string): Record<string, string> {
-  return { HOME: home, NUPHOS_AGENT_EXECUTABLE: cliPath, NUPHOS_AGENT_HOME: home }
+  return { HOME: home, CERIN_AGENT_EXECUTABLE: cliPath, CERIN_AGENT_HOME: home }
 }
 
 /**
- * The HOME a native ACP agent runs with for Nuphos, as /home/node is in the
+ * The HOME a native ACP agent runs with for Cerin, as /home/node is in the
  * cloud runtime: it starts empty, so the owner's own login and config stay out,
  * and the agent's Sign in writes its credential here.
  */
@@ -66,16 +66,16 @@ export async function homeLogin(
   return Boolean(found?.isFile() && found.size > 2)
 }
 
-/** An agent never serves Nuphos from the owner's own home, where their personal config lives. */
+/** An agent never serves Cerin from the owner's own home, where their personal config lives. */
 export const AGENT_HOME_UNAVAILABLE: Record<LocalAgentProvider, string> = {
-  'claude-code': 'Nuphos could not prepare a separate Claude Code home on this computer.',
+  'claude-code': 'Cerin could not prepare a separate Claude Code home on this computer.',
   codex: 'Sign in to Codex on this computer with `codex login`, then check again.',
-  grok: 'Nuphos could not prepare a separate Grok Build home on this computer.',
-  antigravity: 'Nuphos could not prepare a separate Antigravity home on this computer.',
-  opencode: 'Nuphos could not prepare a separate OpenCode home on this computer.',
-  dsh: 'Nuphos could not prepare a separate DeepSeek Harness home on this computer.',
-  hermes: 'Nuphos could not prepare a separate Hermes Agent home on this computer.',
-  pi: 'Nuphos could not prepare a separate Pi home on this computer.',
+  grok: 'Cerin could not prepare a separate Grok Build home on this computer.',
+  antigravity: 'Cerin could not prepare a separate Antigravity home on this computer.',
+  opencode: 'Cerin could not prepare a separate OpenCode home on this computer.',
+  dsh: 'Cerin could not prepare a separate DeepSeek Harness home on this computer.',
+  hermes: 'Cerin could not prepare a separate Hermes Agent home on this computer.',
+  pi: 'Cerin could not prepare a separate Pi home on this computer.',
 }
 
 export const INSTALL_HINT: Record<LocalAgentProvider, string> = {

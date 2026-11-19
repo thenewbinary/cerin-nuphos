@@ -10,10 +10,10 @@ import { stripVTControlCharacters } from 'node:util'
 export const VERIFICATION_URI = 'https://accounts.x.ai/oauth2/device'
 // A computer running Grok Build as a local agent names its own CLI and home.
 export const GROK_HOME = join(
-  process.env.NUPHOS_AGENT_HOME || process.env.HOME || '/home/node',
+  process.env.CERIN_AGENT_HOME || process.env.HOME || '/home/node',
   '.grok',
 )
-const GROK_EXECUTABLE = process.env.NUPHOS_AGENT_EXECUTABLE || 'grok'
+const GROK_EXECUTABLE = process.env.CERIN_AGENT_EXECUTABLE || 'grok'
 
 export function deviceCodePrompt(output) {
   const userCode = new RegExp(

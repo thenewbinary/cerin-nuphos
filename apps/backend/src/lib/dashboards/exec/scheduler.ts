@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { config } from '@/config'
 import { getTeamMembership } from '@/lib/identity'
 import { logError, logEvent } from '@/lib/observability'
-import { nuphosDashboards, dashboardPanels, dashboardPanelSnapshots } from '@/models'
+import { cerinDashboards, dashboardPanels, dashboardPanelSnapshots } from '@/models'
 
 import { evaluatePanelAlert } from '../alert-service'
 import { mintDashboardPanelToken } from '../panel-principal'
@@ -65,7 +65,7 @@ export async function scheduleSnapshot(snapshotId: ObjectId): Promise<void> {
     return
   }
   const [dashboard, panel] = await Promise.all([
-    nuphosDashboards().findOne({ _id: snapshot.dashboardId, teamId: snapshot.teamId }),
+    cerinDashboards().findOne({ _id: snapshot.dashboardId, teamId: snapshot.teamId }),
     dashboardPanels().findOne({ _id: snapshot.panelId, teamId: snapshot.teamId }),
   ])
 
@@ -118,7 +118,7 @@ async function executeWithRetry(run: Run): Promise<void> {
       })
 
       if (!(await holdLease(run))) return
-      const nuphosToken = mintDashboardPanelToken({
+      const cerinToken = mintDashboardPanelToken({
         userId: run.userId,
         teamId: run.snapshot.teamId.toHexString(),
         panelId: run.panel._id.toHexString(),
@@ -127,7 +127,7 @@ async function executeWithRetry(run: Run): Promise<void> {
       const { output, durationMs } = await runOnRuntime({
         runtime,
         jobId: `panel-${run.snapshot._id.toHexString()}-${String(attempt)}`,
-        nuphosToken,
+        cerinToken,
         code: run.code,
         params: run.snapshot.params,
         panel: run.panel,

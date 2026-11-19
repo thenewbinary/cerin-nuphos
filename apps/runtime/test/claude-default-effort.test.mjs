@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
 import {
-  nuphosDescribeDefaultEffort,
+  cerinDescribeDefaultEffort,
   patchClaudeDefaultEffort,
 } from '../image/claude-agent-acp/default-effort.mjs'
 
@@ -19,7 +19,7 @@ const query = (effort) => ({ getSettings: async () => ({ applied: { effort } }) 
 test('the default choice names the level Claude Code will send', async () => {
   const config = options('default')
 
-  await nuphosDescribeDefaultEffort(query('medium'), config)
+  await cerinDescribeDefaultEffort(query('medium'), config)
   assert.equal(config[0].options[0].description, 'medium')
 })
 
@@ -29,7 +29,7 @@ test('a pinned level, an unknown level or an old CLI leaves the choice alone', a
     [options('default'), query('ultra')],
     [options('default'), { getSettings: async () => Promise.reject(new Error('unsupported')) }],
   ]) {
-    await nuphosDescribeDefaultEffort(q, config)
+    await cerinDescribeDefaultEffort(q, config)
     assert.equal(config[0].options[0].description, undefined)
   }
 })
@@ -38,7 +38,7 @@ test('a get_settings that never answers leaves the choice alone after the timeou
   const config = options('default')
   const started = Date.now()
 
-  await nuphosDescribeDefaultEffort({ getSettings: () => new Promise(() => {}) }, config, 20)
+  await cerinDescribeDefaultEffort({ getSettings: () => new Promise(() => {}) }, config, 20)
   assert.equal(config[0].options[0].description, undefined)
   assert.ok(Date.now() - started < 1000)
 })
@@ -55,11 +55,11 @@ test('the patch lands once at session creation and once after a config change', 
   ].join('\n')
   const patched = patchClaudeDefaultEffort(source)
 
-  assert.equal(patched.split('await nuphosDescribeDefaultEffort(').length - 1, 2)
-  assert.match(patched, /fastMode\);\n {12}await nuphosDescribeDefaultEffort\(q, configOptions\);/)
+  assert.equal(patched.split('await cerinDescribeDefaultEffort(').length - 1, 2)
+  assert.match(patched, /fastMode\);\n {12}await cerinDescribeDefaultEffort\(q, configOptions\);/)
   assert.match(
     patched,
-    /\n {8}await nuphosDescribeDefaultEffort\(session\.query, session\.configOptions\);\n {4}\}\n$/,
+    /\n {8}await cerinDescribeDefaultEffort\(session\.query, session\.configOptions\);\n {4}\}\n$/,
   )
   assert.throws(() => patchClaudeDefaultEffort('nothing to patch'))
 })

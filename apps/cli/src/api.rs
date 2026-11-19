@@ -1,4 +1,4 @@
-//! The Nuphos REST calls this client makes, plus the `POST /agent/chat` event
+//! The Cerin REST calls this client makes, plus the `POST /agent/chat` event
 //! stream. Responses stay `serde_json::Value`: the client reads a handful of
 //! fields and sends the rest back untouched.
 
@@ -11,7 +11,7 @@ use reqwest::StatusCode;
 use serde_json::{json, Value};
 use tokio::sync::mpsc::UnboundedSender;
 
-const CLIENT: &str = concat!("nuphos-cli/", env!("CARGO_PKG_VERSION"));
+const CLIENT: &str = concat!("cerin-cli/", env!("CARGO_PKG_VERSION"));
 /// The backend heartbeats every ~5 s; this much silence means a dead socket.
 const IDLE_TIMEOUT: Duration = Duration::from_secs(45);
 
@@ -32,7 +32,7 @@ impl std::error::Error for ApiError {}
 
 impl ApiError {
     fn network(e: reqwest::Error) -> Self {
-        ApiError { status: 0, code: None, message: format!("Could not reach Nuphos: {e}") }
+        ApiError { status: 0, code: None, message: format!("Could not reach Cerin: {e}") }
     }
 
     /// Reads an Atlas error body: `{ error: { code, message } }`.
@@ -43,10 +43,10 @@ impl ApiError {
         let message = error
             .and_then(|e| e["message"].as_str())
             .map(String::from)
-            .unwrap_or_else(|| format!("Nuphos returned status {}.", status.as_u16()));
+            .unwrap_or_else(|| format!("Cerin returned status {}.", status.as_u16()));
         // The terminal cannot ask for the code; a fresh sign-in counts as a recent check.
         let message = if code.as_deref() == Some("reauth_required") {
-            "This needs a recent two-factor check. Do it in the Nuphos app, or run `nuphos login` again.".to_string()
+            "This needs a recent two-factor check. Do it in the Cerin app, or run `cerin login` again.".to_string()
         } else {
             message
         };
@@ -369,8 +369,8 @@ impl Api {
             return Err(error.message);
         };
 
-        // `NUPHOS_DEBUG_FRAMES=<file>` appends every event, for debugging.
-        let mut debug = std::env::var_os("NUPHOS_DEBUG_FRAMES").and_then(|path| {
+        // `CERIN_DEBUG_FRAMES=<file>` appends every event, for debugging.
+        let mut debug = std::env::var_os("CERIN_DEBUG_FRAMES").and_then(|path| {
             let mut options = std::fs::OpenOptions::new();
             options.create(true).append(true);
             // It holds whole conversations, like cli.yaml holds the token.
@@ -385,7 +385,7 @@ impl Api {
             let chunk = match tokio::time::timeout(IDLE_TIMEOUT, bytes.next()).await {
                 Err(_) => return Err("The connection went quiet for too long.".into()),
                 Ok(None) => break,
-                Ok(Some(Err(e))) => return Err(format!("Lost the connection to Nuphos: {e}")),
+                Ok(Some(Err(e))) => return Err(format!("Lost the connection to Cerin: {e}")),
                 Ok(Some(Ok(chunk))) => chunk,
             };
             buffer.extend_from_slice(&chunk);

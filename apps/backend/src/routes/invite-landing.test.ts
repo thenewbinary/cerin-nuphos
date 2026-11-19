@@ -6,16 +6,16 @@ describe('inviteLandingPage', () => {
   test('names the team and offers open + download actions', () => {
     const html = inviteLandingPage('Acme')
 
-    expect(html).toContain('Join <b>Acme</b> on Nuphos')
-    expect(html).toContain('href="nuphos://open"')
-    expect(html).toContain('href="https://nuphos.ai/download"')
+    expect(html).toContain('Join <b>Acme</b> on Cerin')
+    expect(html).toContain('href="cerin://open"')
+    expect(html).toContain('href="https://platform.cerin.ai/download"')
     // The auto-launch script fires the same deep link the button offers.
-    expect(html).toContain('location.href = "nuphos://open"')
+    expect(html).toContain('location.href = "cerin://open"')
   })
 
   test('falls back to a generic heading without a team name', () => {
     for (const value of [null, '', '   ']) {
-      expect(inviteLandingPage(value)).toContain('Join your team on Nuphos')
+      expect(inviteLandingPage(value)).toContain('Join your team on Cerin')
     }
   })
 

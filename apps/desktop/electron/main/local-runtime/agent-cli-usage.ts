@@ -62,7 +62,7 @@ function usageRequest(
 }
 
 /** Asks the provider what is left of this computer's own account. It runs here,
- *  not in Nuphos, because the credential is here — and because the rate limit it
+ *  not in Cerin, because the credential is here — and because the rate limit it
  *  spends is this person's, not a shared one. Every failure reports nothing:
  *  usage is decoration, never a reason to call the agent broken, and the token
  *  must never reach a log. */

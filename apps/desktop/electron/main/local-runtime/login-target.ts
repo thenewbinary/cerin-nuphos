@@ -35,7 +35,7 @@ export function loginWrapper(
 ) {
   const wrapper = path.join(bundleRoot, `${provider === 'codex' ? 'codex' : 'claude'}-login.mjs`)
 
-  if (!existsSync(wrapper)) throw new Error('Update Nuphos to sign in with an API key.')
+  if (!existsSync(wrapper)) throw new Error('Update Cerin to sign in with an API key.')
 
   return {
     command: process.execPath,
@@ -43,7 +43,7 @@ export function loginWrapper(
     env: {
       ...target.env,
       ...(provider === 'codex'
-        ? { CODEX_EXECUTABLE: target.cliPath, NUPHOS_CODEX_AUTH_DIRECTORY: target.agentHome }
+        ? { CODEX_EXECUTABLE: target.cliPath, CERIN_CODEX_AUTH_DIRECTORY: target.agentHome }
         : {}),
     },
   }

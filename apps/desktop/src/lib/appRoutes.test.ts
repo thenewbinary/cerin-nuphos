@@ -115,7 +115,7 @@ const CASES: { name: string; nav: NavigationSnapshot }[] = [
   {
     name: 'dashboard',
     nav: emptyNavigation({ kind: 'team', teamId: T }, 'team.dashboards', {
-      nuphosDashboard: { dashboardId: 'dash-1', dashboardName: 'Dashboard' },
+      cerinDashboard: { dashboardId: 'dash-1', dashboardName: 'Dashboard' },
     }),
   },
   {
@@ -266,7 +266,7 @@ const CASES: { name: string; nav: NavigationSnapshot }[] = [
         kind: 'aws-account',
         teamId: T,
         accountId: '682033483399',
-        roleArn: 'arn:aws:iam::682033483399:role/nuphos',
+        roleArn: 'arn:aws:iam::682033483399:role/cerin',
       },
       'aws.role',
     ),
@@ -947,7 +947,7 @@ test('custom resource routes restore every provider cluster scope', () => {
 // A pinned favourite (and any shared link) is stored as a produced path and
 // reopened by parsing it back, so the page a cluster URL was captured on has to
 // survive the round trip for every provider — see the `cluster` mention carve-out
-// in openNuphosLinkInNewTab, which exists for exactly this.
+// in openCerinLinkInNewTab, which exists for exactly this.
 test('cluster page paths round-trip their page for every provider', () => {
   const clusterScopes: Extract<Scope, { kind: 'cluster' }>[] = [
     {
@@ -1113,11 +1113,11 @@ test('legacy aliases parse to the same navigation as their canonical form', () =
   }
 })
 
-// Full nuphos.ai URLs (what chat links and deep links actually carry) parse
+// Full platform.cerin.ai URLs (what chat links and deep links actually carry) parse
 // the same as bare paths, including query strings.
 test('parser accepts absolute URLs and query params', () => {
   const parsed = navigationFromAppPath(
-    'https://nuphos.ai/teams/6a6198d06a7585a89e02775d/infra/aws/682033483399/cloudwatch-metrics',
+    'https://platform.cerin.ai/teams/6a6198d06a7585a89e02775d/infra/aws/682033483399/cloudwatch-metrics',
   )
 
   assert.ok(parsed)
@@ -1148,7 +1148,7 @@ test('a pull request path without a state backs out to the list that can show it
 
 test('non-app paths return null', () => {
   assert.equal(navigationFromAppPath('/login'), null)
-  assert.equal(navigationFromAppPath('https://docs.nuphos.ai/teams/x'), null)
+  assert.equal(navigationFromAppPath('https://docs.platform.cerin.ai/teams/x'), null)
   assert.equal(navigationFromAppPath('not a url //'), null)
   // Malformed percent-encoding survives URL parsing; must not throw URIError.
   assert.equal(navigationFromAppPath('/teams/%E0%A4%A/plans'), null)

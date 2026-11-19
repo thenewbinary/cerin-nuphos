@@ -34,7 +34,7 @@ const PROVIDERS: { provider: PersonalCredentialProvider; name: string; descripti
     provider: 'github',
     name: 'GitHub',
     description: t(
-      'Act as yourself on GitHub — commits, PRs and comments are authored by you instead of nuphos[bot]. Tasks scoped to one repository keep using nuphos[bot].',
+      'Act as yourself on GitHub — commits, PRs and comments are authored by you instead of cerin[bot]. Tasks scoped to one repository keep using cerin[bot].',
     ),
   },
   {
@@ -74,7 +74,7 @@ export function PersonalCredentialsSection({
   onOpenSection?: (section: string) => void
 }) {
   const [credentials, setCredentials] = useState<PersonalCredential[] | null>(null)
-  // Gmail / Google Drive go through the current team's own OAuth client, else Nuphos's Composio.
+  // Gmail / Google Drive go through the current team's own OAuth client, else Cerin's Composio.
   // Null while unknown, or when it could not be read: Connect stays available and says why if it fails.
   const [googleClient, setGoogleClient] = useState<TeamGoogleClient | null>(null)
   const admin = useAdminName(team?.id, Boolean(team && team.role !== 'ADMINISTRATOR'))
@@ -177,7 +177,7 @@ export function PersonalCredentialsSection({
                     <p className="mt-0.5 text-[12.5px] text-tertiary">{description}</p>
                     {!credential && viaComposio && (
                       <p className="mt-1.5 text-[12.5px] text-secondary">
-                        {t('Connects through Composio, which handles this data for Nuphos.')}
+                        {t('Connects through Composio, which handles this data for Cerin.')}
                       </p>
                     )}
                     {!credential && needsTeamClient && (

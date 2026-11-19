@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 
 import { isRuntimeRefusal } from '@/lib/claude-code-preview/runtime-refusal'
 import { AppError } from '@/lib/errors'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import { logError } from '@/lib/observability'
 import { persistedMessageToUiMessage } from '@/routes/mcp/transcript'
 
@@ -141,7 +141,7 @@ export async function runTurn(
         userId: data.userId,
         teamId: data.teamId,
         sessionId: data.targetSessionId,
-        nuphosToken: signNuphosToken(data.userId, 8 * 60 * 60),
+        cerinToken: signCerinToken(data.userId, 8 * 60 * 60),
         messages: [
           ...prior,
           ...fresh.map((message): UIMessage => ({
@@ -234,7 +234,7 @@ export async function reportUndelivered(
     const senderId = message.metadata?.sourceSessionId
 
     await keepUndelivered(data, message, reason, error)
-    // Only an agent's message is answered. The answer is Nuphos's own notice,
+    // Only an agent's message is answered. The answer is Cerin's own notice,
     // never an agent's, so it is never reported back: threads cannot ping-pong.
     if (message.source !== 'agent.thread' || !senderId) continue
     const failed = (error: unknown) => {
@@ -269,7 +269,7 @@ export async function reportUndelivered(
         sender,
         notice,
         'agent.resource',
-        systemSender('nuphos', 'Nuphos', `/teams/${sender.teamId}/agent/${data.targetSessionId}`),
+        systemSender('cerin', 'Cerin', `/teams/${sender.teamId}/agent/${data.targetSessionId}`),
       )
 
       run.catch(failed)

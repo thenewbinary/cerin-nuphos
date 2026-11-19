@@ -3,7 +3,7 @@ import type { AgentCommand } from '../../../lib/runtimeExecution.ts'
 // How often each agent command has been used from this computer, so the `/`
 // menu can offer the user's own favourites first.
 
-const KEY = 'nuphos.slashCommandUsage.v1'
+const KEY = 'cerin.slashCommandUsage.v1'
 
 export type SlashUsage = Readonly<Record<string, number>>
 
@@ -51,7 +51,7 @@ export function recordSlashUse(
 
 // The commands each agent last listed, so a new conversation, which has no
 // session yet to list them, can still offer them.
-const COMMANDS_KEY = 'nuphos.agentCommands.v1'
+const COMMANDS_KEY = 'cerin.agentCommands.v1'
 
 function isAgentCommand(value: unknown): value is AgentCommand {
   if (!value || typeof value !== 'object') return false

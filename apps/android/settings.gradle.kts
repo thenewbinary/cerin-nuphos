@@ -22,8 +22,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "nuphos-android"
+rootProject.name = "cerin-android"
 include(":app")
 
 // Synthetic cross-UID sender is never part of a production build.
-if (providers.gradleProperty("nuphosIsolatedShareFixture").orNull == "true" || providers.gradleProperty("nuphosIsolatedPersistentShareFixture").orNull == "true") include(":share-sender")
+if (providers.gradleProperty("cerinIsolatedShareFixture").orNull == "true" || providers.gradleProperty("cerinIsolatedPersistentShareFixture").orNull == "true") include(":share-sender")

@@ -22,7 +22,7 @@ const TTL_MS = 10 * 60 * 1000
 export type InstallFlowState = {
   /** Team the installation is bound to. */
   t: string
-  /** Nuphos user who started the flow. */
+  /** Cerin user who started the flow. */
   u: string
   /** The client's own correlation state, handed back unchanged. */
   s?: string
@@ -40,7 +40,7 @@ export type InstallFlowState = {
 function mac(payload: string): Buffer {
   const secret = config.auth.jwtSecret
 
-  if (!secret) throw new Error('NUPHOS_JWT_SECRET is not configured')
+  if (!secret) throw new Error('CERIN_JWT_SECRET is not configured')
 
   return createHmac('sha256', secret).update(`github-install-flow:${payload}`).digest()
 }
@@ -97,7 +97,7 @@ export function githubInstallStartUrl(signedState: string): string | null {
 }
 
 /** The browser that opened the flow holds its nonce; another browser cannot finish it. */
-export const INSTALL_FLOW_COOKIE = 'nuphos_github_install'
+export const INSTALL_FLOW_COOKIE = 'cerin_github_install'
 
 /** The team's name when the user still administers it. */
 export async function administeredTeamName(userId: string, teamId: string): Promise<string | null> {
@@ -160,7 +160,7 @@ export function invalidFlow(): never {
   throw new AppError(
     400,
     'invalid_github_install_state',
-    'This GitHub installation link is invalid or has expired. Start again from Nuphos.',
+    'This GitHub installation link is invalid or has expired. Start again from Cerin.',
   )
 }
 

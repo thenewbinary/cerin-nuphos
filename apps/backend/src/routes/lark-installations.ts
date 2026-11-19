@@ -62,13 +62,13 @@ larkInstallationsRoutes.put('/', requireTeamRole('ADMINISTRATOR'), async (c) => 
     throw new AppError(
       400,
       'invalid_request',
-      'The event Encrypt Key is required (Nuphos fails closed without it)',
+      'The event Encrypt Key is required (Cerin fails closed without it)',
     )
   }
 
   const webhookUrl = webhookUrlFor(appId)
 
-  // Reject an app already bound to a different Nuphos team before we spend a
+  // Reject an app already bound to a different Cerin team before we spend a
   // round-trip verifying credentials.
   await assertLarkAppAvailable(appId, teamId)
 

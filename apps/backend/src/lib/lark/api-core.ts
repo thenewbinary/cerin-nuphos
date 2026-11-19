@@ -4,7 +4,7 @@ import { AppError } from '@/lib/errors'
 
 // The Lark connector is CUSTOM-APP-ONLY: every call authenticates with a
 // specific team's own 企业自建应用 credentials, resolved (and decrypted) from its
-// binding. There is no global Nuphos Lark app.
+// binding. There is no global Cerin Lark app.
 export type LarkDomain = 'feishu' | 'larksuite'
 
 export type LarkAppContext = {

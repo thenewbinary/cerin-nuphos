@@ -19,7 +19,7 @@ import type { NavHistory } from './navHistory.ts'
 //
 // The back/forward stack. History used to be reconstructed by an effect that
 // diffed a hand-listed subset of NavigationSnapshot's fields, so every drill-
-// down stored in a field nobody remembered to list (awsDetail, nuphosDashboard,
+// down stored in a field nobody remembered to list (awsDetail, cerinDashboard,
 // architectureDetail, the integrations modal) was invisible to Back. These
 // tests pin the two properties that replaced it: an entry is the tab's whole
 // snapshot, and its identity is the URL.
@@ -215,7 +215,7 @@ const DRILL_DOWNS: { name: string; from: NavigationSnapshot; to: NavigationSnaps
     name: 'cost dashboard',
     from: nav('team.dashboards'),
     to: nav('team.dashboards', {
-      nuphosDashboard: { dashboardId: 'dash-1', dashboardName: 'Monthly' },
+      cerinDashboard: { dashboardId: 'dash-1', dashboardName: 'Monthly' },
     }),
   },
   {

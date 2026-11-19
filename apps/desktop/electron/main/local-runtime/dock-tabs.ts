@@ -38,11 +38,11 @@ export const watchDockTab: WatchTab = async (session, tab, width, height, end) =
   for (const window of BrowserWindow.getAllWindows()) {
     // An agent's tab and an extension's page are windows on the browser session; only the app's own answer.
     if (window.isDestroyed() || window.webContents.session === browserSession()) continue
-    const call = `window.nuphosWatchDockTab?.(${[session, tab, width, height].map((v) => JSON.stringify(v)).join(', ')}) ?? null`
+    const call = `window.cerinWatchDockTab?.(${[session, tab, width, height].map((v) => JSON.stringify(v)).join(', ')}) ?? null`
     const unwatch = () => {
       if (!window.isDestroyed())
         window.webContents
-          .executeJavaScript(`window.nuphosUnwatchDockTab?.(${JSON.stringify(tab)})`)
+          .executeJavaScript(`window.cerinUnwatchDockTab?.(${JSON.stringify(tab)})`)
           .catch(() => {})
     }
     let timer: ReturnType<typeof setTimeout> | undefined

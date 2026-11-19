@@ -8,14 +8,14 @@ import { useModels } from '@/lib/test/doubles/models'
 import { createFakeInstructionsCollection } from '@/lib/test/fake-instructions-collection'
 
 import type { AgentSessionOrigin } from '@/lib/agent/message-origin'
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 import type { TeamAuthVariables } from '@/middleware/auth'
 import type { ConversationTeamAuthVariables } from '@/routes/teams/conversation-auth'
 
 const TEAM_ID = new ObjectId().toHexString()
 const collection = createFakeInstructionsCollection()
 let currentUserId = 'admin-user'
-let currentRole: NuphosTeamRole = 'ADMINISTRATOR'
+let currentRole: CerinTeamRole = 'ADMINISTRATOR'
 
 type ConversationTurn = { key?: string; origin?: AgentSessionOrigin } | null
 let conversationTurn: ConversationTurn = null
@@ -52,7 +52,7 @@ type Listing = {
   canManageTeam: boolean
 }
 
-function as(userId: string, role: NuphosTeamRole): void {
+function as(userId: string, role: CerinTeamRole): void {
   currentUserId = userId
   currentRole = role
 }

@@ -4,12 +4,12 @@ import { api } from '../../api'
 import { toast } from '../../components/ui/toast'
 import { t } from '../../i18n/index.ts'
 
-import { createNuphosDashboard } from './helpers'
+import { createCerinDashboard } from './helpers'
 
 import type {
   DashboardViewRange,
-  NuphosDashboard,
-  NuphosDashboardDetail,
+  CerinDashboard,
+  CerinDashboardDetail,
   OpenAgentChat,
 } from '../schema'
 import type { Dispatch, SetStateAction } from 'react'
@@ -18,16 +18,16 @@ type Args = {
   teamId: string
   viewRange?: DashboardViewRange
   selectedId: string | null
-  dashboards: NuphosDashboard[]
-  setDashboards: Dispatch<SetStateAction<NuphosDashboard[]>>
-  detail: NuphosDashboardDetail | null
-  selectedDashboard: NuphosDashboard | null
+  dashboards: CerinDashboard[]
+  setDashboards: Dispatch<SetStateAction<CerinDashboard[]>>
+  detail: CerinDashboardDetail | null
+  selectedDashboard: CerinDashboard | null
   loadDetail: (id: string, opts?: { silent?: boolean }) => Promise<void>
   onDashboardOpened?: (
     d: { dashboardId: string; dashboardName: string; viewRange?: DashboardViewRange } | null,
   ) => void
   onOpenAgentChat: OpenAgentChat
-  setDashboardToDelete: Dispatch<SetStateAction<NuphosDashboard | null>>
+  setDashboardToDelete: Dispatch<SetStateAction<CerinDashboard | null>>
   setCustomRange: Dispatch<SetStateAction<{ periodStart: string; periodEnd: string } | null>>
 }
 
@@ -67,7 +67,7 @@ export function useDashboardActions({
     creatingRef.current = true
     setCreating(true)
     try {
-      const created = await createNuphosDashboard(teamId, dashboards.length > 0)
+      const created = await createCerinDashboard(teamId, dashboards.length > 0)
 
       setDashboards((prev) => [created, ...prev])
       onDashboardOpened?.({ dashboardId: created.id, dashboardName: created.name })
@@ -80,7 +80,7 @@ export function useDashboardActions({
   }, [teamId, dashboards.length, onDashboardOpened, setDashboards])
 
   const deleteDashboard = useCallback(
-    async (dashboard: NuphosDashboard) => {
+    async (dashboard: CerinDashboard) => {
       try {
         await api.dashboardsDelete(teamId, dashboard.id)
         setDashboards((prev) => prev.filter((d) => d.id !== dashboard.id))

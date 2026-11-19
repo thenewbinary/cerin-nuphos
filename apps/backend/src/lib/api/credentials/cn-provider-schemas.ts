@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { objectIdStringSchema, teamPathSchema } from './paths'
 
 export const tencentAccountPathSchema = teamPathSchema.extend({
-  accountId: objectIdStringSchema.describe('Nuphos Tencent account binding id.'),
+  accountId: objectIdStringSchema.describe('Cerin Tencent account binding id.'),
 })
 
 export const tencentCredentialsSchema = z.object({
@@ -39,7 +39,7 @@ export const tencentClustersResponseSchema = z.object({
 })
 
 export const aliyunAccountPathSchema = teamPathSchema.extend({
-  accountId: objectIdStringSchema.describe('Nuphos Alibaba Cloud account binding id.'),
+  accountId: objectIdStringSchema.describe('Cerin Alibaba Cloud account binding id.'),
 })
 
 export const aliyunCredentialsSchema = z.object({
@@ -76,7 +76,7 @@ export const aliyunClustersResponseSchema = z.object({
 })
 
 export const huaweiAccountPathSchema = teamPathSchema.extend({
-  accountId: objectIdStringSchema.describe('Nuphos Huawei Cloud account binding id.'),
+  accountId: objectIdStringSchema.describe('Cerin Huawei Cloud account binding id.'),
 })
 
 export const huaweiCredentialsSchema = z.object({
@@ -94,7 +94,7 @@ export const huaweiCredentialsSchema = z.object({
 })
 
 export const volcengineAccountPathSchema = teamPathSchema.extend({
-  accountId: objectIdStringSchema.describe('Nuphos Volcengine account binding id.'),
+  accountId: objectIdStringSchema.describe('Cerin Volcengine account binding id.'),
 })
 
 export const volcengineCredentialsSchema = z.object({

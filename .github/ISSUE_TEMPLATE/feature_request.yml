@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Search [existing issues](https://github.com/nuphos/nuphos/issues?q=is%3Aissue) first, including closed ones. If one matches, add your use case there instead.
+        Search [existing issues](https://github.com/thenewbinary/cerin-platform/issues?q=is%3Aissue) first, including closed ones. If one matches, add your use case there instead.
   - type: textarea
     id: problem
     attributes:

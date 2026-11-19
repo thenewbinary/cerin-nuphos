@@ -68,7 +68,7 @@ export function WaitingForBrowser({ keepsGrant }: { keepsGrant: boolean }) {
           .map((part, i, parts) => (
             <Fragment key={i}>
               {part}
-              {i < parts.length - 1 && <span className="font-mono">nuphos://</span>}
+              {i < parts.length - 1 && <span className="font-mono">cerin://</span>}
             </Fragment>
           ))}
       </div>

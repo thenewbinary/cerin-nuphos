@@ -17,7 +17,7 @@ import type { McpSurface, ToolHandler } from '@/lib/mcp/protocol'
 
 /**
  * The MCP servers attached to one conversation's Claude Code session: the
- * credentials surface and Nuphos's native tools, both on this backend. The
+ * credentials surface and Cerin's native tools, both on this backend. The
  * bearer is a short-lived token scoped to exactly this (session, team) mount —
  * never the user's general token, because the runtime endpoint it travels to
  * is team-admin-configurable. Empty when no sandbox-reachable base URL is
@@ -39,9 +39,9 @@ function skillSyncEnv(
   base: string,
 ): Record<string, string> {
   return {
-    NUPHOS_RUNTIME_SKILLS_URL: runtimeSkillsUrl(teamId, undefined, base),
+    CERIN_RUNTIME_SKILLS_URL: runtimeSkillsUrl(teamId, undefined, base),
     // Naming a member lets the same sync fetch their personal skills as well.
-    NUPHOS_RUNTIME_SKILLS_TOKEN: mintRuntimeSkillsToken(teamId, skillsOwnerId),
+    CERIN_RUNTIME_SKILLS_TOKEN: mintRuntimeSkillsToken(teamId, skillsOwnerId),
   }
 }
 
@@ -59,14 +59,14 @@ export function previewSessionEnv(args: {
     ...skillSyncEnv(args.teamId, args.personalSkillsOf, args.base),
     // Native skills share the classic setup scripts. Give those scripts the
     // same variable names they already understand, but with the narrowly
-    // scoped preview bearer rather than a user's general Nuphos token.
-    NUPHOS_TOKEN: args.token,
-    NUPHOS_BACKEND_URL: args.base,
-    NUPHOS_SESSION_ID: args.conversationId,
-    ...(args.sessionActor ? { NUPHOS_SESSION_ACTOR: args.sessionActor } : {}),
+    // scoped preview bearer rather than a user's general Cerin token.
+    CERIN_TOKEN: args.token,
+    CERIN_BACKEND_URL: args.base,
+    CERIN_SESSION_ID: args.conversationId,
+    ...(args.sessionActor ? { CERIN_SESSION_ACTOR: args.sessionActor } : {}),
     // Skills address team-scoped routes as /teams/$TEAM/...
     TEAM: args.teamId,
-    NUPHOS_TEAM_ID: args.teamId,
+    CERIN_TEAM_ID: args.teamId,
   }
 }
 
@@ -107,7 +107,7 @@ export type PreviewSessionAccessOptions = {
   backendUrl?: string
   /** The actor sent this turn's message; otherwise the turn acts as the session owner. */
   humanTurn?: boolean
-  /** From `nuphosToolsVersion`; a change makes the runtime respawn an idle agent. */
+  /** From `cerinToolsVersion`; a change makes the runtime respawn an idle agent. */
   toolsVersion?: string
   /** Set for a sub-agent thread: its tokens name the parent as the RFC 8693 actor. */
   parentSessionId?: string
@@ -149,9 +149,9 @@ export async function previewSessionAccess(
 
   return {
     mcpServers: [
-      { name: 'nuphos-credentials', type: 'http', url: `${mount}/mcp`, headers },
+      { name: 'cerin-credentials', type: 'http', url: `${mount}/mcp`, headers },
       {
-        name: 'nuphos-tools',
+        name: 'cerin-tools',
         type: 'http',
         url: options?.toolsVersion
           ? `${mount}/mcp-tools?tools=${options.toolsVersion}`
@@ -187,9 +187,9 @@ const DESCRIPTION_PROPERTY = {
 }
 
 export const CREDENTIALS_MCP_SURFACE: McpSurface = {
-  serverName: 'nuphos-credentials',
+  serverName: 'cerin-credentials',
   instructions:
-    'Cloud credentials the user selected for this Nuphos conversation. Call ' +
+    'Cloud credentials the user selected for this Cerin conversation. Call ' +
     'list_credentials to see what is available, then get_credential with a ' +
     '(provider, id) pair from that list. Values are short-lived; fetch them ' +
     'right before use instead of storing them. Credential selection is per ' +

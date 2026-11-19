@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 if [ "$#" -ne 2 ] || { [ "$2" != "gmail" ] && [ "$2" != "google-drive" ] && [ "$2" != "google-calendar" ]; }; then
@@ -12,11 +12,11 @@ fi
 
 team_id="$1"
 provider="$2"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.nuphos.ai}}"
+base="${CERIN_BACKEND_URL:-${CERIN_API_URL:-https://platform.cerin.ai}}"
 base="${base%/}"
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set; this handout only works inside a Nuphos agent conversation" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is not set; this handout only works inside a Cerin agent conversation" >&2
   exit 1
 fi
 
@@ -32,7 +32,7 @@ status="$(curl -sSL -o "$tmp" -w '%{http_code}' \
   --retry 3 \
   --retry-delay 1 \
   --retry-connrefused \
-  -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+  -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
   -H "Accept: application/json" \
   "${base}${path}")"
 

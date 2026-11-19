@@ -8,9 +8,9 @@ export type ChangelogEntry = {
 }
 
 // Keep in sync with apps/desktop/src/lib/whatsNew.ts
-export const CHANGELOG_INDEX_URL = 'https://nuphos.ai/changelog'
-export const CHANGELOG_PAGE_PREFIX = 'https://nuphos.ai/changelog/'
-export const CHANGELOG_FEED_URL = 'https://nuphos.ai/changelog/feed.json'
+export const CHANGELOG_INDEX_URL = 'https://platform.cerin.ai/changelog'
+export const CHANGELOG_PAGE_PREFIX = 'https://platform.cerin.ai/changelog/'
+export const CHANGELOG_FEED_URL = 'https://platform.cerin.ai/changelog/feed.json'
 
 function isEntry(v: unknown): v is ChangelogEntry {
   if (typeof v !== 'object' || v === null) return false

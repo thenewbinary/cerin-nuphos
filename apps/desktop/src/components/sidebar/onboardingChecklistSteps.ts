@@ -5,8 +5,8 @@ import { t } from '../../i18n/index.ts'
 
 // Historically this key stored a permanent dismissal; it now means "collapsed",
 // so previously-dismissed teams show the compact row instead of nothing.
-export const COLLAPSE_KEY = (teamId: string) => `nuphos.onboarding-checklist.dismissed.${teamId}`
-export const VISITED_KEY = (teamId: string) => `nuphos.onboarding-checklist.visited.${teamId}`
+export const COLLAPSE_KEY = (teamId: string) => `cerin.onboarding-checklist.dismissed.${teamId}`
+export const VISITED_KEY = (teamId: string) => `cerin.onboarding-checklist.visited.${teamId}`
 
 export function readVisited(teamId: string): Set<string> {
   if (typeof window === 'undefined') return new Set()
@@ -59,13 +59,13 @@ export const STEPS: StepDef[] = [
   {
     id: 'integrate',
     label: t('Connect your cloud assets'),
-    description: t('Link a cloud account so Nuphos can manage it.'),
+    description: t('Link a cloud account so Cerin can manage it.'),
     navKey: 'team.integrations',
     completeOnOpen: false,
   },
   {
     id: 'chat',
-    label: t('Ask Nuphos your first question'),
+    label: t('Ask Cerin your first question'),
     description: t('Deploy, debug, or query in plain language.'),
     navKey: 'team.agent',
     completeOnOpen: true,

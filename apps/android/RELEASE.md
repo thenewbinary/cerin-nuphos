@@ -10,7 +10,7 @@ tag, not marked as latest. The signed AAB also stays downloadable as an artifact
 ## Administrator setup
 
 Before production signing, a repository administrator must complete this setup
-in the official `nuphos/nuphos` repository:
+in the official `thenewbinary/cerin-platform` repository:
 
 - Protect `main`. Review release source and its checks before starting a run.
 - Create the `android-release` Environment. Require an authorized maintainer's
@@ -32,14 +32,14 @@ in the official `nuphos/nuphos` repository:
 ### Play upload (keyless)
 
 The signing job authenticates to Google Play with Workload Identity Federation;
-no JSON key exists. GCP project `nuphos` holds service account
-`play-publisher@nuphos.iam.gserviceaccount.com` (no GCP roles) and provider
-`github/nuphos-android-release`, which only accepts tokens whose repository ID,
-owner ID, ref and environment are `nuphos/nuphos`, `nuphos`, `refs/heads/main`
+no JSON key exists. GCP project `cerin` holds service account
+`play-publisher@cerin.iam.gserviceaccount.com` (no GCP roles) and provider
+`github/cerin-android-release`, which only accepts tokens whose repository ID,
+owner ID, ref and environment are `thenewbinary/cerin-platform`, `cerin`, `refs/heads/main`
 and `android-release`. The Google Play Android Developer API is enabled there.
 
 In Play Console the service account is invited under **Users and permissions**
-with access to `ai.nuphos.android` limited to releasing to production. To
+with access to `ai.cerin.android` limited to releasing to production. To
 rotate, remove that user and the provider; there is no secret to revoke.
 
 ## Firebase and optimization
@@ -47,8 +47,8 @@ rotate, remove that user and the provider; there is no secret to revoke.
 Release builds enable R8 and resource shrinking and fail when
 `app/google-services.json` is absent. Debug and fixture builds may omit Firebase.
 Set the repository Actions variable `ANDROID_GOOGLE_SERVICES_JSON` to the complete
-reviewed Firebase Android client configuration for project `nuphos-android` and
-package `ai.nuphos.android` before running the release workflow. This is Firebase
+reviewed Firebase Android client configuration for project `cerin-android` and
+package `ai.cerin.android` before running the release workflow. This is Firebase
 client configuration, not a service-account credential or signing secret. Never
 put private keys or server credentials in this variable. The workflow checks the
 project and package without logging the configuration.
@@ -71,13 +71,13 @@ and background notification delivery/navigation.
    current version code. Never use the workflow run number as the version.
 3. The build job runs Python and JVM tests, release lint and `bundleRelease`.
    Pinned bundletool validates the bundle and checks its actual package
-   `ai.nuphos.android`, requested versions, minSdk 33 and targetSdk 36. The
+   `ai.cerin.android`, requested versions, minSdk 33 and targetSdk 36. The
    unsigned evidence artifact is available even if signing has not started.
 4. Review the exact source commit and build result before approving the
    `android-release` Environment job. Signing uses only the immutable unsigned
    artifact ID from the same successful run. It performs no source checkout.
 5. Download `android-signed-<run_id>-<attempt>` from that run within 14 days.
-   It contains `Nuphos-Android-<version_name>-<version_code>.aab`,
+   It contains `Cerin-Android-<version_name>-<version_code>.aab`,
    `SHA256SUMS.txt` and `metadata.json`. The metadata records the source commit,
    run and attempt, actual package/versions/SDK values, unsigned and signed
    SHA-256 checksums, and upload-certificate fingerprint.
@@ -112,7 +112,7 @@ update CI only when the replacement certificate is approved and registered.
 Gradle preserves the existing local version defaults. Override them explicitly:
 
 ```sh
-./gradlew --no-daemon -PnuphosVersionCode=2 -PnuphosVersionName=1.0.1 \
+./gradlew --no-daemon -PcerinVersionCode=2 -PcerinVersionName=1.0.1 \
   :app:testDebugUnitTest :app:lintRelease :app:bundleRelease
 python3 -m unittest discover -s scripts -p 'test_*.py'
 ```

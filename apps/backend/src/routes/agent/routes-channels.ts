@@ -239,8 +239,8 @@ channelRoutes.post('/conversations/:sessionId/channel-messages', async (c) => {
   const [metadata, mentions] = await Promise.all([
     createMessageMetadata(
       userId,
-      'nuphos',
-      c.req.header('X-Nuphos-Device-Id')?.trim() || undefined,
+      'cerin',
+      c.req.header('X-Cerin-Device-Id')?.trim() || undefined,
     ),
     resolveMentions(teamId, body.mentions, userId),
   ])

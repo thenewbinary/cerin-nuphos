@@ -55,17 +55,17 @@ jobs:
           context: apps/runtime/image
           file: apps/runtime/image/Dockerfile
           load: true
-          tags: nuphos-runtime:sdk-candidate
+          tags: cerin-runtime:sdk-candidate
           build-args: |
-            BASE_IMAGE=ghcr.io/zeabur/nuphos-runtime:0.0.12-base-codex
+            BASE_IMAGE=ghcr.io/zeabur/cerin-runtime:0.0.12-base-codex
             RUNTIME_PROVIDER=claude-code
           cache-from: type=gha,scope=runtime-claude-code
           cache-to: type=gha,mode=max,scope=runtime-claude-code
       - name: Smoke-test image and native model discovery without prompts
         if: steps.update.outputs.changed == 'true'
         run: |
-          docker run --rm -v "$PWD/test:/smoke:ro" --entrypoint bash nuphos-runtime:sdk-candidate /smoke/image-smoke.sh
-          docker run --rm -v "$PWD/test:/smoke:ro" --entrypoint node nuphos-runtime:sdk-candidate /smoke/model-discovery.mjs claude-code > /tmp/models.json
+          docker run --rm -v "$PWD/test:/smoke:ro" --entrypoint bash cerin-runtime:sdk-candidate /smoke/image-smoke.sh
+          docker run --rm -v "$PWD/test:/smoke:ro" --entrypoint node cerin-runtime:sdk-candidate /smoke/model-discovery.mjs claude-code > /tmp/models.json
           jq -e '.models | length > 0' /tmp/models.json
           cat /tmp/models.json >> "$GITHUB_STEP_SUMMARY"
       - name: Open a pull request for the tested SDK

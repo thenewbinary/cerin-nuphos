@@ -1,4 +1,4 @@
-const EVENT = 'nuphos:chat-title-changed'
+const EVENT = 'cerin:chat-title-changed'
 
 export type ChatTitleChange = { sessionId: string; teamId: string; title: string }
 

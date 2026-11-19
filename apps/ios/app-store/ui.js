@@ -1,4 +1,4 @@
-// HTML port of the Nuphos iOS screens (dark appearance), in native points on a 440×956 canvas.
+// HTML port of the Cerin iOS screens (dark appearance), in native points on a 440×956 canvas.
 // Metrics were measured against simulator captures of the real app (see README.md).
 const fs = require('fs');
 const path = require('path');
@@ -102,7 +102,7 @@ const home = (convs) => `${ios()}
   <div class="glass" style="left:${312 + DX}px;top:${62 + DY}px;width:44px;height:44px">${sym('line.3.horizontal.decrease', 'regular', 22)}</div>
   <div class="glass" style="left:${372 + DX}px;top:${62 + DY}px;width:44px;height:44px"></div>${avatar('BW', 30, 379 + DX, 69 + DY)}
   ${convs.map((c, i) => convRow(i, c)).join('')}
-  ${composer('Ask Nuphos anything…', false)}</div>`;
+  ${composer('Ask Cerin anything…', false)}</div>`;
 
 const chatHeader = (title, agent, label) => `
   <div class="glass" style="left:20px;top:${62 + DY}px;width:44px;height:44px">${sym('chevron.left', 'semibold', 23, '#fff', 'margin-left:-2px')}</div>

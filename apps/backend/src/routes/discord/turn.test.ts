@@ -19,7 +19,7 @@ const message = {
   metadata: {
     version: 1,
     sender: { type: 'user', id: 'alice', displayName: 'Alice' },
-    source: 'nuphos',
+    source: 'cerin',
     sentAt: '2026-01-01T00:00:00.000Z',
   },
   parts: [{ type: 'text', text: 'ship it?' }],
@@ -54,7 +54,7 @@ test('an app turn in a bound session posts the sender to the thread and syncs wh
     deps,
   )
 
-  expect(calls.posts).toEqual([['thread', '**Alice** (from Nuphos):\nship it?']])
+  expect(calls.posts).toEqual([['thread', '**Alice** (from Cerin):\nship it?']])
   await mirror?.finish()
   expect(calls.synced).toEqual([[thread, 'owner']])
 })
@@ -98,6 +98,6 @@ test("an agent token's app turn is posted as the bot, via its user", async () =>
   )
 
   expect(calls.posts).toEqual([
-    ['thread', '**Grok Bot · via Yuanlin Lin** (from Nuphos):\nship it?'],
+    ['thread', '**Grok Bot · via Yuanlin Lin** (from Cerin):\nship it?'],
   ])
 })

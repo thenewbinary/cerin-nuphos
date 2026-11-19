@@ -95,8 +95,8 @@ const USER = {
 
 useDb({ db: (() => ({ collection })) as unknown as typeof dbActual.db })
 useIdentity({
-  getNuphosUserById: (async (id: string) =>
-    id === USER.id ? USER : null) as unknown as typeof identityActual.getNuphosUserById,
+  getCerinUserById: (async (id: string) =>
+    id === USER.id ? USER : null) as unknown as typeof identityActual.getCerinUserById,
 })
 
 const {
@@ -342,7 +342,7 @@ describe('the delivery target is constrained at registration', () => {
       'http://127.0.0.1:80/callback', // privileged
       'http://127.0.0.1:51000/callback?token=x', // pre-seeded query
       'http://127.0.0.1:51000/callback#x',
-      'nuphos://callback',
+      'cerin://callback',
       'not a url',
     ]) {
       await expect(register({ redirectUri })).rejects.toThrow(/loopback/)

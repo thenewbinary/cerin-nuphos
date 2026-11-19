@@ -12,18 +12,18 @@ import {
 import type { AccountSummary } from '../auth/accounts.ts'
 
 const a: AccountSummary = {
-  key: 'a@https://api.nuphos.ai',
-  api: 'https://api.nuphos.ai',
+  key: 'a@https://platform.cerin.ai',
+  api: 'https://platform.cerin.ai',
   active: true,
 }
 const b: AccountSummary = {
-  key: 'b@https://api.nuphos.ai',
-  api: 'https://api.nuphos.ai',
+  key: 'b@https://platform.cerin.ai',
+  api: 'https://platform.cerin.ai',
   active: false,
 }
 const c: AccountSummary = {
-  key: 'c@https://nuphos.example.com',
-  api: 'https://nuphos.example.com',
+  key: 'c@https://cerin.example.com',
+  api: 'https://cerin.example.com',
   active: false,
 }
 const teams: Record<string, string[]> = { [b.key]: ['team-b'], [c.key]: ['team-c'] }

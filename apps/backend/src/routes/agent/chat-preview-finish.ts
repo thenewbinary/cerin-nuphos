@@ -92,7 +92,7 @@ export async function finishPreviewTurn(args: {
   const nativePlanSteps: PreviewToolStep[] = nativePlans
     .filter((plan) => !existingPlanIds.has(plan.id))
     .map((plan) => ({
-      toolCallId: `nuphos-plan-${plan.id}-${String(args.startedAt)}`,
+      toolCallId: `cerin-plan-${plan.id}-${String(args.startedAt)}`,
       toolName: 'plan_create',
       input: { title: plan.title, overview: plan.overview },
       output: { planId: plan.id, status: plan.status },

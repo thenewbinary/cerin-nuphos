@@ -84,9 +84,9 @@ test(
 
     sessions.start(owner, id, 80, 24)
     sessions.replay(owner, id)
-    const ttyReady = waitForOutput(emitter, 'NUPHOS_PTY_OK')
+    const ttyReady = waitForOutput(emitter, 'CERIN_PTY_OK')
 
-    sessions.input(owner, id, "test -t 0 && printf '%s%s\\n' NUPHOS_ PTY_OK\r")
+    sessions.input(owner, id, "test -t 0 && printf '%s%s\\n' CERIN_ PTY_OK\r")
     await ttyReady
     sessions.resize(owner, id, 101, 37)
     const resized = waitForOutput(emitter, '37 101')
@@ -101,9 +101,9 @@ test(
     assert.deepEqual(sessions.processes(owner), [{ id, name: 'sleep' }])
     assert.deepEqual(sessions.processes(renderer().owner), [])
     sessions.input(owner, id, '\x03')
-    const interrupted = waitForOutput(emitter, 'NUPHOS_INTERRUPT_OK')
+    const interrupted = waitForOutput(emitter, 'CERIN_INTERRUPT_OK')
 
-    sessions.input(owner, id, "printf '%s%s\\n' NUPHOS_ INTERRUPT_OK\r")
+    sessions.input(owner, id, "printf '%s%s\\n' CERIN_ INTERRUPT_OK\r")
     await interrupted
     for (let attempt = 0; attempt < 30 && sessions.processes(owner).length; attempt++) {
       await new Promise((resolve) => setTimeout(resolve, 100))
@@ -126,13 +126,13 @@ test(
     const id = 'tab-1'
 
     const first = sessions.start(owner, id, 80, 24)
-    const moved = waitForOutput(emitter, 'NUPHOS_MOVED_OK')
+    const moved = waitForOutput(emitter, 'CERIN_MOVED_OK')
 
     // Leave a mark the shell itself carries. Deliberately `cd` rather than a
     // variable: the assignment syntax differs between shells and this spawns
     // whatever login shell the developer actually uses, so a fish user would
     // watch this fail for reasons that have nothing to do with the terminal.
-    sessions.input(owner, id, "cd /usr/lib; printf '%s%s\\n' NUPHOS_ MOVED_OK\r")
+    sessions.input(owner, id, "cd /usr/lib; printf '%s%s\\n' CERIN_ MOVED_OK\r")
     await moved
 
     // Switching chat session unmounts the view and mounts it again. Same tab
@@ -147,7 +147,7 @@ test(
       .map((event) => (event.type === 'data' ? event.data : ''))
       .join('')
 
-    assert.match(replayed, /NUPHOS_MOVED_OK/)
+    assert.match(replayed, /CERIN_MOVED_OK/)
     assert.deepEqual(events.at(-1), { id, type: 'replayed', resumed: false })
     const stillThere = waitForOutput(emitter, '/usr/lib')
 

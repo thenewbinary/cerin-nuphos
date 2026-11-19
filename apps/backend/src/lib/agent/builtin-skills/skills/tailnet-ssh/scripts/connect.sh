@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 if [ "$#" -lt 2 ]; then
@@ -18,17 +18,17 @@ fi
 team_id="$1"
 client_id="$2"
 
-: "${NUPHOS_TOKEN:?NUPHOS_TOKEN is required}"
+: "${CERIN_TOKEN:?CERIN_TOKEN is required}"
 # The ordinary team route accepts only a conversation principal for this
 # operation and enforces the selected binding plus its sandbox-access policy.
 
 state_dir="${HOME}/.tailnet-ssh"
 sock="${state_dir}/tailscaled.sock"
-socks_port="${NUPHOS_TAILNET_SOCKS_PORT:-1055}"
+socks_port="${CERIN_TAILNET_SOCKS_PORT:-1055}"
 log="${state_dir}/tailscaled.log"
 # Delimiters so disconnect.sh removes exactly this block and nothing else.
-SSH_CONFIG_MARKER="# >>> nuphos-tailnet-ssh >>>"
-SSH_CONFIG_END="# <<< nuphos-tailnet-ssh <<<"
+SSH_CONFIG_MARKER="# >>> cerin-tailnet-ssh >>>"
+SSH_CONFIG_END="# <<< cerin-tailnet-ssh <<<"
 
 ts() { tailscale --socket="$sock" "$@"; }
 
@@ -43,7 +43,7 @@ fi
 
 command -v tailscaled >/dev/null 2>&1 || bash "$(dirname "$0")/install.sh"
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${CERIN_BACKEND_URL:-https://platform.cerin.ai}"
 url="${base%/}/teams/${team_id}/tailscale-clients/${client_id}/tailnet-sessions"
 
 response="$(mktemp)"
@@ -52,7 +52,7 @@ cleanup() { rm -f "$response" "$keyfile"; }
 trap cleanup EXIT
 
 status="$(curl -sS -X POST -w '%{http_code}' -o "$response" \
-  -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+  -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
   -H 'Content-Type: application/json' \
   "$url" || true)"
 
@@ -63,7 +63,7 @@ if [ "$status" != "200" ]; then
 
 Common causes:
   403 tailscale_sandbox_access_disabled — an admin has not enabled private
-      network access for this binding in Nuphos.
+      network access for this binding in Cerin.
   403 tailscale_client_agent_access_denied — the binding is not selected in
       this session's credential selector.
   403 tailscale_auth_key_denied — the customer's OAuth client lacks the
@@ -88,8 +88,8 @@ open(keyfile, "w", encoding="utf-8").write(data["authKey"])
 open(envfile, "w", encoding="utf-8").write(
     "\n".join(
         [
-            f"export NUPHOS_TAILNET_TAG={shlex.quote(data['tag'])}",
-            f"export NUPHOS_TAILNET_HOSTNAME={shlex.quote(data['hostname'])}",
+            f"export CERIN_TAILNET_TAG={shlex.quote(data['tag'])}",
+            f"export CERIN_TAILNET_HOSTNAME={shlex.quote(data['hostname'])}",
             "",
         ]
     )
@@ -125,7 +125,7 @@ fi
 # dials out and nothing in the tailnet can dial in to it.
 if ! ts up \
   --auth-key="file:${keyfile}" \
-  --hostname="$NUPHOS_TAILNET_HOSTNAME" \
+  --hostname="$CERIN_TAILNET_HOSTNAME" \
   --accept-routes \
   --shields-up \
   --timeout=60s; then
@@ -157,7 +157,7 @@ EOF
   chmod 600 "$ssh_config"
 fi
 
-echo "Joined as ${NUPHOS_TAILNET_HOSTNAME} (${NUPHOS_TAILNET_TAG})."
+echo "Joined as ${CERIN_TAILNET_HOSTNAME} (${CERIN_TAILNET_TAG})."
 echo "SOCKS5 proxy for non-ssh tools: 127.0.0.1:${socks_port}"
 echo
 

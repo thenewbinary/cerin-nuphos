@@ -80,7 +80,7 @@ test('a host that cannot start says why and holds nothing', async () => {
   const pool = newPool()
 
   const host = fakeHost(
-    'echo "mac-screen-host: Screen Recording is not allowed for Nuphos yet" >&2; exit 1',
+    'echo "mac-screen-host: Screen Recording is not allowed for Cerin yet" >&2; exit 1',
   )
 
   await assert.rejects(
@@ -94,7 +94,7 @@ test('a host that cannot start says why and holds nothing', async () => {
 test('opening the screen asks this Mac for its permissions, and the viewer hears why it failed', async () => {
   const pool = newPool()
   const host = fakeHost(
-    'echo "mac-screen-host: Accessibility is not allowed for Nuphos yet." >&2; exit 1',
+    'echo "mac-screen-host: Accessibility is not allowed for Cerin yet." >&2; exit 1',
   )
   let asked = 0
   const deps = macScreenDeps(pool, () => ({ agents: {} }) as never, {
@@ -107,7 +107,7 @@ test('opening the screen asks this Mac for its permissions, and the viewer hears
 
   await assert.rejects(
     deps.instances({ method: 'desktop', sessionId: 's1' }),
-    /^Error: Accessibility is not allowed for Nuphos yet\.$/u,
+    /^Error: Accessibility is not allowed for Cerin yet\.$/u,
   )
   assert.equal(asked, 1)
   assert.deepEqual(macScreenStatus(pool).desktops, [])

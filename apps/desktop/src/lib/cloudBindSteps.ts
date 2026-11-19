@@ -42,7 +42,7 @@ export function gcpContentStep(_purpose: 'operational', index: number): number {
 }
 
 export function gcpSpec(_purpose: 'operational') {
-  const sa = 'nuphos-connector'
+  const sa = 'cerin-connector'
 
   return {
     sa,
@@ -64,6 +64,6 @@ export const GCP_STEPS_CONSOLE = [
   t('Create the service account'),
   t('Grant it project access'),
   t('Principals with access'),
-  t('Let Nuphos impersonate it'),
+  t('Let Cerin impersonate it'),
   t('Enter details'),
 ] as const

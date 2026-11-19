@@ -5,11 +5,11 @@ import { config } from '@/config'
 import type { KeyObject } from 'node:crypto'
 
 /**
- * Nuphos as an OIDC identity provider for AWS web-identity federation.
+ * Cerin as an OIDC identity provider for AWS web-identity federation.
  *
  * Customers register `https://<issuer>` as an IAM OIDC identity provider and
  * trust it in their role's policy with `sts:AssumeRoleWithWebIdentity`,
- * conditioned on `<issuer-host>:sub` = `nuphos:team:<teamId>`. The backend
+ * conditioned on `<issuer-host>:sub` = `cerin:team:<teamId>`. The backend
  * mints a short-lived RS256 ID token per team and exchanges it at STS — no
  * long-lived AWS credentials involved, and AWS itself enforces that a token
  * minted for team A can never assume team B's role (the confused-deputy
@@ -109,20 +109,20 @@ export function getAwsOidcIssuer(): string {
 
 /**
  * The `sub` claim for a team's tokens. Customers pin this in their role trust
- * policy: `"<issuer-host>:sub": "nuphos:team:<teamId>"`.
+ * policy: `"<issuer-host>:sub": "cerin:team:<teamId>"`.
  */
 export function awsOidcSubjectForTeam(teamId: string): string {
-  return `nuphos:team:${teamId}`
+  return `cerin:team:${teamId}`
 }
 
 /**
  * Mint a short-lived RS256 ID token for this team against an arbitrary
- * audience, signed by the shared Nuphos issuer key. AWS web-identity and
- * Volcengine OIDC are the same Nuphos IdP (same issuer, JWKS, `sub`); only the
+ * audience, signed by the shared Cerin issuer key. AWS web-identity and
+ * Volcengine OIDC are the same Cerin IdP (same issuer, JWKS, `sub`); only the
  * `aud` — the client id the customer registers on their OIDC provider —
  * differs. Exported so non-AWS consumers (e.g. Volcengine STS) can reuse it.
  */
-export function mintNuphosOidcToken(
+export function mintCerinOidcToken(
   teamId: string,
   audience: string,
   ttlSec: number = config.byos.aws.oidc.tokenTtlSec,
@@ -153,7 +153,7 @@ export function mintNuphosOidcToken(
 
 /** Mint a short-lived RS256 ID token for sts:AssumeRoleWithWebIdentity. */
 export function mintAwsWebIdentityToken(teamId: string): string {
-  return mintNuphosOidcToken(teamId, config.byos.aws.oidc.audience)
+  return mintCerinOidcToken(teamId, config.byos.aws.oidc.audience)
 }
 
 /** Discovery document with the fields AWS requires of an OIDC provider. */

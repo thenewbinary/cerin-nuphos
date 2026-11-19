@@ -1,6 +1,6 @@
 /**
- * Moves one runtime Nuphos hosts onto the device path (NUPS-1234): its pod restarts as the
- * `nuphos agent` host, joins as a team device, and Nuphos reaches it through that device's
+ * Moves one runtime Cerin hosts onto the device path (NUPS-1234): its pod restarts as the
+ * `cerin agent` host, joins as a team device, and Cerin reaches it through that device's
  * tunnel. `--detach` puts it back on the direct connection. Either way the provisioner
  * restarts the pod on its next pass, and conversations keep their runtime.
  *

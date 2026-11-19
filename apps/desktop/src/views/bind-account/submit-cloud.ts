@@ -23,7 +23,7 @@ export async function submitAws(st: BindState, env: SubmitEnv) {
   if (!ARN_PATTERN.test(roleArn.trim())) {
     setError(
       t('Invalid ARN. Must be like {example}', {
-        example: 'arn:aws:iam::123456789012:role/NuphosRole',
+        example: 'arn:aws:iam::123456789012:role/CerinRole',
       }),
     )
 
@@ -86,7 +86,7 @@ export async function submitTencent(st: BindState, env: SubmitEnv) {
   if (!TENCENT_ROLE_ARN_PATTERN.test(roleArn)) {
     toast.error(
       t('Invalid role ARN. Must be like {example}', {
-        example: 'qcs::cam::uin/123456789:roleName/Nuphos',
+        example: 'qcs::cam::uin/123456789:roleName/Cerin',
       }),
     )
 
@@ -132,7 +132,7 @@ export async function submitAliyun(st: BindState, env: SubmitEnv) {
   if (!ALIYUN_ROLE_ARN_PATTERN.test(roleArn)) {
     toast.error(
       t('Invalid role ARN. Must be like {example}', {
-        example: 'acs:ram::123456789012345:role/NuphosConnector',
+        example: 'acs:ram::123456789012345:role/CerinConnector',
       }),
     )
 
@@ -141,7 +141,7 @@ export async function submitAliyun(st: BindState, env: SubmitEnv) {
   if (!ALIYUN_OIDC_PROVIDER_ARN_PATTERN.test(oidcProviderArn)) {
     toast.error(
       t('Invalid OIDC provider ARN. Must be like {example}', {
-        example: 'acs:ram::123456789012345:oidc-provider/nuphos',
+        example: 'acs:ram::123456789012345:oidc-provider/cerin',
       }),
     )
 
@@ -181,7 +181,7 @@ export async function submitVolcengine(st: BindState, env: SubmitEnv) {
   if (!TRN_PATTERN.test(roleTrn)) {
     toast.error(
       t('Invalid role TRN. Must be like {example}', {
-        example: 'trn:iam::2100000000:role/NuphosConnector',
+        example: 'trn:iam::2100000000:role/CerinConnector',
       }),
     )
 

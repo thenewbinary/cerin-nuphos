@@ -45,7 +45,7 @@ export function WatchDestinationDialog({
   onClose,
   onContinue,
 }: WatchDestinationDialogProps) {
-  const [destination, setDestination] = useState<WatchDestination['type']>('nuphos')
+  const [destination, setDestination] = useState<WatchDestination['type']>('cerin')
   const [channels, setChannels] = useState<SlackChannelOption[]>([])
   const [channelId, setChannelId] = useState('')
   const [slackConnected, setSlackConnected] = useState(false)
@@ -126,13 +126,13 @@ export function WatchDestinationDialog({
   const dmAvailable = dmRecipient !== null
   const dmCopy = dmRecipient ? slackDmRecipientCopy(dmRecipient) : null
   const canContinue =
-    destination === 'nuphos' ||
+    destination === 'cerin' ||
     (destination === 'slack_dm' && dmAvailable) ||
     (destination === 'slack_channel' && selectedChannel !== undefined)
 
   const submit = () => {
-    if (destination === 'nuphos') {
-      onContinue({ type: 'nuphos' })
+    if (destination === 'cerin') {
+      onContinue({ type: 'cerin' })
     } else if (destination === 'slack_dm' && dmAvailable) {
       onContinue({ type: 'slack_dm' })
     } else if (destination === 'slack_channel' && selectedChannel) {
@@ -152,10 +152,10 @@ export function WatchDestinationDialog({
           <div className="flex items-start justify-between border-b border-line-control px-5 py-4">
             <div className="min-w-0 pr-4">
               <Dialog.Title className="text-[14px] font-semibold text-main">
-                {t('Where should Nuphos report?')}
+                {t('Where should Cerin report?')}
               </Dialog.Title>
               <Dialog.Description className="mt-1 truncate text-[12px] text-secondary">
-                {t('Nuphos will investigate {name} when it fires.', { name: subjectName })}
+                {t('Cerin will investigate {name} when it fires.', { name: subjectName })}
               </Dialog.Description>
             </div>
             <Dialog.Close
@@ -173,11 +173,11 @@ export function WatchDestinationDialog({
             aria-label={t('Watch destination')}
           >
             <WatchDestinationCard
-              value="nuphos"
-              selected={destination === 'nuphos'}
+              value="cerin"
+              selected={destination === 'cerin'}
               icon={<UiIcon size={14} icon={InboxIcon} className="h-3.5 w-3.5" />}
-              title="Nuphos"
-              description={t('Investigate and keep the findings in Nuphos.')}
+              title="Cerin"
+              description={t('Investigate and keep the findings in Cerin.')}
             />
             <WatchDestinationCard
               value="slack_dm"
@@ -205,11 +205,11 @@ export function WatchDestinationDialog({
               title={t('Slack channel')}
               description={
                 loadingSlack
-                  ? t('Loading channels Nuphos can post to…')
+                  ? t('Loading channels Cerin can post to…')
                   : !slackConnected
                     ? t('Connect Slack in Settings to enable channel notifications.')
                     : channels.length === 0
-                      ? t('Invite the Nuphos bot to a channel first.')
+                      ? t('Invite the Cerin bot to a channel first.')
                       : t('Investigate and post a replyable incident message.')
               }
             />

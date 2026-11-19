@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 root = Path(__file__).parent
-name = f'nuphos-railway-test-{secrets.token_hex(4)}'
+name = f'cerin-railway-test-{secrets.token_hex(4)}'
 volume = name + '-home'
 image = name + ':test'
 
@@ -65,9 +65,9 @@ session.endSession();
 with tempfile.TemporaryDirectory() as directory:
     env_file = Path(directory) / 'mongo.env'
     password = secrets.token_hex(32)
-    env_file.write_text('MONGO_INITDB_ROOT_USERNAME=nuphos\n'
+    env_file.write_text('MONGO_INITDB_ROOT_USERNAME=cerin\n'
                         f'MONGO_INITDB_ROOT_PASSWORD={password}\n'
-                        'NUPHOS_MONGO_HOST=localhost\n'
+                        'CERIN_MONGO_HOST=localhost\n'
                         'GLIBC_TUNABLES=glibc.pthread.rseq=1\n')
     env_file.chmod(0o600)
     try:

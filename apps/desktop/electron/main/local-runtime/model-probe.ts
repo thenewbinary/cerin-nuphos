@@ -207,7 +207,7 @@ export function probeLocalModels(options: {
       await call('initialize', {
         protocolVersion: 1,
         clientCapabilities: {},
-        clientInfo: { name: 'nuphos-model-discovery', version: '1' },
+        clientInfo: { name: 'cerin-model-discovery', version: '1' },
       })
       const session = await call('session/new', { cwd: options.cwd, mcpServers: [] })
       const sessionId = String(session.sessionId)

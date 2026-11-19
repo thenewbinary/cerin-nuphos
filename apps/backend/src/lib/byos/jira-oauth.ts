@@ -10,7 +10,7 @@ const ATLASSIAN_ACCESSIBLE_RESOURCES_URL =
   'https://api.atlassian.com/oauth/token/accessible-resources'
 // audience is required by Atlassian 3LO so the token works against the Jira REST API.
 const ATLASSIAN_AUDIENCE = 'api.atlassian.com'
-const USER_AGENT = 'nuphos-backend'
+const USER_AGENT = 'cerin-backend'
 const JIRA_FETCH_TIMEOUT_MS = 30_000
 
 export class JiraApiError extends Error {

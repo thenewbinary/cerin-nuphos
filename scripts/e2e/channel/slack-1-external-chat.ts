@@ -19,7 +19,7 @@ function mongo(stack: Stack, body: string, args: unknown = null): unknown {
   const script = `
     import { MongoClient, ObjectId } from 'mongodb'
     const client = await new MongoClient(process.argv[1]).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const args = JSON.parse(process.argv[2])
     const result = await (async () => { ${body} })()
     console.log(JSON.stringify(result ?? null))
@@ -97,7 +97,7 @@ export default {
       const asked = await slackMessage(stack, 'UOWNER', 'Status? E2E_WHO E2E_DELIVERY:slack-owner')
 
       await answer(stack, chatId, 'POSTED E2E_DELIVERY:slack-owner from=owner')
-      // Nothing of it shows in Nuphos, even to the Bot's owner with a matching search.
+      // Nothing of it shows in Cerin, even to the Bot's owner with a matching search.
       const listing = await fetch(
         `${stack.apiUrl}/agent/conversations?teamId=${stack.teamId}&scope=team&kind=channel&search=e2e`,
         { headers: { authorization: `Bearer ${stack.token}` } },
@@ -105,7 +105,7 @@ export default {
       const { conversations } = (await listing.json()) as { conversations: { sessionId: string }[] }
 
       if (!listing.ok || conversations.some((row) => row.sessionId === chatId))
-        throw new Error('The external chat is listed in Nuphos')
+        throw new Error('The external chat is listed in Cerin')
       await slackMessage(stack, 'UEXT', 'Me too E2E_WHO E2E_DELIVERY:slack-ext', {
         user_team: 'TOTHER',
       })

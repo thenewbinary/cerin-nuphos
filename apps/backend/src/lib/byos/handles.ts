@@ -48,7 +48,7 @@ export function tencentHandleFor(
   return assumeRoleWithWebIdentity(binding.roleArn, binding.providerId, teamId, {
     // Legacy bindings predate the partition field — treat them as China.
     site: binding.site ?? 'china',
-    sessionName: `nuphos-${binding.id.toHexString()}`,
+    sessionName: `cerin-${binding.id.toHexString()}`,
   })
 }
 
@@ -72,7 +72,7 @@ export function aliyunHandleFor(
   return assumeAliyunRole(binding.roleArn, binding.oidcProviderArn, teamId, {
     // Legacy bindings predate the partition field — treat them as China.
     site: binding.site ?? 'china',
-    sessionName: `nuphos-${binding.id.toHexString()}`,
+    sessionName: `cerin-${binding.id.toHexString()}`,
   })
 }
 
@@ -82,7 +82,7 @@ export function volcengineHandleFor(
   teamId: string,
 ): Promise<VolcengineHandle> {
   return assumeVolcengineRole(binding.roleTrn, teamId, {
-    sessionName: `nuphos-${binding.id.toHexString()}`,
+    sessionName: `cerin-${binding.id.toHexString()}`,
   })
 }
 

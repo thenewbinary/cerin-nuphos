@@ -305,7 +305,7 @@ describe('GET /posthog-app', () => {
     const res = await app().request(`/posthog-app/callback?state=${state}&code=c1`)
     const link = deepLink(await res.text())
 
-    expect(link.protocol).toBe('nuphos:')
+    expect(link.protocol).toBe('cerin:')
     expect(link.searchParams.get('binding_id')).toMatch(/^[a-f0-9]{24}$/)
     expect(exchanges).toEqual([{ code: 'c1', codeVerifier: verifier }])
     const pushed = (updates[0]?.update.$push as { posthogIntegrations: PosthogIntegrationBinding })

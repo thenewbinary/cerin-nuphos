@@ -21,7 +21,7 @@ export function showFirstLaunchIntro() {
 
   url.searchParams.set('theme', light ? 'light' : 'dark')
   frame.src = url.href
-  frame.title = t('Welcome to Nuphos')
+  frame.title = t('Welcome to Cerin')
   frame.setAttribute('sandbox', 'allow-scripts allow-same-origin')
   frame.className = 'first-launch-intro'
   frame.style.background = light ? '#fcfcfd' : '#18181b'
@@ -37,7 +37,7 @@ export function showFirstLaunchIntro() {
     setTimeout(() => frame.remove(), 500)
   }
   const onMessage = (event: MessageEvent) => {
-    if (event.source === frame.contentWindow && event.data === 'nuphos:introFinished') dismiss()
+    if (event.source === frame.contentWindow && event.data === 'cerin:introFinished') dismiss()
   }
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') dismiss()

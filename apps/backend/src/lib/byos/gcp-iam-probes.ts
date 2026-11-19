@@ -5,7 +5,7 @@ import type { SelfCapabilities, ServiceAccountCapabilities } from './gcp-iam-typ
 export const ROLE_PERMISSION_CAP = 200
 
 // Curated probe for testIamPermissions when getIamPolicy is denied. Covers the
-// resources Nuphos actually touches: GKE, Compute, IAM/service accounts,
+// resources Cerin actually touches: GKE, Compute, IAM/service accounts,
 // Resource Manager, and read-side observability. testIamPermissions accepts up
 // to 100 permissions per call, so this list is kept under that ceiling.
 export const PROBE_PERMISSIONS: string[] = [
@@ -179,7 +179,7 @@ export async function probeGcpSelfCapabilities({
       ? 'SA has resourcemanager.projects.getIamPolicy on this project.'
       : 'SA lacks resourcemanager.projects.getIamPolicy — it cannot see its own bindings.',
     writeReason: canWrite
-      ? "SA has resourcemanager.projects.setIamPolicy on this project — you can adjust Nuphos's bindings from this SA without re-binding the project."
-      : "SA lacks resourcemanager.projects.setIamPolicy — to change Nuphos's roles you'll need a project IAM admin.",
+      ? "SA has resourcemanager.projects.setIamPolicy on this project — you can adjust Cerin's bindings from this SA without re-binding the project."
+      : "SA lacks resourcemanager.projects.setIamPolicy — to change Cerin's roles you'll need a project IAM admin.",
   }
 }

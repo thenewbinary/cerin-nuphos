@@ -13,11 +13,11 @@ import type { UserInfo } from '../auth-status.ts'
 import type { TokenStore } from './token-store.ts'
 
 const USER: UserInfo = { id: 'u1', name: 'Bruce', email: 'bruce@example.com', username: 'bruce' }
-const ACCOUNT = 'u1@https://api.nuphos.ai'
-const API = 'https://api.nuphos.ai'
+const ACCOUNT = 'u1@https://platform.cerin.ai'
+const API = 'https://platform.cerin.ai'
 
 async function harness({ secure = true, failSet = false, gated = false } = {}) {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-config-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-config-'))
   const file = path.join(dir, 'desktop.yaml')
   const legacy = path.join(dir, 'cli.yaml')
   const items = new Map<string, string>()
@@ -52,7 +52,7 @@ async function harness({ secure = true, failSet = false, gated = false } = {}) {
     path: file,
     store,
     secure: () => secure,
-    apiUrl: () => 'https://api.nuphos.ai/',
+    apiUrl: () => 'https://platform.cerin.ai/',
     onAccount: (_api: string, token: string | null) => tokens.push(token),
     saveBackend: () => {},
     legacyPath: legacy,
@@ -123,7 +123,7 @@ test('a newer sign-in while a plaintext token moves to the keychain wins', async
   // The older sign-in waits as another account; the newer one is active.
   assert.deepEqual([...h.items].sort(), [
     [ACCOUNT, 'tok-old'],
-    ['u9@https://api.nuphos.ai', 'tok-9'],
+    ['u9@https://platform.cerin.ai', 'tok-9'],
   ])
   assert.equal(h.tokens.at(-1), 'tok-9')
   assert.equal((await h.config.read()).token, 'tok-9')
@@ -206,10 +206,10 @@ test('signing in as another user keeps the previous one signed in, waiting', asy
   await h.config.write({ api: API, token: 'tok-9', userInfo: other })
 
   assert.equal(h.items.get(ACCOUNT), 'tok-1')
-  assert.equal(h.items.get('u9@https://api.nuphos.ai'), 'tok-9')
+  assert.equal(h.items.get('u9@https://platform.cerin.ai'), 'tok-9')
   assert.deepEqual(await h.onDisk(), {
     api: API,
-    keychainAccount: 'u9@https://api.nuphos.ai',
+    keychainAccount: 'u9@https://platform.cerin.ai',
     userInfo: other,
     accounts: [{ api: API, keychainAccount: ACCOUNT, userInfo: USER }],
   })

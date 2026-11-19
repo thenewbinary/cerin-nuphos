@@ -1,11 +1,11 @@
 import { logError, logEvent } from '@/lib/observability'
-import { nuphosDashboards } from '@/models'
+import { cerinDashboards } from '@/models'
 
 import { refreshDashboard } from './exec/execute'
 import { DASHBOARD_REFRESH_CADENCES, nextScheduledRefresh } from './refresh-cadence'
 import { migratePanelCadencesToDashboards } from './refresh-schedule-migration'
 
-import type { NuphosDashboard } from '@/models'
+import type { CerinDashboard } from '@/models'
 
 const SWEEP_INTERVAL_MS = 60_000
 const MAX_REFRESHES_PER_SWEEP = 50
@@ -14,9 +14,9 @@ const MAX_REFRESHES_PER_SWEEP = 50
 // before the trigger worker starts, or a panel trigger would fire as an agent run.
 const MIGRATION_RERUN_DELAY_MS = 15 * 60_000
 
-async function claimDueDashboard(now: Date): Promise<NuphosDashboard | null> {
+async function claimDueDashboard(now: Date): Promise<CerinDashboard | null> {
   for (const cadence of DASHBOARD_REFRESH_CADENCES) {
-    const claimed = await nuphosDashboards().findOneAndUpdate(
+    const claimed = await cerinDashboards().findOneAndUpdate(
       { cadence, nextRefreshAt: { $lte: now } },
       {
         $set: { nextRefreshAt: nextScheduledRefresh(cadence, now), lastScheduledRefreshAt: now },

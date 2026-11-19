@@ -43,7 +43,7 @@
     <string name="connectors_field_integration_token">整合權杖</string>
     <string name="connectors_field_account_email">帳號電子郵件</string>
     <string name="connectors_field_management_api_key">Management API 金鑰</string>
-    <string name="connectors_note_aws">此角色必須已信任 Nuphos。伺服器會在儲存前檢查存取權。</string>
+    <string name="connectors_note_aws">此角色必須已信任 Cerin。伺服器會在儲存前檢查存取權。</string>
     <string name="connectors_note_azure">請先設定應用程式的同盟憑證與角色指派。</string>
     <string name="connectors_category_infrastructure">基礎架構</string>
     <string name="connectors_category_observability">可觀測性</string>

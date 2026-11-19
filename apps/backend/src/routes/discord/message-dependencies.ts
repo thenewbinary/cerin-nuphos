@@ -11,7 +11,7 @@ import {
   markDiscordEvent,
   refreshDiscordEventClaim,
 } from '@/lib/discord/store'
-import { getTeamMembership, signNuphosToken } from '@/lib/identity'
+import { getTeamMembership, signCerinToken } from '@/lib/identity'
 
 import { recordDiscordSessionMessage } from './session-context'
 import { buildMessagesForDiscordTurn, syncDiscordThread } from './transcript'
@@ -28,7 +28,7 @@ export const defaultDependencies = {
   markDiscordEvent,
   refreshDiscordEventClaim,
   getTeamMembership,
-  signNuphosToken,
+  signCerinToken,
   createDiscordThread,
   getDiscordChannel,
   sendDiscordMessage,

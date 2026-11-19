@@ -1,11 +1,11 @@
 // Legacy favorites were scoped only by team, so there is no safe way to prove
 // which user owns them on a shared Electron profile. Purge that cache instead
 // of assigning it to whichever account happens to sign in after the upgrade.
-const LEGACY_STORAGE_KEY = 'nuphos.sidebarFavorites'
-const CACHE_STORAGE_KEY = 'nuphos.sidebarFavorites.v2'
-const SYNC_STORAGE_KEY = 'nuphos.sidebarFavorites.sync.v1'
+const LEGACY_STORAGE_KEY = 'cerin.sidebarFavorites'
+const CACHE_STORAGE_KEY = 'cerin.sidebarFavorites.v2'
+const SYNC_STORAGE_KEY = 'cerin.sidebarFavorites.sync.v1'
 
-export const CHANGE_EVENT = 'nuphos:sidebar-favorites-changed'
+export const CHANGE_EVENT = 'cerin:sidebar-favorites-changed'
 export const MAX_CONFLICT_RETRIES = 8
 export const MAX_RETRY_DELAY_MS = 60_000
 

@@ -214,7 +214,7 @@ export async function reportHealth(now = Date.now()): Promise<void> {
 let timer: ReturnType<typeof setInterval> | undefined
 let reporting = false
 
-/** Starts the 5-minute report loop when NUPHOS_TELEMETRY_KEY is set. The timer
+/** Starts the 5-minute report loop when CERIN_TELEMETRY_KEY is set. The timer
  *  is unref'd and holds nothing to flush, so shutdown has nothing to stop. */
 export function startHealthTelemetry(): void {
   if (!config.telemetry.key || timer) return
@@ -264,7 +264,7 @@ export async function setTelemetryEnabled(enabled: boolean): Promise<TelemetrySt
     throw new AppError(
       400,
       'telemetry_key_missing',
-      'NUPHOS_TELEMETRY_KEY is not set; set it and restart the backend to send health reports',
+      'CERIN_TELEMETRY_KEY is not set; set it and restart the backend to send health reports',
     )
   }
   await stateCollection().updateOne(

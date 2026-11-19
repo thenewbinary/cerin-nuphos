@@ -57,7 +57,7 @@ export function createAgentDeviceBoxRoutes(deps: AgentDeviceRouteDependencies) {
   }
   const requireBoxes = () => {
     if (!deps.box)
-      throw new AppError(503, 'box_unavailable', 'Computers from Nuphos are off on this deployment')
+      throw new AppError(503, 'box_unavailable', 'Computers from Cerin are off on this deployment')
 
     return deps.box
   }
@@ -118,12 +118,12 @@ export function createAgentDeviceBoxRoutes(deps: AgentDeviceRouteDependencies) {
     const teamId = readTeamIdCandidate(c, requestedTeamId)
 
     if (!teamId)
-      throw new AppError(400, 'team_required', 'A computer from Nuphos is made in a team')
+      throw new AppError(400, 'team_required', 'A computer from Cerin is made in a team')
     if ((await deps.access.role(c.get('userId'), teamId)) !== 'ADMINISTRATOR')
       throw new AppError(
         403,
         'forbidden',
-        'Only team administrators can create a computer from Nuphos',
+        'Only team administrators can create a computer from Cerin',
       )
     // Stored with the Box itself, so a Box is never made without the access asked for.
     const shared = requested && memberAccess(await deps.teamMembers(teamId), requested)

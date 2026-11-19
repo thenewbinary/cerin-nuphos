@@ -37,8 +37,8 @@ guard arguments.count == 2 || (arguments.count == 3 && arguments[2] == "--own-pe
     exit(64)
 }
 let socketPath = arguments[1]
-/// Set in the copy --own-permissions starts: the pid of the Nuphos that started the first one.
-let parentKey = "NUPHOS_MAC_SCREEN_PARENT"
+/// Set in the copy --own-permissions starts: the pid of the Cerin that started the first one.
+let parentKey = "CERIN_MAC_SCREEN_PARENT"
 
 @_silgen_name("responsibility_spawnattrs_setdisclaim")
 func responsibility_spawnattrs_setdisclaim(_ attrs: UnsafeMutablePointer<posix_spawnattr_t?>, _ disclaim: Int32) -> Int32
@@ -71,12 +71,12 @@ func runDisclaimed() -> Never {
 if arguments.count == 3 { runDisclaimed() }
 let ownPermissions = ProcessInfo.processInfo.environment[parentKey] != nil
 
-// Nuphos started this host; only Nuphos may connect, and the host goes when Nuphos does.
+// Cerin started this host; only Cerin may connect, and the host goes when Cerin does.
 let parent = ProcessInfo.processInfo.environment[parentKey].flatMap { pid_t($0) } ?? getppid()
 let parentGone = DispatchSource.makeProcessSource(identifier: parent, eventMask: .exit, queue: .main)
 parentGone.setEventHandler { leave() }
 parentGone.resume()
-// Nuphos stops the host with SIGTERM (phone control switched off, the app quitting).
+// Cerin stops the host with SIGTERM (phone control switched off, the app quitting).
 signal(SIGTERM, SIG_IGN)
 let terminated = DispatchSource.makeSignalSource(signal: SIGTERM, queue: .main)
 terminated.setEventHandler { leave() }
@@ -93,10 +93,10 @@ func leave() -> Never {
     for window in windows { window.restore() }
     exit(0)
 }
-// Nuphos went before the watch above began.
+// Cerin went before the watch above began.
 if kill(parent, 0) != 0 { exit(0) }
 
-let permissionHolder = ownPermissions ? "mac-screen-host" : "Nuphos"
+let permissionHolder = ownPermissions ? "mac-screen-host" : "Cerin"
 if !CGPreflightScreenCaptureAccess() {
     CGRequestScreenCaptureAccess()
     fail("Screen Recording is not allowed for \(permissionHolder) yet")
@@ -596,8 +596,8 @@ nonisolated final class Viewer: NSObject, SCStreamOutput, @unchecked Sendable {
         guard connection.read(1) == [1] else { return false }
         connection.send(be32(0))
         guard connection.read(1) != nil else { return false }
-        // The name tells a Nuphos viewer it can ask for one window fitted to its pane (SetDesktopSize).
-        let name = Array("Nuphos Mac".utf8)
+        // The name tells a Cerin viewer it can ask for one window fitted to its pane (SetDesktopSize).
+        let name = Array("Cerin Mac".utf8)
         connection.send(be16(width) + be16(height) + [32, 24, 0, 1, 0, 255, 0, 255, 0, 255, 16, 8, 0, 0, 0, 0] + be32(name.count) + name)
         return true
     }
@@ -737,7 +737,7 @@ guard bound == 0, listen(server, 4) == 0 else { fail("cannot listen on \(socketP
 chmod(socketPath, 0o600)
 print("listening on \(socketPath)")
 
-// With nobody watching for IDLE seconds the host exits; Nuphos starts it again for the next viewer.
+// With nobody watching for IDLE seconds the host exits; Cerin starts it again for the next viewer.
 let idle: Double = 60
 nonisolated(unsafe) var viewers = 0
 nonisolated(unsafe) var idleExit: DispatchWorkItem?
@@ -758,7 +758,7 @@ Thread.detachNewThread {
     while true {
         let fd = accept(server, nil, nil)
         guard fd >= 0 else { continue }
-        // Another process of the same user would otherwise use Nuphos's Screen Recording and Accessibility.
+        // Another process of the same user would otherwise use Cerin's Screen Recording and Accessibility.
         var peer: pid_t = 0
         var size = socklen_t(MemoryLayout<pid_t>.size)
         guard getsockopt(fd, SOL_LOCAL, LOCAL_PEERPID, &peer, &size) == 0, peer == parent else {

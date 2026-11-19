@@ -20,7 +20,7 @@ rm -rf "$state_dir"
 # ProxyCommand whose socket no longer exists.
 ssh_config="$HOME/.ssh/config"
 if [ -f "$ssh_config" ]; then
-  sed -i '/^# >>> nuphos-tailnet-ssh >>>$/,/^# <<< nuphos-tailnet-ssh <<<$/d' "$ssh_config"
+  sed -i '/^# >>> cerin-tailnet-ssh >>>$/,/^# <<< cerin-tailnet-ssh <<<$/d' "$ssh_config"
 fi
 
 echo "Left the tailnet."

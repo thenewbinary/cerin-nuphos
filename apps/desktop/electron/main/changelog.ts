@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron'
 
-import { isNuphosCloud } from '../api-endpoint.ts'
+import { isCerinCloud } from '../api-endpoint.ts'
 
 import { CHANGELOG_FEED_URL, parseChangelogFeed } from './changelog-feed.ts'
 
@@ -27,7 +27,7 @@ export function getChangelogState(): ChangelogState {
 }
 
 export async function fetchChangelogOnce() {
-  if (!isNuphosCloud()) {
+  if (!isCerinCloud()) {
     setChangelogState({ kind: 'unavailable' })
 
     return
@@ -42,7 +42,7 @@ export async function fetchChangelogOnce() {
     if (!res.ok) throw new Error(`changelog feed http ${String(res.status)}`)
     const entries = parseChangelogFeed(await res.json())
 
-    if (isNuphosCloud() && entries && entries.length > 0)
+    if (isCerinCloud() && entries && entries.length > 0)
       setChangelogState({ kind: 'ready', entries })
     else setChangelogState({ kind: 'unavailable' })
   } catch {

@@ -38,7 +38,7 @@ export async function routeSlackDestination(input: {
   const notLinked = (): SlackDestinationRoute => ({
     ok: false,
     error:
-      'That Slack channel is not linked to this Nuphos team. Only channels explicitly linked to the team are valid destinations.',
+      'That Slack channel is not linked to this Cerin team. Only channels explicitly linked to the team are valid destinations.',
   })
   // The team's own bot is the right sender either when the caller named
   // its workspace, or when no grant covers the channel.

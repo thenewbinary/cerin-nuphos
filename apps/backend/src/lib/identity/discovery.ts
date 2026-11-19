@@ -5,14 +5,14 @@ import { extractEmailDomain, isPublicEmailDomain } from '@/lib/email-domains'
 import { mapTeam, teams, users } from '@/lib/identity/shared'
 import { addUserToTeam } from '@/lib/identity/teams'
 
-import type { NuphosTeamDoc } from '@/lib/identity/shared'
-import type { NuphosTeam } from '@/lib/identity/types'
+import type { CerinTeamDoc } from '@/lib/identity/shared'
+import type { CerinTeam } from '@/lib/identity/types'
 import type { ObjectId } from 'mongodb'
 
 export async function setTeamAllowedEmailDomains(
   teamId: string,
   domains: string[],
-): Promise<NuphosTeam | null> {
+): Promise<CerinTeam | null> {
   if (!MongoObjectId.isValid(teamId)) return null
   const result = await teams().findOneAndUpdate(
     { _id: new MongoObjectId(teamId), deletedAt: { $exists: false } },
@@ -99,13 +99,13 @@ export async function getDiscoverableTeamsForEmail(
 }
 
 export type JoinTeamByEmailDomainResult =
-  | { kind: 'joined'; team: NuphosTeam }
+  | { kind: 'joined'; team: CerinTeam }
   | { kind: 'team_not_found' }
   | { kind: 'not_allowed' }
   | { kind: 'already_member' }
 
 function classifyFailedJoin(
-  team: NuphosTeamDoc | null,
+  team: CerinTeamDoc | null,
   userObjectId: ObjectId,
 ): Exclude<JoinTeamByEmailDomainResult, { kind: 'joined' }> {
   if (!team) return { kind: 'team_not_found' }

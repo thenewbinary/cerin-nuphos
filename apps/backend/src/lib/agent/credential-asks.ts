@@ -121,7 +121,7 @@ async function wake(
         `so your question is answered (requestId ${answered.join(', ')}). ` +
         'Call list_credentials to see them, then continue the task.',
       'agent.resource',
-      systemSender('nuphos:credentials', 'Nuphos'),
+      systemSender('cerin:credentials', 'Cerin'),
     )
 
     await run

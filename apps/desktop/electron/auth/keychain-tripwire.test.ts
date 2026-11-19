@@ -10,7 +10,7 @@ import yaml from 'js-yaml'
 // wrote: reaching @napi-rs/keyring here is what made macOS ask for the login
 // keychain password whenever the suite ran in a signed-in user's shell.
 test('plain Node never reaches the keychain, even beside a keychain sign-in', async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-tripwire-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-tripwire-'))
   const reached: string[] = []
   const trip = (op: string) => () => {
     reached.push(op)
@@ -26,10 +26,10 @@ test('plain Node never reaches the keychain, even beside a keychain sign-in', as
       },
     },
   })
-  process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
+  process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
   await fs.writeFile(
     path.join(dir, 'desktop.yaml'),
-    yaml.dump({ keychainAccount: 'u1@https://api.nuphos.ai', user: 'bruce@example.com' }),
+    yaml.dump({ keychainAccount: 'u1@https://platform.cerin.ai', user: 'bruce@example.com' }),
   )
 
   const { keychainStore } = await import('./token-store.ts')
@@ -38,8 +38,8 @@ test('plain Node never reaches the keychain, even beside a keychain sign-in', as
 
   assert.equal((await readConfig()).token, undefined)
   assert.equal((await requestContext()).token, null)
-  await writeConfig({ token: 'tok-1', api: 'https://api.nuphos.ai' })
+  await writeConfig({ token: 'tok-1', api: 'https://platform.cerin.ai' })
   await writeConfig({})
-  await assert.rejects(keychainStore.get('u1@https://api.nuphos.ai'))
+  await assert.rejects(keychainStore.get('u1@https://platform.cerin.ai'))
   assert.deepEqual(reached, [])
 })

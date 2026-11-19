@@ -15,7 +15,7 @@ const pull: GithubPR = {
   labels: [{ name: 'Desktop', color: '5319e7' }],
   createdAt: '2026-09-01T00:00:00Z',
   updatedAt: '2026-09-01T00:00:00Z',
-  htmlUrl: 'https://github.com/zeabur/nuphos/pull/2528',
+  htmlUrl: 'https://github.com/zeabur/cerin/pull/2528',
   headRef: 'codex/fix-uiux',
   baseRef: 'main',
 }
@@ -55,7 +55,7 @@ test('workflow runs match by id, name, branch, and event', () => {
     headSha: 'abc',
     createdAt: '2026-09-01T00:00:00Z',
     updatedAt: '2026-09-01T00:00:00Z',
-    htmlUrl: 'https://github.com/zeabur/nuphos/actions/runs/9001',
+    htmlUrl: 'https://github.com/zeabur/cerin/actions/runs/9001',
   }
 
   assert.equal(matchesRunFilter(run, '9001'), true)

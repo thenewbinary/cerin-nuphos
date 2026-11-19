@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'bun:test'
 
-import { NUPHOS_DISCORD_COMMAND, splitDiscordText } from './api'
+import { CERIN_DISCORD_COMMAND, splitDiscordText } from './api'
 
-describe('Nuphos Discord command', () => {
+describe('Cerin Discord command', () => {
   test('allows members to use mode commands while handlers guard channel administration', () => {
-    expect(NUPHOS_DISCORD_COMMAND.default_member_permissions).toBeNull()
-    expect(NUPHOS_DISCORD_COMMAND.dm_permission).toBe(false)
-    expect(NUPHOS_DISCORD_COMMAND.options.map((option) => option.name)).toEqual([
+    expect(CERIN_DISCORD_COMMAND.default_member_permissions).toBeNull()
+    expect(CERIN_DISCORD_COMMAND.dm_permission).toBe(false)
+    expect(CERIN_DISCORD_COMMAND.options.map((option) => option.name)).toEqual([
       'full-access',
       'auto',
       'enable',

@@ -43,7 +43,7 @@
     <string name="connectors_field_integration_token">Token integrasi</string>
     <string name="connectors_field_account_email">Email akun</string>
     <string name="connectors_field_management_api_key">Kunci Management API</string>
-    <string name="connectors_note_aws">Peran harus sudah memercayai Nuphos. Server memeriksa akses sebelum menyimpan.</string>
+    <string name="connectors_note_aws">Peran harus sudah memercayai Cerin. Server memeriksa akses sebelum menyimpan.</string>
     <string name="connectors_note_azure">Siapkan kredensial federasi dan penetapan peran aplikasi terlebih dahulu.</string>
     <string name="connectors_category_infrastructure">Infrastruktur</string>
     <string name="connectors_category_observability">Observabilitas</string>

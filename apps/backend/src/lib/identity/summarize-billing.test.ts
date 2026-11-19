@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb'
 
 import { mapTeam } from './shared'
 
-import type { NuphosTeamDoc } from './shared'
+import type { CerinTeamDoc } from './shared'
 
 test('all teams have free access regardless of persisted payment state', () => {
   for (const billing of [
@@ -16,7 +16,7 @@ test('all teams have free access regardless of persisted payment state', () => {
     },
     { awsMarketplace: { status: 'failed' }, overagePaused: true },
   ]) {
-    const team: NuphosTeamDoc = {
+    const team: CerinTeamDoc = {
       _id: new ObjectId(),
       ownerID: new ObjectId(),
       name: 'Free',

@@ -221,7 +221,7 @@ export function createDeviceToolHandler(
 
     if (!ownerUserId) return toolError('This device is not available to you.')
 
-    const toolCallId = `nuphos-${randomUUID()}`
+    const toolCallId = `cerin-${randomUUID()}`
     const requestedAt = new Date()
 
     await deps

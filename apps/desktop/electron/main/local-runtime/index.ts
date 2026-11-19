@@ -51,10 +51,10 @@ import type { LocalRuntimeBundle } from './config.ts'
 import type { LocalRuntimeState, LocalRuntimeViewState } from './controller-types.ts'
 
 const dataDir = () => path.join(app.getPath('userData'), 'local-runtime')
-const devBuild = () => !app.isPackaged && !process.env.NUPHOS_LOCAL_RUNTIME_DIR
+const devBuild = () => !app.isPackaged && !process.env.CERIN_LOCAL_RUNTIME_DIR
 
 function bundleRoot(): string {
-  if (process.env.NUPHOS_LOCAL_RUNTIME_DIR) return process.env.NUPHOS_LOCAL_RUNTIME_DIR
+  if (process.env.CERIN_LOCAL_RUNTIME_DIR) return process.env.CERIN_LOCAL_RUNTIME_DIR
   if (app.isPackaged) return path.join(process.resourcesPath, 'local-runtime')
 
   return path.join(
@@ -101,7 +101,7 @@ const controller: LocalRuntimeController = new LocalRuntimeController({
   createProcess: () => withProviderKey(new OpenabProcess(), providerKeys),
   probeModels: bundledModelProbe(findBundle, providerKeys),
   createTunnel: (runtime, runtimeStatus, onChange, agentInstances) => {
-    // Its owner updates this Nuphos from another computer (app-update-request.ts).
+    // Its owner updates this Cerin from another computer (app-update-request.ts).
     const { status, instances } = appUpdateTunnel(runtimeStatus, agentInstances, {
       version: () => app.getVersion(),
       state: getUpdaterState,
@@ -117,7 +117,7 @@ const controller: LocalRuntimeController = new LocalRuntimeController({
       activity: sleep.taskActivity,
       connectBackend: (reclaim) => {
         if (!deviceRegistrationAllowed(isDev))
-          throw new Error('Development builds do not register computers with Nuphos Cloud')
+          throw new Error('Development builds do not register computers with Cerin Cloud')
         const { api, token } = authSession.context()
 
         if (!token) throw new Error('Not signed in')
@@ -265,7 +265,7 @@ export async function setLocalCustomProvider(
 ): Promise<LocalRuntimeState> {
   const { userId } = controller.state()
 
-  if (!userId) throw new Error('Sign in to Nuphos first.')
+  if (!userId) throw new Error('Sign in to Cerin first.')
   await saveCustomProvider(providerKeys, ownDir(userId), userId, provider, value)
   await controller.refresh(true, [provider === 'codex' ? 'codex' : 'claude-code'])
 

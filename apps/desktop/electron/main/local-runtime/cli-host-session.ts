@@ -4,7 +4,7 @@ import yaml from 'js-yaml'
 
 import { CLI_CONFIG_PATH } from '../../cli-config-path.ts'
 
-/** What `nuphos login` leaves in cli.yaml: the token, or the keychain item holding it. */
+/** What `cerin login` leaves in cli.yaml: the token, or the keychain item holding it. */
 export type CliConfig = { token?: string; keychainAccount?: string } | null
 
 export function readCliConfig(): CliConfig {
@@ -38,11 +38,11 @@ export function hostOwner(
   if (me?.cliToken?.kind === 'agent') {
     return {
       error:
-        "An agent token cannot run this computer's runtimes. Sign in as yourself (`nuphos login --device`, then Approve as me), or join with `nuphos agent --join <token>`.",
+        "An agent token cannot run this computer's runtimes. Sign in as yourself (`cerin login --device`, then Approve as me), or join with `cerin agent --join <token>`.",
     }
   }
 
   return typeof me?.id === 'string' && me.id
     ? { userId: me.id }
-    : { error: 'Not signed in; run `nuphos login`, or join with `nuphos agent --join <token>`.' }
+    : { error: 'Not signed in; run `cerin login`, or join with `cerin agent --join <token>`.' }
 }

@@ -1,5 +1,5 @@
 // A desktop per conversation on a Linux Box: the agents' env names the wrapper
-// Claude runs as each session's `nuphos-desktop` MCP server (desktop-session.mjs),
+// Claude runs as each session's `cerin-desktop` MCP server (desktop-session.mjs),
 // and a pool sized to the CPUs; a reaper frees displays whose session is gone.
 
 import { spawn, spawnSync } from 'node:child_process'
@@ -89,9 +89,9 @@ export function enableDesktopPool(bundleRoot: string, dataDir: string): string |
     return null
   const pool = path.join(dataDir, 'desktops')
 
-  process.env.NUPHOS_DESKTOP_SESSION = wrapper
-  process.env.NUPHOS_DESKTOP_POOL = pool
-  process.env.NUPHOS_DESKTOP_POOL_SIZE = String(os.cpus().length)
+  process.env.CERIN_DESKTOP_SESSION = wrapper
+  process.env.CERIN_DESKTOP_POOL = pool
+  process.env.CERIN_DESKTOP_POOL_SIZE = String(os.cpus().length)
   setInterval(() => {
     spawn(process.execPath, [wrapper, 'reap', pool], { stdio: 'ignore' }).on('error', () => {})
   }, REAP_EVERY_MS).unref()

@@ -41,7 +41,7 @@ export type BindingStatus = 'active' | 'pending' | 'revoked' | 'unknown'
 type Fetch = typeof fetch
 
 /** Accepts what a runtime console hands out (http(s) or ws(s), with or without `/acp`)
- *  and returns the ACP URL Nuphos stores and dials. */
+ *  and returns the ACP URL Cerin stores and dials. */
 export function normalizePairingRuntimeUrl(value: string): string | null {
   let url: URL
 
@@ -153,7 +153,7 @@ const unreachable = () =>
   new AppError(
     502,
     'runtime_unreachable',
-    'Nuphos could not reach this agent to finish connecting. Check that its address is reachable from Nuphos, then generate a new pairing code.',
+    'Cerin could not reach this agent to finish connecting. Check that its address is reachable from Cerin, then generate a new pairing code.',
   )
 
 export async function exchangePairingCode(

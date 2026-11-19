@@ -9,7 +9,7 @@ import type { Scenario } from './ui.ts'
 
 export const computerRemoveScenarios: Scenario[] = [
   {
-    // Removing a computer while it was online answered "Quit Nuphos on this computer first".
+    // Removing a computer while it was online answered "Quit Cerin on this computer first".
     name: 'an online computer is removed, told so, and does not come back',
     run: async (page, stack) => {
       const deviceId = randomUUID()

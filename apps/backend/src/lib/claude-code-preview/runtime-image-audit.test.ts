@@ -15,7 +15,7 @@ test('an image change row names the actor and both digests', () => {
     provider: 'codex',
     runtimeLabel: 'Work',
     actorUserId: 'user-1',
-    fromImage: digest('nuphos-runtime'),
+    fromImage: digest('cerin-runtime'),
     toImage: digest('other'),
     createdAt: new Date(ts),
   })
@@ -32,7 +32,7 @@ test('an image change row names the actor and both digests', () => {
       provider: 'codex',
       label: 'Work',
     },
-    change: { fromImage: digest('nuphos-runtime'), toImage: digest('other') },
+    change: { fromImage: digest('cerin-runtime'), toImage: digest('other') },
   })
 })
 
@@ -44,10 +44,10 @@ test('a runtime that had no image of its own still records the digest it gained'
     runtimeLabel: 'Work',
     actorUserId: null,
     fromImage: null,
-    toImage: digest('nuphos-runtime'),
+    toImage: digest('cerin-runtime'),
     createdAt: new Date(ts),
   })
 
-  expect(row.change).toEqual({ fromImage: null, toImage: digest('nuphos-runtime') })
+  expect(row.change).toEqual({ fromImage: null, toImage: digest('cerin-runtime') })
   expect(row.eventId).toBe(`runtime_image:runtime-1:${ts}`)
 })

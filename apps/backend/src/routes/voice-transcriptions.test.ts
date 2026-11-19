@@ -59,12 +59,12 @@ const audio = new File([new Uint8Array([1, 2, 3])], 'dictation.m4a', { type: 'au
 
 describe('POST /teams/:teamId/voice-transcriptions', () => {
   test('transcribes a subscribed team’s recording with the server key', async () => {
-    const res = await transcribe({ file: audio, prompt: 'Nuphos' })
+    const res = await transcribe({ file: audio, prompt: 'Cerin' })
 
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ text: '你好', language: 'chinese' })
     expect(sent?.get('model')).toBe('whisper-1')
-    expect(sent?.get('prompt')).toBe('Nuphos')
+    expect(sent?.get('prompt')).toBe('Cerin')
     expect(sent?.get('file')).toBeInstanceOf(File)
   })
 

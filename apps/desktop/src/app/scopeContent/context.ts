@@ -5,7 +5,7 @@ import type {
   AwsS3Detail,
   CloudflareResourceDetailRef,
   LinearNavState,
-  NuphosDashboardRef,
+  CerinDashboardRef,
   RepoProvider,
 } from '../../lib/appRoutes'
 import type { JournalChatTarget } from '../../lib/journalEvent'
@@ -59,10 +59,10 @@ export type ScopeContentProps = {
   setArchitectureDetail: (d: { diagramId: string; diagramName: string } | null) => void
   designDetail: { designId: string; designName: string } | null
   setDesignDetail: (d: { designId: string; designName: string } | null) => void
-  nuphosDashboard: NuphosDashboardRef | null
-  setNuphosDashboard: (d: NuphosDashboardRef | null) => void
-  nuphosDashboards: { id: string; name: string }[] | undefined
-  setNuphosDashboards: (dashboards: { id: string; name: string }[]) => void
+  cerinDashboard: CerinDashboardRef | null
+  setCerinDashboard: (d: CerinDashboardRef | null) => void
+  cerinDashboards: { id: string; name: string }[] | undefined
+  setCerinDashboards: (dashboards: { id: string; name: string }[]) => void
   linearNav: LinearNavState | null
   setLinearNav: (nav: LinearNavState) => void
   restoredTitle: string | undefined
@@ -150,10 +150,10 @@ export type ScopeContentProps = {
   /** Viewer is a team administrator — gates approving permission-grant rows in the Plans library. */
   isTeamAdmin: boolean
   onOpenAuditConversation: (sessionId: string, locate?: JournalChatTarget) => void
-  /** Open a node's link: nuphos.ai pages open in-app, everything else external. */
+  /** Open a node's link: platform.cerin.ai pages open in-app, everything else external. */
   onOpenNodeLink: (url: string) => void
   /** Opens a link clicked in an agent's text as the conversation does: in the dock, this page staying. */
-  onOpenNuphosLink: (href: string, beside?: boolean) => boolean
+  onOpenCerinLink: (href: string, beside?: boolean) => boolean
 }
 
 export type RenderPage = (

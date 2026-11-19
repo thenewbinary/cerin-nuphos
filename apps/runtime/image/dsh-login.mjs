@@ -18,17 +18,17 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { pastedAddress } from './opencode-login.mjs'
 
 // A computer running DSH as a local agent names its own CLI and the home it runs with.
-const HOME = process.env.NUPHOS_AGENT_HOME || process.env.HOME || '/home/node'
+const HOME = process.env.CERIN_AGENT_HOME || process.env.HOME || '/home/node'
 // Where the ACP shim points DSH_HOME, whatever the computer's own DSH_HOME is.
 const DSH_HOME = join(HOME, '.dsh')
-const DSH_EXECUTABLE = process.env.NUPHOS_AGENT_EXECUTABLE || 'dsh'
+const DSH_EXECUTABLE = process.env.CERIN_AGENT_EXECUTABLE || 'dsh'
 const PLUGIN = join(dirname(fileURLToPath(import.meta.url)), 'dsh-sign-in.mjs')
 const METHODS = [
   { value: 'account', label: 'DeepSeek account' },
   { value: 'api-key', label: 'DeepSeek API key' },
 ]
 // The `acp` profile starts every session on the API-key route; an account needs its own.
-const ACCOUNT_PROFILE_PATCH = `# Written by Nuphos after a DeepSeek account sign-in.
+const ACCOUNT_PROFILE_PATCH = `# Written by Cerin after a DeepSeek account sign-in.
 - id: acp
   config:
     provider: deepseek-account
@@ -40,7 +40,7 @@ class LoginError extends Error {}
 /** The overlay that turns the `acp` profile into a one-shot sign-in. */
 export function signInPatch({ plugin, port }) {
   const server = port
-    ? `    - id: nuphos-sign-in-server
+    ? `    - id: cerin-sign-in-server
       name: '@deepseek-ai/dsh-host-webserver'
       config:
         host: 127.0.0.1
@@ -50,7 +50,7 @@ export function signInPatch({ plugin, port }) {
   return `- id: acp
   disabled: true
 - insert:
-${server}    - id: nuphos-sign-in
+${server}    - id: cerin-sign-in
       name: ${JSON.stringify(plugin)}
 `
 }
@@ -86,7 +86,7 @@ function dshVersion() {
 /** DSH with the sign-in overlay; resolves its frames, its stdin and a stop. */
 export async function startSignIn({ method }) {
   const port = method === 'account' ? await freePort() : undefined
-  const dir = await mkdtemp(join(tmpdir(), 'nuphos-dsh-sign-in-'))
+  const dir = await mkdtemp(join(tmpdir(), 'cerin-dsh-sign-in-'))
   const patch = join(dir, 'sign-in.patch.yml')
   await writeFile(patch, signInPatch({ plugin: PLUGIN, port }), { mode: 0o600 })
   const version = await dshVersion()
@@ -97,9 +97,9 @@ export async function startSignIn({ method }) {
       DSH_HOME,
       PATH: process.env.PATH ?? '/usr/local/bin:/usr/bin:/bin',
       TERM: 'dumb',
-      NUPHOS_DSH_SIGN_IN: method,
-      ...(port ? { NUPHOS_DSH_SIGN_IN_PORT: String(port) } : {}),
-      ...(version ? { NUPHOS_DSH_VERSION: version } : {}),
+      CERIN_DSH_SIGN_IN: method,
+      ...(port ? { CERIN_DSH_SIGN_IN_PORT: String(port) } : {}),
+      ...(version ? { CERIN_DSH_VERSION: version } : {}),
     },
     cwd: HOME,
     // In this helper's process group, so stopping the sign-in stops DSH too.

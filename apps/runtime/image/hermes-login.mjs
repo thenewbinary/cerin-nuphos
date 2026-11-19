@@ -16,8 +16,8 @@ import { join } from 'node:path'
 import { createInterface } from 'node:readline'
 import { pathToFileURL } from 'node:url'
 
-const HERMES = process.env.NUPHOS_AGENT_EXECUTABLE || 'hermes'
-const HOME = process.env.NUPHOS_AGENT_HOME || process.env.HOME || '/home/node'
+const HERMES = process.env.CERIN_AGENT_EXECUTABLE || 'hermes'
+const HOME = process.env.CERIN_AGENT_HOME || process.env.HOME || '/home/node'
 const WINDOWS = process.platform === 'win32'
 // What Python on Windows needs to start, find its temp folder and run commands.
 const WINDOWS_ENV = ['SYSTEMROOT', 'TEMP', 'TMP', 'PATHEXT', 'LOCALAPPDATA', 'APPDATA']
@@ -206,7 +206,7 @@ export async function runHermesLogin({
     })
     const add = run(HERMES, ['auth', 'add', id, '--type', 'oauth', '--no-browser'], {
       // OpenRouter shows a code to paste, rather than calling back a listener here.
-      env: hermesEnv(id === 'openrouter' ? { SSH_CLIENT: 'nuphos' } : {}),
+      env: hermesEnv(id === 'openrouter' ? { SSH_CLIENT: 'cerin' } : {}),
       // Once the page is printed and the output has settled, it includes the code to enter.
       onOutput: (output) => {
         clearTimeout(settle)

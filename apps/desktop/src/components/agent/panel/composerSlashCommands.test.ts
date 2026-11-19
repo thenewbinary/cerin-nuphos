@@ -70,21 +70,21 @@ const agent = [
   { name: 'model', description: "The agent's own model command" },
 ]
 
-test("the agent's commands come first, matched by name, then Nuphos actions", () => {
+test("the agent's commands come first, matched by name, then Cerin actions", () => {
   assert.deepEqual(
     matchSlashOptions(agent, commands, 'mo').map((option) =>
-      option.kind === 'agent' ? `agent:${option.command.name}` : `nuphos:${option.action.id}`,
+      option.kind === 'agent' ? `agent:${option.command.name}` : `cerin:${option.action.id}`,
     ),
-    ['agent:model', 'nuphos:model'],
+    ['agent:model', 'cerin:model'],
   )
   assert.equal(matchSlashOptions(agent, commands, '').length, agent.length + commands.length)
-  assert.equal(matchSlashOptions([], commands, 'f')[0]?.kind, 'nuphos')
+  assert.equal(matchSlashOptions([], commands, 'f')[0]?.kind, 'cerin')
 })
 
 function label(option: SlashOption | null) {
   if (option === null) return null
 
-  return option.kind === 'agent' ? `agent:${option.command.name}` : `nuphos:${option.action.id}`
+  return option.kind === 'agent' ? `agent:${option.command.name}` : `cerin:${option.action.id}`
 }
 
 test("the agent's commands are listed A to Z", () => {
@@ -180,12 +180,12 @@ test('the first ↓ moves off the row shown highlighted', () => {
   assert.equal(slashStep(2, 1, options.length), 0)
 })
 
-test('/model + Enter never runs a Nuphos action unless the arrows picked it', () => {
+test('/model + Enter never runs a Cerin action unless the arrows picked it', () => {
   const options = matchSlashOptions([], commands, 'mo')
 
   assert.equal(slashEnterTarget(options, 'mo', { active: -1, armed: false }), null)
   assert.equal(slashEnterTarget(options, 'mo', { active: 0, armed: false }), null)
-  assert.equal(label(slashEnterTarget(options, 'mo', { active: 0, armed: true })), 'nuphos:model')
+  assert.equal(label(slashEnterTarget(options, 'mo', { active: 0, armed: true })), 'cerin:model')
 })
 
 test('/fork + Enter runs the Fork action instead of sending "/fork" to the agent', () => {
@@ -198,7 +198,7 @@ test('/fork + Enter runs the Fork action instead of sending "/fork" to the agent
         armed: false,
       }),
     ),
-    'nuphos:fork',
+    'cerin:fork',
   )
   // Typed in full, it wins over a longer agent command sorted first.
   assert.equal(
@@ -208,7 +208,7 @@ test('/fork + Enter runs the Fork action instead of sending "/fork" to the agent
         armed: false,
       }),
     ),
-    'nuphos:fork',
+    'cerin:fork',
   )
   // An agent command with the same name is still the agent's.
   const same = matchSlashOptions([{ name: 'fork', description: '' }], commands, 'fork')

@@ -44,7 +44,7 @@ export type TriggerRunParams = {
   // Durable conversation owner when a shared external thread is continued by
   // another teammate. Defaults to `userId`.
   conversationOwnerUserId?: string
-  nuphosToken: string
+  cerinToken: string
   teamId: string | undefined
   sessionId: string
   messages: UIMessage[]
@@ -81,7 +81,7 @@ export type TriggerRunParams = {
  * Execute an agent session on behalf of a trigger (cron or webhook).
  * Runs to completion without returning an HTTP stream to the trigger caller,
  * while still creating the same resumable AgentRun used by the interactive UI.
- * Slack sessions can therefore be opened mid-run from Nuphos and observe the
+ * Slack sessions can therefore be opened mid-run from Cerin and observe the
  * accepted user turn plus live model/tool output.
  */
 export async function executeAgentForTrigger(params: TriggerRunParams): Promise<AgentRunOutcome> {

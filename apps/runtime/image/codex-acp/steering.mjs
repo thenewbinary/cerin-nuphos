@@ -1,7 +1,7 @@
 // Forward into the existing native turn. Never cancel, start, or replay a turn.
 // `toInput` is the adapter's own prompt conversion, so steered attachments read
 // exactly like the ones in a normal prompt.
-export async function nuphosSteerCodex(agent, params, toInput) {
+export async function cerinSteerCodex(agent, params, toInput) {
   if (
     typeof params?.sessionId !== 'string' ||
     !Array.isArray(params.prompt) ||

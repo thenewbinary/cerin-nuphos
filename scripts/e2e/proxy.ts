@@ -6,7 +6,7 @@ import { connect, createServer as createTcpServer } from 'node:net'
 
 import type { AddressInfo, Server, Socket } from 'node:net'
 
-export const PROXIED_HOST = 'nuphos-backend.e2e.invalid'
+export const PROXIED_HOST = 'cerin-backend.e2e.invalid'
 
 export type Proxies = {
   http: number

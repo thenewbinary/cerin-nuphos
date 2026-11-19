@@ -1,12 +1,12 @@
 ---
 name: grok-bot-export
-description: Prepare a portable Nuphos Bot bundle from agents in Grok Bot, after reviewing which data the person wants to move.
+description: Prepare a portable Cerin Bot bundle from agents in Grok Bot, after reviewing which data the person wants to move.
 ---
 
-# Prepare a Nuphos Bot bundle
+# Prepare a Cerin Bot bundle
 
 Run these instructions in the source Grok Bot environment. The output is a ZIP
-that the person reviews in Nuphos. You do not sign in to Nuphos, reconnect an
+that the person reviews in Cerin. You do not sign in to Cerin, reconnect an
 integration, or transmit anything to a destination server yourself.
 
 ## Review what will move
@@ -37,7 +37,7 @@ Do not collect access tokens, cookies, passwords, SSH keys, provider logins,
 OAuth grants, browser profiles, connector credentials or environment files.
 Inspect instructions, skill files, filenames, URLs and working files for such
 content. Replace references to a credential with a request to reconnect it in
-Nuphos; never substitute a different live credential. Omit generated dependency
+Cerin; never substitute a different live credential. Omit generated dependency
 trees, version-control directories and nested archives.
 
 The destination performs its own validation. Your inspection is not a guarantee
@@ -47,13 +47,13 @@ files so the person can review them before importing.
 ## Write the format
 
 Build a ZIP with `manifest.json` at its root. Use the following independent
-Nuphos format. All keys contain lowercase letters, numbers and internal hyphens,
+Cerin format. All keys contain lowercase letters, numbers and internal hyphens,
 with at most 64 characters. Keys identify objects only inside this export; do
 not use account IDs, destination session IDs or credentials as keys.
 
 ```json
 {
-  "format": "nuphos-bot-bundle",
+  "format": "cerin-bot-bundle",
   "version": 1,
   "source": {
     "application": "grok-bot",
@@ -100,7 +100,7 @@ include no undeclared files. Skill folders must contain `SKILL.md` and their
 support files. File paths and destinations must be relative, use `/`, and contain
 no drive prefixes, empty segments, `.` or `..`. Replace each exported file's
 absolute path in instructions and scheduled prompts with `{{file:destination}}`,
-for example `{{file:notes.md}}`. Nuphos resolves that marker to the new Bot's
+for example `{{file:notes.md}}`. Cerin resolves that marker to the new Bot's
 isolated imported directory. Do not claim that unexported absolute paths will
 exist on the target computer; list them as manual setup.
 
@@ -115,9 +115,9 @@ Schedules use five-field cron with the original IANA time zone, or
 180 seconds. Do not convert a local time to a fixed UTC offset or invent cron
 for an event-driven task. Each original schedule gets its own key. Keep event
 definitions in `manualTasks` without secret webhook URLs. Record requested state
-accurately; Nuphos still requires a separate activation confirmation.
+accurately; Cerin still requires a separate activation confirmation.
 
 Write the completed ZIP to a temporary filename first, then rename it to its
 final name. Report the location, selected objects, omissions and unresolved
 items. Explain that the person must review the destination, files and schedule
-effects in Nuphos. Do not say the migration or reconnection is already complete.
+effects in Cerin. Do not say the migration or reconnection is already complete.

@@ -5,7 +5,7 @@ import { latestCliRelease } from '@/lib/claude-code-preview/runtime-release'
 type Deps = { latest: typeof latestCliRelease }
 
 /**
- * The newest CLI version as plain text, for `install.sh` and `nuphos update`.
+ * The newest CLI version as plain text, for `install.sh` and `cerin update`.
  * Public: both run before sign-in. They used to ask the GitHub API directly,
  * which rate-limits unauthenticated callers per IP, so shared cloud IPs often
  * got 403 and no version. This answers from the backend's cached release feed.

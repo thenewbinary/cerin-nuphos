@@ -34,7 +34,7 @@ const box = (deviceId: string, account?: string) =>
       ...(account ? { accountId: account } : {}),
     },
   }) as unknown as AgentDevice
-const devices = [box('team-box', accountId), box('nuphos-box')]
+const devices = [box('team-box', accountId), box('cerin-box')]
 
 useModels({
   teamByosBindings: (() => ({
@@ -136,7 +136,7 @@ test('creating needs an administrator and a bound account', async () => {
 test('a Box on the deployment’s account is out of reach', async () => {
   const refused = await handlers().update_box!({
     label: 'Stop',
-    deviceId: 'nuphos-box',
+    deviceId: 'cerin-box',
     action: 'stop',
   })
 

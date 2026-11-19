@@ -4,7 +4,7 @@ import * as atlas from './atlas'
 import { connectorCallbackError, connectorCallbackParams } from './connector-oauth-callback'
 
 // Shared scheme with github-install — gitlab uses a different hostname
-// (nuphos://gitlab-callback) so the dispatcher in main.ts can route by
+// (cerin://gitlab-callback) so the dispatcher in main.ts can route by
 // it without colliding.
 export const GITLAB_CALLBACK_HOST = 'gitlab-callback'
 const INSTALL_TIMEOUT_MS = 10 * 60 * 1000

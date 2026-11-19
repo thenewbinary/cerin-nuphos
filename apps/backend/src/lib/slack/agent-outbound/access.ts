@@ -59,10 +59,10 @@ export function createResolveSlackTeamAccess(input: {
 
     if (initialWorkspaceId) {
       if (!binding || binding.slackTeamId !== initialWorkspaceId) {
-        throw new Error('Slack is no longer connected to this Nuphos team')
+        throw new Error('Slack is no longer connected to this Cerin team')
       }
     } else if (binding) {
-      throw new Error('Slack connectivity for this Nuphos team changed while the turn was running')
+      throw new Error('Slack connectivity for this Cerin team changed while the turn was running')
     }
     let installation: SlackTeamAccess['installation'] = null
 
@@ -70,7 +70,7 @@ export function createResolveSlackTeamAccess(input: {
       const bot = await dependencies.resolveBot(teamObjectId)
 
       if (!bot || bot.binding.slackTeamId !== binding.slackTeamId) {
-        throw new Error('Slack is not available for this Nuphos team')
+        throw new Error('Slack is not available for this Cerin team')
       }
       installation = {
         workspaceId: binding.slackTeamId,
@@ -81,7 +81,7 @@ export function createResolveSlackTeamAccess(input: {
     const grants = await resolveSlackWorkspaceGrants(dependencies, teamId, binding?.slackTeamId)
 
     if (!installation && grants.length === 0) {
-      throw new Error('Slack is no longer connected to this Nuphos team')
+      throw new Error('Slack is no longer connected to this Cerin team')
     }
 
     return { installation, grants }

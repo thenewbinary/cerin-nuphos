@@ -7,7 +7,7 @@ assignee_id=""
 state_id=""
 priority=""
 description_file="-"
-env_path="${LINEAR_ENV_PATH:-$HOME/.linear/nuphos.env}"
+env_path="${LINEAR_ENV_PATH:-$HOME/.linear/cerin.env}"
 
 usage() {
   cat >&2 <<'EOF'
@@ -43,12 +43,12 @@ fi
 
 if [ -r "$env_path" ]; then
   # setup-credentials.sh owns this mode-0600 file. The GraphQL helper sources
-  # it again independently; this read is for the Nuphos team id used in links.
+  # it again independently; this read is for the Cerin team id used in links.
   # shellcheck disable=SC1090
   source "$env_path"
 fi
-nuphos_team_id="${LINEAR_NUPHOS_TEAM_ID:-}"
-nuphos_session_id="${NUPHOS_SESSION_ID:-}"
+cerin_team_id="${LINEAR_CERIN_TEAM_ID:-}"
+cerin_session_id="${CERIN_SESSION_ID:-}"
 
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 payload="$(mktemp)"
@@ -126,9 +126,9 @@ print(result["issue"]["id"])
 PY
 )"
 
-if [ -n "$nuphos_team_id" ] && [ -n "$nuphos_session_id" ]; then
-  session_url="https://nuphos.ai/teams/${nuphos_team_id}/agent/${nuphos_session_id}"
-  python3 - "$attachment_payload" "$issue_id" "$session_url" "$nuphos_session_id" <<'PY'
+if [ -n "$cerin_team_id" ] && [ -n "$cerin_session_id" ]; then
+  session_url="https://platform.cerin.ai/teams/${cerin_team_id}/agent/${cerin_session_id}"
+  python3 - "$attachment_payload" "$issue_id" "$session_url" "$cerin_session_id" <<'PY'
 import json
 import sys
 
@@ -141,10 +141,10 @@ query = """mutation CreateAttachment($input: AttachmentCreateInput!) {
 }"""
 attachment_input = {
     "issueId": issue_id,
-    "title": "Nuphos session",
+    "title": "Cerin session",
     "subtitle": "Source context",
     "url": session_url,
-    "metadata": {"nuphosSessionId": session_id},
+    "metadata": {"cerinSessionId": session_id},
 }
 with open(payload_path, "w") as dst:
     json.dump({"query": query, "variables": {"input": attachment_input}}, dst)
@@ -160,7 +160,7 @@ with open(sys.argv[1]) as src:
 issue["sourceLink"] = {"success": False, "url": sys.argv[2]}
 print(json.dumps(issue, ensure_ascii=False, indent=2))
 PY
-    echo "The Linear issue was created, but its Nuphos session Link failed. Do not rerun issue-create.sh; attach the URL to issue $issue_id with attachmentCreate." >&2
+    echo "The Linear issue was created, but its Cerin session Link failed. Do not rerun issue-create.sh; attach the URL to issue $issue_id with attachmentCreate." >&2
     exit 1
   fi
 fi

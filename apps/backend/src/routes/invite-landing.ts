@@ -6,7 +6,7 @@ import { Hono } from 'hono'
  * which stranded users who already had the desktop app installed. This page
  * closes both halves of the flow:
  *
- *  - App installed: the page immediately fires the `nuphos://open` deep link,
+ *  - App installed: the page immediately fires the `cerin://open` deep link,
  *    so the desktop app comes to the front. The app refreshes pending
  *    invitations on window focus and pops its invitation flow (onboarding
  *    pick screen for new accounts, the takeover modal for signed-in users) —
@@ -30,19 +30,19 @@ function escapeHtml(value: string): string {
     .replaceAll("'", '&#39;')
 }
 
-const OPEN_APP_URL = 'nuphos://open'
-const DOWNLOAD_URL = 'https://nuphos.ai/download'
+const OPEN_APP_URL = 'cerin://open'
+const DOWNLOAD_URL = 'https://platform.cerin.ai/download'
 
 // Pure builder — no config, no network — so copy and escaping are
 // unit-testable (same split as desktop-callback-page / buildInvitationEmail).
 export function inviteLandingPage(teamName: string | null): string {
   const team = teamName?.trim() ? escapeHtml(teamName.trim()) : ''
-  const heading = team ? `Join <b>${team}</b> on Nuphos` : 'Join your team on Nuphos'
+  const heading = team ? `Join <b>${team}</b> on Cerin` : 'Join your team on Cerin'
 
   return `<!doctype html>
 <html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Team invitation · Nuphos</title>
-<link rel="icon" href="https://nuphos.ai/favicon.svg" type="image/svg+xml" />
+<title>Team invitation · Cerin</title>
+<link rel="icon" href="https://platform.cerin.ai/favicon.svg" type="image/svg+xml" />
 <style>
   *{box-sizing:border-box}
   body{font-family:Geist,-apple-system,'Segoe UI',Roboto,sans-serif;background:#18181b;color:#fff;display:flex;min-height:100vh;margin:0;align-items:center;justify-content:center;padding:24px}
@@ -56,11 +56,11 @@ export function inviteLandingPage(teamName: string | null): string {
 </style></head>
 <body><div class="card">
   <h1>${heading}</h1>
-  <p class="sub">Open the Nuphos desktop app and sign in with the email address this
+  <p class="sub">Open the Cerin desktop app and sign in with the email address this
   invitation was sent to — your invitation will be waiting. Don't have the app yet?
   Download it first.</p>
-  <a class="btn" href="${OPEN_APP_URL}">Open Nuphos</a>
-  <a class="btn secondary" href="${DOWNLOAD_URL}">Download Nuphos</a>
+  <a class="btn" href="${OPEN_APP_URL}">Open Cerin</a>
+  <a class="btn secondary" href="${DOWNLOAD_URL}">Download Cerin</a>
 </div>
 <script>location.href = ${JSON.stringify(OPEN_APP_URL)}</script>
 </body></html>`

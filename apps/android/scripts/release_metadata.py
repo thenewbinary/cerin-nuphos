@@ -23,7 +23,7 @@ def validate_manifest(xml, code, name):
     validate_version(code, name)
     manifest = ET.fromstring(xml)
     sdk = manifest.find('uses-sdk')
-    if (manifest.get('package') != 'ai.nuphos.android'
+    if (manifest.get('package') != 'ai.cerin.android'
             or manifest.get(ANDROID + 'versionCode') != code
             or manifest.get(ANDROID + 'versionName') != name
             or sdk is None or sdk.get(ANDROID + 'minSdkVersion') != '33'
@@ -60,7 +60,7 @@ def main():
         'repository': os.environ['GITHUB_REPOSITORY'],
         'run_id': os.environ['GITHUB_RUN_ID'],
         'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
-        'package_id': 'ai.nuphos.android',
+        'package_id': 'ai.cerin.android',
         'version_code': code, 'version_name': args.version_name,
         'min_sdk': 33, 'target_sdk': 36, 'signed': False,
         'unsigned_sha256': hashlib.sha256(args.bundle.read_bytes()).hexdigest(),

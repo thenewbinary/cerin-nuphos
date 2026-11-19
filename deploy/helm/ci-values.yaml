@@ -7,4 +7,4 @@ runtime:
   url: https://runtime.example.com
 email:
   resendApiKey: ci-placeholder
-  from: Nuphos <noreply@example.com>
+  from: Cerin <noreply@example.com>

@@ -23,7 +23,7 @@ export type DiscordCommandInteraction = {
 }
 
 type Installation = { teamId: string }
-type UserMapping = { nuphosUserId: string }
+type UserMapping = { cerinUserId: string }
 
 export type DiscordChannelCommandDependencies = {
   findInstallation: (guildId: string) => Promise<Installation | null>
@@ -43,7 +43,7 @@ export type DiscordChannelCommandDependencies = {
     teamId: string
     guildId: string
     channelId: string
-    nuphosUserId: string
+    cerinUserId: string
   }) => Promise<void>
   disableChannel: (args: { teamId: string; guildId: string; channelId: string }) => Promise<void>
 }
@@ -63,7 +63,7 @@ const ADMINISTRATOR = 1n << 3n
 export function parseDiscordChannelCommand(
   interaction: DiscordCommandInteraction,
 ): DiscordChannelCommand | null {
-  if (interaction.data?.name !== 'nuphos') return null
+  if (interaction.data?.name !== 'cerin') return null
   const option = interaction.data.options?.find((entry) => entry.type === 1)
 
   return option?.name === 'enable' || option?.name === 'disable' ? option.name : null
@@ -128,13 +128,13 @@ const defaultDependencies: DiscordChannelCommandDependencies = {
     await discordUserMappings().findOne({ guildId, teamId, discordUserId, enabled: true }),
   findMembership: getTeamMembership,
   getChannel: getDiscordChannel,
-  enableChannel: async ({ teamId, guildId, channelId, nuphosUserId }) => {
+  enableChannel: async ({ teamId, guildId, channelId, cerinUserId }) => {
     const now = new Date()
 
     await discordChannelMappings().updateOne(
       { guildId, channelId },
       {
-        $setOnInsert: { teamId, createdBy: nuphosUserId, createdAt: now },
+        $setOnInsert: { teamId, createdBy: cerinUserId, createdAt: now },
         $set: { enabled: true, updatedAt: now },
       },
       { upsert: true },
@@ -156,22 +156,22 @@ export async function handleDiscordChannelCommand(
     return 'This command is only available inside a Discord server channel.'
   }
   if (!canManageDiscordChannel(interaction.member?.permissions)) {
-    return 'You need the Discord Manage Channels permission to change Nuphos access here.'
+    return 'You need the Discord Manage Channels permission to change Cerin access here.'
   }
   const installation = await dependencies.findInstallation(guildId)
 
-  if (!installation) return 'This server is not connected to a Nuphos workspace.'
+  if (!installation) return 'This server is not connected to a Cerin workspace.'
   const userMapping = await dependencies.findUserMapping({
     guildId,
     teamId: installation.teamId,
     discordUserId,
   })
   const membership = userMapping
-    ? await dependencies.findMembership(userMapping.nuphosUserId, installation.teamId)
+    ? await dependencies.findMembership(userMapping.cerinUserId, installation.teamId)
     : null
 
   if (!userMapping || membership?.role !== 'ADMINISTRATOR') {
-    return 'Only a linked Nuphos workspace administrator can change channel access.'
+    return 'Only a linked Cerin workspace administrator can change channel access.'
   }
   let channel: Awaited<ReturnType<DiscordChannelCommandDependencies['getChannel']>>
 
@@ -186,7 +186,7 @@ export async function handleDiscordChannelCommand(
       discord_error_code: error instanceof DiscordApiError ? error.code : undefined,
     })
     if (error instanceof DiscordApiError && error.status === 403) {
-      return 'Nuphos cannot access this channel. In Discord, open Edit Channel → Permissions, add the Nuphos bot, and allow View Channel, Send Messages, Read Message History, Create Public Threads, and Send Messages in Threads. For a private thread, also invite Nuphos to the thread. Then retry this command. /nuphos enable does not change Discord permissions.'
+      return 'Cerin cannot access this channel. In Discord, open Edit Channel → Permissions, add the Cerin bot, and allow View Channel, Send Messages, Read Message History, Create Public Threads, and Send Messages in Threads. For a private thread, also invite Cerin to the thread. Then retry this command. /cerin enable does not change Discord permissions.'
     }
     if (error instanceof DiscordApiError && error.status === 404) {
       return 'Discord could not find this channel. Open an existing server channel and retry the command.'
@@ -205,7 +205,7 @@ export async function handleDiscordChannelCommand(
       teamId: installation.teamId,
       guildId,
       channelId,
-      nuphosUserId: userMapping.nuphosUserId,
+      cerinUserId: userMapping.cerinUserId,
     })
   } else {
     await dependencies.disableChannel({ teamId: installation.teamId, guildId, channelId })
@@ -215,10 +215,10 @@ export async function handleDiscordChannelCommand(
     discord_guild_id: guildId,
     discord_channel_id: channelId,
     discord_user_id: discordUserId,
-    nuphos_user_id: userMapping.nuphosUserId,
+    cerin_user_id: userMapping.cerinUserId,
   })
 
   return command === 'enable'
-    ? '✅ Nuphos is enabled in this channel. Linked workspace members can now mention @Nuphos.'
-    : '⛔ Nuphos is disabled in this channel.'
+    ? '✅ Cerin is enabled in this channel. Linked workspace members can now mention @Cerin.'
+    : '⛔ Cerin is disabled in this channel.'
 }

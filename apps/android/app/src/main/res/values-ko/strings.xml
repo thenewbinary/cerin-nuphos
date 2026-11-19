@@ -1,10 +1,10 @@
 <resources>
-    <string name="welcome_title">Nuphos에 오신 것을 환영합니다</string>
+    <string name="welcome_title">Cerin에 오신 것을 환영합니다</string>
     <string name="welcome_body">로그인하거나 계정을 만드세요.</string>
     <string name="sign_in">로그인</string>
     <string name="signing_in">로그인하는 중…</string>
     <string name="sign_out">로그아웃</string>
-    <string name="sign_out_confirm">Nuphos에서 로그아웃할까요?</string>
+    <string name="sign_out_confirm">Cerin에서 로그아웃할까요?</string>
     <string name="account">계정</string>
     <string name="done">완료</string>
     <string name="cancel">취소</string>
@@ -16,11 +16,11 @@
     <string name="my_chats">내 작업</string>
     <string name="team_chats">팀 작업</string>
     <string name="show_dismissed">닫은 항목 표시</string>
-    <string name="ask_nuphos">Nuphos에게 무엇이든 물어보세요…</string>
+    <string name="ask_cerin">Cerin에게 무엇이든 물어보세요…</string>
     <string name="queue_message">메시지 대기열에 추가…</string>
     <string name="send">보내기</string>
     <string name="stop">중지</string>
-    <string name="coming_soon">Nuphos 앱에 곧 제공됩니다.</string>
+    <string name="coming_soon">Cerin 앱에 곧 제공됩니다.</string>
     <string name="no_chats">아직 작업이 없습니다</string>
     <string name="no_chats_body">아래 입력란에서 작업을 시작하세요.</string>
     <string name="no_matches">일치 항목 없음</string>

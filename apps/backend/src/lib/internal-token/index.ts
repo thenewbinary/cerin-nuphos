@@ -34,7 +34,7 @@ function configuredSigner(): InternalTokenSigner | null {
   const { kmsKeyId, kmsRegion, gcpKmsKeyVersion, privateKeyBase64 } = config.auth.internalTokens
 
   if (kmsKeyId && gcpKmsKeyVersion) {
-    throw new Error('Set only one of NUPHOS_INTERNAL_TOKEN_KMS_KEY_ID and _GCP_KMS_KEY_VERSION')
+    throw new Error('Set only one of CERIN_INTERNAL_TOKEN_KMS_KEY_ID and _GCP_KMS_KEY_VERSION')
   }
   if (kmsKeyId) return awsKmsSigner(kmsKeyId, kmsRegion)
   if (gcpKmsKeyVersion) return gcpKmsSigner(gcpKmsKeyVersion, googleKmsCall())
@@ -47,7 +47,7 @@ function previousPublicKeys(): KeyObject[] {
   return config.auth.internalTokens.previousPublicKeysBase64.map((b64) => {
     const key = createPublicKey(Buffer.from(b64, 'base64').toString('utf8'))
 
-    assertP256(key, 'NUPHOS_INTERNAL_TOKEN_PREVIOUS_PUBLIC_KEYS_BASE64')
+    assertP256(key, 'CERIN_INTERNAL_TOKEN_PREVIOUS_PUBLIC_KEYS_BASE64')
 
     return key
   })

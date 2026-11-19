@@ -9,7 +9,7 @@ export type AgentChatDeepLinkPayload = {
   autoSend: boolean
 }
 
-const PROTOCOL = 'nuphos:'
+const PROTOCOL = 'cerin:'
 const HOST = 'agent-chat'
 
 function isTruthyParam(value: string | null): boolean {

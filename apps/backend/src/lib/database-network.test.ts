@@ -9,7 +9,7 @@ import {
 describe('database private network configuration', () => {
   const tailscale = {
     bindingId: new ObjectId('507f1f77bcf86cd799439011'),
-    tag: 'tag:nuphos-database',
+    tag: 'tag:cerin-database',
   }
 
   test('accepts a direct public connection without private network metadata', () => {

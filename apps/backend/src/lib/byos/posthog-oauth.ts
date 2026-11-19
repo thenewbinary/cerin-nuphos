@@ -43,9 +43,9 @@ export function posthogOAuthClient(scopes: readonly string[]): PosthogOAuthClien
 export function posthogClientMetadata(client: PosthogOAuthClient, scopes: readonly string[]) {
   return {
     client_id: client.clientId,
-    client_name: 'Nuphos',
-    client_uri: 'https://nuphos.ai',
-    logo_uri: 'https://nuphos.ai/favicon.svg',
+    client_name: 'Cerin',
+    client_uri: 'https://platform.cerin.ai',
+    logo_uri: 'https://platform.cerin.ai/favicon.svg',
     redirect_uris: [client.redirectUri],
     grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],

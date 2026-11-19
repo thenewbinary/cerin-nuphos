@@ -28,14 +28,14 @@ if (
   createHash('sha256').update(source).digest('hex') !==
   '0eeabe7242f82b2a27bd9a98c9812ff7fb29c4a67c1d289947b88bcacceb8548'
 )
-  throw new Error('Claude ACP bundle changed; review the Nuphos adapter patches.')
+  throw new Error('Claude ACP bundle changed; review the Cerin adapter patches.')
 const mcpAnchor = '            for (const server of params.mcpServers) {'
 if (source.split(mcpAnchor).length !== 2) throw new Error('Expected one Claude MCP server handoff.')
 let patched = patchClaudeAskUserQuestion(
   patchClaudeDefaultEffort(patchClaudeSessionState(patchClaudeTurnCompletion(source))),
 ).replace(
   mcpAnchor,
-  '            for (const server of nuphosBridgeMcpServers(params.mcpServers)) {',
+  '            for (const server of cerinBridgeMcpServers(params.mcpServers)) {',
 )
 const envStart =
   '        const env = {\n            ...process.env,\n            ...userProvidedOptions?.env,'
@@ -43,7 +43,7 @@ const envEnd = '            CLAUDE_CODE_EMIT_SESSION_STATE_EVENTS: "1",\n       
 if (patched.split(envStart).length !== 2 || patched.split(envEnd).length !== 2)
   throw new Error('Expected one Claude SDK session environment handoff.')
 patched = patched
-  .replace(envStart, envStart.replace('const env = {', 'const env = nuphosClaudeSessionEnv({'))
+  .replace(envStart, envStart.replace('const env = {', 'const env = cerinClaudeSessionEnv({'))
   .replace(
     envEnd,
     envEnd.replace(
@@ -51,13 +51,13 @@ patched = patched
       `}, userProvidedOptions?.env);
         // Settings env overrides the child environment in Claude Code. Pin the
         // session paths at the programmatic tier too, just like provider routing.
-        if (env.NUPHOS_SESSION_HOME) {
+        if (env.CERIN_SESSION_HOME) {
             const sessionSettings = typeof settings === "string"
                 ? JSON.parse(await fs.readFile(path.resolve(params.cwd, settings), "utf8"))
                 : settings;
             settings = { ...sessionSettings, env: {
                 ...sessionSettings?.env,
-                ...nuphosSessionHomeEnv(userProvidedOptions?.env),
+                ...cerinSessionHomeEnv(userProvidedOptions?.env),
             } };
         }`,
     ),
@@ -80,7 +80,7 @@ patched = patched
                         void this.client.sessionUpdate({
                             sessionId: params.sessionId,
                             update: { sessionUpdate: "session_info_update", _meta: {
-                                "ai.nuphos/promptSuggestion": { suggestion: message.suggestion }
+                                "ai.cerin/promptSuggestion": { suggestion: message.suggestion }
                             }}
                         }).catch((error) => this.logger.error("Could not publish prompt suggestion", error));
                         break;
@@ -94,7 +94,7 @@ if (patched.split(instructionsAnchor).length !== 2)
   throw new Error('Expected one Claude system prompt handoff.')
 patched = patched.replace(
   instructionsAnchor,
-  `        systemPrompt = await nuphosWithProjectInstructions(systemPrompt, params.cwd);\n${instructionsAnchor}`,
+  `        systemPrompt = await cerinWithProjectInstructions(systemPrompt, params.cwd);\n${instructionsAnchor}`,
 )
 // When Claude Code dies under the adapter (SIGABRT, OOM), the adapter deletes the
 // session but keeps running. OpenAB judges an agent connection alive while its
@@ -122,7 +122,7 @@ if (patched.split(deathError).length !== 2)
   throw new Error('Expected one Claude process-death error.')
 patched = patched.replace(
   deathError,
-  'failAllTurns(RequestError.internalError(undefined, nuphosProcessDeathMessage("Claude Code", message.replace(/^Claude Code /, ""))));',
+  'failAllTurns(RequestError.internalError(undefined, cerinProcessDeathMessage("Claude Code", message.replace(/^Claude Code /, ""))));',
 )
 const sessionHome = readFileSync(new URL('../session-home.mjs', import.meta.url), 'utf8')
 const helper = readFileSync(new URL('../mcp-bridge-config.mjs', import.meta.url), 'utf8')
@@ -141,11 +141,11 @@ if (patched.split(fingerprint).length !== 2)
   throw new Error('Expected one Claude session fingerprint.')
 patched = patched.replace(
   fingerprint,
-  `    const home = nuphosSessionHomeEnv(params._meta?.claudeCode?.options?.env ?? {}).NUPHOS_SESSION_HOME;
+  `    const home = cerinSessionHomeEnv(params._meta?.claudeCode?.options?.env ?? {}).CERIN_SESSION_HOME;
     return JSON.stringify({ cwd: params.cwd, mcpServers: servers, home });`,
 )
 for (const method of ['loadSession', 'resumeSession']) {
-  const start = patched.indexOf(`async nuphos_${method}(params, nuphosRestorePhase) {`)
+  const start = patched.indexOf(`async cerin_${method}(params, cerinRestorePhase) {`)
   const end = patched.indexOf('\n    async ', start + 1)
   const body = patched.slice(start, end)
   const setup = '        const result = await this.getOrCreateSession(params);'
@@ -153,17 +153,17 @@ for (const method of ['loadSession', 'resumeSession']) {
     throw new Error(`Expected one Claude ${method} restoration handoff.`)
   let traced = body.replace(
     setup,
-    `        nuphosRestorePhase('sdk-session');\n${setup}${method === 'resumeSession' ? "\n        nuphosRestorePhase('publish-state');" : ''}`,
+    `        cerinRestorePhase('sdk-session');\n${setup}${method === 'resumeSession' ? "\n        cerinRestorePhase('publish-state');" : ''}`,
   )
   if (method === 'loadSession') {
     const replay = '        await this.replaySessionHistory(params.sessionId);'
     if (traced.split(replay).length !== 2) throw new Error('Expected one Claude history replay.')
     traced = traced.replace(
       replay,
-      `        nuphosRestorePhase('history-replay');\n${replay}\n        nuphosRestorePhase('publish-state');`,
+      `        cerinRestorePhase('history-replay');\n${replay}\n        cerinRestorePhase('publish-state');`,
     )
   }
-  traced = traced.replace('{\n', "{\n        nuphosRestorePhase('provider-update');\n")
+  traced = traced.replace('{\n', "{\n        cerinRestorePhase('provider-update');\n")
   patched = patched.slice(0, start) + traced + patched.slice(end)
 }
 writeFileSync(target, patchSkillsRefresh(patched))

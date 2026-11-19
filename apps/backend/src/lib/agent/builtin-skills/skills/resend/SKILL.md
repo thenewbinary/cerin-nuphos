@@ -1,19 +1,19 @@
 ---
 name: resend
-description: Send transactional email through a Resend account the user's team has bound to Nuphos — send a message, check what happened to one that was already sent, and (with a full-access key) inspect verified sending domains, audiences and contacts. Use whenever the user asks to email someone, mail a report/summary/alert, or check whether an email was delivered. Nuphos backend hands the agent a Resend API key; the agent calls api.resend.com directly with curl.
+description: Send transactional email through a Resend account the user's team has bound to Cerin — send a message, check what happened to one that was already sent, and (with a full-access key) inspect verified sending domains, audiences and contacts. Use whenever the user asks to email someone, mail a report/summary/alert, or check whether an email was delivered. Cerin backend hands the agent a Resend API key; the agent calls api.resend.com directly with curl.
 ---
 
 # resend
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
 Use this skill when the user wants you to **send email on their behalf**, or to
 check on mail already sent, through the **Resend account** their team has bound
-to Nuphos. It closes the loop with the other skills: investigate a problem
+to Cerin. It closes the loop with the other skills: investigate a problem
 (monitoring/cloud) → write up what you found → mail it to the people who need it.
 
 ## Sending is irreversible — read this first
@@ -48,10 +48,10 @@ another way to send.
 
 ```bash
 bash skills/resend/scripts/setup-credentials.sh <teamId> <integrationId>
-source ~/.resend/nuphos.env
+source ~/.resend/cerin.env
 ```
 
-That writes `~/.resend/nuphos.env` (mode 600) with `RESEND_API_KEY`,
+That writes `~/.resend/cerin.env` (mode 600) with `RESEND_API_KEY`,
 `RESEND_API_BASE_URL`, `RESEND_PERMISSION` and `RESEND_BINDING_ID`.
 
 If setup fails with **HTTP 403**, this Resend binding is not enabled for this
@@ -95,7 +95,7 @@ send. With a full-access key, `GET /domains` shows which domains are verified.
 
 ```bash
 resend POST /emails -d '{
-  "from": "Nuphos <alerts@yourdomain.com>",
+  "from": "Cerin <alerts@yourdomain.com>",
   "to": ["someone@example.com"],
   "subject": "Deploy failed on production",
   "text": "Plain-text body.",

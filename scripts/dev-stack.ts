@@ -152,7 +152,7 @@ async function runningS3Keys(): Promise<S3Keys | null> {
   const env: Record<string, string> = {}
   const result = await runDevCommand(
     'docker',
-    ['inspect', '-f', '{{range .Config.Env}}{{println .}}{{end}}', 'nuphos-dev-rustfs-1'],
+    ['inspect', '-f', '{{range .Config.Env}}{{println .}}{{end}}', 'cerin-dev-rustfs-1'],
     {
       timeoutMs: 20_000,
       onStdout: (line) => {

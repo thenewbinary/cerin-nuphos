@@ -8,7 +8,7 @@ import type {
   AwsS3Detail,
   CloudflareResourceDetailRef,
   LinearNavState,
-  NuphosDashboardRef,
+  CerinDashboardRef,
 } from '../../lib/appRoutes'
 import type { DetailTarget } from '../../views/DetailView'
 
@@ -67,11 +67,11 @@ export function useTabDetailSetters(tabId: string, updateTab: UpdateWorkspaceTab
     },
     [tabId, updateTab],
   )
-  const setNuphosDashboard = useCallback(
-    (nuphosDashboard: NuphosDashboardRef | null) => {
+  const setCerinDashboard = useCallback(
+    (cerinDashboard: CerinDashboardRef | null) => {
       updateTab(tabId, (cur) => {
-        const a = cur.nuphosDashboard ?? null
-        const b = nuphosDashboard
+        const a = cur.cerinDashboard ?? null
+        const b = cerinDashboard
         // Same-check: the view re-reports on every dashboard-list reload, and a
         // no-op tab update per poll would churn every consumer of tab state.
         const same =
@@ -82,20 +82,20 @@ export function useTabDetailSetters(tabId: string, updateTab: UpdateWorkspaceTab
             a.dashboardName === b.dashboardName &&
             JSON.stringify(a.viewRange) === JSON.stringify(b.viewRange))
 
-        return same ? cur : { ...cur, nuphosDashboard }
+        return same ? cur : { ...cur, cerinDashboard }
       })
     },
     [tabId, updateTab],
   )
-  const setNuphosDashboards = useCallback(
-    (nuphosDashboards: { id: string; name: string }[]) => {
+  const setCerinDashboards = useCallback(
+    (cerinDashboards: { id: string; name: string }[]) => {
       updateTab(tabId, (cur) => {
-        const a = cur.nuphosDashboards
+        const a = cur.cerinDashboards
         const same =
-          a?.length === nuphosDashboards.length &&
-          a.every((d, i) => d.id === nuphosDashboards[i].id && d.name === nuphosDashboards[i].name)
+          a?.length === cerinDashboards.length &&
+          a.every((d, i) => d.id === cerinDashboards[i].id && d.name === cerinDashboards[i].name)
 
-        return same ? cur : { ...cur, nuphosDashboards }
+        return same ? cur : { ...cur, cerinDashboards }
       })
     },
     [tabId, updateTab],
@@ -132,8 +132,8 @@ export function useTabDetailSetters(tabId: string, updateTab: UpdateWorkspaceTab
     setAwsDetail,
     setArchitectureDetail,
     setDesignDetail,
-    setNuphosDashboard,
-    setNuphosDashboards,
+    setCerinDashboard,
+    setCerinDashboards,
     setLinearNav,
     setCloudflareDetail,
   }

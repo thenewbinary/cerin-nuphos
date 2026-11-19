@@ -161,7 +161,7 @@ export async function attachRuntimeTunnel(
 
         return
       case 'revoke':
-        shut(TUNNEL_CLOSE_REVOKED, 'This computer was disconnected from Nuphos')
+        shut(TUNNEL_CLOSE_REVOKED, 'This computer was disconnected from Cerin')
 
         return
       case 'revoke-actor':

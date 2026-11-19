@@ -8,7 +8,7 @@ fi
 
 team_id="$1"
 integration_id="$2"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.nuphos.ai}}"
+base="${CERIN_BACKEND_URL:-${CERIN_API_URL:-https://platform.cerin.ai}}"
 base="${base%/}"
 
 urlencode() {
@@ -19,9 +19,9 @@ PY
 }
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-# shellcheck source=../../_runtime/scripts/nuphos-token.sh
-source "$script_dir/../../_runtime/scripts/nuphos-token.sh"
-auth_token="$(nuphos_token)" || exit 1
+# shellcheck source=../../_runtime/scripts/cerin-token.sh
+source "$script_dir/../../_runtime/scripts/cerin-token.sh"
+auth_token="$(cerin_token)" || exit 1
 
 team_enc="$(urlencode "$team_id")"
 integration_enc="$(urlencode "$integration_id")"
@@ -38,7 +38,7 @@ curl -fsSL \
 mkdir -p "$HOME/.betterstack"
 chmod 700 "$HOME/.betterstack"
 
-python3 - "$tmp" "$HOME/.betterstack/nuphos.env" <<'PY'
+python3 - "$tmp" "$HOME/.betterstack/cerin.env" <<'PY'
 import json, shlex, sys
 src, dst = sys.argv[1], sys.argv[2]
 data = json.load(open(src))
@@ -60,5 +60,5 @@ with open(dst, "w") as f:
     f.write(f"export BETTERSTACK_LABEL={shlex.quote(str(data.get('label', '')))}\n")
 PY
 
-chmod 600 "$HOME/.betterstack/nuphos.env"
-echo "Wrote Better Stack credentials to ~/.betterstack/nuphos.env"
+chmod 600 "$HOME/.betterstack/cerin.env"
+echo "Wrote Better Stack credentials to ~/.betterstack/cerin.env"

@@ -1,13 +1,13 @@
 ---
 name: hetzner
-description: Run hcloud CLI commands from the sandbox to inspect or change Hetzner Cloud resources — servers, volumes, networks, firewalls, load balancers, floating IPs, and images. Includes a setup script for selected Nuphos-bound Hetzner accounts.
+description: Run hcloud CLI commands from the sandbox to inspect or change Hetzner Cloud resources — servers, volumes, networks, firewalls, load balancers, floating IPs, and images. Includes a setup script for selected Cerin-bound Hetzner accounts.
 ---
 
 # Hetzner Cloud CLI
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -22,14 +22,14 @@ it with `kubectl` using a kubeconfig they provide, not through this skill.
 
 `hcloud` is provided by the runtime image's tool manifest, not baked into it:
 the first call downloads the pinned, checksum-verified release and can take a
-while, so let it finish rather than interrupt it. `nuphos-tools list` shows the
+while, so let it finish rather than interrupt it. `cerin-tools list` shows the
 tool and its state. If the command is missing entirely, or that install keeps
 failing, report the runtime mismatch instead of installing another build during
-the task; do not conclude that Nuphos lacks Hetzner credentials.
+the task; do not conclude that Cerin lacks Hetzner credentials.
 
-## Prefer Nuphos API for first-party reads
+## Prefer Cerin API for first-party reads
 
-For read-only data Nuphos already exposes, call the Nuphos API first. This list
+For read-only data Cerin already exposes, call the Cerin API first. This list
 route wraps its result in an object, so extract the array before piping to a
 `jq` filter (e.g. `.servers[]`, not `.[]`):
 
@@ -53,10 +53,10 @@ bash skills/hetzner/scripts/setup-credentials.sh <teamId> <accountId>
 ```
 
 The setup script uses the selected account for this agent session when
-`NUPHOS_SESSION_ID` is present, writes `~/.config/hcloud/cli.toml` with an
-active context, and also writes `~/.hetzner/nuphos.env` exporting `HCLOUD_TOKEN`
+`CERIN_SESSION_ID` is present, writes `~/.config/hcloud/cli.toml` with an
+active context, and also writes `~/.hetzner/cerin.env` exporting `HCLOUD_TOKEN`
 for tools that read it from the environment. `hcloud` prefers `HCLOUD_TOKEN`
-when it is set, so `source ~/.hetzner/nuphos.env` if a later shell doesn't pick
+when it is set, so `source ~/.hetzner/cerin.env` if a later shell doesn't pick
 up the context.
 
 Confirm the token works before mutating anything:

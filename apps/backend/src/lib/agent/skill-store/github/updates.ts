@@ -26,7 +26,7 @@ export type GithubSkillUpdate = {
   installedCommit: string
   latestCommit: string | null
   status: 'up_to_date' | 'update_available' | 'source_missing'
-  /** Changed in Nuphos since install; updating replaces those edits. */
+  /** Changed in Cerin since install; updating replaces those edits. */
   edited: boolean
   /** Upstream changes since install, by path inside the skill folder. */
   changes: { added: string[]; changed: string[]; removed: string[] }
@@ -180,7 +180,7 @@ function assertUpdatable(entry: Inspected | undefined, name: string, overwrite: 
     throw new AppError(
       409,
       'skill_edited',
-      `${name} was edited in Nuphos; confirm to replace the edits`,
+      `${name} was edited in Cerin; confirm to replace the edits`,
     )
 
   return { ...entry, upstream: entry.upstream }
@@ -218,7 +218,7 @@ export async function updateGithubSkills(
       throw new AppError(
         409,
         'skill_edited',
-        `${name} was edited in Nuphos; confirm to replace the edits`,
+        `${name} was edited in Cerin; confirm to replace the edits`,
       )
     else chosen.push({ ...entry, upstream })
   }

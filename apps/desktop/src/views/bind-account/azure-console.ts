@@ -15,9 +15,9 @@ export const AZURE_SUBSCRIPTIONS_URL =
   'https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBlade'
 
 export function azureAppName(_purpose: 'operational'): string {
-  return 'Nuphos'
+  return 'Cerin'
 }
 
 export function azureCredentialName(_purpose: 'operational'): string {
-  return 'nuphos'
+  return 'cerin'
 }

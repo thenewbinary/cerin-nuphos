@@ -12,10 +12,10 @@ type Complete = (
   code: string,
 ) => Promise<PersonalCredential>
 
-// nuphos://personal-credential?provider=…&state=…&code=… (or &error=…). The
+// cerin://personal-credential?provider=…&state=…&code=… (or &error=…). The
 // backend only stages the grant; the member who started the flow claims it
 // with the one-time code, so the code never leaves the main process.
-const PROTOCOL = 'nuphos:'
+const PROTOCOL = 'cerin:'
 const HOST = 'personal-credential'
 const PROVIDERS: readonly PersonalCredentialProvider[] = [
   'github',

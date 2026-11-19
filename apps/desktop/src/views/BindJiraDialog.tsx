@@ -75,7 +75,7 @@ export function BindJiraDialog({ open, teamId, onClose, onBound }: Props) {
       onClose={close}
       title={t('Connect {name}', { name: 'Jira' })}
       description={t(
-        'Authorize Nuphos to read and create issues in your Jira site so it can open, comment on, and transition tickets.',
+        'Authorize Cerin to read and create issues in your Jira site so it can open, comment on, and transition tickets.',
       )}
       width={460}
     >
@@ -111,7 +111,7 @@ export function BindJiraDialog({ open, teamId, onClose, onBound }: Props) {
                 text={t(
                   'If nothing happens, make sure your browser allowed the popup and that your OS routes {scheme} URLs to this app.',
                 )}
-                scheme={<span className="font-mono">nuphos://</span>}
+                scheme={<span className="font-mono">cerin://</span>}
               />
             </div>
           </div>

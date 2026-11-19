@@ -62,7 +62,7 @@ tailscaleScoped.post('/tailnet-sessions', async (c) => {
     tailscaleAuthHandle(c.get('tailscaleBindingAuth'), teamId),
     {
       tag,
-      description: `Nuphos agent sandbox ${hostname}`,
+      description: `Cerin agent sandbox ${hostname}`,
       expirySeconds: TAILNET_AUTH_KEY_TTL_SECONDS,
     },
   ).catch((err: unknown) => {
@@ -77,7 +77,7 @@ tailscaleScoped.post('/tailnet-sessions', async (c) => {
   })
 
   // The hostname is what lets the customer line a row in their own tailnet
-  // audit log up against a Nuphos conversation, so it has to be greppable on
+  // audit log up against a Cerin conversation, so it has to be greppable on
   // our side too.
   logEvent('info', 'agent.tailnet.joined', {
     team_id: teamId.toHexString(),

@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <bindingId>
 
-  teamId     Nuphos team id (24-char hex)
+  teamId     Cerin team id (24-char hex)
   bindingId  GitLab binding id (24-char hex, from
              GET /teams/<teamId>/gitlab-bindings)
 
 Environment:
-  NUPHOS_TOKEN       Required. Already exported in the Nuphos agent sandbox.
-  NUPHOS_BACKEND_URL Required. Base URL of the Nuphos backend API; defaults to https://api.nuphos.ai.
+  CERIN_TOKEN       Required. Already exported in the Cerin agent sandbox.
+  CERIN_BACKEND_URL Required. Base URL of the Cerin backend API; defaults to https://platform.cerin.ai.
 
 Fetches the binding's short-lived (~2 h, backend-auto-refreshed)
 GitLab OAuth access token and wires up git, glab, and curl access:
@@ -38,7 +38,7 @@ team_id="$1"
 binding_id="$2"
 
 if ! [[ "$team_id" =~ ^[0-9a-fA-F]{24}$ ]]; then
-  echo "invalid teamId: expected a 24-char hex Nuphos team id, got '$team_id'" >&2
+  echo "invalid teamId: expected a 24-char hex Cerin team id, got '$team_id'" >&2
   exit 1
 fi
 
@@ -47,8 +47,8 @@ if ! [[ "$binding_id" =~ ^[0-9a-fA-F]{24}$ ]]; then
   exit 1
 fi
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set in this sandbox" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is not set in this sandbox" >&2
   exit 1
 fi
 
@@ -58,8 +58,8 @@ token_response="$(curl -fsSL \
   --retry 2 \
   --retry-delay 1 \
   --retry-all-errors \
-  -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") \
-  "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}/teams/$team_id/gitlab-bindings/$binding_id/token")"
+  -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") \
+  "${CERIN_BACKEND_URL:-https://platform.cerin.ai}/teams/$team_id/gitlab-bindings/$binding_id/token")"
 
 token="$(printf '%s' "$token_response" | python3 -c '
 import json, sys
@@ -88,7 +88,7 @@ print(data.get("scope", ""))
 ')"
 
 if [ -z "$token" ] || [ -z "$host_url" ]; then
-  echo "Nuphos backend returned no token" >&2
+  echo "Cerin backend returned no token" >&2
   exit 1
 fi
 

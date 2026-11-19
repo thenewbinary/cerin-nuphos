@@ -567,7 +567,7 @@ mod tests {
             request(
                 "env",
                 "env-1",
-                json!({"stdin":"ignored","env":{"NUPHOS_TOKEN":"t0k"}}),
+                json!({"stdin":"ignored","env":{"CERIN_TOKEN":"t0k"}}),
             ),
             "conn",
         )
@@ -581,7 +581,7 @@ mod tests {
         // `sh` itself exports PWD, SHLVL and `_`.
         let allowed = [
             "HOME",
-            "NUPHOS_TOKEN",
+            "CERIN_TOKEN",
             "PATH",
             "PWD",
             "SHLVL",
@@ -590,7 +590,7 @@ mod tests {
             "OLDPWD",
         ];
         assert!(names.iter().all(|n| allowed.contains(n)), "{names:?}");
-        assert!(stdout.contains("NUPHOS_TOKEN=t0k"));
+        assert!(stdout.contains("CERIN_TOKEN=t0k"));
         assert!(!stdout.contains(&gateway_only));
         assert_eq!(result["exitCode"], 0);
     }

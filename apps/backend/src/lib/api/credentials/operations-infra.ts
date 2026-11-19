@@ -41,7 +41,7 @@ export const infraCredentialOperations = [
     tags: ['Linode accounts'],
     summary: 'List bound Linode accounts',
     description:
-      'List Linode accounts connected to a Nuphos team without returning raw Linode tokens.',
+      'List Linode accounts connected to a Cerin team without returning raw Linode tokens.',
     auth: 'bearer',
     pathSchema: teamPathSchema,
     responseSchema: linodeAccountsResponseSchema,
@@ -53,7 +53,7 @@ export const infraCredentialOperations = [
     tags: ['Linode accounts'],
     summary: 'List Linode instances',
     description:
-      'List Linode instances for a bound Linode account through Nuphos, without exposing the underlying Linode token.',
+      'List Linode instances for a bound Linode account through Cerin, without exposing the underlying Linode token.',
     auth: 'bearer',
     pathSchema: linodeAccountPathSchema,
     responseSchema: linodeInstancesResponseSchema,
@@ -65,7 +65,7 @@ export const infraCredentialOperations = [
     tags: ['Linode accounts'],
     summary: 'List LKE clusters',
     description:
-      'List Linode Kubernetes Engine clusters for a bound Linode account through Nuphos.',
+      'List Linode Kubernetes Engine clusters for a bound Linode account through Cerin.',
     auth: 'bearer',
     pathSchema: linodeAccountPathSchema,
     responseSchema: lkeClustersResponseSchema,
@@ -77,7 +77,7 @@ export const infraCredentialOperations = [
     tags: ['Hetzner accounts'],
     summary: 'List bound Hetzner accounts',
     description:
-      'List Hetzner Cloud accounts connected to a Nuphos team without returning raw Hetzner API tokens.',
+      'List Hetzner Cloud accounts connected to a Cerin team without returning raw Hetzner API tokens.',
     auth: 'bearer',
     pathSchema: teamPathSchema,
     responseSchema: hetznerAccountsResponseSchema,
@@ -101,7 +101,7 @@ export const infraCredentialOperations = [
     tags: ['Hetzner accounts'],
     summary: 'List Hetzner servers',
     description:
-      'List Hetzner Cloud servers for a bound Hetzner account through Nuphos, without exposing the underlying Hetzner API token.',
+      'List Hetzner Cloud servers for a bound Hetzner account through Cerin, without exposing the underlying Hetzner API token.',
     auth: 'bearer',
     pathSchema: hetznerAccountPathSchema,
     responseSchema: hetznerServersResponseSchema,
@@ -113,7 +113,7 @@ export const infraCredentialOperations = [
     tags: ['Tailscale clients'],
     summary: 'List bound Tailscale OAuth clients',
     description:
-      'List Tailscale OAuth clients connected to a Nuphos team without returning raw client secrets.',
+      'List Tailscale OAuth clients connected to a Cerin team without returning raw client secrets.',
     auth: 'bearer',
     pathSchema: teamPathSchema,
     responseSchema: tailscaleClientsResponseSchema,
@@ -148,7 +148,7 @@ export const infraCredentialOperations = [
     tags: ['Tencent accounts'],
     summary: 'List TKE clusters',
     description:
-      'List Tencent Kubernetes Engine clusters for a bound Tencent account through Nuphos.',
+      'List Tencent Kubernetes Engine clusters for a bound Tencent account through Cerin.',
     auth: 'bearer',
     pathSchema: tencentAccountPathSchema,
     responseSchema: tencentClustersResponseSchema,
@@ -172,7 +172,7 @@ export const infraCredentialOperations = [
     tags: ['Alibaba Cloud accounts'],
     summary: 'List ACK clusters',
     description:
-      'List Alibaba Cloud Container Service (ACK) clusters for a bound Alibaba Cloud account through Nuphos.',
+      'List Alibaba Cloud Container Service (ACK) clusters for a bound Alibaba Cloud account through Cerin.',
     auth: 'bearer',
     pathSchema: aliyunAccountPathSchema,
     responseSchema: aliyunClustersResponseSchema,
@@ -184,7 +184,7 @@ export const infraCredentialOperations = [
     tags: ['Alibaba Cloud accounts'],
     summary: 'List ECS instances',
     description:
-      'List Alibaba Cloud ECS instances for a bound Alibaba Cloud account through Nuphos.',
+      'List Alibaba Cloud ECS instances for a bound Alibaba Cloud account through Cerin.',
     auth: 'bearer',
     pathSchema: aliyunAccountPathSchema,
     responseSchema: aliyunEcsResponseSchema,
@@ -196,7 +196,7 @@ export const infraCredentialOperations = [
     tags: ['Alibaba Cloud accounts'],
     summary: 'List Simple Application Server instances',
     description:
-      'List Alibaba Cloud Simple Application Server (SWAS) instances for a bound Alibaba Cloud account through Nuphos.',
+      'List Alibaba Cloud Simple Application Server (SWAS) instances for a bound Alibaba Cloud account through Cerin.',
     auth: 'bearer',
     pathSchema: aliyunAccountPathSchema,
     responseSchema: aliyunSwasResponseSchema,
@@ -220,7 +220,7 @@ export const infraCredentialOperations = [
     tags: ['Volcengine accounts'],
     summary: 'List VKE clusters',
     description:
-      'List Volcengine Kubernetes Engine (VKE) clusters for a bound Volcengine account through Nuphos.',
+      'List Volcengine Kubernetes Engine (VKE) clusters for a bound Volcengine account through Cerin.',
     auth: 'bearer',
     pathSchema: volcengineAccountPathSchema,
     responseSchema: volcengineClustersResponseSchema,
@@ -231,7 +231,7 @@ export const infraCredentialOperations = [
     path: '/teams/{teamId}/volcengine-accounts/{accountId}/ecs-instances',
     tags: ['Volcengine accounts'],
     summary: 'List ECS instances',
-    description: 'List Volcengine ECS instances for a bound Volcengine account through Nuphos.',
+    description: 'List Volcengine ECS instances for a bound Volcengine account through Cerin.',
     auth: 'bearer',
     pathSchema: volcengineAccountPathSchema,
     responseSchema: volcengineEcsResponseSchema,

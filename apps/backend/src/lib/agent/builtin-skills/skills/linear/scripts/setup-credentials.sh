@@ -10,7 +10,7 @@ fi
 
 team_id="$1"
 binding_id="$2"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.nuphos.ai}}"
+base="${CERIN_BACKEND_URL:-${CERIN_API_URL:-https://platform.cerin.ai}}"
 base="${base%/}"
 
 urlencode() {
@@ -21,9 +21,9 @@ PY
 }
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-# shellcheck source=../../_runtime/scripts/nuphos-token.sh
-source "$script_dir/../../_runtime/scripts/nuphos-token.sh"
-auth_token="$(nuphos_token)" || exit 1
+# shellcheck source=../../_runtime/scripts/cerin-token.sh
+source "$script_dir/../../_runtime/scripts/cerin-token.sh"
+auth_token="$(cerin_token)" || exit 1
 
 team_enc="$(urlencode "$team_id")"
 binding_enc="$(urlencode "$binding_id")"
@@ -50,7 +50,7 @@ curl -fsSL \
 mkdir -p "$HOME/.linear"
 chmod 700 "$HOME/.linear"
 
-python3 - "$tmp" "$HOME/.linear/nuphos.env" "$team_id" <<'PY'
+python3 - "$tmp" "$HOME/.linear/cerin.env" "$team_id" <<'PY'
 import json, shlex, sys
 src, dst = sys.argv[1], sys.argv[2]
 data = json.load(open(src))
@@ -60,7 +60,7 @@ with open(dst, "w") as f:
         raise SystemExit("Credentials response missing accessToken; re-bind the Linear workspace.")
     f.write("unset LINEAR_ACCESS_TOKEN\n")
     f.write(f"export LINEAR_ACCESS_TOKEN={shlex.quote(token)}\n")
-    f.write(f"export LINEAR_NUPHOS_TEAM_ID={shlex.quote(sys.argv[3])}\n")
+    f.write(f"export LINEAR_CERIN_TEAM_ID={shlex.quote(sys.argv[3])}\n")
     f.write(f"export LINEAR_WORKSPACE_ID={shlex.quote(str(data.get('workspaceId', '')))}\n")
     f.write(f"export LINEAR_WORKSPACE_NAME={shlex.quote(str(data.get('workspaceName', '')))}\n")
     f.write(f"export LINEAR_ORG_URL_KEY={shlex.quote(str(data.get('organizationUrlKey') or ''))}\n")
@@ -69,5 +69,5 @@ actor = data.get("actor") or {}
 print(f"Acting as {actor['login']} (Personal Credential)" if actor.get("kind") == "personal" else "Acting as the team's Linear app")
 PY
 
-chmod 600 "$HOME/.linear/nuphos.env"
-echo "Wrote Linear credentials to ~/.linear/nuphos.env"
+chmod 600 "$HOME/.linear/cerin.env"
+echo "Wrote Linear credentials to ~/.linear/cerin.env"

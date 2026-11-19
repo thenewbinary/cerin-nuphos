@@ -24,7 +24,7 @@ import { parseObjectId } from '@/lib/objectid'
 import { zv } from '@/lib/validate'
 import { requireTeamRole } from '@/middleware/auth'
 
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 import type { TeamAuthVariables } from '@/middleware/auth'
 import type { Context, MiddlewareHandler } from 'hono'
 
@@ -84,7 +84,7 @@ function resolveScope(c: SkillsContext): string {
 
 /** Team skills are role-gated; a member's own personal skills are theirs to change. */
 function requireTeamSkillRole(
-  ...allowed: NuphosTeamRole[]
+  ...allowed: CerinTeamRole[]
 ): MiddlewareHandler<{ Variables: TeamSkillsVariables }> {
   const teamGate = requireTeamRole(...allowed)
 

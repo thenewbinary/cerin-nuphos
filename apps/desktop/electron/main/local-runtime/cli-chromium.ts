@@ -1,4 +1,4 @@
-// The headless Chromium behind `nuphos agent`'s `local_browser` (cli-browser.ts), and its
+// The headless Chromium behind `cerin agent`'s `local_browser` (cli-browser.ts), and its
 // debugging pipe: JSON messages ended by NUL on fds 3 and 4, so no port is opened.
 
 import { spawn } from 'node:child_process'
@@ -72,7 +72,7 @@ export class Cdp {
   }
 }
 
-/** The first Chromium on PATH (or Chrome on a Mac), which `nuphos agent` drives headless. */
+/** The first Chromium on PATH (or Chrome on a Mac), which `cerin agent` drives headless. */
 export function findBrowser(env = process.env): string | undefined {
   const dirs = (env.PATH ?? '').split(delimiter).filter(Boolean)
 
@@ -94,7 +94,7 @@ export function launchChromium(executable: string, profile: string): Browser {
     '--mute-audio',
   ]
 
-  // Chromium will not start as root with its sandbox, as `nuphos agent` may run on a server.
+  // Chromium will not start as root with its sandbox, as `cerin agent` may run on a server.
   if (process.getuid?.() === 0) args.push('--no-sandbox')
   const child = spawn(executable, args, { stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'] })
 

@@ -26,7 +26,7 @@ for await (const line of createInterface({ input: process.stdin })) {
   const msg = JSON.parse(line)
 
   if (msg.id === undefined) continue
-  appendFileSync(process.env.NUPHOS_SMOKE_RECORD, `${JSON.stringify(msg)}\n`)
+  appendFileSync(process.env.CERIN_SMOKE_RECORD, `${JSON.stringify(msg)}\n`)
   let result = {}
   const model = {
     id: 'smoke-model',

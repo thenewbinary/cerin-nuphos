@@ -1,20 +1,20 @@
 ---
 name: upstash
-description: Manage Upstash — list/create/delete Redis databases, read usage stats and backups, and manage Vector indexes — through an Upstash account the user's team has bound to Nuphos. Use whenever the user asks about their Upstash Redis databases, wants to provision or tear one down, check an Upstash endpoint/region/plan, inspect Redis usage or costs, or manage Upstash Vector indexes. Nuphos backend hands the agent an Upstash Management API key; the agent calls api.upstash.com/v2 directly with curl.
+description: Manage Upstash — list/create/delete Redis databases, read usage stats and backups, and manage Vector indexes — through an Upstash account the user's team has bound to Cerin. Use whenever the user asks about their Upstash Redis databases, wants to provision or tear one down, check an Upstash endpoint/region/plan, inspect Redis usage or costs, or manage Upstash Vector indexes. Cerin backend hands the agent an Upstash Management API key; the agent calls api.upstash.com/v2 directly with curl.
 ---
 
 # upstash
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
 Use this skill when the user wants you to inspect or change their **Upstash**
 resources — find a Redis database's endpoint, provision a new one, check usage
 stats before a plan change, tear down a stale database, or manage Vector
-indexes — using the **Upstash account** their team has already bound to Nuphos.
+indexes — using the **Upstash account** their team has already bound to Cerin.
 
 Anything the Upstash Management API can do, this skill can do. The sandbox
 pre-installs Upstash's official CLI, which reads the credentials this skill
@@ -32,12 +32,12 @@ the remaining endpoints.
 The bound Upstash accounts are already listed for you under **Upstash accounts:** in the
 credential section of the system prompt. Each line carries the `accountId`, `label`, `email`, a
 ready-to-run `setupCommand`, and a `databasesEndpoint` for a quick read-only listing through
-Nuphos. Pick one (most teams have exactly one) and run its `setupCommand` verbatim:
+Cerin. Pick one (most teams have exactly one) and run its `setupCommand` verbatim:
 
 ```bash
 # 1. Load the account's key into the env.
 bash skills/upstash/scripts/setup-credentials.sh <teamId> <accountId>
-source ~/.upstash/nuphos.env
+source ~/.upstash/cerin.env
 
 # The official CLI reuses UPSTASH_EMAIL + UPSTASH_API_KEY. It is the shortest
 # path for common operations and avoids hand-authoring URLs and auth headers.
@@ -105,7 +105,7 @@ Only if the credential section is missing or looks stale. `$TEAM` is exported in
 environment.
 
 ```bash
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://platform.cerin.ai}$1" "${@:2}"; }
 ac /teams/$TEAM/upstash-accounts | python3 -m json.tool
 # → { "accounts": [ { "id": "<accountId>", "label": "Acme",
 #       "email": "ops@acme.com", ... } ] }

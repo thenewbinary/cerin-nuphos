@@ -1,21 +1,21 @@
 import { getMyTeams } from '@/lib/identity'
 import { getCapabilities, toolResult } from '@/lib/mcp/protocol'
-import { nuphosAsk } from '@/routes/mcp/ask'
-import { nuphosCheck } from '@/routes/mcp/check'
+import { cerinAsk } from '@/routes/mcp/ask'
+import { cerinCheck } from '@/routes/mcp/check'
 import {
-  nuphosEvents,
-  nuphosListQueue,
-  nuphosListRuntimes,
-  nuphosRemoveQueued,
-  nuphosStop,
+  cerinEvents,
+  cerinListQueue,
+  cerinListRuntimes,
+  cerinRemoveQueued,
+  cerinStop,
 } from '@/routes/mcp/control'
-import { nuphosListCredentials, nuphosUpdateCredentials } from '@/routes/mcp/credentials'
-import { nuphosListSessions, nuphosUpdateSession } from '@/routes/mcp/sessions'
+import { cerinListCredentials, cerinUpdateCredentials } from '@/routes/mcp/credentials'
+import { cerinListSessions, cerinUpdateSession } from '@/routes/mcp/sessions'
 
 import type { ToolHandler, ToolResult } from '@/lib/mcp/protocol'
 import type { McpCallContext } from '@/routes/mcp/types'
 
-async function nuphosListTeams(ctx: McpCallContext): Promise<ToolResult> {
+async function cerinListTeams(ctx: McpCallContext): Promise<ToolResult> {
   const teams = await getMyTeams(ctx.userId)
 
   return toolResult({
@@ -30,18 +30,18 @@ async function nuphosListTeams(ctx: McpCallContext): Promise<ToolResult> {
 // Bind the tool implementations to the authenticated caller for a single request.
 export function toolsForContext(ctx: McpCallContext): Record<string, ToolHandler> {
   return {
-    nuphos_ask: (args) => nuphosAsk(args, ctx),
-    nuphos_check: (args) => nuphosCheck(args, ctx),
-    nuphos_list_teams: () => nuphosListTeams(ctx),
-    nuphos_list_runtimes: (args) => nuphosListRuntimes(args, ctx),
-    nuphos_list_sessions: (args) => nuphosListSessions(args, ctx),
-    nuphos_events: (args) => nuphosEvents(args, ctx),
-    nuphos_stop: (args) => nuphosStop(args, ctx),
-    nuphos_list_queue: (args) => nuphosListQueue(args, ctx),
-    nuphos_remove_queued: (args) => nuphosRemoveQueued(args, ctx),
-    nuphos_update_session: (args) => nuphosUpdateSession(args, ctx),
-    nuphos_list_credentials: (args) => nuphosListCredentials(args, ctx),
-    nuphos_update_credentials: (args) => nuphosUpdateCredentials(args, ctx),
-    nuphos_capabilities: async () => toolResult(getCapabilities()),
+    cerin_ask: (args) => cerinAsk(args, ctx),
+    cerin_check: (args) => cerinCheck(args, ctx),
+    cerin_list_teams: () => cerinListTeams(ctx),
+    cerin_list_runtimes: (args) => cerinListRuntimes(args, ctx),
+    cerin_list_sessions: (args) => cerinListSessions(args, ctx),
+    cerin_events: (args) => cerinEvents(args, ctx),
+    cerin_stop: (args) => cerinStop(args, ctx),
+    cerin_list_queue: (args) => cerinListQueue(args, ctx),
+    cerin_remove_queued: (args) => cerinRemoveQueued(args, ctx),
+    cerin_update_session: (args) => cerinUpdateSession(args, ctx),
+    cerin_list_credentials: (args) => cerinListCredentials(args, ctx),
+    cerin_update_credentials: (args) => cerinUpdateCredentials(args, ctx),
+    cerin_capabilities: async () => toolResult(getCapabilities()),
   }
 }

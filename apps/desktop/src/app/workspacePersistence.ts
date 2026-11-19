@@ -14,7 +14,7 @@ import {
 } from './workspaceTabState.ts'
 
 import type { WorkspaceTabState } from './workspaceTabState'
-import type { NavigationSnapshot, NuphosDashboardRef } from '../lib/appRoutes.ts'
+import type { NavigationSnapshot, CerinDashboardRef } from '../lib/appRoutes.ts'
 
 // Each tab persists only its navigation history (a list of plain-data
 // snapshots) plus the cursor and a label hint. Runtime-only fields — live SSH
@@ -167,7 +167,7 @@ function withoutConnectorsPage(snapshot: NavigationSnapshot): NavigationSnapshot
 }
 
 type LegacyNavigationSnapshot = NavigationSnapshot & {
-  costDashboard?: NuphosDashboardRef | null
+  costDashboard?: CerinDashboardRef | null
   linearIssue?: { bindingId: string; identifier: string; title?: string } | null
 }
 
@@ -189,7 +189,7 @@ export function withRenamedPage(snapshot: LegacyNavigationSnapshot): NavigationS
   return {
     ...rest,
     active,
-    nuphosDashboard: rest.nuphosDashboard ?? costDashboard ?? null,
+    cerinDashboard: rest.cerinDashboard ?? costDashboard ?? null,
     linearNav: rest.linearNav ?? (linearIssue ? { view: 'issue', ...linearIssue } : null),
   }
 }

@@ -109,10 +109,10 @@ export const desktopScreenScenarios: Scenario[] = [
       )
       const hostLog = join(artifacts, 'fake-mac-screen-host.log')
       const computer = await startSecondComputer(stack, LABEL, {
-        env: { NUPHOS_E2E_MAC_SCREEN_HOST: HOST, NUPHOS_E2E_MAC_SCREEN_LOG: hostLog },
+        env: { CERIN_E2E_MAC_SCREEN_HOST: HOST, CERIN_E2E_MAC_SCREEN_LOG: hostLog },
       })
       const blank = await startSecondComputer(stack, BLANK_LABEL, {
-        env: { NUPHOS_E2E_MAC_SCREEN_HOST: HOST, NUPHOS_E2E_MAC_SCREEN_BLANK: '1' },
+        env: { CERIN_E2E_MAC_SCREEN_HOST: HOST, CERIN_E2E_MAC_SCREEN_BLANK: '1' },
       })
 
       try {

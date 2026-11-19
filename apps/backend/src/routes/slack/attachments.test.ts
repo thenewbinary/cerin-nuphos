@@ -132,7 +132,7 @@ describe('placeSlackHistoryFiles', () => {
     )
 
     expect(message!.files).toEqual([
-      { id: 'F1', name: 'hidden.pdf', error: 'Slack did not share this file with the Nuphos app.' },
+      { id: 'F1', name: 'hidden.pdf', error: 'Slack did not share this file with the Cerin app.' },
       { id: 'F2', name: 'gone.pdf', error: 'Could not be fetched, or is too large.' },
       { id: 'F3', name: 'ok.png', path: '/work/attachments/ok.png' },
     ])

@@ -14,7 +14,7 @@ describe('detectChineseScript', () => {
   })
 
   test('ambiguous latest falls back to earlier decisive message', () => {
-    expect(detectChineseScript(['ok', '好', '幫我在 nuphos 這個 gcp 帳號開一個 gke 集群'])).toBe(
+    expect(detectChineseScript(['ok', '好', '幫我在 cerin 這個 gcp 帳號開一個 gke 集群'])).toBe(
       'traditional',
     )
   })

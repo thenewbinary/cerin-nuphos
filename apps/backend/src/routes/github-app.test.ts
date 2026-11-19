@@ -68,13 +68,13 @@ const saved = {
 }
 
 Object.assign(config.byos.github, {
-  appSlug: 'nuphos',
+  appSlug: 'cerin',
   clientId: 'Iv1.client',
   clientSecret: 'gh-secret',
-  setupRedirect: 'https://app.nuphos.test/github-callback',
+  setupRedirect: 'https://app.cerin.test/github-callback',
 })
 Object.assign(config.auth, { jwtSecret: 'test-secret' })
-Object.assign(config.agent, { publicBackendUrl: 'https://api.nuphos.test' })
+Object.assign(config.agent, { publicBackendUrl: 'https://api.cerin.test' })
 afterAll(() => {
   Object.assign(config.byos.github, saved.github)
   Object.assign(config.auth, { jwtSecret: saved.jwtSecret })
@@ -141,11 +141,11 @@ describe('GitHub installation flow', () => {
     const { install, opener, authorize, done } = await runFlow(OWN_INSTALLATION)
 
     expect(install.headers.get('location')).toStartWith(
-      'https://github.com/apps/nuphos/installations/new?state=',
+      'https://github.com/apps/cerin/installations/new?state=',
     )
     expect(authorize.origin + authorize.pathname).toBe('https://github.com/login/oauth/authorize')
     expect(authorize.searchParams.get('redirect_uri')).toBe(
-      'https://api.nuphos.test/github-app/setup',
+      'https://api.cerin.test/github-app/setup',
     )
 
     const page = await done.text()
@@ -158,7 +158,7 @@ describe('GitHub installation flow', () => {
     const confirmed = await confirm(page, opener)
     const back = new URL(confirmed.headers.get('location') ?? '')
 
-    expect(back.origin + back.pathname).toBe('https://app.nuphos.test/github-callback')
+    expect(back.origin + back.pathname).toBe('https://app.cerin.test/github-callback')
     expect(back.searchParams.get('installation_id')).toBe(String(OWN_INSTALLATION))
     expect(back.searchParams.get('state')).toBe('client-nonce')
     expect(bindings?.githubInstallations?.map((b) => b.installationId)).toEqual([OWN_INSTALLATION])
@@ -191,7 +191,7 @@ describe('GitHub installation flow', () => {
   test('confirming needs the same browser', async () => {
     const { done } = await runFlow(OWN_INSTALLATION)
 
-    expect((await confirm(await done.text(), 'nuphos_github_install=other')).status).toBe(400)
+    expect((await confirm(await done.text(), 'cerin_github_install=other')).status).toBe(400)
     expect(bindings).toBeNull()
   })
 
@@ -284,7 +284,7 @@ describe('POST /teams/:teamId/github-installations', () => {
     )
     const url = new URL(((await res.json()) as { url: string }).url)
 
-    expect(url.origin + url.pathname).toBe('https://api.nuphos.test/github-app/install')
+    expect(url.origin + url.pathname).toBe('https://api.cerin.test/github-app/install')
     expect(verifyInstallFlowState(url.searchParams.get('ticket') ?? '')).toMatchObject({
       t: TEAM.toHexString(),
       u: ADMIN,

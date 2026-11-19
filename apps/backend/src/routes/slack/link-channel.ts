@@ -8,13 +8,13 @@ import {
   announceChannelLink,
   buildChannelLinkedInteractionResponse,
   linkChannelFromSlackInteraction,
-  resolveNuphosUserForSlackActor,
+  resolveCerinUserForSlackActor,
 } from '@/lib/slack/onboarding'
 import { publishHomeTabForUser } from '@/routes/slack/home'
 
 import type { SlackInteractionPayload } from '@/routes/slack/types'
 
-// Everything behind the nuphos_link_channel ack: gate checks, the
+// Everything behind the cerin_link_channel ack: gate checks, the
 // conversations.info probe, the mapping upsert, and result delivery. Kept out
 // of handleSlackInteraction so the interaction route can ack within Slack's
 // 3-second deadline and run this detached whenever an out-of-band delivery
@@ -51,42 +51,42 @@ export async function handleLinkChannelInteraction(args: {
 
   const botContext = await resolveSlackBotForWorkspace(slackWorkspaceId)
 
-  if (!botContext?.nuphosTeamId) {
+  if (!botContext?.cerinTeamId) {
     return await deliver({
       response_type: 'ephemeral',
       replace_original: false,
-      text: 'Nuphos is not installed for this Slack workspace yet.',
+      text: 'Cerin is not installed for this Slack workspace yet.',
     })
   }
 
-  const linkedByNuphosUserId = await resolveNuphosUserForSlackActor({
+  const linkedByCerinUserId = await resolveCerinUserForSlackActor({
     slackWorkspaceId,
-    nuphosTeamId: new ObjectId(botContext.nuphosTeamId),
+    cerinTeamId: new ObjectId(botContext.cerinTeamId),
     slackUserId,
   })
 
   // Channel mappings are team-level config: mirror the REST route's gate
   // (PUT /slack/mappings → requireTeamAdmin). A user mapping only proves the
-  // actor linked their account — require the mapped Nuphos user to still be a
+  // actor linked their account — require the mapped Cerin user to still be a
   // team ADMINISTRATOR before persisting. The install-welcome DM flow keeps
   // working: /slack-installations/start-oauth already requires ADMINISTRATOR,
   // and the installer is auto-linked to that requester.
   const fromHomeTab = payload.view?.type === 'home'
-  const actorMembership = linkedByNuphosUserId
-    ? await getTeamMembership(linkedByNuphosUserId, botContext.nuphosTeamId)
+  const actorMembership = linkedByCerinUserId
+    ? await getTeamMembership(linkedByCerinUserId, botContext.cerinTeamId)
     : null
 
   if (actorMembership?.role !== 'ADMINISTRATOR') {
-    const adminHint = linkedByNuphosUserId
-      ? 'Only team administrators can link channels to Nuphos.'
-      : 'Your Slack account is not linked to a Nuphos administrator. Link it in Nuphos → Settings → Slack — note that only team administrators can link channels.'
+    const adminHint = linkedByCerinUserId
+      ? 'Only team administrators can link channels to Cerin.'
+      : 'Your Slack account is not linked to a Cerin administrator. Link it in Cerin → Settings → Slack — note that only team administrators can link channels.'
 
     logEvent('info', 'slack.onboarding.channel_link.denied', {
       slack_workspace_id: slackWorkspaceId,
       slack_user_id: slackUserId,
       slack_channel_id: channelId,
-      team_id: botContext.nuphosTeamId,
-      linked: Boolean(linkedByNuphosUserId),
+      team_id: botContext.cerinTeamId,
+      linked: Boolean(linkedByCerinUserId),
     })
     if (fromHomeTab) {
       // No response_url on view actions — deliver the denial by DM.
@@ -111,12 +111,12 @@ export async function handleLinkChannelInteraction(args: {
     linkChannelFromSlackInteraction({
       botToken: botContext.botToken,
       slackWorkspaceId,
-      nuphosTeamId: botContext.nuphosTeamId,
+      cerinTeamId: botContext.cerinTeamId,
       channelId,
       linkedBySlackUserId: slackUserId,
-      linkedByNuphosUserId: linkedByNuphosUserId ?? undefined,
+      linkedByCerinUserId: linkedByCerinUserId ?? undefined,
     })
-  const inviteHint = `I couldn't access <#${channelId}>. If it's a private channel, run \`/invite @Nuphos\` there first, then pick it again.`
+  const inviteHint = `I couldn't access <#${channelId}>. If it's a private channel, run \`/invite @Cerin\` there first, then pick it again.`
 
   // Home-tab select: no response_url, so success shows up by re-publishing the
   // view (the channel appears under "Linked channels") and failure guidance is

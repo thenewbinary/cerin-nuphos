@@ -139,9 +139,9 @@ function buildOpenApi() {
   return {
     openapi: '3.1.0',
     info: {
-      title: 'Nuphos API',
+      title: 'Cerin API',
       version: '0.1.0',
-      description: 'Generated from the Nuphos API operation registry.',
+      description: 'Generated from the Cerin API operation registry.',
     },
     servers: [{ url: '/' }],
     components: {

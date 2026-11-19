@@ -11,7 +11,7 @@ target = Path(sys.argv[1]) / "hosts.yml"
 credential = json.load(sys.stdin)
 token = credential.get("token")
 if not isinstance(token, str) or not token:
-    raise SystemExit("Nuphos backend returned no GitHub installation token")
+    raise SystemExit("Cerin backend returned no GitHub installation token")
 # Installation tokens have no human /user identity. Use the conventional Git
 # token username rather than pretending that the installation owner is a user.
 entry = {"user": "x-access-token", "oauth_token": token, "git_protocol": "https",
@@ -55,7 +55,7 @@ else:
     output += "github.com: " + json.dumps(entry) + "\n"
 
 # Replace atomically; concurrent readers see either the previous or fresh token.
-fd, temporary = tempfile.mkstemp(prefix=".nuphos-auth-", dir=target.parent)
+fd, temporary = tempfile.mkstemp(prefix=".cerin-auth-", dir=target.parent)
 try:
     with os.fdopen(fd, "w") as stream:
         stream.write(output)

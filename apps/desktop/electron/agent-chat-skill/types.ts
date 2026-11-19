@@ -1,5 +1,5 @@
 export type AgentChatSkillTarget = 'claude' | 'codex'
-export type AgentChatSkillId = 'open-in-nuphos'
+export type AgentChatSkillId = 'open-in-cerin'
 
 export type AgentChatSkillInstallResult = {
   skillId: AgentChatSkillId

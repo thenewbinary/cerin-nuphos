@@ -44,7 +44,7 @@
     <string name="storetext_account_delete_password_or_code">Gunakan kata sandi atau kode email Anda.</string>
     <string name="storetext_account_delete_password_length">Masukkan kata sandi minimal 12 karakter.</string>
     <string name="storetext_account_delete_code_length">Masukkan kode email 6 karakter.</string>
-    <string name="storetext_signin_web">Masuk via web (nuphos.ai)</string>
+    <string name="storetext_signin_web">Masuk via web (platform.cerin.ai)</string>
     <string name="storetext_signin_browser_on_system">%1$s di %2$s</string>
     <string name="storetext_signin_browser_on">Browser di %1$s</string>
     <string name="storetext_signin_unknown_device">Perangkat tidak dikenal</string>

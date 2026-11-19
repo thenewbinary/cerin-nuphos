@@ -39,7 +39,7 @@ export function NotionForm({ st }: { st: BindState }) {
           <li>
             <Fill
               text={t(
-                'In each Notion page or database you want Nuphos to reach, open {menu} and add this integration — Notion only exposes pages that have been shared with it.',
+                'In each Notion page or database you want Cerin to reach, open {menu} and add this integration — Notion only exposes pages that have been shared with it.',
               )}
               menu={<span className="text-main">••• → Connections</span>}
             />
@@ -185,7 +185,7 @@ export function ResendForm({ st }: { st: BindState }) {
           <li>
             <Fill
               text={t(
-                'Choose a permission. {access} lets Nuphos send mail and nothing else — prefer it unless Nuphos needs to manage domains or audiences.',
+                'Choose a permission. {access} lets Cerin send mail and nothing else — prefer it unless Cerin needs to manage domains or audiences.',
               )}
               access={<span className="text-main">Sending access</span>}
             />
@@ -198,7 +198,7 @@ export function ResendForm({ st }: { st: BindState }) {
           </li>
           <li>
             <Fill
-              text={t('Nuphos can only send from a {domain}, set up under {page}.')}
+              text={t('Cerin can only send from a {domain}, set up under {page}.')}
               domain={<span className="text-main">{t('verified domain')}</span>}
               page={<span className="text-main">Domains</span>}
             />
@@ -241,7 +241,7 @@ export function ZeaburForm({ st }: { st: BindState }) {
   return (
     <Field
       label={t('API Token')}
-      hint={t('Nuphos will discover your Zeabur user and teams from this API key.')}
+      hint={t('Cerin will discover your Zeabur user and teams from this API key.')}
     >
       <input
         type="password"

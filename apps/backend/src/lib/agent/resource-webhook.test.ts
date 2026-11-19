@@ -58,9 +58,9 @@ describe('GitHub resource routing', () => {
   test('CI on our own pushes still wakes, other own events do not', () => {
     const previous = config.byos.github.appSlug
 
-    config.byos.github.appSlug = 'nuphos'
+    config.byos.github.appSlug = 'cerin'
     try {
-      const sender = { type: 'Bot', login: 'nuphos[bot]' }
+      const sender = { type: 'Bot', login: 'cerin[bot]' }
       const suite = { status: 'completed', conclusion: 'success', pull_requests: [{ number: 56 }] }
 
       expect(
@@ -95,7 +95,7 @@ describe('GitHub resource routing', () => {
     expect(
       githubResourceEvents('issue_comment', {
         ...payload,
-        sender: { type: 'Bot', login: 'nuphos[bot]' },
+        sender: { type: 'Bot', login: 'cerin[bot]' },
       }),
     ).toEqual([])
     // An issue's comment wakes only a conversation that linked that issue, by its key.
@@ -176,10 +176,10 @@ test('pending, unattributed and own commit statuses do not route', () => {
   expect(githubStatusCommit('push', status)).toBeNull()
   const previous = config.byos.github.appSlug
 
-  config.byos.github.appSlug = 'nuphos'
+  config.byos.github.appSlug = 'cerin'
   try {
     expect(
-      githubStatusCommit('status', { ...status, sender: { type: 'Bot', login: 'nuphos[bot]' } }),
+      githubStatusCommit('status', { ...status, sender: { type: 'Bot', login: 'cerin[bot]' } }),
     ).toBeNull()
   } finally {
     config.byos.github.appSlug = previous
@@ -217,11 +217,11 @@ test('review Apps wake the PR; bot comments still do not', () => {
 test('own merges update the linked tag state even though they never wake a session', () => {
   const previous = config.byos.github.appSlug
 
-  config.byos.github.appSlug = 'nuphos'
+  config.byos.github.appSlug = 'cerin'
   const merged = {
     ...base,
     action: 'closed',
-    sender: { type: 'Bot', login: 'nuphos[bot]' },
+    sender: { type: 'Bot', login: 'cerin[bot]' },
     pull_request: {
       number: 56,
       state: 'closed',
@@ -264,9 +264,9 @@ test('own merges update the linked tag state even though they never wake a sessi
 test('pushes, finished CI and reviews refresh a linked PR tag, our own included', () => {
   const previous = config.byos.github.appSlug
 
-  config.byos.github.appSlug = 'nuphos'
+  config.byos.github.appSlug = 'cerin'
   try {
-    const own = { type: 'Bot', login: 'nuphos[bot]' }
+    const own = { type: 'Bot', login: 'cerin[bot]' }
     const target = {
       key: 'github/12/34/56',
       installationId: 12,

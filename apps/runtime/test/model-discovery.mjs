@@ -165,5 +165,5 @@ child.stdout.on('data', (chunk) => {
 send(1, 'initialize', {
   protocolVersion: 1,
   clientCapabilities: {},
-  clientInfo: { name: 'nuphos-runtime-model-discovery', version: '1' },
+  clientInfo: { name: 'cerin-runtime-model-discovery', version: '1' },
 })

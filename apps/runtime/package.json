@@ -1,8 +1,8 @@
 {
-  "name": "nuphos-runtime",
+  "name": "cerin-runtime",
   "private": true,
   "version": "0.1.66",
-  "description": "Container image for the Nuphos agent runtime.",
+  "description": "Container image for the Cerin agent runtime.",
   "license": "Apache-2.0",
   "scripts": {
     "test": "node --test test/*.test.mjs"

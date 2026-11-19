@@ -1946,7 +1946,7 @@ mod tests {
     fn mcp_declaration_changes_ignore_headers_and_empty_declarations() {
         let server = |url: &str, token: &str| {
             serde_json::json!({
-                "name": "nuphos-tools",
+                "name": "cerin-tools",
                 "type": "http",
                 "url": url,
                 "headers": [{"name": "Authorization", "value": token}],

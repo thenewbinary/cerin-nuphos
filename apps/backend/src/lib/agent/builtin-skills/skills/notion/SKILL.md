@@ -1,20 +1,20 @@
 ---
 name: notion
-description: Read and edit Notion — search the workspace, fetch page/database content, create and update pages, append blocks, create/query databases, and read/post comments — through a Notion workspace the user's team has bound to Nuphos. Use whenever the user asks to find a Notion page/doc, read a Notion database, capture notes into Notion, write up a runbook/report/incident doc in Notion, update a page, or comment on one. Nuphos backend hands the agent a Notion integration token; the agent calls api.notion.com/v1 directly with curl.
+description: Read and edit Notion — search the workspace, fetch page/database content, create and update pages, append blocks, create/query databases, and read/post comments — through a Notion workspace the user's team has bound to Cerin. Use whenever the user asks to find a Notion page/doc, read a Notion database, capture notes into Notion, write up a runbook/report/incident doc in Notion, update a page, or comment on one. Cerin backend hands the agent a Notion integration token; the agent calls api.notion.com/v1 directly with curl.
 ---
 
 # notion
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
 Use this skill when the user wants you to read or change **Notion** content on
 their behalf — find a doc, read a database, write up a report/runbook/incident
 doc, capture notes, update a page's properties or body, or comment — using the
-**Notion workspace** their team has already bound to Nuphos. This closes the
+**Notion workspace** their team has already bound to Cerin. This closes the
 loop with the other skills: investigate a problem (monitoring/cloud) → write it
 up as a Notion page or database row → keep it updated.
 
@@ -31,7 +31,7 @@ run its `setupCommand` verbatim:
 ```bash
 # 1. Load the integration's token into the env.
 bash skills/notion/scripts/setup-credentials.sh <teamId> <integrationId>
-source ~/.notion/nuphos.env
+source ~/.notion/cerin.env
 
 # 2. Helper for Notion REST calls. Notion requires the Notion-Version header.
 notion() {
@@ -62,7 +62,7 @@ Only if the credential section is missing or looks stale. `$TEAM` is exported in
 environment.
 
 ```bash
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://platform.cerin.ai}$1" "${@:2}"; }
 ac /teams/$TEAM/notion-integrations | python3 -m json.tool
 # → { "integrations": [ { "id": "<integrationId>", "label": "Acme",
 #       "workspaceName": "Acme", ... } ] }
@@ -72,7 +72,7 @@ ac /teams/$TEAM/notion-integrations | python3 -m json.tool
 > been explicitly shared with it (in Notion: page → ••• → Connections → add the
 > integration). If `search` or a `GET` returns nothing / `object_not_found`,
 > the page almost certainly hasn't been shared with the integration yet. This
-> is a Notion permission, not a Nuphos one: the Notion connector being
+> is a Notion permission, not a Cerin one: the Notion connector being
 > installed does not give access to every page.
 
 ### A page that is not shared: ask with a card, then retry
@@ -93,7 +93,7 @@ they answer:
    and continue without that page; do not ask again in a loop.
 
 Use these words, so each side reads as the same thing: the **Notion connector**
-in Nuphos, and **Connections** on the Notion page. Do not ask twice for the
+in Cerin, and **Connections** on the Notion page. Do not ask twice for the
 same page; when several pages are missing, list them in one card, one line each.
 
 ## Find things — search

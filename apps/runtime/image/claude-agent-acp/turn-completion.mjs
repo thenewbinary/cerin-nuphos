@@ -12,7 +12,7 @@ export function patchClaudeTurnCompletion(source) {
   const patches = [
     [
       '(turnInFlight.steeredEchoes ??= new Set()).add(steeredUuid);',
-      '(turnInFlight.steeredEchoes ??= new Set()).add(steeredUuid);\n        turnInFlight.nuphosLatestSteerUuid = steeredUuid;',
+      '(turnInFlight.steeredEchoes ??= new Set()).add(steeredUuid);\n        turnInFlight.cerinLatestSteerUuid = steeredUuid;',
     ],
     [
       '                                ensureActiveTurn(message.user_message_uuid);',
@@ -20,7 +20,7 @@ export function patchClaudeTurnCompletion(source) {
                                 const answeredTurn = session.activeTurn;
                                 if (isSteering(answeredTurn) &&
                                     typeof message.user_message_uuid === "string" &&
-                                    message.user_message_uuid === answeredTurn.nuphosLatestSteerUuid) {
+                                    message.user_message_uuid === answeredTurn.cerinLatestSteerUuid) {
                                     // This result belongs to the latest injected command, not
                                     // the cycle it interrupted. Let the normal result handler
                                     // settle it (including errors, usage, and subagent holds).
@@ -28,24 +28,24 @@ export function patchClaudeTurnCompletion(source) {
                                     // await below reinstates the hold with its own identity.
                                     answeredTurn.steeredEchoes = undefined;
                                     answeredTurn.steeredSettle = undefined;
-                                    answeredTurn.nuphosLatestSteerUuid = undefined;
+                                    answeredTurn.cerinLatestSteerUuid = undefined;
                                 }`,
     ],
     [
       '                                    session.activeTurn.steeredEchoes.delete(message.uuid);',
       `                                    if (session.activeTurn.steeredEchoes.delete(message.uuid))
-                                        session.activeTurn.nuphosSteerAwaitingResult = true;`,
+                                        session.activeTurn.cerinSteerAwaitingResult = true;`,
     ],
     [
       '                session.activeTurn.steeredSettle = outcome;',
-      '                session.activeTurn.steeredSettle = outcome;\n                session.activeTurn.nuphosSteerAwaitingResult = false;',
+      '                session.activeTurn.steeredSettle = outcome;\n                session.activeTurn.cerinSteerAwaitingResult = false;',
     ],
     [
       '                                    else if (session.owedTrailingIdles > 0) {',
       `                                    else if (isSteering(session.activeTurn) &&
                                         session.activeTurn.steeredEchoes.size === 0 &&
                                         session.activeTurn.steeredSettle !== undefined &&
-                                        !session.activeTurn.nuphosSteerAwaitingResult) {
+                                        !session.activeTurn.cerinSteerAwaitingResult) {
                                         const steered = session.activeTurn;
                                         steered.deferredSettle = steered.steeredSettle;
                                         steered.steeredEchoes = undefined;

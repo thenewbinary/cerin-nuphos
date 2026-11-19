@@ -50,7 +50,7 @@ test('a download is saved in the folder under its own name, without a dialog', (
 })
 
 test('a name never leaves the folder or carries control characters', () => {
-  const folder = join('/Users', 'me', 'Downloads', 'Nuphos')
+  const folder = join('/Users', 'me', 'Downloads', 'Cerin')
   const free = () => false
 
   assert.equal(

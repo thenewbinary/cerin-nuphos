@@ -122,7 +122,7 @@ test('only the most recent drafts are kept and broken storage is ignored', () =>
   assert.equal(loadComposerDraft(composerDraftKey('t', 's0'), storage), null)
   assert.equal(loadComposerDraft(composerDraftKey('t', 's59'), storage)?.text, 'x')
 
-  storage.setItem('nuphos.agent.composerDrafts.v1', '{not json')
+  storage.setItem('cerin.agent.composerDrafts.v1', '{not json')
   assert.equal(loadComposerDraft(composerDraftKey('t', 's59'), storage), null)
 
   const throwing = {
@@ -152,7 +152,7 @@ test('a draft too long to store is kept whole for the session, never cut short',
   saveComposerDraft(key, draft(long), storage)
 
   assert.equal(loadComposerDraft(key, storage)?.text, long)
-  assert.ok(!storage.getItem('nuphos.agent.composerDrafts.v1')?.includes('short'))
+  assert.ok(!storage.getItem('cerin.agent.composerDrafts.v1')?.includes('short'))
   saveComposerDraft(key, draft(''), storage)
   assert.equal(loadComposerDraft(key, storage), null)
 })

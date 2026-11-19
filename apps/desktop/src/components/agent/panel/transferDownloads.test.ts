@@ -291,7 +291,7 @@ test('inline reply images do not also produce a duplicate download card', () => 
   const id = '0123456789abcdef01234567'
   const reply = message('a1', 'assistant')
 
-  reply.parts = [{ type: 'text', text: `![preview](https://nuphos.ai/_reply-images/${id})` }]
+  reply.parts = [{ type: 'text', text: `![preview](https://platform.cerin.ai/_reply-images/${id})` }]
   const auto = { ...group(id, '2026-01-01T00:00:00Z'), label: 'Reply image' }
 
   assert.equal(anchorDownloadGroups([reply], [auto]).size, 0)

@@ -24,7 +24,7 @@ export function LarkLinkedAccountsCard({
         <div className="text-[13px] font-medium text-main">{t('Linked accounts')}</div>
         <div className="mt-0.5 text-[12px] text-tertiary">
           {t(
-            'Lark users mapped to Nuphos members. Members link themselves by DMing the bot a pairing code; remove one to revoke its access.',
+            'Lark users mapped to Cerin members. Members link themselves by DMing the bot a pairing code; remove one to revoke its access.',
           )}
         </div>
       </div>
@@ -35,13 +35,13 @@ export function LarkLinkedAccountsCard({
       ) : (
         <div className="divide-y divide-line-control/60">
           {userMappings.map((mapping) => {
-            const member = memberById.get(mapping.nuphosUserId)
+            const member = memberById.get(mapping.cerinUserId)
 
             return (
               <div key={mapping.id} className="flex items-center gap-3 px-4 py-3">
                 <div className="min-w-0 flex-1">
                   <div className="text-[13px] text-main truncate">
-                    {member ? member.name || member.email : mapping.nuphosUserId}
+                    {member ? member.name || member.email : mapping.cerinUserId}
                   </div>
                   <div className="flex items-center gap-1.5 font-mono text-[11.5px] text-tertiary truncate">
                     {mapping.larkOpenId}

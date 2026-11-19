@@ -1,10 +1,10 @@
 <resources>
-    <string name="welcome_title">Selamat datang di Nuphos</string>
+    <string name="welcome_title">Selamat datang di Cerin</string>
     <string name="welcome_body">Masuk atau buat akun.</string>
     <string name="sign_in">Masuk</string>
     <string name="signing_in">Sedang masuk…</string>
     <string name="sign_out">Keluarkan</string>
-    <string name="sign_out_confirm">Keluar dari Nuphos?</string>
+    <string name="sign_out_confirm">Keluar dari Cerin?</string>
     <string name="account">Akun</string>
     <string name="done">Selesai</string>
     <string name="cancel">Batal</string>
@@ -16,11 +16,11 @@
     <string name="my_chats">Tugas saya</string>
     <string name="team_chats">Tugas tim</string>
     <string name="show_dismissed">Tampilkan yang diabaikan</string>
-    <string name="ask_nuphos">Tanyakan apa saja ke Nuphos…</string>
+    <string name="ask_cerin">Tanyakan apa saja ke Cerin…</string>
     <string name="queue_message">Antrekan pesan…</string>
     <string name="send">Kirim</string>
     <string name="stop">Hentikan</string>
-    <string name="coming_soon">Segera hadir di aplikasi Nuphos.</string>
+    <string name="coming_soon">Segera hadir di aplikasi Cerin.</string>
     <string name="no_chats">Belum ada tugas</string>
     <string name="no_chats_body">Mulai tugas dari bilah di bawah.</string>
     <string name="no_matches">Tidak ada yang cocok</string>

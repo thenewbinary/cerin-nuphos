@@ -105,7 +105,7 @@ export async function handleOpenAbPermissionRequest(
     args.conversationOwnerUserId ?? args.userId,
   )
 
-  // Nuphos MCP tool cards are normally hidden (the handler renders its own);
+  // Cerin MCP tool cards are normally hidden (the handler renders its own);
   // an approval request has nowhere to attach unless this card is visible.
   // Full Access asks nothing, so revealing it would show such a call twice,
   // beside the card its handler renders.

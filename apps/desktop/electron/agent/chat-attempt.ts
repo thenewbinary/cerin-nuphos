@@ -34,7 +34,7 @@ export async function postChatAttempt(
     accept: 'text/event-stream',
     'accept-encoding': 'identity',
     [CLIENT_VERSION_HEADER]: CLIENT_VERSION_VALUE,
-    'x-nuphos-device-id': readDeviceIdentity().deviceId,
+    'x-cerin-device-id': readDeviceIdentity().deviceId,
   }
 
   if (locale) headers['x-atlas-locale'] = locale

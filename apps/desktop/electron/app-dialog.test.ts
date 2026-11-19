@@ -56,7 +56,7 @@ function navigate(win: FakeWindow, url: string, initiator = win.webContents.main
 test('untrusted text cannot inject markup or a confirmation action', () => {
   const html = appDialogHtml({
     title: '<script>evil()</script>',
-    message: '<form action="https://nuphos-dialog.invalid/confirm">',
+    message: '<form action="https://cerin-dialog.invalid/confirm">',
     detail: '&secret',
     confirmLabel: '<img>',
   })
@@ -77,11 +77,11 @@ test('only the isolated document can confirm; no renderer preload or scripts', a
   assert.equal(prefs.javascript, false)
   assert.equal(prefs.nodeIntegration, false)
   assert.equal(prefs.preload, undefined)
-  navigate(win, 'https://nuphos-dialog.invalid/confirm', {})
+  navigate(win, 'https://cerin-dialog.invalid/confirm', {})
   assert.equal(win.destroyed, false)
   navigate(win, 'https://attacker.example/confirm')
   assert.equal(win.destroyed, false)
-  navigate(win, 'https://nuphos-dialog.invalid/confirm?')
+  navigate(win, 'https://cerin-dialog.invalid/confirm?')
   assert.equal(await result, true)
 })
 
@@ -105,7 +105,7 @@ test('parent destruction cancels; separate requests never share approval', async
   const a = showAppDialog(parent as never, opts)
   const b = showAppDialog(parent as never, opts)
 
-  navigate(FakeWindow.windows[1], 'https://nuphos-dialog.invalid/confirm')
+  navigate(FakeWindow.windows[1], 'https://cerin-dialog.invalid/confirm')
   assert.equal(await a, true)
   assert.equal(FakeWindow.windows[2].destroyed, false)
   parent.destroy()
@@ -117,8 +117,8 @@ test('an informational dialog cannot approve an action', async () => {
   const result = showAppDialog(null, { title: 'Update', message: 'Ready' })
   const win = FakeWindow.windows[0]
 
-  navigate(win, 'https://nuphos-dialog.invalid/confirm')
+  navigate(win, 'https://cerin-dialog.invalid/confirm')
   assert.equal(win.destroyed, false)
-  navigate(win, 'https://nuphos-dialog.invalid/cancel')
+  navigate(win, 'https://cerin-dialog.invalid/cancel')
   assert.equal(await result, false)
 })

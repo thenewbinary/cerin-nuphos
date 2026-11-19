@@ -122,11 +122,11 @@ test('restores a Cost Management tab as Dashboards with its open dashboard', () 
   const [open, list] = state.buckets.s.tabs
 
   assert.equal(open.active, 'team.dashboards')
-  assert.deepEqual(open.nuphosDashboard, { dashboardId: 'dash-1', dashboardName: 'AWS spend' })
+  assert.deepEqual(open.cerinDashboard, { dashboardId: 'dash-1', dashboardName: 'AWS spend' })
   assert.equal(open.navHistory[0].active, 'team.dashboards')
   assert.equal(open.restoredTitle, 'AWS spend')
   assert.equal(list.active, 'team.dashboards')
-  assert.equal(list.nuphosDashboard, null)
+  assert.equal(list.cerinDashboard, null)
   assert.equal(list.restoredTitle, 'Dashboards')
 })
 

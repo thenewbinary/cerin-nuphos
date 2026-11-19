@@ -98,7 +98,7 @@ app.route('/internal/.well-known', internalWellKnownRoutes)
 app.route('/auth', cliAuthRoutes)
 app.route('/auth', auth)
 app.route('/avatars', avatarsRoutes)
-// Server-to-server abuse fence for nuphos.ai's public email handoff. The route
+// Server-to-server abuse fence for platform.cerin.ai's public email handoff. The route
 // authenticates its caller and fails closed when shared Redis is unavailable.
 app.route('/internal/download-handoff-rate-limit', downloadHandoffRateLimitRoutes)
 app.route('/internal/claude-code-runtime-skills', claudeCodeRuntimeSkills)
@@ -116,7 +116,7 @@ app.route('/agent-journal', agentJournal)
 app.route('/webhooks', webhooksRoutes)
 app.route('/agent-sessions', agentSessions)
 // MCP (Model Context Protocol) server — lets external MCP clients (Claude Code,
-// Codex, …) talk to the Nuphos Agent. See routes/mcp.ts.
+// Codex, …) talk to the Cerin Agent. See routes/mcp.ts.
 app.route('/mcp', mcp)
 // OAuth 2.1 authorization server backing the MCP flow (DCR + PKCE authorize +
 // token). Unauthenticated by design — this IS the auth surface. See routes/oauth.ts.

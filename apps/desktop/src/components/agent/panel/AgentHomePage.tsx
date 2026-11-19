@@ -89,7 +89,7 @@ export function AgentHomePage({
   /** Administrators can make their home layout the team default. */
   isTeamAdmin?: boolean
   /** Opens a conversation picked from a home card. */
-  onOpenNuphosLink?: (href: string) => boolean
+  onOpenCerinLink?: (href: string) => boolean
   onOpenConversation?: (sessionId: string, title: string) => void
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -101,7 +101,7 @@ export function AgentHomePage({
   const entranceKey = useEntranceCount(shown)
   // Asked once the agent has finished a few turns cleanly. Starring and
   // "not now" both retire it for good.
-  const [starDismissed, dismissStar] = useStickyDismiss('nuphos.agent.starStrip.dismissed')
+  const [starDismissed, dismissStar] = useStickyDismiss('cerin.agent.starStrip.dismissed')
   const showStar = !starDismissed && successfulTurns() >= 5
   const onConnectAgent = runtimeControl?.onConnectAgent
 

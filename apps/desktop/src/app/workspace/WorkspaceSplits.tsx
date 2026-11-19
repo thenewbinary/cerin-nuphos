@@ -40,12 +40,12 @@ export function WorkspaceSplits({
   ...props
 }: WorkspaceProps & { Pane: ComponentType<WorkspaceProps> }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
-    () => readLocalStorage('nuphos.sidebarCollapsed') === '1',
+    () => readLocalStorage('cerin.sidebarCollapsed') === '1',
   )
   const toggleSidebarCollapsed = useCallback(() => setSidebarCollapsed((value) => !value), [])
 
   useEffect(() => {
-    writeLocalStorage('nuphos.sidebarCollapsed', sidebarCollapsed ? '1' : '0')
+    writeLocalStorage('cerin.sidebarCollapsed', sidebarCollapsed ? '1' : '0')
   }, [sidebarCollapsed])
 
   const [layout, setLayout] = useState<SplitLayout>({ id: 'primary' })

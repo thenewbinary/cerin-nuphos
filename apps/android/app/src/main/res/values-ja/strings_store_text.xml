@@ -44,7 +44,7 @@
     <string name="storetext_account_delete_password_or_code">パスワードかメールのコードのどちらかを使用してください。</string>
     <string name="storetext_account_delete_password_length">12 文字以上のパスワードを入力してください。</string>
     <string name="storetext_account_delete_code_length">6 文字のメールコードを入力してください。</string>
-    <string name="storetext_signin_web">Web サインイン（nuphos.ai）</string>
+    <string name="storetext_signin_web">Web サインイン（platform.cerin.ai）</string>
     <string name="storetext_signin_browser_on_system">%2$s 上の %1$s</string>
     <string name="storetext_signin_browser_on">%1$s 上のブラウザ</string>
     <string name="storetext_signin_unknown_device">不明なデバイス</string>

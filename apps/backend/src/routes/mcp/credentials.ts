@@ -76,13 +76,13 @@ function credentialAccessPayload(access: {
   }
 }
 
-export async function nuphosListCredentials(
+export async function cerinListCredentials(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {
   const teamId = typeof args.team_id === 'string' && args.team_id.trim() ? args.team_id.trim() : ''
 
-  if (!teamId) return toolError('`team_id` is required. Call nuphos_list_teams first.')
+  if (!teamId) return toolError('`team_id` is required. Call cerin_list_teams first.')
   const membership = await getTeamMembership(ctx.userId, teamId)
 
   if (!membership) return toolError(`You are not a member of team ${teamId}.`)
@@ -115,7 +115,7 @@ export async function nuphosListCredentials(
   })
 }
 
-// The categories nuphos_update_credentials replaces, by tool argument. It has no
+// The categories cerin_update_credentials replaces, by tool argument. It has no
 // parameter for the others (local devices, on-prem, connectors), so it never
 // writes them.
 const NAMED_CATEGORIES = {
@@ -144,7 +144,7 @@ const OPTIONAL_CATEGORIES = {
   teamIdentity: 'team_identity',
 } as const
 
-export async function nuphosUpdateCredentials(
+export async function cerinUpdateCredentials(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {

@@ -33,7 +33,7 @@ export async function handleDiscordMention(
     markDiscordEvent,
     refreshDiscordEventClaim,
     getTeamMembership,
-    signNuphosToken,
+    signCerinToken,
     createDiscordThread,
     getDiscordChannel,
     sendDiscordMessage,
@@ -97,7 +97,7 @@ export async function handleDiscordMention(
     ) {
       await recordDiscordSessionMessage(registeredThread, event, senderName)
     }
-    // Nuphos answers only when mentioned; other thread messages are kept as
+    // Cerin answers only when mentioned; other thread messages are kept as
     // session context above.
     if (!mentioned) {
       await markDiscordEvent(event.id, 'ignored')
@@ -112,13 +112,13 @@ export async function handleDiscordMention(
     })
 
     const membership = userMapping
-      ? await getTeamMembership(userMapping.nuphosUserId, installation.teamId)
+      ? await getTeamMembership(userMapping.cerinUserId, installation.teamId)
       : null
 
     if (!userMapping || !membership) {
       await sendDiscordMessage(
         event.channel_id,
-        'Link your Discord account first: in Nuphos, open Connectors → Add connector → Discord.',
+        'Link your Discord account first: in Cerin, open Connectors → Add connector → Discord.',
       ).catch(() => {})
       await markDiscordEvent(event.id, 'completed')
 
@@ -127,7 +127,7 @@ export async function handleDiscordMention(
     const text = discordMessageText(event, botUserId, registeredThread !== null)
 
     if (!text) {
-      await sendDiscordMessage(event.channel_id, 'What would you like Nuphos to look into?')
+      await sendDiscordMessage(event.channel_id, 'What would you like Cerin to look into?')
       await markDiscordEvent(event.id, 'completed')
 
       return
@@ -140,7 +140,7 @@ export async function handleDiscordMention(
             await createDiscordThread({
               channelId: event.channel_id,
               messageId: event.id,
-              name: text.replace(/\s+/g, ' ').slice(0, 80) || 'Nuphos conversation',
+              name: text.replace(/\s+/g, ' ').slice(0, 80) || 'Cerin conversation',
             })
           ).id
     const thread = await getOrCreateDiscordThread({
@@ -149,7 +149,7 @@ export async function handleDiscordMention(
       threadChannelId,
       rootMessageId: event.id,
       teamId: installation.teamId,
-      agentUserId: registeredThread?.agentUserId ?? userMapping.nuphosUserId,
+      agentUserId: registeredThread?.agentUserId ?? userMapping.cerinUserId,
       createdByDiscordUserId: registeredThread?.createdByDiscordUserId ?? event.author.id,
       generation: installation.generation,
     })
@@ -167,23 +167,23 @@ export async function handleDiscordMention(
     const attached = await ingestDiscordAttachments({
       attachments: event.attachments,
       teamId: thread.teamId,
-      userId: userMapping.nuphosUserId,
+      userId: userMapping.cerinUserId,
       sessionId: thread.sessionId,
     })
     const renderedText = attached ? `${text}\n\n${attached}` : text
     const replyTo = event.referenced_message && discordReplyQuote(event.referenced_message)
-    const attribution = await createMessageMetadata(userMapping.nuphosUserId, 'discord')
+    const attribution = await createMessageMetadata(userMapping.cerinUserId, 'discord')
     const metadata = replyTo ? { ...attribution, replyTo } : attribution
     const turn = await turnRunner.admitChannelTurn({
       userId: thread.agentUserId,
       sessionId: thread.sessionId,
-      actorUserId: userMapping.nuphosUserId,
+      actorUserId: userMapping.cerinUserId,
       message: {
         ...buildPendingUserMessage({
           renderedText,
           source: 'discord',
           metadata,
-          actorUserId: userMapping.nuphosUserId,
+          actorUserId: userMapping.cerinUserId,
         }),
         // The Discord id is how the transcript knows this message has arrived.
         id: `discord-${event.id}`,
@@ -221,9 +221,9 @@ export async function handleDiscordMention(
         installationGeneration: thread.generation,
         teamId: thread.teamId,
         ownerUserId: thread.agentUserId,
-        actorUserId: userMapping.nuphosUserId,
+        actorUserId: userMapping.cerinUserId,
         sessionId: thread.sessionId,
-        nuphosToken: signNuphosToken(userMapping.nuphosUserId, 60 * 60 * 8),
+        cerinToken: signCerinToken(userMapping.cerinUserId, 60 * 60 * 8),
         messages,
         firstMessage: text,
         turnContext,

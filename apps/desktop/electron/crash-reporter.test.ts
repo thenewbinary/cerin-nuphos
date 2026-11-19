@@ -22,7 +22,7 @@ let started: StartOptions | undefined
 let analytics: boolean[] = []
 let broadcasts: unknown[][] = []
 const syncHandlers = new Map<string, (event: { returnValue?: unknown }) => void>()
-const CLOUD = 'https://api.nuphos.ai'
+const CLOUD = 'https://platform.cerin.ai'
 const SELF_HOSTED = 'https://api.example.test'
 let setApiUrl: (url: string | null) => string
 const extra = new Map<string, string>()
@@ -49,8 +49,8 @@ const syncValue = (channel = 'diagnostics:enabled') => {
 
 before(async () => {
   delete process.env.VITE_DEV_SERVER_URL
-  process.env.NUPHOS_CLI_CONFIG = path.join(userData, 'cli.test.yaml')
-  process.env.NUPHOS_API_URL = SELF_HOSTED
+  process.env.CERIN_CLI_CONFIG = path.join(userData, 'cli.test.yaml')
+  process.env.CERIN_API_URL = SELF_HOSTED
   mock.module('electron', {
     namedExports: {
       app: { getPath: () => userData },

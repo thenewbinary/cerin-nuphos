@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { nuphosSteerCodex as steer } from '../image/codex-acp/steering.mjs'
+import { cerinSteerCodex as steer } from '../image/codex-acp/steering.mjs'
 
 const toInput = (prompt) => prompt.map(({ text }) => ({ type: 'text', text, text_elements: [] }))
-const nuphosSteerCodex = (agent, params) => steer(agent, params, toInput)
+const cerinSteerCodex = (agent, params) => steer(agent, params, toInput)
 
 test('steering targets the existing native turn and preserves its identity', async () => {
   const session = { currentTurnId: 'native-turn' }
@@ -23,7 +23,7 @@ test('steering targets the existing native turn and preserves its identity', asy
   }
 
   assert.deepEqual(
-    await nuphosSteerCodex(agent, {
+    await cerinSteerCodex(agent, {
       sessionId: 'thread',
       prompt: [{ type: 'text', text: 'Focus on tests' }],
     }),
@@ -46,7 +46,7 @@ test('idle and raced native turns never fall back to a new prompt', async () => 
   const agent = { getSessionState: () => ({ currentTurnId: null }) }
   const params = { sessionId: 'thread', prompt: [{ type: 'text', text: 'Follow up' }] }
 
-  assert.equal((await nuphosSteerCodex(agent, params)).outcome, 'promptRequired')
+  assert.equal((await cerinSteerCodex(agent, params)).outcome, 'promptRequired')
   agent.getSessionState = () => ({ currentTurnId: 'old' })
   agent.codexAcpClient = {
     codexClient: {
@@ -55,16 +55,16 @@ test('idle and raced native turns never fall back to a new prompt', async () => 
       },
     },
   }
-  await assert.rejects(nuphosSteerCodex(agent, params), /active turn changed/)
+  await assert.rejects(cerinSteerCodex(agent, params), /active turn changed/)
 })
 
 test('invalid inputs and invalid acknowledgements are not reported as delivered', async () => {
   await assert.rejects(
-    nuphosSteerCodex({}, { sessionId: 'thread', prompt: [] }),
+    cerinSteerCodex({}, { sessionId: 'thread', prompt: [] }),
     /non-empty prompt/,
   )
   await assert.rejects(
-    nuphosSteerCodex(
+    cerinSteerCodex(
       {
         getSessionState: () => ({ currentTurnId: 'one' }),
         codexAcpClient: { codexClient: { sendRequest: async () => ({ turnId: 'two' }) } },

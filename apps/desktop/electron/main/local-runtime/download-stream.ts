@@ -101,7 +101,7 @@ export class LocalDownloadStream implements SocketLike {
     if (existing?.isDirectory()) return this.answer({ t: 'error', error: 'not_a_file' })
     if (existing && !overwrite) return this.answer({ t: 'error', error: 'file_exists' })
     // Written beside the target, then put in place whole, so a failed fetch leaves nothing.
-    const temporary = join(folder, `.nuphos-download-${randomUUID()}`)
+    const temporary = join(folder, `.cerin-download-${randomUUID()}`)
 
     try {
       const response = await fetch(url, { signal: this.abort.signal })

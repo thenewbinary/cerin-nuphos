@@ -4,7 +4,7 @@ import { shell } from 'electron'
 
 import * as atlas from './atlas'
 
-export const GITHUB_PROTOCOL = 'nuphos'
+export const GITHUB_PROTOCOL = 'cerin'
 const INSTALL_TIMEOUT_MS = 10 * 60 * 1000
 
 type Pending = {

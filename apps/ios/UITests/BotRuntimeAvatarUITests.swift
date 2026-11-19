@@ -72,7 +72,7 @@ final class BotRuntimeAvatarUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: file, options: .atomic)
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": file.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": file.path]
         app.launch()
         let row = app.staticTexts["Release notes"].firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 10))

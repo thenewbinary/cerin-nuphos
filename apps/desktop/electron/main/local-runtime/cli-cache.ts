@@ -1,5 +1,5 @@
 // What the agent CLIs looked like at the last probe, per user: a head start for
-// the next launch, shared by the app and the `nuphos agent` host.
+// the next launch, shared by the app and the `cerin agent` host.
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'

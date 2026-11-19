@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import type { SlackEventEnvelope, SlackRuntime } from '@/routes/slack/types'
 
 import { appendMessageOriginLine, buildSlackMessageOrigin } from '@/lib/agent/message-origin'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import {
   appendSlackThreadMessage,
   getOrCreateSlackAgentThread,
@@ -128,8 +128,8 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
       event.thread_ts,
       event.user,
       email
-        ? "Your Slack email doesn't match any Nuphos user on this team. Open your DM with me or go to Nuphos → Settings → Slack to link your account."
-        : 'Your Slack account is not linked to Nuphos yet. Open your DM with me or link your account in Nuphos → Settings → Slack.',
+        ? "Your Slack email doesn't match any Cerin user on this team. Open your DM with me or go to Cerin → Settings → Slack to link your account."
+        : 'Your Slack account is not linked to Cerin yet. Open your DM with me or link your account in Cerin → Settings → Slack.',
     )
     await markSlackEvent(eventId, 'completed')
 
@@ -141,7 +141,7 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
     slackChannelId: event.channel,
     slackThreadTs,
     teamId: mapping.teamId,
-    agentUserId: userMapping.nuphosUserId,
+    agentUserId: userMapping.cerinUserId,
     createdBySlackUserId: event.user,
     lastSlackEventId: eventId,
   })
@@ -155,7 +155,7 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
       runtime,
       event.channel,
       slackThreadTs,
-      'What would you like Nuphos to look into? Mention me in this thread with your question.',
+      'What would you like Cerin to look into? Mention me in this thread with your question.',
     )
     await markSlackEvent(eventId, 'completed')
 
@@ -234,7 +234,7 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
     threadTs: slackThreadTs,
     eventId,
     renderedText,
-    actorUserId: userMapping.nuphosUserId,
+    actorUserId: userMapping.cerinUserId,
     reactionMessageTs: event.ts,
   })
 
@@ -244,7 +244,7 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
   beginThreadStatus(runtime, event.channel, slackThreadTs)
 
   try {
-    const turnIdentity = getSlackThreadTurnIdentity(thread, userMapping.nuphosUserId)
+    const turnIdentity = getSlackThreadTurnIdentity(thread, userMapping.cerinUserId)
     const messages = await buildMessagesForRenderedTurn({
       sessionId: thread.sessionId,
       userId: turnIdentity.conversationOwnerUserId,
@@ -252,7 +252,7 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
       messageId: `slack-${event.event_ts ?? event.ts ?? randomUUID()}`,
       renderedText,
       carried: claim.carried,
-      actorUserId: userMapping.nuphosUserId,
+      actorUserId: userMapping.cerinUserId,
       attachmentParts: mentionAttachments.parts,
       origin: messageOrigin,
     })
@@ -269,7 +269,7 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
       // Signed for the sender — in a thread someone else started, the turn
       // still runs in the owner's session but must not borrow their token
       // (mirrors handleThreadMessage's fail-closed sender resolution).
-      nuphosToken: signNuphosToken(userMapping.nuphosUserId, 60 * 60 * 8),
+      cerinToken: signCerinToken(userMapping.cerinUserId, 60 * 60 * 8),
       sender: { slackUserId: event.user, displayName: senderName },
       messages,
       firstMessage: resolvedText,

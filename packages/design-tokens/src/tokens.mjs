@@ -14,7 +14,7 @@
 /** @type {{ light: Theme, dark: Theme }} */
 export const themes = {
   light: {
-    // Surfaces, from the desk up. Matches nuphos.ai's light palette.
+    // Surfaces, from the desk up. Matches platform.cerin.ai's light palette.
     'surface.canvas': '#F5F4F2',
     'surface.sheet': '#FCFBF9',
     'surface.raised': '#FFFFFE',

@@ -14,9 +14,9 @@ export {
   serializeSnapshot,
 } from '@/routes/dashboards/serialize'
 
-export const nuphosDashboardsRoutes = new Hono<{ Variables: TeamAuthVariables }>()
+export const cerinDashboardsRoutes = new Hono<{ Variables: TeamAuthVariables }>()
 
-registerDashboardRoutes(nuphosDashboardsRoutes)
-registerDashboardPanelRoutes(nuphosDashboardsRoutes)
-registerDashboardExecutionRoutes(nuphosDashboardsRoutes)
-registerDashboardAlertRoutes(nuphosDashboardsRoutes)
+registerDashboardRoutes(cerinDashboardsRoutes)
+registerDashboardPanelRoutes(cerinDashboardsRoutes)
+registerDashboardExecutionRoutes(cerinDashboardsRoutes)
+registerDashboardAlertRoutes(cerinDashboardsRoutes)

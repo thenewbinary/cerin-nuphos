@@ -54,7 +54,7 @@ for (const provider of ['claude-code', 'codex'] as const) {
       locale: 'en',
     })
 
-    expect(prompt).toContain('<nuphos_instructions>')
+    expect(prompt).toContain('<cerin_instructions>')
     expect(prompt).toContain('### Change policy\n\nOpen a Plan before any production change.')
     expect(prompt).toContain('### Answer style\n\nLead with the answer.')
   })

@@ -144,7 +144,7 @@ describe('GitHub skill updates', () => {
     })
   })
 
-  test('reports an unchanged source, a moved folder and an edit made in Nuphos', async () => {
+  test('reports an unchanged source, a moved folder and an edit made in Cerin', async () => {
     latest = installed
     stored['skills/pdf/SKILL.md'] = 'edited'
     expect((await checkGithubSkillUpdates(scope, download))[0]).toMatchObject({

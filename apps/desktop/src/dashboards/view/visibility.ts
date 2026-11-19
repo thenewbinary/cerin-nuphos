@@ -1,5 +1,5 @@
 import type { TeamRole } from '../../types'
-import type { DashboardVisibility, NuphosDashboard } from '../schema'
+import type { DashboardVisibility, CerinDashboard } from '../schema'
 
 /**
  * The backend's rules for who may change a dashboard, mirrored so the list offers
@@ -8,11 +8,11 @@ import type { DashboardVisibility, NuphosDashboard } from '../schema'
  * once they are not, any Administrator. `creatorInTeam` is false only for a
  * dashboard the backend sent as a former member's.
  */
-type Owned = Pick<NuphosDashboard, 'createdBy' | 'visibility'>
+type Owned = Pick<CerinDashboard, 'createdBy' | 'visibility'>
 
 const writesTeam = (role: TeamRole | undefined) => role === 'ADMINISTRATOR' || role === 'EDITOR'
 
-export function isPersonal(dashboard: Pick<NuphosDashboard, 'visibility'>): boolean {
+export function isPersonal(dashboard: Pick<CerinDashboard, 'visibility'>): boolean {
   return dashboard.visibility === 'personal'
 }
 
@@ -51,7 +51,7 @@ export function moveTarget(
 }
 
 /** The list's two sections: the caller's personal dashboards, then the team's. */
-export function splitByVisibility(dashboards: NuphosDashboard[]) {
+export function splitByVisibility(dashboards: CerinDashboard[]) {
   return {
     personal: dashboards.filter((dashboard) => isPersonal(dashboard)),
     team: dashboards.filter((dashboard) => !isPersonal(dashboard)),

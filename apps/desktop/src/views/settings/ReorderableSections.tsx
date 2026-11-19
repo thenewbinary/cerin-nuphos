@@ -15,7 +15,7 @@ import {
 import type { DragEvent, ReactNode } from 'react'
 
 // Only a section's own grip may drop here, not a chat dragged in from the sidebar.
-const SECTION_DRAG_TYPE = 'application/x-nuphos-page-section'
+const SECTION_DRAG_TYPE = 'application/x-cerin-page-section'
 const MOVE_MS = 200
 
 /**

@@ -9,8 +9,8 @@ import yaml from 'js-yaml'
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'auth-backend-'))
 const desktopFile = path.join(dir, 'desktop.yaml')
 
-process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
-process.env.NUPHOS_API_URL = 'https://a.example.test'
+process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
+process.env.CERIN_API_URL = 'https://a.example.test'
 mock.module('electron', {
   namedExports: { app: { getVersion: () => '0.0.0-test' }, shell: { openExternal: () => {} } },
 })

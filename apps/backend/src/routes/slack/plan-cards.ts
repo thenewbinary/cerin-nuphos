@@ -10,7 +10,7 @@ import type { SlackCreatedPlan } from '@/lib/agent/tools-skilled/types'
 import type { SlackRuntime } from '@/routes/slack/types'
 
 export function slackPlanUrl(teamId: string | undefined, planId: string): string | null {
-  return teamId ? `https://nuphos.ai/teams/${teamId}/plans/${planId}` : null
+  return teamId ? `https://platform.cerin.ai/teams/${teamId}/plans/${planId}` : null
 }
 
 export function slackPlanLink(teamId: string | undefined, plan: SlackCreatedPlan): string {
@@ -21,7 +21,7 @@ export function slackPlanLink(teamId: string | undefined, plan: SlackCreatedPlan
 }
 
 // The Approve button on plan review cards (block_actions in /interactions).
-export const PLAN_APPROVE_ACTION = 'nuphos_plan_approve'
+export const PLAN_APPROVE_ACTION = 'cerin_plan_approve'
 
 // task_card titles are plain text; Slack caps them tightly (same 256-char
 // ceiling as Block Kit text fields).
@@ -57,7 +57,7 @@ function buildPlanStepsBlock(title: string, steps: PlanStep[]): unknown {
     tasks.push({
       type: 'task_card',
       task_id: 'steps-truncated',
-      title: `…and ${String(steps.length - shown.length)} more steps — open the plan in Nuphos for the full list`,
+      title: `…and ${String(steps.length - shown.length)} more steps — open the plan in Cerin for the full list`,
       status: 'pending',
     })
   }
@@ -76,7 +76,7 @@ function buildPlanApprovalBlocks(args: {
   // predates the Agents & AI Apps block types).
   steps?: PlanStep[]
   // False when the plan is missing required sections and can only be reviewed
-  // in Nuphos; the card then carries no Approve button.
+  // in Cerin; the card then carries no Approve button.
   approvable: boolean
 }): unknown[] {
   const url = slackPlanUrl(args.teamId, args.planId)
@@ -108,7 +108,7 @@ function buildPlanApprovalBlocks(args: {
         title: { type: 'plain_text', text: 'Approve this plan?' },
         text: {
           type: 'mrkdwn',
-          text: `Nuphos will start executing *${escapeSlackMrkdwn(args.title.slice(0, 120))}* right away.`,
+          text: `Cerin will start executing *${escapeSlackMrkdwn(args.title.slice(0, 120))}* right away.`,
         },
         confirm: { type: 'plain_text', text: 'Approve' },
         deny: { type: 'plain_text', text: 'Cancel' },
@@ -125,8 +125,8 @@ function buildPlanApprovalBlocks(args: {
         {
           type: 'mrkdwn',
           text: args.approvable
-            ? 'Waiting for review — approve it here, or open it in Nuphos first.'
-            : 'Waiting for review — it is missing required sections, open it in Nuphos.',
+            ? 'Waiting for review — approve it here, or open it in Cerin first.'
+            : 'Waiting for review — it is missing required sections, open it in Cerin.',
         },
       ],
     },

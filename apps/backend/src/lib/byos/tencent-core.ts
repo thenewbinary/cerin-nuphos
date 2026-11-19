@@ -4,7 +4,7 @@ import type { TencentSite } from './types'
 
 /**
  * Short-lived Tencent Cloud STS credentials, obtained via OIDC web-identity
- * federation (like AWS/Aliyun/Volcengine): Nuphos mints a per-team token and
+ * federation (like AWS/Aliyun/Volcengine): Cerin mints a per-team token and
  * calls sts:AssumeRoleWithWebIdentity into the customer's CAM role. The `token`
  * accompanies the temporary secretId/secretKey. `site` picks the partition
  * (mainland China vs International) and therefore which endpoints/regions to hit.

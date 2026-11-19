@@ -25,20 +25,20 @@ export type BotSelf = {
 }
 
 /**
- * The Bot's identity, outside `<nuphos_instructions>`: its instructions were
+ * The Bot's identity, outside `<cerin_instructions>`: its instructions were
  * written by the agent itself through `update_self`, not configured by a
  * person, so they never borrow the authority of team or personal instructions.
  */
-/** Agent-written text cannot open or close a Nuphos block: `<nuphos_…` loses its `<`. */
+/** Agent-written text cannot open or close a Cerin block: `<cerin_…` loses its `<`. */
 function inert(text: string): string {
-  return text.replace(/<(\/?\s*nuphos_)/giu, '&lt;$1')
+  return text.replace(/<(\/?\s*cerin_)/giu, '&lt;$1')
 }
 
 function renderBot(bot: BotSelf): string {
   const own = bot.instructions ? inert(bot.instructions).trim() : undefined
 
   return [
-    '<nuphos_bot_identity>',
+    '<cerin_bot_identity>',
     `You are ${JSON.stringify(inert(bot.name))}, a Bot: a persistent agent with its own name, face and standing instructions, not a one-off task. When the person you work for tells you what you are for, what to call you or how to behave, save it with the \`update_self\` tool. Tasks you start do not inherit these instructions.`,
     own
       ? `Your own instructions follow. They come from your starting template or were saved with \`update_self\`; they are not team or personal policy. Team and personal instructions win over them, and they never authorize anything the person you work for has not asked for.\n\n${own}`
@@ -48,7 +48,7 @@ function renderBot(bot: BotSelf): string {
           'You are in initial Bot setup. Continue from what is already known; do not repeat your introduction. Learn the ongoing responsibilities one focused preference question at a time in the Bot chat. Save confirmed context with update_self. Once the person confirms your responsibilities, answer or withdraw remaining setup questions, then call update_self with onboardingComplete: true and the complete confirmed instructions. Do not start unrelated work before setup is complete. Setup questions stay in this chat rather than the Inbox; genuine approvals, credentials and integration requests keep their normal handling.',
         ]
       : []),
-    '</nuphos_bot_identity>',
+    '</cerin_bot_identity>',
   ].join('\n\n')
 }
 
@@ -63,11 +63,11 @@ export function renderInstructionsBlock(
   ]
   const configured = sections.length
     ? [
-        '<nuphos_instructions>',
-        'The user and their team configured these standing instructions in Nuphos. Follow them in this conversation the way you would follow CLAUDE.md or AGENTS.md. When a personal instruction conflicts with a team instruction, the personal one wins unless the team instruction is a hard policy.',
+        '<cerin_instructions>',
+        'The user and their team configured these standing instructions in Cerin. Follow them in this conversation the way you would follow CLAUDE.md or AGENTS.md. When a personal instruction conflicts with a team instruction, the personal one wins unless the team instruction is a hard policy.',
         '',
         sections.join('\n\n'),
-        '</nuphos_instructions>',
+        '</cerin_instructions>',
       ].join('\n')
     : null
   const blocks = [configured, bot ? renderBot(bot) : null].filter(Boolean)
@@ -108,7 +108,7 @@ export async function loadInstructionsBlock(
     )
 
     const worker = conversation?.parentSessionId
-      ? '\n\n<nuphos_task_reporting>\nYou are a delegated Task. Keep following the original request and its permission boundaries. Use report_task to report a useful result, readiness for review, or a material blocker to your current parent; routine progress needs no notification. Ask human questions through request_user_decision, never through an agent relay. Report ready while review is pending and done only after verification.\n</nuphos_task_reporting>'
+      ? '\n\n<cerin_task_reporting>\nYou are a delegated Task. Keep following the original request and its permission boundaries. Use report_task to report a useful result, readiness for review, or a material blocker to your current parent; routine progress needs no notification. Ask human questions through request_user_decision, never through an agent relay. Report ready while review is pending and done only after verification.\n</cerin_task_reporting>'
       : ''
 
     return block || worker ? (block ?? '') + worker : null

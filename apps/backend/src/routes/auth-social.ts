@@ -48,20 +48,20 @@ socialAuth.get('/login', async (c) => {
 
   if (!links.length)
     throw new AppError(503, 'provider_unavailable', 'Social sign-in is not configured')
-  c.header('X-Nuphos-Social-Login', '1')
+  c.header('X-Cerin-Social-Login', '1')
   // Lets apps show one button per provider and skip this page.
-  c.header('X-Nuphos-Social-Providers', providers.join(','))
-  if (providers.includes('oidc')) c.header('X-Nuphos-Social-Oidc-Name', config.auth.oidc.name)
+  c.header('X-Cerin-Social-Providers', providers.join(','))
+  if (providers.includes('oidc')) c.header('X-Cerin-Social-Oidc-Name', config.auth.oidc.name)
 
   return c.html(
-    `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Sign in to Nuphos</title><style>body{font:18px system-ui;max-width:360px;margin:15vh auto;padding:24px}a{display:block;padding:16px;margin:16px 0;border:1px solid;border-radius:8px;color:inherit;text-decoration:none}</style><h1>Sign in to Nuphos</h1>${links.join('')}<p>Use the same provider as your existing account.</p></html>`,
+    `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Sign in to Cerin</title><style>body{font:18px system-ui;max-width:360px;margin:15vh auto;padding:24px}a{display:block;padding:16px;margin:16px 0;border:1px solid;border-radius:8px;color:inherit;text-decoration:none}</style><h1>Sign in to Cerin</h1>${links.join('')}<p>Use the same provider as your existing account.</p></html>`,
   )
 })
 
 socialAuth.route('/device', deviceApproval)
 
 socialAuth.get('/session', async (c) => {
-  const token = getCookie(c, '__Host-nuphos-social')
+  const token = getCookie(c, '__Host-cerin-social')
   const identity = token ? await authenticateToken(token) : null
 
   if (!identity) throw new AppError(401, 'unauthorized', 'Sign in first')
@@ -89,7 +89,7 @@ socialAuth.get('/:provider/start', async (c) => {
     firstTouch: getCookie(c, FIRST_TOUCH_COOKIE),
     expiresAt: new Date(Date.now() + 600_000),
   })
-  setCookie(c, '__Host-nuphos-oauth', state, {
+  setCookie(c, '__Host-cerin-oauth', state, {
     httpOnly: true,
     secure: true,
     sameSite: 'None',
@@ -119,7 +119,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
   const provider = parseProvider(c.req.param('provider'))
   const input = c.req.method === 'POST' ? await c.req.parseBody() : c.req.query()
   const state = input.state
-  const cookie = getCookie(c, '__Host-nuphos-oauth')
+  const cookie = getCookie(c, '__Host-cerin-oauth')
 
   if (typeof state !== 'string' || !cookie || !safeEqualStr(state, cookie))
     throw new AppError(400, 'invalid_state', 'Sign-in expired. Please try again.')
@@ -129,7 +129,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
     expiresAt: { $gt: new Date() },
   })
 
-  deleteCookie(c, '__Host-nuphos-oauth', { path: '/', secure: true })
+  deleteCookie(c, '__Host-cerin-oauth', { path: '/', secure: true })
   if (!attempt) throw new AppError(400, 'invalid_state', 'Sign-in expired. Please try again.')
   const delivery = attempt.handle ? await findPendingNativeSession(attempt.handle) : null
 
@@ -158,7 +158,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
     }
     const session = await startSession(c, identity.user)
 
-    setCookie(c, '__Host-nuphos-social', session.token, {
+    setCookie(c, '__Host-cerin-social', session.token, {
       httpOnly: true,
       secure: true,
       sameSite: 'Lax',
@@ -168,7 +168,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
     if (attempt.next) return c.redirect(attempt.next)
 
     return c.html(
-      '<!doctype html><html lang="en"><meta charset="utf-8"><title>Signed in</title><h1>Signed in to Nuphos</h1><p>You can return to your workspace.</p></html>',
+      '<!doctype html><html lang="en"><meta charset="utf-8"><title>Signed in</title><h1>Signed in to Cerin</h1><p>You can return to your workspace.</p></html>',
     )
   } catch {
     if (attempt.handle) await abandonNativeSession(attempt.handle)

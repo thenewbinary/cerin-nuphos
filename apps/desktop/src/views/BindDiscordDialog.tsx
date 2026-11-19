@@ -63,10 +63,10 @@ export function BindDiscordDialog({
       description={
         operation === 'link'
           ? t(
-              'Link your Discord identity so requests use your own Nuphos permissions and credentials.',
+              'Link your Discord identity so requests use your own Cerin permissions and credentials.',
             )
           : t(
-              'Add Nuphos to your Discord server, enable a channel with /nuphos enable and mention it to start a conversation.',
+              'Add Cerin to your Discord server, enable a channel with /cerin enable and mention it to start a conversation.',
             )
       }
       width={460}
@@ -81,7 +81,7 @@ export function BindDiscordDialog({
                 'Discord opens in your browser to verify your identity. The bot installation and other team member links are unchanged.',
               )
             : t(
-                'Discord opens in your browser. Choose a server and approve the bot. Your Discord account is linked to this Nuphos workspace automatically.',
+                'Discord opens in your browser. Choose a server and approve the bot. Your Discord account is linked to this Cerin workspace automatically.',
               )}
         </p>
       </div>

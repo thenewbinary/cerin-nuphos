@@ -83,7 +83,7 @@ export async function ingestDiscordAttachments(args: {
 
 // Files the agent pushed to the transfer store during this turn are attached
 // to the thread. Best-effort and never rejects: a failed attachment must not
-// fail the turn, and the download card in the Nuphos app exists either way.
+// fail the turn, and the download card in the Cerin app exists either way.
 export async function postAgentProducedDiscordFiles(args: {
   channelId: string
   teamId: string
@@ -131,7 +131,7 @@ export async function postAgentProducedDiscordFiles(args: {
     if (unattached.length > 0) {
       await sendDiscordMessage(
         args.channelId,
-        `I could not attach ${unattached.join(', ')} here. Download from the conversation in the Nuphos app.`,
+        `I could not attach ${unattached.join(', ')} here. Download from the conversation in the Cerin app.`,
       )
     }
   } catch (err) {

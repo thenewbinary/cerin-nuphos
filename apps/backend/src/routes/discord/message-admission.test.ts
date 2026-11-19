@@ -86,7 +86,7 @@ function setup(
       findOne: async () => {
         calls.userLookups++
 
-        return options.linked === false ? null : { nuphosUserId: 'actor' }
+        return options.linked === false ? null : { cerinUserId: 'actor' }
       },
     }),
     getTeamMembership: async () => ({ role: 'MEMBER' }),
@@ -116,7 +116,7 @@ function setup(
     executeDiscordTurn: async (args: Record<string, unknown>) => {
       calls.turns.push(args)
     },
-    signNuphosToken: () => 'actor-token',
+    signCerinToken: () => 'actor-token',
     turnRunner: {
       admitChannelTurn: async () => ({ mode: 'run', carried: [], release: () => {} }),
     },

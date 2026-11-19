@@ -6,12 +6,12 @@ import { config } from '@/config'
 
 import type { ObjectId } from 'mongodb'
 
-type NuphosRunClaims = {
-  aud: 'nuphos'
+type CerinRunClaims = {
+  aud: 'cerin'
   sub: string
   iat: number
   exp: number
-  from: 'nuphos'
+  from: 'cerin'
   scope: 'all'
 }
 
@@ -25,27 +25,27 @@ export const MAX_RUN_TOKEN_TTL_SEC = 24 * 60 * 60
  * Sign-in JWTs issued before sessions existed lived 30 days. They are accepted
  * until they expire on their own; anything signed for longer is refused. Once
  * the last of them has expired, verify against MAX_RUN_TOKEN_TTL_SEC instead.
- * To end them all sooner, rotate NUPHOS_JWT_SECRET.
+ * To end them all sooner, rotate CERIN_JWT_SECRET.
  */
 const LEGACY_SIGN_IN_TTL_SEC = 30 * 24 * 60 * 60
 
-export function signNuphosToken(userId: ObjectId | string, ttlSec: number): string {
+export function signCerinToken(userId: ObjectId | string, ttlSec: number): string {
   const secret = requireJwtSecret()
   const sub = typeof userId === 'string' ? userId : userId.toHexString()
 
   if (!MongoObjectId.isValid(sub)) {
-    throw new Error(`Cannot sign Nuphos token: invalid user id ${sub}`)
+    throw new Error(`Cannot sign Cerin token: invalid user id ${sub}`)
   }
   if (!(ttlSec > 0 && ttlSec <= MAX_RUN_TOKEN_TTL_SEC)) {
-    throw new Error(`Cannot sign Nuphos token: ttl ${String(ttlSec)}s is out of range`)
+    throw new Error(`Cannot sign Cerin token: ttl ${String(ttlSec)}s is out of range`)
   }
   const now = Math.floor(Date.now() / 1000)
-  const claims: NuphosRunClaims = {
-    aud: 'nuphos',
+  const claims: CerinRunClaims = {
+    aud: 'cerin',
     sub,
     iat: now,
     exp: now + ttlSec,
-    from: 'nuphos',
+    from: 'cerin',
     scope: 'all',
   }
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' }), 'utf8').toString(
@@ -57,7 +57,7 @@ export function signNuphosToken(userId: ObjectId | string, ttlSec: number): stri
   return `${header}.${payload}.${signature}`
 }
 
-export function verifyNuphosToken(token: string): NuphosRunClaims | null {
+export function verifyCerinToken(token: string): CerinRunClaims | null {
   const secret = config.auth.jwtSecret
 
   if (!secret) return null
@@ -70,18 +70,18 @@ export function verifyNuphosToken(token: string): NuphosRunClaims | null {
   const expected = createHmac('sha256', secret).update(`${header}.${payload}`).digest('base64url')
 
   if (!safeEqual(expected, signature)) return null
-  let claims: NuphosRunClaims
+  let claims: CerinRunClaims
 
   try {
-    claims = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as NuphosRunClaims
+    claims = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as CerinRunClaims
   } catch {
     return null
   }
   const now = Math.floor(Date.now() / 1000)
 
   if (
-    claims.aud !== 'nuphos' ||
-    claims.from !== 'nuphos' ||
+    claims.aud !== 'cerin' ||
+    claims.from !== 'cerin' ||
     !claims.sub ||
     claims.exp <= now ||
     claims.exp - claims.iat > LEGACY_SIGN_IN_TTL_SEC
@@ -93,7 +93,7 @@ export function verifyNuphosToken(token: string): NuphosRunClaims | null {
 
 function requireJwtSecret(): string {
   if (!config.auth.jwtSecret) {
-    throw new Error('NUPHOS_JWT_SECRET or JWT_SECRET_KEY is required for Nuphos auth')
+    throw new Error('CERIN_JWT_SECRET or JWT_SECRET_KEY is required for Cerin auth')
   }
 
   return config.auth.jwtSecret

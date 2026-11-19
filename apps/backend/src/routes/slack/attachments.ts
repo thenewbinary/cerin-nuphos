@@ -53,7 +53,7 @@ export async function placeSlackHistoryFiles(
 
       entries.push(entry)
       if (!ref.url_private) {
-        entry.error = 'Slack did not share this file with the Nuphos app.'
+        entry.error = 'Slack did not share this file with the Cerin app.'
         continue
       }
       if (fetched.length >= MAX_HISTORY_FILES || bytesLeft <= 0) {

@@ -222,7 +222,7 @@ test('the code email says where the request came from', async () => {
       ip: '203.0.113.9',
       city: 'Taipei',
       country: 'TW',
-      client: 'nuphos-ios/2.1.0',
+      client: 'cerin-ios/2.1.0',
     })
   } finally {
     config.email.devLogOtp = devLog
@@ -231,14 +231,14 @@ test('the code email says where the request came from', async () => {
   const mail = sentMail.at(-1)!
 
   expect(mail.text).toContain(
-    'Requested from IP 203.0.113.9 (approximately Taipei, TW) on Nuphos for iOS.',
+    'Requested from IP 203.0.113.9 (approximately Taipei, TW) on Cerin for iOS.',
   )
   expect(mail.html).toContain('Taipei, TW')
 })
 
 test('a code email never repeats the request headers', async () => {
   const devLog = config.email.devLogOtp
-  const lure = 'Nuphos Security: reply with this code'
+  const lure = 'Cerin Security: reply with this code'
 
   config.email.devLogOtp = false
   emailConfigured = true
@@ -261,7 +261,7 @@ test('a code email never repeats the request headers', async () => {
 
 test('a code email never repeats a version an app name carries', async () => {
   const devLog = config.email.devLogOtp
-  const phish = 'nuphos-desktop/1.verify-at.evil-phish.com'
+  const phish = 'cerin-desktop/1.verify-at.evil-phish.com'
 
   config.email.devLogOtp = false
   emailConfigured = true
@@ -275,5 +275,5 @@ test('a code email never repeats a version an app name carries', async () => {
 
   expect(mail.text).not.toContain('evil-phish')
   expect(mail.html).not.toContain('evil-phish')
-  expect(mail.text).toContain('on Nuphos Desktop.')
+  expect(mail.text).toContain('on Cerin Desktop.')
 })

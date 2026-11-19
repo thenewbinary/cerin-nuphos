@@ -1,5 +1,5 @@
 #!/bin/sh
-# Stands in for a vendor's installer (NUPHOS_E2E_AGENT_INSTALLER): after a moment, puts a
+# Stands in for a vendor's installer (CERIN_E2E_AGENT_INSTALLER): after a moment, puts a
 # `claude` that can only start a sign-in where the real installer puts it.
 set -eu
 sleep 5

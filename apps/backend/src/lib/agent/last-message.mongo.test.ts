@@ -53,7 +53,7 @@ describe.skipIf(!process.env.TEST_MONGODB_URI)('lastMessage', () => {
     await post('First post', { type: 'agent', id: 'bot' })
     await post('Second post', { type: 'agent', id: 'bot' })
     // The turn goes on: a wake-up from the channel is not something anyone said.
-    await post('New messages in a Nuphos channel', { type: 'system', id: 'channel:x' })
+    await post('New messages in a Cerin channel', { type: 'system', id: 'channel:x' })
 
     expect(await lastMessage(channel, 'bot')).toEqual({ text: 'Second post' })
   })

@@ -20,7 +20,7 @@ import type { AwsSnsEnvelope } from './sns-webhook'
 const baseEnvelope: AwsSnsEnvelope = {
   Type: 'Notification',
   MessageId: 'message-1',
-  TopicArn: 'arn:aws:sns:us-east-1:123456789012:nuphos-watch',
+  TopicArn: 'arn:aws:sns:us-east-1:123456789012:cerin-watch',
   Message: '{"AlarmName":"High CPU","NewStateValue":"ALARM"}',
   Timestamp: '2026-07-23T10:00:00.000Z',
   SignatureVersion: '2',
@@ -73,7 +73,7 @@ describe('AWS SNS webhook validation', () => {
       Type: 'SubscriptionConfirmation',
       Token: 'token-1',
       SubscribeURL:
-        'https://169.254.169.254/?Action=ConfirmSubscription&TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3Anuphos-watch&Token=token-1',
+        'https://169.254.169.254/?Action=ConfirmSubscription&TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3Acerin-watch&Token=token-1',
     })
 
     expect(() => validateAwsSnsConfirmationUrl(confirmation)).toThrow('Untrusted')
@@ -127,7 +127,7 @@ describe('AWS SNS webhook validation', () => {
       Type: 'SubscriptionConfirmation',
       Token: 'token-1',
       SubscribeURL:
-        'https://sns.us-east-1.amazonaws.com/?Action=ConfirmSubscription&TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3Anuphos-watch&Token=token-1',
+        'https://sns.us-east-1.amazonaws.com/?Action=ConfirmSubscription&TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3Acerin-watch&Token=token-1',
     })
     const unavailableFetch = (async () =>
       new Response('', { status: 503 })) as unknown as typeof fetch
@@ -149,7 +149,7 @@ describe('AWS SNS webhook validation', () => {
       Type: 'SubscriptionConfirmation',
       Token: 'token-1',
       SubscribeURL:
-        'https://sns.us-east-1.amazonaws.com/?Action=ConfirmSubscription&TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3Anuphos-watch&Token=token-1',
+        'https://sns.us-east-1.amazonaws.com/?Action=ConfirmSubscription&TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3Acerin-watch&Token=token-1',
     })
     const forbiddenFetch = (async () =>
       new Response('', { status: 403 })) as unknown as typeof fetch

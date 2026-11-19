@@ -197,7 +197,7 @@ export function boxSetupProblem(phase: BoxSetupPhase): string | null {
   return null
 }
 
-/** The plans the billing service sells, smallest first; `vcpus` keys the billing service's nuphos_box_<vcpus>vcpu_monthly price. */
+/** The plans the billing service sells, smallest first; `vcpus` keys the billing service's cerin_box_<vcpus>vcpu_monthly price. */
 export const BOX_PLANS = [
   {
     name: 'Starter',

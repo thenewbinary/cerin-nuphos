@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import { logEvent } from '@/lib/observability'
-import { nuphosDashboards } from '@/models'
+import { cerinDashboards } from '@/models'
 
 import { DASHBOARD_REFRESH_CADENCES, nextScheduledRefresh } from './refresh-cadence'
 
@@ -67,7 +67,7 @@ export async function migratePanelCadencesToDashboards(now = new Date()): Promis
       })
     }
     if (!cadence) continue
-    const result = await nuphosDashboards().updateOne(
+    const result = await cerinDashboards().updateOne(
       { _id: entry.dashboardId, teamId: entry.teamId, cadence: { $exists: false } },
       { $set: { cadence, nextRefreshAt: nextScheduledRefresh(cadence, now) } },
     )

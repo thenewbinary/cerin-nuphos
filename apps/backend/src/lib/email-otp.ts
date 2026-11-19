@@ -2,7 +2,7 @@ import { createHash, createHmac, hkdfSync, randomInt, timingSafeEqual } from 'no
 
 import { MongoServerError } from 'mongodb'
 
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 import type { SignInSource } from '@/lib/request-origin'
 import type { Collection, ObjectId } from 'mongodb'
 
@@ -54,7 +54,7 @@ export async function requestEmailOtp(
   const normalized = normalizeEmail(email)
 
   if (!config.email.devLogOtp && !isEmailConfigured()) {
-    // Nothing can be sent, but a code an operator issued (`nuphos-admin sign-in-code`) can be entered.
+    // Nothing can be sent, but a code an operator issued (`cerin-admin sign-in-code`) can be entered.
     if (await otps().findOne({ email: normalized, expiresAt: { $gt: new Date() } })) return
     throw new AppError(503, 'email_not_configured', 'Email sign-in is not available on this server')
   }
@@ -126,9 +126,9 @@ export async function requestEmailOtp(
   try {
     await sendEmail({
       to: normalized,
-      subject: `${code} is your Nuphos sign-in code`,
+      subject: `${code} is your Cerin sign-in code`,
       html: otpEmailHtml(code, from),
-      text: `Your Nuphos sign-in code is ${code}. It expires in 10 minutes.\n\n${requestedFrom(from)}\n\nIf you didn't request this, you can ignore this email.`,
+      text: `Your Cerin sign-in code is ${code}. It expires in 10 minutes.\n\n${requestedFrom(from)}\n\nIf you didn't request this, you can ignore this email.`,
     })
   } catch (err) {
     // Undo the stored code so the cooldown doesn't lock the user out of
@@ -167,7 +167,7 @@ export async function issueEmailOtpCode(email: string): Promise<string> {
   return code
 }
 
-export async function verifyEmailOtp(email: string, code: string): Promise<NuphosUser> {
+export async function verifyEmailOtp(email: string, code: string): Promise<CerinUser> {
   const normalized = normalizeEmail(email)
 
   if (!/^\d{6}$/.test(code)) {
@@ -248,9 +248,9 @@ function hashCode(email: string, code: string): string {
     const secret = config.auth.jwtSecret
 
     if (!secret) {
-      throw new Error('NUPHOS_JWT_SECRET or JWT_SECRET_KEY is required for email OTP sign-in')
+      throw new Error('CERIN_JWT_SECRET or JWT_SECRET_KEY is required for email OTP sign-in')
     }
-    otpHmacKey = Buffer.from(hkdfSync('sha256', secret, '', 'nuphos-email-otp-v1', 32))
+    otpHmacKey = Buffer.from(hkdfSync('sha256', secret, '', 'cerin-email-otp-v1', 32))
   }
 
   return createHmac('sha256', otpHmacKey).update(`${email}:${code}`).digest('hex')
@@ -281,7 +281,7 @@ function otpEmailHtml(code: string, from: SignInSource): string {
 <html>
 <body style="margin:0;padding:32px 16px;background:#f6f6f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1e">
   <div style="max-width:420px;margin:0 auto;background:#ffffff;border-radius:12px;padding:32px;border:1px solid #e6e6ea">
-    <div style="font-size:16px;font-weight:600;margin-bottom:16px">Sign in to Nuphos</div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:16px">Sign in to Cerin</div>
     <div style="font-size:14px;color:#55555e;line-height:1.6;margin-bottom:24px">
       Use this code to finish signing in. It expires in 10 minutes.
     </div>

@@ -30,7 +30,7 @@ export function TailscalePrivateNetworkPanel({
   sandboxAccess: TailscaleSandboxAccess | null | undefined
 }) {
   const [enabled, setEnabled] = useState(sandboxAccess?.enabled ?? false)
-  const [tag, setTag] = useState(sandboxAccess?.tag ?? 'tag:nuphos')
+  const [tag, setTag] = useState(sandboxAccess?.tag ?? 'tag:cerin')
   const [saving, setSaving] = useState(false)
   const [targetTag, setTargetTag] = useState('tag:staging')
   const [sshUser, setSshUser] = useState('deploy')
@@ -40,7 +40,7 @@ export function TailscalePrivateNetworkPanel({
 
   useResetOnKey(`${String(sandboxAccess?.enabled ?? false)}|${sandboxAccess?.tag ?? ''}`, () => {
     setEnabled(sandboxAccess?.enabled ?? false)
-    setTag(sandboxAccess?.tag ?? 'tag:nuphos')
+    setTag(sandboxAccess?.tag ?? 'tag:cerin')
   })
 
   const tagValid = TAG_PATTERN.test(tag)
@@ -49,7 +49,7 @@ export function TailscalePrivateNetworkPanel({
     // Revoking must never depend on the tag field being valid — an unsaved typo
     // would otherwise trap access in the on position.
     if (nextEnabled && !TAG_PATTERN.test(tag)) {
-      toast.error(t('Enter a tag like tag:nuphos before enabling private network access'))
+      toast.error(t('Enter a tag like tag:cerin before enabling private network access'))
 
       return
     }
@@ -119,7 +119,7 @@ export function TailscalePrivateNetworkPanel({
         />
         <div className="text-[11.5px] text-secondary leading-relaxed">
           {t(
-            'This is a larger grant than listing devices. If this OAuth client also carries device-write scopes, consider binding a separate client that only has {scope}, so the credential Nuphos holds for the data plane can do nothing else.',
+            'This is a larger grant than listing devices. If this OAuth client also carries device-write scopes, consider binding a separate client that only has {scope}, so the credential Cerin holds for the data plane can do nothing else.',
             { scope: 'auth_keys' },
           )}
         </div>
@@ -131,7 +131,7 @@ export function TailscalePrivateNetworkPanel({
           value={tag}
           onChange={(e) => setTag(e.target.value.trim())}
           spellCheck={false}
-          placeholder="tag:nuphos"
+          placeholder="tag:cerin"
           className="flex-1 min-w-0 h-7 px-2 rounded-md bg-surface-sunken border border-line-control font-mono text-[12px] text-main outline-none focus:border-line-control"
         />
         {enabled && (
@@ -150,7 +150,7 @@ export function TailscalePrivateNetworkPanel({
         <div className="text-[12px] font-medium text-main">{t('Tailnet ACL')}</div>
         <div className="mt-1 text-[11.5px] text-tertiary leading-relaxed">
           {t(
-            'Nuphos never writes your policy file. Generate the blocks below, review them, and apply them yourself — deleting them revokes access immediately.',
+            'Cerin never writes your policy file. Generate the blocks below, review them, and apply them yourself — deleting them revokes access immediately.',
           )}
         </div>
         <div className="mt-3 flex items-center gap-2">

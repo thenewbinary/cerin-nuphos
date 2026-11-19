@@ -8,7 +8,7 @@ fi
 
 team_id="$1"
 binding_id="$2"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.nuphos.ai}}"
+base="${CERIN_BACKEND_URL:-${CERIN_API_URL:-https://platform.cerin.ai}}"
 base="${base%/}"
 
 urlencode() {
@@ -19,9 +19,9 @@ PY
 }
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-# shellcheck source=../../_runtime/scripts/nuphos-token.sh
-source "$script_dir/../../_runtime/scripts/nuphos-token.sh"
-auth_token="$(nuphos_token)" || exit 1
+# shellcheck source=../../_runtime/scripts/cerin-token.sh
+source "$script_dir/../../_runtime/scripts/cerin-token.sh"
+auth_token="$(cerin_token)" || exit 1
 
 team_enc="$(urlencode "$team_id")"
 binding_enc="$(urlencode "$binding_id")"
@@ -52,7 +52,7 @@ fi
 mkdir -p "$HOME/.jira"
 chmod 700 "$HOME/.jira"
 
-python3 - "$tmp" "$HOME/.jira/nuphos.env" <<'PY'
+python3 - "$tmp" "$HOME/.jira/cerin.env" <<'PY'
 import json, shlex, sys
 src, dst = sys.argv[1], sys.argv[2]
 data = json.load(open(src))
@@ -71,5 +71,5 @@ with open(dst, "w") as f:
     f.write(f"export JIRA_BINDING_ID={shlex.quote(str(data.get('bindingId', '')))}\n")
 PY
 
-chmod 600 "$HOME/.jira/nuphos.env"
-echo "Wrote Jira credentials to ~/.jira/nuphos.env"
+chmod 600 "$HOME/.jira/cerin.env"
+echo "Wrote Jira credentials to ~/.jira/cerin.env"

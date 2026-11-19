@@ -99,7 +99,7 @@ describe('token exchange', () => {
     expect(claims).toMatchObject({
       sid: 'conv-1',
       tid: 'team-1',
-      aud: ['nuphos-preview-mcp', 'credential:aws/role-1'],
+      aud: ['cerin-preview-mcp', 'credential:aws/role-1'],
       act: { sub: 'session:conv-1' },
     })
     expect(claims?.lim?.awsRoleIds).toEqual(['role-1'])

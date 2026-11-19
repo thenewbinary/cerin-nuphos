@@ -3,12 +3,12 @@ import { ObjectId } from 'mongodb'
 
 import { presetWindow, resolveParams, rollingSnapshotHashes } from './params'
 
-import type { DashboardPanel, DashboardRangePreset, NuphosDashboard } from '@/models'
+import type { DashboardPanel, DashboardRangePreset, CerinDashboard } from '@/models'
 
 const dashboard = {
   teamId: new ObjectId(),
   timeRange: { ...presetWindow('thisMonth', new Date('2026-10-09T05:15:00Z')), granularity: 'day' },
-} as NuphosDashboard
+} as CerinDashboard
 const panel: DashboardPanel = {
   _id: new ObjectId(),
   teamId: dashboard.teamId,

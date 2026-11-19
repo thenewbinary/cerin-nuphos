@@ -6,10 +6,10 @@ import { useAgentDeviceStore } from '@/lib/test/doubles/agent-devices-store'
 import { useIdentity } from '@/lib/test/doubles/identity'
 
 import type { TransferTeamOwnershipResult } from '@/lib/identity/team-roles'
-import type { NuphosTeamMember } from '@/lib/identity/types'
+import type { CerinTeamMember } from '@/lib/identity/types'
 import type { TeamAuthVariables } from '@/middleware/auth'
 
-const MEMBER: NuphosTeamMember = {
+const MEMBER: CerinTeamMember = {
   id: 'member-1',
   email: 'member@example.com',
   name: 'Member',

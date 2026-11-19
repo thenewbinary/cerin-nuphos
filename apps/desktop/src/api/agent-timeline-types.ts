@@ -28,12 +28,12 @@ export type AgentTimelineEvent = {
   skipped?: { label: string; reason: string }[]
   /** message_edited / conversation_forked: the destination session. */
   forkSessionId?: string
-  /** settings_changed: who changed the settings, a person, a Task acting for one, the agent, or Nuphos. */
+  /** settings_changed: who changed the settings, a person, a Task acting for one, the agent, or Cerin. */
   by?:
     | ({ type: 'person' } & AgentTimelinePerson)
     | { type: 'task'; sessionId: string; title: string; provider?: AgentProvider }
     | ({ type: 'runtime' } & AgentTimelineRuntime)
-    | { type: 'nuphos' }
+    | { type: 'cerin' }
   /** settings_changed: `set` when the agent filled in values nobody picked. */
   form?: 'set' | 'changed'
   /** settings_changed: each setting, as the picker names it; an absent value is the default. */

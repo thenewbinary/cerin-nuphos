@@ -27,7 +27,7 @@ import type { ImageAttachmentPart, LocalFilePart, TextPart, TransferUploadPart }
 import type { ReactNode } from 'react'
 
 // Pull plan references out of message text. The composer serializes a plan
-// mention chip back to its Nuphos URL (`…/teams/T/plans/<n>`), so a sent
+// mention chip back to its Cerin URL (`…/teams/T/plans/<n>`), so a sent
 // message carries the URL as plain text; parse those out so we can render the
 // referenced plan inline. Deduped by planId, first-seen order preserved.
 const PLAN_MENTION_TRAILING_PUNCT = new Set(['.', ',', ';', ':', '!', '?', ']', ')', '>', '}'])
@@ -35,7 +35,7 @@ const PLAN_MENTION_TRAILING_PUNCT = new Set(['.', ',', ';', ':', '!', '?', ']', 
 function extractPlanMentions(text: string): { planId: string; teamId: string }[] {
   const out: { planId: string; teamId: string }[] = []
   const seen = new Set<string>()
-  const re = /https:\/\/nuphos\.ai\/\S+/g
+  const re = /https:\/\/platform\.cerin\.ai\/\S+/g
   let m: RegExpExecArray | null
 
   while ((m = re.exec(text)) !== null) {
@@ -60,7 +60,7 @@ export const UserMessage = memo(
     onApprovePlan,
     onRejectPlan,
     canActOnPlans = false,
-    onOpenNuphosLink,
+    onOpenCerinLink,
     onEdit,
     teamId,
   }: {
@@ -72,7 +72,7 @@ export const UserMessage = memo(
     /** Whether a referenced `proposed` plan can be acted on (not streaming/read-only).
      *  This is what lets a historical plan be pulled into chat and executed. */
     canActOnPlans?: boolean
-    onOpenNuphosLink?: (href: string, beside?: boolean) => boolean
+    onOpenCerinLink?: (href: string, beside?: boolean) => boolean
     /** Re-runs the message with new text, in a fork of the chat. */
     onEdit?: (messageId: string, text: string) => void
   }) => {
@@ -83,8 +83,8 @@ export const UserMessage = memo(
     const renderLink = useCallback(
       (href: string, children: ReactNode) =>
         renderMemberMentionLink(href, children, teamId) ??
-        renderAtlasMentionLink(href, children, onOpenNuphosLink),
-      [onOpenNuphosLink, teamId],
+        renderAtlasMentionLink(href, children, onOpenCerinLink),
+      [onOpenCerinLink, teamId],
     )
     const textParts = message.parts.filter((p): p is TextPart => p.type === 'text')
     const files = message.parts.filter((p): p is LocalFilePart => p.type === 'local-file')
@@ -115,7 +115,7 @@ export const UserMessage = memo(
           metadata={message.metadata}
           text={copyableText}
           teamId={teamId}
-          onOpenNuphosLink={onOpenNuphosLink}
+          onOpenCerinLink={onOpenCerinLink}
           renderLink={renderLink}
         />
       )
@@ -141,7 +141,7 @@ export const UserMessage = memo(
                 <span
                   className="shrink-0 rounded bg-surface-hover px-1.5 py-0.5 text-[10px] text-tertiary"
                   title={t(
-                    'Posted in Discord by someone with no linked Nuphos account. The name is the one they chose.',
+                    'Posted in Discord by someone with no linked Cerin account. The name is the one they chose.',
                   )}
                 >
                   {t('Discord · unverified')}
@@ -216,7 +216,7 @@ export const UserMessage = memo(
                             // line breaks visible without turning them into paragraphs.
                             className="[&_p]:whitespace-pre-wrap [&_li]:whitespace-pre-wrap"
                             renderLink={renderLink}
-                            onLinkClick={onOpenNuphosLink}
+                            onLinkClick={onOpenCerinLink}
                           >
                             {linkMentions(segment.text, message.metadata?.mentions)}
                           </MessageResponse>

@@ -20,7 +20,7 @@ import type { AddIntegrationKey, CatalogCategory } from './addIntegrationCatalog
 // here; the definition moved to addIntegrationCatalog with the catalog data.
 export type { AddIntegrationKey } from './addIntegrationCatalog'
 
-const CONNECTOR_CAPABILITIES_URL = 'https://docs.nuphos.ai/connectors/capabilities'
+const CONNECTOR_CAPABILITIES_URL = ''
 
 // CloudLogo covers every provider except Linear, which ships its own
 // (deliberately monochrome) brand mark.

@@ -65,7 +65,7 @@ export function boxRestartEnded(
   kind: BoxRestartKind,
   outcome: BoxRestartOutcome,
   label: string,
-  /** A person's computer restarting its Nuphos Desktop, which nobody can Resume from here. */
+  /** A person's computer restarting its Cerin Desktop, which nobody can Resume from here. */
   desktop = false,
 ): { tone: 'success' | 'error'; title: string; description: string } | null {
   if (outcome === 'timeout' && desktop)
@@ -73,7 +73,7 @@ export function boxRestartEnded(
       tone: 'error',
       title: t('{label} did not come back', { label }),
       description: t(
-        'Nuphos on it has not reconnected 5 minutes after the update started. Open Nuphos on that computer.',
+        'Cerin on it has not reconnected 5 minutes after the update started. Open Cerin on that computer.',
       ),
     }
   if (outcome === 'timeout')
@@ -108,14 +108,14 @@ const updateStopsTasks = () =>
     'A Task running on it stops where it is, and its other Tasks wait until it reconnects. Send a message to continue a stopped Task.',
   )
 
-/** The confirmation before updating a Box, which restarts Nuphos on it. */
+/** The confirmation before updating a Box, which restarts Cerin on it. */
 export function boxUpdateConfirm(boxLabel: string, version: string | undefined) {
   const install = version
     ? t(
-        'This restarts Nuphos on {boxLabel} now to install the latest version available (expected v{version}).',
+        'This restarts Cerin on {boxLabel} now to install the latest version available (expected v{version}).',
         { boxLabel, version },
       )
-    : t('This restarts Nuphos on {boxLabel} now to install the latest version available.', {
+    : t('This restarts Cerin on {boxLabel} now to install the latest version available.', {
         boxLabel,
       })
 
@@ -123,12 +123,12 @@ export function boxUpdateConfirm(boxLabel: string, version: string | undefined) 
     title: t('Update {boxLabel}?', { boxLabel }),
     confirmLabel: t('Update and restart'),
     description: `${install} ${t(
-      'The computer itself keeps running, and Nuphos on it starts again even if the install fails.',
+      'The computer itself keeps running, and Cerin on it starts again even if the install fails.',
     )} ${updateStopsTasks()}`,
   }
 }
 
-/** The ⋯ menu's item for the viewer's other computer: its Nuphos Desktop's update, when there is one to start. */
+/** The ⋯ menu's item for the viewer's other computer: its Cerin Desktop's update, when there is one to start. */
 export function appUpdateLabel(app: NonNullable<AgentDevice['app']>): string {
   const update = app.update
 
@@ -139,12 +139,12 @@ export function appUpdateLabel(app: NonNullable<AgentDevice['app']>): string {
     : t('Downloading v{version}', { version: update.version })
 }
 
-/** The confirmation before restarting another computer's Nuphos Desktop into its update. */
+/** The confirmation before restarting another computer's Cerin Desktop into its update. */
 export function appUpdateConfirm(label: string, version: string) {
   return {
     title: t('Update {boxLabel}?', { boxLabel: label }),
     confirmLabel: t('Update and restart'),
-    description: `${t('This restarts Nuphos on {label} now to install v{version}.', {
+    description: `${t('This restarts Cerin on {label} now to install v{version}.', {
       label,
       version,
     })} ${updateStopsTasks()}`,

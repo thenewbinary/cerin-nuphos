@@ -17,7 +17,7 @@ final class VoiceInputUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.resetAuthorizationStatus(for: .microphone)
         addUIInterruptionMonitor(withDescription: "Microphone") { alert in
             let allow = alert.buttons["Allow"].firstMatch

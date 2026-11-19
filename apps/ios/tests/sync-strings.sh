@@ -4,6 +4,6 @@
 #   bash tests/sync-strings.sh <DerivedData>
 set -euo pipefail
 cd "$(dirname "$0")/.."
-find "${1:?usage: sync-strings.sh <DerivedData>}" -path '*/nuphos-ios.build/*' -name '*.stringsdata' \
+find "${1:?usage: sync-strings.sh <DerivedData>}" -path '*/cerin-ios.build/*' -name '*.stringsdata' \
   -exec printf -- '--stringsdata\0%s\0' {} + |
   xargs -0 xcrun xcstringstool sync Shared/Localizable.xcstrings

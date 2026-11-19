@@ -23,7 +23,7 @@ describe('preview MCP token', () => {
       own: 'user-1',
       sid: 'conv-1',
       tid: 'team-1',
-      ori: 'https://api.nuphos.ai',
+      ori: 'https://platform.cerin.ai',
     })
     // Never the general session-token shape — only conversation-aware
     // middleware may accept it.
@@ -154,10 +154,10 @@ describe('redactSignedTokens', () => {
       teamId: 'team-1',
     })
     const skills = mintRuntimeSkillsToken('team-1', 'user-1')
-    const frame = JSON.stringify({ text: `NUPHOS_TOKEN=${token}\nBearer ${token}\tS=${skills}` })
+    const frame = JSON.stringify({ text: `CERIN_TOKEN=${token}\nBearer ${token}\tS=${skills}` })
 
     expect(JSON.parse(redactSignedTokens(frame))).toEqual({
-      text: 'NUPHOS_TOKEN=[redacted]\nBearer [redacted]\tS=[redacted]',
+      text: 'CERIN_TOKEN=[redacted]\nBearer [redacted]\tS=[redacted]',
     })
   })
 

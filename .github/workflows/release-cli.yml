@@ -1,8 +1,8 @@
 name: Release CLI
 
 # Dispatch from main with a `cli-vX.Y.Z` tag, matching apps/cli/Cargo.toml, to publish
-# the `nuphos` binaries as a GitHub Release. apps/cli/install.sh and
-# `nuphos update` install from the newest of these releases.
+# the `cerin` binaries as a GitHub Release. apps/cli/install.sh and
+# `cerin update` install from the newest of these releases.
 
 on:
   # Dispatch from main after creating the tag; see release-provenance.yml.
@@ -62,7 +62,7 @@ jobs:
         run: |
           set -euo pipefail
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            printf 'Install or update:\n\n```sh\ncurl -fsSL https://nuphos.ai/install | sh\n```\n' > notes.md
+            printf 'Install or update:\n\n```sh\ncurl -fsSL https://cerin.ai/install | sh\n```\n' > notes.md
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --draft --latest=false \
               --title "CLI ${TAG#cli-}" --generate-notes --notes-file notes.md
           fi
@@ -121,7 +121,7 @@ jobs:
           APPLE_API_KEY_BASE64: ${{ secrets.APPLE_API_KEY_BASE64 }}
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
-        run: bash scripts/sign-macos.sh "target/$TARGET/release/nuphos"
+        run: bash scripts/sign-macos.sh "target/$TARGET/release/cerin"
       - name: Upload to the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -129,12 +129,12 @@ jobs:
           TARGET: ${{ matrix.target }}
         run: |
           set -euo pipefail
-          ASSET="nuphos-$TARGET.tar.gz"
-          tar -czf "$ASSET" -C "target/$TARGET/release" nuphos
+          ASSET="cerin-$TARGET.tar.gz"
+          tar -czf "$ASSET" -C "target/$TARGET/release" cerin
           if command -v sha256sum >/dev/null; then sha256sum "$ASSET" > "$ASSET.sha256"; else shasum -a 256 "$ASSET" > "$ASSET.sha256"; fi
           gh release upload "$TAG" "$ASSET" "$ASSET.sha256" --repo "$GITHUB_REPOSITORY" --clobber
 
-  # The runtime `nuphos agent` fetches on first use: the desktop's staged
+  # The runtime `cerin agent` fetches on first use: the desktop's staged
   # local runtime (openab and the ACP adapters) plus its host for plain Node.
   agent:
     needs: [provenance, validate]
@@ -203,13 +203,13 @@ jobs:
         run: |
           set -euo pipefail
           IDENTITY=$(jq -er '
-            [.[] | select(.name | startswith("Developer ID Application:") and endswith("(6T873K59LQ)"))]
-            | if length == 1 then .[0].hash else error("Expected one Nuphos Developer ID identity") end
+            [.[] | select(.name | startswith("Developer ID Application:") and endswith("(MT4V6HEGSU)"))]
+            | if length == 1 then .[0].hash else error("Expected one Cerin Developer ID identity") end
           ' <<< "$SIGNING_IDENTITIES")
           for target in ${TARGETS//,/ }; do
             for helper in mac-screen-host cua-permission; do
               file="build/local-runtime/$target/$helper"
-              codesign --force --sign "$IDENTITY" --identifier "ai.nuphos.$helper" \
+              codesign --force --sign "$IDENTITY" --identifier "ai.cerin.$helper" \
                 --options runtime --timestamp "$file"
               codesign --verify --strict --verbose=2 "$file"
             done
@@ -225,8 +225,8 @@ jobs:
             dir="build/local-runtime/$target"
             bun build electron/main/local-runtime/cli-host.ts --target=node --format=esm --external @napi-rs/keyring --outfile "$dir/host.mjs"
             # The host must load under plain Node before it ships (#2749).
-            (env -u NUPHOS_AGENT_HOME node "$dir/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'NUPHOS_AGENT_HOME is not set'
-            ASSET="nuphos-agent-$target.tar.gz"
+            (env -u CERIN_AGENT_HOME node "$dir/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'CERIN_AGENT_HOME is not set'
+            ASSET="cerin-agent-$target.tar.gz"
             tar -czf "$ASSET" -C "$dir" .
             if command -v sha256sum >/dev/null; then sha256sum "$ASSET" > "$ASSET.sha256"; else shasum -a 256 "$ASSET" > "$ASSET.sha256"; fi
             gh release upload "$TAG" "$ASSET" "$ASSET.sha256" --repo "$GITHUB_REPOSITORY" --clobber

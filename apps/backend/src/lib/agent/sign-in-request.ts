@@ -17,7 +17,7 @@ import { ASK_OPEN_MS } from './db/conversations-list'
 import type { AgentConversation } from './db'
 import type { ComputerSigners } from './sign-in-signers'
 import type { DownloadHandoffRateLimitResult } from '@/lib/download-handoff-rate-limit'
-import type { NuphosTeamMember, NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamMember, CerinTeamRole } from '@/lib/identity/types'
 
 /** Who was asked to act on which agent, for whom. Names are for display only. */
 export type SignInRequest = {
@@ -35,7 +35,7 @@ export type NudgeKind = 'signInRequest'
 
 export type NudgeConversation = AgentConversation & Partial<Record<NudgeKind, SignInRequest>>
 
-type Member = Pick<NuphosTeamMember, 'id' | 'name' | 'role' | 'joinedAt' | 'removedAt'>
+type Member = Pick<CerinTeamMember, 'id' | 'name' | 'role' | 'joinedAt' | 'removedAt'>
 
 /** A repeat inside this window is stored again but notifies nobody. */
 export const NOTIFY_REPEAT_MS = 30 * 60_000
@@ -85,7 +85,7 @@ export function releaseWhenAskLapses(
  */
 export function signInRecipients(
   runtimeId: string,
-  requester: { id: string; role: NuphosTeamRole },
+  requester: { id: string; role: CerinTeamRole },
   members: Member[],
   /** The computer as on record; without it, only the owner its agent's id names. */
   computer?: ComputerSigners | null,
@@ -197,7 +197,7 @@ const PUSH = {
 export async function nudge(
   kind: NudgeKind,
   input: { teamId: string; runtimeId: string; sessionId: string; requesterId: string },
-  requesterRole: NuphosTeamRole,
+  requesterRole: CerinTeamRole,
   deps: NudgeDeps = nudgeDeps,
 ): Promise<{ askedName: string; notified: boolean }> {
   const { teamId, runtimeId, sessionId, requesterId } = input
@@ -275,7 +275,7 @@ export async function nudge(
 function recipientsFor(
   conversation: NudgeConversation,
   requesterId: string,
-  requesterRole: NuphosTeamRole,
+  requesterRole: CerinTeamRole,
   members: Member[],
   computer: ComputerSigners | null,
 ): Member[] {

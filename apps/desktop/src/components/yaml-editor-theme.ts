@@ -1,6 +1,6 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 
-export const THEME_NAME = 'nuphos-code'
+export const THEME_NAME = 'cerin-code'
 
 // Monaco themes need concrete hex colors, not the `rgb(var(--…))` expressions
 // the rest of the app uses. Resolve each expression against the live DOM so the

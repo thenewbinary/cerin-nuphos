@@ -11,7 +11,7 @@ import type { TransferGroupView } from '@/lib/file-transfer/service'
 // upload flow: files.getUploadURLExternal → POST the bytes →
 // files.completeUploadExternal (which shares into the thread). Requires the
 // files:write bot scope; workspaces installed before that scope was added get
-// a plain-message fallback pointing at the Nuphos desktop download card.
+// a plain-message fallback pointing at the Cerin desktop download card.
 
 // Whole files are buffered through this process on their way to Slack, so cap
 // what we attach. Slack's own ceiling is 1 GB; the transfer store's default
@@ -176,7 +176,7 @@ export async function shareTransferGroupsToSlackThread(args: {
     entry.reason === 'too_large' ? `\`${entry.fileName}\` (too large)` : `\`${entry.fileName}\``,
   )
   const scopeHint = missingScope
-    ? ' Attaching files in Slack requires re-installing the Nuphos Slack app (files permission).'
+    ? ' Attaching files in Slack requires re-installing the Cerin Slack app (files permission).'
     : ''
 
   try {
@@ -184,7 +184,7 @@ export async function shareTransferGroupsToSlackThread(args: {
       token: args.token,
       channel: args.channel,
       threadTs: args.threadTs,
-      text: `📎 This run produced files I couldn't attach here: ${names.join(', ')}. Download them from this conversation in the Nuphos desktop app.${scopeHint}`,
+      text: `📎 This run produced files I couldn't attach here: ${names.join(', ')}. Download them from this conversation in the Cerin desktop app.${scopeHint}`,
     })
   } catch (err) {
     logError('slack.files.fallback_error', err, {

@@ -134,7 +134,7 @@ export function AliyunBindWizard({
                 {oidc && !oidc.configured && (
                   <div className="text-[11.5px] text-status-attention">
                     {t(
-                      "Nuphos's OIDC connector isn't configured on this backend yet — binding will fail until it is.",
+                      "Cerin's OIDC connector isn't configured on this backend yet — binding will fail until it is.",
                     )}
                   </div>
                 )}
@@ -185,7 +185,7 @@ export function AliyunBindWizard({
                 <StepNote>
                   <Fill
                     text={t(
-                      'Keep the trust policy the console generates — its action is {action}, which is what RAM grants to an OIDC provider. {api} is the STS API Nuphos calls, not a trust-policy action; changing the action to it makes the bind fail.',
+                      'Keep the trust policy the console generates — its action is {action}, which is what RAM grants to an OIDC provider. {api} is the STS API Cerin calls, not a trust-policy action; changing the action to it makes the bind fail.',
                     )}
                     action={<span className="font-mono">sts:AssumeRole</span>}
                     api={<span className="font-mono">AssumeRoleWithOIDC</span>}
@@ -215,7 +215,7 @@ export function AliyunBindWizard({
                     type="text"
                     value={roleArn}
                     onChange={(e) => onRoleArnChange(e.target.value)}
-                    placeholder="acs:ram::123456789012345:role/NuphosConnector"
+                    placeholder="acs:ram::123456789012345:role/CerinConnector"
                     className="w-full h-9 px-2.5 rounded-md bg-surface border border-line-control focus:border-line-focus outline-none text-[12.5px] font-mono placeholder:text-tertiary text-main"
                   />
                 </Field>
@@ -227,7 +227,7 @@ export function AliyunBindWizard({
                     type="text"
                     value={oidcProviderArn}
                     onChange={(e) => onOidcProviderArnChange(e.target.value)}
-                    placeholder="acs:ram::123456789012345:oidc-provider/nuphos"
+                    placeholder="acs:ram::123456789012345:oidc-provider/cerin"
                     className="w-full h-9 px-2.5 rounded-md bg-surface border border-line-control focus:border-line-focus outline-none text-[12.5px] font-mono placeholder:text-tertiary text-main"
                   />
                 </Field>

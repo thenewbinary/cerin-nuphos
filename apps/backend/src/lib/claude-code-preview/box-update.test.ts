@@ -123,18 +123,18 @@ describe('Box update', () => {
 
   test('the update installs the newest CLI, drops generated panels and always restarts the host', () => {
     // One install step for create and update: it always fetches the newest CLI.
-    expect(BOX_INSTALL_COMMAND).toContain('curl -fsSL https://nuphos.ai/install | sh')
-    expect(BOX_INSTALL_COMMAND).not.toContain('command -v nuphos')
+    expect(BOX_INSTALL_COMMAND).toContain('curl -fsSL https://cerin.ai/install | sh')
+    expect(BOX_INSTALL_COMMAND).not.toContain('command -v cerin')
     const lines = BOX_UPDATE_COMMAND.split('\n')
 
     // The host is stopped first (its service, so it does not start again mid-install), killed if
     // it hangs, and started last, even when the install fails.
-    expect(lines[0]).toBe('systemctl --user stop nuphos-agent 2>/dev/null')
+    expect(lines[0]).toBe('systemctl --user stop cerin-agent 2>/dev/null')
     expect(lines[1]).toContain('pkill -f "[h]ost.mjs"')
     expect(lines[2]).toBe('pkill -9 -f "[h]ost.mjs"')
     expect(lines.at(-1)).toBe(AGENT_COMMAND)
     // A Box with the service starts it; one whose CLI predates it runs the host as before.
-    expect(AGENT_COMMAND).toMatch(/systemctl --user start nuphos-agent 2>\/dev\/null \|\| pgrep/)
+    expect(AGENT_COMMAND).toMatch(/systemctl --user start cerin-agent 2>\/dev\/null \|\| pgrep/)
     expect(BOX_UPDATE_COMMAND).toContain(`(\n${BOX_INSTALL_COMMAND}\n${BOX_MOUNTS_COMMAND}`)
     // Only session panels without the browser launcher are dropped.
     expect(BOX_UPDATE_COMMAND).toContain('grep -L web-browser.desktop')
@@ -248,21 +248,21 @@ describe('Box update', () => {
 
 /** Each ~/AGENTS.md that was written for agents, byte for byte (their sha256 are in IMAGE_AGENTS_SHA256). */
 const WRITTEN_AGENTS = {
-  /** The Nuphos Box image's. */
+  /** The Cerin Box image's. */
   image: `# Agent notes
 
-You are running on a Nuphos Box: a Linux VM in the cloud that runs this team's
-Nuphos agents. People talk to you through Nuphos; nobody uses this machine's
+You are running on a Cerin Box: a Linux VM in the cloud that runs this team's
+Cerin agents. People talk to you through Cerin; nobody uses this machine's
 own console. Work in /data/workspace.
 
 - Anything visual (a web page, a browser, a GUI app): use the desktop tools
-  (the \`nuphos-desktop\` MCP server: get_app_state, click, type_text, ...).
+  (the \`cerin-desktop\` MCP server: get_app_state, click, type_text, ...).
   The first call starts this conversation's own desktop, and the person
-  watches it live in Nuphos. Do not start X, Xvnc or a browser on DISPLAY=:1
+  watches it live in Cerin. Do not start X, Xvnc or a browser on DISPLAY=:1
   from the shell; that display is not used for conversations.
 - ~/MACHINE.md lists the machine's size, what survives a stop, and the
   installed tools. Ignore its notes about the instabox dashboard, its
-  Computer tab and display :1; they do not apply on a Nuphos Box.
+  Computer tab and display :1; they do not apply on a Cerin Box.
 `,
   /** What instabox writes wherever ~/AGENTS.md is missing. */
   instabox: `# Agent notes

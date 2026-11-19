@@ -20,9 +20,9 @@ export { persistCloudflareBinding }
 
 export const cloudflareAppRoutes = new Hono()
 
-// The Electron deep-link target. Same nuphos:// scheme as github/gitlab, with a
+// The Electron deep-link target. Same cerin:// scheme as github/gitlab, with a
 // distinct hostname so main.ts can route by it.
-const DESKTOP_CALLBACK = 'nuphos://cloudflare-callback'
+const DESKTOP_CALLBACK = 'cerin://cloudflare-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)

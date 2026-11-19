@@ -12,13 +12,13 @@ import type { UserInfo } from '../auth-status.ts'
 import type { Config } from './config.ts'
 import type { TokenStore } from './token-store.ts'
 
-const CLOUD = 'https://api.nuphos.ai'
-const SELF = 'https://nuphos.example.com'
+const CLOUD = 'https://platform.cerin.ai'
+const SELF = 'https://cerin.example.com'
 const ALICE: UserInfo = { id: 'alice', name: 'Alice', email: 'a@example.com', username: 'alice' }
 const BOB: UserInfo = { id: 'bob', name: 'Bob', email: 'b@example.com', username: 'bob' }
 
 async function harness({ secure = true } = {}) {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-accounts-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-accounts-'))
   const file = path.join(dir, 'desktop.yaml')
   const items = new Map<string, string>()
   const store: TokenStore = {

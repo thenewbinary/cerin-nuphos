@@ -3,11 +3,11 @@ import { collectCookieTokenCandidates } from '@/lib/cookie-auth'
 import { AppError } from '@/lib/errors'
 import { authenticateToken, getTeamMembership } from '@/lib/identity'
 
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 import type { MiddlewareHandler } from 'hono'
 
 export type AdminVars = {
-  adminAuthSource: 'nuphos-token'
+  adminAuthSource: 'cerin-token'
   adminUserId?: string
 }
 
@@ -23,27 +23,27 @@ export const requireAdmin: MiddlewareHandler<{ Variables: AdminVars }> = async (
   const cookieAuth = await authenticateCookieAdmin(c.req.header('Cookie'))
 
   if (cookieAuth.status === 'ok') {
-    c.set('adminAuthSource', 'nuphos-token')
+    c.set('adminAuthSource', 'cerin-token')
     c.set('adminUserId', cookieAuth.user.id)
     await next()
 
     return
   }
   if (cookieAuth.status === 'not-admin') {
-    throw new AppError(403, 'forbidden', `Nuphos user ${cookieAuth.user.id} is not an Nuphos admin`)
+    throw new AppError(403, 'forbidden', `Cerin user ${cookieAuth.user.id} is not an Cerin admin`)
   }
-  throw new AppError(401, 'unauthorized', 'Missing Nuphos token')
+  throw new AppError(401, 'unauthorized', 'Missing Cerin token')
 }
 
 type CookieAdminAuthResult =
-  | { status: 'ok'; user: NuphosUser }
+  | { status: 'ok'; user: CerinUser }
   | { status: 'missing' }
-  | { status: 'not-admin'; user: NuphosUser }
+  | { status: 'not-admin'; user: CerinUser }
 
 async function authenticateCookieAdmin(
   cookieHeader: string | undefined,
 ): Promise<CookieAdminAuthResult> {
-  let authenticatedUser: NuphosUser | null = null
+  let authenticatedUser: CerinUser | null = null
 
   for (const token of collectCookieTokenCandidates(cookieHeader, config.admin.cookieNames)) {
     const result = await authenticateToken(token)

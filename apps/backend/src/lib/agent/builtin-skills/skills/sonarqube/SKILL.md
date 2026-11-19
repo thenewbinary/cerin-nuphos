@@ -6,8 +6,8 @@ description: Inspect SonarQube projects, Quality Gate status, code issues, vulne
 # SonarQube
 
 Use this skill to inspect analysis results already stored in a SonarQube instance
-that the user's Nuphos team has connected. Nuphos keeps the SonarQube token
-encrypted on the backend. The Agent calls curated Nuphos endpoints and never
+that the user's Cerin team has connected. Cerin keeps the SonarQube token
+encrypted on the backend. The Agent calls curated Cerin endpoints and never
 receives the token.
 
 This connector does **not** grant access to GitHub, GitLab, or the user's source
@@ -23,7 +23,7 @@ id already filled in. Pick the exact integration the user names; when several ex
 user did not identify one, ask instead of guessing.
 
 ```bash
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://platform.cerin.ai}$1" "${@:2}"; }
 
 SQ=<integrationId from the credential section>
 
@@ -163,7 +163,7 @@ explicitly supplied for the SonarQube connector test.
 When `sonarqube_scan_fixture` is present in the current tool list, the backend
 operator has explicitly enabled that isolated development path. It accepts only
 the bound integration ID and always scans project
-`nuphos-sonarqube-isolated-fixture`; there is no source/path/URL argument.
+`cerin-sonarqube-isolated-fixture`; there is no source/path/URL argument.
 
 1. Call `sonarqube_scan_fixture` once with the selected integration ID.
 2. Poll the returned task with `sonarqube_scan_status` at reasonable intervals.

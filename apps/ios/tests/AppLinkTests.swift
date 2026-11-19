@@ -6,16 +6,16 @@ enum AppLinkTests {
         let child = "6797aa32-c875-42d7-8530-1c635060bae5"
         func route(_ link: String) -> AppLink? { AppLink(URL(string: link)!) }
         func handoff(_ page: String) -> String {
-            var components = URLComponents(string: "nuphos://open")!
+            var components = URLComponents(string: "cerin://open")!
             components.queryItems = [.init(name: "url", value: page), .init(name: "path", value: URL(string: page)?.path())]
             return components.url!.absoluteString
         }
 
-        let session = "https://nuphos.ai/teams/\(team)/agent/\(child)"
-        let plan = "https://nuphos.ai/teams/\(team)/plans/42"
+        let session = "https://platform.cerin.ai/teams/\(team)/agent/\(child)"
+        let plan = "https://platform.cerin.ai/teams/\(team)/plans/42"
 
-        // A tapped nuphos.ai link and the page nuphos.ai hands over through
-        // "Open in Nuphos" land on the same screen.
+        // A tapped platform.cerin.ai link and the page platform.cerin.ai hands over through
+        // "Open in Cerin" land on the same screen.
         for link in [session, handoff(session)] {
             precondition(route(link) == .session(teamId: team, sessionId: child), link)
         }
@@ -28,10 +28,10 @@ enum AppLinkTests {
 
         // Pages without an app screen keep the app where it is.
         for page in [
-            "https://nuphos.ai/teams/\(team)/devices/6654656b-87b7-c9a0-7f3a-5d7817b8b06e",
-            "https://nuphos.ai/teams/\(team)/agent/memories",
-            "https://nuphos.ai/teams/\(team)/infra/aws/793407052998",
-            "https://nuphos.ai/",
+            "https://platform.cerin.ai/teams/\(team)/devices/6654656b-87b7-c9a0-7f3a-5d7817b8b06e",
+            "https://platform.cerin.ai/teams/\(team)/agent/memories",
+            "https://platform.cerin.ai/teams/\(team)/infra/aws/793407052998",
+            "https://platform.cerin.ai/",
         ] {
             precondition(route(page) == nil, page)
             precondition(route(handoff(page)) == nil, handoff(page))
@@ -40,12 +40,12 @@ enum AppLinkTests {
         // The hand-off carries no more trust than the page inside it.
         for link in [
             handoff("https://evil.com/teams/\(team)/agent/\(child)"),
-            handoff("https://dev.nuphos.ai/teams/\(team)/agent/\(child)"),
-            handoff("http://nuphos.ai/teams/\(team)/agent/\(child)"),
+            handoff("https://dev.platform.cerin.ai/teams/\(team)/agent/\(child)"),
+            handoff("http://platform.cerin.ai/teams/\(team)/agent/\(child)"),
             handoff(handoff(session)),
-            "nuphos://open?path=/teams/\(team)/agent/\(child)",
-            "nuphos://agent-chat?url=\(session)",
-            "nuphos://open",
+            "cerin://open?path=/teams/\(team)/agent/\(child)",
+            "cerin://agent-chat?url=\(session)",
+            "cerin://open",
         ] {
             precondition(route(link) == nil, link)
         }

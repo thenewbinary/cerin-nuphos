@@ -156,13 +156,13 @@ test('a check that fails is logged, never thrown at the host', async () => {
   assert.equal(await tickCliUpdate(value), null)
 })
 
-test('nuphos update that cannot start says so instead of crashing the host', async () => {
-  assert.equal(await runCliUpdate(path.join(tmpdir(), 'no-such-nuphos')), false)
+test('cerin update that cannot start says so instead of crashing the host', async () => {
+  assert.equal(await runCliUpdate(path.join(tmpdir(), 'no-such-cerin')), false)
   // Node itself starts on every platform (macOS has no /bin/true).
   assert.equal(await runCliUpdate(process.execPath), true)
 })
 
-test('the idle wait follows NUPHOS_AUTO_UPDATE_IDLE_SECONDS, as on the Desktop', async () => {
+test('the idle wait follows CERIN_AUTO_UPDATE_IDLE_SECONDS, as on the Desktop', async () => {
   const short = deps({ idleSeconds: () => 40, idleThreshold: 30 })
   const long = deps({ idleSeconds: () => 40 })
 

@@ -570,12 +570,12 @@ test('a queued answer keeps the question it names and is admitted naming it', ()
     'en',
     {
       clientCapabilities: { localTools: true },
-      decisionReplyTo: 'nuphos-q1',
+      decisionReplyTo: 'cerin-q1',
     },
     undefined,
   )
 
-  expect(context).toMatchObject({ decisionReplyTo: 'nuphos-q1' })
+  expect(context).toMatchObject({ decisionReplyTo: 'cerin-q1' })
   // An id the resolve route would refuse is not carried at all.
   expect(
     queuedChatContext(c, 'en', { decisionReplyTo: 'x'.repeat(201) }, undefined),
@@ -586,12 +586,12 @@ test('a queued answer keeps the question it names and is admitted naming it', ()
     message: input,
     locale: 'en',
     localTools: true,
-    decisionReplyTo: 'nuphos-q1',
+    decisionReplyTo: 'cerin-q1',
   })
 
   expect(body).toMatchObject({
     id: 'conv-1',
-    decisionReplyTo: 'nuphos-q1',
+    decisionReplyTo: 'cerin-q1',
   })
   expect(
     queuedChatBody('conv-1', 'team-1', {

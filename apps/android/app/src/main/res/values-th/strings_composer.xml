@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">ข้อมูลรับรอง · %1$d</string>
     <string name="composer_computers_count">คอมพิวเตอร์ · %1$d</string>
     <string name="composer_queue_a_message">เพิ่มข้อความเข้าคิว</string>
-    <string name="composer_ask_nuphos">ถาม Nuphos ได้ทุกเรื่อง</string>
+    <string name="composer_ask_cerin">ถาม Cerin ได้ทุกเรื่อง</string>
     <string name="composer_remove_attachment_failed">นำไฟล์แนบที่บันทึกไว้นี้ออกไม่ได้ โปรดตรวจสอบพื้นที่เก็บข้อมูลแล้วลองอีกครั้ง</string>
     <string name="composer_photos">รูปภาพ</string>
     <string name="composer_files">ไฟล์</string>
@@ -55,8 +55,8 @@
     <string name="composer_clear">ล้าง</string>
     <string name="composer_retry">ลองอีกครั้ง</string>
     <string name="composer_loading_iam">กำลังโหลด IAM…</string>
-    <string name="composer_no_computers">ไม่มีคอมพิวเตอร์ที่ใช้ได้ เชื่อมต่อคอมพิวเตอร์ใน Nuphos เพื่อใช้งานที่นี่</string>
-    <string name="composer_no_computers_or_iam">ไม่มีคอมพิวเตอร์หรือ IAM ที่ใช้ได้ เชื่อมต่อคอมพิวเตอร์หรือบัญชีคลาวด์ใน Nuphos เพื่อใช้งานที่นี่</string>
+    <string name="composer_no_computers">ไม่มีคอมพิวเตอร์ที่ใช้ได้ เชื่อมต่อคอมพิวเตอร์ใน Cerin เพื่อใช้งานที่นี่</string>
+    <string name="composer_no_computers_or_iam">ไม่มีคอมพิวเตอร์หรือ IAM ที่ใช้ได้ เชื่อมต่อคอมพิวเตอร์หรือบัญชีคลาวด์ใน Cerin เพื่อใช้งานที่นี่</string>
     <string name="composer_allow_computers">อนุญาตให้เอเจนต์นี้ควบคุมคอมพิวเตอร์ที่คุณเลือก</string>
     <string name="composer_permission_mode">โหมดสิทธิ์</string>
     <string name="composer_load_runtimes_failed">โหลดรันไทม์ไม่ได้</string>
@@ -66,7 +66,7 @@
     <string name="composer_runtime_wait">โปรดรอให้คำตอบปัจจุบันหรือข้อความที่รอดำเนินการเสร็จก่อนสลับรันไทม์</string>
     <string name="composer_loading_runtimes">กำลังโหลดรันไทม์…</string>
     <string name="composer_no_runtimes">ไม่มีรันไทม์ที่ใช้ได้</string>
-    <string name="composer_no_runtimes_body">เปิด Nuphos บนคอมพิวเตอร์ของคุณเพื่อเพิ่ม Box หรือเชื่อมต่อคอมพิวเตอร์ของคุณเอง</string>
+    <string name="composer_no_runtimes_body">เปิด Cerin บนคอมพิวเตอร์ของคุณเพื่อเพิ่ม Box หรือเชื่อมต่อคอมพิวเตอร์ของคุณเอง</string>
     <string name="composer_manage_runtimes">จัดการคอมพิวเตอร์และรันไทม์</string>
     <string name="composer_refresh_runtimes">รีเฟรชรันไทม์</string>
     <string name="composer_move_to">ย้ายไปยัง %1$s ใช่ไหม</string>

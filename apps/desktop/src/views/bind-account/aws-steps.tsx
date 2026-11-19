@@ -44,7 +44,7 @@ export function AwsWizardStepContent({
             <li>
               <Fill
                 text={t('Provider URL: {value}')}
-                value={<CopyableValue value="https://nuphos.ai" />}
+                value={<CopyableValue value="https://platform.cerin.ai" />}
               />
             </li>
             <li>
@@ -63,7 +63,7 @@ export function AwsWizardStepContent({
           <div className="text-[11.5px] text-tertiary">
             <Fill
               text={t('Already added {provider} in this AWS account? Skip ahead with Next.')}
-              provider={<span className="font-mono">nuphos.ai</span>}
+              provider={<span className="font-mono">platform.cerin.ai</span>}
             />
           </div>
         </div>
@@ -87,7 +87,7 @@ export function AwsWizardStepContent({
             <li>
               <Fill
                 text={t('Identity provider: {provider} · Audience: {audience}')}
-                provider={<span className="text-main">nuphos.ai</span>}
+                provider={<span className="text-main">platform.cerin.ai</span>}
                 audience={<span className="text-main">sts.amazonaws.com</span>}
               />
             </li>
@@ -95,9 +95,9 @@ export function AwsWizardStepContent({
               <Fill
                 text={t('Click {button} — Key: {field} · Condition: {condition} · Value: {value}')}
                 button={<span className="text-main">Add condition</span>}
-                field={<CopyableValue value="nuphos.ai:sub" />}
+                field={<CopyableValue value="platform.cerin.ai:sub" />}
                 condition={<span className="text-main">StringEquals</span>}
-                value={<CopyableValue value={`nuphos:team:${teamId}`} />}
+                value={<CopyableValue value={`cerin:team:${teamId}`} />}
               />
             </li>
             <li>
@@ -106,7 +106,7 @@ export function AwsWizardStepContent({
           </StepList>
           <div className="text-[11.5px] text-tertiary">
             {t(
-              'The condition pins this role to your team — without it, any Nuphos team could assume the role.',
+              'The condition pins this role to your team — without it, any Cerin team could assume the role.',
             )}
           </div>
         </div>
@@ -116,7 +116,7 @@ export function AwsWizardStepContent({
         <div className="space-y-3">
           <div className="text-[12px] text-secondary leading-relaxed">
             <Fill
-              text={t('On the {page} page, choose what Nuphos is allowed to do in this account:')}
+              text={t('On the {page} page, choose what Cerin is allowed to do in this account:')}
               page={<span className="text-main">Add permissions</span>}
             />
           </div>
@@ -162,7 +162,7 @@ export function AwsWizardStepContent({
             <li>
               <Fill
                 text={t('Role name: {value} (or any name you like)')}
-                value={<CopyableValue value="NuphosRole" />}
+                value={<CopyableValue value="CerinRole" />}
               />
             </li>
             <li>
@@ -192,14 +192,14 @@ export function AwsWizardStepContent({
           <Field
             label={t('IAM Role ARN')}
             hint={t(
-              'The role Nuphos will assume in your account. Account ID is parsed from the ARN.',
+              'The role Cerin will assume in your account. Account ID is parsed from the ARN.',
             )}
           >
             <input
               type="text"
               value={roleArn}
               onChange={(e) => onRoleArnChange(e.target.value)}
-              placeholder="arn:aws:iam::123456789012:role/NuphosRole"
+              placeholder="arn:aws:iam::123456789012:role/CerinRole"
               className="w-full h-9 px-2.5 rounded-md bg-surface border border-line-control focus:border-line-focus outline-none text-[12.5px] font-mono placeholder:text-tertiary text-main"
             />
           </Field>

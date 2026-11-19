@@ -125,7 +125,7 @@ async function completeDiscordInteraction(
   } catch (err) {
     logError('discord.interaction.error', err, { interaction_id: interaction.id })
     await dependencies.editResponse(interaction.application_id, interaction.token, {
-      content: 'Nuphos could not complete this interaction. Please try again.',
+      content: 'Cerin could not complete this interaction. Please try again.',
     })
   }
 }
@@ -165,7 +165,7 @@ export async function processDiscordInteraction(
 
     return ephemeral(modeResult ?? (await handleDiscordChannelCommand(interaction)))
   }
-  const match = interaction.data?.custom_id?.match(/^nuphos:tool:(approve|reject):(.+)$/)
+  const match = interaction.data?.custom_id?.match(/^cerin:tool:(approve|reject):(.+)$/)
 
   if (interaction.type !== 3 || !match) return ephemeral('This interaction is not supported.')
   const discordUserId = interaction.member?.user?.id ?? interaction.user?.id
@@ -187,11 +187,11 @@ export async function processDiscordInteraction(
     guildId: decision.guildId,
     discordUserId,
     teamId: decision.teamId,
-    nuphosUserId: decision.actorUserId,
+    cerinUserId: decision.actorUserId,
     enabled: true,
   })
 
-  if (!mapping || !(await getTeamMembership(mapping.nuphosUserId, decision.teamId))) {
+  if (!mapping || !(await getTeamMembership(mapping.cerinUserId, decision.teamId))) {
     return ephemeral('Only the person whose credentials this turn is using can decide it.')
   }
   const wait = await findPreviewWaitByRef('agent-permission', decision.ref)
@@ -230,7 +230,7 @@ export async function processDiscordInteraction(
     session_id: decision.sessionId,
     discord_guild_id: decision.guildId,
     discord_user_id: discordUserId,
-    nuphos_user_id: mapping.nuphosUserId,
+    cerin_user_id: mapping.cerinUserId,
   })
 
   return {

@@ -50,13 +50,13 @@ function awaitPicture(host: HTMLElement, shown: () => void, failed: () => void):
 /** A Box pauses the agent's input tools while the owner holds its display; a Mac's screen (:0) does not. */
 const holdingStatus = (display: number) =>
   display === 0
-    ? t('You have the Mac’s screen; Nuphos can still use it too.')
-    : t('You have the desktop; Nuphos’s input tools wait until you hand it back.')
+    ? t('You have the Mac’s screen; Cerin can still use it too.')
+    : t('You have the desktop; Cerin’s input tools wait until you hand it back.')
 
 /**
  * A conversation's own desktop on its Box, watched over the Box's tunnel;
  * `display` is the X display number, or 0 for a Mac's own screen, which
- * Nuphos serves itself with no Mac account. View-only until the owner takes it over:
+ * Cerin serves itself with no Mac account. View-only until the owner takes it over:
  * the backend drops the viewer's input until then, and taking over also makes
  * the agent's input tools on that desktop wait. A dropped stream reconnects,
  * as the viewer again: the host hands the desktop back when a stream closes.

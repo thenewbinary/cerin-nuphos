@@ -73,7 +73,7 @@ let departed = new Set<string>()
 useIdentity({
   getTeamMembership: async (userId) =>
     departed.has(userId) ? null : ({ role: 'MEMBER' } as never),
-  signNuphosToken: () => 'test-token',
+  signCerinToken: () => 'test-token',
   getTeamMembers: async () =>
     [
       ...['owner', 'agent-a-owner', 'mei'].map((id) => ({
@@ -118,11 +118,11 @@ useSessionExecutionState({
 const person: MessageMetadata = {
   version: 1,
   sender: { type: 'user', id: 'owner', displayName: 'Owner' },
-  source: 'nuphos',
+  source: 'cerin',
   sentAt: new Date().toISOString(),
 }
 
-// What Nuphos records when a person answers a question card: theirs, but not news to anyone.
+// What Cerin records when a person answers a question card: theirs, but not news to anyone.
 const cardAnswer: MessageMetadata = {
   ...person,
   replyTo: { authorName: 'Scribe', text: 'Which regions?' },
@@ -223,7 +223,7 @@ describe('waking a channel’s agents', () => {
       message: {
         source: 'agent.resource',
         actorUserId: 'agent-a-owner',
-        renderedText: 'New messages in a Nuphos channel (channelId channel).',
+        renderedText: 'New messages in a Cerin channel (channelId channel).',
         metadata: {
           sender: { type: 'system', id: 'channel:channel', displayName: 'channel title' },
           source: 'agent.resource',
@@ -284,7 +284,7 @@ describe('waking a channel’s agents', () => {
       'agent.resource',
       {
         version: 1,
-        sender: { type: 'system', id: 'nuphos:decision', displayName: 'Nuphos' },
+        sender: { type: 'system', id: 'cerin:decision', displayName: 'Cerin' },
         source: 'agent.resource',
         sentAt: new Date().toISOString(),
       },
@@ -663,7 +663,7 @@ describe('a person posting while an agent’s turn runs', () => {
     const [steer] = steers
 
     expect(steer!.userId).toBe('agent-a-owner')
-    expect(steer!.text).toStartWith('New messages in a Nuphos channel (channelId channel).')
+    expect(steer!.text).toStartWith('New messages in a Cerin channel (channelId channel).')
     expect(steer!.text).toContain('go ahead')
     expect(steer!.text).toContain('"fromOwner": true')
     expect(steer!.metadata).toMatchObject({
@@ -892,7 +892,7 @@ describe('reading a channel', () => {
     // Nor does an agent, even one acting for the owner or claiming their id.
     await say('go ahead', {
       ...agentSpeaker('bot'),
-      source: 'nuphos',
+      source: 'cerin',
       sender: {
         type: 'agent',
         id: 'token',

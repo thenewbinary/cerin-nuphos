@@ -7,7 +7,7 @@
 // sentinel line to stdout carrying the JSON output, which the backend validates
 // against panelOutputSchema (panel-output.ts).
 //
-// Panel code can read NUPHOS_TOKEN directly. That token is a short-lived
+// Panel code can read CERIN_TOKEN directly. That token is a short-lived
 // dashboard panel token: bound to this team and the script's author, GET-only, and
 // limited to the credentials selected in the panel's settings. The backend
 // enforces those limits; the checks in `request` below only keep the built-in
@@ -67,8 +67,8 @@ function fail(error) {
 const runDir = process.argv[2]
 if (!runDir) fail('panel-runner: missing run directory argument')
 
-const backendUrl = (process.env.NUPHOS_BACKEND_URL || '').replace(/\/$/, '')
-const token = process.env.NUPHOS_TOKEN || ''
+const backendUrl = (process.env.CERIN_BACKEND_URL || '').replace(/\/$/, '')
+const token = process.env.CERIN_TOKEN || ''
 
 // A route answers `<integration>_not_bound` when the integration it reads is no
 // longer connected to the team (or not selected for this panel). Its name, as a
@@ -99,18 +99,18 @@ function notConnectedName(code) {
   return (brand ? BRANDS[brand] : key[0].toUpperCase()) + rest
 }
 
-// Thin, GET-only Nuphos client restricted to this dashboard's team and the
+// Thin, GET-only Cerin client restricted to this dashboard's team and the
 // configured backend origin. Selected credentials stay reachable so panels can
-// query provider read APIs when Nuphos has no equivalent endpoint.
+// query provider read APIs when Cerin has no equivalent endpoint.
 async function request(path) {
-  if (!backendUrl) throw new Error('NUPHOS_BACKEND_URL is not set for the panel job')
+  if (!backendUrl) throw new Error('CERIN_BACKEND_URL is not set for the panel job')
   let url
   if (/^https?:\/\//i.test(path)) {
     // Absolute URLs may only target the configured backend origin, so this
     // client won't forward the bearer token to an arbitrary host. The `+ '/'`
     // boundary rejects look-alikes like `<backend>.evil.com`.
     if (path !== backendUrl && !path.startsWith(`${backendUrl}/`)) {
-      throw new Error('nuphos client may only call the Nuphos backend origin')
+      throw new Error('cerin client may only call the Cerin backend origin')
     }
     url = path
   } else {
@@ -119,7 +119,7 @@ async function request(path) {
   const parsedUrl = new URL(url)
   const teamId = globalThis.params?.teamId
   if (!teamId || !parsedUrl.pathname.startsWith(`/teams/${encodeURIComponent(teamId)}/`)) {
-    throw new Error('nuphos client may only call routes for this dashboard team')
+    throw new Error('cerin client may only call routes for this dashboard team')
   }
   const res = await fetch(url, { headers: token ? { authorization: `Bearer ${token}` } : {} })
   const text = await res.text()
@@ -131,7 +131,7 @@ async function request(path) {
   }
   if (!res.ok) {
     const detail = typeof parsed === 'string' ? parsed : JSON.stringify(parsed)
-    const error = new Error(`nuphos GET ${path} failed: ${res.status} ${detail}`)
+    const error = new Error(`cerin GET ${path} failed: ${res.status} ${detail}`)
 
     error.notConnected = notConnectedName(parsed?.error?.code)
     throw error
@@ -139,7 +139,7 @@ async function request(path) {
   return parsed
 }
 
-const nuphos = {
+const cerin = {
   get: (path) => request(path),
 }
 
@@ -154,7 +154,7 @@ async function main() {
   }
 
   globalThis.params = params
-  globalThis.nuphos = nuphos
+  globalThis.cerin = cerin
   globalThis.emit = emit
 
   const scriptUrl = pathToFileURL(resolve(runDir, 'script.mjs')).href

@@ -23,7 +23,7 @@ import type { Context } from 'hono'
 
 export const slackAppRoutes = new Hono()
 
-const DESKTOP_CALLBACK = 'nuphos://slack-callback'
+const DESKTOP_CALLBACK = 'cerin://slack-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)
@@ -215,7 +215,7 @@ export async function persistSlackBinding(
     if (e instanceof Error && 'code' in e && (e as { code?: number }).code === 11000) {
       return {
         error: 'workspace_taken',
-        error_description: 'This Slack workspace is already connected to another Nuphos team',
+        error_description: 'This Slack workspace is already connected to another Cerin team',
       }
     }
     throw e
@@ -225,7 +225,7 @@ export async function persistSlackBinding(
     slackWorkspaceId: draft.slackTeamId,
     teamId: teamId.toHexString(),
     installerSlackUserId: draft.installerSlackUserId,
-    requesterNuphosUserId: requesterUserId,
+    requesterCerinUserId: requesterUserId,
   })
 
   // Only DM the installer on a fresh install. Reinstall reuses this callback

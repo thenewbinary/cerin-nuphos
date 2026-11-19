@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 
 import { AppError } from '@/lib/errors'
-import { getNuphosUserById, getTeamsByIds } from '@/lib/identity'
+import { getCerinUserById, getTeamsByIds } from '@/lib/identity'
 import { logError } from '@/lib/observability'
 
 import {
@@ -63,7 +63,7 @@ function alreadyConnected(runtimeId: string): AppError {
 
 async function pairingClientMetadata(args: PairRuntimeArgs, runtimeRecordId: string) {
   const [team] = await getTeamsByIds([args.teamId])
-  const user = await getNuphosUserById(args.userId)
+  const user = await getCerinUserById(args.userId)
 
   return {
     backendOrigin: (publicBackendUrl() ?? runtimeBackendUrl(false) ?? '').replace(/\/$/u, ''),
@@ -202,7 +202,7 @@ export async function pairTeamRuntime(
       throw new AppError(
         422,
         'runtime_provider_undetected',
-        'Nuphos connected to this agent but could not tell whether it runs Claude Code or Codex. Make sure the agent image is up to date.',
+        'Cerin connected to this agent but could not tell whether it runs Claude Code or Codex. Make sure the agent image is up to date.',
       )
     const label = args.label || new URL(url).hostname.slice(0, 120)
     const runtime = await registerTeamRuntime({

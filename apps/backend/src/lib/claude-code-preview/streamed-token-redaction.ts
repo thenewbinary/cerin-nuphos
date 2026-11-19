@@ -7,7 +7,7 @@ import type { PreviewTextMetadata } from './preview-agent-update'
 // How every token this backend signs begins.
 const TOKEN_STARTS = [
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.', // b64url of the fixed HS256 JWT header
-  'nuphos-runtime-skills-v1.',
+  'cerin-runtime-skills-v1.',
 ]
 const SEPARATORS = new Set([' ', '\n', '\r', '\t', '"', "'", '\\'])
 

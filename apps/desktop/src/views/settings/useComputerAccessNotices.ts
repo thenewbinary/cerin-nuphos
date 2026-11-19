@@ -53,7 +53,7 @@ export function useComputerAccessNotices(
 
   useEffect(() => {
     if (!teamId || !viewerId || !list) return
-    const started = `nuphos.computerAccessSeen.${viewerId}`
+    const started = `cerin.computerAccessSeen.${viewerId}`
     const key = `${started}.${teamId}`
     const firstLook = readLocalStorage(started) === null
     const { notices, next } = freshAccess(

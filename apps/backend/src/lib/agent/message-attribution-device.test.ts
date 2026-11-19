@@ -30,13 +30,13 @@ const collection = (name: string) => ({
 useDb({ db: () => ({ collection }) })
 
 test('only a device registered to the sender is attached, without its id', async () => {
-  expect((await createMessageMetadata(sender, 'nuphos', 'mine')).device).toEqual({
+  expect((await createMessageMetadata(sender, 'cerin', 'mine')).device).toEqual({
     label: 'My Mac',
     platform: 'darwin',
   })
-  expect(await createMessageMetadata(sender, 'nuphos', 'theirs')).not.toHaveProperty('device')
-  expect(await createMessageMetadata(sender, 'nuphos', 'unknown')).not.toHaveProperty('device')
-  expect((await createMessageMetadata(sender, 'nuphos')).sender.email).toBe('me@example.com')
+  expect(await createMessageMetadata(sender, 'cerin', 'theirs')).not.toHaveProperty('device')
+  expect(await createMessageMetadata(sender, 'cerin', 'unknown')).not.toHaveProperty('device')
+  expect((await createMessageMetadata(sender, 'cerin')).sender.email).toBe('me@example.com')
 })
 
 test('the email stays out of channels people outside the team can read', async () => {
@@ -47,7 +47,7 @@ test('the email stays out of channels people outside the team can read', async (
 
 test("an agent token's message is the bot's, on its user's behalf, and records the token", async () => {
   const cliToken = { id: 'tok1', kind: 'agent' as const, name: 'Grok Bot', teamId: 't1' }
-  const metadata = await createMessageMetadata(sender, 'nuphos', 'mine', cliToken)
+  const metadata = await createMessageMetadata(sender, 'cerin', 'mine', cliToken)
 
   expect(metadata.sender).toEqual({
     type: 'agent',
@@ -58,7 +58,7 @@ test("an agent token's message is the bot's, on its user's behalf, and records t
   expect(metadata.cliTokenId).toBe('tok1')
   expect(metadata).not.toHaveProperty('device')
 
-  const personal = await createMessageMetadata(sender, 'nuphos', undefined, {
+  const personal = await createMessageMetadata(sender, 'cerin', undefined, {
     id: 'tok2',
     kind: 'personal',
     name: 'laptop',

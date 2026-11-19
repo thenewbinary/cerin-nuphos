@@ -13,39 +13,39 @@ import e2e_runner as runner
 class ConfigTests(unittest.TestCase):
     def config(self, **changes):
         values = {
-            "NUPHOS_E2E_DEVICE_SERIAL": "emulator-5556",
-            "NUPHOS_E2E_EXPECTED_EMAIL": "tester@example.invalid",
-            "NUPHOS_E2E_TEAM_ID": "fixture-team",
-            "NUPHOS_E2E_LOGIN_MODE": "existing-session",
+            "CERIN_E2E_DEVICE_SERIAL": "emulator-5556",
+            "CERIN_E2E_EXPECTED_EMAIL": "tester@example.invalid",
+            "CERIN_E2E_TEAM_ID": "fixture-team",
+            "CERIN_E2E_LOGIN_MODE": "existing-session",
         }
         values.update(changes)
         return runner.read_config(values)
 
     def test_requires_identity_device_and_explicit_mode(self):
-        for key in ["NUPHOS_E2E_DEVICE_SERIAL", "NUPHOS_E2E_EXPECTED_EMAIL",
-                    "NUPHOS_E2E_TEAM_ID", "NUPHOS_E2E_LOGIN_MODE"]:
+        for key in ["CERIN_E2E_DEVICE_SERIAL", "CERIN_E2E_EXPECTED_EMAIL",
+                    "CERIN_E2E_TEAM_ID", "CERIN_E2E_LOGIN_MODE"]:
             with self.assertRaises(runner.SetupError):
                 self.config(**{key: ""})
         with self.assertRaises(runner.SetupError):
-            self.config(NUPHOS_E2E_DEVICE_SERIAL="x; echo secret")
+            self.config(CERIN_E2E_DEVICE_SERIAL="x; echo secret")
 
     def test_password_requires_separate_explicit_dedicated_opt_in(self):
         with self.assertRaises(runner.SetupError):
-            self.config(NUPHOS_E2E_LOGIN_MODE="password", NUPHOS_E2E_PASSWORD="secret-value-123")
-        c = self.config(NUPHOS_E2E_LOGIN_MODE="password", NUPHOS_E2E_PASSWORD="secret-value-123",
-                        NUPHOS_E2E_ALLOW_LOGIN="true")
+            self.config(CERIN_E2E_LOGIN_MODE="password", CERIN_E2E_PASSWORD="secret-value-123")
+        c = self.config(CERIN_E2E_LOGIN_MODE="password", CERIN_E2E_PASSWORD="secret-value-123",
+                        CERIN_E2E_ALLOW_LOGIN="true")
         self.assertNotIn("secret-value-123", repr(c))
 
     def test_existing_mode_rejects_unused_password(self):
         with self.assertRaises(runner.SetupError):
-            self.config(NUPHOS_E2E_PASSWORD="secret-value-123")
+            self.config(CERIN_E2E_PASSWORD="secret-value-123")
 
     def test_env_file_is_literal_and_secret_files_are_private(self):
         with tempfile.TemporaryDirectory() as directory:
             p = Path(directory) / "config"
-            p.write_text("NUPHOS_E2E_PASSWORD='literal$() value'\n")
+            p.write_text("CERIN_E2E_PASSWORD='literal$() value'\n")
             p.chmod(0o600)
-            self.assertEqual("literal$() value", runner.load_file(p)["NUPHOS_E2E_PASSWORD"])
+            self.assertEqual("literal$() value", runner.load_file(p)["CERIN_E2E_PASSWORD"])
             p.chmod(0o644)
             with self.assertRaises(runner.SetupError):
                 runner.load_file(p)
@@ -57,8 +57,8 @@ class ConfigTests(unittest.TestCase):
             if "instrument" in argv:
                 raise runner.SetupError("Instrumentation failed.")
             return "device\n"
-        c = self.config(NUPHOS_E2E_LOGIN_MODE="password", NUPHOS_E2E_PASSWORD="secret-value-123",
-                        NUPHOS_E2E_ALLOW_LOGIN="true")
+        c = self.config(CERIN_E2E_LOGIN_MODE="password", CERIN_E2E_PASSWORD="secret-value-123",
+                        CERIN_E2E_ALLOW_LOGIN="true")
         with patch.object(runner, "command", command):
             with self.assertRaises(runner.SetupError):
                 runner.run(c, "/sdk/adb")

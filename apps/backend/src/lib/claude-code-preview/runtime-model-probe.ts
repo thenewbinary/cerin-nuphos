@@ -82,5 +82,5 @@ child.stdout.on('data', chunk => {
     }
   }
 });
-send(1, 'initialize', { protocolVersion: 1, clientCapabilities: {}, clientInfo: { name: 'nuphos-model-discovery', version: '1' } });
+send(1, 'initialize', { protocolVersion: 1, clientCapabilities: {}, clientInfo: { name: 'cerin-model-discovery', version: '1' } });
 `

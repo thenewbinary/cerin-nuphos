@@ -8,8 +8,8 @@ export type ChatLinkMenuDeps = {
   resolveExternalLink?: (href: string) => Promise<string>
   copyLink: (href: string) => Promise<void>
   openExternalLink: (url: string) => void
-  openNuphosLinkFromChat: (href: string) => boolean
-  openNuphosLinkInNewTab: (href: string) => boolean
+  openCerinLinkFromChat: (href: string) => boolean
+  openCerinLinkInNewTab: (href: string) => boolean
 }
 
 // A relative `/teams/...` link resolves against the web origin; anything else
@@ -18,7 +18,7 @@ function absolute(href: string): string {
   return isAppWebUrl(href.trim())?.toString() ?? href.trim()
 }
 
-// Right-click menu on a chat link. "Open in Nuphos" is the left-click routing,
+// Right-click menu on a chat link. "Open in Cerin" is the left-click routing,
 // except that a plain web page lands in the built-in browser tab instead of the
 // system browser; external/copy actions resolve the provider URL when available.
 export function buildChatLinkMenuActions({
@@ -26,8 +26,8 @@ export function buildChatLinkMenuActions({
   resolveExternalLink,
   copyLink,
   openExternalLink,
-  openNuphosLinkFromChat,
-  openNuphosLinkInNewTab,
+  openCerinLinkFromChat,
+  openCerinLinkInNewTab,
 }: ChatLinkMenuDeps): ChatLinkMenuActions {
   function external(href: string, act: (url: string) => void) {
     if (!resolveExternalLink) {
@@ -40,7 +40,7 @@ export function buildChatLinkMenuActions({
 
   return {
     openInApp: (href) => {
-      if (openNuphosLinkFromChat(href)) return
+      if (openCerinLinkFromChat(href)) return
       const url = absolute(href)
 
       if (!teamId || !/^https?:\/\//i.test(url)) {
@@ -48,7 +48,7 @@ export function buildChatLinkMenuActions({
 
         return
       }
-      openNuphosLinkInNewTab(
+      openCerinLinkInNewTab(
         pageLocationForNavigation(
           emptyNavigation({ kind: 'team', teamId }, 'team.browser', { browserUrl: url }),
         ).href,

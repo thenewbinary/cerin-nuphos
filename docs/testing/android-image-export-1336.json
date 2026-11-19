@@ -1,8 +1,8 @@
 {
   "base": "2bae389422c3573e641f0885957f7b4ad373ed3c",
-  "applicationId": "ai.nuphos.android.imageexport1336",
-  "testPackage": "ai.nuphos.android.imageexport1336.test",
-  "targetPackage": "ai.nuphos.android.imageexport1336",
+  "applicationId": "ai.cerin.android.imageexport1336",
+  "testPackage": "ai.cerin.android.imageexport1336.test",
+  "targetPackage": "ai.cerin.android.imageexport1336",
   "runner": "androidx.test.runner.AndroidJUnitRunner",
   "apkSha256": {
     "apps/android/app/build/outputs/apk/debug/app-debug.apk": "44f6ffc01641d4f6ea4a5184e5295af0c993242e25cc2b331afc21f095733655",
@@ -36,12 +36,12 @@
     "apps/android/app/build.gradle.kts": "32bb27b1ee409a337b5ddc71004e088cbb6cf64e8c3fe695c33b9d3fa6c3d84c",
     "apps/android/app/src/main/AndroidManifest.xml": "2fa703b83120bf25691c9655c6dfddbda055f514c28de226e2187afecc71ec23",
     "apps/android/app/src/main/res/xml/image_export_paths.xml": "c6c29d947f927de0db1fd490247cb02df5364aafd297b7ca464a2b1bb9deea20",
-    "apps/android/app/src/main/java/ai/nuphos/android/ui/chat/MessageImages.kt": "dc416480d5424bff62dba0e5a98d314556a70b9db1f0137415482338ee492a93",
-    "apps/android/app/src/main/java/ai/nuphos/android/ui/chat/TransferCard.kt": "28680dd59e4c63e09679fc097ff0c156ecad4ce68b60f05b1ca75bfd18b792dc",
-    "apps/android/app/src/main/java/ai/nuphos/android/ui/chat/ImageExports.kt": "5b507f3a68f0980f4a636615efe84fa70b9e704029321dde5c77ae82955e85dc",
-    "apps/android/app/src/main/java/ai/nuphos/android/ui/chat/ImageExportActions.kt": "0899bf5dde50cf597baebb572627ae7907145969f6e0a6368c5b66e2e639416a",
-    "apps/android/app/src/main/java/ai/nuphos/android/ui/chat/ImageExportProvider.kt": "6332cacf3b9e688f8645c9c78f95d20b24cd3fb3135f906e161dffd471b0c0de",
-    "apps/android/app/src/androidTest/java/ai/nuphos/android/ImageExportsFixtureDeviceTest.kt": "eecd83769ae5aa6c5e76c6be1c2fd1a943143a871ec759c769e0a1601d200688"
+    "apps/android/app/src/main/java/ai/cerin/android/ui/chat/MessageImages.kt": "dc416480d5424bff62dba0e5a98d314556a70b9db1f0137415482338ee492a93",
+    "apps/android/app/src/main/java/ai/cerin/android/ui/chat/TransferCard.kt": "28680dd59e4c63e09679fc097ff0c156ecad4ce68b60f05b1ca75bfd18b792dc",
+    "apps/android/app/src/main/java/ai/cerin/android/ui/chat/ImageExports.kt": "5b507f3a68f0980f4a636615efe84fa70b9e704029321dde5c77ae82955e85dc",
+    "apps/android/app/src/main/java/ai/cerin/android/ui/chat/ImageExportActions.kt": "0899bf5dde50cf597baebb572627ae7907145969f6e0a6368c5b66e2e639416a",
+    "apps/android/app/src/main/java/ai/cerin/android/ui/chat/ImageExportProvider.kt": "6332cacf3b9e688f8645c9c78f95d20b24cd3fb3135f906e161dffd471b0c0de",
+    "apps/android/app/src/androidTest/java/ai/cerin/android/ImageExportsFixtureDeviceTest.kt": "eecd83769ae5aa6c5e76c6be1c2fd1a943143a871ec759c769e0a1601d200688"
   },
   "validationSourceCommit": "5e42581a3ca859855b688b646a78376ba5658588",
   "integrationValidation": {
@@ -54,7 +54,7 @@
       "apps/android/README.md",
       "apps/android/app/build.gradle.kts"
     ],
-    "gradleChange": "Preserve upstream nuphosIsolatedContentFixture alongside adaptive/image flags and generic mutual exclusion guard",
+    "gradleChange": "Preserve upstream cerinIsolatedContentFixture alongside adaptive/image flags and generic mutual exclusion guard",
     "deviceRetest": "Not repeated: integration resolution changes documentation only; prior Pixel 8 evidence applies to unchanged image product code. Integrated CI is required."
   }
 }

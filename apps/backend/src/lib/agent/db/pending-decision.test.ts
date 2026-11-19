@@ -84,7 +84,7 @@ beforeEach(() => {
 })
 
 const request = {
-  id: 'nuphos-1',
+  id: 'cerin-1',
   category: 'approval' as const,
   question: 'Merge #468?',
   options: ['Merge', 'Hold'],
@@ -109,25 +109,25 @@ describe('input requests', () => {
       userId: 'owner',
       inputRequests: Array.from({ length: 100 }, (_, n) => ({
         ...request,
-        id: `nuphos-${String(n)}`,
+        id: `cerin-${String(n)}`,
         status: 'open',
       })),
     }
 
     stored = [owned]
-    await addInputRequest('s1', 'owner', { ...request, id: 'nuphos-new' })
+    await addInputRequest('s1', 'owner', { ...request, id: 'cerin-new' })
 
     expect(owned.inputRequests).toHaveLength(101)
     expect(updates.some((update) => '$pull' in update.update)).toBe(false)
   })
 
   test('resolving takes exactly that request off the list', async () => {
-    expect(await resolveInputRequest('s1', 'owner', 'nuphos-1')).toBe(true)
+    expect(await resolveInputRequest('s1', 'owner', 'cerin-1')).toBe(true)
 
     expect(updates).toEqual([
       {
-        filter: { sessionId: 's1', userId: 'owner', 'inputRequests.id': 'nuphos-1' },
-        update: { $pull: { inputRequests: { id: 'nuphos-1' } } },
+        filter: { sessionId: 's1', userId: 'owner', 'inputRequests.id': 'cerin-1' },
+        update: { $pull: { inputRequests: { id: 'cerin-1' } } },
       },
     ])
   })
@@ -141,12 +141,12 @@ describe('input requests', () => {
 
     stored = [owned, { sessionId: 's1', userId: 'intruder' }]
 
-    expect(await resolveInputRequest('s1', 'intruder', 'nuphos-1')).toBe(false)
-    expect(await resolveInputRequest('s1', 'owner', 'nuphos-unknown')).toBe(false)
+    expect(await resolveInputRequest('s1', 'intruder', 'cerin-1')).toBe(false)
+    expect(await resolveInputRequest('s1', 'owner', 'cerin-unknown')).toBe(false)
     expect(owned.inputRequests).toHaveLength(1)
-    expect(await resolveInputRequest('s1', 'owner', 'nuphos-1')).toBe(true)
+    expect(await resolveInputRequest('s1', 'owner', 'cerin-1')).toBe(true)
     expect(owned.inputRequests).toEqual([])
-    expect(await resolveInputRequest('s1', 'owner', 'nuphos-1')).toBe(false)
+    expect(await resolveInputRequest('s1', 'owner', 'cerin-1')).toBe(false)
   })
 
   test('an answer whose agent could not be told puts the request back once', async () => {
@@ -159,7 +159,7 @@ describe('input requests', () => {
     expect(updates[0]?.filter).toEqual({
       sessionId: 's1',
       userId: 'owner',
-      'inputRequests.id': { $ne: 'nuphos-1' },
+      'inputRequests.id': { $ne: 'cerin-1' },
     })
   })
 
@@ -167,7 +167,7 @@ describe('input requests', () => {
   test('correcting a question stamps when it was last edited', async () => {
     const before = Date.now()
 
-    expect(await updateInputRequest('s1', 'u1', 'nuphos-1', { question: 'Merge #469?' })).toBe(true)
+    expect(await updateInputRequest('s1', 'u1', 'cerin-1', { question: 'Merge #469?' })).toBe(true)
     const set = updates.at(-1)?.update.$set as Doc
 
     expect(set['inputRequests.$.question']).toBe('Merge #469?')
@@ -175,15 +175,15 @@ describe('input requests', () => {
   })
 
   test('open requests are the open ones, oldest first', () => {
-    const newer = { ...request, id: 'nuphos-2', askedAt: new Date('2026-10-20T00:00:00Z') }
-    const older = { ...request, id: 'nuphos-1' }
+    const newer = { ...request, id: 'cerin-2', askedAt: new Date('2026-10-20T00:00:00Z') }
+    const older = { ...request, id: 'cerin-1' }
     // Kept as history before conversations held only open requests.
-    const answered = { ...request, id: 'nuphos-0', status: 'answered' } as unknown as InputRequest
+    const answered = { ...request, id: 'cerin-0', status: 'answered' } as unknown as InputRequest
     const open = openInputRequests({
       inputRequests: [{ ...newer, status: 'open' }, answered, { ...older, status: 'open' }],
     })
 
-    expect(open.map((entry) => entry.id)).toEqual(['nuphos-1', 'nuphos-2'])
+    expect(open.map((entry) => entry.id)).toEqual(['cerin-1', 'cerin-2'])
   })
 
   test('the Inbox lists conversations with any open request, trigger runs included', async () => {

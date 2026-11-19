@@ -23,7 +23,7 @@ final class BotPinsUITests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: live) }
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let shelf = app.scrollViews["PinnedBotsShelf"]
         XCTAssertTrue(shelf.waitForExistence(timeout: 15))
@@ -66,7 +66,7 @@ final class BotPinsUITests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: live) }
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let first = app.buttons["PinnedBot-chat-release"]
         let second = app.buttons["PinnedBot-chat-design"]
@@ -103,7 +103,7 @@ final class BotPinsUITests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: live) }
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let row = app.staticTexts["Release notes"].firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 10)); row.tap()
@@ -158,7 +158,7 @@ final class BotPinsUITests: XCTestCase {
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
-        if let dir = ProcessInfo.processInfo.environment["NUPHOS_SHOTS"] {
+        if let dir = ProcessInfo.processInfo.environment["CERIN_SHOTS"] {
             try? screen.pngRepresentation.write(to: URL(filePath: dir).appending(path: "\(name).png"))
         }
     }

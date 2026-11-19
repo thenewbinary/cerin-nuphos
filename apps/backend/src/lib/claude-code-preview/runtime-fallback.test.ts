@@ -209,7 +209,7 @@ test('the owner’s failed turn goes on by itself on the agent it moved to', asy
 
   await Bun.sleep(10)
   expect(moves.map((move) => move.to)).toEqual(['b'])
-  expect(continued).toEqual([{ actor: 'owner', sender: 'nuphos', source: 'agent.resource' }])
+  expect(continued).toEqual([{ actor: 'owner', sender: 'cerin', source: 'agent.resource' }])
 })
 
 test('a teammate’s failed turn moves but waits for them to send again', async () => {

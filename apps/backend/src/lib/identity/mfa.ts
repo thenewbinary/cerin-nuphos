@@ -22,7 +22,7 @@ import { logEvent } from '@/lib/observability'
 
 import type { EncryptedSecret } from '@/lib/byos/secrets'
 import type { StoredPasskey } from '@/lib/identity/mfa-passkeys'
-import type { NuphosUserDoc } from '@/lib/identity/shared'
+import type { CerinUserDoc } from '@/lib/identity/shared'
 
 /**
  * Optional two-factor authentication: a TOTP authenticator (RFC 6238) plus
@@ -53,7 +53,7 @@ const FAILURE_WINDOW_MS = 15 * 60 * 1000
 // ── Account state ──
 
 type MfaFields = Pick<
-  NuphosUserDoc,
+  CerinUserDoc,
   'email' | 'mfa' | 'mfaPending' | 'mfaFailures' | 'passkeyChallenge'
 >
 
@@ -131,7 +131,7 @@ export async function confirmTotpSetup(userId: string, code: unknown) {
   void notify(
     account.email,
     'Two-factor authentication turned on',
-    'Two-factor authentication was turned on for your Nuphos account.',
+    'Two-factor authentication was turned on for your Cerin account.',
   )
 
   return { recoveryCodes: codes }
@@ -144,7 +144,7 @@ export async function disableMfa(userId: string, code: unknown): Promise<void> {
   void notify(
     email,
     'Two-factor authentication turned off',
-    'Two-factor authentication was turned off for your Nuphos account.',
+    'Two-factor authentication was turned off for your Cerin account.',
   )
 }
 
@@ -172,7 +172,7 @@ export async function resetMfaForSupport(userId: string): Promise<boolean> {
   void notify(
     account.email,
     'Two-factor authentication was reset',
-    'Nuphos support turned off two-factor authentication on your account at your request, and signed it out everywhere, CLI tokens included.',
+    'Cerin support turned off two-factor authentication on your account at your request, and signed it out everywhere, CLI tokens included.',
   )
 
   return true
@@ -247,7 +247,7 @@ export async function verifySecondFactor(
       void notify(
         account.email,
         'A recovery code was used',
-        `A recovery code was used to verify your Nuphos account. ${String(mfa.recoveryCodes.length - 1)} remain.`,
+        `A recovery code was used to verify your Cerin account. ${String(mfa.recoveryCodes.length - 1)} remain.`,
       )
 
       return account.email

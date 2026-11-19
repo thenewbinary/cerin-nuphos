@@ -4,10 +4,10 @@ import { buildDownloadLinkEmail } from './download-link-email'
 
 describe('buildDownloadLinkEmail', () => {
   const expectedLinks = [
-    'https://nuphos.ai/download',
-    'https://nuphos.ai/api/desktop/download?arch=arm64',
-    'https://nuphos.ai/api/desktop/download?arch=x64',
-    'https://nuphos.ai/api/desktop/download?platform=windows',
+    'https://platform.cerin.ai/download',
+    'https://platform.cerin.ai/api/desktop/download?arch=arm64',
+    'https://platform.cerin.ai/api/desktop/download?arch=x64',
+    'https://platform.cerin.ai/api/desktop/download?platform=windows',
   ]
 
   test('every link appears in both the text and the HTML body', () => {
@@ -25,6 +25,6 @@ describe('buildDownloadLinkEmail', () => {
   test('the download page link is the first URL in the text body', () => {
     const email = buildDownloadLinkEmail()
 
-    expect(email.text.match(/https:\/\/\S+/)?.[0]).toBe('https://nuphos.ai/download')
+    expect(email.text.match(/https:\/\/\S+/)?.[0]).toBe('https://platform.cerin.ai/download')
   })
 })

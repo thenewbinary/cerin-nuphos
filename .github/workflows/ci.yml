@@ -226,7 +226,7 @@ jobs:
         working-directory: apps/ios
         run: |
           set -euo pipefail
-          xcodebuild -project nuphos-ios.xcodeproj -scheme nuphos-ios -configuration Debug \
+          xcodebuild -project cerin-ios.xcodeproj -scheme cerin-ios -configuration Debug \
             -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO build -quiet
       # A string added in code without a catalog entry would ship untranslated.
@@ -290,8 +290,8 @@ jobs:
         run: cargo build --locked
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: nuphos-cli-macos-arm64
-          path: apps/cli/target/debug/nuphos
+          name: cerin-cli-macos-arm64
+          path: apps/cli/target/debug/cerin
           retention-days: 7
           if-no-files-found: error
 
@@ -422,7 +422,7 @@ jobs:
         env:
           TEST_MONGODB_URI: mongodb://127.0.0.1:27017
           MONGODB_URI: mongodb://127.0.0.1:27017
-          MONGODB_DB: nuphos_test
+          MONGODB_DB: cerin_test
         # A suite that skips here passes without having touched the database.
         run: |
           # A run block is `bash -e` without pipefail: without this, tee's exit hides bun's.
@@ -574,13 +574,13 @@ jobs:
       - name: Build renderer and main bundles
         working-directory: apps/desktop
         run: pnpm exec vite build
-      # `nuphos agent` runs this bundle under plain Node. An `electron` import
+      # `cerin agent` runs this bundle under plain Node. An `electron` import
       # that reaches it only fails when the host loads (#2749), so load it.
-      - name: Load the nuphos agent host bundle
+      - name: Load the cerin agent host bundle
         working-directory: apps/desktop
         run: |
           bun build electron/main/local-runtime/cli-host.ts --target=node --format=esm --external @napi-rs/keyring --outfile "$RUNNER_TEMP/host.mjs"
-          (env -u NUPHOS_AGENT_HOME node "$RUNNER_TEMP/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'NUPHOS_AGENT_HOME is not set'
+          (env -u CERIN_AGENT_HOME node "$RUNNER_TEMP/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'CERIN_AGENT_HOME is not set'
 
   # Some tests only run on macOS (the keychain, macOS config paths), and the
   # native addon only compiles there. A PR or queue entry gets the Mac only when
@@ -591,7 +591,7 @@ jobs:
   # Staging and electron-builder are skipped in the queue: the PR already
   # packaged the same inputs.
   desktop:
-    name: Desktop (Nuphos macOS package)
+    name: Desktop (Cerin macOS package)
     needs: changes
     # On schedule `changes` is skipped; !cancelled() keeps this job running.
     if: >-
@@ -626,7 +626,7 @@ jobs:
         working-directory: apps/desktop
         run: node local-runtime/prepare.mjs --targets darwin-arm64,darwin-x64 --no-openab
       # Exercise both native architectures without producing release ZIP/DMG files.
-      - name: Package Nuphos macOS app
+      - name: Package Cerin macOS app
         if: github.event_name != 'merge_group'
         working-directory: apps/desktop
         run: pnpm exec electron-builder --mac --arm64 --x64 --dir --publish never

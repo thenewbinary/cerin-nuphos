@@ -62,7 +62,7 @@
     <string name="agent_working">处理中…</string>
     <string name="agent_ok">确定</string>
     <string name="agent_first_runtime_title">连接你的第一个运行环境</string>
-    <string name="agent_first_runtime_body">在电脑上打开 Nuphos 来添加 Box 或连接你自己的电脑，或请工作区管理员连接一个。</string>
+    <string name="agent_first_runtime_body">在电脑上打开 Cerin 来添加 Box 或连接你自己的电脑，或请工作区管理员连接一个。</string>
     <string name="agent_cloud">云端</string>
     <plurals name="agent_runtime_count">
         <item quantity="other">%1$d 个运行环境</item>
@@ -85,7 +85,7 @@
     <string name="agent_percent">%1$d%%</string>
     <string name="agent_couldnt_load_runtimes">无法加载运行环境</string>
     <string name="agent_no_runtimes">没有运行环境</string>
-    <string name="agent_no_runtimes_body">在电脑上打开 Nuphos，连接电脑并添加运行环境。</string>
+    <string name="agent_no_runtimes_body">在电脑上打开 Cerin，连接电脑并添加运行环境。</string>
     <string name="agent_deleting">删除中</string>
     <string name="agent_disabled">已停用</string>
     <string name="agent_offline">离线</string>
@@ -103,9 +103,9 @@
     <string name="agent_ask_admin_sign_in">请管理员登录</string>
     <string name="agent_runtime_gone_body">此运行环境已不在当前工作区中。请先刷新运行环境再继续。</string>
     <string name="agent_runtime_disabled_body">此运行环境已停用或正在移除。请管理员检查它已保存的状态。</string>
-    <string name="agent_teammate_sign_in_body">%1$s 属于一位队友，只有对方能登录。请对方在该电脑上打开 Nuphos，并在“运行环境”页面选择“登录”。</string>
-    <string name="agent_host_sign_in_body">在 %1$s 上打开 Nuphos，前往“运行环境”页面，并为此运行环境选择“登录”。</string>
-    <string name="agent_admin_sign_in_body">工作区管理员可以在自己电脑上的 Nuphos“运行环境”页面登录。</string>
+    <string name="agent_teammate_sign_in_body">%1$s 属于一位队友，只有对方能登录。请对方在该电脑上打开 Cerin，并在“运行环境”页面选择“登录”。</string>
+    <string name="agent_host_sign_in_body">在 %1$s 上打开 Cerin，前往“运行环境”页面，并为此运行环境选择“登录”。</string>
+    <string name="agent_admin_sign_in_body">工作区管理员可以在自己电脑上的 Cerin“运行环境”页面登录。</string>
     <string name="agent_back_to_runtimes">返回运行环境</string>
     <string name="agent_runtime">运行环境</string>
     <string name="agent_runtime_removed">此运行环境已移除。</string>
@@ -125,8 +125,8 @@
     <string name="agent_unreconciled">请求可能已到达服务器。进行其他更改前，请先刷新已保存的状态。</string>
     <string name="agent_refresh_runtime">刷新运行环境</string>
     <string name="agent_remove_named">移除 %1$s？</string>
-    <string name="agent_remove_managed_body">这会停止运行环境，并永久删除其文件和登录信息。你的任务记录会保留在 Nuphos 中。</string>
-    <string name="agent_remove_body">这会断开运行环境的连接。你的任务会保留在 Nuphos 中。</string>
+    <string name="agent_remove_managed_body">这会停止运行环境，并永久删除其文件和登录信息。你的任务记录会保留在 Cerin 中。</string>
+    <string name="agent_remove_body">这会断开运行环境的连接。你的任务会保留在 Cerin 中。</string>
     <string name="agent_runtime_details">运行环境详情</string>
     <string name="agent_manage_runtimes">管理运行环境</string>
     <string name="agent_for_new_tasks">用于新任务。现有任务会保留当前的运行环境。</string>

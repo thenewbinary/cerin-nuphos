@@ -6,7 +6,7 @@ import { readLocalStorage, writeLocalStorage } from './localStorage'
 import type { UserInfo } from '../types'
 
 // Both stores live only in localStorage, so a copy restores them whole.
-const KEPT = ['nuphos.agent.composerDrafts.v1', 'nuphos.agent.clearedReplies.v1']
+const KEPT = ['cerin.agent.composerDrafts.v1', 'cerin.agent.clearedReplies.v1']
 
 /**
  * What this window keeps of the account it signs out of: drafts, cleared

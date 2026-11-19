@@ -12,12 +12,12 @@ import {
 
 describe('assertTailnetTag', () => {
   test('accepts the tag grammar Tailscale and the dialer share', () => {
-    expect(assertTailnetTag('tag:nuphos')).toBe('tag:nuphos')
-    expect(assertTailnetTag('tag:nuphos-agent-1')).toBe('tag:nuphos-agent-1')
+    expect(assertTailnetTag('tag:cerin')).toBe('tag:cerin')
+    expect(assertTailnetTag('tag:cerin-agent-1')).toBe('tag:cerin-agent-1')
   })
 
   test('rejects anything that is not a tag', () => {
-    for (const bad of ['nuphos', 'tag:', 'tag:-lead', 'tag:UPPER', 'tag:has space', 'group:sre']) {
+    for (const bad of ['cerin', 'tag:', 'tag:-lead', 'tag:UPPER', 'tag:has space', 'group:sre']) {
       expect(() => assertTailnetTag(bad)).toThrow(AppError)
     }
   })
@@ -29,8 +29,8 @@ describe('requireTailnetSandboxTag', () => {
 
   test('returns the tag once an admin has opted the binding in', () => {
     expect(
-      requireTailnetSandboxTag({ enabled: true, tag: 'tag:nuphos', enabledBy, enabledAt }),
-    ).toBe('tag:nuphos')
+      requireTailnetSandboxTag({ enabled: true, tag: 'tag:cerin', enabledBy, enabledAt }),
+    ).toBe('tag:cerin')
   })
 
   // A binding that predates the data plane must never gain it implicitly.
@@ -40,7 +40,7 @@ describe('requireTailnetSandboxTag', () => {
 
   test('refuses when access was turned back off', () => {
     expect(() =>
-      requireTailnetSandboxTag({ enabled: false, tag: 'tag:nuphos', enabledBy, enabledAt }),
+      requireTailnetSandboxTag({ enabled: false, tag: 'tag:cerin', enabledBy, enabledAt }),
     ).toThrow(AppError)
   })
 
@@ -70,7 +70,7 @@ describe('tailnetSandboxHostname', () => {
 describe('renderTailnetAclSnippet', () => {
   test('emits the three blocks the customer has to apply', () => {
     const snippet = renderTailnetAclSnippet({
-      tag: 'tag:nuphos',
+      tag: 'tag:cerin',
       targetTag: 'tag:staging',
       sshUsers: ['deploy'],
     })
@@ -86,7 +86,7 @@ describe('renderTailnetAclSnippet', () => {
   // one would hand the customer a policy file they cannot save.
   test('never emits a check action, which Tailscale rejects for tagged src', () => {
     const snippet = renderTailnetAclSnippet({
-      tag: 'tag:nuphos',
+      tag: 'tag:cerin',
       targetTag: 'tag:staging',
       sshUsers: [],
     })
@@ -98,7 +98,7 @@ describe('renderTailnetAclSnippet', () => {
 
   test('enforces recording when the customer runs a recorder', () => {
     const snippet = renderTailnetAclSnippet({
-      tag: 'tag:nuphos',
+      tag: 'tag:cerin',
       targetTag: 'tag:staging',
       sshUsers: ['deploy'],
       recorderTag: 'tag:tsrecorder',
@@ -110,7 +110,7 @@ describe('renderTailnetAclSnippet', () => {
 
   test('omits the recording clause when there is no recorder', () => {
     const snippet = renderTailnetAclSnippet({
-      tag: 'tag:nuphos',
+      tag: 'tag:cerin',
       targetTag: 'tag:staging',
       sshUsers: [],
     })
@@ -120,7 +120,7 @@ describe('renderTailnetAclSnippet', () => {
 
   test('validates both tags rather than interpolating them blindly', () => {
     expect(() =>
-      renderTailnetAclSnippet({ tag: 'tag:nuphos', targetTag: '"; evil', sshUsers: [] }),
+      renderTailnetAclSnippet({ tag: 'tag:cerin', targetTag: '"; evil', sshUsers: [] }),
     ).toThrow(AppError)
   })
 })

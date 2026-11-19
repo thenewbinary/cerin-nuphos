@@ -20,14 +20,14 @@ const interaction = (command: 'enable' | 'disable'): DiscordCommandInteraction =
   guild_id: 'guild-1',
   channel_id: 'thread-1',
   member: { permissions: '16', user: { id: 'discord-user-1' } },
-  data: { name: 'nuphos', options: [{ type: 1, name: command }] },
+  data: { name: 'cerin', options: [{ type: 1, name: command }] },
 })
 
 function dependencies(overrides: Partial<DiscordChannelCommandDependencies> = {}) {
   const calls = { enabled: [] as unknown[], disabled: [] as unknown[] }
   const value: DiscordChannelCommandDependencies = {
     findInstallation: async () => ({ teamId: 'team-1' }),
-    findUserMapping: async () => ({ nuphosUserId: 'nuphos-user-1' }),
+    findUserMapping: async () => ({ cerinUserId: 'cerin-user-1' }),
     findMembership: async () => ({ role: 'ADMINISTRATOR' }),
     getChannel: async () => ({
       id: 'thread-1',
@@ -48,20 +48,20 @@ function dependencies(overrides: Partial<DiscordChannelCommandDependencies> = {}
 }
 
 describe('Discord channel management command admission', () => {
-  test('accepts only nuphos enable and disable subcommands', () => {
+  test('accepts only cerin enable and disable subcommands', () => {
     expect(
       parseDiscordChannelCommand({
-        data: { name: 'nuphos', options: [{ type: 1, name: 'enable' }] },
+        data: { name: 'cerin', options: [{ type: 1, name: 'enable' }] },
       }),
     ).toBe('enable')
     expect(
       parseDiscordChannelCommand({
-        data: { name: 'nuphos', options: [{ type: 1, name: 'disable' }] },
+        data: { name: 'cerin', options: [{ type: 1, name: 'disable' }] },
       }),
     ).toBe('disable')
     expect(
       parseDiscordChannelCommand({
-        data: { name: 'nuphos', options: [{ type: 1, name: 'ask' }] },
+        data: { name: 'cerin', options: [{ type: 1, name: 'ask' }] },
       }),
     ).toBeNull()
     expect(parseDiscordChannelCommand({ data: { name: 'other' } })).toBeNull()
@@ -76,7 +76,7 @@ describe('Discord channel management command admission', () => {
     expect(canManageDiscordChannel()).toBe(false)
   })
 
-  test('does not mutate access for an unlinked or non-admin Nuphos user', async () => {
+  test('does not mutate access for an unlinked or non-admin Cerin user', async () => {
     const unlinked = dependencies({ findUserMapping: async () => null })
     const member = dependencies({ findMembership: async () => ({ role: 'MEMBER' }) })
 
@@ -101,7 +101,7 @@ describe('Discord channel management command admission', () => {
         teamId: 'team-1',
         guildId: 'guild-1',
         channelId: 'channel-1',
-        nuphosUserId: 'nuphos-user-1',
+        cerinUserId: 'cerin-user-1',
       },
     ])
     expect(deps.calls.disabled).toEqual([])

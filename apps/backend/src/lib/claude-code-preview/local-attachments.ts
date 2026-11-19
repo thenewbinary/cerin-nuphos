@@ -17,12 +17,12 @@ import type { DeviceRuntimeSocketDeps } from '@/lib/agent/devices/local-runtime/
  */
 export const INLINE_SECRET_MIN_DESKTOP = '0.95.0'
 
-/** `nuphos-desktop/0.94.0` → `0.94.0`. A CLI host, a dev build or an unparseable
+/** `cerin-desktop/0.94.0` → `0.94.0`. A CLI host, a dev build or an unparseable
  *  value is unknown, and an unknown host keeps the behaviour it had before. */
 function desktopVersion(client: string | undefined): string | undefined {
   const [app, version] = client?.split('/') ?? []
 
-  return app === 'nuphos-desktop' && stableRuntimeVersion(version) ? version : undefined
+  return app === 'cerin-desktop' && stableRuntimeVersion(version) ? version : undefined
 }
 
 /** A Desktop too old to take a secret inline; nothing else is affected. */
@@ -56,7 +56,7 @@ export async function localAttachments(
     throw new AppError(
       409,
       'runtime_outdated',
-      `The computer running this agent needs Nuphos Desktop ${INLINE_SECRET_MIN_DESKTOP} or later to save a secret. Update Nuphos Desktop on that computer, then try again.`,
+      `The computer running this agent needs Cerin Desktop ${INLINE_SECRET_MIN_DESKTOP} or later to save a secret. Update Cerin Desktop on that computer, then try again.`,
     )
   const socket = new DeviceRuntimeSocket({ ...ref, actorId, teamId, purpose: 'attachments' }, deps)
 

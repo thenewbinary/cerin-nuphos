@@ -17,7 +17,7 @@ adminRoutes.use('*', requireAdmin)
 
 // Lightweight validation endpoint used by the Admin frontend before it
 // renders protected pages. The auth middleware has already verified both the
-// Nuphos session and membership in the configured admin team.
+// Cerin session and membership in the configured admin team.
 adminRoutes.get('/session', (c) => {
   return c.json({ userId: c.get('adminUserId') })
 })

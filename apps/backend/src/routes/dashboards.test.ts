@@ -77,7 +77,7 @@ describe('serializeSnapshot', () => {
       error: {
         message: 'Panel execution failed',
         kind: 'nonzero_exit',
-        stderr: 'NUPHOS_TOKEN=secret',
+        stderr: 'CERIN_TOKEN=secret',
       },
       createdAt: now,
     } as unknown as DashboardPanelSnapshot

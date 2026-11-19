@@ -149,7 +149,7 @@ export async function postAsAgent(
         sender: {
           type: 'agent',
           id: agent.sessionId,
-          displayName: agent.title || 'Nuphos agent',
+          displayName: agent.title || 'Cerin agent',
           ...(agent.agentRuntime ? { agentRuntime: agent.agentRuntime } : {}),
         },
         source: 'agent.thread',
@@ -222,7 +222,7 @@ export async function notifyAgent(
   const metadata = channelNoticeSender(
     channel.teamId,
     channel.sessionId,
-    chatName(channel) || 'Nuphos channel',
+    chatName(channel) || 'Cerin channel',
   )
 
   // An agent's posts still wait for the turn to end: one wake per turn (#1458).

@@ -90,8 +90,8 @@ export function removePane(layout: SplitLayout, id: string): SplitLayout | null 
 }
 
 /** Private drag types, so the split overlay ignores files and text drags. */
-export const SESSION_DRAG_TYPE = 'application/x-nuphos-session'
-export const PANE_DRAG_TYPE = 'application/x-nuphos-pane'
+export const SESSION_DRAG_TYPE = 'application/x-cerin-session'
+export const PANE_DRAG_TYPE = 'application/x-cerin-pane'
 
 export type DropZone = 'left' | 'right' | 'top' | 'bottom' | 'center'
 

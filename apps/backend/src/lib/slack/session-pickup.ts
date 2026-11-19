@@ -80,7 +80,7 @@ async function threadLink(
 
 function pickupRootText(title: string): string {
   return [
-    `**Picked up from Nuphos: ${title}**`,
+    `**Picked up from Cerin: ${title}**`,
     '',
     'Mention me in this thread to continue the conversation. Turns driven from here run in the cloud sandbox — tools that execute on your computer (local shell, port forwards) are unavailable until you continue from the desktop app again.',
   ].join('\n')
@@ -109,7 +109,7 @@ export async function pickUpConversationInSlack(
     throw new AppError(
       409,
       'slack_not_installed',
-      'This team has no Slack workspace connected. Install the Nuphos Slack app first.',
+      'This team has no Slack workspace connected. Install the Cerin Slack app first.',
     )
   }
   const slackWorkspaceId = bot.binding.slackTeamId
@@ -125,14 +125,14 @@ export async function pickUpConversationInSlack(
     botToken: bot.botToken,
     slackWorkspaceId,
     teamId: args.teamId,
-    nuphosUserId: args.userId,
+    cerinUserId: args.userId,
   })
 
   if (!selfMapping) {
     throw new AppError(
       409,
       'slack_identity_unlinked',
-      'Your Slack account is not linked to this Nuphos team. Link it in Settings → Slack first.',
+      'Your Slack account is not linked to this Cerin team. Link it in Settings → Slack first.',
     )
   }
   const dmChannelId = await dependencies.openDm(bot.botToken, selfMapping.slackUserId)

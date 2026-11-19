@@ -75,9 +75,9 @@ describe('GCP credentials in the agent prompt', () => {
 
   test('carries a GUI link for the instance list and an SSH template', () => {
     expect(line).toContain(
-      `guiLinks={gceInstances:"https://nuphos.ai/teams/${TEAM_ID}/infra/gcp/example-project/gce-instances"}`,
+      `guiLinks={gceInstances:"https://platform.cerin.ai/teams/${TEAM_ID}/infra/gcp/example-project/gce-instances"}`,
     )
-    expect(line).toContain('gceSsh:"https://nuphos.ai/teams/')
+    expect(line).toContain('gceSsh:"https://platform.cerin.ai/teams/')
     expect(line).toContain('/gce/<region>/instances/<instanceName>/ssh"')
   })
 
@@ -117,7 +117,7 @@ describe('On-prem Kubernetes credentials in the agent prompt', () => {
 
   test('links to the shared Kubernetes resource UI', () => {
     expect(prompt).toContain(
-      `https://nuphos.ai/teams/${TEAM_ID}/k8s/onprem/${clusterId}/onprem/${clusterId}/workloads/pods`,
+      `https://platform.cerin.ai/teams/${TEAM_ID}/k8s/onprem/${clusterId}/onprem/${clusterId}/workloads/pods`,
     )
   })
 })

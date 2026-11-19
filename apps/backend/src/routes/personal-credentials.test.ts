@@ -123,12 +123,12 @@ const saveConfig = {
 
 // As in production: GitHub's install redirect is a desktop deep link, so the
 // callback has to come from the backend's public URL, not the setup redirect.
-Object.assign(config.agent, { publicBackendUrl: 'https://api.nuphos.test/' })
+Object.assign(config.agent, { publicBackendUrl: 'https://api.cerin.test/' })
 
 Object.assign(config.byos.github, {
   clientId: 'Iv1.client',
   clientSecret: 'gh-secret',
-  setupRedirect: 'nuphos://github-callback',
+  setupRedirect: 'cerin://github-callback',
   encryptionKey: 'k',
 })
 Object.assign(config.byos.linear, {
@@ -211,7 +211,7 @@ async function start(provider: string, userId: string, teamId = TEAM): Promise<s
   const { state, authorizeUrl } = (await res.json()) as { state: string; authorizeUrl: string }
 
   expect(new URL(authorizeUrl).searchParams.get('redirect_uri')).toBe(
-    `https://api.nuphos.test/personal-credentials/${provider}/callback`,
+    `https://api.cerin.test/personal-credentials/${provider}/callback`,
   )
 
   return state
@@ -255,7 +255,7 @@ describe.each(['github', 'linear', 'gmail', 'google-drive', 'google-calendar'])(
       const state = await start(provider, 'alice')
       const link = await callback(provider, state)
 
-      expect(link.protocol).toBe('nuphos:')
+      expect(link.protocol).toBe('cerin:')
       expect(saved).toHaveLength(0)
       const res = await complete(provider, 'alice', state, link.searchParams.get('code') ?? '')
 

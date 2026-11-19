@@ -1,4 +1,4 @@
-//! `nuphos` — a terminal client for Nuphos agent conversations.
+//! `cerin` — a terminal client for Cerin agent conversations.
 
 mod accounts;
 mod agent;
@@ -24,19 +24,19 @@ use serde_json::Value;
 
 use crate::api::Api;
 
-/// A terminal client for Nuphos. Without a command it opens the interactive
+/// A terminal client for Cerin. Without a command it opens the interactive
 /// TUI; every TUI action is also a command for scripts and other agents.
 #[derive(Parser)]
-#[command(name = "nuphos", version)]
+#[command(name = "cerin", version)]
 struct Args {
     /// Team id or name. Defaults to the team used last.
-    #[arg(long, global = true, env = "NUPHOS_TEAM")]
+    #[arg(long, global = true, env = "CERIN_TEAM")]
     team: Option<String>,
     /// Print JSON instead of text.
     #[arg(long, global = true)]
     json: bool,
-    /// Run as this Nuphos Desktop account (its email, or its key from
-    /// `nuphos auth list`) for this command only.
+    /// Run as this Cerin Desktop account (its email, or its key from
+    /// `cerin auth list`) for this command only.
     #[arg(long, global = true)]
     account: Option<String>,
     #[command(subcommand)]
@@ -78,7 +78,7 @@ enum Command {
         create: bool,
     },
     /// List runtimes (what tasks run on, such as Claude Code; find tasks with
-    /// `nuphos conversations`), move --session to one, pick one for new tasks
+    /// `cerin conversations`), move --session to one, pick one for new tasks
     /// with --default, or sign an existing runtime in with --login.
     #[command(name = "agents", alias = "runtime")]
     Runtime {
@@ -121,23 +121,23 @@ enum Command {
         session: String,
     },
     /// Run this computer's Claude Code and Codex as local runtimes, as the desktop app does.
-    /// On Linux with systemd it installs and starts the user service `nuphos-agent`, which
+    /// On Linux with systemd it installs and starts the user service `cerin-agent`, which
     /// starts again after a reboot; elsewhere it runs in the foreground.
     Agent {
-        /// Join Nuphos with a one-time token instead of signing in. Pass `-` and pipe the token
-        /// to stdin, or set `NUPHOS_JOIN_TOKEN`, so it stays out of the shell history. Later
+        /// Join Cerin with a one-time token instead of signing in. Pass `-` and pipe the token
+        /// to stdin, or set `CERIN_JOIN_TOKEN`, so it stays out of the shell history. Later
         /// runs need neither.
         #[arg(long, value_name = "TOKEN")]
         join: Option<String>,
     },
-    /// Sign in, from Nuphos Desktop's sign-in when there is one, else through the browser,
+    /// Sign in, from Cerin Desktop's sign-in when there is one, else through the browser,
     /// or with a code approved on another device when there is no browser here.
     Login {
         /// Sign in with a code approved on another device, even if this one has a browser.
         #[arg(long, conflicts_with = "token")]
         device: bool,
-        /// Use an agent token from nuphos.ai/settings/tokens. Pass `-` and pipe it to stdin,
-        /// so it stays out of the shell history. `NUPHOS_CLI_TOKEN` works without saving it.
+        /// Use an agent token from platform.cerin.ai/settings/tokens. Pass `-` and pipe it to stdin,
+        /// so it stays out of the shell history. `CERIN_CLI_TOKEN` works without saving it.
         #[arg(long, value_name = "TOKEN")]
         token: Option<String>,
     },
@@ -155,7 +155,7 @@ enum Command {
         #[arg(long, value_name = "FILE|URL")]
         avatar: Option<String>,
     },
-    /// Sign out of the CLI (Nuphos Desktop stays signed in).
+    /// Sign out of the CLI (Cerin Desktop stays signed in).
     Logout,
     /// Show who is signed in and where the session token is kept.
     Auth {
@@ -184,9 +184,9 @@ enum TokenCommand {
 enum AuthCommand {
     /// Who is signed in, and where the session token is kept.
     Status,
-    /// The accounts signed in to Nuphos Desktop, and which one the CLI uses.
+    /// The accounts signed in to Cerin Desktop, and which one the CLI uses.
     List,
-    /// Use a Nuphos Desktop account (its email or key) as the CLI's sign-in.
+    /// Use a Cerin Desktop account (its email or key) as the CLI's sign-in.
     Switch {
         /// Not `account`: that id is the global `--account` option's.
         #[arg(value_name = "ACCOUNT")]
@@ -200,7 +200,7 @@ async fn main() {
     match run(args).await {
         Ok(code) => std::process::exit(code),
         Err(e) => {
-            eprintln!("nuphos: {}", render::clean(&format!("{e:#}")));
+            eprintln!("cerin: {}", render::clean(&format!("{e:#}")));
             std::process::exit(1);
         }
     }
@@ -220,7 +220,7 @@ async fn run(args: Args) -> Result<i32> {
     check_runtime_pick(&args.command)?;
     let interactive = matches!(args.command, None | Some(Command::Resume { .. }));
     if interactive && !(std::io::stdin().is_terminal() && std::io::stdout().is_terminal()) {
-        bail!("the TUI needs a terminal; use `nuphos exec` to send a message from a script");
+        bail!("the TUI needs a terminal; use `cerin exec` to send a message from a script");
     }
     if let Some(selector) = &args.account {
         // Not for the sign-in itself, nor for `agent`, which hosts this computer
@@ -230,7 +230,7 @@ async fn run(args: Args) -> Result<i32> {
             Some(Command::Login { .. } | Command::Logout | Command::Auth { .. } | Command::Agent { .. })
         ) {
             bail!(
-                "--account runs one command as a desktop account; for the CLI's own sign-in use `nuphos auth switch`"
+                "--account runs one command as a desktop account; for the CLI's own sign-in use `cerin auth switch`"
             );
         }
         config::use_account(accounts::find(accounts::desktop_accounts(), selector)?.sign_in()?);
@@ -238,7 +238,7 @@ async fn run(args: Args) -> Result<i32> {
     match &args.command {
         Some(Command::Logout) => {
             login::logout().await?;
-            println!("Signed out of Nuphos.");
+            println!("Signed out of Cerin.");
             return Ok(0);
         }
         Some(Command::Update) => return update::update().await,
@@ -342,7 +342,7 @@ async fn run(args: Args) -> Result<i32> {
     }
 }
 
-/// `nuphos auth status`: read locally, without checking the token with the
+/// `cerin auth status`: read locally, without checking the token with the
 /// backend. There is deliberately no command that prints the token: the
 /// keychain trusts this binary, so it would hand the token to any process.
 async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
@@ -350,7 +350,7 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
         AuthCommand::Status => {
             let session = config::read_session();
             if session.token.is_none() {
-                eprintln!("nuphos: not signed in; run `nuphos login`");
+                eprintln!("cerin: not signed in; run `cerin login`");
                 return Ok(1);
             }
             println!("Signed in as {}", who(&session));
@@ -360,7 +360,7 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
         AuthCommand::List => {
             // From the file: listing never needs a token, nor the keychain.
             let session = config::saved_session();
-            // NUPHOS_CLI_TOKEN outranks the saved sign-in: commands use it, and
+            // CERIN_CLI_TOKEN outranks the saved sign-in: commands use it, and
             // which account it is is not known without asking the backend.
             let from_env = config::env_token_set();
             let cli = if from_env { None } else { accounts::key_of(&session) };
@@ -380,12 +380,12 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
             }
             match &cli {
                 _ if from_env => {
-                    println!("CLI: the NUPHOS_CLI_TOKEN environment variable (`nuphos team` checks whose it is)")
+                    println!("CLI: the CERIN_CLI_TOKEN environment variable (`cerin team` checks whose it is)")
                 }
                 Some(key) => println!("CLI: {} ({})", who(&session), render::clean(key)),
                 None => println!("CLI: not signed in"),
             }
-            println!("Nuphos Desktop:{}", if desktop.is_empty() { " no accounts signed in" } else { "" });
+            println!("Cerin Desktop:{}", if desktop.is_empty() { " no accounts signed in" } else { "" });
             for a in &desktop {
                 let marks = [
                     a.active.then_some("in use on Desktop"),
@@ -403,7 +403,7 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
             let env_api = config::env_api_override();
             if accounts::override_conflicts(env_api.as_deref(), &target.api) {
                 bail!(
-                    "NUPHOS_API_URL points at {}, not {}'s backend ({}); unset it to switch to that account",
+                    "CERIN_API_URL points at {}, not {}'s backend ({}); unset it to switch to that account",
                     render::clean(env_api.as_deref().unwrap_or_default()),
                     render::clean(&target.who),
                     render::clean(&target.api)
@@ -421,10 +421,10 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
 }
 
 /// "Grok Bot, an agent of Yuanlin" for an agent token, else the user. Not
-/// known locally for `NUPHOS_CLI_TOKEN`, which nothing has checked yet.
+/// known locally for `CERIN_CLI_TOKEN`, which nothing has checked yet.
 fn who(session: &config::Session) -> String {
     if session.from_env {
-        return "whoever NUPHOS_CLI_TOKEN belongs to (not checked locally; `nuphos team` checks it)".to_string();
+        return "whoever CERIN_CLI_TOKEN belongs to (not checked locally; `cerin team` checks it)".to_string();
     }
     let user = session.user_info.as_ref().and_then(|u| u["email"].as_str()).or(session.user.as_deref());
     let user = render::clean(user.unwrap_or("unknown"));
@@ -452,7 +452,7 @@ fn read_secret(value: &str) -> Result<String> {
     Ok(value)
 }
 
-/// `nuphos token list | revoke ID`.
+/// `cerin token list | revoke ID`.
 async fn token(api: &Api, command: &TokenCommand, json: bool) -> Result<i32> {
     match command {
         TokenCommand::List => {
@@ -474,7 +474,7 @@ async fn token(api: &Api, command: &TokenCommand, json: bool) -> Result<i32> {
         }
         TokenCommand::Revoke { id } => {
             if id.len() != 24 || !id.chars().all(|c| c.is_ascii_hexdigit()) {
-                bail!("not a token id; `nuphos token list` shows them");
+                bail!("not a token id; `cerin token list` shows them");
             }
             api.revoke_cli_token(id).await?;
             println!("Revoked {}.", render::clean(id));
@@ -483,7 +483,7 @@ async fn token(api: &Api, command: &TokenCommand, json: bool) -> Result<i32> {
     Ok(0)
 }
 
-/// `nuphos agent-profile --name NAME --avatar FILE|URL`: the backend accepts
+/// `cerin agent-profile --name NAME --avatar FILE|URL`: the backend accepts
 /// this only from an agent token, and only for that token.
 async fn agent_profile(api: &Api, name: Option<&str>, avatar: Option<&str>, json: bool) -> Result<i32> {
     let mut profile = Value::Null;
@@ -541,10 +541,10 @@ async fn tui(start: app::Start, team: Option<String>) -> Result<i32> {
     };
     let app = app::App::new(Api::new(api_url, token), config::read_prefs());
     if let Some((team_id, session_id)) = app.run(start, team).await? {
-        let web = std::env::var("NUPHOS_WEB_URL").unwrap_or_else(|_| "https://nuphos.ai".into());
+        let web = std::env::var("CERIN_WEB_URL").unwrap_or_else(|_| "https://platform.cerin.ai".into());
         let path = render::clean(&format!("/teams/{team_id}/agent/{session_id}"));
         println!("Task: {}{path}", web.trim_end_matches('/'));
-        println!("Continue with: nuphos resume {}", render::clean(&session_id));
+        println!("Continue with: cerin resume {}", render::clean(&session_id));
     }
     Ok(0)
 }
@@ -566,7 +566,7 @@ async fn sign_in(interactive: bool) -> Result<(Api, Value, Vec<Value>)> {
         }
     }
     if !interactive {
-        bail!("not signed in; run `nuphos login` (it can use Nuphos Desktop's sign-in)");
+        bail!("not signed in; run `cerin login` (it can use Cerin Desktop's sign-in)");
     }
     let session = login::login(&api_url, false).await?;
     let api = Api::new(api_url, session.token.unwrap_or_default());
@@ -598,12 +598,12 @@ mod avatar_tests {
 
     #[tokio::test]
     async fn a_file_over_the_limit_is_refused() {
-        let path = std::env::temp_dir().join(format!("nuphos-avatar-{}.png", std::process::id()));
+        let path = std::env::temp_dir().join(format!("cerin-avatar-{}.png", std::process::id()));
         std::fs::write(&path, vec![0u8; MAX_AVATAR_BYTES + 1]).unwrap();
         let result = read_avatar(path.to_str().unwrap()).await;
         std::fs::remove_file(&path).unwrap();
         assert!(result.unwrap_err().to_string().contains("over 2 MB"));
-        let small = std::env::temp_dir().join(format!("nuphos-avatar-ok-{}.png", std::process::id()));
+        let small = std::env::temp_dir().join(format!("cerin-avatar-ok-{}.png", std::process::id()));
         std::fs::write(&small, b"png").unwrap();
         assert_eq!(read_avatar(small.to_str().unwrap()).await.unwrap(), b"png");
         std::fs::remove_file(&small).unwrap();
@@ -618,7 +618,7 @@ mod account_args {
 
     #[test]
     fn auth_switch_names_its_account_without_setting_the_global_flag() {
-        let args = Args::try_parse_from(["nuphos", "auth", "switch", "alex@example.com"]).unwrap();
+        let args = Args::try_parse_from(["cerin", "auth", "switch", "alex@example.com"]).unwrap();
         assert!(args.account.is_none());
         match args.command {
             Some(Command::Auth { command: AuthCommand::Switch { selector } }) => {
@@ -626,7 +626,7 @@ mod account_args {
             }
             _ => panic!("not auth switch"),
         }
-        let args = Args::try_parse_from(["nuphos", "--account", "sam@example.com", "team"]).unwrap();
+        let args = Args::try_parse_from(["cerin", "--account", "sam@example.com", "team"]).unwrap();
         assert_eq!(args.account.as_deref(), Some("sam@example.com"));
     }
 }
@@ -644,27 +644,27 @@ mod runtime_args {
     #[test]
     fn managed_creation_is_no_longer_a_command() {
         for command in ["agents", "runtime"] {
-            assert!(Args::try_parse_from(["nuphos", command, "codex", "--create"]).is_err());
-            let args = Args::try_parse_from(["nuphos", command, "Codex", "--login"]).unwrap();
+            assert!(Args::try_parse_from(["cerin", command, "codex", "--create"]).is_err());
+            let args = Args::try_parse_from(["cerin", command, "Codex", "--login"]).unwrap();
             assert!(matches!(args.command, Some(Command::Runtime { login: true, .. })));
         }
-        assert!(Args::try_parse_from(["nuphos", "team", "Acme", "--create"]).is_ok());
+        assert!(Args::try_parse_from(["cerin", "team", "Acme", "--create"]).is_ok());
     }
 
     #[test]
     fn a_runtime_name_without_session_or_default_changes_nothing() {
-        let error = check(&["nuphos", "agents", "Codex"]).unwrap_err().to_string();
+        let error = check(&["cerin", "agents", "Codex"]).unwrap_err().to_string();
         assert!(error.contains("--session") && error.contains("--default"), "{error}");
     }
 
     #[test]
     fn listing_moving_defaulting_and_signing_in_still_parse() {
         for argv in [
-            &["nuphos", "agents"][..],
-            &["nuphos", "agents", "Codex", "--session", "abc"],
-            &["nuphos", "agents", "Codex", "--default"],
-            &["nuphos", "agents", "Codex", "--login"],
-            &["nuphos", "runtime", "Codex", "--default"],
+            &["cerin", "agents"][..],
+            &["cerin", "agents", "Codex", "--session", "abc"],
+            &["cerin", "agents", "Codex", "--default"],
+            &["cerin", "agents", "Codex", "--login"],
+            &["cerin", "runtime", "Codex", "--default"],
         ] {
             check(argv).unwrap_or_else(|e| panic!("{argv:?}: {e}"));
         }
@@ -672,8 +672,8 @@ mod runtime_args {
 
     #[test]
     fn default_does_not_combine_with_a_session() {
-        assert!(Args::try_parse_from(["nuphos", "agents", "Codex", "--default", "--session", "abc"]).is_err());
-        assert!(Args::try_parse_from(["nuphos", "agents", "--default"]).is_err());
+        assert!(Args::try_parse_from(["cerin", "agents", "Codex", "--default", "--session", "abc"]).is_err());
+        assert!(Args::try_parse_from(["cerin", "agents", "--default"]).is_err());
     }
 }
 
@@ -685,11 +685,11 @@ mod triggers_args {
 
     #[test]
     fn a_task_id_lists_its_triggers_and_usage_stays_a_subcommand() {
-        let args = Args::try_parse_from(["nuphos", "triggers", "sess-1"]).unwrap();
+        let args = Args::try_parse_from(["cerin", "triggers", "sess-1"]).unwrap();
         assert!(matches!(args.command, Some(Command::Triggers { session: Some(s), command: None }) if s == "sess-1"));
-        let args = Args::try_parse_from(["nuphos", "triggers"]).unwrap();
+        let args = Args::try_parse_from(["cerin", "triggers"]).unwrap();
         assert!(matches!(args.command, Some(Command::Triggers { session: None, command: None })));
-        let args = Args::try_parse_from(["nuphos", "triggers", "usage", "Nightly"]).unwrap();
+        let args = Args::try_parse_from(["cerin", "triggers", "usage", "Nightly"]).unwrap();
         assert!(matches!(
             args.command,
             Some(Command::Triggers { session: None, command: Some(TriggersCommand::Usage { trigger }) }) if trigger == "Nightly"

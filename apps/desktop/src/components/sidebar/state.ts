@@ -5,7 +5,7 @@ import { isBotTreeFold } from './chat-sections.ts'
 export const MIN_SIDEBAR_WIDTH = 220
 export const MAX_SIDEBAR_WIDTH = 380
 export const DEFAULT_SIDEBAR_WIDTH = 248
-export const SIDEBAR_WIDTH_KEY = 'nuphos.sidebarWidth'
+export const SIDEBAR_WIDTH_KEY = 'cerin.sidebarWidth'
 
 /** The width the person last dragged the sidebar to, within bounds. */
 export function storedSidebarWidth(): number {
@@ -21,7 +21,7 @@ export function storedSidebarWidth(): number {
 // the integration groups below are ALWAYS folded at rest and their expansion
 // is deliberately ephemeral (never persisted). A flat pre-per-team shape
 // parses as no overrides.
-const SIDEBAR_GROUP_STATE_KEY = 'nuphos.sidebarGroupState'
+const SIDEBAR_GROUP_STATE_KEY = 'cerin.sidebarGroupState'
 
 // Derived, never hand-listed: a copy of the labels here would silently stop
 // matching the moment a category is renamed in the shared table, and the group

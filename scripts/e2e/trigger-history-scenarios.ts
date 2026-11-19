@@ -20,7 +20,7 @@ function call(stack: Stack, method: string, path: string, body?: unknown) {
     headers: {
       authorization: `Bearer ${stack.token}`,
       'content-type': 'application/json',
-      'x-atlas-client': 'nuphos-e2e',
+      'x-atlas-client': 'cerin-e2e',
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   })
@@ -105,7 +105,7 @@ export const triggerHistoryScenarios: Scenario[] = [
 
       if (pause?.before?.enabled !== true || pause.after?.enabled !== false)
         throw new Error(`The pause is not recorded: ${JSON.stringify(pause)}`)
-      if (changes.some((change) => change.via !== 'request' || change.client !== 'nuphos-e2e'))
+      if (changes.some((change) => change.via !== 'request' || change.client !== 'cerin-e2e'))
         throw new Error(`A record lacks its source: ${JSON.stringify(changes)}`)
       if (JSON.stringify(changes).includes(created.webhookSecret))
         throw new Error('A record holds the webhook secret')

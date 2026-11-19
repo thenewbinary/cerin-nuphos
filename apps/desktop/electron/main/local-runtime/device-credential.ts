@@ -1,4 +1,4 @@
-// What `nuphos agent --join <token>` leaves on a computer: its own credential,
+// What `cerin agent --join <token>` leaves on a computer: its own credential,
 // which opens only its runtime tunnel and is revoked on its own, so a server
 // never has to hold a person's session.
 
@@ -16,7 +16,7 @@ export type DeviceCredential = {
   box?: true
 }
 
-/** Only a Box is Nuphos's whole computer, so only there may its default agents' logins go. */
+/** Only a Box is Cerin's whole computer, so only there may its default agents' logins go. */
 export const ownsMachine = (credential: DeviceCredential | null): boolean =>
   credential?.box === true
 
@@ -35,7 +35,7 @@ export const tunnelUrlFor = (apiUrl: string, deviceId: string, reclaim = false) 
  * systemd by RestartPreventExitStatus=78, and the LaunchAgent, which restarts only a
  * failed exit, by 0.
  */
-export const EXIT_REVOKED = process.env.XPC_SERVICE_NAME === 'ai.nuphos.agent' ? 0 : 78
+export const EXIT_REVOKED = process.env.XPC_SERVICE_NAME === 'ai.cerin.agent' ? 0 : 78
 
 export function deviceCredentialStore(dataDir: string) {
   const file = path.join(dataDir, 'device-credential.json')
@@ -99,7 +99,7 @@ export async function credentialRevoked(
 /** Exits for good: the saved credential stays, so a restart fails the same way. */
 export function exitRevoked(): never {
   console.error(
-    'This computer was disconnected from Nuphos. Join it again with a new token: `nuphos agent --join -`.',
+    'This computer was disconnected from Cerin. Join it again with a new token: `cerin agent --join -`.',
   )
   process.exit(EXIT_REVOKED)
 }
@@ -146,7 +146,7 @@ export async function deviceCredentialFor(options: {
   )
 
   if (typeof joined === 'number') {
-    if (joined !== 401) throw new Error(`Could not join Nuphos (HTTP ${String(joined)}).`)
+    if (joined !== 401) throw new Error(`Could not join Cerin (HTTP ${String(joined)}).`)
     // A used token left in a service's environment must not restart forever either.
     console.error('This join token is invalid, used or expired; create a new one.')
     process.exit(EXIT_REVOKED)

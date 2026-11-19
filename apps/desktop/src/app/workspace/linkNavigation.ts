@@ -8,7 +8,7 @@ import type { NavigationSnapshot } from '../../lib/appRoutes.ts'
 const ROUTE_TABLE_FIRST = new Set<string>(['cluster', 'github-repo', 'github-pr', 'agent-session'])
 
 /**
- * Where a Nuphos link leads. Resource-level mention links come first (they carry
+ * Where a Cerin link leads. Resource-level mention links come first (they carry
  * filter/label niceties); the rest, and anything else the route table can parse
  * (section pages, drill-downs, legacy aliases), resolve through the shared parser.
  */

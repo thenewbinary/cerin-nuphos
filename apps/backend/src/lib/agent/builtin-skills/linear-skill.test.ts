@@ -98,7 +98,7 @@ beforeAll(async () => {
         if (body.query.includes('IssueContextTeams')) {
           return Response.json({ data: { teams: page(teams) } })
         }
-        return Response.json({ data: { viewer: { id: 'viewer-1', name: 'Nuphos' } } })
+        return Response.json({ data: { viewer: { id: 'viewer-1', name: 'Cerin' } } })
       }
       if (body.query?.includes('mutation CreateAttachment')) {
         return Response.json({
@@ -107,7 +107,7 @@ beforeAll(async () => {
               success: true,
               attachment: {
                 id: 'attachment-1',
-                title: 'Nuphos session',
+                title: 'Cerin session',
                 subtitle: 'Source context',
                 url: body.variables?.input?.url,
               },
@@ -151,7 +151,7 @@ beforeAll(async () => {
     path.join(testScriptsDir, 'graphql.sh'),
     `#!/usr/bin/env bash
 set -euo pipefail
-source "\${LINEAR_ENV_PATH:-$HOME/.linear/nuphos.env}"
+source "\${LINEAR_ENV_PATH:-$HOME/.linear/cerin.env}"
 /usr/bin/curl -fsS \
   -H "Authorization: Bearer \${LINEAR_ACCESS_TOKEN}" \
   -H 'Content-Type: application/json' \
@@ -173,10 +173,10 @@ async function testHome(): Promise<string> {
 
   await mkdir(linear)
   await writeFile(
-    path.join(linear, 'nuphos.env'),
-    "export LINEAR_ACCESS_TOKEN='test-token'\nexport LINEAR_NUPHOS_TEAM_ID='nuphos-team'\n",
+    path.join(linear, 'cerin.env'),
+    "export LINEAR_ACCESS_TOKEN='test-token'\nexport LINEAR_CERIN_TEAM_ID='cerin-team'\n",
   )
-  await chmod(path.join(linear, 'nuphos.env'), 0o600)
+  await chmod(path.join(linear, 'cerin.env'), 0o600)
 
   return home
 }
@@ -186,7 +186,7 @@ function spawnEnv(home: string): Record<string, string> {
     ...process.env,
     HOME: home,
     LINEAR_TEST_GRAPHQL_URL: server.url.toString(),
-    NUPHOS_SESSION_ID: 'session-123',
+    CERIN_SESSION_ID: 'session-123',
   } as Record<string, string>
 }
 
@@ -380,8 +380,8 @@ describe('linear skill stateless helpers', () => {
       expect(JSON.parse(stdout)).toMatchObject({
         identifier: 'EX-1',
         sourceLink: {
-          title: 'Nuphos session',
-          url: 'https://nuphos.ai/teams/nuphos-team/agent/session-123',
+          title: 'Cerin session',
+          url: 'https://platform.cerin.ai/teams/cerin-team/agent/session-123',
         },
       })
       expect(requests).toHaveLength(2)
@@ -404,10 +404,10 @@ describe('linear skill stateless helpers', () => {
         variables: {
           input: {
             issueId: 'issue-1',
-            title: 'Nuphos session',
+            title: 'Cerin session',
             subtitle: 'Source context',
-            url: 'https://nuphos.ai/teams/nuphos-team/agent/session-123',
-            metadata: { nuphosSessionId: 'session-123' },
+            url: 'https://platform.cerin.ai/teams/cerin-team/agent/session-123',
+            metadata: { cerinSessionId: 'session-123' },
           },
         },
       })
@@ -420,7 +420,7 @@ describe('linear skill stateless helpers', () => {
     const home = await testHome()
     requests = []
     try {
-      const sessionUrl = 'https://nuphos.ai/teams/nuphos-team/agent/session-123'
+      const sessionUrl = 'https://platform.cerin.ai/teams/cerin-team/agent/session-123'
       const process = Bun.spawn(
         [
           'bash',

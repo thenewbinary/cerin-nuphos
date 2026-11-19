@@ -74,7 +74,7 @@ jobs:
           file: apps/backend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/nuphos/backend:v${{ steps.version.outputs.version }}
+          tags: ghcr.io/thenewbinary/cerin-backend:v${{ steps.version.outputs.version }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ needs.provenance.outputs.sha }}
@@ -90,7 +90,7 @@ jobs:
       # annotation records the release commit it built.
       - name: Sign image
         env:
-          IMAGE: ghcr.io/nuphos/backend@${{ steps.image.outputs.digest }}
+          IMAGE: ghcr.io/thenewbinary/cerin-backend@${{ steps.image.outputs.digest }}
           COMMIT: ${{ needs.provenance.outputs.sha }}
         run: cosign sign --yes -a "commit=$COMMIT" "$IMAGE"
 
@@ -108,7 +108,7 @@ jobs:
         run: |
           set -euo pipefail
           TAG="backend-v$VERSION"
-          IMAGE="ghcr.io/nuphos/backend:v$VERSION"
+          IMAGE="ghcr.io/thenewbinary/cerin-backend:v$VERSION"
           printf 'Self-hosted Backend image: `%s` (linux/amd64 and linux/arm64).\n\nImage digest: `%s`.\n' "$IMAGE" "$DIGEST" > release-notes.md
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --title "Backend v$VERSION" --latest=false --generate-notes --notes-file release-notes.md

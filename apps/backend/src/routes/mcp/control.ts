@@ -24,13 +24,13 @@ const text = (value: unknown) => (typeof value === 'string' && value.trim() ? va
 
 const EVENTS_PAGE = 200
 
-export async function nuphosListRuntimes(
+export async function cerinListRuntimes(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {
   const teamId = text(args.team_id)
 
-  if (!teamId) return toolError('`team_id` is required. Call nuphos_list_teams to see your teams.')
+  if (!teamId) return toolError('`team_id` is required. Call cerin_list_teams to see your teams.')
   if (!(await getTeamMembership(ctx.userId, teamId)))
     return toolError(`You are not a member of team ${teamId}.`)
   const runtimes = await withRuntimeReadiness(
@@ -71,7 +71,7 @@ async function readable(args: Record<string, unknown>, ctx: McpCallContext) {
 const isError = (value: unknown): value is ToolResult =>
   typeof value === 'object' && value !== null && 'isError' in value
 
-export async function nuphosStop(
+export async function cerinStop(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {
@@ -85,7 +85,7 @@ export async function nuphosStop(
   return toolResult({ session_id: conversation.sessionId, status })
 }
 
-export async function nuphosListQueue(
+export async function cerinListQueue(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {
@@ -105,7 +105,7 @@ export async function nuphosListQueue(
   })
 }
 
-export async function nuphosRemoveQueued(
+export async function cerinRemoveQueued(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {
@@ -113,7 +113,7 @@ export async function nuphosRemoveQueued(
   const queuedId = text(args.queued_id)
 
   if (isError(conversation)) return conversation
-  if (!queuedId) return toolError('`queued_id` is required. See nuphos_list_queue.')
+  if (!queuedId) return toolError('`queued_id` is required. See cerin_list_queue.')
   try {
     const message = await takeOwnQueued(conversation, ctx.userId, queuedId)
 
@@ -151,7 +151,7 @@ function localFramesAfter(owner: string, streamId: string, after: string, count:
     .map((frame, i) => ({ id: String(start + i + 1), frame }))
 }
 
-export async function nuphosEvents(
+export async function cerinEvents(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {
@@ -169,7 +169,7 @@ export async function nuphosEvents(
     (await getActiveAgentRunForSession(owner, conversation.sessionId))
   // Only this session's running turn is read, so a cursor reaches no other stream.
   // A cursor on any other stream marks a turn that is over: its events are gone
-  // from here, and the stored transcript (nuphos_check from_index) has it whole.
+  // from here, and the stored transcript (cerin_check from_index) has it whole.
   const ended = Boolean(cursor && cursor.streamId !== active?.streamId)
   const base = {
     session_id: conversation.sessionId,

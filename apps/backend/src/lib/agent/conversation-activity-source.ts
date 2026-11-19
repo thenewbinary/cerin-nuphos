@@ -1,4 +1,4 @@
-export type ConversationActivityOrigin = 'nuphos' | 'slack' | 'trigger' | 'mcp' | 'unknown'
+export type ConversationActivityOrigin = 'cerin' | 'slack' | 'trigger' | 'mcp' | 'unknown'
 
 export type ConversationActivitySource = {
   origin: ConversationActivityOrigin
@@ -35,7 +35,7 @@ export function normalizeConversationActivitySource(
 
   if (slackOriginated) origin = 'slack'
   else if (source === 'agent.trigger' || source?.startsWith('agent.trigger.')) origin = 'trigger'
-  else if (source === 'app' || source?.startsWith('app.')) origin = 'nuphos'
+  else if (source === 'app' || source?.startsWith('app.')) origin = 'cerin'
   else if (source === 'mcp' || source?.startsWith('mcp.')) origin = 'mcp'
 
   return { origin, linkedSlackThread }

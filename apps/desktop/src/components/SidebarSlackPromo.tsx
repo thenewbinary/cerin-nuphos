@@ -14,8 +14,8 @@ import { t } from '../i18n'
 // mount, so the parent must remount this via a `key={teamId}` when the team
 // changes.
 
-const DISMISS_KEY = (teamId: string) => `nuphos.slack-promo.dismissed.${teamId}`
-const COLLAPSE_KEY = (teamId: string) => `nuphos.slack-promo.collapsed.${teamId}`
+const DISMISS_KEY = (teamId: string) => `cerin.slack-promo.dismissed.${teamId}`
+const COLLAPSE_KEY = (teamId: string) => `cerin.slack-promo.collapsed.${teamId}`
 
 function persist(key: string, value: string) {
   try {
@@ -98,7 +98,7 @@ export function SidebarSlackPromo({
                 <span>Slack{connectAfter}</span>
               </div>
               <p className="mt-0.5 text-[11.5px] leading-snug text-white/75">
-                {t('Chat with Nuphos and get updates right in your Slack workspace.')}
+                {t('Chat with Cerin and get updates right in your Slack workspace.')}
               </p>
               <button
                 type="button"

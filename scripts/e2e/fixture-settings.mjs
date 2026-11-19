@@ -14,13 +14,13 @@ const models = first ? [...shared, 'fixture-large'] : shared
 // "Default", which names the model it stands for and is a new session's model, and
 // Claude Code's effort levels, whose "default" names the level it stands for.
 const standIn = { value: 'default', name: 'Default (recommended)', description: 'fixture' }
-// While a `behind` file beside the log names a model, a session with Nuphos's tools offers it
+// While a `behind` file beside the log names a model, a session with Cerin's tools offers it
 // and stays on it whatever it was asked to start on; a model probe, opened without them, never
 // lists it: the session runs a model its computer's list lacks.
 const behind = join(dirname(process.env.E2E_ACP_LOG ?? ''), 'behind')
 const unlistedFor = (sessionId) =>
   toolsServer(sessionId) && existsSync(behind) && readFileSync(behind, 'utf8')
-const meta = 'ai.nuphos/runtimeDefaults'
+const meta = 'ai.cerin/runtimeDefaults'
 
 /** A new session's params, with no model to start on when it stays on the unlisted one. */
 export function heldDefaults(sessionId, params) {

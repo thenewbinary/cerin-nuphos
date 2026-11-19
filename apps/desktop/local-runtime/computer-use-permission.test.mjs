@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { runInNewContext } from 'node:vm'
-import { nuphosAuthorizeComputerUse } from './computer-use-permission.mjs'
+import { cerinAuthorizeComputerUse } from './computer-use-permission.mjs'
 
 const authorize = (platform) =>
-  runInNewContext(`(${nuphosAuthorizeComputerUse.toString()})`, {
-    process: { platform, env: { NUPHOS_CUA_PERMISSION_CLIENT: '/bundle/cua-permission' } },
+  runInNewContext(`(${cerinAuthorizeComputerUse.toString()})`, {
+    process: { platform, env: { CERIN_CUA_PERMISSION_CLIENT: '/bundle/cua-permission' } },
   })
 const cua = { _meta: { connector_id: 'computer-use' } }
 

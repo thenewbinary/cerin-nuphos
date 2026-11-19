@@ -118,8 +118,8 @@ describe('plainText', () => {
   })
 
   test('keeps underscores inside a word', () => {
-    expect(plainText('Set `NUPHOS_AGENT_HOME` to _your_ __home__')).toBe(
-      'Set NUPHOS_AGENT_HOME to your home',
+    expect(plainText('Set `CERIN_AGENT_HOME` to _your_ __home__')).toBe(
+      'Set CERIN_AGENT_HOME to your home',
     )
   })
 

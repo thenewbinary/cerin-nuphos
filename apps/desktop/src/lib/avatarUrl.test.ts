@@ -23,17 +23,17 @@ test('shared-message avatars reject untrusted and disguised image hosts', () => 
 })
 
 test('uploaded photos are trusted only on the backend this app talks to', () => {
-  setAvatarApiOrigin('https://api.nuphos.ai')
+  setAvatarApiOrigin('https://platform.cerin.ai')
   assert.equal(
-    trustedAvatarURL(`https://api.nuphos.ai${uploaded}`),
-    `https://api.nuphos.ai${uploaded}`,
+    trustedAvatarURL(`https://platform.cerin.ai${uploaded}`),
+    `https://platform.cerin.ai${uploaded}`,
   )
   for (const value of [
     `https://evil.example${uploaded}`,
-    `http://api.nuphos.ai${uploaded}`,
-    `https://api.nuphos.ai${uploaded}?track=1`,
-    `https://api.nuphos.ai${uploaded.replace('.webp', '.svg')}`,
-    'https://api.nuphos.ai/avatars/me/pixel.webp',
+    `http://platform.cerin.ai${uploaded}`,
+    `https://platform.cerin.ai${uploaded}?track=1`,
+    `https://platform.cerin.ai${uploaded.replace('.webp', '.svg')}`,
+    'https://platform.cerin.ai/avatars/me/pixel.webp',
   ]) {
     assert.equal(trustedAvatarURL(value), undefined)
   }
@@ -42,5 +42,5 @@ test('uploaded photos are trusted only on the backend this app talks to', () => 
     trustedAvatarURL(`http://localhost:3720${uploaded}`),
     `http://localhost:3720${uploaded}`,
   )
-  assert.equal(trustedAvatarURL(`https://api.nuphos.ai${uploaded}`), undefined)
+  assert.equal(trustedAvatarURL(`https://platform.cerin.ai${uploaded}`), undefined)
 })

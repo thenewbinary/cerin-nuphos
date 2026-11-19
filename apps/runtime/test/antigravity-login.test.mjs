@@ -23,7 +23,7 @@ if (args[0] === 'models') {
   process.exit(0)
 }
 if (JSON.stringify(args) !== JSON.stringify(['acp', '--login'])) process.exit(2)
-if (process.env.NUPHOS_TOKEN) process.exit(3)
+if (process.env.CERIN_TOKEN) process.exit(3)
 process.stderr.write('Open this link in a browser to log in with Google:\\n\\n  ${AUTHORIZE}\\n\\nThen paste the authorization code:\\n')
 require('node:readline').createInterface({ input: process.stdin }).on('line', (code) => {
   if (code === 'denied') { console.error('secret-provider-output'); process.exit(1) }
@@ -59,9 +59,9 @@ test('the official CLI receives the code and owns the sign-in; no credential lea
       executable,
       env: {
         HOME: '/not-the-agent-home',
-        NUPHOS_AGENT_HOME: home,
+        CERIN_AGENT_HOME: home,
         PATH: process.env.PATH,
-        NUPHOS_TOKEN: 'must-not-reach-cli',
+        CERIN_TOKEN: 'must-not-reach-cli',
       },
       input,
       emit: (frame) => {

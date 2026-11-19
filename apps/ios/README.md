@@ -1,17 +1,17 @@
-# Nuphos iOS
+# Cerin iOS
 
-SwiftUI client for api.nuphos.ai. Open `nuphos-ios.xcodeproj` in Xcode 26.2 or later.
+SwiftUI client for platform.cerin.ai. Open `cerin-ios.xcodeproj` in Xcode 26.2 or later.
 
 ## Run on a simulator
 
 ```sh
-xcodebuild -project nuphos-ios.xcodeproj -scheme nuphos-ios -configuration Debug \
+xcodebuild -project cerin-ios.xcodeproj -scheme cerin-ios -configuration Debug \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 ```
 
 ## UI tests in CI
 
-The UI tests (`nuphos-iosUITests`) take about an hour serially, so they do not run on every pull request.
+The UI tests (`cerin-iosUITests`) take about an hour serially, so they do not run on every pull request.
 `.github/workflows/ios-ui.yml` runs all of them every night on `main`, and on any branch you dispatch it on.
 A failed test fails the job, and a failed nightly run opens or updates an issue listing the failed tests.
 When a change affects iOS screens or the UI tests themselves, run it on the pull request's branch and link the run:
@@ -27,7 +27,7 @@ commits side by side as `before` and `after`, copy the new test file into `befor
 
 ```sh
 bash after/apps/ios/tests/ui-evidence.sh before after BotsAndTasksListUITests/testBotsKeepWhatWasOpenedByHand \
-  -destination "id=$udid" -only-testing:nuphos-iosUITests/BotsAndTasksListUITests
+  -destination "id=$udid" -only-testing:cerin-iosUITests/BotsAndTasksListUITests
 ```
 
 It reads each side's result bundle, not the exit code, writes a per-test table to the
@@ -71,7 +71,7 @@ The app follows the system language, using the seven languages Desktop ships (`z
 After adding or changing a string, build the app and sync the catalog, then fill what Desktop already translates:
 
 ```sh
-xcodebuild -project nuphos-ios.xcodeproj -scheme nuphos-ios -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project cerin-ios.xcodeproj -scheme cerin-ios -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
 bash tests/sync-strings.sh build
 node ../../scripts/fill-mobile-locales.mjs ios
 ```
@@ -85,10 +85,10 @@ If you cannot write all seven languages, run the fill script for what Desktop al
 ## Run on a device
 
 ```sh
-xcodebuild -project nuphos-ios.xcodeproj -scheme nuphos-ios -configuration Debug \
+xcodebuild -project cerin-ios.xcodeproj -scheme cerin-ios -configuration Debug \
   -destination 'generic/platform=iOS' -allowProvisioningUpdates build
-xcrun devicectl device install app --device <udid> <DerivedData>/Build/Products/Debug-iphoneos/nuphos-ios.app
-xcrun devicectl device process launch --device <udid> ai.nuphos.ios
+xcrun devicectl device install app --device <udid> <DerivedData>/Build/Products/Debug-iphoneos/cerin-ios.app
+xcrun devicectl device process launch --device <udid> ai.cerin.ios
 ```
 
 ## TestFlight
@@ -103,19 +103,19 @@ project only matters for local builds.
 Locally, with an API key at `~/.private_keys/AuthKey_<id>.p8`:
 
 ```sh
-xcodebuild -project nuphos-ios.xcodeproj -scheme nuphos-ios -configuration Release \
-  -destination 'generic/platform=iOS' -archivePath build/nuphos.xcarchive \
+xcodebuild -project cerin-ios.xcodeproj -scheme cerin-ios -configuration Release \
+  -destination 'generic/platform=iOS' -archivePath build/cerin.xcarchive \
   -allowProvisioningUpdates -authenticationKeyPath ~/.private_keys/AuthKey_<id>.p8 \
   -authenticationKeyID <id> -authenticationKeyIssuerID <issuer> \
   CURRENT_PROJECT_VERSION=<build> archive
-xcodebuild -exportArchive -archivePath build/nuphos.xcarchive -exportOptionsPlist ExportOptions.plist \
+xcodebuild -exportArchive -archivePath build/cerin.xcarchive -exportOptionsPlist ExportOptions.plist \
   -exportPath build/export -allowProvisioningUpdates -authenticationKeyPath ~/.private_keys/AuthKey_<id>.p8 \
   -authenticationKeyID <id> -authenticationKeyIssuerID <issuer>
 ```
 
 ## Product analytics
 
-Release builds using the default Nuphos Cloud endpoint send curated events to
+Release builds using the default Cerin Cloud endpoint send curated events to
 PostHog project 439957, using the same backend user ID as Desktop. Debug builds
 (including preview fixtures), signed-out sessions and self-hosted endpoints do
 not capture events. PostHog Swift is pinned to 3.89.1. Automatic screen/tap
@@ -131,7 +131,7 @@ text, attachment names/content, access tokens or backend URLs are recorded.
 - `team_switched`, `agent_message_sent`, `agent_message_queued`,
   `agent_chat_started`, `agent_plan_approved`, `agent_plan_rejected`.
 
-All events carry `platform` (`ios` on iPhone/iPad) and `client=nuphos-ios`;
+All events carry `platform` (`ios` on iPhone/iPad) and `client=cerin-ios`;
 the SDK supplies app version/build and OS properties. Team-specific events
 carry explicit `team_id`. A send event means dispatch intent, not a completed
 agent response. A steering send is recorded only after the server accepts it.

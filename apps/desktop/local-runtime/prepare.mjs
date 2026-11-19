@@ -6,7 +6,7 @@
 // The adapters are this repository's apps/runtime/image adapters, patched as
 // the image patches them.
 // openab is built from apps/runtime/openab unless --openab (or
-// NUPHOS_OPENAB_BINARY) supplies one. Its build lives in ~/.cache/nuphos, so
+// CERIN_OPENAB_BINARY) supplies one. Its build lives in ~/.cache/cerin, so
 // every checkout on this computer shares it. Without --require a target that cannot
 // get an openab binary is staged without one, and the app reports the Local
 // runtime as unavailable in that build.
@@ -41,7 +41,7 @@ import {
 // openab pins no toolchain, so this keeps a runner image's rustc out of the build.
 const RUST_TOOLCHAIN = '1.99.0'
 
-/** One nuphos-runtime adapter per agent the desktop can run, patched as its image patches it. */
+/** One cerin-runtime adapter per agent the desktop can run, patched as its image patches it. */
 export const ADAPTERS = {
   'claude-code': {
     dir: 'claude-agent-acp',
@@ -184,7 +184,7 @@ function buildOpenab(target, revision) {
 
   if (!triple || !revision) return null
   const name = target.startsWith('win32') ? 'openab.exe' : 'openab'
-  const cacheDir = join(homedir(), '.cache', 'nuphos')
+  const cacheDir = join(homedir(), '.cache', 'cerin')
   const binary = join(cacheDir, `openab-${revision}`, 'target', triple, 'release', name)
 
   // A revision names its source, so a built binary is final. Release jobs
@@ -243,7 +243,7 @@ export async function prepare({ targets, openab, skipOpenab, require }) {
         filter: (path) => !path.endsWith('.complete'),
       })
     cpSync(join(RUNTIME_DIR, ATTACHMENT_JOB), join(out, 'attachment-job.mjs'))
-    // Each agent's sign-in wrapper openab runs on request from Nuphos, the ones the runtime image ships.
+    // Each agent's sign-in wrapper openab runs on request from Cerin, the ones the runtime image ships.
     cpSync(join(RUNTIME_DIR, 'claude-login.mjs'), join(out, 'claude-login.mjs'))
     cpSync(join(RUNTIME_DIR, 'codex-login.mjs'), join(out, 'codex-login.mjs'))
     cpSync(join(RUNTIME_DIR, 'grok-login.mjs'), join(out, 'grok-login.mjs'))
@@ -257,7 +257,7 @@ export async function prepare({ targets, openab, skipOpenab, require }) {
     cpSync(join(RUNTIME_DIR, 'hermes-providers.json'), join(out, 'hermes-providers.json'))
     cpSync(join(RUNTIME_DIR, 'pi-login.mjs'), join(out, 'pi-login.mjs'))
     cpSync(join(RUNTIME_DIR, 'pi-session.mjs'), join(out, 'pi-session.mjs'))
-    // The `panel` job a machine Nuphos made offers, the one the runtime image runs.
+    // The `panel` job a machine Cerin made offers, the one the runtime image runs.
     cpSync(join(RUNTIME_DIR, 'panel-job.mjs'), join(out, 'panel-job.mjs'))
     // A desktop per session on a Linux Box: the MCP wrapper Claude runs there.
     cpSync(
@@ -351,7 +351,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
   await prepare({
     targets: values.targets.split(',').filter(Boolean),
-    openab: values.openab ?? process.env.NUPHOS_OPENAB_BINARY,
+    openab: values.openab ?? process.env.CERIN_OPENAB_BINARY,
     skipOpenab: values['no-openab'],
     require: values.require,
   })

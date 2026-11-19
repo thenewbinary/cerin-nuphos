@@ -287,7 +287,7 @@ function relayFailureReason(err: unknown): string {
   const message = err instanceof Error ? err.message : String(err)
 
   if (message.includes('503')) {
-    return 'The relay agent in the cluster is not connected. Check the nuphos-relay-agent pods.'
+    return 'The relay agent in the cluster is not connected. Check the cerin-relay-agent pods.'
   }
   if (message.includes('502')) {
     return 'The relay agent is connected but could not reach the API server address in the kubeconfig.'

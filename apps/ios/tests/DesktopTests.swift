@@ -177,7 +177,7 @@ struct DesktopTests {
         try await client.run(RFBByteStream(chunks))
     }
 
-    /// A computer that only offers an account sign-in (Screen Sharing behind an older Nuphos) is refused, not asked.
+    /// A computer that only offers an account sign-in (Screen Sharing behind an older Cerin) is refused, not asked.
     static func signInRefused() async throws {
         let recorder = Recorder()
         do {
@@ -202,7 +202,7 @@ struct DesktopTests {
         precondition(RFBClient.encodings.first == 50, "Open H.264 is asked for first")
     }
 
-    /// A Mac's Nuphos host names itself, a fitted window's new size comes as DesktopSize before its
+    /// A Mac's Cerin host names itself, a fitted window's new size comes as DesktopSize before its
     /// frame, and the request for one is SetDesktopSize with screen 1.
     static func fitWindow() async throws {
         let recorder = Recorder()
@@ -215,7 +215,7 @@ struct DesktopTests {
         let client = RFBClient(send: { recorder.sent += $0 }, handlers: handlers)
         let payload: [UInt8] = [0, 0, 0, 1, 0x65, 1]
         var server = Array("RFB 003.008\n".utf8) + [1, 1] + be32(0)
-        server += be16(16) + be16(8) + [UInt8](repeating: 0, count: 16) + be32(10) + Array("Nuphos Mac".utf8)
+        server += be16(16) + be16(8) + [UInt8](repeating: 0, count: 16) + be32(10) + Array("Cerin Mac".utf8)
         server += [0, 0] + be16(2) + rect(0, 0, 32, 20, -223) + rect(0, 0, 32, 20, 50) + be32(payload.count) + be32(1) + payload
         do {
             try await run(client, against: server)

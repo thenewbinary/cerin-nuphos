@@ -142,7 +142,7 @@ async function handlePayload(payload: GatewayPayload): Promise<void> {
         d: {
           token: config.discord.botToken,
           intents: 513 | (1 << 15),
-          properties: { os: process.platform, browser: 'nuphos', device: 'nuphos' },
+          properties: { os: process.platform, browser: 'cerin', device: 'cerin' },
         },
       })
     }

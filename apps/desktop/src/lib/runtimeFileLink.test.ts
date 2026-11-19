@@ -17,7 +17,7 @@ test('resolves agent file links to runtime paths and leaves real URLs alone', ()
   ])
     assert.equal(runtimeFilePathFromHref(href), path)
   for (const href of [
-    'https://nuphos.ai/teams/t/agent',
+    'https://platform.cerin.ai/teams/t/agent',
     '/teams/t/infra/aws',
     'mailto:a@b.c',
     'file:///workspace/report.md',
@@ -58,7 +58,7 @@ test('finds bare runtime paths in prose without catching URLs, dates or app rout
     '.',
   ])
   for (const text of [
-    'https://nuphos.ai/teams/t/agent',
+    'https://platform.cerin.ai/teams/t/agent',
     '2026/10/16',
     'TCP/UDP and/or',
     '/usr',

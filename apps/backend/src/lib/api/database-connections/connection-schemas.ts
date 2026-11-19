@@ -18,7 +18,7 @@ export const databaseTailscaleNetworkSchema = z
     tag: z
       .string()
       .trim()
-      .regex(/^tag:[a-z0-9][a-z0-9-]{0,62}$/i, 'Use a Tailscale tag such as tag:nuphos-database'),
+      .regex(/^tag:[a-z0-9][a-z0-9-]{0,62}$/i, 'Use a Tailscale tag such as tag:cerin-database'),
   })
   .strict()
 export const databaseAgentPolicySchema = z.enum(['disabled', 'metadata-only', 'read-only'])

@@ -61,7 +61,7 @@ agent.post('/chat/:streamId/abort', async (c) => {
     // Cancellation is a request, not a terminal state. Keep the run, its SSE
     // stream, and its distributed ownership alive until the OpenAB prompt
     // resolves. The runtime is the authority on when the turn actually stops;
-    // finishing here used to make Nuphos report an idle conversation while the
+    // finishing here used to make Cerin report an idle conversation while the
     // runtime was still executing the same turn.
     abortSpan.end()
 

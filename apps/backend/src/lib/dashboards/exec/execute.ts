@@ -6,7 +6,7 @@ import { dashboardPanels, dashboardPanelSnapshots } from '@/models'
 import { advanceRelativeWindow, headCode, resolveParams } from './params'
 import { queueSnapshot } from './scheduler'
 
-import type { NuphosDashboard, DashboardPanel, DashboardPanelSnapshot } from '@/models'
+import type { CerinDashboard, DashboardPanel, DashboardPanelSnapshot } from '@/models'
 
 // ---------------------------------------------------------------------------
 // Single-panel execution
@@ -14,7 +14,7 @@ import type { NuphosDashboard, DashboardPanel, DashboardPanelSnapshot } from '@/
 
 export type ExecuteArgs = {
   teamId: ObjectId
-  dashboard: NuphosDashboard
+  dashboard: CerinDashboard
   panel: DashboardPanel
   /** Bypass completed-snapshot reuse. An equivalent in-flight run is still
    * reused so duplicate clicks cannot execute the same script concurrently. */
@@ -113,7 +113,7 @@ export async function executePanel(args: ExecuteArgs): Promise<DashboardPanelSna
  *  The client polls each snapshot to completion. */
 export async function refreshDashboard(args: {
   teamId: ObjectId
-  dashboard: NuphosDashboard
+  dashboard: CerinDashboard
   force?: boolean
   viewOnly?: boolean
 }): Promise<DashboardPanelSnapshot[]> {

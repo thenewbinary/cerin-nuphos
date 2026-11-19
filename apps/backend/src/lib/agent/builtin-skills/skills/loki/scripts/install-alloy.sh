@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install & configure Grafana Alloy on a GCE VM so its logs ship to Loki.
 #
-# Runs ON the target VM as root. The Nuphos agent pipes it over SSH:
+# Runs ON the target VM as root. The Cerin agent pipes it over SSH:
 #   gcloud compute ssh <vm> --zone <zone> --command \
 #     "sudo LOKI_URL=http://10.0.0.5:3100 ENV_LABEL=stage SERVICE_LABEL=c-engine bash -s" \
 #     < skills/loki/scripts/install-alloy.sh
@@ -81,7 +81,7 @@ fi
 
 mkdir -p /etc/alloy
 cat > /etc/alloy/config.alloy <<EOF
-// Managed by Nuphos (loki skill). Re-running the installer overwrites this file.
+// Managed by Cerin (loki skill). Re-running the installer overwrites this file.
 loki.write "default" {
   endpoint {
     url = "${LOKI_URL}/loki/api/v1/push"
@@ -127,7 +127,7 @@ fi
 # Emit a marker line so the caller can verify end-to-end retrieval through
 # Loki. `logger` can be missing on minimal images — a failed marker must not
 # turn a successful install into a reported failure (set -e).
-logger -t nuphos-onboarding "loki onboarding marker host=$(hostname) at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" ||
+logger -t cerin-onboarding "loki onboarding marker host=$(hostname) at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" ||
   echo "warning: logger unavailable, onboarding marker not emitted — verify with a live log line instead" >&2
 
 echo "OK alloy=active loki=${LOKI_URL} labels=env:${ENV_LABEL},instance:$(hostname),service:${SERVICE_LABEL}"

@@ -60,7 +60,7 @@ test('the Electron IPC wrapper and Error prefix are stripped', () => {
   assert.equal(detail, null)
 })
 
-test('a Nuphos-shaped error body reads its message', () => {
+test('a Cerin-shaped error body reads its message', () => {
   const { summary } = queryErrorText(
     JSON.stringify({ error: { code: 'grafana_unreachable', message: 'Failed to reach Grafana' } }),
   )

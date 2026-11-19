@@ -8,7 +8,7 @@ import {
   credentialsMcpTools,
 } from '@/lib/claude-code-preview/credentials-mcp'
 import { scopedPathAllowed, verifyPreviewMcpToken } from '@/lib/claude-code-preview/mcp-token'
-import { nuphosToolsMcp } from '@/lib/claude-code-preview/nuphos-tools-mcp'
+import { cerinToolsMcp } from '@/lib/claude-code-preview/cerin-tools-mcp'
 import { resolvePreviewToolContext } from '@/lib/claude-code-preview/preview-tool-context-resolve'
 import {
   dashboardPanelAgent,
@@ -48,7 +48,7 @@ import type { FileTransferVariables } from '@/routes/file-transfers'
 import type { Context, MiddlewareHandler } from 'hono'
 
 /**
- * Agent-side routes — called from inside the sandbox using NUPHOS_TOKEN. The
+ * Agent-side routes — called from inside the sandbox using CERIN_TOKEN. The
  * session id in the path identifies which agent is calling; we verify that
  * the authenticated user owns that session before honoring the request.
  */
@@ -163,11 +163,11 @@ teamScoped.post('/mcp', async (c) => {
   return serveMcp(c, credentialsMcpTools(agent, teamId, vend), CREDENTIALS_MCP_SURFACE)
 })
 
-// Nuphos's native tools (memory, dashboards, diagrams, triggers, …) as a second MCP
+// Cerin's native tools (memory, dashboards, diagrams, triggers, …) as a second MCP
 // server; their results render as cards through the run-frame bridge.
 teamScoped.post('/mcp-tools', async (c) => {
   const agent = c.get('agent')
-  const { surface, tools } = await nuphosToolsMcp(
+  const { surface, tools } = await cerinToolsMcp(
     await resolvePreviewToolContext({
       userId: agent.userId,
       conversationOwnerUserId: agent.conversationOwnerUserId,

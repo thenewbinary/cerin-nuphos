@@ -1,19 +1,19 @@
-import { nuphosStreamReplyImages } from './reply-image-stream.mjs'
+import { cerinStreamReplyImages } from './reply-image-stream.mjs'
 
 // Inlined into both native adapters, so local and cloud use the same contract.
-export function nuphosReplyImages(agent, params, response) {
-  const env = params?._meta?.claudeCode?.options?.env ?? params?._meta?.['ai.nuphos/codex']?.env
+export function cerinReplyImages(agent, params, response) {
+  const env = params?._meta?.claudeCode?.options?.env ?? params?._meta?.['ai.cerin/codex']?.env
   if (
-    !env?.NUPHOS_TOKEN ||
-    !env.NUPHOS_SESSION_ID ||
-    !(env.TEAM || env.NUPHOS_TEAM_ID) ||
+    !env?.CERIN_TOKEN ||
+    !env.CERIN_SESSION_ID ||
+    !(env.TEAM || env.CERIN_TEAM_ID) ||
     !params.cwd
   )
     return response
   const target = agent.client?.sessionUpdate ? agent.client : agent.connection
   const method = target === agent.client ? 'sessionUpdate' : 'notify'
   if (!target?.[method]) return response
-  if (!agent.nuphosReplyImageState) {
+  if (!agent.cerinReplyImageState) {
     const sessions = new Map()
     const original = target[method].bind(target)
     const send = (notification) =>
@@ -22,7 +22,7 @@ export function nuphosReplyImages(agent, params, response) {
     const flush = async (state) => {
       const pending = state.pending
       if (pending) {
-        const text = await nuphosStreamReplyImages('', state, nuphosUploadReplyImages, true)
+        const text = await cerinStreamReplyImages('', state, cerinUploadReplyImages, true)
         if (text)
           await send({
             ...pending,
@@ -44,10 +44,10 @@ export function nuphosReplyImages(agent, params, response) {
           if (state.pending && state.pending.update.messageId !== update.messageId)
             await flush(state)
           state.pending = notification
-          const text = await nuphosStreamReplyImages(
+          const text = await cerinStreamReplyImages(
             update.content.text,
             state,
-            nuphosUploadReplyImages,
+            cerinUploadReplyImages,
           )
           if (text)
             await send({
@@ -63,7 +63,7 @@ export function nuphosReplyImages(agent, params, response) {
       queue = result.catch(() => {})
       return result
     }
-    agent.nuphosFlushReplyImages = (sessionId) => {
+    agent.cerinFlushReplyImages = (sessionId) => {
       const state = sessions.get(sessionId)
       const result = queue.then(() => state && flush(state))
       queue = result.catch(() => {})
@@ -74,24 +74,24 @@ export function nuphosReplyImages(agent, params, response) {
       try {
         return await prompt(...args)
       } finally {
-        await agent.nuphosFlushReplyImages(args[0]?.sessionId)
+        await agent.cerinFlushReplyImages(args[0]?.sessionId)
       }
     }
-    agent.nuphosReplyImageState = sessions
+    agent.cerinReplyImageState = sessions
   }
   const id = response?.sessionId ?? params.sessionId
   if (id)
-    agent.nuphosReplyImageState.set(id, {
+    agent.cerinReplyImageState.set(id, {
       env: { ...env },
       cwd: params.cwd,
-      cache: agent.nuphosReplyImageState.get(id)?.cache ?? new Map(),
+      cache: agent.cerinReplyImageState.get(id)?.cache ?? new Map(),
       credentialsDir: process.env.OPENAB_CREDENTIALS_DIR,
       pending: null,
     })
   return response
 }
 
-export async function nuphosUploadReplyImages(text, state) {
+export async function cerinUploadReplyImages(text, state) {
   const fs = await import('node:fs/promises')
   const path = await import('node:path')
   const { fileURLToPath } = await import('node:url')
@@ -171,12 +171,12 @@ export async function nuphosUploadReplyImages(text, state) {
       let group = cached?.expiresAt > Date.now() ? cached.id : null
       if (!group) {
         const env = state.env
-        let token = env.NUPHOS_TOKEN
+        let token = env.CERIN_TOKEN
         if (state.credentialsDir)
           token = (
-            await fs.readFile(path.join(state.credentialsDir, 'NUPHOS_TOKEN'), 'utf8')
+            await fs.readFile(path.join(state.credentialsDir, 'CERIN_TOKEN'), 'utf8')
           ).trim()
-        const base = `${(env.NUPHOS_BACKEND_URL || 'https://api.nuphos.ai').replace(/\/$/, '')}/agent-sessions/${encodeURIComponent(env.NUPHOS_SESSION_ID)}/teams/${encodeURIComponent(env.TEAM || env.NUPHOS_TEAM_ID)}/file-transfers`
+        const base = `${(env.CERIN_BACKEND_URL || 'https://platform.cerin.ai').replace(/\/$/, '')}/agent-sessions/${encodeURIComponent(env.CERIN_SESSION_ID)}/teams/${encodeURIComponent(env.TEAM || env.CERIN_TEAM_ID)}/file-transfers`
         const signal = uploadSignal
         const request = async (url, options) => {
           const result = await fetch(url, { ...options, signal })
@@ -209,7 +209,7 @@ export async function nuphosUploadReplyImages(text, state) {
         if (state.cache.size >= 128) state.cache.clear()
         state.cache.set(key, { id: group, expiresAt: Date.parse(created.expiresAt) })
       }
-      output += `![${match[1]}](https://nuphos.ai/_reply-images/${group})`
+      output += `![${match[1]}](https://platform.cerin.ai/_reply-images/${group})`
     } catch (error) {
       // No native errors: they can expose local paths, URLs or credentials.
       const allowed = [

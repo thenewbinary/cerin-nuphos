@@ -13,7 +13,7 @@ import type { MigrationManifest, MigrationPart } from './format'
 
 // Stage the bounded archive so failures never return a successful partial ZIP.
 export function createMigrationArchive(manifest: MigrationManifest) {
-  const directory = mkdtempSync(join(tmpdir(), 'nuphos-migration-'))
+  const directory = mkdtempSync(join(tmpdir(), 'cerin-migration-'))
   const path = join(directory, 'team.zip')
   const fd = openSync(path, 'wx', 0o600)
   let closed = false

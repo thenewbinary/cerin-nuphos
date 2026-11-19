@@ -39,7 +39,7 @@ export function Conversation({
   onApprovePlan,
   onRejectPlan,
   activePlanCanAct,
-  onOpenNuphosLink,
+  onOpenCerinLink,
   onOpenAgentSettings,
   onEditMessage,
   isTeamAdmin = false,
@@ -181,7 +181,7 @@ export function Conversation({
             onApprovePlan={onApprovePlan}
             onRejectPlan={onRejectPlan}
             activePlanCanAct={activePlanCanAct}
-            onOpenNuphosLink={onOpenNuphosLink}
+            onOpenCerinLink={onOpenCerinLink}
             onOpenAgentSettings={onOpenAgentSettings}
             onEditMessage={onEditMessage}
             isTeamAdmin={isTeamAdmin}

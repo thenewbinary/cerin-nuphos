@@ -1,4 +1,4 @@
-// A computer's Nuphos Desktop, updated by its owner from another of their computers. The
+// A computer's Cerin Desktop, updated by its owner from another of their computers. The
 // Desktop reports its version and the update its updater found; asking it to update
 // restarts it into that update the way Restart to update does, which ends every agent
 // on it, so only its owner may, and the Desktop refuses while an agent task runs. A Box
@@ -42,7 +42,7 @@ export async function requestComputerAppUpdate(
   const status = await deps.status(userId, deviceId)
 
   if (!status)
-    throw new AppError(409, 'runtime_offline', 'The computer is offline. Open Nuphos on it first.')
+    throw new AppError(409, 'runtime_offline', 'The computer is offline. Open Cerin on it first.')
   const update = status.app?.update
 
   if (!update?.ready)

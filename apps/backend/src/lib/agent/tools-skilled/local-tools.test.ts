@@ -138,7 +138,7 @@ describe('createLocalExecTool execute', () => {
 
     expect(result).toEqual({
       error:
-        'No local device is usable in this conversation. Either none is selected in its credential selector, or the selected one is offline: Nuphos Desktop must be open and signed in on it, with local exec allowed. list_credentials shows which.',
+        'No local device is usable in this conversation. Either none is selected in its credential selector, or the selected one is offline: Cerin Desktop must be open and signed in on it, with local exec allowed. list_credentials shows which.',
     })
 
     expect(dispatchCalls).toEqual([])
@@ -158,15 +158,15 @@ describe('createLocalExecTool execute', () => {
 
     expect(await none.execute({ label: 'run', command: '{}' }, {})).toEqual({
       error:
-        "No selected device can open a terminal: a Box's `nuphos agent` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead.",
+        "No selected device can open a terminal: a Box's `cerin agent` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead.",
     })
     expect(await none.execute({ label: 'run', command: '{}', device: 'box' }, {})).toEqual({
       error:
-        "Device box cannot open a terminal: a Box's `nuphos agent` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead.",
+        "Device box cannot open a terminal: a Box's `cerin agent` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead.",
     })
     expect(await some.execute({ label: 'run', command: '{}', device: 'box' }, {})).toEqual({
       error:
-        "Device box cannot open a terminal: a Box's `nuphos agent` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead. Terminals can open on: d1 (MacBook), d2 (Linux box).",
+        "Device box cannot open a terminal: a Box's `cerin agent` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead. Terminals can open on: d1 (MacBook), d2 (Linux box).",
     })
     expect(dispatchCalls).toEqual([])
   })

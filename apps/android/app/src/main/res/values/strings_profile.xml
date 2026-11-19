@@ -2,7 +2,7 @@
     <string name="profile_consent_title">Before you use AI agents</string>
     <string name="profile_consent_intro" translatable="false">Using an agent sends your prompts, conversation history, uploaded images and files, and relevant results from connected tools to the providers needed to carry out your request.</string>
     <string name="profile_consent_recipients_title">Who receives this data</string>
-    <string name="profile_consent_recipients_body" translatable="false">Depending on your runtime and model, this includes Anthropic (Claude), OpenAI (Codex), Google, or Amazon Web Services. Nuphos also uses Braintrust to store AI execution traces, which can include conversation and tool content, for diagnostics and service improvement.</string>
+    <string name="profile_consent_recipients_body" translatable="false">Depending on your runtime and model, this includes Anthropic (Claude), OpenAI (Codex), Google, or Amazon Web Services. Cerin also uses Braintrust to store AI execution traces, which can include conversation and tool content, for diagnostics and service improvement.</string>
     <string name="profile_consent_choice_title">Your choice</string>
     <string name="profile_consent_choice_body" translatable="false">Only share information you are authorized to share. You can decline and still manage your account or request its deletion. You can withdraw permission in Account → AI data sharing. Withdrawal stops new AI use from this app; it does not undo completed transfers or stop work already running, including work started on other devices or by scheduled agents.</string>
     <string name="profile_consent_read_privacy_policy">Read the privacy policy</string>
@@ -72,7 +72,7 @@
     <string name="profile_two_factor_remove">Remove</string>
     <string name="profile_two_factor_add_passkey">Add a passkey</string>
     <string name="profile_two_factor_turn_on">Turn on</string>
-    <string name="profile_two_factor_setup_step_add">1. Add Nuphos to your authenticator app</string>
+    <string name="profile_two_factor_setup_step_add">1. Add Cerin to your authenticator app</string>
     <string name="profile_two_factor_open_authenticator">Open in authenticator app</string>
     <string name="profile_two_factor_enter_key">Or enter this key:</string>
     <string name="profile_two_factor_setup_step_code">2. Enter the 6-digit code it shows</string>

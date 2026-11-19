@@ -82,7 +82,7 @@ export type CloudflareIamPermissions = {
   tokenId: string | null
   /** "active", "disabled", or "expired" per the verify endpoint. */
   tokenStatus: string | null
-  /** Token name (often "Nuphos BYOC") if discoverable. */
+  /** Token name (often "Cerin BYOC") if discoverable. */
   tokenName: string | null
   /** ISO timestamp when the token expires, or null if never. */
   expiresOn: string | null
@@ -276,7 +276,7 @@ function deriveCloudflareSelfCapabilities({
     inferred: false,
     readReason,
     writeReason: canWrite
-      ? `Token includes the "${writeGroup!.name}" permission group, so you can rotate or edit this Nuphos token from within itself.`
+      ? `Token includes the "${writeGroup!.name}" permission group, so you can rotate or edit this Cerin token from within itself.`
       : "No token-management permission group is granted — you'll need to manage this token from the Cloudflare dashboard.",
   }
 }

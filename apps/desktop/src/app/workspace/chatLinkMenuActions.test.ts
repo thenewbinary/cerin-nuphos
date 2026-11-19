@@ -18,8 +18,8 @@ function setup(opts: { teamId?: string | null; handledInApp?: boolean } = {}) {
       return Promise.resolve()
     },
     openExternalLink: (url) => calls.external.push(url),
-    openNuphosLinkFromChat: () => opts.handledInApp ?? false,
-    openNuphosLinkInNewTab: (href) => {
+    openCerinLinkFromChat: () => opts.handledInApp ?? false,
+    openCerinLinkInNewTab: (href) => {
       calls.inNewTab.push(href)
 
       return true
@@ -64,8 +64,8 @@ test('copy and external open use the absolute URL for a relative app path', () =
   actions.copyLink('/teams/team1/agent')
   actions.openExternal('/teams/team1/agent')
   actions.copyLink('https://example.com/a')
-  assert.deepEqual(calls.copied, ['https://nuphos.ai/teams/team1/agent', 'https://example.com/a'])
-  assert.deepEqual(calls.external, ['https://nuphos.ai/teams/team1/agent'])
+  assert.deepEqual(calls.copied, ['https://platform.cerin.ai/teams/team1/agent', 'https://example.com/a'])
+  assert.deepEqual(calls.external, ['https://platform.cerin.ai/teams/team1/agent'])
 })
 
 test('the menu only applies to web pages and in-app paths', () => {
@@ -84,12 +84,12 @@ test('provider resolution leaves in-app routing unchanged', async () => {
       calls.push(`copy:${url}`)
     },
     openExternalLink: (url) => calls.push(`external:${url}`),
-    openNuphosLinkFromChat: (href) => {
+    openCerinLinkFromChat: (href) => {
       calls.push(`app:${href}`)
 
       return true
     },
-    openNuphosLinkInNewTab: () => false,
+    openCerinLinkInNewTab: () => false,
   })
 
   actions.openInApp('/teams/team1/repository')

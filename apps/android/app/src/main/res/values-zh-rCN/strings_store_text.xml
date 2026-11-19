@@ -44,7 +44,7 @@
     <string name="storetext_account_delete_password_or_code">请使用你的密码或邮箱验证码其中之一。</string>
     <string name="storetext_account_delete_password_length">请输入至少 12 个字符的密码。</string>
     <string name="storetext_account_delete_code_length">请输入 6 个字符的邮箱验证码。</string>
-    <string name="storetext_signin_web">网页登录（nuphos.ai）</string>
+    <string name="storetext_signin_web">网页登录（platform.cerin.ai）</string>
     <string name="storetext_signin_browser_on_system">%2$s 上的 %1$s</string>
     <string name="storetext_signin_browser_on">%1$s 上的浏览器</string>
     <string name="storetext_signin_unknown_device">未知设备</string>

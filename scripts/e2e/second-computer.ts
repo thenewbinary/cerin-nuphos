@@ -1,4 +1,4 @@
-// Another computer, as `nuphos agent` runs one: the real host on a home of its own, with no
+// Another computer, as `cerin agent` runs one: the real host on a home of its own, with no
 // agent CLI. Adding an agent there installs fixture-install.sh's `claude`.
 import { execFileSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
@@ -13,7 +13,7 @@ import type { Stack } from './stack.ts'
 export const DESKTOP_DIR = resolve(import.meta.dirname, '../../apps/desktop')
 
 // It dials the backend at `apiUrl` and runs its agents from the bundle in `runtimeDir`. With
-// `stagedUpdate` it reports that update downloaded, as a Nuphos Desktop does; updating it stops
+// `stagedUpdate` it reports that update downloaded, as a Cerin Desktop does; updating it stops
 // the host, which starts again on its own without one, as the Desktop opens again once installed.
 export async function startSecondComputer(
   stack: Stack,
@@ -32,11 +32,11 @@ export async function startSecondComputer(
 ) {
   const deviceId = randomUUID()
   const home = join(artifacts, `computer-${deviceId.slice(0, 8)}`)
-  const agentHome = join(home, '.nuphos-agent')
+  const agentHome = join(home, '.cerin-agent')
   // Beside the app's node_modules, which the host resolves its keyring module from.
   const host = join(DESKTOP_DIR, 'build', 'e2e-host.mjs')
 
-  // Signed in as `nuphos login` leaves it, beside the app's sign-in files the artifacts leave out.
+  // Signed in as `cerin login` leaves it, beside the app's sign-in files the artifacts leave out.
   const cliConfig = join(artifacts, 'sign-in', `computer-${deviceId.slice(0, 8)}.yaml`)
 
   mkdirSync(agentHome, { recursive: true })
@@ -61,17 +61,17 @@ export async function startSecondComputer(
   )
   const env = {
     HOME: home,
-    NUPHOS_AGENT_HOME: agentHome,
-    NUPHOS_LOCAL_RUNTIME_DIR: runtimeDir,
-    NUPHOS_API_URL: apiUrl,
-    NUPHOS_CLI_CONFIG: cliConfig,
-    NUPHOS_E2E_AGENT_INSTALLER: resolve(import.meta.dirname, 'fixture-install.sh'),
+    CERIN_AGENT_HOME: agentHome,
+    CERIN_LOCAL_RUNTIME_DIR: runtimeDir,
+    CERIN_API_URL: apiUrl,
+    CERIN_CLI_CONFIG: cliConfig,
+    CERIN_E2E_AGENT_INSTALLER: resolve(import.meta.dirname, 'fixture-install.sh'),
     ...extra,
   }
   let stopped = false
   let restarts = 0
   let child = spawn(`computer-${label}`, ['node', host], {
-    env: stagedUpdate ? { ...env, NUPHOS_E2E_STAGED_UPDATE: stagedUpdate } : env,
+    env: stagedUpdate ? { ...env, CERIN_E2E_STAGED_UPDATE: stagedUpdate } : env,
   })
 
   if (stagedUpdate)

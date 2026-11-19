@@ -1,6 +1,6 @@
 // Renders the selectable app icons for Desktop, iOS and Android from the shipped bot-avatar
 // SVGs. Nothing is drawn by hand: each icon is one avatar placed by one of three layouts
-// (the LogoFilm compositions in nuphos/studio) and frozen at a pose of the product's own
+// (the LogoFilm compositions in cerin/studio) and frozen at a pose of the product's own
 // idle loop. B2 is the bundled icon on every platform. Icon A, the original mark, is
 // a committed asset and is not rendered here.
 //
@@ -18,7 +18,7 @@ import sharp from 'sharp'
 
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const repo = path.resolve(desktop, '../..')
-const iosAssets = path.join(repo, 'apps/ios/nuphos-ios/Assets.xcassets')
+const iosAssets = path.join(repo, 'apps/ios/cerin-ios/Assets.xcassets')
 const androidRes = path.join(repo, 'apps/android/app/src/main/res')
 
 const CHARACTERS = {
@@ -184,7 +184,7 @@ for (const [letter, file] of Object.entries(CHARACTERS)) {
     const bled = screenshot(page(file, layout, BLEED, false), SIZE + BLEED * 2)
 
     const name = `app_icon_${id.toLowerCase()}`
-    // Only B2 has a single-color mark that matches its framing (nuphos.ai/brand); the
+    // Only B2 has a single-color mark that matches its framing (platform.cerin.ai/brand); the
     // checked-in drawable is a trace of it, not generated here.
     const monochrome = MONOCHROME.has(id)
       ? `\n    <monochrome android:drawable="@drawable/${name}_monochrome" />`

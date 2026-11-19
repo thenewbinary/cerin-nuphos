@@ -47,7 +47,7 @@ function usage(code = 1): never {
 options:
   --scope <scope>   Skills namespace: "global" or "teams/<teamObjectId>"
   --dir <path>      Local directory of skill folders (each with SKILL.md)
-  --actor-user-id   Optional Nuphos user id to attribute this import to
+  --actor-user-id   Optional Cerin user id to attribute this import to
   --dry-run         List objects that would be uploaded; do not write
 
 required env:

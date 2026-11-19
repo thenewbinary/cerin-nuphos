@@ -33,7 +33,7 @@ useSlackAgentBot({
 })
 useSlackUserIdentity({
   resolveSlackUserMapping: () =>
-    Promise.resolve({ mapping: { nuphosUserId: 'viewer' } as never, email: null }),
+    Promise.resolve({ mapping: { cerinUserId: 'viewer' } as never, email: null }),
 })
 useIdentity({ getTeamMembership: () => Promise.resolve({ role: 'EDITOR' } as never) })
 useAgentDb({

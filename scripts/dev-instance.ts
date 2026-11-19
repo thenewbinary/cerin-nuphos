@@ -34,7 +34,7 @@ export type InstanceRecord = {
   groups: number[]
 }
 
-const DIR = join(homedir(), '.cache', 'nuphos-dev', 'instances')
+const DIR = join(homedir(), '.cache', 'cerin-dev', 'instances')
 
 function leasePort(key: string): number {
   const hash = createHash('sha256').update(key).digest('hex')
@@ -42,7 +42,7 @@ function leasePort(key: string): number {
   return 49_152 + (Number.parseInt(hash.slice(0, 8), 16) % 15_000)
 }
 
-const leaseIdentity = (key: string) => `nuphos-dev:${key}`
+const leaseIdentity = (key: string) => `cerin-dev:${key}`
 
 async function leaseOwner(port: number): Promise<string> {
   return new Promise((resolve) => {
@@ -86,19 +86,19 @@ export async function acquireDevInstance(key: string): Promise<() => void> {
     if ((error as NodeJS.ErrnoException).code !== 'EADDRINUSE') throw error
     if ((await leaseOwner(port)) === leaseIdentity(key))
       throw new Error(
-        `Dev instance "${key}" is already running. Use its Electron window, or set NUPHOS_DEV_INSTANCE=<another name> to start a second one.`,
+        `Dev instance "${key}" is already running. Use its Electron window, or set CERIN_DEV_INSTANCE=<another name> to start a second one.`,
         { cause: error },
       )
     // Fail closed on a collision. Picking a second port could admit a duplicate
     // later if the unrelated listener on the first port disappears.
     throw new Error(
-      `Dev instance lease port ${String(port)} is occupied by another process; set NUPHOS_DEV_INSTANCE to another name.`,
+      `Dev instance lease port ${String(port)} is occupied by another process; set CERIN_DEV_INSTANCE to another name.`,
       { cause: error },
     )
   }
 }
 
-/** Where Electron keeps the profile of `Nuphos Dev (<suffix>)`. */
+/** Where Electron keeps the profile of `Cerin Dev (<suffix>)`. */
 export function electronAppData(name: string): string {
   const base =
     process.platform === 'darwin'

@@ -40,7 +40,7 @@ const TAIPEI_DESKTOP = {
   ip: '203.0.113.9',
   city: 'Taipei',
   country: 'TW',
-  client: 'nuphos-desktop/1.0.0',
+  client: 'cerin-desktop/1.0.0',
 }
 
 beforeEach(() => {
@@ -66,11 +66,11 @@ test('an older account with no session to compare with is reported', async () =>
 
 test('only the exact IP of an earlier session is familiar', async () => {
   sessions = [session({ ip: '203.0.113.9' })]
-  expect(await isNewSignIn(OLD, { ...TAIPEI_DESKTOP, client: 'nuphos-android/1.4.0' })).toBe(false)
+  expect(await isNewSignIn(OLD, { ...TAIPEI_DESKTOP, client: 'cerin-android/1.4.0' })).toBe(false)
 
   // Same app, same city and country, another IP: still reported.
   sessions = [
-    session({ ip: '203.0.113.10', city: 'Taipei', country: 'TW', client: 'nuphos-desktop/1.0.0' }),
+    session({ ip: '203.0.113.10', city: 'Taipei', country: 'TW', client: 'cerin-desktop/1.0.0' }),
   ]
   expect(await isNewSignIn(OLD, TAIPEI_DESKTOP)).toBe(true)
 })
@@ -98,11 +98,11 @@ test('the alert leads with time and IP, and names the device only from known val
   expect(sent[0]!.to).toBe('dev@example.com')
   expect(sent[0]!.text).toContain('IP address: 203.0.113.9')
   expect(sent[0]!.text).toContain('Approximate location: Taipei, TW')
-  expect(sent[0]!.text).toContain('Device: Nuphos Desktop\n')
+  expect(sent[0]!.text).toContain('Device: Cerin Desktop\n')
   expect(sent[0]!.text).toContain('Signed-in devices')
 
   // Headers are caller-controlled: their text never reaches the email.
-  const lure = 'Nuphos Security: reply with this code'
+  const lure = 'Cerin Security: reply with this code'
 
   await sendNewSignInAlert(dev, {
     ...TAIPEI_DESKTOP,
@@ -117,7 +117,7 @@ test('the alert leads with time and IP, and names the device only from known val
 
   await sendNewSignInAlert(dev, {
     ...TAIPEI_DESKTOP,
-    client: 'nuphos-desktop/1.verify-at.evil-phish.com',
+    client: 'cerin-desktop/1.verify-at.evil-phish.com',
   })
   expect(sent[2]!.text).not.toContain('evil-phish')
   expect(sent[2]!.html).not.toContain('evil-phish')

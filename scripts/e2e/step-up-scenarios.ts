@@ -51,7 +51,7 @@ function signedInAgo(mongoUri: string, email: string, minutes: number): void {
     import { MongoClient } from 'mongodb'
     const [uri, email, minutes] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const user = await db.collection('users').findOne({ email })
     const at = new Date(Date.now() - Number(minutes) * 60_000)
     await db.collection('user_sessions').updateMany(
@@ -70,12 +70,12 @@ function signedInAgo(mongoUri: string, email: string, minutes: number): void {
 function agentRunToken(mongoUri: string, email: string): string {
   const run = `
     import { MongoClient } from 'mongodb'
-    import { signNuphosToken } from './src/lib/identity/token.ts'
+    import { signCerinToken } from './src/lib/identity/token.ts'
     const [uri, email] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const user = await client.db('nuphos_e2e').collection('users').findOne({ email })
+    const user = await client.db('cerin_e2e').collection('users').findOne({ email })
     await client.close()
-    console.log(signNuphosToken(user._id.toHexString(), 60 * 60))`
+    console.log(signCerinToken(user._id.toHexString(), 60 * 60))`
 
   return execFileSync('bun', ['-e', run, mongoUri, email], {
     cwd: BACKEND_DIR,
@@ -84,7 +84,7 @@ function agentRunToken(mongoUri: string, email: string): string {
     env: {
       ...process.env,
       MONGODB_URI: mongoUri,
-      NUPHOS_JWT_SECRET: 'local-e2e-jwt-secret-not-a-production-credential',
+      CERIN_JWT_SECRET: 'local-e2e-jwt-secret-not-a-production-credential',
     },
   })
     .toString()

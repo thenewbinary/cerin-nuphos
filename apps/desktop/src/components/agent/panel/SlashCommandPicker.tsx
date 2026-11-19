@@ -9,19 +9,19 @@ import type { SlashOption } from './composerSlashCommands'
 import type { Popover } from '@base-ui/react/popover'
 
 function OptionRow({ option }: { option: SlashOption }) {
-  const nuphos = option.kind === 'nuphos'
-  const name = nuphos ? option.action.title : `/${option.command.name}`
-  const description = nuphos ? option.action.description : option.command.description
-  const hint = nuphos ? undefined : option.command.hint
+  const cerin = option.kind === 'cerin'
+  const name = cerin ? option.action.title : `/${option.command.name}`
+  const description = cerin ? option.action.description : option.command.description
+  const hint = cerin ? undefined : option.command.hint
 
   return (
     <>
       <span className="flex w-[28%] min-w-0 max-w-[210px] shrink-0 items-baseline gap-1.5">
         <span className="truncate font-mono text-[12px] leading-4 text-main">{name}</span>
-        {nuphos && (
-          // Nuphos actions run when picked, so they never pass for something the agent runs.
+        {cerin && (
+          // Cerin actions run when picked, so they never pass for something the agent runs.
           <span className="shrink-0 rounded bg-state-selected px-1 text-[10px] leading-4 text-tertiary">
-            Nuphos
+            Cerin
           </span>
         )}
         {hint && <span className="truncate text-[10.5px] leading-4 text-tertiary">{hint}</span>}

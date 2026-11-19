@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { presetWindow } from '@/lib/dashboards/exec-service'
 
-import type { NuphosDashboard } from '@/models'
+import type { CerinDashboard } from '@/models'
 
 /** Request-local range; never written back to the dashboard definition. */
 export const dashboardViewSchema = z
@@ -26,9 +26,9 @@ export const dashboardViewSchema = z
   })
 
 export function dashboardForView(
-  dashboard: NuphosDashboard,
+  dashboard: CerinDashboard,
   query: z.infer<typeof dashboardViewSchema>,
-): NuphosDashboard {
+): CerinDashboard {
   const preset = query.preset ?? (query.periodStart ? undefined : dashboard.rangePreset)
   const range = preset
     ? presetWindow(preset)

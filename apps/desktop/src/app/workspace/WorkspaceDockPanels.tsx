@@ -22,11 +22,11 @@ export function WorkspaceDockPanels({ ws, user }: { ws: WorkspaceController; use
     workspaceDockExpanded,
     setWorkspaceDockExpanded,
     scope,
-    stableOpenNuphosLinkFromChat,
+    stableOpenCerinLinkFromChat,
   } = ws
   const dockRef = useRef<HTMLElement | null>(null)
   const [widthVw, setWidthVw] = useState(() => {
-    const stored = Number(localStorage.getItem('nuphos.workspaceDockWidthVw'))
+    const stored = Number(localStorage.getItem('cerin.workspaceDockWidthVw'))
 
     return Number.isFinite(stored) && stored > 0 ? Math.min(60, Math.max(24, stored)) : 42
   })
@@ -58,7 +58,7 @@ export function WorkspaceDockPanels({ ws, user }: { ws: WorkspaceController; use
     }
   }, [dragging])
 
-  useEffect(() => localStorage.setItem('nuphos.workspaceDockWidthVw', String(widthVw)), [widthVw])
+  useEffect(() => localStorage.setItem('cerin.workspaceDockWidthVw', String(widthVw)), [widthVw])
   // The chat column beside the dock lays out at its settled width from this.
   useLayoutEffect(() => {
     dockRef.current?.parentElement?.style.setProperty(
@@ -67,7 +67,7 @@ export function WorkspaceDockPanels({ ws, user }: { ws: WorkspaceController; use
     )
   }, [widthVw, scope?.teamId])
 
-  usePageWindow(stableOpenNuphosLinkFromChat, dockOpen, setWorkspaceDockExpanded)
+  usePageWindow(stableOpenCerinLinkFromChat, dockOpen, setWorkspaceDockExpanded)
 
   useEffect(() => {
     if (!dockOpen) setWorkspaceDockExpanded(false)

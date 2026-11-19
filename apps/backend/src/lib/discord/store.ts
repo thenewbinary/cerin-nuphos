@@ -12,7 +12,7 @@ export type DiscordInstallation = {
   guildName: string
   teamId: string
   installerDiscordUserId: string
-  installerNuphosUserId: string
+  installerCerinUserId: string
   generation: number
   enabled: boolean
   createdAt: Date
@@ -46,7 +46,7 @@ export type DiscordUserMapping = {
   guildId: string
   discordUserId: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   enabled: boolean
   createdAt: Date
   updatedAt: Date
@@ -133,7 +133,7 @@ export async function setupDiscordIndexes(): Promise<void> {
       { unique: true, background: true },
     ),
     discordUserMappings().createIndex(
-      { guildId: 1, nuphosUserId: 1 },
+      { guildId: 1, cerinUserId: 1 },
       { unique: true, background: true },
     ),
     discordAgentThreads().createIndex(

@@ -5,7 +5,7 @@ export type SlackThreadReplyAccess =
 
 /**
  * Proactive channel notifications are team collaboration surfaces: any
- * currently-linked Nuphos teammate may continue the bound incident. A 1:1
+ * currently-linked Cerin teammate may continue the bound incident. A 1:1
  * Slack DM is different — only the conversation owner/recipient may drive it.
  *
  * The workspace/team binding and Slack identity mapping are verified by the
@@ -30,7 +30,7 @@ export function getAgentNotificationReplyAccess(args: {
 }
 
 /**
- * A shared Slack thread keeps writing to its original Nuphos conversation,
+ * A shared Slack thread keeps writing to its original Cerin conversation,
  * while every turn executes as the teammate who actually sent the reply.
  */
 export function getSlackThreadTurnIdentity(

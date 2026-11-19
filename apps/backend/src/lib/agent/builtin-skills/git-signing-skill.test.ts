@@ -53,7 +53,7 @@ test('signs and verifies commits for the participant who set it up', () => {
   expect(run(bin, [alice, 'log', '-1', '--format=%an <%ae> %G?'], repo)).toBe(
     'Alice Example <alice@example.invalid> G',
   )
-  expect(statSync(join(root, '.config/nuphos-git-identities', alice, 'signing_ed25519')).mode & 0o777).toBe(0o600)
+  expect(statSync(join(root, '.config/cerin-git-identities', alice, 'signing_ed25519')).mode & 0o777).toBe(0o600)
 })
 
 test('leaves no identity in the shared config, so plain git commits fail', () => {
@@ -76,7 +76,7 @@ test('refuses a participant without an identity', () => {
 
 test('keeps the existing key when run again', () => {
   setupAlice()
-  const pub = join(root, '.config/nuphos-git-identities', alice, 'signing_ed25519.pub')
+  const pub = join(root, '.config/cerin-git-identities', alice, 'signing_ed25519.pub')
   const first = readFileSync(pub, 'utf8')
   setupAlice()
   expect(readFileSync(pub, 'utf8')).toBe(first)

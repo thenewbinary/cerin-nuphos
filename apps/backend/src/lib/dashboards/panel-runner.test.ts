@@ -41,8 +41,8 @@ async function runPanel(
     const process = Bun.spawn(['node', RUNNER, runDir], {
       env: {
         ...Bun.env,
-        NUPHOS_BACKEND_URL: server.url.toString().replace(/\/$/, ''),
-        NUPHOS_TOKEN: 'test-token',
+        CERIN_BACKEND_URL: server.url.toString().replace(/\/$/, ''),
+        CERIN_TOKEN: 'test-token',
       },
       stdout: 'pipe',
       stderr: 'pipe',
@@ -59,11 +59,11 @@ async function runPanel(
   }
 }
 
-describe('panel runner Nuphos client', () => {
+describe('panel runner Cerin client', () => {
   test('allows GET requests scoped to the dashboard team', async () => {
     authorizationHeaders = []
     const result = await runPanel(`
-      const response = await nuphos.get('/teams/${TEAM_ID}/usage')
+      const response = await cerin.get('/teams/${TEAM_ID}/usage')
       emit({ kind: 'scalar', title: 'Cost', value: response.value, unit: 'usd' })
     `)
 
@@ -75,7 +75,7 @@ describe('panel runner Nuphos client', () => {
   test('rejects routes for another team before sending the token', async () => {
     authorizationHeaders = []
     const result = await runPanel(`
-      await nuphos.get('/teams/0000000000000000000000b2/usage')
+      await cerin.get('/teams/0000000000000000000000b2/usage')
     `)
 
     expect(result.exitCode).toBe(1)
@@ -86,7 +86,7 @@ describe('panel runner Nuphos client', () => {
   test('allows credential routes for the dashboard team', async () => {
     authorizationHeaders = []
     const result = await runPanel(`
-      const response = await nuphos.get(
+      const response = await cerin.get(
         '/teams/${TEAM_ID}/linode-accounts/account-123/credentials'
       )
       emit({ kind: 'scalar', title: 'Credential request', value: response.value, unit: 'count' })
@@ -127,7 +127,7 @@ describe('panel runner not-connected answers', () => {
     ['account_not_bound', 'AWS account'],
   ] as const) {
     test(`names the integration of a ${code} answer`, async () => {
-      const result = await runPanel(`await nuphos.get('/teams/${TEAM_ID}/gone/${code}')`)
+      const result = await runPanel(`await cerin.get('/teams/${TEAM_ID}/gone/${code}')`)
 
       expect(result.exitCode).toBe(1)
       expect(envelope(result.stdout).notConnected).toBe(name)
@@ -137,7 +137,7 @@ describe('panel runner not-connected answers', () => {
   }
 
   test('leaves any other failure unnamed', async () => {
-    const result = await runPanel(`await nuphos.get('/teams/${TEAM_ID}/gone/not_found')`)
+    const result = await runPanel(`await cerin.get('/teams/${TEAM_ID}/gone/not_found')`)
 
     expect(result.exitCode).toBe(1)
     expect(envelope(result.stdout).notConnected).toBeUndefined()

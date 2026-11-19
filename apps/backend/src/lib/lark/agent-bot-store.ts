@@ -24,7 +24,7 @@ export type LarkUserMapping = {
   appId: string
   larkOpenId: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   enabled: boolean
   createdBy: string
   createdAt: Date
@@ -79,7 +79,7 @@ export type LarkPairCode = {
   _id?: ObjectId
   code: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   createdAt: Date
   expiresAt: Date
 }
@@ -112,7 +112,7 @@ export async function setupLarkAgentIndexes(): Promise<void> {
     { unique: true, background: true },
   )
   await larkUserMappings().createIndex({ teamId: 1, updatedAt: -1 }, { background: true })
-  await larkUserMappings().createIndex({ nuphosUserId: 1, updatedAt: -1 }, { background: true })
+  await larkUserMappings().createIndex({ cerinUserId: 1, updatedAt: -1 }, { background: true })
   await larkAgentThreads().createIndex(
     { appId: 1, chatId: 1, threadId: 1 },
     { unique: true, background: true },
@@ -136,7 +136,7 @@ export async function setupLarkAgentIndexes(): Promise<void> {
   )
   await larkReplyFeedback().createIndex({ sessionId: 1, updatedAt: -1 }, { background: true })
   await larkPairCodes().createIndex({ code: 1 }, { unique: true, background: true })
-  await larkPairCodes().createIndex({ teamId: 1, nuphosUserId: 1 }, { background: true })
+  await larkPairCodes().createIndex({ teamId: 1, cerinUserId: 1 }, { background: true })
   // Mongo reaps expired codes on its own once past expiresAt.
   await larkPairCodes().createIndex(
     { expiresAt: 1 },

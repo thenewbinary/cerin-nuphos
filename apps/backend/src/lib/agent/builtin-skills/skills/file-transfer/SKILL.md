@@ -1,11 +1,11 @@
 ---
 name: file-transfer
-description: Move files between the user and the sandbox/cluster through Nuphos's short-lived transfer store. Use when the user uploaded files for you to work on, or when you produced/fetched a file the user should download. Pull user uploads into the sandbox; push files out so the user can download them (single files or a zip), or save them straight onto a selected computer with local_download.
+description: Move files between the user and the sandbox/cluster through Cerin's short-lived transfer store. Use when the user uploaded files for you to work on, or when you produced/fetched a file the user should download. Pull user uploads into the sandbox; push files out so the user can download them (single files or a zip), or save them straight onto a selected computer with local_download.
 ---
 
 # File transfer
 
-Nuphos has a temporary, S3-backed transfer store that ferries files between
+Cerin has a temporary, S3-backed transfer store that ferries files between
 the user and agent workflows. You never touch buckets or credentials — these
 scripts call the backend, which hands back short-lived signed URLs, and the
 file moves **directly between the sandbox and S3**.
@@ -39,16 +39,16 @@ gone. Pulling an upload likewise happens within the active turn.
 ft() {
   local method="$1" path="$2"; shift 2
   curl -fsSL -X "$method" \
-    -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") \
+    -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") \
     -H "Content-Type: application/json" \
-    "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}/agent-sessions/${NUPHOS_SESSION_ID}/teams/${TEAM}/file-transfers${path}" "$@"
+    "${CERIN_BACKEND_URL:-https://platform.cerin.ai}/agent-sessions/${CERIN_SESSION_ID}/teams/${TEAM}/file-transfers${path}" "$@"
 }
 ```
 
-`$TEAM` is the team id — get it from the `nuphos-api` skill
-(`GET /teams`) if you don't already have it. `$NUPHOS_TOKEN` and
-`$NUPHOS_SESSION_ID` are already in the environment. Use `ft` or the
-scripts below rather than another HTTP client; see the `nuphos-api` skill for
+`$TEAM` is the team id — get it from the `cerin-api` skill
+(`GET /teams`) if you don't already have it. `$CERIN_TOKEN` and
+`$CERIN_SESSION_ID` are already in the environment. Use `ft` or the
+scripts below rather than another HTTP client; see the `cerin-api` skill for
 why.
 
 ## Pull user uploads into the sandbox
@@ -155,7 +155,7 @@ bash skills/file-transfer/scripts/transfer-push.sh <TEAM> ./out/deck.html
 
 The computer fetches the file itself and answers `{path, size}` once it is
 written. If it answers `file_exists`, ask the person before calling again with
-`overwrite: true`. If it answers `update_required`, tell them to update Nuphos
+`overwrite: true`. If it answers `update_required`, tell them to update Cerin
 on that computer. Pass `fileName` when the group holds several files.
 
 ## Failure handling

@@ -58,16 +58,16 @@ test('a new version takes over from the one a viewer picked', () => {
 test('the stored turn renaming its calls keeps the version a viewer picked', () => {
   const owner = view()
 
-  publishSessionArtifacts(owner, 's4', new Map([['page', [v('a', 1), v('nuphos-live', 2)]]]))
+  publishSessionArtifacts(owner, 's4', new Map([['page', [v('a', 1), v('cerin-live', 2)]]]))
   pickArtifactVersion('s4', 'page', 1)
   publishSessionArtifacts(
     owner,
     's4',
-    new Map([['page', [v('a', 1), v('runtime-id', 2, 'nuphos-live')]]]),
+    new Map([['page', [v('a', 1), v('runtime-id', 2, 'cerin-live')]]]),
   )
 
   assert.equal(readPickedArtifactVersion('s4', 'page'), 1)
-  assert.equal(readArtifactCall('nuphos-live'), undefined)
+  assert.equal(readArtifactCall('cerin-live'), undefined)
   assert.deepEqual(readArtifactCall('runtime-id'), { sessionId: 's4', artifactId: 'page' })
   releaseSessionArtifacts(owner, 's4')
 })

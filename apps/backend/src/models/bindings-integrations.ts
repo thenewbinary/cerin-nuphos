@@ -101,7 +101,7 @@ export type TailscaleOAuthClientBinding = {
     authTag: string
     ciphertext: string
   }
-  // Presence marks the binding as federated: Nuphos signs a short-lived OIDC
+  // Presence marks the binding as federated: Cerin signs a short-lived OIDC
   // JWT and exchanges it for an API token, so there is nothing to store, leak
   // or rotate. `audience` is what the customer's trust credential expects.
   federation?: { audience: string }

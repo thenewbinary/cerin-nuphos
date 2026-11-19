@@ -1,0 +1,996 @@
+package ai.cerin.android.ui.chat
+
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.HorizontalDivider
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Error
+import androidx.compose.material.icons.outlined.Handyman
+import androidx.compose.material.icons.outlined.Memory
+import androidx.compose.material.icons.outlined.PanTool
+import androidx.compose.material.icons.outlined.Psychology
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.withFrameNanos
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import ai.cerin.android.data.AgentChatApi
+import ai.cerin.android.session.ConversationReads
+import ai.cerin.android.session.AiAccess
+import androidx.compose.runtime.key
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import ai.cerin.android.model.ChatPart
+import ai.cerin.android.model.ChatRow
+import ai.cerin.android.model.ChatTime
+import ai.cerin.android.model.MessageAttribution
+import ai.cerin.android.model.PlanLink
+import ai.cerin.android.session.ChatSession
+import ai.cerin.android.ui.LocalAuthSession
+import ai.cerin.android.ui.LocalAgentStore
+import ai.cerin.android.ui.components.MarkdownText
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import ai.cerin.android.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun ConversationScreen(
+    sessionId: String,
+    fresh: Boolean,
+    onBack: () -> Unit,
+    nav: NavHostController,
+    newChat: Boolean = false,
+) {
+    val store = LocalAgentStore.current
+    val selectedTeamId = store.selectedTeam?.id
+    val conversation = store.conversations.firstOrNull { it.sessionId == sessionId && (it.teamId == null || it.teamId == selectedTeamId) }
+    val newTaskTitle = stringResource(R.string.chat_new_task)
+    val taskTitle = stringResource(R.string.chat_task_fallback_title)
+    val session = remember(store, sessionId, selectedTeamId) {
+        if (fresh) store.session(sessionId, newTaskTitle)
+        else conversation?.let { store.session(it) } ?: store.session(sessionId, taskTitle)
+    }
+    // A chat named by a link before the list knew it: show it as a chat once its detail says so.
+    if (session.isChannel) {
+        ai.cerin.android.ui.chats.ChannelScreen(sessionId = sessionId, onBack = onBack,
+            onOpenTask = { bot -> nav.navigate("conversation/${android.net.Uri.encode(bot)}") { launchSingleTop = true } })
+        return
+    }
+    val auth = LocalAuthSession.current
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    var resumed by remember(lifecycle) { mutableStateOf(lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
+    val reads = remember(session) { ConversationReads() }
+    val readTarget = ConversationReads.Target("${auth.generation}:${AiAccess.revision}", session.teamId, session.sessionId)
+    val visible = resumed && auth.aiAllowed && store.selectedTeam?.id == session.teamId
+    DisposableEffect(lifecycle, reads) {
+        val observer = LifecycleEventObserver { _, _ ->
+            resumed = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            if (!resumed) reads.hidden()
+        }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer); reads.hidden() }
+    }
+    DisposableEffect(reads, visible, readTarget) {
+        if (visible) reads.visible(readTarget) else reads.hidden()
+        onDispose { reads.hidden() }
+    }
+    val app = androidx.compose.ui.platform.LocalContext.current.applicationContext as ai.cerin.android.CerinApplication
+    val push = app.pushNotifications
+    val notificationTarget = ai.cerin.android.notifications.LocalNotificationTarget.from(auth.user?.id, session.teamId, session.sessionId)
+    DisposableEffect(push, visible, notificationTarget) {
+        if (visible && notificationTarget != null) push.reading(notificationTarget)
+        onDispose { if (notificationTarget != null) push.hidden(notificationTarget) }
+    }
+    val transcript = session.readTranscript
+    LaunchedEffect(session, transcript, session.messages, visible, readTarget) {
+        if (!visible || transcript == null || !session.readAllowed || transcript.messages != session.messages) return@LaunchedEffect
+        withFrameNanos { }
+        repeat(2) { attempt ->
+            if (!visible || !session.readAllowed || session.readTranscript != transcript || transcript.messages != session.messages) return@LaunchedEffect
+            val ticket = reads.begin(readTarget, transcript.generation, transcript.seq) ?: return@LaunchedEffect
+            try {
+                val state = store.markRead(session.teamId, session.sessionId, ticket.seq)
+                if (reads.accepts(ticket, readTarget, session.readTranscript?.generation ?: -1, session.readAllowed && transcript.messages == session.messages)) {
+                    store.applyRead(session.teamId, session.sessionId, ticket.seq, state)
+                    reads.completed(ticket)
+                }
+                return@LaunchedEffect
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                reads.failed(ticket)
+                throw e
+            } catch (_: Exception) {
+                reads.failed(ticket)
+                if (attempt == 0) delay(1_000)
+            }
+        }
+    }
+    var alwaysTarget by remember { mutableStateOf<ChatPart.Tool?>(null) }
+    var alwaysRule by remember { mutableStateOf("") }
+    var toolDetail by remember { mutableStateOf<ChatPart.Tool?>(null) }
+
+    LaunchedEffect(session) {
+        val prompt = store.pendingPrompt
+        store.pendingPrompt = null
+        if (fresh && prompt != null) {
+            session.send(prompt)
+        } else if (!session.loaded) {
+            session.load()
+        }
+    }
+    // Picks up turns started elsewhere, only while on screen and in the foreground.
+    LaunchedEffect(session, lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) { session.pollWhileIdle() }
+    }
+
+    // Initial entry, foreground and manual refresh work even during an active turn.
+    // Turn completion is a separate event, never a resource polling loop.
+    val resourcesAllowed = resumed && auth.aiAllowed && selectedTeamId == session.teamId && session.loaded && session.loadError == null
+    var refreshResources by remember(session) { mutableStateOf(0) }
+    LaunchedEffect(session, resourcesAllowed, auth.generation, AiAccess.revision, refreshResources) {
+        if (resourcesAllowed) session.refreshResources()
+        else session.linkedResources.invalidate(clear = resumed)
+    }
+    LaunchedEffect(session, session.isStreaming, session.messages.size) {
+        if (resourcesAllowed && !session.isStreaming && session.linkedResources.hasLoaded) session.refreshResources()
+    }
+    DisposableEffect(session) {
+        onDispose { session.linkedResources.invalidate() }
+    }
+
+    var showAgent by remember(session) { mutableStateOf(false) }
+    var showRuntimeManagement by remember(session, store.workspaceRevision) { mutableStateOf(false) }
+    LaunchedEffect(session, session.loaded, session.isOwner, visible, resourcesAllowed, session.isStreaming, session.messages.size) {
+        if (!visible || !resourcesAllowed) return@LaunchedEffect
+        while (kotlinx.coroutines.currentCoroutineContext()[kotlinx.coroutines.Job]?.isActive == true) {
+            session.refreshDownloads()
+            delay(15_000)
+        }
+    }
+    val senderKey = "${auth.generation}:${AiAccess.revision}:${auth.user?.id}:${session.teamId}"
+    DisposableEffect(session, senderKey) {
+        val user = auth.user
+        val generation = auth.generation
+        val revision = AiAccess.revision
+        session.bindLocalSender(senderKey) {
+            user?.takeIf { auth.aiAllowed && auth.generation == generation &&
+                AiAccess.revision == revision && auth.user?.id == it.id && store.selectedTeam?.id == session.teamId
+            }?.let { ai.cerin.android.model.MessageAttribution(it.id, it.displayName, "user", "cerin",
+                avatarURL = ai.cerin.android.model.SenderAvatar.trusted(it.avatarURL)) }
+        }
+        onDispose { session.bindLocalSender(null) { null } }
+    }
+    val rows = ChatRow.rows(session, ai.cerin.android.ui.agent.rememberComputerPresence(auth.token, session.teamId, session.runtimeId))
+    val uriHandler = LocalUriHandler.current
+
+    var showTriggers by remember(sessionId) { mutableStateOf(false) }
+    if (showTriggers && auth.token != null) {
+        ConversationTriggersSheet(auth.token!!, session.teamId, sessionId) { showTriggers = false }
+    }
+    var showSummary by remember(session, selectedTeamId) { mutableStateOf(false) }
+    val summaryToken = auth.token
+    val summaryAllowed = session.readAllowed && (!fresh || !session.isNew) && !newChat && auth.aiAllowed && selectedTeamId == session.teamId &&
+        summaryToken != null && conversation?.isBot != true && ai.cerin.android.model.BotFaces.face(sessionId) == null
+    if (showSummary && summaryAllowed && summaryToken != null) {
+        TaskSummarySheet(
+            session = session,
+            token = summaryToken,
+            children = store.conversations.filter {
+                it.parentSessionId == sessionId && (it.teamId == null || it.teamId == session.teamId)
+            }.sortedByDescending { it.lastActiveAt },
+            allowed = { auth.aiAllowed && store.selectedTeam?.id == session.teamId },
+            onOpen = { child ->
+                showSummary = false
+                nav.navigate("conversation/${android.net.Uri.encode(child)}")
+            },
+            onDismiss = { showSummary = false },
+        )
+    }
+    val chatCanvas = ai.cerin.android.ui.theme.LocalChatCanvas.current
+    Scaffold(
+        containerColor = chatCanvas,
+        contentWindowInsets = WindowInsets.safeDrawing,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        ai.cerin.android.ui.components.AgentAvatar(session.sessionId, session.agentRuntime, 24.dp)
+                        Column(Modifier.weight(1f)) {
+                            val showTriggersLabel = stringResource(R.string.chat_show_task_triggers)
+                            Text(session.title, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.clickable { showTriggers = true }.semantics { contentDescription = showTriggersLabel })
+                            val label = session.runtimeDeviceLabel
+                            if (session.agentRuntime != null || label != null) {
+                                val runtimeLabel = stringResource(R.string.chat_runtime_description, ai.cerin.android.model.RuntimeIdentity.detail(session.agentRuntime, label))
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    if (ai.cerin.android.model.BotFaces.face(session.sessionId) != null) ai.cerin.android.ui.components.RuntimeMark(session.agentRuntime)
+                                    Text(ai.cerin.android.model.RuntimeIdentity.detail(session.agentRuntime, label), style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                        modifier = Modifier.semantics { contentDescription = runtimeLabel })
+                                }
+                            }
+                        }
+                    }
+                },
+                navigationIcon = {
+                    if (newChat) TextButton(onClick = onBack) { Text(stringResource(R.string.chat_new_task)) }
+                    else IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = stringResource(R.string.chat_back)) }
+                },
+                actions = {
+                    if (summaryAllowed) {
+                        IconButton(onClick = { showSummary = true }) {
+                            Icon(painterResource(R.drawable.ic_task_summary), stringResource(R.string.chat_summary_open))
+                        }
+                    }
+                    ConversationMenu(session, store, onBack, onChooseRuntime = { showAgent = true })
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = chatCanvas),
+            )
+        },
+    ) { padding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .consumeWindowInsets(padding)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .widthIn(max = 720.dp),
+        ) {
+            if (resourcesAllowed) SessionResourceStrip(
+                resources = session.linkedResources.resources,
+                loading = session.linkedResources.loading,
+                failed = session.linkedResources.failed,
+                onRefresh = { refreshResources++ },
+            )
+            if (session.loaded && session.loadError == null && session.isArchived) {
+                Text(stringResource(R.string.chat_archived_task), Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            if (session.canReadDownloads && session.downloadsError != null) Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(session.downloadsError.orEmpty(), style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
+                val retryScope = rememberCoroutineScope()
+                TextButton(onClick = { retryScope.launch { session.refreshDownloads() } }) { Text(stringResource(R.string.chat_retry_files)) }
+            }
+            // The transcript runs on behind what's laid over its bottom edge, down to the composer's rounded card.
+            var bottomInset by remember { mutableStateOf(0.dp) }
+            val density = LocalDensity.current
+            Box(Modifier.weight(1f).fillMaxWidth()) {
+                when {
+                    !session.loaded -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingIndicator() }
+                    session.loadError != null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(session.loadError ?: "", color = MaterialTheme.colorScheme.error)
+                    }
+                    else -> key(session) {
+                        TranscriptList(
+                            rows = rows,
+                            latestRequest = session.scrollToLatestRevision,
+                            modifier = Modifier.fillMaxSize(),
+                            bottomInset = bottomInset,
+                        ) { row ->
+                            ChatRowView(
+                                row = row,
+                                session = session,
+                                onLink = { url ->
+                                    val target = PlanLink.target(url)
+                                    val conversation = ai.cerin.android.session.ConversationLink.parse(url)
+                                    if (target != null) nav.navigate("plan/${target.planId}")
+                                    else if (conversation != null) app.conversationLinks.offer(conversation)
+                                    else uriHandler.openUri(url)
+                                },
+                                onAlwaysAllow = {
+                                    alwaysRule = it.authorization?.get("suggestedRule")?.stringValue.orEmpty()
+                                    alwaysTarget = it
+                                },
+                                onOpenTool = { toolDetail = it },
+                                onSwitchRuntime = if (session.canManage) ({ showAgent = true }) else null,
+                                onOpenChannel = { channelId ->
+                                    nav.navigate("channel/${android.net.Uri.encode(channelId)}") { launchSingleTop = true }
+                                },
+                            )
+                        }
+                    }
+                }
+                val behindComposer = chatCanvas
+                Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth()
+                    // Rows show past the card's top and sides, but not as a cut-off line under it.
+                    .drawBehind {
+                        val fill = COMPOSER_BOTTOM_FILL.toPx().coerceAtMost(size.height)
+                        drawRect(behindComposer, topLeft = Offset(0f, size.height - fill), size = Size(size.width, fill))
+                    }
+                    .onSizeChanged { bottomInset = with(density) { (it.height.toDp() - COMPOSER_TOP_MARGIN).coerceAtLeast(0.dp) } }) {
+                    Column(Modifier.fillMaxWidth().background(chatCanvas)) {
+                        if (session.runtimeRecoveryRequired) {
+                            Text(stringResource(R.string.chat_delivery_check_needed), modifier = Modifier.padding(horizontal = 16.dp))
+                            TextButton(enabled = session.loaded && !session.readOnly, onClick = session::recoverRuntime) { Text(stringResource(R.string.chat_check_delivery)) }
+                        }
+                        if (session.steeringRetryRequired) {
+                            Text(stringResource(R.string.chat_steering_rejected), modifier = Modifier.padding(horizontal = 16.dp))
+                            TextButton(enabled = session.loaded && !session.readOnly, onClick = session::retryQueued) { Text(stringResource(R.string.chat_retry_steering)) }
+                        }
+                        session.uploadDraft?.let { draft ->
+                            Column(Modifier.padding(horizontal = 16.dp)) {
+                                Text(draft.text.ifBlank { stringResource(R.string.chat_attachment_message) }, maxLines = 2)
+                                Text(draft.attachments.joinToString(", ") { it.name }, maxLines = 2)
+                                session.uploadProgress?.let { progress ->
+                                    Text(when (progress.stage) {
+                                        ai.cerin.android.data.AttachmentTransfers.Stage.Intent -> stringResource(R.string.chat_upload_preparing)
+                                        ai.cerin.android.data.AttachmentTransfers.Stage.Uploading -> stringResource(R.string.chat_upload_progress, progress.bytesWritten, progress.totalBytes)
+                                        ai.cerin.android.data.AttachmentTransfers.Stage.Finalizing -> stringResource(R.string.chat_upload_checking)
+                                        ai.cerin.android.data.AttachmentTransfers.Stage.Ready -> stringResource(R.string.chat_upload_ready)
+                                    })
+                                }
+                                session.uploadError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                                Row {
+                                    if (session.uploadBusy) TextButton(onClick = session::cancelUpload) { Text(stringResource(R.string.chat_upload_cancel)) }
+                                    else TextButton(enabled = session.canSubmit, onClick = session::retryUpload) { Text(stringResource(R.string.chat_upload_retry)) }
+                                    TextButton(onClick = session::discardUpload) { Text(stringResource(R.string.chat_upload_remove)) }
+                                }
+                            }
+                        }
+                        if (session.readOnly) Text(stringResource(R.string.chat_read_only_task), modifier = Modifier.padding(horizontal = 16.dp))
+                        if (session.queued.isNotEmpty()) {
+                            Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                session.queued.forEachIndexed { i, item ->
+                                    Surface(shape = MaterialTheme.shapes.extraLarge, color = MaterialTheme.colorScheme.surfaceContainerHigh) {
+                                        Row(Modifier.padding(horizontal = 10.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Text(item, maxLines = 1, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f, false).widthIn(max = 180.dp))
+                                            TextButton(onClick = { session.removeQueued(i) }) { Text("×") }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    val draftAuth = ai.cerin.android.ui.LocalAuthSession.current
+                    val draftAccount = draftAuth.user?.id
+                    val draftTeam = session.teamId
+                    val draft = remember(draftAccount, draftTeam, sessionId, draftAuth.generation, ai.cerin.android.session.AiAccess.revision) {
+                        draftAccount?.let { draftAuth.composerDrafts.bind(it, draftTeam, ai.cerin.android.session.ComposerDrafts.Destination.Chat(sessionId), ai.cerin.android.session.AiAccess.bind(draftAuth.token.orEmpty())) }
+                    }
+                    val draftApp = androidx.compose.ui.platform.LocalContext.current.applicationContext as ai.cerin.android.CerinApplication
+                    LaunchedEffect(session.draftAccessInvalidated, draft) {
+                        if (session.draftAccessInvalidated && draft != null && draftApp.incomingShares.hasDraft(draft.key)) {
+                            draftApp.incomingShares.drop(draft.key)
+                            draft.write("")
+                        }
+                    }
+                    val quotas = ai.cerin.android.ui.agent.rememberRuntimeQuotas(draftAuth.token, session.teamId)
+                    if (showAgent && draftAuth.token != null && draftAuth.aiAllowed) {
+                        val generation = draftAuth.generation
+                        val workspaceRevision = store.workspaceRevision
+                        ConversationAgentSheet(session, draftAuth.token!!, quotas,
+                            isCurrent = { draftAuth.generation == generation && draftAuth.aiAllowed &&
+                                store.workspaceRevision == workspaceRevision && store.selectedTeam?.id == session.teamId },
+                            onDismiss = { showAgent = false },
+                            onManage = { showAgent = false; showRuntimeManagement = true })
+                    }
+                    if (showRuntimeManagement && draftAuth.token != null && draftAuth.aiAllowed && store.selectedTeam?.id == session.teamId) {
+                        ModalBottomSheet(onDismissRequest = { showRuntimeManagement = false; showAgent = true },
+                            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                            containerColor = MaterialTheme.colorScheme.background) {
+                            Column(Modifier.fillMaxWidth().fillMaxHeight()) {
+                                ai.cerin.android.ui.agent.RuntimePickerHeader(title = stringResource(R.string.chat_computers_and_runtimes),
+                                    onClose = { showRuntimeManagement = false; showAgent = true })
+                                HorizontalDivider()
+                                ai.cerin.android.ui.agent.RuntimesPage()
+                            }
+                        }
+                    }
+                    androidx.compose.runtime.DisposableEffect(session, store.workspaceRevision, draftAuth.generation) {
+                        val modelWorkspaceRevision = store.workspaceRevision
+                        val modelAuthGeneration = draftAuth.generation
+                        session.activateModelSettings(store.selectedTeam?.id == session.teamId && draftAuth.aiAllowed) {
+                            store.workspaceRevision == modelWorkspaceRevision && store.selectedTeam?.id == session.teamId &&
+                                draftAuth.generation == modelAuthGeneration && draftAuth.aiAllowed
+                        }
+                        onDispose { session.activateModelSettings(false) }
+                    }
+                    LaunchedEffect(session.modelSettings, session.isStreaming, session.runtimeObservation?.phase) {
+                        session.modelSettings?.refresh()
+                    }
+                    LaunchedEffect(session.modelSettings, session.modelSettings?.pending?.isNotEmpty()) {
+                        val settings = session.modelSettings
+                        while (settings != null && settings.pending.isNotEmpty() && settings.error == null) {
+                            kotlinx.coroutines.delay(2500)
+                            settings.refresh()
+                        }
+                    }
+                    val queueGeneration = draftAuth.generation
+                    val queueWorkspace = store.workspaceRevision
+                    val queueConsent = ai.cerin.android.session.AiAccess.revision
+                    androidx.compose.runtime.DisposableEffect(session, queueGeneration, queueWorkspace, queueConsent, draft) {
+                        session.activateQueue {
+                            draft != null && draftAuth.generation == queueGeneration && draftAuth.aiAllowed &&
+                                ai.cerin.android.session.AiAccess.revision == queueConsent &&
+                                store.workspaceRevision == queueWorkspace && store.selectedTeam?.id == session.teamId
+                        }
+                        onDispose { session.deactivateQueue() }
+                    }
+                    LaunchedEffect(session, resumed, queueGeneration, queueWorkspace, queueConsent, session.loaded, session.isStreaming, session.queuedSends, session.sendQueues, session.runtimeObservation?.phase) {
+                        if (resumed) while (true) {
+                            session.serverQueue.refresh()
+                            if (session.serverQueue.items.isEmpty() && !session.isStreaming && !session.sendQueues) break
+                            kotlinx.coroutines.delay(3_000)
+                        }
+                    }
+                    var recalledFiles by remember(session, queueGeneration, queueWorkspace, queueConsent) {
+                        mutableStateOf(emptyList<ai.cerin.android.model.ComposerAttachment>())
+                    }
+                    ServerQueuedMessages(session.serverQueue, writable = !session.readOnly && !session.isArchived,
+                        canSteer = session.canSteer, onRecall = { recalled ->
+                            if (draft == null) false else runCatching {
+                                val files = recalled.files.map { file ->
+                                    require(file.mediaType == "image/jpeg" && file.url.startsWith("data:image/jpeg;base64,")) {
+                                        "This queued attachment cannot be edited on this device."
+                                    }
+                                    require(file.url.length <= 30_000_000)
+                                    ai.cerin.android.model.ComposerAttachment(
+                                        id = "recalled-${file.url.hashCode()}-${file.filename}", name = file.filename ?: "Queued photo.jpg",
+                                        kind = ai.cerin.android.model.ComposerAttachment.Kind.Image(java.util.Base64.getDecoder().decode(file.url.substringAfter(','))))
+                                }
+                                val existing = draftApp.incomingShares.text(draft.key) ?: draft.text
+                                val merged = if (existing == recalled.text || existing.endsWith("\n\n${recalled.text}")) existing
+                                    else listOf(existing, recalled.text).filter { it.isNotBlank() }.joinToString("\n\n")
+                                draftApp.incomingShares.writeText(draft.key, merged)
+                                val saved = draft.write(merged)
+                                if (saved) recalledFiles = (recalledFiles + files).distinctBy { it.id }
+                                saved
+                            }.getOrDefault(false)
+                        })
+                    ChatComposer(
+                        promptSuggestion = { session.promptSuggestion },
+                        modelSettings = session.modelSettings,
+                        followsBot = session.followsBot,
+                        recalledFiles = recalledFiles,
+                        onRecalledFilesRestored = { recalledFiles = emptyList() },
+                        mentions = if (store.selectedTeam?.id != draftTeam) null else remember(store, draftTeam, sessionId) {
+                            SessionMentionSource(draftTeam, sessionId) {
+                                store.mentionableSessions(draftTeam)
+                            }
+                        },
+                        // Mentioning a computer selects it, and a Task under a Bot has no selection of its own.
+                        devices = if (!session.canManage || session.followsBot || store.selectedTeam?.id != draftTeam) null
+                        else remember(store, session, draftTeam, store.workspaceRevision) {
+                            DeviceMentionSource(draftTeam,
+                                load = { store.mentionableComputers(draftTeam) },
+                                pick = { device ->
+                                    if (!session.canManage || store.selectedTeam?.id != draftTeam || !draftAuth.aiAllowed) false
+                                    else DeviceMention.select(session.credentialAccess ?: ai.cerin.android.model.CredentialSelection(), device)?.let {
+                                        session.credentialAccess = it
+                                        true
+                                    } ?: false
+                                },
+                            )
+                        },
+                        draft = draft,
+                        draftingEnabled = draft != null && draftAuth.aiAllowed && store.selectedTeam != null &&
+                            session.loaded && session.loadError == null && !session.readOnly && !session.isArchived,
+                        isStreaming = session.isStreaming && !session.isNative,
+                        onSend = session::send,
+                        canSubmit = session.canSubmit && session.uploadDraft == null,
+                        sendQueues = session.sendQueues,
+                        rejectedSubmission = session.rejectedSubmission,
+                        onRejectedRestored = session::clearRejectedSubmission,
+                        onStop = if (session.canCancel) session::stop else null,
+                stopsRuntimeTurn = session.isNative,
+                        showControls = session.canManage,
+                        selection = session.credentialAccess ?: ai.cerin.android.model.CredentialSelection(),
+                        onSelectionChange = session::updateCredentials,
+                        mode = session.permissionMode,
+                        onModeChange = session::updatePermissionMode,
+                    )
+                }
+            }
+        }
+    }
+
+    toolDetail?.let { part ->
+        ToolDetailDialog(part, onDismiss = { toolDetail = null })
+    }
+
+    if (alwaysTarget != null) {
+        AlertDialog(
+            onDismissRequest = { alwaysTarget = null },
+            title = { Text(stringResource(R.string.chat_always_allow_title)) },
+            text = {
+                Column {
+                    Text(stringResource(R.string.chat_always_allow_body))
+                    TextField(alwaysRule, onValueChange = { alwaysRule = it }, modifier = Modifier.padding(top = 8.dp))
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        alwaysTarget?.let { session.decide(it.toolCallId, ChatSession.ApprovalDecision.Always, alwaysRule) }
+                        alwaysTarget = null
+                    },
+                    enabled = alwaysRule.isNotBlank(),
+                ) { Text(stringResource(R.string.chat_allow)) }
+            },
+            dismissButton = { TextButton(onClick = { alwaysTarget = null }) { Text(stringResource(R.string.cancel)) } },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun ChatRowView(
+    row: ChatRow,
+    session: ChatSession,
+    onLink: (String) -> Unit,
+    onAlwaysAllow: (ChatPart.Tool) -> Unit,
+    onOpenTool: (ChatPart.Tool) -> Unit,
+    onSwitchRuntime: (() -> Unit)? = null,
+    onOpenChannel: ((String) -> Unit)? = null,
+) {
+    when (row) {
+        is ChatRow.Timestamp -> Text(
+            ChatTime.label(row.date),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+        )
+        is ChatRow.Event -> AgentEventRow(row, onLink, onOpenChannel) {
+            UserAttachments(row.content, session)
+        }
+        is ChatRow.Answered -> AnsweredLine(row, onLink)
+        is ChatRow.User -> UserMessageContent(row.sender, row.text) { UserAttachments(row, session) }
+        is ChatRow.AssistantText -> MarkdownText(row.text, streaming = row.streaming, onLink = onLink)
+        is ChatRow.Downloads -> {
+            val agents = LocalAgentStore.current
+            val auth = LocalAuthSession.current
+            val allowed = { session.canReadDownloads && auth.aiAllowed && agents.selectedTeam?.id == session.teamId }
+            if (allowed()) TransferCard(
+                ai.cerin.android.model.TransferUpload(row.group.groupId, row.group.files.map { it.fileName }),
+                { session.transferGroup(row.group.groupId) }, allowed(), allowed, compact = true)
+        }
+        is ChatRow.Reasoning -> ReasoningTile(row.part)
+        is ChatRow.Tool -> {
+            val reference = ai.cerin.android.model.ThreadReference.from(row.part)
+            if (row.part.secretRequest != null) SecretCard(row.part, session.reply(after = row.messageId), session)
+            else if (reference == null) ToolCallRow(row.part, row.canDecide, session, onOpenTool, onAlwaysAllow)
+            else {
+                val target = LocalAgentStore.current.conversations.firstOrNull { it.sessionId == reference.id }
+                Surface(onClick = { onLink(SessionMention.link(session.teamId, reference.id)) },
+                    shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                    Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        ai.cerin.android.ui.components.AgentAvatar(reference.id, target?.agentRuntime, 24.dp)
+                        Column(Modifier.weight(1f)) {
+                            Text(target?.displayTitle ?: reference.title ?: stringResource(R.string.chat_agent_fallback_title), maxLines = 1, style = MaterialTheme.typography.bodyMedium)
+                            Text(reference.verb, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Text("›", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+            }
+        }
+        is ChatRow.ToolRun -> ToolRunGroup(row, session, onLink, onAlwaysAllow, onOpenTool)
+        is ChatRow.Work -> WorkGroup(row, session, onLink, onAlwaysAllow, onOpenTool)
+        is ChatRow.Memory -> Surface(shape = MaterialTheme.shapes.extraLarge, color = MaterialTheme.colorScheme.surfaceContainer) {
+            Row(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Outlined.Memory, contentDescription = null, modifier = Modifier.size(14.dp))
+                Text(stringResource(R.string.chat_memory_updated), modifier = Modifier.padding(start = 6.dp), style = MaterialTheme.typography.labelMedium)
+            }
+        }
+        is ChatRow.MemoryRecall -> MemoryRecallRow(
+            row,
+            MemoryRecallAccess(
+                loaded = session.canShowRecall(row),
+                allowed = LocalAuthSession.current.aiAllowed,
+                originTeamId = session.teamId,
+                selectedTeamId = LocalAgentStore.current.selectedTeam?.id,
+            ),
+        )
+        is ChatRow.Activity -> Row(verticalAlignment = Alignment.CenterVertically) {
+            if (!row.text.isNullOrEmpty()) ActivityText(row.text, row.live)
+            else if (row.live) LoadingIndicator(Modifier.size(20.dp))
+        }
+        is ChatRow.Hint -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(row.text, color = if (row.isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.bodySmall)
+            val auth = LocalAuthSession.current
+            val store = LocalAgentStore.current
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val workspace = store.workspaceRevision
+            val consent = AiAccess.revision
+            val viewer = auth.user?.id
+            val generation = auth.generation
+            val valid = { auth.aiAllowed && session.readAllowed && store.selectedTeam?.id == session.teamId &&
+                store.workspaceRevision == workspace && AiAccess.revision == consent && auth.generation == generation }
+            val report = ChatRow.failureReport(row.id, session.messages)?.takeIf { valid() }
+            val retry = session.failedTurn(viewer)?.takeIf { it.rowId == row.id && valid() }
+            var copied by remember(row.id, report) { mutableStateOf(false) }
+            if (retry != null || report != null) Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (retry != null) OutlinedButton(onClick = { if (valid()) session.retryFailedTurn(auth.user?.id) },
+                    modifier = Modifier.testTag("failed-turn-retry:${row.id}")) {
+                    Icon(androidx.compose.ui.res.painterResource(R.drawable.failed_turn_retry), null, Modifier.size(16.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(stringResource(R.string.failed_turn_retry))
+                }
+                if (report != null) OutlinedButton(onClick = copy@{
+                    if (!valid()) return@copy
+                    val current = ChatRow.failureReport(row.id, session.messages) ?: return@copy
+                    (context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager)
+                        .setPrimaryClip(android.content.ClipData.newPlainText(row.text, current))
+                    copied = true
+                }, modifier = Modifier.testTag("failed-turn-copy:${row.id}")) {
+                    Icon(androidx.compose.ui.res.painterResource(if (copied) R.drawable.failed_turn_check else R.drawable.failed_turn_copy), null, Modifier.size(16.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(stringResource(if (copied) R.string.failed_turn_copied else R.string.failed_turn_copy))
+                }
+            }
+            // A signed-out agent the viewer can't sign in: whoever can is asked through their Inbox.
+            val runtimeId = session.runtimeId
+            val block = session.runtimeBlock?.takeIf { row.isError }
+            val askLabel = if (block?.signedOut == true) AgentChatApi.signInAsk(runtimeId, LocalAuthSession.current.user?.id,
+                LocalAgentStore.current.teams.firstOrNull { it.id == session.teamId }?.isAdministrator == true) else null
+            val ask = session.signInAsk?.takeIf { askLabel != null && it.runtimeId == runtimeId }
+            if (ask != null) Text(ask.status, color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.bodySmall)
+            val switch = onSwitchRuntime?.takeIf { block != null || row.id == "runtime-offline" }
+            if ((askLabel != null && ask?.asked != true) || switch != null) Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (askLabel != null && runtimeId != null && ask?.asked != true) {
+                    val scope = rememberCoroutineScope()
+                    Button(onClick = { scope.launch { session.askSignIn(runtimeId) } },
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)) {
+                        Text(askLabel, style = MaterialTheme.typography.labelMedium)
+                    }
+                }
+                // A runtime that can't take the turn: moving the conversation is the way on.
+                if (switch != null) SwitchRuntimeButton(switch)
+            }
+        }
+        ChatRow.Bottom -> Spacer(Modifier.height(1.dp))
+    }
+}
+
+/** What the turn is doing. A band of light moves across it while it's live, as on iOS. */
+@Composable
+private fun ActivityText(text: String, live: Boolean) {
+    val style = MaterialTheme.typography.bodySmall
+    val base = MaterialTheme.colorScheme.onSurfaceVariant
+    if (!live) { Text(text, style = style, color = base); return }
+    val highlight = MaterialTheme.colorScheme.onSurface
+    // Read only while drawing, so the band repaints each frame without recomposing the row.
+    val band = rememberInfiniteTransition(label = "activity").animateFloat(
+        initialValue = -0.3f, targetValue = 1.3f,
+        animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+            androidx.compose.animation.core.tween(1400, easing = androidx.compose.animation.core.LinearEasing)),
+        label = "activity-band",
+    )
+    Text(text, color = base, style = style, modifier = Modifier.testTag("activity-live")
+        .graphicsLayer { compositingStrategy = androidx.compose.ui.graphics.CompositingStrategy.Offscreen }
+        .drawWithContent {
+            drawContent()
+            val center = band.value * size.width
+            val half = size.width * 0.15f
+            drawRect(
+                androidx.compose.ui.graphics.Brush.horizontalGradient(
+                    0f to androidx.compose.ui.graphics.Color.Transparent, 0.5f to highlight, 1f to androidx.compose.ui.graphics.Color.Transparent,
+                    startX = center - half, endX = center + half,
+                ),
+                blendMode = androidx.compose.ui.graphics.BlendMode.SrcAtop,
+            )
+        })
+}
+
+/** The empty space above the composer's rounded card: the transcript can show through it. */
+private val COMPOSER_TOP_MARGIN = 8.dp
+private val COMPOSER_BOTTOM_FILL = 32.dp
+
+/** Sender, attachments and text, the same 6 dp apart as iOS. A part that isn't there takes no space. */
+@Composable
+internal fun UserMessageContent(sender: MessageAttribution?, text: String, attachments: @Composable () -> Unit) {
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp), horizontalAlignment = Alignment.End) {
+        sender?.let { MessageSenderLabel(it) }
+        attachments()
+        if (text.isNotEmpty()) UserMessageBubble(text)
+    }
+}
+
+@Composable
+private fun UserAttachments(row: ChatRow.User, session: ChatSession) {
+    MessageImages(row.images, row.messageId, alignEnd = true)
+    row.uploads.forEach { attachment ->
+        key(attachment.groupId, session) {
+            TransferCard(attachment, { session.transferGroup(attachment.groupId) }, session.canReadAttachments, { session.canReadAttachments })
+        }
+    }
+}
+
+@Composable
+private fun ReasoningTile(part: ChatPart.Reasoning) {
+    var expanded by remember { mutableStateOf(false) }
+    val thinking = part.state == ChatPart.StreamState.Streaming
+    Column {
+        TranscriptDisclosure(if (thinking) stringResource(R.string.chat_reasoning_thinking) else stringResource(R.string.chat_reasoning_thought), expanded, { expanded = !expanded })
+        if (expanded) SelectionContainer {
+            Text(part.text, modifier = Modifier.padding(start = 12.dp, top = 6.dp),
+                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun ToolCallRow(
+    part: ChatPart.Tool,
+    canDecide: Boolean,
+    session: ChatSession,
+    onOpen: (ChatPart.Tool) -> Unit,
+    onAlwaysAllow: (ChatPart.Tool) -> Unit,
+) {
+    val tint = when (part.state) {
+        ChatPart.Tool.State.InputStreaming, ChatPart.Tool.State.InputAvailable, ChatPart.Tool.State.ApprovalResponded -> MaterialTheme.colorScheme.primary
+        ChatPart.Tool.State.ApprovalRequested -> MaterialTheme.colorScheme.tertiary
+        ChatPart.Tool.State.OutputAvailable -> androidx.compose.ui.graphics.Color(0xFF2E7D32)
+        ChatPart.Tool.State.OutputError -> MaterialTheme.colorScheme.error
+        ChatPart.Tool.State.OutputDenied -> MaterialTheme.colorScheme.outline
+    }
+    Column {
+        Surface(
+            onClick = { onOpen(part) },
+            shape = MaterialTheme.shapes.medium,
+            color = tint.copy(alpha = 0.10f),
+            border = BorderStroke(1.dp, tint.copy(alpha = 0.18f)),
+        ) {
+            Column(Modifier.padding(horizontal = 12.dp, vertical = 9.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(when (part.state) {
+                        ChatPart.Tool.State.ApprovalRequested -> Icons.Outlined.PanTool
+                        ChatPart.Tool.State.OutputAvailable -> Icons.Outlined.CheckCircle
+                        ChatPart.Tool.State.OutputError -> Icons.Outlined.Error
+                        else -> Icons.Outlined.Handyman
+                    }, null, tint = tint, modifier = Modifier.size(16.dp))
+                    Text(part.displayLabel, modifier = Modifier.padding(start = 8.dp).weight(1f),
+                        style = MaterialTheme.typography.bodyMedium, maxLines = 1)
+                    val duration = part.startedAt?.let { start -> part.completedAt?.let { end -> (end - start) / 1000 } }
+                    duration?.takeIf { it >= 0 }?.let { Text(stringResource(R.string.chat_duration_seconds, it.toInt()), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                }
+                part.input?.get("command")?.stringValue?.takeIf { it.isNotBlank() && it != part.displayLabel }?.let {
+                    Text(it, maxLines = 3, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodySmall, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
+                }
+            }
+        }
+        val authorizationNote = when {
+            part.approval?.approved == false || part.state == ChatPart.Tool.State.OutputDenied -> stringResource(R.string.chat_tool_you_denied)
+            part.approval?.approved == true || part.state == ChatPart.Tool.State.ApprovalResponded -> stringResource(R.string.chat_tool_you_approved)
+            part.authorization?.get("decision")?.stringValue == "allow" -> when (part.authorization?.get("triggeredBy")?.get("kind")?.stringValue) {
+                "read_only" -> stringResource(R.string.chat_tool_auto_read_only)
+                "bypass" -> stringResource(R.string.chat_tool_auto_bypass)
+                "prior_grant" -> stringResource(R.string.chat_tool_auto_prior_grant)
+                else -> null
+            }
+            else -> null
+        }
+        if (authorizationNote != null) Text(authorizationNote, style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(start = 4.dp, top = 6.dp))
+        if (part.state == ChatPart.Tool.State.ApprovalRequested) {
+            val reason = part.authorization?.get("reason")?.stringValue
+            Text(reason?.let { stringResource(R.string.chat_authorization_required_reason, it) } ?: stringResource(R.string.chat_authorization_required), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))
+            if (canDecide) {
+                Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(modifier = Modifier.testTag("approve-once:${part.toolCallId}"), enabled = !session.readOnly && (if (session.isNative) session.canReply else session.canSubmit), onClick = { session.decide(part.toolCallId, ChatSession.ApprovalDecision.Once) }) { Text(stringResource(R.string.approve_once)) }
+                    if (part.approval?.source != "openab") {
+                        FilledTonalButton(enabled = session.canManage, onClick = { session.decide(part.toolCallId, ChatSession.ApprovalDecision.Session) }) { Text(stringResource(R.string.for_session)) }
+                    }
+                }
+                Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (part.approval?.source != "openab") {
+                        OutlinedButton(enabled = session.canManage, onClick = { onAlwaysAllow(part) }) { Text(stringResource(R.string.always_allow)) }
+                    }
+                    OutlinedButton(enabled = !session.readOnly && (if (session.isNative) session.canReply else session.canSubmit), onClick = { session.decide(part.toolCallId, ChatSession.ApprovalDecision.Deny) }) { Text(stringResource(R.string.deny)) }
+                }
+            }
+        }
+        part.planId?.let { InlinePlanCard(it, session) }
+    }
+}
+
+@Composable
+private fun ToolRunGroup(
+    row: ChatRow.ToolRun,
+    session: ChatSession,
+    onLink: (String) -> Unit,
+    onAlwaysAllow: (ChatPart.Tool) -> Unit,
+    onOpenTool: (ChatPart.Tool) -> Unit,
+) {
+    val calls = row.rows.filterIsInstance<ChatRow.Tool>()
+    // Open while live and for each new authorization request, as on iOS; a tap always wins, so a
+    // failed run folds like any other.
+    val approval = calls.lastOrNull { it.part.state == ChatPart.Tool.State.ApprovalRequested }?.part?.toolCallId
+    var expanded by remember(row.id, approval) { mutableStateOf(row.live || approval != null) }
+    val detail = pluralStringResource(when {
+        calls.any { it.part.state == ChatPart.Tool.State.ApprovalRequested } -> R.plurals.chat_tool_run_calls_authorization
+        calls.any { it.part.state == ChatPart.Tool.State.OutputError } -> R.plurals.chat_tool_run_calls_failed
+        row.live -> R.plurals.chat_tool_run_calls_running
+        else -> R.plurals.chat_tool_run_calls
+    }, calls.size, calls.size)
+    Column {
+        TranscriptDisclosure(calls.last().part.displayLabel, expanded, { expanded = !expanded }, " $detail")
+        if (expanded) Column(Modifier.padding(start = 12.dp, top = 6.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            row.rows.forEach { child -> key(child.id) { ChatRowView(child, session, onLink, onAlwaysAllow, onOpenTool) } }
+        }
+    }
+}
+
+@Composable
+private fun WorkGroup(
+    row: ChatRow.Work,
+    session: ChatSession,
+    onLink: (String) -> Unit,
+    onAlwaysAllow: (ChatPart.Tool) -> Unit,
+    onOpenTool: (ChatPart.Tool) -> Unit,
+) {
+    var expanded by remember(row.id) { mutableStateOf(false) }
+    val title = row.duration?.takeIf { it >= 1 }?.let { pluralStringResource(R.plurals.chat_work_duration_steps, row.rows.size, it.toInt(), row.rows.size) }
+        ?: pluralStringResource(R.plurals.chat_work_steps, row.rows.size, row.rows.size)
+    Column {
+        TranscriptDisclosure(title, expanded, { expanded = !expanded })
+        if (expanded) {
+            Column(Modifier.padding(start = 12.dp, top = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ChatRow.toolRuns(row.rows, live = false).forEach { child ->
+                    key(child.id) { ChatRowView(child, session, onLink, onAlwaysAllow, onOpenTool) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+internal fun UserMessageBubble(text: String) {
+    var expanded by remember(text) { mutableStateOf(false) }
+    val preview = remember(text) { MessagePreview.head(text) }
+    val folded = preview != null && !expanded
+    Surface(
+        modifier = Modifier.padding(start = 56.dp).widthIn(max = 640.dp).testTag("user-bubble"),
+        shape = RoundedCornerShape(18.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+        Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Selection must never copy an abbreviated preview as the full message.
+            if (folded) Text(preview.orEmpty(), color = MaterialTheme.colorScheme.onSurface)
+            else SelectionContainer { Text(text, color = MaterialTheme.colorScheme.onSurface) }
+            if (preview != null) TextButton(onClick = { expanded = !expanded }, contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)) {
+                Text(if (expanded) stringResource(R.string.chat_show_less) else stringResource(R.string.chat_show_more), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    }
+}
+
+@Composable
+internal fun TranscriptDisclosure(title: String, expanded: Boolean, onClick: () -> Unit, detail: String? = null) {
+    val expandedState = stringResource(if (expanded) R.string.chat_expanded else R.string.chat_collapsed)
+    Row(Modifier.fillMaxWidth().clickable(onClickLabel = if (expanded) stringResource(R.string.chat_collapse) else stringResource(R.string.chat_expand), onClick = onClick)
+        .semantics { stateDescription = expandedState }
+        .padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Icon(Icons.Outlined.Psychology, null, Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        // One line, as on iOS: only the title gives way, so [detail] (a run's count and state) always shows.
+        Row(Modifier.weight(1f)) {
+            Text(title, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+            detail?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, softWrap = false) }
+        }
+        Icon(if (expanded) Icons.Outlined.KeyboardArrowDown else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+            null, Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun ToolDetailDialog(part: ChatPart.Tool, onDismiss: () -> Unit) {
+    androidx.compose.material3.ModalBottomSheet(onDismissRequest = onDismiss,
+        sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+        Column(Modifier.fillMaxWidth().fillMaxHeight(0.9f).verticalScroll(rememberScrollState()).padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(part.displayLabel, style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.done)) }
+            }
+            Text(when (part.state) {
+                ChatPart.Tool.State.OutputAvailable -> stringResource(R.string.chat_tool_state_completed)
+                ChatPart.Tool.State.OutputError -> stringResource(R.string.chat_tool_state_failed)
+                ChatPart.Tool.State.OutputDenied -> stringResource(R.string.chat_tool_state_denied)
+                ChatPart.Tool.State.ApprovalRequested -> stringResource(R.string.chat_authorization_required)
+                else -> stringResource(R.string.chat_tool_state_pending)
+            }, style = MaterialTheme.typography.labelLarge)
+            for ((label, content) in listOf(
+                stringResource(R.string.chat_tool_input) to (part.input?.takeUnless { it.isNull }?.prettyPrinted ?: part.inputText.takeIf { it.isNotBlank() } ?: stringResource(R.string.chat_tool_no_input)),
+                stringResource(R.string.chat_tool_output) to (part.output?.takeUnless { it.isNull }?.prettyPrinted ?: if (part.state == ChatPart.Tool.State.OutputDenied) stringResource(R.string.chat_tool_execution_denied) else stringResource(R.string.chat_tool_no_output)),
+            )) {
+                Text(label, style = MaterialTheme.typography.titleSmall)
+                androidx.compose.foundation.text.selection.SelectionContainer {
+                    Text(content, style = MaterialTheme.typography.bodySmall, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
+                }
+            }
+            part.errorText?.takeIf { it.isNotBlank() }?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+        }
+    }
+}
+
+/** Opens the runtime sheet, which moves this conversation to the runtime chosen. */
+@Composable
+internal fun SwitchRuntimeButton(onClick: () -> Unit) {
+    OutlinedButton(onClick = onClick, contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)) {
+        Text(stringResource(R.string.chat_switch_runtime), style = MaterialTheme.typography.labelMedium)
+    }
+}

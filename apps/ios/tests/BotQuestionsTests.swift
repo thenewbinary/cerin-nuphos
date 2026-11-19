@@ -186,7 +186,7 @@ enum BotQuestionsTests {
         let questions = BotQuestions.under(bot: "bot", rows: rows)
         precondition(questions.map(\.request.id) == ["q-docs", "q-bot", "q-canary"])
         precondition(questions.map(\.sessionId) == ["docs", "bot", "canary"])
-        precondition(questions[2].link(team: "t1").absoluteString == "https://nuphos.ai/teams/t1/agent/canary")
+        precondition(questions[2].link(team: "t1").absoluteString == "https://platform.cerin.ai/teams/t1/agent/canary")
     }
 
     private static func leavesOutOtherBotsAndTeammates() {

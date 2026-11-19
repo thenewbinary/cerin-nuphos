@@ -1,21 +1,21 @@
 ---
 name: gcloud
-description: Run Google Cloud SDK (gcloud) commands from the sandbox to inspect or change GCP resources (GKE, Compute Engine, IAM, networking). Includes scripts to install the SDK and to load a short-lived access token for an Nuphos-bound project.
+description: Run Google Cloud SDK (gcloud) commands from the sandbox to inspect or change GCP resources (GKE, Compute Engine, IAM, networking). Includes scripts to install the SDK and to load a short-lived access token for an Cerin-bound project.
 ---
 
 # gcloud (Google Cloud SDK)
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
-Use this skill when the user wants to inspect or change GCP resources directly with `gcloud`. The SDK is on PATH; the runtime image's tool manifest installs it on first use, so the first call can take a while. Authenticate before any `gcloud` call — either with a token Nuphos mints for a bound project (preferred), or with a service-account key the user pasted.
+Use this skill when the user wants to inspect or change GCP resources directly with `gcloud`. The SDK is on PATH; the runtime image's tool manifest installs it on first use, so the first call can take a while. Authenticate before any `gcloud` call — either with a token Cerin mints for a bound project (preferred), or with a service-account key the user pasted.
 
 ## When to skip this skill
 
-For anything Nuphos already exposes via its own API — listing Compute Engine instances or GKE clusters in a bound project, fetching kubeconfigs, listing/editing firewall rules — call the Nuphos backend route directly instead of `gcloud ...`. Same data, no setup, smaller blast radius:
+For anything Cerin already exposes via its own API — listing Compute Engine instances or GKE clusters in a bound project, fetching kubeconfigs, listing/editing firewall rules — call the Cerin backend route directly instead of `gcloud ...`. Same data, no setup, smaller blast radius:
 
 - List Compute Engine VMs in a bound project → `GET /teams/:teamId/gcp-projects/:projectId/gce-instances` (every zone, with machine type, status, IPs, network and labels)
 - List VPC networks → `GET /teams/:teamId/gcp-projects/:projectId/vpcs`
@@ -25,14 +25,14 @@ For anything Nuphos already exposes via its own API — listing Compute Engine i
 
 A bound project need not run Kubernetes. A project with only Compute Engine VMs is a normal binding: `clusters` comes back empty (or reports the Kubernetes Engine API as disabled), and the GCE routes above are the ones to use.
 
-Use this skill when the user asks for something Nuphos does not expose (e.g. Cloud Logging queries, Cloud Storage, Pub/Sub, IAM bindings), or hands you a key for a project Nuphos isn't connected to.
+Use this skill when the user asks for something Cerin does not expose (e.g. Cloud Logging queries, Cloud Storage, Pub/Sub, IAM bindings), or hands you a key for a project Cerin isn't connected to.
 
 ## Setup
 
 ```bash
 # Authenticate. Pick ONE path:
 
-# (a) PREFERRED — short-lived impersonated token for an Nuphos-bound project.
+# (a) PREFERRED — short-lived impersonated token for an Cerin-bound project.
 #     Configures gcloud's auth/access_token_file + active project. Token expires
 #     in ~1h — re-run if commands start failing with reauth errors.
 bash skills/gcloud/scripts/setup-credentials.sh <teamId> <projectId>
@@ -52,7 +52,7 @@ shred -u "$key" 2>/dev/null || rm -f "$key"
 CLOUDSDK_AUTH_ACCESS_TOKEN="ya29...." gcloud projects list
 ```
 
-`setup-credentials.sh` calls the ordinary `GET /teams/:teamId/gcp-projects/:projectId/credentials` API with `NUPHOS_TOKEN`. When the bearer is a conversation principal, the backend automatically restricts it to this conversation's selected service accounts. When `<serviceAccountId>` is provided, the script adds `?serviceAccountId=...` and impersonates that exact allowed binding; otherwise the backend selects an allowed operational service account for the project. The token inherits exactly that SA's permissions. Permission-admin (human-only, IAM-escalation) service accounts are never handed out through this path.
+`setup-credentials.sh` calls the ordinary `GET /teams/:teamId/gcp-projects/:projectId/credentials` API with `CERIN_TOKEN`. When the bearer is a conversation principal, the backend automatically restricts it to this conversation's selected service accounts. When `<serviceAccountId>` is provided, the script adds `?serviceAccountId=...` and impersonates that exact allowed binding; otherwise the backend selects an allowed operational service account for the project. The token inherits exactly that SA's permissions. Permission-admin (human-only, IAM-escalation) service accounts are never handed out through this path.
 
 After authenticating, confirm identity before doing anything mutating:
 
@@ -102,7 +102,7 @@ The local command shape is:
 gcloud iam service-accounts add-iam-policy-binding \
   <bound-service-account-email> \
   --project=<project-id> \
-  --member="principal://iam.googleapis.com/projects/<nuphos-project-number>/locations/global/workloadIdentityPools/<pool-id>/subject/nuphos:team:<team-id>" \
+  --member="principal://iam.googleapis.com/projects/<cerin-project-number>/locations/global/workloadIdentityPools/<pool-id>/subject/cerin:team:<team-id>" \
   --role="roles/iam.serviceAccountTokenCreator"
 ```
 
@@ -122,7 +122,7 @@ policy change.
   and Google Workspace customer IDs, never a single principal.
 - `iam.managed.allowedPolicyMembers` reports a different error,
   `Operation denied by org policy ... constraints/iam.managed.allowedPolicyMembers`.
-  Its `allowedMemberSubjects` accepts the single Nuphos `principal://` value and
+  Its `allowedMemberSubjects` accepts the single Cerin `principal://` value and
   allows only that exact subject; `allowedPrincipalSets` must be non-empty and
   list only `//cloudresourcemanager.googleapis.com/organizations/<id>` values. A
   project policy replaces the parent policy rather than merging with it, and a
@@ -133,7 +133,7 @@ policy change.
 For the administrator to weigh, not a policy to hand over: the narrowest
 exception would be on the project that holds the connector service account, a
 managed policy that keeps the organization's principal set and every parent
-value and adds the Nuphos principal to `allowedMemberSubjects`, then, once it is
+value and adds the Cerin principal to `allowedMemberSubjects`, then, once it is
 in effect, `allowAll` for the legacy constraint on that project. The managed
 behavior above was tested; that the legacy step completes the grant was not.
 See https://docs.cloud.google.com/organization-policy/restrict-domains.
@@ -149,7 +149,7 @@ gcloud org-policies describe iam.managed.allowedPolicyMembers --project=<project
 
 ### No binding, or a binding on the wrong project
 
-Creating the Nuphos-side binding is a human step. `POST /teams/:teamId/gcp-projects`
+Creating the Cerin-side binding is a human step. `POST /teams/:teamId/gcp-projects`
 answers `403 conversation_api_forbidden` for every agent conversation, whatever
 the user's team role, so do not present it as missing permissions or ask for the
 API to be opened.
@@ -162,7 +162,7 @@ Do the parts you can and leave only the click:
    for the team's workload identity principal with the user's own authenticated
    `gcloud` — through `local_exec` when it is available, otherwise by handing the
    user the exact commands.
-3. Tell the user to bind it in the Nuphos app under Settings -> Integrations,
+3. Tell the user to bind it in the Cerin app under Settings -> Integrations,
    giving them the service account email and project id to enter, then retry.
 
 ## Common operations
@@ -215,13 +215,13 @@ The desktop's dashboard Watch prompt identifies the exact project, service-accou
 
 4. Once an exact alert policy exists, use the additive webhook wiring recipe below. Preserve all existing notification channels and scope the new path only to that policy.
 
-## Wiring a Cloud Monitoring alert to a Nuphos agent trigger
+## Wiring a Cloud Monitoring alert to a Cerin agent trigger
 
-Use this when the user says "watch this alert policy / when X fires, do Y". Same pattern as the grafana skill's recipe: GCP keeps the condition (the alert policy), Nuphos receives the notification (a webhook trigger), the conversation the trigger is bound to performs Y. Requires `roles/monitoring.editor` (or the channel+policy editor pair) on the project — a 403 means the bound service account lacks it; guide the user to grant instead of improvising.
+Use this when the user says "watch this alert policy / when X fires, do Y". Same pattern as the grafana skill's recipe: GCP keeps the condition (the alert policy), Cerin receives the notification (a webhook trigger), the conversation the trigger is bound to performs Y. Requires `roles/monitoring.editor` (or the channel+policy editor pair) on the project — a 403 means the bound service account lacks it; guide the user to grant instead of improvising.
 
-**Completion contract:** creating the trigger only creates the Nuphos receiver; the Watch is not live until the GCP notification channel is created, attached additively to the exact alert policy, read back, and drill-tested. For an existing alert policy, the generated Watch prompt authorizes those scoped additive changes. For a dashboard panel that needs a new policy, the user's later explicit approval of the exact condition authorizes policy creation and the scoped wiring; after that approval, do not ask for another confirmation or hand setup commands back to the user when the connected service account can run them.
+**Completion contract:** creating the trigger only creates the Cerin receiver; the Watch is not live until the GCP notification channel is created, attached additively to the exact alert policy, read back, and drill-tested. For an existing alert policy, the generated Watch prompt authorizes those scoped additive changes. For a dashboard panel that needs a new policy, the user's later explicit approval of the exact condition authorizes policy creation and the scoped wiring; after that approval, do not ask for another confirmation or hand setup commands back to the user when the connected service account can run them.
 
-If the requested destination is Slack, call `slack_list_destinations` before creating the trigger. Use only the user's explicit DM/channel choice and name its stable ID/DM in the messageTemplate. If the user chose Nuphos, do not add Slack delivery.
+If the requested destination is Slack, call `slack_list_destinations` before creating the trigger. Use only the user's explicit DM/channel choice and name its stable ID/DM in the messageTemplate. If the user chose Cerin, do not add Slack delivery.
 
 1. **Create the webhook trigger** through the `triggers` skill (`triggerType: "webhook"`, `targetSessionId` this conversation unless the user names another of theirs; first list the triggers bound to it and reuse one that already receives this policy). Cloud Monitoring's webhook body is `{"version": "1.2", "incident": {...}}` — the useful fields are `incident.state` ("open" | "closed"), `incident.policy_name`, `incident.condition_name`, `incident.summary`, `incident.url` (console deep link), `incident.started_at`. Write the messageTemplate as the ACTION, branching on state:
 
@@ -230,14 +230,14 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    Policy: {{payload.incident.policy_name}} — {{payload.incident.summary}}
    If the payload contains "test": true or "drill": true, reply "test delivery received" and STOP — no investigation.
    For Slack, first check the earlier firings in this conversation to see whether this alert has already been reported. Investigate, then call slack_post once when this firing is worth telling people about — a new problem, a material change, or its recovery; an unchanged repeat needs no post. Post to the exact destination the user approved, as written in the messageTemplate, including slackWorkspaceId when it is known: {"type":"channel","channelId":"<the selected stable ID>","slackWorkspaceId":"<its workspace>"} for a channel, or {"type":"dm_self"} for a DM. Keep bindConversation on unless this conversation is already bound to a Slack thread, in which case pass bindConversation=false.
-   For Nuphos-only delivery, keep the findings here and do not call slack_post.
+   For Cerin-only delivery, keep the findings here and do not call slack_post.
    ```
 
-   Each Slack post is one message from this conversation; replies in the thread under the first, bound post continue this conversation. Tell the user they can reply there to continue with Nuphos.
+   Each Slack post is one message from this conversation; replies in the thread under the first, bound post continue this conversation. Tell the user they can reply there to continue with Cerin.
 
    The result gives you `webhookUrl` and `webhookSecret` (returned only once). Sanity check: the `webhookUrl` must be an absolute `https://` URL — a bare path means the backend has no public base URL; STOP and tell the user. NEVER substitute a different host.
 
-2. **Create a webhook notification channel** with the secret embedded as `?secret=` in the URL (the Nuphos receiver authenticates on that; the `auth_token` query GCP appends itself is ignored). Pass the definition via `--channel-content-from-file` so the secret never lands in process args or shell history, and shred the tmpfile after:
+2. **Create a webhook notification channel** with the secret embedded as `?secret=` in the URL (the Cerin receiver authenticates on that; the `auth_token` query GCP appends itself is ignored). Pass the definition via `--channel-content-from-file` so the secret never lands in process args or shell history, and shred the tmpfile after:
 
    ```bash
    CHANNEL_FILE=$(mktemp)                 # unpredictable path, mode 0600
@@ -245,7 +245,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    cat > "$CHANNEL_FILE" <<'EOF'
    {
      "type": "webhook_tokenauth",
-     "displayName": "nuphos-<trigger name>",
+     "displayName": "cerin-<trigger name>",
      "labels": { "url": "<webhookUrl>?secret=<webhookSecret>" }
    }
    EOF
@@ -269,17 +269,17 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
 
 5. **Verify before saying live**: describe the new notification channel and alert policy, and verify the policy contains the new channel plus every channel it had before. Then `POST /{triggerId}/test-fire` (see the `triggers` skill) with a representative payload (`{"test": true, "incident": {"state": "open", "policy_name": "...", "summary": "..."}}`) to check the cheap action branch. GCP has no channel test-send CLI; changing a live condition to force an incident is a separate risky action and still requires explicit approval.
 
-6. **Report what you created**: the full notification-channel name, the alert-policy name, and whether this workflow created the policy. Nuphos does not record them, and removing the trigger leaves them in GCP.
+6. **Report what you created**: the full notification-channel name, the alert-policy name, and whether this workflow created the policy. Cerin does not record them, and removing the trigger leaves them in GCP.
 
 If channel creation, policy attachment, read-back, or the drill fails, remove the channel from the policy, delete the newly created channel, and delete the newly created trigger when safe. Report the exact blocker; do not leave an enabled half-configured workflow.
 
-To tear down, confirm with the user, remove only the Nuphos channel from the exact policy (`--remove-notification-channels`), read the policy back, delete the channel, then delete the trigger. Deleting the trigger alone does not touch GCP.
+To tear down, confirm with the user, remove only the Cerin channel from the exact policy (`--remove-notification-channels`), read the policy back, delete the channel, then delete the trigger. Deleting the trigger alone does not touch GCP.
 
 ## Safety
 
 - **Read-only by default.** `list`, `describe`, `get-*` are safe.
 - **Confirm before mutating.** Anything with `create`, `delete`, `update`, `set-*`, `add-*`, `remove-*`, `apply`, `start`, `stop`, `reset`, `resize` requires the user's go-ahead, and you must summarize the exact resource and project first. A generated Watch prompt confirms additive wiring for an existing exact policy. It does not confirm creation of a new policy from a dashboard chart; that requires the mandatory later condition approval above. Once received, do not ask twice.
-- **Don't persist user-supplied keys.** Path (a) above stores an Nuphos-minted **short-lived** token (no refresh secret) under `~/.config/gcloud/`, which is fine. For a service-account key the user pastes, use a tmpfile and `shred -u` after activation.
-- **Don't leak tokens.** Don't `cat ~/.config/gcloud/nuphos-access-token` back to the user, and don't print `gcloud auth print-access-token` output — pipe it directly into the next command.
+- **Don't persist user-supplied keys.** Path (a) above stores an Cerin-minted **short-lived** token (no refresh secret) under `~/.config/gcloud/`, which is fine. For a service-account key the user pastes, use a tmpfile and `shred -u` after activation.
+- **Don't leak tokens.** Don't `cat ~/.config/gcloud/cerin-access-token` back to the user, and don't print `gcloud auth print-access-token` output — pipe it directly into the next command.
 - **Be careful with `gcloud projects delete` and `gcloud container clusters delete`** — both are immediate and destructive.
 - **Re-auth if you see reauth errors.** Re-run `setup-credentials.sh` rather than asking the user for new credentials.

@@ -2,22 +2,22 @@ import { config } from '@/config'
 import { isEmailConfigured, sendEmail } from '@/lib/email'
 import { logError } from '@/lib/observability'
 
-import type { NuphosTeam } from '@/lib/identity'
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeam } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity/types'
 import type { TeamInvitation } from '@/models'
 
 export type SerializedTeamInvitation = {
   id: string
   inviterId: string
   teamId: string
-  team?: Pick<NuphosTeam, 'id' | 'name' | 'avatarUrl'>
+  team?: Pick<CerinTeam, 'id' | 'name' | 'avatarUrl'>
   invitedAt: string
   inviteeEmail: string
   acceptedAt?: string
   rejectedAt?: string
   /** The page the email's accept button opens, for an admin to send another way. */
   inviteUrl?: string
-  role: NuphosTeamRole
+  role: CerinTeamRole
 }
 
 export function normalizeInviteeEmail(email: string): string {
@@ -26,7 +26,7 @@ export function normalizeInviteeEmail(email: string): string {
 
 export function serializeTeamInvitation(
   invitation: TeamInvitation,
-  team?: Pick<NuphosTeam, 'id' | 'name' | 'avatarUrl'>,
+  team?: Pick<CerinTeam, 'id' | 'name' | 'avatarUrl'>,
   inviteUrl?: string,
 ): SerializedTeamInvitation {
   return {
@@ -44,7 +44,7 @@ export function serializeTeamInvitation(
 }
 
 /** The role accepting this invitation gives; one made before roles were stored gives Editor. */
-export function invitationRole(invitation: Pick<TeamInvitation, 'role'>): NuphosTeamRole {
+export function invitationRole(invitation: Pick<TeamInvitation, 'role'>): CerinTeamRole {
   return invitation.role ?? 'EDITOR'
 }
 
@@ -97,7 +97,7 @@ export function buildInvitationEmail(input: TeamInvitationEmailInput): {
   const lead = inviter ? `${inviter} has invited you to join` : `You've been invited to join`
   const appUrl = input.appUrl?.trim() || undefined
 
-  const subject = `You're invited to ${teamName} on Nuphos`
+  const subject = `You're invited to ${teamName} on Cerin`
   const button = appUrl
     ? `<a href="${escapeHtml(appUrl)}" style="display:inline-block;margin-top:8px;padding:11px 20px;background:#1a1a1e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600">Accept invitation</a>`
     : ''
@@ -105,10 +105,10 @@ export function buildInvitationEmail(input: TeamInvitationEmailInput): {
 <html>
 <body style="margin:0;padding:32px 16px;background:#f6f6f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1e">
   <div style="max-width:420px;margin:0 auto;background:#ffffff;border-radius:12px;padding:32px;border:1px solid #e6e6ea">
-    <div style="font-size:16px;font-weight:600;margin-bottom:16px">You're invited to Nuphos</div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:16px">You're invited to Cerin</div>
     <div style="font-size:14px;color:#55555e;line-height:1.6;margin-bottom:24px">
-      ${escapeHtml(lead)} <strong>${escapeHtml(teamName)}</strong> on Nuphos.
-      Open Nuphos and sign in with <strong>${escapeHtml(input.to)}</strong> to accept the invitation.
+      ${escapeHtml(lead)} <strong>${escapeHtml(teamName)}</strong> on Cerin.
+      Open Cerin and sign in with <strong>${escapeHtml(input.to)}</strong> to accept the invitation.
     </div>
     ${button}
     <div style="font-size:12.5px;color:#8a8a94;line-height:1.6;margin-top:24px">
@@ -118,8 +118,8 @@ export function buildInvitationEmail(input: TeamInvitationEmailInput): {
 </body>
 </html>`
   const text =
-    `${lead} ${teamName} on Nuphos.\n\n` +
-    `Open Nuphos and sign in with ${input.to} to accept the invitation.${
+    `${lead} ${teamName} on Cerin.\n\n` +
+    `Open Cerin and sign in with ${input.to} to accept the invitation.${
       appUrl ? `\n\n${appUrl}` : ''
     }\n\nIf you weren't expecting this invitation, you can safely ignore this email.`
 

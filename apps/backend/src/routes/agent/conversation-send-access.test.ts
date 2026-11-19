@@ -4,7 +4,7 @@ import { serializeConversationForViewer } from './conversation-view'
 import { assertConversationSendable, assertConversationWritable } from './team-scope'
 
 import type { AgentConversation } from '@/lib/agent/db'
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 
 import { useAgentDb } from '@/lib/test/doubles/agent-db'
 import { useIdentity } from '@/lib/test/doubles/identity'
@@ -61,7 +61,7 @@ test('general access lets the team read; only participants reply', async () => {
 })
 
 test('a viewer who may only read is served read-only', () => {
-  const viewer = { id: 'teammate' } as NuphosUser
+  const viewer = { id: 'teammate' } as CerinUser
   const viewOnly = { userId: 'owner', teamId, generalAccess: 'view' }
 
   expect(serializeConversationForViewer(viewOnly, viewer, new Map(), null, 'view')).toMatchObject({
@@ -74,7 +74,7 @@ test('a viewer who may only read is served read-only', () => {
 test('the serializer tells each viewer what they may do', () => {
   const doc = { userId: 'owner', teamId, generalAccess: 'none', participantIds: ['invited'] }
   const as = (id: string, access: 'owner' | 'reply' | 'view' | null) =>
-    serializeConversationForViewer(doc, { id } as NuphosUser, new Map(), null, access)
+    serializeConversationForViewer(doc, { id } as CerinUser, new Map(), null, access)
 
   expect(as('owner', 'owner')).toMatchObject({
     access: 'owner',
@@ -96,7 +96,7 @@ test('the serializer tells each viewer what they may do', () => {
   expect(
     serializeConversationForViewer(
       { userId: 'owner', teamId },
-      { id: 'x' } as NuphosUser,
+      { id: 'x' } as CerinUser,
       new Map(),
       null,
       'view',
@@ -122,7 +122,7 @@ test("each viewer sees the Task archived when they archived it, and never someon
     memberArchivedAt: { amy: mine },
   }
   const as = (id: string) =>
-    serializeConversationForViewer(doc, { id } as NuphosUser, new Map(), null, 'reply')
+    serializeConversationForViewer(doc, { id } as CerinUser, new Map(), null, 'reply')
 
   expect(as('amy').archivedAt).toEqual(mine)
   expect(as('daniel').archivedAt).toBeUndefined()

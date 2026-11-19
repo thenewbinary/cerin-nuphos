@@ -33,8 +33,8 @@ import type { Context } from 'hono'
 function verificationUri(): string {
   const origin = new URL(config.auth.publicBaseUrl).origin
 
-  return ['https://api.nuphos.ai', 'https://nuphos.ai'].includes(origin)
-    ? 'https://nuphos.ai/device'
+  return ['https://platform.cerin.ai', 'https://platform.cerin.ai'].includes(origin)
+    ? 'https://platform.cerin.ai/device'
     : `${config.auth.publicBaseUrl}${DEVICE_PAGE_PATH}`
 }
 
@@ -173,7 +173,7 @@ export function createCliAuthRoutes(quota: Quota = redisQuota) {
     }),
   )
 
-  // The owner setting one of their agent tokens' avatar (nuphos.ai/settings/tokens).
+  // The owner setting one of their agent tokens' avatar (platform.cerin.ai/settings/tokens).
   // Agent tokens are refused here by `cliTokenDenied`.
   routes.put('/cli-tokens/:id/avatar', requireAuth, avatarBodyLimit, async (c) =>
     c.json({

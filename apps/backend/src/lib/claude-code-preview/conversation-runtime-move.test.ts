@@ -207,7 +207,7 @@ test('a move retains the old runtime without needing an online source', async ()
   expect(conversation.runtimeId).toBe('new')
 })
 
-test('a conversation on a retired Nuphos-hosted runtime moves to another agent', async () => {
+test('a conversation on a retired Cerin-hosted runtime moves to another agent', async () => {
   const sourceUrl = 'ws://openab-claude-old.openab-runtimes.svc:8080/acp'
 
   conversation.claudeCodePreview!.runtimeUrl = sourceUrl

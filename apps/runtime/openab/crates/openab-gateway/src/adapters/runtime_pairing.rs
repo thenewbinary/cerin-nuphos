@@ -1,6 +1,6 @@
 //! Pairing: an application trades a short-lived, single-use code for its own binding.
 //!
-//! The runtime console mints a code; the application (the Nuphos backend) presents it to
+//! The runtime console mints a code; the application (the Cerin backend) presents it to
 //! `POST /_openab/pairing/exchange` and receives a pending binding's transport and control
 //! keys. `GET /_openab/bindings/self` and `POST /_openab/bindings/self/revoke` let the
 //! holder of a binding's keys check or end it.
@@ -162,7 +162,7 @@ pub fn client_ip(headers: &HeaderMap) -> String {
         .unwrap_or_else(|| "direct".into())
 }
 
-/// The agent this runtime runs, as Nuphos names it, from the image's adapter stamp.
+/// The agent this runtime runs, as Cerin names it, from the image's adapter stamp.
 pub fn provider() -> Option<&'static str> {
     let stamp = std::env::var("OPENAB_ADAPTER_VERSION").ok()?;
     if stamp.starts_with("claude-agent-acp") {
@@ -229,7 +229,7 @@ fn binding_label(client: &BindingClient) -> String {
         .team_name
         .clone()
         .or(host)
-        .unwrap_or_else(|| "Nuphos".into())
+        .unwrap_or_else(|| "Cerin".into())
 }
 
 async fn exchange(
@@ -338,24 +338,24 @@ mod tests {
             ..Default::default()
         };
         assert_eq!(
-            binding_label(&origin("https://api.nuphos.example/")),
-            "api.nuphos.example"
+            binding_label(&origin("https://api.cerin.example/")),
+            "api.cerin.example"
         );
         assert_eq!(
-            binding_label(&origin("api.nuphos.example")),
-            "api.nuphos.example"
+            binding_label(&origin("api.cerin.example")),
+            "api.cerin.example"
         );
         assert_eq!(
-            binding_label(&origin("api.nuphos.example:8443/x")),
-            "api.nuphos.example:8443"
+            binding_label(&origin("api.cerin.example:8443/x")),
+            "api.cerin.example:8443"
         );
-        assert_eq!(binding_label(&origin("")), "Nuphos");
+        assert_eq!(binding_label(&origin("")), "Cerin");
         let named = BindingClient {
             team_name: Some("Acme".into()),
-            ..origin("https://api.nuphos.example")
+            ..origin("https://api.cerin.example")
         };
         assert_eq!(binding_label(&named), "Acme");
-        assert_eq!(binding_label(&BindingClient::default()), "Nuphos");
+        assert_eq!(binding_label(&BindingClient::default()), "Cerin");
     }
 
     #[test]
@@ -450,7 +450,7 @@ mod tests {
         let app = app(store.clone());
         let (code, _) = store.pairing.mint().unwrap();
         let body = json!({"code": code, "client": {
-            "backendOrigin": "https://api.nuphos.example",
+            "backendOrigin": "https://api.cerin.example",
             "teamId": "t1", "teamName": "Acme\u{7}", "pairedBy": "Ada",
             "runtimeRecordId": "rt_1", "unknown": true
         }});

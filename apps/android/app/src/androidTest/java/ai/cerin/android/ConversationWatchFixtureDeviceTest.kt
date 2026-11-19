@@ -1,0 +1,497 @@
+package ai.cerin.android
+
+import android.content.Context
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import ai.cerin.android.data.*
+import ai.cerin.android.model.*
+import ai.cerin.android.session.*
+import ai.cerin.android.ui.*
+import ai.cerin.android.ui.agent.AgentPage
+import ai.cerin.android.ui.theme.CerinTheme
+import kotlinx.coroutines.*
+import okhttp3.*
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.Assert.*
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.ExternalResource
+import org.junit.rules.RuleChain
+import org.junit.runner.RunWith
+import java.util.concurrent.CopyOnWriteArrayList
+import org.junit.Assume.assumeTrue
+
+/** Synthetic local transport only. The outer rule blocks the real Activity's reads. */
+@RunWith(AndroidJUnit4::class)
+class ConversationWatchFixtureDeviceTest {
+    private val compose = createAndroidComposeRule<MainActivity>()
+    private val requests = CopyOnWriteArrayList<Request>()
+    private val originals = mutableMapOf<String, OkHttpClient>()
+    private val token = "watch-fixture-no-credentials"
+    private lateinit var store: AgentStore
+    private lateinit var app: CerinApplication
+    private var savedAccess: Any? = null
+    private var savedAuth: Any? = null
+    private var savedAuthToken: String? = null
+    private var preferences: Map<String, *> = emptyMap<String, Any>()
+    @Volatile private var legacyServer = false
+    private val watching = java.util.concurrent.ConcurrentHashMap(mapOf("parent" to true, "child" to true, "other" to true))
+    private val watched get() = watching.getValue("parent")
+    @Volatile private var rejectNext = false
+    @Volatile private var holdWrite: java.util.concurrent.CountDownLatch? = null
+    @Volatile private var holdNextList: java.util.concurrent.CountDownLatch? = null
+    @Volatile private var holdDetails: java.util.concurrent.CountDownLatch? = null
+    @Volatile private var failList = false
+    @Volatile private var failDetails = false
+    @Volatile private var taskSummaryFixture = false
+    @Volatile private var emptyTaskSummary = false
+    @Volatile private var extraSummaryContext = false
+    private val summaryTeam = "64b5f1c2e4b0a1d2c3e4f5a6"
+    private val summaryGroup = "64b5f1c2e4b0a1d2c3e4f5a7"
+    private val summaryFiles get() = """{"groupId":"$summaryGroup","expiresAt":"2099-01-01T00:00:00Z","files":[{"id":"file1","fileName":"release-notes.md","status":"ready"}]}"""
+    private val entries = """[{"key":"agent-session:normal","label":"Synthetic pin"}]"""
+    @Suppress("UNCHECKED_CAST") private fun state(target: Any, name: String, delegated: Boolean = true) =
+        target.javaClass.getDeclaredField(name + if (delegated) "\$delegate" else "").also { it.isAccessible = true }.get(target) as MutableState<Any?>
+
+    private val network = object : ExternalResource() {
+        override fun before() {
+            app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as CerinApplication
+            preferences = app.getSharedPreferences("cerin.prefs", Context.MODE_PRIVATE).all.toMap()
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                savedAccess = state(AiAccess, "state", false).value
+                savedAuth = state(app.authSession, "state").value
+                val tokenField = AuthSession::class.java.getDeclaredField("token").also { it.isAccessible = true }
+                savedAuthToken = tokenField.get(app.authSession) as String?
+                tokenField.set(app.authSession, token)
+                state(app.authSession, "state").value = AuthSession.State.SignedIn(CerinUser("watch-fixture", "watch@example.test", "Watch fixture"))
+                AiAccess.activate(token)
+            }
+            val client = OkHttpClient.Builder().addInterceptor { chain ->
+                val req = chain.request(); requests += req
+                val path = req.url.encodedPath
+                val watchId = Regex("/agent/conversations/(parent|child|other)/watch").matchEntire(path)?.groupValues?.get(1)
+                val mutation = watchId != null && req.method in setOf("PUT", "DELETE")
+                val denied = mutation && rejectNext
+                if (denied) rejectNext = false
+                if (mutation && watchId == "parent") check(holdWrite?.await(10, java.util.concurrent.TimeUnit.SECONDS) != false)
+                if (mutation && !denied) {
+                    watching[watchId!!] = req.method == "PUT"
+                    // The server's DELETE cascades to descendants.
+                    if (watchId == "parent" && req.method == "DELETE") watching["child"] = false
+                }
+                val summaryResources = extraSummaryContext && path == "/agent/conversations/parent/resources"
+                val summaryTriggers = extraSummaryContext && path == "/agent/triggers"
+                val summaryDownloads = extraSummaryContext && path == "/agent-sessions/parent/teams/$summaryTeam/file-transfers/downloads"
+                val summaryDownload = extraSummaryContext && path == "/teams/$summaryTeam/file-transfers/$summaryGroup/download"
+                val listing = path == "/agent/conversations"
+                val detailId = Regex("/agent/conversations/(parent|child|other)").matchEntire(path)?.groupValues?.get(1)
+                // A read answers with what was true when it reached the server, however late it returns.
+                val text = when {
+                    summaryDownloads -> """{"groups":[$summaryFiles]}"""
+                    summaryDownload -> summaryFiles
+                    summaryResources -> """{"resources":[{"id":"pr1","provider":"github","title":"Improve mobile navigation","url":"https://github.com/example/project/pull/42","state":"open","number":42}]}"""
+                    summaryTriggers -> """[{"id":"trigger1","name":"Daily release check","enabled":true,"triggerType":"cron","scheduleDescription":"Every day, 09:00"}]"""
+                    mutation && denied -> """{"error":"synthetic unavailable"}"""
+                    mutation -> """{"ok":true,"watching":${watching[watchId!!]}}"""
+                    listing && req.url.queryParameter("teamId") == "B" -> """{"conversations":[],"hasMore":false}"""
+                    listing && emptyTaskSummary && req.url.queryParameter("pendingDecision") == "true" ->
+                        """{"conversations":[],"hasMore":false}"""
+                    listing && taskSummaryFixture && req.url.queryParameter("pendingDecision") == "true" ->
+                        """{"conversations":[{"sessionId":"parent","teamId":"A","title":"Synthetic task","isOwner":true,
+                            "inputRequests":[{"id":"q-summary","category":"preference","question":"Review the plan?","options":["Review"],"status":"open"}]}],"hasMore":false}"""
+                    listing && extraSummaryContext -> """{"conversations":[
+                        {"sessionId":"parent","teamId":"$summaryTeam","title":"Synthetic shared parent","isOwner":true},
+                        {"sessionId":"child","teamId":"$summaryTeam","title":"Synthetic child","parentSessionId":"parent","isOwner":true}
+                    ],"hasMore":false}"""
+                    listing -> """{"conversations":[{"sessionId":"parent","teamId":"A","title":"Synthetic shared parent","watching":${watching["parent"]},"readOnly":true,"isOwner":false},{"sessionId":"child","teamId":"A","title":"Synthetic child","parentSessionId":"parent","isOwner":false,"readOnly":true,"watching":${watching["child"]}},{"sessionId":"other","teamId":"A","title":"Synthetic other","isOwner":false,"readOnly":true,"watching":${watching["other"]}}],"hasMore":false}"""
+                    detailId != null && extraSummaryContext -> """{"messages":[],"isOwner":true,"readOnly":false}"""
+                    detailId != null -> """{"messages":[],"readOnly":true,"isOwner":false,"watching":${watching[detailId]}}"""
+                    path == "/teams/A/favorites" -> """{"revision":1,"entries":$entries}"""
+                    else -> "{}"
+                }
+                if (listing && req.url.queryParameter("teamId") != "B") holdNextList?.let { holdNextList = null; check(it.await(10, java.util.concurrent.TimeUnit.SECONDS)) }
+                if (detailId != null) holdDetails?.await(10, java.util.concurrent.TimeUnit.SECONDS)
+                val failed = (listing && failList) || (detailId != null && failDetails)
+                val code = if (denied || failed) 503 else if (mutation || listing || detailId != null || summaryResources || summaryTriggers || summaryDownloads || summaryDownload || path == "/teams/A/favorites") 200 else 404
+                Response.Builder().request(req).protocol(Protocol.HTTP_1_1).code(code).message("fixture")
+                    .body((if (legacyServer) text.replace(Regex(",\"watching\":(true|false)"), "") else text).toResponseBody(Http.jsonMedia)).build()
+            }.build()
+            for (name in listOf("client", "chatClient")) {
+                val field = Http::class.java.getDeclaredField(name).also { it.isAccessible = true }
+                originals[name] = field.get(null) as OkHttpClient; field.set(null, client)
+            }
+        }
+        override fun after() {
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                if (::store.isInitialized) store.disposeForConsent()
+                state(AiAccess, "state", false).value = savedAccess
+                state(app.authSession, "state").value = savedAuth
+                AuthSession::class.java.getDeclaredField("token").also { it.isAccessible = true }.set(app.authSession, savedAuthToken)
+                val editor = app.getSharedPreferences("cerin.prefs", Context.MODE_PRIVATE).edit().clear()
+                preferences.forEach { (key, value) -> when(value) {
+                    is String -> editor.putString(key, value)
+                    is Boolean -> editor.putBoolean(key, value)
+                    is Int -> editor.putInt(key, value)
+                    is Long -> editor.putLong(key, value)
+                    is Float -> editor.putFloat(key, value)
+                    is Set<*> -> @Suppress("UNCHECKED_CAST") editor.putStringSet(key, value as Set<String>)
+                } }; editor.commit()
+            }
+            originals.forEach { (name, client) -> Http::class.java.getDeclaredField(name).also { it.isAccessible = true }.set(null, client) }
+        }
+    }
+    @get:Rule val rules: RuleChain = RuleChain.outerRule(network).around(compose)
+
+    private fun render() {
+        compose.runOnIdle {
+            AiAccess.grant(token)
+            store = AgentStore(token, compose.activity)
+            val team = if (extraSummaryContext) summaryTeam else "A"
+            state(store, "selectedTeam").value = Team(team, "Fixture A")
+            store.acceptMemberships(listOf(Team(team, "Fixture A"), Team("B", "Fixture B")))
+            state(store, "phase").value = AgentStore.Phase.Loaded
+            state(store, "conversations").value = listOf(
+                AgentConversation("parent", team, "Synthetic shared parent", watching = true, isOwner = false, readOnly = true),
+                AgentConversation("child", team, "Synthetic child", parentSessionId = "parent", watching = true, isOwner = false, readOnly = true),
+                AgentConversation("other", team, "Synthetic other", watching = true, isOwner = false, readOnly = true))
+            val auth = AuthSession(app, app.tokenStore)
+            AuthSession::class.java.getDeclaredField("token").also { it.isAccessible = true }.set(auth, token)
+            compose.activity.setContent {
+                CerinTheme(darkTheme = InstrumentationRegistry.getArguments().getString("fixtureDark") == "true") { androidx.compose.material3.Surface(Modifier.fillMaxSize().systemBarsPadding()) { CompositionLocalProvider(LocalAgentStore provides store, LocalAuthSession provides auth) {
+                    val nav = rememberNavController()
+                    NavHost(nav, startDestination = "history") {
+                        composable("history") { AgentPage(false, {}, nav) }
+                        composable("conversation/{sessionId}") { back ->
+                            val sessionId = back.arguments!!.getString("sessionId")!!
+                            if (taskSummaryFixture) {
+                                ai.cerin.android.ui.chat.ConversationScreen(sessionId, false, { nav.popBackStack() }, nav)
+                                return@composable
+                            }
+                            val session = store.session(sessionId, "Synthetic shared parent")
+                            androidx.compose.runtime.LaunchedEffect(session) { session.load() }
+                            androidx.compose.foundation.layout.Column {
+                                androidx.compose.material3.Text("Synthetic shared conversation")
+                                ai.cerin.android.ui.chat.ConversationMenu(session, store, {})
+                            }
+                        }
+                    }
+                } } }
+            }
+        }
+        waitText("Synthetic shared parent")
+    }
+    @Test fun taskSummaryShowsQuestionsAndRuntimeWork() {
+        taskSummaryFixture = true
+        render()
+        compose.onNodeWithText("Synthetic shared parent").performClick()
+        compose.waitUntil(8_000) { compose.onAllNodesWithContentDescription(compose.activity.getString(R.string.chat_summary_open)).fetchSemanticsNodes().isNotEmpty() }
+        compose.runOnIdle {
+            val session = store.session("parent", "Synthetic shared parent")
+            state(session, "runtimeObservation").value = RuntimeObservation(requireNotNull(JsonValue.parse(
+                """{"tools":[{"id":"term","terminal":{"status":"running","command":"Check the build","output":"Build is running"}}]}""",
+            )), RuntimeObservation.now())
+        }
+        shot("task-summary-toolbar")
+        compose.onNodeWithContentDescription(compose.activity.getString(R.string.chat_summary_open)).performClick()
+        waitText("Review the plan?")
+        shot("task-summary-pending")
+        compose.onNodeWithText("Check the build").performClick()
+        waitText("Build is running")
+        shot("task-summary")
+        compose.onNodeWithText("Review the plan?").performClick()
+        compose.onNodeWithContentDescription(compose.activity.getString(R.string.chat_summary_close_question)).assertIsDisplayed()
+        shot("task-summary-question")
+        compose.onNodeWithContentDescription(compose.activity.getString(R.string.chat_summary_close_question)).performClick()
+        compose.onNodeWithContentDescription(compose.activity.getString(R.string.chat_summary_close)).assertIsDisplayed().performClick()
+        compose.onNodeWithTag("task-summary").assertDoesNotExist()
+    }
+
+    @Test fun taskSummaryShowsTheEmptyState() {
+        taskSummaryFixture = true
+        emptyTaskSummary = true
+        render()
+        compose.onNodeWithText("Synthetic shared parent").performClick()
+        compose.waitUntil(8_000) { compose.onAllNodesWithContentDescription(compose.activity.getString(R.string.chat_summary_open)).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription(compose.activity.getString(R.string.chat_summary_open)).performClick()
+        waitText(compose.activity.getString(R.string.chat_summary_no_questions))
+        compose.onNodeWithText(compose.activity.getString(R.string.chat_summary_background)).assertDoesNotExist()
+        shot("task-summary-empty")
+    }
+
+    @Test fun taskSummaryShowsChangesChildrenFilesAndTriggers() {
+        taskSummaryFixture = true
+        extraSummaryContext = true
+        render()
+        compose.onNodeWithText("Synthetic shared parent").performClick()
+        val openLabel = compose.activity.getString(R.string.chat_summary_open)
+        compose.waitUntil(8_000) { compose.onAllNodesWithContentDescription(openLabel).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription(openLabel).performClick()
+        compose.waitUntil(8_000) { compose.onAllNodesWithText("Daily release check").fetchSemanticsNodes().isNotEmpty() }
+        val summary = hasAnyAncestor(hasTestTag("task-summary"))
+        compose.onNode(hasText("Improve mobile navigation") and summary).assertExists()
+        compose.onNode(hasText("Synthetic child") and summary).assertExists()
+        compose.onAllNodes(hasText("release-notes.md") and summary).assertCountEquals(1)
+        compose.onNode(hasText("Daily release check") and summary).performScrollTo().assertIsDisplayed()
+        val subTasks = compose.activity.getString(R.string.chat_summary_children)
+        compose.onNode(hasText(subTasks) and summary).performScrollTo().assertIsDisplayed()
+        shot("task-summary-context")
+    }
+
+    private fun waitText(text: String) { compose.waitUntil(5_000) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() } }
+
+    private fun shot(name: String) {
+        compose.waitForIdle()
+        Thread.sleep(350)
+        val bitmap = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()
+        val file = java.io.File(app.getExternalFilesDir(null), "watch-$name.png")
+        file.outputStream().use { bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it) }
+        bitmap.recycle()
+    }
+
+    private fun openRowMenu(id: String) {
+        compose.onNodeWithTag("conversation-row:$id").performTouchInput { longClick() }
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("menu-watch:$id").fetchSemanticsNodes().isNotEmpty() }
+    }
+    private fun tapWatch(id: String) { openRowMenu(id); compose.onNodeWithTag("menu-watch:$id").performClick() }
+    private fun row(id: String) = store.conversations.first { it.sessionId == id }
+    private fun deletes(id: String) = requests.count { it.method == "DELETE" && it.url.encodedPath.endsWith("/$id/watch") }
+
+    @Test fun sharedReaderCanUnwatchCascadeAndWatchAgainFromListAndMenu() {
+        render()
+        shot("list-before")
+        tapWatch("parent")
+        compose.waitUntil(5_000) { !watched && !store.isChangingWatch("parent") && row("parent").watching == false && row("child").watching == false }
+        shot("list-after-cascade")
+        compose.onNodeWithText("Synthetic shared parent").performClick()
+        waitText("Synthetic shared conversation")
+        compose.onNodeWithContentDescription("Task actions").performClick()
+        waitText("Watch")
+        shot("shared-menu-watch")
+        compose.onNodeWithText("Rename").assertDoesNotExist()
+        compose.onNodeWithText("Watch").performClick()
+        compose.waitUntil(5_000) { watched && !store.isChangingWatch("parent") }
+        compose.onNodeWithContentDescription("Task actions").performClick()
+        waitText("Unwatch")
+        shot("shared-menu-unwatch")
+        val writes = requests.filter { it.method in setOf("PUT", "DELETE") }
+        assertEquals(listOf("DELETE", "PUT"), writes.map { it.method })
+        assertTrue(writes.all { it.url.encodedPath.endsWith("/parent/watch") && it.url.queryParameter("teamId") == "A" })
+    }
+    @Test fun duplicateTapAndLateTeamResponseStayIsolated() {
+        render()
+        val hold = java.util.concurrent.CountDownLatch(1)
+        holdWrite = hold
+        val jobs = mutableListOf<Job>()
+        compose.runOnIdle {
+            val row = store.conversations.first()
+            val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+            jobs += scope.launch { store.setWatching(row) }
+            jobs += scope.launch { store.setWatching(row) }
+        }
+        try {
+            compose.waitUntil(5_000) { requests.any { it.method == "DELETE" } }
+            assertEquals(1, requests.count { it.method == "DELETE" })
+            compose.runOnIdle { store.select(Team("B", "Fixture B")) }
+            hold.countDown()
+            compose.waitUntil(5_000) { jobs.all { it.isCompleted } && store.phase == AgentStore.Phase.Loaded }
+            assertEquals("B", store.selectedTeam?.id)
+            assertTrue(store.conversations.isEmpty())
+            assertNull(store.watchError)
+            assertFalse(store.isChangingWatch("parent"))
+        } finally { hold.countDown(); jobs.forEach { it.cancel() } }
+    }
+    @Test fun legacyServerHidesControlsInListAndMenu() {
+        render()
+        legacyServer = true
+        val job = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch { store.reload() }
+        compose.waitUntil(5_000) { job.isCompleted && store.conversations.all { it.watching == null } }
+        compose.onAllNodesWithText("Unwatch").assertCountEquals(0)
+        compose.onAllNodesWithText("Watch").assertCountEquals(0)
+        shot("legacy-list")
+        compose.onNodeWithText("Synthetic shared parent").performClick()
+        waitText("Synthetic shared conversation")
+        compose.onNodeWithContentDescription("Task actions").performClick()
+        compose.onAllNodesWithText("Unwatch").assertCountEquals(0)
+        compose.onAllNodesWithText("Watch").assertCountEquals(0)
+        shot("legacy-menu")
+        assertTrue(requests.none { it.method in setOf("PUT", "DELETE") })
+    }
+    @Test fun failedWriteLeavesStateAndAllowsExplicitRetry() {
+        render()
+        rejectNext = true
+        tapWatch("parent")
+        waitText("Watch update failed")
+        assertTrue(watched)
+        assertEquals(true, store.conversations.first().watching)
+        shot("failure-retry")
+        compose.onNodeWithText("Refresh").performClick()
+        compose.waitUntil(5_000) { store.watchError == null }
+        tapWatch("parent")
+        compose.waitUntil(5_000) { !watched && !store.isChangingWatch("parent") }
+        assertEquals(2, requests.count { it.method == "DELETE" })
+    }
+
+    @Test fun theItemFlipsAtOnceAndOtherRowsWaitForTheReread() {
+        render()
+        val reread = java.util.concurrent.CountDownLatch(1)
+        holdNextList = reread
+        try {
+            tapWatch("parent")
+            compose.waitUntil(5_000) { row("parent").watching == false }
+            assertEquals("The row not written to keeps its value", true, row("other").watching)
+            assertEquals("A cascade comes from the read, not a guess", true, row("child").watching)
+            openRowMenu("parent")
+            compose.onNodeWithTag("menu-watch:parent").assertTextEquals("Watch").assertIsEnabled()
+            shot("list-flipped-before-reread")
+            androidx.test.espresso.Espresso.pressBack()
+            openRowMenu("other")
+            compose.onNodeWithTag("menu-watch:other").assertTextEquals("Unwatch")
+            androidx.test.espresso.Espresso.pressBack()
+        } finally { reread.countDown() }
+        compose.waitUntil(5_000) { row("child").watching == false }
+        assertEquals(true, row("other").watching)
+        assertNull(store.watchError)
+    }
+    @Test fun anotherConversationCanChangeWhileOneIsInFlight() {
+        render()
+        val write = java.util.concurrent.CountDownLatch(1)
+        holdWrite = write
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        val jobs = mutableListOf<Job>()
+        try {
+            tapWatch("parent")
+            compose.waitUntil(5_000) { store.isChangingWatch("parent") }
+            openRowMenu("parent")
+            compose.onNodeWithTag("menu-watch:parent").assertIsNotEnabled()
+            androidx.test.espresso.Espresso.pressBack()
+            // Even a direct second call for the same conversation sends nothing more.
+            compose.runOnIdle { jobs += scope.launch { store.setWatching(row("parent")) } }
+            tapWatch("other")
+            compose.waitUntil(5_000) { row("other").watching == false && !store.isChangingWatch("other") }
+            assertEquals(1, deletes("other"))
+            assertTrue(store.isChangingWatch("parent"))
+            assertEquals(true, row("parent").watching)
+        } finally { write.countDown() }
+        compose.waitUntil(5_000) { !store.isChangingWatch("parent") && row("parent").watching == false }
+        jobs.forEach { it.cancel() }
+        assertTrue("Still one write for the conversation", deletes("parent") <= 1)
+    }
+    @Test fun anEarlierChangeFinishingLeavesTheNextWriteLocked() {
+        render()
+        val firstReread = java.util.concurrent.CountDownLatch(1)
+        val secondWrite = java.util.concurrent.CountDownLatch(1)
+        holdNextList = firstReread
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        val first = compose.runOnIdle { scope.launch { store.setWatching(row("parent")) } }
+        var second: Job? = null
+        var third: Job? = null
+        try {
+            compose.waitUntil(5_000) { row("parent").watching == false && !store.isChangingWatch("parent") }
+            holdWrite = secondWrite
+            second = compose.runOnIdle { scope.launch { store.setWatching(row("parent")) } }
+            compose.waitUntil(5_000) { store.isChangingWatch("parent") }
+            firstReread.countDown()
+            compose.waitUntil(5_000) { first.isCompleted }
+            compose.waitForIdle()
+            assertTrue("The first change finishing can't unlock the second", store.isChangingWatch("parent"))
+            third = compose.runOnIdle { scope.launch { store.setWatching(row("parent")) } }
+            compose.waitForIdle()
+            assertEquals("No third write", 1, requests.count { it.method == "DELETE" && it.url.encodedPath.endsWith("/parent/watch") })
+            assertEquals(1, requests.count { it.method == "PUT" && it.url.encodedPath.endsWith("/parent/watch") })
+        } finally { firstReread.countDown(); secondWrite.countDown() }
+        compose.waitUntil(5_000) { second?.isCompleted == true && !store.isChangingWatch("parent") && row("parent").watching == true }
+        third?.cancel()
+        assertTrue(watched)
+    }
+    @Test fun aFailedRereadKeepsTheItemsAndCanBeRetried() {
+        render()
+        failList = true
+        tapWatch("parent")
+        waitText("Watch update failed")
+        assertEquals(false, row("parent").watching)
+        assertEquals(true, row("other").watching)
+        assertEquals(3, store.conversations.size)
+        shot("reread-failed")
+        failList = false
+        compose.onNodeWithText("Refresh").performClick()
+        compose.waitUntil(5_000) { store.watchError == null && row("child").watching == false }
+        openRowMenu("parent")
+        compose.onNodeWithTag("menu-watch:parent").assertTextEquals("Watch").assertIsEnabled()
+    }
+    @Test fun aReadFromBeforeTheWriteCannotUndoIt() {
+        render()
+        val late = java.util.concurrent.CountDownLatch(1)
+        holdNextList = late
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        val before = requests.size
+        val read = compose.runOnIdle { scope.launch { store.reload() } }
+        compose.waitUntil(5_000) { requests.drop(before).any { it.url.encodedPath == "/agent/conversations" } }
+        compose.runOnIdle { scope.launch { store.setWatching(row("parent")) } }
+        compose.waitUntil(5_000) { !store.isChangingWatch("parent") && deletes("parent") == 1 }
+        assertEquals(false, row("parent").watching)
+        late.countDown()
+        compose.waitUntil(5_000) { read.isCompleted }
+        compose.waitForIdle()
+        assertEquals("The read saw the old value and arrived late", false, row("parent").watching)
+    }
+    @Test fun loadedSessionsFollowTheWriteAndTheCascade() {
+        render()
+        lateinit var parent: ai.cerin.android.session.ChatSession
+        lateinit var child: ai.cerin.android.session.ChatSession
+        compose.runOnIdle { parent = store.session("parent", "Synthetic shared parent"); child = store.session("child", "Synthetic child") }
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        val loads = compose.runOnIdle { listOf(scope.launch { parent.load() }, scope.launch { child.load() }) }
+        compose.waitUntil(5_000) { loads.all { it.isCompleted } && parent.canWatch && child.canWatch }
+        val reads = java.util.concurrent.CountDownLatch(1)
+        holdDetails = reads
+        try {
+            tapWatch("parent")
+            compose.waitUntil(5_000) { parent.watching == false }
+            assertEquals("Shown until a read says otherwise", true, child.watching)
+            assertTrue(parent.canWatch && child.canWatch)
+        } finally { reads.countDown(); holdDetails = null }
+        compose.waitUntil(5_000) { child.watching == false && !store.isChangingWatch("parent") }
+        assertNull(store.watchError)
+    }
+    @Test fun aFailedSessionReadKeepsTheItem() {
+        render()
+        lateinit var child: ai.cerin.android.session.ChatSession
+        compose.runOnIdle { child = store.session("child", "Synthetic child") }
+        val load = compose.runOnIdle { CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate).launch { child.load() } }
+        compose.waitUntil(5_000) { load.isCompleted && child.canWatch }
+        failDetails = true
+        tapWatch("parent")
+        waitText("Watch update failed")
+        assertEquals(true, child.watching)
+        assertTrue(child.canWatch)
+    }
+    @Test fun theConversationMenuFlipsAtOnce() {
+        render()
+        compose.onNodeWithText("Synthetic shared parent").performClick()
+        waitText("Synthetic shared conversation")
+        compose.onNodeWithContentDescription("Task actions").performClick()
+        waitText("Unwatch")
+        val reads = java.util.concurrent.CountDownLatch(1)
+        holdNextList = reads
+        holdDetails = reads
+        try {
+            compose.onNodeWithText("Unwatch").performClick()
+            compose.waitUntil(5_000) { !watched && store.conversations.first { it.sessionId == "parent" }.watching == false }
+            compose.onNodeWithContentDescription("Task actions").performClick()
+            waitText("Watch")
+            compose.onAllNodesWithText("Unwatch").assertCountEquals(0)
+            shot("menu-flipped-before-reread")
+        } finally { reads.countDown(); holdDetails = null }
+    }
+}

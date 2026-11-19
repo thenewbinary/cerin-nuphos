@@ -126,8 +126,8 @@ const OTHER_TEAM = '69e989027ab63e8d6a0ffcb7'
 
 useDb({ db: () => ({ collection }) })
 useIdentity({
-  getNuphosUserById: async (id: string) => (id === USER.id ? USER : null),
-  getNuphosUserForCredential: async (id: string) => (id === USER.id ? USER : null),
+  getCerinUserById: async (id: string) => (id === USER.id ? USER : null),
+  getCerinUserForCredential: async (id: string) => (id === USER.id ? USER : null),
   getTeamMembership: async (_userId: string, teamId: string) =>
     teamId === TEAM ? { role: 'EDITOR' } : null,
 })

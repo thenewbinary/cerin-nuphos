@@ -109,7 +109,7 @@ plaudAccountsRoutes.post('/start-oauth', requireTeamRole('ADMINISTRATOR'), async
     throw new AppError(
       503,
       'plaud_oauth_unavailable',
-      'Plaud OAuth needs a public HTTPS backend URL (NUPHOS_PUBLIC_BACKEND_URL); locally, run the dev launcher with its Cloudflare tunnel.',
+      'Plaud OAuth needs a public HTTPS backend URL (CERIN_PUBLIC_BACKEND_URL); locally, run the dev launcher with its Cloudflare tunnel.',
     )
   }
   const clientId = await registerPlaudClient(redirectUri)

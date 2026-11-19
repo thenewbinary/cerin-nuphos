@@ -8,12 +8,12 @@ import type { SlashCommand } from './composerSlashCommands'
 import type { PanelViewCtx } from './ctx'
 
 /**
- * The panel's `/` actions: Codex's most used ones that Nuphos already has a
+ * The panel's `/` actions: Codex's most used ones that Cerin already has a
  * control for, in Codex's order and wording. Each composer adds Model itself
  * when it has a model control.
  */
 export function usePanelSlashCommands(c: PanelViewCtx): SlashCommand[] {
-  const { activeTab, forkConversation, onOpenNuphosLink, startNewChat, teamId } = c
+  const { activeTab, forkConversation, onOpenCerinLink, startNewChat, teamId } = c
   const forkableSessionId = activeTab && !activeTab.unsaved ? activeTab.sessionId : undefined
 
   return useMemo(
@@ -30,14 +30,14 @@ export function usePanelSlashCommands(c: PanelViewCtx): SlashCommand[] {
             },
           ]
         : []),
-      ...(teamId && onOpenNuphosLink
+      ...(teamId && onOpenCerinLink
         ? [
             {
               id: 'memories',
               title: t('Memories'),
               description: t("Open your team's memories"),
               run: () => {
-                onOpenNuphosLink(
+                onOpenCerinLink(
                   `${ATLAS_WEB_BASE_URL}/teams/${encodeURIComponent(teamId)}/agent/memories`,
                 )
               },
@@ -45,6 +45,6 @@ export function usePanelSlashCommands(c: PanelViewCtx): SlashCommand[] {
           ]
         : []),
     ],
-    [forkConversation, forkableSessionId, onOpenNuphosLink, startNewChat, teamId],
+    [forkConversation, forkableSessionId, onOpenCerinLink, startNewChat, teamId],
   )
 }

@@ -11,7 +11,7 @@ import { useBoxHostUpdate } from './useBoxHostUpdate'
 import type { AgentDevice } from '../../api'
 
 /**
- * The update a computer's ⋯ menu offers: a Box's host CLI, or the Nuphos Desktop on another of
+ * The update a computer's ⋯ menu offers: a Box's host CLI, or the Cerin Desktop on another of
  * the viewer's own computers, which restarts into the update it downloaded.
  */
 export function useComputerUpdate(

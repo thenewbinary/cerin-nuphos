@@ -219,7 +219,7 @@ async function fetchUncached(
 }
 
 /** An agent on the owner's own computer reads its own account and reports the
- *  answer with its presence, so there is nothing for Nuphos to ask: normalize
+ *  answer with its presence, so there is nothing for Cerin to ask: normalize
  *  what arrived, the same way a probe's reading is normalized. */
 function localQuota(instance: RuntimeInstance, deps: RuntimeQuotaDeps): RuntimeQuota {
   const usage = instance.local?.usage

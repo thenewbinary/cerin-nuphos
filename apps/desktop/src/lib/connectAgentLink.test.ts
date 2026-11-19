@@ -11,12 +11,12 @@ import {
 const CODE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 function link(params: Record<string, string>): string {
-  return `nuphos://connect-runtime?${new URLSearchParams(params).toString()}`
+  return `cerin://connect-runtime?${new URLSearchParams(params).toString()}`
 }
 
 test('recognizes only the connect-runtime host', () => {
   assert.equal(isConnectAgentLink(link({ url: 'https://a.example', code: CODE })), true)
-  assert.equal(isConnectAgentLink('nuphos://open?path=/'), false)
+  assert.equal(isConnectAgentLink('cerin://open?path=/'), false)
   assert.equal(isConnectAgentLink('https://connect-runtime/?code=x'), false)
 })
 

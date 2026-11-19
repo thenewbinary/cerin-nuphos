@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
 
-process.env.E2E_ARTIFACTS = mkdtempSync(join(tmpdir(), 'nuphos-e2e-log-'))
+process.env.E2E_ARTIFACTS = mkdtempSync(join(tmpdir(), 'cerin-e2e-log-'))
 const { backendFailures } = await import('./backend-log.ts')
 
 const log = (lines: object[]) =>

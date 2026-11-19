@@ -46,7 +46,7 @@ export type LocalRuntimeSummary = {
   /** The agent's own name; absent while it has its provider's. */
   agentLabel?: string
   instanceId?: string
-  /** The team member who added this agent through Nuphos; absent for older and default agents. */
+  /** The team member who added this agent through Cerin; absent for older and default agents. */
   addedBy?: { userId: string; at: string }
   /** Whether the computer reports this agent right now. */
   online: boolean
@@ -60,7 +60,7 @@ export type LocalRuntimeSummary = {
   usageAt?: string
   /** Which account's quota the agent spends, hashed by that computer; see runtime-quota-shape. */
   accountKey?: string
-  /** Present when the computer is a Box Nuphos made, rather than someone's own machine. */
+  /** Present when the computer is a Box Cerin made, rather than someone's own machine. */
   box?: Pick<AgentDeviceBox, 'provider'>
   /** Present when it is a teammate's own computer they share with the viewer; see local-share. */
   shared?: { level: Exclude<LocalShareLevel, 'off'> }
@@ -225,7 +225,7 @@ export async function resolveLocalRuntimeEndpoint(
     throw new AppError(
       409,
       'runtime_offline',
-      'The computer running this agent is offline. Open Nuphos on it with the local agent turned on.',
+      'The computer running this agent is offline. Open Cerin on it with the local agent turned on.',
       // The placement just authorized: a send to an offline computer queues for it (queueForOfflineComputer).
       { runtimeId, deviceId: ref.deviceId, runtimeLabel: label },
     )

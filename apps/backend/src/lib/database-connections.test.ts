@@ -57,7 +57,7 @@ describe('database connection parsing', () => {
   test('parses PostgreSQL without exposing credentials or parameters', () => {
     const parsed = parseDatabaseConnection(
       'postgresql',
-      'postgresql://readonly:topsecret@db.example.test:6432/app?sslmode=verify-full&application_name=nuphos',
+      'postgresql://readonly:topsecret@db.example.test:6432/app?sslmode=verify-full&application_name=cerin',
     )
 
     expect(parsed).toMatchObject({
@@ -174,12 +174,12 @@ describe('database access policy', () => {
       connectionUri: 'mongodb://reader:test-only@mongo.internal/app',
       environment: 'test',
       networkMode: 'tailscale',
-      tailscale: { bindingId: '507f1f77bcf86cd799439011', tag: 'tag:nuphos-database' },
+      tailscale: { bindingId: '507f1f77bcf86cd799439011', tag: 'tag:cerin-database' },
     })
 
     expect(value.tailscale).toEqual({
       bindingId: '507f1f77bcf86cd799439011',
-      tag: 'tag:nuphos-database',
+      tag: 'tag:cerin-database',
     })
   })
 
@@ -198,14 +198,14 @@ describe('database access policy', () => {
       databaseConnectionCreateSchema.safeParse({
         ...base,
         networkMode: 'public',
-        tailscale: { bindingId: '507f1f77bcf86cd799439011', tag: 'tag:nuphos-database' },
+        tailscale: { bindingId: '507f1f77bcf86cd799439011', tag: 'tag:cerin-database' },
       }).success,
     ).toBe(false)
     expect(
       databaseConnectionCreateSchema.safeParse({
         ...base,
         networkMode: 'tailscale',
-        tailscale: { bindingId: '507f1f77bcf86cd799439011', tag: 'nuphos-database' },
+        tailscale: { bindingId: '507f1f77bcf86cd799439011', tag: 'cerin-database' },
       }).success,
     ).toBe(false)
   })

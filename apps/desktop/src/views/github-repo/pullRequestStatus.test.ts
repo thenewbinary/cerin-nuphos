@@ -23,7 +23,7 @@ const detail = (overrides: Partial<GithubPRDetail> = {}): GithubPRDetail => ({
   labels: [],
   createdAt: '2026-09-01T00:00:00Z',
   updatedAt: '2026-09-01T00:00:00Z',
-  htmlUrl: 'https://github.com/zeabur/nuphos/pull/1',
+  htmlUrl: 'https://github.com/zeabur/cerin/pull/1',
   headRef: 'feat/thing',
   baseRef: 'main',
   body: null,

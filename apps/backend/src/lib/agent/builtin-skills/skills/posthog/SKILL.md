@@ -1,13 +1,13 @@
 ---
 name: posthog
-description: Query PostHog product analytics — run HogQL (SQL) over events, persons and sessions, and read insights, dashboards, feature flags, cohorts, experiments and event/property definitions — through a PostHog project the user's team has connected to Nuphos with PostHog OAuth. Use whenever the user asks about product usage, funnels, retention, active users, a feature flag's rollout, what an event contains, or wants numbers from PostHog. The agent calls the PostHog API directly, limited to the scopes the team granted; writes need explicit user confirmation.
+description: Query PostHog product analytics — run HogQL (SQL) over events, persons and sessions, and read insights, dashboards, feature flags, cohorts, experiments and event/property definitions — through a PostHog project the user's team has connected to Cerin with PostHog OAuth. Use whenever the user asks about product usage, funnels, retention, active users, a feature flag's rollout, what an event contains, or wants numbers from PostHog. The agent calls the PostHog API directly, limited to the scopes the team granted; writes need explicit user confirmation.
 ---
 
 # posthog
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -23,10 +23,10 @@ The credential selector lists the enabled integrations with their
 `setupCommand`. Run it exactly:
 
 ```bash
-bash skills/posthog/scripts/setup-credentials.sh "$TEAM" "<integrationId>" && source ~/.posthog/nuphos.env
+bash skills/posthog/scripts/setup-credentials.sh "$TEAM" "<integrationId>" && source ~/.posthog/cerin.env
 ```
 
-It writes `~/.posthog/nuphos.env` (mode 600) and prints the enabled projects:
+It writes `~/.posthog/cerin.env` (mode 600) and prints the enabled projects:
 
 | Variable | Meaning |
 | --- | --- |

@@ -8,7 +8,7 @@ const moduleUrl = new URL('./dev-launcher-watchdog.ts', import.meta.url).href
 const configUrl = new URL('../config/core.ts', import.meta.url).href
 
 test('a killed launcher stops its backend watcher, including after hot-reload replacement', async () => {
-  const cwd = await mkdtemp(join(tmpdir(), 'nuphos-launcher-watchdog-'))
+  const cwd = await mkdtemp(join(tmpdir(), 'cerin-launcher-watchdog-'))
   const launcher = Bun.spawn([process.execPath, '-e', 'setInterval(() => {}, 1000)'], {
     cwd,
     env: {},
@@ -30,7 +30,7 @@ test('a killed launcher stops its backend watcher, including after hot-reload re
       cwd,
       env: {
         NODE_ENV: 'development',
-        NUPHOS_DEV_LAUNCHER_PID: String(launcher.pid),
+        CERIN_DEV_LAUNCHER_PID: String(launcher.pid),
         MONGODB_URI: 'mongodb://localhost/watchdog-test',
       },
       stdout: 'pipe',
@@ -59,14 +59,14 @@ test('a killed launcher stops its backend watcher, including after hot-reload re
 })
 
 test('standalone and production backends do not follow a development launcher', async () => {
-  const cwd = await mkdtemp(join(tmpdir(), 'nuphos-launcher-disabled-'))
+  const cwd = await mkdtemp(join(tmpdir(), 'cerin-launcher-disabled-'))
 
   try {
     await Promise.all(
       [
-        { NODE_ENV: 'production', NUPHOS_DEV_LAUNCHER_PID: '999999' },
-        { NODE_ENV: 'development', NUPHOS_DEV_LAUNCHER_PID: '' },
-        { NODE_ENV: 'development', NUPHOS_DEV_LAUNCHER_PID: '-1' },
+        { NODE_ENV: 'production', CERIN_DEV_LAUNCHER_PID: '999999' },
+        { NODE_ENV: 'development', CERIN_DEV_LAUNCHER_PID: '' },
+        { NODE_ENV: 'development', CERIN_DEV_LAUNCHER_PID: '-1' },
       ].map(async (env) => {
         const child = Bun.spawn(
           [

@@ -11,12 +11,12 @@ set -euo pipefail
 # fix the chat kept a session that never loaded and spun forever.
 device=${1:-booted}
 team=64b5f1c2e4b0a1d2c3e4f5a6
-chat="https://nuphos.ai/teams/$team/agent/push-a"
+chat="https://platform.cerin.ai/teams/$team/agent/push-a"
 fixture="$(cd "$(dirname "$0")" && pwd)/fixtures/push-responses.json"
 
-launch=$(SIMCTL_CHILD_NUPHOS_PREVIEW_RESPONSES="$fixture" \
-  xcrun simctl launch --terminate-running-process "$device" ai.nuphos.ios \
-  -preview-home -preview-no-push -open-links "$chat" "https://nuphos.ai/agent" "$chat")
+launch=$(SIMCTL_CHILD_CERIN_PREVIEW_RESPONSES="$fixture" \
+  xcrun simctl launch --terminate-running-process "$device" ai.cerin.ios \
+  -preview-home -preview-no-push -open-links "$chat" "https://platform.cerin.ai/agent" "$chat")
 pid=${launch##*: }
 
 # Three links two seconds apart, then time for the last chat to load. A loaded

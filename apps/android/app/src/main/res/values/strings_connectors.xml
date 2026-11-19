@@ -43,7 +43,7 @@
     <string name="connectors_field_integration_token">Integration token</string>
     <string name="connectors_field_account_email">Account email</string>
     <string name="connectors_field_management_api_key">Management API key</string>
-    <string name="connectors_note_aws">The role must already trust Nuphos. The server checks access before saving.</string>
+    <string name="connectors_note_aws">The role must already trust Cerin. The server checks access before saving.</string>
     <string name="connectors_note_azure">Set up the app\'s federated credential and role assignment first.</string>
     <string name="connectors_category_infrastructure">Infrastructure</string>
     <string name="connectors_category_observability">Observability</string>

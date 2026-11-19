@@ -124,12 +124,12 @@ describe('OpenAbAcpClient', () => {
 
     await OpenAbAcpClient.connect({
       url: 'ws://openab-claude-abc.openab-runtimes.svc:8080/acp',
-      tunnelUrl: 'nuphos-device://runtime/user-1/pod-device?team=team-1',
+      tunnelUrl: 'cerin-device://runtime/user-1/pod-device?team=team-1',
       authKey: 'transport',
       socketFactory: h.connect,
     })
 
-    expect(h.socket().url).toBe('nuphos-device://runtime/user-1/pod-device?team=team-1')
+    expect(h.socket().url).toBe('cerin-device://runtime/user-1/pod-device?team=team-1')
   })
 
   test('surfaces the WebSocket close code and reason when the ACP handshake is rejected', async () => {
@@ -151,7 +151,7 @@ describe('OpenAbAcpClient', () => {
     const h = harness(false)
     const connecting = OpenAbAcpClient.connect({
       url: 'ws://openab-claude-abc.openab-runtimes.svc:8080/acp',
-      tunnelUrl: 'nuphos-device://runtime/user-1/device-1?team=team-1',
+      tunnelUrl: 'cerin-device://runtime/user-1/device-1?team=team-1',
       authKey: 'transport',
       socketFactory: h.connect,
     })
@@ -477,7 +477,7 @@ describe('OpenAbAcpClient', () => {
       method: 'initialize',
       params: {
         protocolVersion: 1,
-        clientInfo: { name: 'nuphos', version: 'poc' },
+        clientInfo: { name: 'cerin', version: 'poc' },
         clientCapabilities: { _meta: { 'dev.openab/sessionSnapshots': true } },
       },
     })
@@ -594,7 +594,7 @@ describe('OpenAbAcpClient', () => {
         sessionId: 'sess_timer',
         update: {
           sessionUpdate: 'session_info_update',
-          _meta: { 'ai.nuphos/promptSuggestion': { suggestion: 'check the timer' } },
+          _meta: { 'ai.cerin/promptSuggestion': { suggestion: 'check the timer' } },
         },
       },
     })
@@ -855,7 +855,7 @@ describe('OpenAbAcpClient', () => {
         sessionId: 'sess-existing',
         cwd: '/workspace',
         mcpServers: [],
-        _meta: { 'ai.nuphos/runtimeAuthority': 2, 'dev.openab/permissionPolicy': 'relay' },
+        _meta: { 'ai.cerin/runtimeAuthority': 2, 'dev.openab/permissionPolicy': 'relay' },
       },
     })
     h.socket().receive({ jsonrpc: '2.0', id: 1, result: {} })
@@ -985,7 +985,7 @@ describe('OpenAbAcpClient', () => {
     })
     const servers = [
       {
-        name: 'nuphos-credentials',
+        name: 'cerin-credentials',
         type: 'http' as const,
         url: 'https://backend.example/agent-sessions/conv-1/teams/team-1/mcp',
         headers: [{ name: 'Authorization', value: 'Bearer session-token' }],
@@ -1008,35 +1008,35 @@ describe('OpenAbAcpClient', () => {
     await loading
   })
 
-  test('appends the Nuphos system prompt through _meta on session/new and session/load', async () => {
+  test('appends the Cerin system prompt through _meta on session/new and session/load', async () => {
     const h = harness()
     const client = await OpenAbAcpClient.connect({
       url: 'ws://openab/acp',
       authKey: 'key',
       socketFactory: h.connect,
     })
-    const creating = client.createSession('/workspace', [], 'You are the Nuphos Agent.')
+    const creating = client.createSession('/workspace', [], 'You are the Cerin Agent.')
     const newFrame = await nextSent(h.socket(), 0)
 
     expect(newFrame.params).toEqual({
       cwd: '/workspace',
       mcpServers: [],
       _meta: {
-        'ai.nuphos/runtimeAuthority': 2,
+        'ai.cerin/runtimeAuthority': 2,
         'dev.openab/permissionPolicy': 'relay',
-        systemPrompt: { append: 'You are the Nuphos Agent.' },
+        systemPrompt: { append: 'You are the Cerin Agent.' },
       },
     })
     h.socket().receive({ jsonrpc: '2.0', id: newFrame.id, result: { sessionId: 'sess_sp' } })
     await creating
 
-    const loading = client.loadSession('sess_sp', '/workspace', [], 'You are the Nuphos Agent.')
+    const loading = client.loadSession('sess_sp', '/workspace', [], 'You are the Cerin Agent.')
     const loadFrame = await nextSent(h.socket(), 1)
 
     expect((loadFrame.params as { _meta: unknown })._meta).toEqual({
-      'ai.nuphos/runtimeAuthority': 2,
+      'ai.cerin/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
-      systemPrompt: { append: 'You are the Nuphos Agent.' },
+      systemPrompt: { append: 'You are the Cerin Agent.' },
     })
     h.socket().receive({ jsonrpc: '2.0', id: loadFrame.id, result: {} })
     await loading
@@ -1048,7 +1048,7 @@ describe('OpenAbAcpClient', () => {
     expect(plainFrame.params).toEqual({
       cwd: '/workspace',
       mcpServers: [],
-      _meta: { 'ai.nuphos/runtimeAuthority': 2, 'dev.openab/permissionPolicy': 'relay' },
+      _meta: { 'ai.cerin/runtimeAuthority': 2, 'dev.openab/permissionPolicy': 'relay' },
     })
     h.socket().receive({ jsonrpc: '2.0', id: plainFrame.id, result: { sessionId: 'sess_plain' } })
     await plain
@@ -1253,15 +1253,15 @@ describe('OpenAbAcpClient', () => {
       socketFactory: h.connect,
     })
     const runtime = {
-      env: { NUPHOS_PLAN_API_BASE: 'http://backend/plans', NUPHOS_PLAN_API_TOKEN: 'scoped' },
+      env: { CERIN_PLAN_API_BASE: 'http://backend/plans', CERIN_PLAN_API_TOKEN: 'scoped' },
     }
     const creating = client.createSession('/workspace', [], undefined, runtime)
     const frame = await nextSent(h.socket(), 0)
 
     expect((frame.params as { _meta: unknown })._meta).toEqual({
-      'ai.nuphos/runtimeAuthority': 2,
+      'ai.cerin/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
-      'dev.openab/credentials': { NUPHOS_PLAN_API_TOKEN: 'scoped' },
+      'dev.openab/credentials': { CERIN_PLAN_API_TOKEN: 'scoped' },
       claudeCode: { options: { env: runtime.env } },
     })
     h.socket().receive({ jsonrpc: '2.0', id: frame.id, result: { sessionId: 'sess_native' } })
@@ -1277,7 +1277,7 @@ describe('OpenAbAcpClient', () => {
     })
     const mcpServers = [
       {
-        name: 'nuphos-tools',
+        name: 'cerin-tools',
         type: 'http' as const,
         url: 'http://backend/mcp-tools',
         headers: [{ name: 'Authorization', value: 'Bearer turn-2' }],
@@ -1285,7 +1285,7 @@ describe('OpenAbAcpClient', () => {
     ]
     const runtime = {
       provider: 'codex' as const,
-      env: { NUPHOS_TOKEN: 'turn-2', NUPHOS_PLAN_API_TOKEN: 'turn-2', TEAM: 'team' },
+      env: { CERIN_TOKEN: 'turn-2', CERIN_PLAN_API_TOKEN: 'turn-2', TEAM: 'team' },
     }
     const prompting = client.prompt(
       's',
@@ -1303,13 +1303,13 @@ describe('OpenAbAcpClient', () => {
     const frame = await nextSent(h.socket(), 0)
     const meta = (frame.params as { _meta: Record<string, unknown> })._meta
 
-    expect(meta['ai.nuphos/acknowledgePrompt']).toBe(true)
+    expect(meta['ai.cerin/acknowledgePrompt']).toBe(true)
     expect(meta['dev.openab/mcpServers']).toEqual(mcpServers)
     expect(meta['dev.openab/sessionMeta']).toEqual({
-      'ai.nuphos/runtimeAuthority': 2,
+      'ai.cerin/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
-      'dev.openab/credentials': { NUPHOS_TOKEN: 'turn-2', NUPHOS_PLAN_API_TOKEN: 'turn-2' },
-      'ai.nuphos/codex': { developerInstructions: 'Instructions', env: runtime.env },
+      'dev.openab/credentials': { CERIN_TOKEN: 'turn-2', CERIN_PLAN_API_TOKEN: 'turn-2' },
+      'ai.cerin/codex': { developerInstructions: 'Instructions', env: runtime.env },
     })
     h.socket().receive({ jsonrpc: '2.0', id: frame.id, result: { stopReason: 'end_turn' } })
     await prompting
@@ -1575,12 +1575,12 @@ test('both providers forward runtime defaults with the session-scoped environmen
     const creating = client.createSession('/workspace', [], 'Instructions', {
       provider,
       defaults,
-      env: { NUPHOS_TOKEN: 'scoped' },
+      env: { CERIN_TOKEN: 'scoped' },
     })
     const frame = await nextSent(h.socket(), 0)
     const meta = (frame.params as { _meta: Record<string, unknown> })._meta
 
-    expect(meta['ai.nuphos/runtimeDefaults']).toEqual(defaults)
+    expect(meta['ai.cerin/runtimeDefaults']).toEqual(defaults)
     expect(meta['dev.openab/permissionPolicy']).toBe('relay')
     expect(JSON.stringify(meta)).toContain('scoped')
     h.socket().receive({ jsonrpc: '2.0', id: frame.id, result: { sessionId: 'sess_native' } })
@@ -1768,7 +1768,7 @@ test('steering carries its attribution ahead of the words, like a prompt', async
     authKey: 'operator',
     socketFactory: h.connect,
   })
-  const header = '<nuphos_message_metadata>{}</nuphos_message_metadata>'
+  const header = '<cerin_message_metadata>{}</cerin_message_metadata>'
   const pending = client.steerSession('session', 'Approved', 'receipt', [], header)
   const frame = await nextSent(h.socket(), 0)
 

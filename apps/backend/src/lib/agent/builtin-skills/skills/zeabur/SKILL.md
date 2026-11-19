@@ -1,19 +1,19 @@
 ---
 name: zeabur
-description: Inspect or manage Zeabur (PaaS) resources for a Nuphos-bound Zeabur provider — projects, services, deployments, runtime/build logs, and environment variables — via the Zeabur GraphQL API (and the zeabur CLI when present). Includes a setup script that loads the selected provider's API token into the sandbox.
+description: Inspect or manage Zeabur (PaaS) resources for a Cerin-bound Zeabur provider — projects, services, deployments, runtime/build logs, and environment variables — via the Zeabur GraphQL API (and the zeabur CLI when present). Includes a setup script that loads the selected provider's API token into the sandbox.
 ---
 
 # Zeabur
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
 Use this skill when the user wants to inspect or operate a Zeabur deployment, service, project, or its logs/environment variables — for example when they paste a `zeabur.com` deployment URL and ask what is happening with it.
 
-Zeabur is just one of several Nuphos-bound providers (peer to AWS, GCP, Cloudflare). Everything here is bounded by the user's Zeabur API token; there is no special internal access.
+Zeabur is just one of several Cerin-bound providers (peer to AWS, GCP, Cloudflare). Everything here is bounded by the user's Zeabur API token; there is no special internal access.
 
 The Zeabur GraphQL API at `https://api.zeabur.com/graphql` is the dependable backbone — it is always reachable from the sandbox via `curl`. The `zeabur` CLI may or may not be pre-installed; prefer GraphQL and fall back to the CLI only when it is present.
 
@@ -23,15 +23,15 @@ Load the token for the selected provider before any call:
 
 ```bash
 bash .claude/skills/zeabur/scripts/setup-credentials.sh <teamId> <zeaburId>
-source ~/.zeabur/nuphos.env   # exports ZEABUR_TOKEN, ZEABUR_ID, ZEABUR_KIND, ZEABUR_NAME
+source ~/.zeabur/cerin.env   # exports ZEABUR_TOKEN, ZEABUR_ID, ZEABUR_KIND, ZEABUR_NAME
 ```
 
 Editors and administrators may use a selected connector; only administrators may manage its binding. The runtime receives the connector’s long-lived token with its full upstream authority, not a read-only grant. Viewer access remains denied.
 
-The script fetches the token through the ordinary Nuphos team API. A conversation bearer is authorized against this conversation's selected providers automatically. The script writes `~/.zeabur/nuphos.env` and runs `zeabur auth login --token` if the CLI exists. `<zeaburId>` is the `zeaburId` shown in this session's enabled-credentials list.
+The script fetches the token through the ordinary Cerin team API. A conversation bearer is authorized against this conversation's selected providers automatically. The script writes `~/.zeabur/cerin.env` and runs `zeabur auth login --token` if the CLI exists. `<zeaburId>` is the `zeaburId` shown in this session's enabled-credentials list.
 
 In Claude Code, `skills` is a compatibility link to the native `.claude/skills` tree and the
-runtime supplies the session-scoped Nuphos variables automatically. Do not search the filesystem
+runtime supplies the session-scoped Cerin variables automatically. Do not search the filesystem
 or inspect environment variables before running the documented script.
 
 When the user already gave a project ID, inspect that project directly in one call; do not list
@@ -117,7 +117,7 @@ mutation UpdateVars($environmentID: ObjectID!, $serviceID: ObjectID!, $data: Map
 Example — runtime logs straight from a pasted URL:
 
 ```bash
-source ~/.zeabur/nuphos.env
+source ~/.zeabur/cerin.env
 zq 'query($s:ObjectID!,$e:ObjectID!,$d:ObjectID){runtimeLogs(serviceID:$s,environmentID:$e,deploymentID:$d){timestamp message}}' \
    '{"s":"<serviceID>","e":"<environmentID>","d":"<deploymentID>"}'
 ```
@@ -152,5 +152,5 @@ Append `-i=false` for non-interactive mode. If `zeabur` is not installed, use th
 
 - Read-only by default: identity/project/service/deployment/log/variable reads are safe.
 - Confirm with the user before any mutation: `updateEnvironmentVariable`, variable create/delete, service restart/redeploy/delete, domain changes.
-- Environment variable values are returned in plaintext and often contain secrets. Present them when the user asks, but never paste the Zeabur API token (`ZEABUR_TOKEN`) into chat and do not `cat ~/.zeabur/nuphos.env`.
+- Environment variable values are returned in plaintext and often contain secrets. Present them when the user asks, but never paste the Zeabur API token (`ZEABUR_TOKEN`) into chat and do not `cat ~/.zeabur/cerin.env`.
 - If the requested Zeabur provider is not in this session's enabled credentials, ask the user to update the credential selection rather than trying other tokens.

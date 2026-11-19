@@ -5,7 +5,7 @@ import { logEvent } from '@/lib/observability'
 export async function notify(to: string, subject: string, line: string): Promise<void> {
   if (!isEmailConfigured()) return
   const notYou =
-    "Not you? Open Nuphos, go to Settings → Account → Signed-in devices and sign out the devices you don't recognise, then reset your password from the sign-in screen."
+    "Not you? Open Cerin, go to Settings → Account → Signed-in devices and sign out the devices you don't recognise, then reset your password from the sign-in screen."
 
   try {
     await sendEmail({

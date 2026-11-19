@@ -53,7 +53,7 @@ export function stripMarkdown(input: string): string {
   // Inline code: `code` -> code
   s = s.replace(/(?=(`+))\1([^`]+)`+/g, '$2')
   // Bold/italic: **x**, __x__, *x*, _x_, ~~x~~. An underscore inside a word
-  // marks no emphasis, so NUPHOS_AGENT_HOME keeps its underscores.
+  // marks no emphasis, so CERIN_AGENT_HOME keeps its underscores.
   s = s.replace(/\*\*(.*?)\*\*|(?<!\w)__(.*?)__(?!\w)/g, '$1$2')
   s = s.replace(/\*(.*?)\*|(?<!\w)_(.*?)_(?!\w)/g, '$1$2')
   s = s.replace(/~~(.*?)~~/g, '$1')
@@ -154,7 +154,7 @@ export function buildAgentStopNotification(args: {
   const { outcome, title, messages = [] } = args
 
   return {
-    title: title?.trim() || 'Nuphos',
+    title: title?.trim() || 'Cerin',
     body: truncate(stopNotificationBody(outcome, messages)),
   }
 }

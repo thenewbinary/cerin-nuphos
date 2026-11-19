@@ -8,7 +8,7 @@ import stylistic from '@stylistic/eslint-plugin'
 import prettier from 'eslint-config-prettier/flat'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
-import nuphos from './eslint-rules/index.js'
+import cerin from './eslint-rules/index.js'
 
 // Root lint policy — covers `scripts/` and `eslint-rules/`, which belong to
 // no app and were linted by nothing. The apps own their own configs: separate
@@ -32,15 +32,15 @@ export default defineConfig([
       globals: globals.node,
       parserOptions: { sourceType: 'module', ecmaVersion: 'latest' },
     },
-    plugins: { unicorn, 'import-x': importX, '@stylistic': stylistic, nuphos },
+    plugins: { unicorn, 'import-x': importX, '@stylistic': stylistic, cerin },
     rules: {
       // ---- comment discipline ---------------------------------------------
-      'nuphos/no-large-comment-block': ['error', { max: 3 }],
-      'nuphos/no-duplicate-comment': ['warn', { max: 2, minWords: 4 }],
-      'nuphos/no-history-reference-comment': 'warn',
-      'nuphos/no-orphaned-doc-comment': 'warn',
+      'cerin/no-large-comment-block': ['error', { max: 3 }],
+      'cerin/no-duplicate-comment': ['warn', { max: 2, minWords: 4 }],
+      'cerin/no-history-reference-comment': 'warn',
+      'cerin/no-orphaned-doc-comment': 'warn',
       // See apps/backend/eslint.config.js for why no-floating-promises misses this.
-      'nuphos/no-unawaited-async-assertion': 'error',
+      'cerin/no-unawaited-async-assertion': 'error',
 
       complexity: ['warn', { max: 15 }],
       'max-lines': ['error', { max: 300 }],
@@ -196,8 +196,8 @@ export default defineConfig([
       // RuleTester fixtures are deliberately repetitive and deliberately
       // contain the very patterns the rules ban — that is what makes them
       // fixtures. Linting them for comment discipline would be circular.
-      'nuphos/no-duplicate-comment': 'off',
-      'nuphos/no-history-reference-comment': 'off',
+      'cerin/no-duplicate-comment': 'off',
+      'cerin/no-history-reference-comment': 'off',
 
       'max-lines': 'off',
       'max-lines-per-function': 'off',

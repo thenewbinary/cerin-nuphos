@@ -12,7 +12,7 @@ type Snapshot = Map<string, ContainerState> | null
 function state(service: string, health: string, restarting = false): ContainerState {
   return {
     service,
-    name: `nuphos-dev-${service}-1`,
+    name: `cerin-dev-${service}-1`,
     status: restarting ? 'restarting' : 'running',
     health,
     restarting,
@@ -26,7 +26,7 @@ function probe(rounds: Snapshot[], stepMs: number, onPause = (_round: number) =>
 
   return {
     inspect: () => Promise.resolve(rounds[Math.min(round, rounds.length - 1)] ?? null),
-    logs: () => Promise.resolve('bucket nuphos-skills: HTTP 503'),
+    logs: () => Promise.resolve('bucket cerin-skills: HTTP 503'),
     pause: () => {
       round++
       onPause(round)
@@ -59,7 +59,7 @@ test('a restarting rustfs is flagged alone, then recovers without a relaunch', a
   const statuses: string[] = []
   const ok = await watchStores(
     [mongo, rustfs],
-    'container nuphos-dev-rustfs-1 is unhealthy',
+    'container cerin-dev-rustfs-1 is unhealthy',
     probe([flaky, flaky, flaky, healed], 70_000, () => {
       statuses.push(`${mongo.status}/${rustfs.status}/${backend.note ?? ''}`)
     }),
@@ -72,7 +72,7 @@ test('a restarting rustfs is flagged alone, then recovers without a relaunch', a
     'ready/crashed/waiting for rustfs …',
   ])
   assert.equal(rustfs.status, 'ready')
-  assert.equal(rustfs.lastRaw, 'bucket nuphos-skills: HTTP 503')
+  assert.equal(rustfs.lastRaw, 'bucket cerin-skills: HTTP 503')
   assert.equal(backend.note, null)
 })
 

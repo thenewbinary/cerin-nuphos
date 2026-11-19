@@ -64,7 +64,7 @@ export async function startBotOnboarding(
       'agent.resource',
       {
         version: 1,
-        sender: { type: 'system', id: 'nuphos:bot-onboarding', displayName: 'Nuphos' },
+        sender: { type: 'system', id: 'cerin:bot-onboarding', displayName: 'Cerin' },
         source: 'agent.resource',
         resourceUrl: `/teams/${teamId}/agent/${channelId}`,
         sentAt: new Date().toISOString(),

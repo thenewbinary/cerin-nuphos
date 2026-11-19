@@ -4,7 +4,7 @@
 
 import type { WebContents } from 'electron'
 
-export const FILE_PREVIEW_FRAME_NAME = 'nuphos-file-preview'
+export const FILE_PREVIEW_FRAME_NAME = 'cerin-file-preview'
 
 const OWN_DOCUMENT = new Set(['about:srcdoc', 'about:blank'])
 

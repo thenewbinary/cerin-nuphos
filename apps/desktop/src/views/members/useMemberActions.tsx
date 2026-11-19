@@ -36,10 +36,10 @@ function announceUnsent(email: string, hasLink: boolean) {
     t('Invited, but no email went out'),
     hasLink
       ? t(
-          'Ask {email} to sign in to Nuphos with this address, or copy the invite link from their row and send it yourself.',
+          'Ask {email} to sign in to Cerin with this address, or copy the invite link from their row and send it yourself.',
           { email },
         )
-      : t('Ask {email} to sign in to Nuphos with this address.', { email }),
+      : t('Ask {email} to sign in to Cerin with this address.', { email }),
   )
 }
 
@@ -246,7 +246,7 @@ export function useMemberActions({
         disabled: isSelf || actingRowKey === row.member.id,
         hint: isSelf ? t('you') : undefined,
         confirm: t(
-          'Remove {name} from this team? They lose its chats. Computers they share here stop being shared, so teammates’ chats on them stop working. The computers they added from Nuphos here go to the team owner, and anything they have open on teammates’ computers closes.',
+          'Remove {name} from this team? They lose its chats. Computers they share here stop being shared, so teammates’ chats on them stop working. The computers they added from Cerin here go to the team owner, and anything they have open on teammates’ computers closes.',
           { name: row.member.name || row.member.email },
         ),
         onSelect: () => removeMember(row.member),

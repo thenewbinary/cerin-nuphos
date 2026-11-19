@@ -41,7 +41,7 @@ final class SharedBotsUITests: XCTestCase {
     func testABotSharedWithYouIsListedLikeYourOwn() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let shared = app.staticTexts["Shared Bot"].firstMatch
         XCTAssertTrue(shared.waitForExistence(timeout: 10), "A Bot shared with you is not in Bots")

@@ -1,5 +1,5 @@
-// The backend this app talks to: a launch-time NUPHOS_API_URL (e.g. from
-// `bun run dev`), else the endpoint saved on the sign-in screen, else Nuphos
+// The backend this app talks to: a launch-time CERIN_API_URL (e.g. from
+// `bun run dev`), else the endpoint saved on the sign-in screen, else Cerin
 // Cloud. It is part of the account context (auth-session.ts), so a request's
 // backend and token are always read together, and is mirrored in process.env
 // so spawned helpers inherit it.
@@ -11,28 +11,28 @@ import { normalizedApi } from './auth/accounts.ts'
 import { authSession } from './auth-session.ts'
 import { CLI_CONFIG_PATH } from './cli-config-path.ts'
 
-const DEFAULT_API_URL = 'https://api.nuphos.ai'
+const DEFAULT_API_URL = 'https://platform.cerin.ai'
 
 // What this process was launched with; resetting the switch returns here, so a
-// `bun run dev` build never falls through to Nuphos Cloud.
-const LAUNCH_API_URL = process.env.NUPHOS_API_URL || process.env.ATLAS_API_URL || ''
+// `bun run dev` build never falls through to Cerin Cloud.
+const LAUNCH_API_URL = process.env.CERIN_API_URL || process.env.ATLAS_API_URL || ''
 
 // Paired with the sign-in file (cli.yaml → cli.api-url), so `bun run dev`'s
 // cli.dev.yaml never shares an endpoint with the installed app.
 const SAVED_PATH = `${CLI_CONFIG_PATH.replace(/\.ya?ml$/, '')}.api-url`
 
-if (!process.env.NUPHOS_API_URL && !process.env.ATLAS_API_URL) {
+if (!process.env.CERIN_API_URL && !process.env.ATLAS_API_URL) {
   try {
     const saved = fs.readFileSync(SAVED_PATH, 'utf8').trim()
 
-    if (saved) process.env.NUPHOS_API_URL = saved
+    if (saved) process.env.CERIN_API_URL = saved
   } catch {
     // No saved endpoint: use the default.
   }
 }
 
 function fromEnv(): string {
-  return process.env.NUPHOS_API_URL || process.env.ATLAS_API_URL || DEFAULT_API_URL
+  return process.env.CERIN_API_URL || process.env.ATLAS_API_URL || DEFAULT_API_URL
 }
 
 authSession.start(fromEnv())
@@ -41,18 +41,18 @@ export function apiUrl(): string {
   return authSession.context().api
 }
 
-/** Whether the backend is Nuphos Cloud rather than a self-hosted one. */
-export function isNuphosCloud(): boolean {
+/** Whether the backend is Cerin Cloud rather than a self-hosted one. */
+export function isCerinCloud(): boolean {
   return new URL(apiUrl()).hostname.replace(/\.$/u, '') === new URL(DEFAULT_API_URL).hostname
 }
 
 /** A dev window may use Cloud, but must not advertise this computer there. */
 export function deviceRegistrationAllowed(dev: boolean): boolean {
-  return !dev || !isNuphosCloud()
+  return !dev || !isCerinCloud()
 }
 
 /**
- * Saves the endpoint (`null` restores the launch-time one, else Nuphos Cloud)
+ * Saves the endpoint (`null` restores the launch-time one, else Cerin Cloud)
  * and returns the new one. A different backend ends the session in memory.
  */
 export function setApiUrl(raw: string | null): string {
@@ -82,14 +82,14 @@ function saveEndpoint(raw: string | null): void {
   delete process.env.ATLAS_API_URL
   if (raw === null) {
     fs.rmSync(SAVED_PATH, { force: true })
-    if (LAUNCH_API_URL) process.env.NUPHOS_API_URL = LAUNCH_API_URL
-    else delete process.env.NUPHOS_API_URL
+    if (LAUNCH_API_URL) process.env.CERIN_API_URL = LAUNCH_API_URL
+    else delete process.env.CERIN_API_URL
   } else {
     const url = new URL(raw.trim())
 
     if (url.protocol !== 'https:' && url.protocol !== 'http:') throw new Error('Not an http(s) URL')
     fs.mkdirSync(path.dirname(SAVED_PATH), { recursive: true })
     fs.writeFileSync(SAVED_PATH, `${url.origin}\n`, 'utf8')
-    process.env.NUPHOS_API_URL = url.origin
+    process.env.CERIN_API_URL = url.origin
   }
 }

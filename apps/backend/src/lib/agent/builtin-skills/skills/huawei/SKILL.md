@@ -1,45 +1,45 @@
 ---
 name: huawei
-description: Call Huawei Cloud (华为云) REST APIs from the sandbox with the bundled signer to inspect or change Huawei Cloud resources (CCE, ECS, ELB, VPC, OBS, RDS, etc.). Includes a script to load a Nuphos-bound Huawei Cloud account's short-lived federated credentials.
+description: Call Huawei Cloud (华为云) REST APIs from the sandbox with the bundled signer to inspect or change Huawei Cloud resources (CCE, ECS, ELB, VPC, OBS, RDS, etc.). Includes a script to load a Cerin-bound Huawei Cloud account's short-lived federated credentials.
 ---
 
 # Huawei Cloud (华为云)
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
-Use this skill when the user wants to inspect or change Huawei Cloud resources. Authenticate before any call — either with credentials Nuphos holds for a bound account (preferred), or with credentials the user pasted in.
+Use this skill when the user wants to inspect or change Huawei Cloud resources. Authenticate before any call — either with credentials Cerin holds for a bound account (preferred), or with credentials the user pasted in.
 
 ## Setup
 
 ```bash
-# Authenticate. PREFERRED — short-lived federated creds for a Nuphos-bound account.
+# Authenticate. PREFERRED — short-lived federated creds for a Cerin-bound account.
 bash skills/huawei/scripts/setup-credentials.sh <teamId> <accountId> [region]
 source ~/.huawei/credentials.env
 ```
 
-Nuphos uses OIDC federation here, like every other cloud connector — but Huawei Cloud has no AssumeRole, so the trust relationship *is* an IAM5 OIDC provider plus a trust agency assigned to Nuphos's audience on it. Nuphos mints a per-team RS256 ID token and calls STS's `AssumeAgencyWithOIDC` (`POST https://sts.<region>.myhuaweicloud.com/v5/agencies/assume-with-oidc`, unsigned) with the provider and agency URNs to get temporary AK/SK + security token directly — no long-lived Huawei keys, no intermediate token, and no relation to IAM's legacy Keystone identity-provider APIs, which don't see IAM5 providers at all.
+Cerin uses OIDC federation here, like every other cloud connector — but Huawei Cloud has no AssumeRole, so the trust relationship *is* an IAM5 OIDC provider plus a trust agency assigned to Cerin's audience on it. Cerin mints a per-team RS256 ID token and calls STS's `AssumeAgencyWithOIDC` (`POST https://sts.<region>.myhuaweicloud.com/v5/agencies/assume-with-oidc`, unsigned) with the provider and agency URNs to get temporary AK/SK + security token directly — no long-lived Huawei keys, no intermediate token, and no relation to IAM's legacy Keystone identity-provider APIs, which don't see IAM5 providers at all.
 
-`setup-credentials.sh` calls `GET /teams/:teamId/huawei-accounts/:accountId/credentials` with the user's `NUPHOS_TOKEN` and writes both naming schemes, because neither reads the other's:
+`setup-credentials.sh` calls `GET /teams/:teamId/huawei-accounts/:accountId/credentials` with the user's `CERIN_TOKEN` and writes both naming schemes, because neither reads the other's:
 
 - `HUAWEICLOUD_SDK_AK` / `HUAWEICLOUD_SDK_SK` / `HUAWEICLOUD_SDK_SECURITY_TOKEN` / `HUAWEICLOUD_SDK_REGION` — the bundled `hw-api.py` signer and Huawei's official SDKs
 - `HW_ACCESS_KEY` / `HW_SECRET_KEY` / `HW_SECURITY_TOKEN` / `HW_REGION_NAME` — the Terraform provider
 
 It also exports `HUAWEICLOUD_DOMAIN_ID` (the account id). Federated credentials carry no IAM user, so use it wherever an API path or SDK asks for a domain id.
 
-The credentials expire (temporary security credentials, one hour by default), so re-run the script to refresh. They carry exactly the permissions of the trust agency the customer assigned to Nuphos's audience — nothing more.
+The credentials expire (temporary security credentials, one hour by default), so re-run the script to refresh. They carry exactly the permissions of the trust agency the customer assigned to Cerin's audience — nothing more.
 
 ## What the customer has to have set up
 
 If federation fails at bind time or later, it is almost always one of these on the customer's side:
 
 1. An IAM identity provider with protocol **OIDC**.
-2. Identity provider URL = the Nuphos issuer, audience = the value shown in the connect dialog (`GET /teams/:teamId/huawei-accounts/oidc-info` returns issuer, audience and this team's subject).
-3. A trust agency assigned to that audience (**Assign Trust Agency** on the provider's Audiences tab), holding the permissions Nuphos should have.
-4. That agency's permissions assigned at the account level (**All resources** / 全局服务), because Nuphos asks for an account-scoped credential. An agency holding only one project's permissions authenticates but cannot be scoped to the account, and the exchange fails.
+2. Identity provider URL = the Cerin issuer, audience = the value shown in the connect dialog (`GET /teams/:teamId/huawei-accounts/oidc-info` returns issuer, audience and this team's subject).
+3. A trust agency assigned to that audience (**Assign Trust Agency** on the provider's Audiences tab), holding the permissions Cerin should have.
+4. That agency's permissions assigned at the account level (**All resources** / 全局服务), because Cerin asks for an account-scoped credential. An agency holding only one project's permissions authenticates but cannot be scoped to the account, and the exchange fails.
 
 A wrong audience, provider name, or trust agency name all surface as a rejected `AssumeAgencyWithOIDC` call.
 
@@ -51,7 +51,7 @@ Answer from `list_credentials` (or the credentials section of your instructions)
 
 There is **no Huawei CLI in the sandbox** — `hcloud` here is Hetzner's CLI, never Huawei's. Call the REST API with the bundled signer, which signs requests exactly as Huawei's official SDKs do (`SDK-HMAC-SHA256`, plus the signed `X-Security-Token` header temporary credentials require). Do not write your own signer.
 
-First call — confirm the credentials work. This is the call Nuphos itself makes with these credentials when the account is bound, so it succeeds on any correctly bound account:
+First call — confirm the credentials work. This is the call Cerin itself makes with these credentials when the account is bound, so it succeeds on any correctly bound account:
 
 ```bash
 source ~/.huawei/credentials.env

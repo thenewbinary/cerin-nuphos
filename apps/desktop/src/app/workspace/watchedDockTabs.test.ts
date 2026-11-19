@@ -74,15 +74,15 @@ test('one phone per tab: a second is refused, and the first keeps its watch', as
     getState: store.getState,
     actions: store.actions,
   })
-  const first = window.nuphosWatchDockTab?.('chat', 'b1', 390, 700)
+  const first = window.cerinWatchDockTab?.('chat', 'b1', 390, 700)
   const unregister = registerBrowserView('b1', {
     getWebContentsId: () => 7,
   } as unknown as WebviewTag)
 
   assert.equal(await first, 7)
-  assert.equal(await window.nuphosWatchDockTab?.('chat', 'b1', 390, 700), null)
+  assert.equal(await window.cerinWatchDockTab?.('chat', 'b1', 390, 700), null)
   assert.equal(isWatchedDockTab('b1'), true)
-  window.nuphosUnwatchDockTab?.('b1')
+  window.cerinUnwatchDockTab?.('b1')
   assert.equal(isWatchedDockTab('b1'), false)
   unregister()
   unexpose()

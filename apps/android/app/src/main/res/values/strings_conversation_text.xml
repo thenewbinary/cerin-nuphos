@@ -27,7 +27,7 @@
     <string name="convtext_delivery_unconfirmed">Message delivery is unconfirmed. Resume the original connection.</string>
     <string name="convtext_task_reloaded">This task changed elsewhere and was reloaded. Retry to send your message.</string>
     <string name="convtext_connection_quiet">The connection kept going quiet; please try again.</string>
-    <string name="convtext_connection_lost">Lost the connection to Nuphos.</string>
+    <string name="convtext_connection_lost">Lost the connection to Cerin.</string>
     <string name="convtext_agent_error">The agent hit an error.</string>
     <string name="convtext_phase_waiting_runtime">Waiting for the runtime to be ready…</string>
     <string name="convtext_phase_reconnecting">Reconnecting…</string>
@@ -63,14 +63,14 @@
     <string name="convtext_conflict_not_resumable">The previous reply can no longer be resumed.</string>
     <string name="convtext_conflict_stream">That stream belongs to another task.</string>
     <string name="convtext_conflict_busy">This task is busy with another reply.</string>
-    <string name="convtext_runtime_signed_out">This runtime is signed out. Sign it in from Nuphos on the computer it runs on, or switch to another runtime.</string>
+    <string name="convtext_runtime_signed_out">This runtime is signed out. Sign it in from Cerin on the computer it runs on, or switch to another runtime.</string>
     <string name="convtext_runtime_disabled">This task\'s runtime is disabled. Switch to another runtime to continue.</string>
     <string name="convtext_runtime_not_found">This runtime is no longer available in this workspace. Switch to another runtime to continue.</string>
-    <string name="convtext_runtime_offline">The computer running this runtime is offline. Open Nuphos on it, or switch to another runtime.</string>
+    <string name="convtext_runtime_offline">The computer running this runtime is offline. Open Cerin on it, or switch to another runtime.</string>
     <string name="convtext_runtime_paused">%1$s is paused. It resumes when you send.</string>
     <string name="convtext_ask_owner">Ask owner</string>
     <string name="convtext_ask_admin">Ask an admin</string>
-    <string name="convtext_server_status">Nuphos returned status %1$d.</string>
+    <string name="convtext_server_status">Cerin returned status %1$d.</string>
 
     <!-- AttachmentTransfers -->
     <string name="convtext_attachments_count">Select 1 to %1$d attachments.</string>

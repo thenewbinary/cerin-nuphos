@@ -1,6 +1,6 @@
 ---
 name: git-signing
-description: Sign a participant's local git commits and tags with their own SSH signing key in the agent sandbox, isolated per Nuphos participant. Use when someone asks for commits signed with their own key, or when a change needs a real `git commit` / `git push` (file modes, symlinks, submodules, several commits) that must be Verified.
+description: Sign a participant's local git commits and tags with their own SSH signing key in the agent sandbox, isolated per Cerin participant. Use when someone asks for commits signed with their own key, or when a change needs a real `git commit` / `git push` (file modes, symlinks, submodules, several commits) that must be Verified.
 ---
 
 # git-signing — commits signed with a participant's own key
@@ -42,7 +42,7 @@ bash skills/git-signing/scripts/setup-signing.sh <sender-id> --name "<name>" --e
 ```
 
 It creates a dedicated, passphrase-less ed25519 key under
-`~/.config/nuphos-git-identities/<sender-id>/`, writes that participant's git
+`~/.config/cerin-git-identities/<sender-id>/`, writes that participant's git
 config there, removes author and signing settings from the shared config and
 sets `user.useConfigOnly=true`, installs `~/.local/bin/git-as`, and signs and
 verifies a probe commit. Running it again keeps the existing key.

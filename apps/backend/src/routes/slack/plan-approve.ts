@@ -10,7 +10,7 @@ import { createInteractionRepliers } from '@/routes/slack/interaction-replies'
 import { resumeApprovedPlanTurn } from '@/routes/slack/plan-resume'
 
 // Approve button pressed on a plan review card. Approves the plan as the
-// mapped Nuphos user (same gates as the in-app approval), kicks the execution
+// mapped Cerin user (same gates as the in-app approval), kicks the execution
 // turn asynchronously, and replaces the card so the button disappears.
 //
 // Runs DETACHED from the interaction HTTP response: the approval does real work
@@ -32,7 +32,7 @@ const REFUSALS: Record<string, [reason: string, message?: string]> = {
   plan_not_proposed: ['plan_not_proposed'],
   plan_incomplete: [
     'plan_incomplete',
-    'This plan is missing required sections (steps, cost, or risk) and cannot be approved yet — open it in Nuphos.',
+    'This plan is missing required sections (steps, cost, or risk) and cannot be approved yet — open it in Cerin.',
   ],
   approval_race_lost: ['approval_race_lost'],
 }
@@ -70,7 +70,7 @@ export async function handlePlanApproveInteraction(args: {
   } catch {
     await reject(
       'malformed_value',
-      'This approval button is malformed — open the plan in Nuphos instead.',
+      'This approval button is malformed — open the plan in Cerin instead.',
     )
 
     return
@@ -80,7 +80,7 @@ export async function handlePlanApproveInteraction(args: {
   if (!planId || !sessionId) {
     await reject(
       'malformed_value',
-      'This approval button is malformed — open the plan in Nuphos instead.',
+      'This approval button is malformed — open the plan in Cerin instead.',
     )
 
     return
@@ -91,7 +91,7 @@ export async function handlePlanApproveInteraction(args: {
   if (!botContext) {
     await reject(
       'workspace_not_installed',
-      'Nuphos is not fully installed for this Slack workspace.',
+      'Cerin is not fully installed for this Slack workspace.',
       {
         plan_id: planId,
         session_id: sessionId,
@@ -102,9 +102,9 @@ export async function handlePlanApproveInteraction(args: {
   }
   repliers.setBotToken(botContext.botToken)
   // The thread is the scoping root and is resolved FIRST: a channel-mapped
-  // channel can belong to a different Nuphos team than the workspace's OAuth
+  // channel can belong to a different Cerin team than the workspace's OAuth
   // binding, and the plan, the user mappings, and the membership gate all live
-  // in the THREAD's team. Scoping any of them to botContext.nuphosTeamId
+  // in the THREAD's team. Scoping any of them to botContext.cerinTeamId
   // silently broke every cross-team approval (plans #88/#89). The button
   // payload is client-controlled, so requiring the thread to belong to this
   // Slack workspace is also the authZ check.
@@ -113,7 +113,7 @@ export async function handlePlanApproveInteraction(args: {
   if (!thread || thread.slackWorkspaceId !== args.slackWorkspaceId) {
     await reject(
       'thread_unresolved',
-      "Approved plans resume in their original Slack thread, but I couldn't match this one — open the plan in Nuphos to approve and run it there.",
+      "Approved plans resume in their original Slack thread, but I couldn't match this one — open the plan in Cerin to approve and run it there.",
       { plan_id: planId, session_id: sessionId, thread_found: Boolean(thread) },
     )
 
@@ -130,27 +130,27 @@ export async function handlePlanApproveInteraction(args: {
   if (!mapping) {
     await reject(
       'user_not_linked',
-      'Your Slack account is not linked to Nuphos yet. Link it in Nuphos → Settings → Slack, then press Approve again.',
+      'Your Slack account is not linked to Cerin yet. Link it in Cerin → Settings → Slack, then press Approve again.',
       { plan_id: planId, session_id: sessionId, team_id: teamId },
     )
 
     return
   }
-  // A stored mapping outlives team membership: if the mapped Nuphos user has
+  // A stored mapping outlives team membership: if the mapped Cerin user has
   // since been removed from the team, the stale mapping must not still let them
   // approve. The in-app approval endpoint enforces this via team-scoped auth;
   // mirror that gate here rather than trusting the mapping alone.
-  const membership = await getTeamMembership(mapping.nuphosUserId, teamId)
+  const membership = await getTeamMembership(mapping.cerinUserId, teamId)
 
   if (!membership) {
     await reject(
       'not_team_member',
-      "Your Nuphos account is no longer a member of this team, so you can't approve this plan.",
+      "Your Cerin account is no longer a member of this team, so you can't approve this plan.",
       {
         plan_id: planId,
         session_id: sessionId,
         team_id: teamId,
-        nuphos_user_id: mapping.nuphosUserId,
+        cerin_user_id: mapping.cerinUserId,
       },
     )
 
@@ -161,7 +161,7 @@ export async function handlePlanApproveInteraction(args: {
   let approval: Awaited<ReturnType<typeof approvePlanForCaller>>
 
   try {
-    approval = await approvePlanForCaller({ planId, teamId, userId: mapping.nuphosUserId })
+    approval = await approvePlanForCaller({ planId, teamId, userId: mapping.cerinUserId })
   } catch (err) {
     const refused = err instanceof AppError ? REFUSALS[err.code] : undefined
 
@@ -204,7 +204,7 @@ export async function handlePlanApproveInteraction(args: {
     team_id: teamId,
     slack_workspace_id: args.slackWorkspaceId,
     slack_user_id: args.slackUserId,
-    nuphos_user_id: mapping.nuphosUserId,
+    cerin_user_id: mapping.cerinUserId,
   })
 
   const title = updated.title || parsed.title || 'plan'
@@ -214,7 +214,7 @@ export async function handlePlanApproveInteraction(args: {
     planId,
     planTitle: title,
     approverSlackUserId: args.slackUserId,
-    approverNuphosUserId: mapping.nuphosUserId,
+    approverCerinUserId: mapping.cerinUserId,
   }).catch((err: unknown) => {
     logError('slack.plan.resume.error', err, { plan_id: planId, session_id: sessionId })
   })
@@ -233,7 +233,7 @@ export async function handlePlanApproveInteraction(args: {
         elements: [
           {
             type: 'mrkdwn',
-            text: `✅ Approved by <@${args.slackUserId}> — Nuphos is starting execution in this thread.`,
+            text: `✅ Approved by <@${args.slackUserId}> — Cerin is starting execution in this thread.`,
           },
         ],
       },

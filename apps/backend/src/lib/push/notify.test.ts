@@ -14,7 +14,7 @@ import type { NotifiableRun, TurnNotifierDeps } from './notify'
 const credentials: ApnsCredentials = {
   keyId: 'K',
   teamId: 'T',
-  bundleId: 'ai.nuphos.ios',
+  bundleId: 'ai.cerin.ios',
   privateKey: 'unused',
   environment: 'production',
 }
@@ -402,12 +402,12 @@ describe('FCM dispatch', () => {
         ...device('FCM:MixedCase'),
         platform: 'android',
         environment: 'production',
-        projectId: 'nuphos-android',
+        projectId: 'cerin-android',
       },
     ]
     const delivered: string[] = []
     const n = notifier({
-      fcmProject: () => 'nuphos-android',
+      fcmProject: () => 'cerin-android',
       sendFcm: async (_project, request) => {
         delivered.push(request.token)
         expect(request.userId).toBe('user-1')
@@ -433,13 +433,13 @@ describe('FCM dispatch', () => {
 
     devices = [
       device('ios'),
-      { ...device('fcm'), platform: 'android', projectId: 'nuphos-android' },
+      { ...device('fcm'), platform: 'android', projectId: 'cerin-android' },
     ]
     const requests: FcmRequest[] = []
     const n = (conversation?: typeof bot) =>
       notifier({
         ...(conversation ? { conversation: async () => conversation } : {}),
-        fcmProject: () => 'nuphos-android',
+        fcmProject: () => 'cerin-android',
         sendFcm: async (_project, request) => {
           requests.push(request)
 
@@ -459,7 +459,7 @@ describe('FCM dispatch', () => {
     let calls = 0
 
     await notifier({
-      fcmProject: () => 'nuphos-android',
+      fcmProject: () => 'cerin-android',
       sendFcm: async () => {
         calls++
 
@@ -469,9 +469,9 @@ describe('FCM dispatch', () => {
     expect(calls).toBe(0)
   })
   test('removes only a provider-confirmed dead Android token', async () => {
-    devices = [{ ...device('dead'), platform: 'android', projectId: 'nuphos-android' }]
+    devices = [{ ...device('dead'), platform: 'android', projectId: 'cerin-android' }]
     await notifier({
-      fcmProject: () => 'nuphos-android',
+      fcmProject: () => 'cerin-android',
       sendFcm: async () => ({ status: 404, deadToken: true }),
     }).runEnded(run())
     expect(removed).toEqual(['dead'])

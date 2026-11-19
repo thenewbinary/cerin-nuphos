@@ -93,7 +93,7 @@ export async function verifyMfa(mfaToken: string, code: string): Promise<UserInf
   return signInWith('/auth/mfa/verify', { mfaToken, code })
 }
 
-/** The same step answered with a passkey, through nuphos.ai in the browser. */
+/** The same step answered with a passkey, through platform.cerin.ai in the browser. */
 export async function verifyMfaWithPasskey(mfaToken: string): Promise<UserInfo> {
   const res = await fetch(`${apiUrl()}/auth/mfa/verify/options`, {
     method: 'POST',

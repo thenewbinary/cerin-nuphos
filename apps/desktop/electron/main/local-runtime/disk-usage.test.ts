@@ -29,7 +29,7 @@ type TestContext = {
   skip?: (message?: string) => void
 }
 
-function tempRoot(t: TestContext, prefix = 'nuphos-disk-usage-'): string {
+function tempRoot(t: TestContext, prefix = 'cerin-disk-usage-'): string {
   const root = mkdtempSync(path.join(os.tmpdir(), prefix))
 
   t.after(() => rmSync(root, { recursive: true, force: true }))
@@ -57,7 +57,7 @@ test('a directory is measured through its subdirectories, and the reading is com
 
 test('a link is not followed, so what it points at is never counted or walked', async (t) => {
   const root = tempRoot(t)
-  const outside = tempRoot(t, 'nuphos-disk-outside-')
+  const outside = tempRoot(t, 'cerin-disk-outside-')
 
   file(path.join(root, 'mine.bin'), 5)
   file(path.join(outside, 'theirs.bin'), 4096)
@@ -97,7 +97,7 @@ test('the reading stops at the deadline, and says it is incomplete', async (t) =
 })
 
 test('a directory that is not there reads as nothing, and is not an error', async () => {
-  const usage = await measureDirectory(path.join(os.tmpdir(), 'nuphos-measure-that-is-not-there'))
+  const usage = await measureDirectory(path.join(os.tmpdir(), 'cerin-measure-that-is-not-there'))
 
   assert.deepEqual(usage, { bytes: 0, entries: 0, complete: true })
 })
@@ -126,7 +126,7 @@ test('a finished session workspace is reclaimed, and the workspace is reported',
 })
 
 test('the directory this build does not use is reported, and left exactly where it is', async (t) => {
-  const leftAlone = tempRoot(t, 'nuphos-disk-left-alone-')
+  const leftAlone = tempRoot(t, 'cerin-disk-left-alone-')
 
   file(path.join(leftAlone, 'local-runtime', 'workspace', 'old-clone', 'index.js'), 2048)
   const logged: { message: string; data?: Record<string, unknown> }[] = []

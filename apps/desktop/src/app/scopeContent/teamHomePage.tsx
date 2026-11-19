@@ -1,6 +1,6 @@
 import { ChartNoAxesColumn } from 'lucide-react'
 
-import { NuphosDashboardsView } from '../../dashboards/NuphosDashboardsView'
+import { CerinDashboardsView } from '../../dashboards/CerinDashboardsView'
 import { t } from '../../i18n'
 import { TeamHomeView } from '../../views/TeamHomeView'
 
@@ -12,9 +12,9 @@ export function renderTeamHomePage(ctx: ScopeRenderContext) {
     t('Stats'),
     <ChartNoAxesColumn className="size-3.5 text-tertiary" strokeWidth={1.8} />,
     <TeamHomeView
-      customBoardOpen={Boolean(ctx.nuphosDashboard)}
+      customBoardOpen={Boolean(ctx.cerinDashboard)}
       customBoards={
-        <NuphosDashboardsView
+        <CerinDashboardsView
           embedded
           teamId={ctx.scope.teamId}
           refreshKey={ctx.refreshKey}
@@ -22,10 +22,10 @@ export function renderTeamHomePage(ctx: ScopeRenderContext) {
           onCount={ctx.onCount}
           onLoading={ctx.onLoading}
           onOpenAgentChat={ctx.onOpenAgentChat}
-          openDashboardId={ctx.nuphosDashboard?.dashboardId ?? null}
-          viewRange={ctx.nuphosDashboard?.viewRange}
-          onDashboardOpened={ctx.setNuphosDashboard}
-          onDashboardsChange={ctx.setNuphosDashboards}
+          openDashboardId={ctx.cerinDashboard?.dashboardId ?? null}
+          viewRange={ctx.cerinDashboard?.viewRange}
+          onDashboardOpened={ctx.setCerinDashboard}
+          onDashboardsChange={ctx.setCerinDashboards}
         />
       }
       teamId={ctx.scope.teamId}

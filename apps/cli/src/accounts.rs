@@ -1,4 +1,4 @@
-//! The accounts signed in to Nuphos Desktop, for `nuphos auth list/switch` and
+//! The accounts signed in to Cerin Desktop, for `cerin auth list/switch` and
 //! `--account`. The desktop keeps the active one at the top of `desktop.yaml`
 //! and the others in its `accounts` list, each with the backend that issued
 //! its token (`apps/desktop/electron/auth/accounts.ts`).
@@ -34,12 +34,12 @@ impl DesktopAccount {
                 None => None,
             },
         };
-        let token = token.ok_or_else(|| anyhow!("{} has to sign in again in Nuphos Desktop", self.who))?;
+        let token = token.ok_or_else(|| anyhow!("{} has to sign in again in Cerin Desktop", self.who))?;
         Ok(Session { token: Some(token), keychain_account: None, api: Some(self.api.clone()), ..self.session.clone() })
     }
 }
 
-/// Every account signed in to Nuphos Desktop, the active one first.
+/// Every account signed in to Cerin Desktop, the active one first.
 pub fn desktop_accounts() -> Vec<DesktopAccount> {
     fs::read_to_string(config::desktop_session_path())
         .map(|text| desktop_accounts_in(&text, &config::shared_api_url()))
@@ -85,9 +85,9 @@ pub fn find(accounts: Vec<DesktopAccount>, selector: &str) -> Result<DesktopAcco
     let mut matches: Vec<DesktopAccount> =
         accounts.into_iter().filter(|a| a.key == selector || a.who.eq_ignore_ascii_case(selector)).collect();
     match matches.len() {
-        0 => bail!("no account `{selector}` is signed in to Nuphos Desktop; `nuphos auth list` shows them"),
+        0 => bail!("no account `{selector}` is signed in to Cerin Desktop; `cerin auth list` shows them"),
         1 => Ok(matches.remove(0)),
-        _ => bail!("`{selector}` is signed in on more than one backend; name it by its key (`nuphos auth list`)"),
+        _ => bail!("`{selector}` is signed in on more than one backend; name it by its key (`cerin auth list`)"),
     }
 }
 
@@ -97,7 +97,7 @@ pub fn override_conflicts(env_api: Option<&str>, account_api: &str) -> bool {
     env_api.is_some_and(|env| !config::same_backend(env, account_api))
 }
 
-/// The CLI's own sign-in as a desktop key, to mark it in `nuphos auth list`.
+/// The CLI's own sign-in as a desktop key, to mark it in `cerin auth list`.
 /// Read from the file alone: a keychain item that cannot be opened right now
 /// (say, over SSH with no session bus) still names a signed-in account.
 pub fn key_of(session: &Session) -> Option<String> {
@@ -114,11 +114,11 @@ mod tests {
     use crate::config::Session;
 
     const FILE: &str = "\
-api: https://api.nuphos.ai
-keychainAccount: alex@https://api.nuphos.ai
+api: https://platform.cerin.ai
+keychainAccount: alex@https://platform.cerin.ai
 userInfo: { id: alex, email: alex@example.com }
 accounts:
-  - api: https://nuphos.example.com/
+  - api: https://cerin.example.com/
     token: tok-self
     userInfo: { id: alex, email: alex@example.com }
   - token: tok-legacy
@@ -136,8 +136,8 @@ accounts:
         assert_eq!(
             rows,
             vec![
-                ("alex@https://api.nuphos.ai".into(), "https://api.nuphos.ai".into(), true),
-                ("alex@https://nuphos.example.com".into(), "https://nuphos.example.com".into(), false),
+                ("alex@https://platform.cerin.ai".into(), "https://platform.cerin.ai".into(), true),
+                ("alex@https://cerin.example.com".into(), "https://cerin.example.com".into(), false),
                 // From before the desktop recorded a backend; loopback as one host.
                 ("sam@http://127.0.0.1:3718".into(), "http://localhost:3718".into(), false),
             ]
@@ -146,37 +146,37 @@ accounts:
 
     #[test]
     fn an_account_is_named_by_its_key_or_an_email_only_one_has() {
-        let pick = |s: &str| find(desktop_accounts_in(FILE, "https://api.nuphos.ai"), s).map(|a| a.key);
-        assert_eq!(pick("SAM@example.com").unwrap(), "sam@https://api.nuphos.ai");
-        assert_eq!(pick("alex@https://nuphos.example.com").unwrap(), "alex@https://nuphos.example.com");
+        let pick = |s: &str| find(desktop_accounts_in(FILE, "https://platform.cerin.ai"), s).map(|a| a.key);
+        assert_eq!(pick("SAM@example.com").unwrap(), "sam@https://platform.cerin.ai");
+        assert_eq!(pick("alex@https://cerin.example.com").unwrap(), "alex@https://cerin.example.com");
         assert!(pick("alex@example.com").unwrap_err().to_string().contains("more than one backend"));
         assert!(pick("nobody@example.com").is_err());
     }
 
     #[test]
     fn a_signed_in_account_carries_its_own_backend() {
-        let accounts = desktop_accounts_in(FILE, "https://api.nuphos.ai");
+        let accounts = desktop_accounts_in(FILE, "https://platform.cerin.ai");
         let session = accounts[1].sign_in().unwrap();
         assert_eq!(session.token.as_deref(), Some("tok-self"));
-        assert_eq!(session.api.as_deref(), Some("https://nuphos.example.com"));
+        assert_eq!(session.api.as_deref(), Some("https://cerin.example.com"));
     }
 
     #[test]
     fn a_keychain_reference_alone_still_names_the_cli_account() {
         let session = Session {
-            keychain_account: Some("alex@https://api.nuphos.ai".into()),
-            api: Some("https://api.nuphos.ai".into()),
+            keychain_account: Some("alex@https://platform.cerin.ai".into()),
+            api: Some("https://platform.cerin.ai".into()),
             user_info: Some(serde_json::json!({ "id": "alex" })),
             ..Session::default()
         };
-        assert_eq!(key_of(&session).as_deref(), Some("alex@https://api.nuphos.ai"));
+        assert_eq!(key_of(&session).as_deref(), Some("alex@https://platform.cerin.ai"));
         assert_eq!(key_of(&Session::default()), None);
     }
 
     #[test]
     fn an_environment_endpoint_for_another_backend_blocks_a_switch() {
-        assert!(override_conflicts(Some("https://api.nuphos.ai"), "https://nuphos.example.com"));
+        assert!(override_conflicts(Some("https://platform.cerin.ai"), "https://cerin.example.com"));
         assert!(!override_conflicts(Some("http://localhost:3718/"), "http://127.0.0.1:3718"));
-        assert!(!override_conflicts(None, "https://nuphos.example.com"));
+        assert!(!override_conflicts(None, "https://cerin.example.com"));
     }
 }

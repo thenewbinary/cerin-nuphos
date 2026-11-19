@@ -34,7 +34,7 @@ use crate::transcript::{self as tx, is_tool, is_tool_settled, part_type, parts, 
 /// Alternate scroll mode: in the alternate screen, the wheel arrives as ↑/↓.
 const ALTERNATE_SCROLL_ON: &str = "\x1b[?1007h";
 const ALTERNATE_SCROLL_OFF: &str = "\x1b[?1007l";
-/// The Nuphos mark (apps/desktop/public/logo.svg) in braille, 14×7.
+/// The Cerin mark (apps/desktop/public/logo.svg) in braille, 14×7.
 const LOGO: [&str; 7] = [
     "⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀",
     "⠀⢀⣴⣶⣶⣶⣤⡀⠈⠻⣷⣄⠀⠀",
@@ -46,11 +46,11 @@ const LOGO: [&str; 7] = [
 ];
 const TIPS: [&str; 4] = [
     "Press ctrl+\\ to jump between your tasks.",
-    "A reply keeps running on the server when you quit; `nuphos resume` picks it up.",
+    "A reply keeps running on the server when you quit; `cerin resume` picks it up.",
     "Use /agents to run this task on another runtime, or to add one.",
     "Use /model to change the model and reasoning effort.",
 ];
-/// The agents Nuphos can run for a team, as the desktop's Add agent offers them.
+/// The agents Cerin can run for a team, as the desktop's Add agent offers them.
 const PROVIDERS: &[(&str, &str)] = &[
     ("claude-code", "Claude Code"),
     ("codex", "Codex"),
@@ -72,7 +72,7 @@ const COMMANDS: [(&str, &str); 9] = [
     ("/new", "start a new task"),
     ("/resume", "continue a previous task"),
     ("/archive", "archive this task and start a new one"),
-    ("/logout", "sign out of Nuphos here and in the desktop app"),
+    ("/logout", "sign out of Cerin here and in the desktop app"),
     ("/quit", "exit"),
 ];
 
@@ -316,7 +316,7 @@ impl App {
                         app.failure = Some(if e.is_rejected_token() {
                             // Expired or signed out elsewhere.
                             match config::forget_rejected(&config::read_session()) {
-                                Ok(()) => "your sign-in has expired; run `nuphos` again to sign in".into(),
+                                Ok(()) => "your sign-in has expired; run `cerin` again to sign in".into(),
                                 Err(e) => e.to_string(),
                             }
                         } else {
@@ -328,7 +328,7 @@ impl App {
                 };
                 app.me_id = shared::user_id(&me);
                 if teams.is_empty() && wanted.is_none() {
-                    app.ask = Some(("You are not in a Nuphos team yet. Name one to create it".into(), Ask::TeamName));
+                    app.ask = Some(("You are not in a Cerin team yet. Name one to create it".into(), Ask::TeamName));
                     return;
                 }
                 match shared::pick_team(&teams, &app.prefs, wanted.as_deref()) {
@@ -374,7 +374,7 @@ impl App {
         let latest = self.update_check.take().and_then(|h| h.now_or_never()).and_then(|r| r.ok()).flatten();
         if let Some(version) = latest.filter(|v| crate::update::is_newer(v)) {
             self.update = Some(format!(
-                "Update available: {} → {} · run `nuphos update`",
+                "Update available: {} → {} · run `cerin update`",
                 env!("CARGO_PKG_VERSION"),
                 render::clean(&version)
             ));
@@ -638,7 +638,7 @@ impl App {
         };
         let mut text = vec![
             Line::from(vec![
-                Span::styled("Nuphos", bold),
+                Span::styled("Cerin", bold),
                 Span::styled(format!("  {}", env!("CARGO_PKG_VERSION")), dim()),
             ]),
             Line::default(),
@@ -740,8 +740,8 @@ impl App {
             let placeholder = match (&self.ask, self.is_new) {
                 (Some((_, Ask::LoginCode { .. })), _) => "Paste the code here",
                 (Some(_), _) => "Type the answer and press enter",
-                (None, true) => "Ask Nuphos anything",
-                (None, false) => "Reply to Nuphos",
+                (None, true) => "Ask Cerin anything",
+                (None, false) => "Reply to Cerin",
             };
             f.render_widget(Paragraph::new(Span::styled(placeholder, dim())), text);
         }
@@ -1033,7 +1033,7 @@ impl App {
             return self.answer(ask, text);
         }
         if self.booting() && text != "/quit" {
-            self.notice = Some("Still connecting to Nuphos…".into());
+            self.notice = Some("Still connecting to Cerin…".into());
             return;
         }
         if text.starts_with('/') {
@@ -1460,12 +1460,12 @@ impl App {
         let label = shared::label(&runtime);
         if runtime["kind"] == "local" {
             return self.notice =
-                Some(format!("{label} signs in on its own computer, with `nuphos agent` or the app."));
+                Some(format!("{label} signs in on its own computer, with `cerin agent` or the app."));
         }
-        // A Nuphos-managed agent is a sandbox Nuphos Cloud boots for the team.
+        // A Cerin-managed agent is a sandbox Cerin Cloud boots for the team.
         let provider = PROVIDERS.iter().find(|(p, _)| runtime["provider"] == *p).map_or(label.as_str(), |(_, n)| n);
         self.signing = Some(if runtime["kind"] == "managed" {
-            format!("Starting your {provider} sandbox in Nuphos Cloud…")
+            format!("Starting your {provider} sandbox in Cerin Cloud…")
         } else {
             format!("Waiting for {label} to come online…")
         });

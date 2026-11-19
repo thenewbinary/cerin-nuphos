@@ -30,7 +30,7 @@ export function buildAuthorizeUrl({
     redirect_uri: redirectUri,
     state,
     scope,
-    // actor=app makes issues/comments authored by the Nuphos OAuth app rather
+    // actor=app makes issues/comments authored by the Cerin OAuth app rather
     // than impersonating the authorising user.
     actor,
   })

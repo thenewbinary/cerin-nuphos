@@ -3,20 +3,20 @@ import { AppError } from '@/lib/errors'
 
 import { aliyunErrorCode } from './aliyun-errors'
 import { SWEEP_READ_TIMEOUT_MS } from './aliyun-sweep'
-// OIDC web-identity federation reuses the shared Nuphos issuer (same signing
+// OIDC web-identity federation reuses the shared Cerin issuer (same signing
 // key, JWKS, and per-team subject as the AWS/Volcengine connectors).
 import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from './aws-oidc'
 
 import type { AliyunSite } from './types'
 
 /**
  * Short-lived Alibaba Cloud STS credentials, obtained via OIDC web-identity
- * federation (like AWS/Volcengine): Nuphos mints a per-team token and calls
+ * federation (like AWS/Volcengine): Cerin mints a per-team token and calls
  * sts:AssumeRoleWithOIDC into the customer's RAM role. The securityToken
  * accompanies the temporary AccessKeyId/Secret. `site` picks the partition
  * (China vs International) and therefore which API endpoints/regions to hit.
@@ -48,8 +48,8 @@ function aliyunStsHost(site: AliyunSite): string {
 }
 
 /**
- * Whether the Nuphos OIDC issuer is configured (shared with the AWS connector —
- * one Nuphos IdP). Without a signing key we cannot mint web-identity tokens, so
+ * Whether the Cerin OIDC issuer is configured (shared with the AWS connector —
+ * one Cerin IdP). Without a signing key we cannot mint web-identity tokens, so
  * AssumeRoleWithOIDC would have nothing to present.
  */
 export function aliyunOidcConfigured(): boolean {
@@ -57,7 +57,7 @@ export function aliyunOidcConfigured(): boolean {
 }
 
 /**
- * The values a customer needs to register Nuphos as a RAM OIDC identity provider
+ * The values a customer needs to register Cerin as a RAM OIDC identity provider
  * and pin their role's trust policy: the issuer URL, the audience (client id) to
  * configure on the provider, and this team's subject claim.
  */
@@ -77,12 +77,12 @@ export function aliyunOidcInfo(teamId: string): {
 
 /** RoleSessionName must be 2–64 chars of [\w+=,.@-]; sanitize defensively. */
 function sanitizeSessionName(name: string): string {
-  return (name || 'nuphos').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
+  return (name || 'cerin').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
 }
 
 /**
  * Assume a customer RAM role via OIDC web-identity federation, returning
- * short-lived STS credentials. Mirrors the Volcengine adapter: Nuphos mints a
+ * short-lived STS credentials. Mirrors the Volcengine adapter: Cerin mints a
  * per-team RS256 token and calls sts:AssumeRoleWithOIDC *unsigned* — the token is
  * the credential. Aliyun requires BOTH the role ARN and the OIDC provider ARN
  * (unlike Volcengine, which resolves the provider from the token issuer).
@@ -97,7 +97,7 @@ export async function assumeRoleWithOidc(
     throw new AppError(
       503,
       'aliyun_connector_unavailable',
-      'The Nuphos OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Alibaba Cloud roles cannot be assumed.',
+      'The Cerin OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Alibaba Cloud roles cannot be assumed.',
     )
   }
   const site = opts.site ?? 'china'
@@ -112,8 +112,8 @@ export async function assumeRoleWithOidc(
     SignatureNonce: crypto.randomUUID(),
     RoleArn: roleArn,
     OIDCProviderArn: oidcProviderArn,
-    OIDCToken: mintNuphosOidcToken(teamId, config.byos.aliyun.oidc.audience),
-    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'nuphos'),
+    OIDCToken: mintCerinOidcToken(teamId, config.byos.aliyun.oidc.audience),
+    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'cerin'),
     DurationSeconds: String(opts.durationSec ?? config.byos.aliyun.oidc.sessionDurationSec),
   })
   let resp: {
@@ -174,7 +174,7 @@ export async function verifyAliyunRole(
   try {
     await assumeRoleWithOidc(roleArn, oidcProviderArn, teamId, {
       site,
-      sessionName: 'nuphos-bind-verify',
+      sessionName: 'cerin-bind-verify',
       durationSec: 900,
     })
   } catch (e) {
@@ -186,7 +186,7 @@ export async function verifyAliyunRole(
     throw new AppError(
       400,
       'aliyun_role_not_assumable',
-      `Nuphos cannot assume ${roleArn}. Check the RAM role's trust policy and OIDC provider: the role must trust the Nuphos OIDC provider (${getAwsOidcIssuer()}) for this team's subject, and the Site (China vs International) must match the account. (${(e as Error).message})`,
+      `Cerin cannot assume ${roleArn}. Check the RAM role's trust policy and OIDC provider: the role must trust the Cerin OIDC provider (${getAwsOidcIssuer()}) for this team's subject, and the Site (China vs International) must match the account. (${(e as Error).message})`,
       { roleArn, upstreamCode: aliyunErrorCode(e) },
     )
   }

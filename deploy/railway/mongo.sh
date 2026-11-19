@@ -2,12 +2,12 @@
 set -euo pipefail
 umask 077
 mkdir -p /data/configdb
-if [ ! -s /data/configdb/nuphos-keyfile ]; then
-  head -c 48 /dev/urandom | base64 > /data/configdb/nuphos-keyfile
+if [ ! -s /data/configdb/cerin-keyfile ]; then
+  head -c 48 /dev/urandom | base64 > /data/configdb/cerin-keyfile
 fi
-chown mongodb:mongodb /data/configdb/nuphos-keyfile
-chmod 400 /data/configdb/nuphos-keyfile
-/usr/local/bin/docker-entrypoint.sh mongod --ipv6 --replSet rs0 --keyFile /data/configdb/nuphos-keyfile --bind_ip_all &
+chown mongodb:mongodb /data/configdb/cerin-keyfile
+chmod 400 /data/configdb/cerin-keyfile
+/usr/local/bin/docker-entrypoint.sh mongod --ipv6 --replSet rs0 --keyFile /data/configdb/cerin-keyfile --bind_ip_all &
 pid=$!
 trap 'kill -TERM "$pid"; wait "$pid"' TERM INT
 for attempt in $(seq 1 120); do
@@ -17,7 +17,7 @@ for attempt in $(seq 1 120); do
     if (!admin.auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) quit(1);
     try { rs.status(); } catch (e) {
       if (e.code !== 94) throw e;
-      rs.initiate({_id:"rs0",members:[{_id:0,host:process.env.NUPHOS_MONGO_HOST+":27017"}]});
+      rs.initiate({_id:"rs0",members:[{_id:0,host:process.env.CERIN_MONGO_HOST+":27017"}]});
     }
     quit(db.hello().isWritablePrimary ? 0 : 1);
   ' >/dev/null 2>&1; then

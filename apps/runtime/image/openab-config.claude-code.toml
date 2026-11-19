@@ -21,4 +21,4 @@ working_dir = "/workspace"
 # than in the container environment.
 MCP_TOOL_TIMEOUT = "1800000"
 MCP_TIMEOUT = "30000"
-BASH_ENV = "/opt/nuphos-runtime/runtime-guard.sh"
+BASH_ENV = "/opt/cerin-runtime/runtime-guard.sh"

@@ -28,7 +28,7 @@ export const commandScenarios: Scenario[] = [
       await page.getByText('E2E long step').first().waitFor()
       await menuLists(page, '/e2e-review')
       // Reopened mid-turn, the run replays from its first frame; no list is remembered locally.
-      await page.evaluate(() => localStorage.removeItem('nuphos.agentCommands.v1'))
+      await page.evaluate(() => localStorage.removeItem('cerin.agentCommands.v1'))
       await page.reload()
       await page.getByText('E2E long step').first().waitFor()
       await menuLists(page, '/e2e-review')

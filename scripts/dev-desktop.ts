@@ -26,7 +26,7 @@ export async function claimDesktopPorts(): Promise<void> {
 }
 
 type ElectronBackendHealth = {
-  event: 'nuphos.dev.electron_backend_health'
+  event: 'cerin.dev.electron_backend_health'
   status: 'healthy' | 'unhealthy'
   consecutiveFailures: number
   latencyMs: number
@@ -45,7 +45,7 @@ export function parseElectronBackendHealth(line: string): ElectronBackendHealth 
   const event = value as Partial<ElectronBackendHealth>
 
   if (
-    event.event !== 'nuphos.dev.electron_backend_health' ||
+    event.event !== 'cerin.dev.electron_backend_health' ||
     (event.status !== 'healthy' && event.status !== 'unhealthy') ||
     typeof event.consecutiveFailures !== 'number' ||
     typeof event.latencyMs !== 'number'
@@ -114,7 +114,7 @@ export function parseDesktop(raw: string) {
     if (p) desktop.port = Number(p[1])
     markDirty()
   }
-  if (line.includes('[nuphos-dev] electron window opened') && desktop.health.electron !== '✓') {
+  if (line.includes('[cerin-dev] electron window opened') && desktop.health.electron !== '✓') {
     desktop.status = desktop.health.backend?.startsWith('✕') ? 'degraded' : 'ready'
     desktop.health.electron = '✓'
     desktop.readyMs = desktop.startedAt ? Date.now() - desktop.startedAt : null
@@ -143,11 +143,11 @@ async function selfHealDesktop(): Promise<void> {
 }
 
 export async function startDesktop() {
-  if (process.env.NUPHOS_DEV_NO_DESKTOP) {
+  if (process.env.CERIN_DEV_NO_DESKTOP) {
     desktop.status = 'stopped'
     desktop.health = { disabled: '—' }
     desktop.url = '(desktop disabled)'
-    pushEvent(desktop, 'skipped (NUPHOS_DEV_NO_DESKTOP=1)')
+    pushEvent(desktop, 'skipped (CERIN_DEV_NO_DESKTOP=1)')
 
     return
   }
@@ -178,9 +178,9 @@ export async function startDesktop() {
     cwd: DESKTOP_DIR,
     env: {
       ...process.env,
-      NUPHOS_API_URL: apiUrl,
-      NUPHOS_LAUNCHER_HEALTH: '1',
-      NUPHOS_CLI_CONFIG: DEV_CLI_CONFIG,
+      CERIN_API_URL: apiUrl,
+      CERIN_LAUNCHER_HEALTH: '1',
+      CERIN_CLI_CONFIG: DEV_CLI_CONFIG,
       ATLAS_WT_BADGE: INSTANCE,
       ATLAS_DEV_SUFFIX: DESKTOP_SUFFIX,
       ATLAS_DEV_CDP_PORT: String(cdp),

@@ -88,7 +88,7 @@ async function registerExternalRuntime(
   body: z.infer<typeof registerRuntimeSchema>,
 ) {
   // A runtime outside the cluster reaches this backend over the public
-  // internet for every Nuphos tool call and for its skill bundle. Refuse
+  // internet for every Cerin tool call and for its skill bundle. Refuse
   // rather than hand it an address it cannot resolve and let the agent
   // fail tool by tool. An in-cluster `ws://*.svc` runtime needs none of it.
   if (!isInternalRuntimeUrl(body.url)) requirePublicBackendUrl()
@@ -127,7 +127,7 @@ export function registerExternalRuntimeRoute(teamScoped: Hono<{ Variables: TeamA
         throw new AppError(
           422,
           'runtime_provider_undetected',
-          'Nuphos could not reach this agent or tell whether it runs Claude Code or Codex. Check the address and admin password, and that the agent image is up to date.',
+          'Cerin could not reach this agent or tell whether it runs Claude Code or Codex. Check the address and admin password, and that the agent image is up to date.',
         )
 
       return registerExternalRuntime(c, provider, body)

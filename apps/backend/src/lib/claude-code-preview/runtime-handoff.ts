@@ -12,7 +12,7 @@ import { withRedis } from '@/lib/redis'
 import { sessionsByConversation } from './agent-chat-registry'
 import { resolveConversationChatRuntime } from './conversation-chat-route'
 import { previewSessionAccess } from './credentials-mcp'
-import { nuphosToolsVersion } from './nuphos-tools-mcp'
+import { cerinToolsVersion } from './cerin-tools-mcp'
 import { openConversationSession } from './open-conversation-session'
 import { parseSessionExecutionState } from './runtime-execution-snapshot'
 import { claimRuntimeHandoffs } from './runtime-handoff-claim'
@@ -140,7 +140,7 @@ export async function adoptRuntimeHandoff(handoff: RuntimeHandoff): Promise<void
       backendUrl: endpoint.backendUrl,
       humanTurn: handoff.humanTurn,
       parentSessionId: conversation.parentSessionId,
-      toolsVersion: await nuphosToolsVersion({
+      toolsVersion: await cerinToolsVersion({
         userId: handoff.actorUserId,
         conversationOwnerUserId: handoff.ownerUserId,
         teamId: handoff.teamId,

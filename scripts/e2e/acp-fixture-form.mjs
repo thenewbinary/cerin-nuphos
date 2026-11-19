@@ -23,7 +23,7 @@ export function formSteps({ call, log, refused }) {
     log({ sessionId, event: 'form-asked', isError: refused(message) })
   }
 
-  /** Opens `url` in the Nuphos browser and fills the saved files into it; the result is logged as it came. */
+  /** Opens `url` in the Cerin browser and fills the saved files into it; the result is logged as it came. */
   async function fillAt(sessionId, url, saved, event) {
     const opened = await call(sessionId, 'local_browser', { action: 'open', url })
     const tab = Number(/tab[\\"]*:\s*(\d+)/.exec(JSON.stringify(opened))?.[1])

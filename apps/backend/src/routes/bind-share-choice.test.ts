@@ -9,7 +9,7 @@ import { useModels } from '@/lib/test/doubles/models'
 
 import { notionIntegrationsRoutes } from './notion-integrations'
 
-import type { NuphosTeam } from '@/lib/identity'
+import type { CerinTeam } from '@/lib/identity'
 import type { TeamAuthVariables } from '@/middleware/auth'
 
 // What the connect dialog sends reaches the binding that is stored.
@@ -44,7 +44,7 @@ async function connect(share: unknown, teamDefault: 'private' | 'team' = 'privat
     c.set('teamId', new ObjectId().toHexString())
     c.set('userId', 'u1')
     c.set('teamRole', 'ADMINISTRATOR')
-    c.set('team', { bindingShareDefault: teamDefault } as unknown as NuphosTeam)
+    c.set('team', { bindingShareDefault: teamDefault } as unknown as CerinTeam)
     await next()
   })
   app.route('/', notionIntegrationsRoutes)

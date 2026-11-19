@@ -104,7 +104,7 @@ function githubJsonFor(token: string, base: string) {
         Authorization: `token ${token}`,
         Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': '2022-11-28',
-        'User-Agent': 'nuphos-backend',
+        'User-Agent': 'cerin-backend',
       },
       signal: AbortSignal.timeout(30_000),
     })

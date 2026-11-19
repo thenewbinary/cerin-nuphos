@@ -1,0 +1,3 @@
+#!/bin/sh
+# Operator commands for this backend; see scripts/cerin-admin.ts.
+exec bun /app/scripts/cerin-admin.ts "$@"

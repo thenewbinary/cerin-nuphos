@@ -162,7 +162,7 @@ export const teamApi = {
     input: {
       slackWorkspaceId: string
       slackUserId: string
-      nuphosUserId: string
+      cerinUserId: string
       enabled?: boolean
     },
   ) => window.api.atlasUpsertSlackUserMapping(teamId, input),

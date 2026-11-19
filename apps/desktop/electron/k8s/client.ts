@@ -15,7 +15,7 @@ import type * as k8s from '@kubernetes/client-node'
 //
 // There is no global "current context" — every k8s operation in this module
 // takes a `context: string` and routes through `getClients(context)`. That
-// keeps Nuphos tabs viewing different clusters truly independent: pointing
+// keeps Cerin tabs viewing different clusters truly independent: pointing
 // Tab A at cluster X and Tab B at cluster Y produces two separate KubeConfig
 // instances + API clients with no shared mutable state.
 export type ClusterClients = {
@@ -211,7 +211,7 @@ export function loadDefaultKubeconfig(): k8s.KubeConfig {
 
 function buildClients(context: string): ClusterClients {
   // For contexts that come from the on-disk default kubeconfig — re-read it
-  // fresh so we capture user edits since process start. Nuphos-loaded contexts
+  // fresh so we capture user edits since process start. Cerin-loaded contexts
   // are registered up front by `loadKubeconfigYaml` so they never hit this
   // path (an entry already exists in `clientCache`).
   const kc = loadDefaultKubeconfig()

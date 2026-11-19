@@ -360,7 +360,7 @@ describe('provider surface', () => {
   test('meta, prefix, storage descriptor, availability, capability absences', async () => {
     expect(nativeMemoryProvider.meta).toEqual({
       id: 'native',
-      displayName: 'Nuphos Memory',
+      displayName: 'Cerin Memory',
       dataResidency: 'local',
       spiVersion: 1,
     })

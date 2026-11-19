@@ -1,6 +1,6 @@
 ---
 name: github
-description: Operate on GitHub repos, issues, PRs, and Actions using an authorized existing local gh login or a GitHub App installation the user's team has bound to Nuphos. Nuphos backend mints short-lived installation tokens; the agent talks to api.github.com directly with `gh` or `curl`. Use whenever the user names a repo, asks to read code/PRs/issues, comment, open a PR, dispatch a workflow, etc.
+description: Operate on GitHub repos, issues, PRs, and Actions using an authorized existing local gh login or a GitHub App installation the user's team has bound to Cerin. Cerin backend mints short-lived installation tokens; the agent talks to api.github.com directly with `gh` or `curl`. Use whenever the user names a repo, asks to read code/PRs/issues, comment, open a PR, dispatch a workflow, etc.
 ---
 
 # github
@@ -9,8 +9,8 @@ description: Operate on GitHub repos, issues, PRs, and Actions using an authoriz
 
 For a confirmed local runtime on the current participant's own device, prefer their
 existing `gh` login when the session's credential policy permits it. Check
-`gh auth status --hostname github.com` before running Nuphos credential setup.
-If the user explicitly requests the Nuphos App identity, skip this local-login
+`gh auth status --hostname github.com` before running Cerin credential setup.
+If the user explicitly requests the Cerin App identity, skip this local-login
 path and use the selected installation's setup command instead.
 
 - Run the check in the participant's actual host environment. An isolated session
@@ -26,11 +26,11 @@ path and use the selected installation's setup command instead.
   does not authorize an unselected identity. A repository permission error is not
   permission to try another account. Do not automatically switch identities.
 - If no usable local login exists, or local identity use is not permitted, explain
-  that result and use an already selected Nuphos App installation when allowed.
+  that result and use an already selected Cerin App installation when allowed.
   Managed/shared runtimes always use the selected App identity; never reuse their
   runtime owner's `gh` login.
 
-The setup and signed-commit instructions below apply to Nuphos-minted tokens: the team App and a member's Personal Credential.
+The setup and signed-commit instructions below apply to Cerin-minted tokens: the team App and a member's Personal Credential.
 For the existing local-login path, use that account for GitHub operations and the
 participant's existing Git author/signing configuration. Check that signing is
 available before committing; do not change global Git configuration or fall back
@@ -39,15 +39,15 @@ merge requirements apply to both paths.
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, write to a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
-For Nuphos installation tokens, always use the setup script below. Do not run `gh auth login`, `gh auth switch`, or `gh auth logout`: those flows can change a shared system keychain even with `--insecure-storage`. The setup script writes the configured gh authentication file (session-scoped when supplied by the runtime) and preserves other hosts.
+For Cerin installation tokens, always use the setup script below. Do not run `gh auth login`, `gh auth switch`, or `gh auth logout`: those flows can change a shared system keychain even with `--insecure-storage`. The setup script writes the configured gh authentication file (session-scoped when supplied by the runtime) and preserves other hosts.
 
-For the App path, Nuphos backend mints a short-lived installation access token (≤1 h) on demand. The local-login path leaves authentication with the device's existing gh configuration.
+For the App path, Cerin backend mints a short-lived installation access token (≤1 h) on demand. The local-login path leaves authentication with the device's existing gh configuration.
 
-## Setup (Nuphos App identity)
+## Setup (Cerin App identity)
 
 The bound GitHub App installations are already listed for you under **GitHub App
 installations:** in the credential section of the system prompt. Each line carries the
@@ -59,9 +59,9 @@ have exactly one) and run its `setupCommand` verbatim:
 bash skills/github/scripts/setup-credentials.sh <teamId> <installationId>
 ```
 
-Identity: when the turn's member connected a Personal Credential, `gh` acts as their own GitHub account. That member is the sender of a member's message, or the session owner for automated turns (triggers, agent threads, resource events). Otherwise it acts as the team's GitHub App (`nuphos[bot]`). Add `--team` to use the App identity on purpose, for example for bot-owned automation. The JSON response's `actor.kind` (`personal` or `team`) says which one you got.
+Identity: when the turn's member connected a Personal Credential, `gh` acts as their own GitHub account. That member is the sender of a member's message, or the session owner for automated turns (triggers, agent threads, resource events). Otherwise it acts as the team's GitHub App (`cerin[bot]`). Add `--team` to use the App identity on purpose, for example for bot-owned automation. The JSON response's `actor.kind` (`personal` or `team`) says which one you got.
 
-Permissions: acting as a member and the member's own `personal` / `github` credential use the same token, issued by the Nuphos GitHub App on the member's behalf. It can do only what both the member and the App installation allow, so a member who owns an org still cannot do through Nuphos what the App was not granted there. The setup script prints each installation's permissions and its settings page. Read them before planning work beyond code, issues and pull requests (org Projects, for example, need `organization_projects`). For a 403 or `Resource not accessible by integration`, follow [Errors](#errors).
+Permissions: acting as a member and the member's own `personal` / `github` credential use the same token, issued by the Cerin GitHub App on the member's behalf. It can do only what both the member and the App installation allow, so a member who owns an org still cannot do through Cerin what the App was not granted there. The setup script prints each installation's permissions and its settings page. Read them before planning work beyond code, issues and pull requests (org Projects, for example, need `organization_projects`). For a 403 or `Resource not accessible by integration`, follow [Errors](#errors).
 
 Without a team installation: when `list_credentials` lists a selected `personal` / `github` entry, the conversation owner chose their own GitHub account for this conversation. Load it with `bash skills/github/scripts/setup-credentials.sh <teamId> personal`; it reaches what that member can reach.
 
@@ -79,8 +79,8 @@ Only if the credential section is missing or looks stale, query the backend dire
 is exported in the runtime environment.
 
 ```bash
-# Reuse the helper from the nuphos-api skill (loads it if needed):
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+# Reuse the helper from the cerin-api skill (loads it if needed):
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://platform.cerin.ai}$1" "${@:2}"; }
 
 ac /teams/$TEAM/github-installations | python3 -m json.tool
 # → { "installations": [
@@ -156,14 +156,14 @@ gh_api -X POST /repos/myorg/myrepo/issues/42/comments \
   -d '{"body":"deployed to staging"}' | python3 -m json.tool
 ```
 
-## Pushing code / opening PRs with a Nuphos token
+## Pushing code / opening PRs with a Cerin token
 
 Use GitHub's `createCommitOnBranch` GraphQL mutation with the token from the setup script for new commits. GitHub supplies the author (the App, or the member's own account for a Personal Credential), uses its signing committer (`web-flow`), and signs the commit. A local `git commit` followed by `git push` does **not** gain a signature from the push credentials, even when its email links to the bot. Do not create commits with the REST Git Database API (`POST /repos/OWNER/REPO/git/commits`): with a Personal Credential those commits are unsigned. To bring a branch up to date with its base, use `POST /repos/OWNER/REPO/merges` (GitHub signs that merge commit) instead of building a merge commit yourself.
 
 When a participant wants commits signed with their own key, or the change needs a local `git commit` / `git push` that must be Verified, use the `git-signing` skill instead.
 
-1. Run the selected installation's setup command with `--for-commit` appended. It prints the current authenticated Nuphos participant's `Co-authored-by` trailer. Refresh this on every committing turn; never infer the participant from the runtime/provider account, installation owner, or durable conversation owner. If the participant identity is unavailable, stop before committing.
-   If the repository uses the Developer Certificate of Origin (a `DCO` file at its root, a contributing guide that asks for `Signed-off-by`, or a DCO check on its PRs), also run `bash skills/github/scripts/commit-signoff.sh OWNER/REPO` against the repository the commit goes to (the fork, for a fork PR). It prints `Signed-off-by: NAME <EMAIL>` for the author GitHub records for the current identity; a DCO check compares that line with the author exactly, and no read-only API reports the commit email, so do not build the line yourself. It briefly creates and deletes a `nuphos/signoff-probe-*` branch. Run it again whenever the setup identity changes.
+1. Run the selected installation's setup command with `--for-commit` appended. It prints the current authenticated Cerin participant's `Co-authored-by` trailer. Refresh this on every committing turn; never infer the participant from the runtime/provider account, installation owner, or durable conversation owner. If the participant identity is unavailable, stop before committing.
+   If the repository uses the Developer Certificate of Origin (a `DCO` file at its root, a contributing guide that asks for `Signed-off-by`, or a DCO check on its PRs), also run `bash skills/github/scripts/commit-signoff.sh OWNER/REPO` against the repository the commit goes to (the fork, for a fork PR). It prints `Signed-off-by: NAME <EMAIL>` for the author GitHub records for the current identity; a DCO check compares that line with the author exactly, and no read-only API reports the commit email, so do not build the line yourself. It briefly creates and deletes a `cerin/signoff-probe-*` branch. Run it again whenever the setup identity changes.
 2. Work from the target branch's current SHA. For a new PR, create a new branch at the base branch SHA using `gh api repos/OWNER/REPO/git/refs -f ref=refs/heads/BRANCH -f sha=BASE_SHA`.
 3. Prepare a JSON payload file for the mutation below. Include the complete new contents of each changed file as base64 in `fileChanges.additions`; include removed paths in `fileChanges.deletions`. Omit unchanged files. Add the participant and runtime trailers to `message.body`, after a blank line, followed by the `Signed-off-by` line when the repository uses the DCO.
 4. Submit with `gh api graphql --input /path/to/commit.json`. Use `expectedHeadOid` to prevent overwriting concurrent changes; on a mismatch, fetch and reconcile before retrying.
@@ -221,11 +221,11 @@ A few rules:
 
 ## Errors
 
-- `404 github_installation_not_found` from Nuphos backend — the installation was uninstalled or transferred. Re-list installations and tell the user.
+- `404 github_installation_not_found` from Cerin backend — the installation was uninstalled or transferred. Re-list installations and tell the user.
 - `401 Bad credentials` from api.github.com (or `gh: HTTP 401`) — token expired (1 h max). Re-run `setup-credentials.sh`.
 - `403 Resource not accessible by integration` (GraphQL: `FORBIDDEN` with the same message) — the App installation lacks a permission. The member's own access is not the problem, and GitHub does not say which permission. Don't retry. Switching to `personal` or `--team` will not help, and neither will another GitHub credential, because all of them go through the same App. Do this instead, in the same turn:
   1. Name the permission. On REST, `gh api -i <path>` returns an `X-Accepted-GitHub-Permissions` header such as `organization_projects=read`. For GraphQL, call the REST endpoint of the same resource, or compare the call with the permissions the setup script printed.
-  2. Find who can grant it. `gh api /apps/<slug> --jq .permissions` lists what the App requests (`<slug>` is `app_slug` in `gh api /user/installations`). If the permission is there but not in the installation, an owner of that account approves it on the `Installation settings` page the setup script printed. If the App does not request it at all, nobody can grant it from that page: only whoever owns the App can add it, which is the Nuphos team on Nuphos Cloud and the instance operator when self-hosted.
+  2. Find who can grant it. `gh api /apps/<slug> --jq .permissions` lists what the App requests (`<slug>` is `app_slug` in `gh api /user/installations`). If the permission is there but not in the installation, an owner of that account approves it on the `Installation settings` page the setup script printed. If the App does not request it at all, nobody can grant it from that page: only whoever owns the App can add it, which is the Cerin team on Cerin Cloud and the instance operator when self-hosted.
   3. Tell the user the permission, the account, which of the two cases it is, and the settings link. Then offer a way to finish now: give them the github.com page for the blocked step and the exact values to enter, so they can do that one step in the browser as themselves while you carry on with the rest.
 - `404 Not Found` on a repo path — either the repo doesn't exist or it's outside the App's `selected` repository scope. Confirm with the user which repo they meant.
 - `429` / secondary rate limits — slow down (don't retry tightly). Installation tokens get their own rate limit pool, but heavy fan-out can still hit it.
@@ -237,7 +237,7 @@ After creating or adopting a PR or issue for the current task, use
 verified resource link in the session sidebar. For GitHub pass `provider: github`,
 the selected `installationId`, `repository` (`owner/repo`) and PR `number`.
 For Linear pass `provider: linear`, the selected binding's `workspaceId` and
-`issueId` (UUID or identifier). This is separate from Linear's Nuphos session
+`issueId` (UUID or identifier). This is separate from Linear's Cerin session
 attachment; retain that attachment too. Do not bind unrelated search results.
 
 Bound GitHub PR events durably wake this conversation with its existing permissions.

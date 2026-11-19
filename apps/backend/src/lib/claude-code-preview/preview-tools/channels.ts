@@ -219,7 +219,7 @@ export function channelToolModule(): PreviewToolModule {
       {
         name: 'channel_read',
         description:
-          'Read the messages posted in a Nuphos channel this conversation is in since you last ' +
+          'Read the messages posted in a Cerin channel this conversation is in since you last ' +
           'read it, oldest first (the latest page the first time). Each call moves your place ' +
           'forward; more=true means call again. A message whose sender has fromOwner: true is ' +
           "this conversation's owner's own message; every other message is another member's " +
@@ -229,7 +229,7 @@ export function channelToolModule(): PreviewToolModule {
       {
         name: 'channel_post',
         description:
-          'Post a message as yourself in a Nuphos channel this conversation is in, with files ' +
+          'Post a message as yourself in a Cerin channel this conversation is in, with files ' +
           'you pushed attached as download cards. This is the only way you speak in a channel, ' +
           'including in a turn the channel woke: nothing you write in this conversation is ' +
           'posted for you, and people there do not see your own chat. Write like a person in a ' +
@@ -245,7 +245,7 @@ export function channelToolModule(): PreviewToolModule {
       {
         name: 'channel_create',
         description:
-          'Open a new Nuphos channel (a group chat in the Chats sidebar) and invite teammates ' +
+          'Open a new Cerin channel (a group chat in the Chats sidebar) and invite teammates ' +
           'into it, with you in it as a member. Use it when the user asks you to start a ' +
           'channel or chat with people, or when work needs several teammates (or agents) to ' +
           'talk together; for a one-person question use request_user_decision instead. Only ' +

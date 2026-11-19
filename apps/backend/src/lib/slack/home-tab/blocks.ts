@@ -1,15 +1,15 @@
 import { escapeSlackMrkdwn } from '@/lib/slack/mrkdwn'
 
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 
 // ─── App Home (Home tab) ─────────────────────────────────────────────────────
 // The Home tab is published per user via views.publish on app_home_opened, so
-// it can show the viewer's own state: which Nuphos team this Slack workspace is
-// connected to, whether THEIR Slack account is linked to a Nuphos user, and
+// it can show the viewer's own state: which Cerin team this Slack workspace is
+// connected to, whether THEIR Slack account is linked to a Cerin user, and
 // which of the team's cloud credentials their allowlists actually grant.
 
 // Re-publishes the Home view with fresh data (block_actions in /interactions).
-export const HOME_REFRESH_ACTION = 'nuphos_home_refresh'
+export const HOME_REFRESH_ACTION = 'cerin_home_refresh'
 
 export type SlackHomeCredentialGroup = { provider: string; entries: string[] }
 
@@ -20,7 +20,7 @@ export type SlackHomeViewModel = {
   // Null when the viewer's Slack account has no enabled mapping to a current
   // team member — the view then explains how linking works instead of showing
   // member-scoped data.
-  viewer: { name: string; email: string; role: NuphosTeamRole | null } | null
+  viewer: { name: string; email: string; role: CerinTeamRole | null } | null
   linkedChannelIds: string[]
   credentials: SlackHomeCredentialGroup[]
 }
@@ -55,7 +55,7 @@ export function credentialBlocks(model: SlackHomeViewModel): unknown[] {
       elements: [
         {
           type: 'mrkdwn',
-          text: '_Link your Nuphos account to see which credentials are available to you._',
+          text: '_Link your Cerin account to see which credentials are available to you._',
         },
       ],
     })
@@ -68,7 +68,7 @@ export function credentialBlocks(model: SlackHomeViewModel): unknown[] {
       elements: [
         {
           type: 'mrkdwn',
-          text: '_No cloud credentials are available to you yet. Add them in the Nuphos desktop app → Settings._',
+          text: '_No cloud credentials are available to you yet. Add them in the Cerin desktop app → Settings._',
         },
       ],
     })
@@ -92,13 +92,13 @@ export function credentialBlocks(model: SlackHomeViewModel): unknown[] {
 
 export function connectionBlocks(model: SlackHomeViewModel): unknown[] {
   const fields: { type: 'mrkdwn'; text: string }[] = [
-    { type: 'mrkdwn', text: `*Nuphos team*\n${escapeSlackMrkdwn(model.teamName)}` },
+    { type: 'mrkdwn', text: `*Cerin team*\n${escapeSlackMrkdwn(model.teamName)}` },
     { type: 'mrkdwn', text: `*Slack workspace*\n${escapeSlackMrkdwn(model.slackTeamName)}` },
     {
       type: 'mrkdwn',
       text: model.viewer
-        ? `*Your Nuphos account*\n${escapeSlackMrkdwn(model.viewer.name)} (${escapeSlackMrkdwn(model.viewer.email)})`
-        : '*Your Nuphos account*\n_Not linked_',
+        ? `*Your Cerin account*\n${escapeSlackMrkdwn(model.viewer.name)} (${escapeSlackMrkdwn(model.viewer.email)})`
+        : '*Your Cerin account*\n_Not linked_',
     },
   ]
 
@@ -121,7 +121,7 @@ export function connectionBlocks(model: SlackHomeViewModel): unknown[] {
       elements: [
         {
           type: 'mrkdwn',
-          text: '_Accounts link automatically when your Slack email matches your Nuphos account email. Otherwise link manually in the Nuphos desktop app → Settings → Slack._',
+          text: '_Accounts link automatically when your Slack email matches your Cerin account email. Otherwise link manually in the Cerin desktop app → Settings → Slack._',
         },
       ],
     })
@@ -152,13 +152,13 @@ export function linkedChannelBlocks(model: SlackHomeViewModel): unknown[] {
     },
     {
       type: 'actions',
-      block_id: 'nuphos_home_actions',
+      block_id: 'cerin_home_actions',
       elements: [
         ...(canLinkChannels
           ? [
               {
                 type: 'conversations_select',
-                action_id: 'nuphos_link_channel',
+                action_id: 'cerin_link_channel',
                 placeholder: { type: 'plain_text', text: 'Link a channel' },
                 filter: { include: ['public', 'private'] },
               },
@@ -178,7 +178,7 @@ export function linkedChannelBlocks(model: SlackHomeViewModel): unknown[] {
             elements: [
               {
                 type: 'mrkdwn',
-                text: 'Private channels only work after you `/invite @Nuphos` there first.',
+                text: 'Private channels only work after you `/invite @Cerin` there first.',
               },
             ],
           },
@@ -188,11 +188,11 @@ export function linkedChannelBlocks(model: SlackHomeViewModel): unknown[] {
 }
 
 export function howToUseBlocks(model: SlackHomeViewModel): unknown[] {
-  const mention = model.botUserId ? `<@${model.botUserId}>` : '@Nuphos'
+  const mention = model.botUserId ? `<@${model.botUserId}>` : '@Cerin'
   const lines = [
     `• Mention ${mention} in a linked channel to start working in a thread — replies in that thread don't need another mention.`,
     '• Open the *Chat* tab above to talk 1:1; *History* lists your past conversations.',
-    '• When a change needs sign-off, Nuphos posts a plan card — press *Approve* to let it execute.',
+    '• When a change needs sign-off, Cerin posts a plan card — press *Approve* to let it execute.',
   ]
 
   return [
@@ -206,13 +206,13 @@ export function howToUseBlocks(model: SlackHomeViewModel): unknown[] {
 export const HOME_INTRO_BLOCKS: unknown[] = [
   {
     type: 'header',
-    text: { type: 'plain_text', text: '👋 Welcome to Nuphos', emoji: true },
+    text: { type: 'plain_text', text: '👋 Welcome to Cerin', emoji: true },
   },
   {
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: 'Nuphos is the open source Grok Bot alternative for your team, right here in Slack. Ask it to review code, triage issues, debug a service, or dig into an alert — it investigates with live thinking steps, proposes plans, and acts once you approve.',
+      text: 'Cerin is the open source Grok Bot alternative for your team, right here in Slack. Ask it to review code, triage issues, debug a service, or dig into an alert — it investigates with live thinking steps, proposes plans, and acts once you approve.',
     },
   },
 ]
@@ -222,7 +222,7 @@ export const HOME_FOOTER_BLOCK: unknown = {
   elements: [
     {
       type: 'mrkdwn',
-      text: 'AI-generated answers may be inaccurate. Manage this connection in the Nuphos desktop app → Settings → Slack.',
+      text: 'AI-generated answers may be inaccurate. Manage this connection in the Cerin desktop app → Settings → Slack.',
     },
   ],
 }

@@ -1,20 +1,20 @@
 ---
 name: jira
-description: Operate on Jira issues — read, create, comment, and transition — through a Jira Cloud site the user's team has bound to Nuphos via OAuth. Use whenever the user asks to open/track/close a Jira issue, file a ticket for an incident, comment on an issue, or check issue status. Nuphos backend hands the agent a short-lived Atlassian access token + cloudId; the agent calls api.atlassian.com/ex/jira/<cloudId>/rest/api/3 directly with curl.
+description: Operate on Jira issues — read, create, comment, and transition — through a Jira Cloud site the user's team has bound to Cerin via OAuth. Use whenever the user asks to open/track/close a Jira issue, file a ticket for an incident, comment on an issue, or check issue status. Cerin backend hands the agent a short-lived Atlassian access token + cloudId; the agent calls api.atlassian.com/ex/jira/<cloudId>/rest/api/3 directly with curl.
 ---
 
 # jira
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
 Use this skill when the user wants you to read or change Jira issues on their
 behalf — file a ticket for an incident, create/comment/transition an issue, or
 look up issue status — using the **Jira Cloud site** their team has already
-bound to Nuphos. This closes the loop: detect a problem (via the
+bound to Cerin. This closes the loop: detect a problem (via the
 monitoring/cloud skills) → open a Jira issue with the root cause → comment
 progress → transition it to Done when the fix is verified.
 
@@ -22,7 +22,7 @@ progress → transition it to Done when the fix is verified.
 
 ```bash
 # 1. Discover the Jira sites the team has bound.
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://platform.cerin.ai}$1" "${@:2}"; }
 ac /teams/$TEAM/jira-sites | python3 -m json.tool
 # → { "sites": [ { "id": "<bindingId>", "siteName": "Acme",
 #       "siteUrl": "https://acme.atlassian.net", "cloudId": "<uuid>", ... } ] }
@@ -31,7 +31,7 @@ ac /teams/$TEAM/jira-sites | python3 -m json.tool
 BINDING=<id from step 1>
 # Only source on success — a failed fetch (403/404/401) leaves no fresh env
 # file, and sourcing a stale one would point later calls at the wrong site.
-bash skills/jira/scripts/setup-credentials.sh "$TEAM" "$BINDING" && source ~/.jira/nuphos.env
+bash skills/jira/scripts/setup-credentials.sh "$TEAM" "$BINDING" && source ~/.jira/cerin.env
 
 # 3. Helper for Jira REST v3 calls (all scoped to the bound site's cloudId).
 jira() {

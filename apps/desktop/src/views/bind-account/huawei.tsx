@@ -129,7 +129,7 @@ export function HuaweiBindWizard({
                 {oidc && !oidc.configured && (
                   <div className="text-[11.5px] text-status-attention">
                     {t(
-                      "Nuphos's OIDC connector isn't configured on this backend yet — binding will fail until it is.",
+                      "Cerin's OIDC connector isn't configured on this backend yet — binding will fail until it is.",
                     )}
                   </div>
                 )}
@@ -163,7 +163,7 @@ export function HuaweiBindWizard({
                   <li>
                     <Fill
                       text={t(
-                        'Give it the permissions Nuphos should have (read-only is enough for browsing), scoped to {scope} — Nuphos requests an account-scoped credential, which a project-only agency cannot grant',
+                        'Give it the permissions Cerin should have (read-only is enough for browsing), scoped to {scope} — Cerin requests an account-scoped credential, which a project-only agency cannot grant',
                       )}
                       scope={<span className="text-main">All resources</span>}
                     />
@@ -171,7 +171,7 @@ export function HuaweiBindWizard({
                   <li>
                     <Fill
                       text={t(
-                        "Under {condition}, click {add} and add {claim} / {operator} equal to {subject}, alongside the {iss} condition already there — required, not optional: Nuphos's identity provider is shared across every customer, so without it anyone who registers the same audience could assume this agency too (Huawei's own form recommends this for a shared OIDC provider)",
+                        "Under {condition}, click {add} and add {claim} / {operator} equal to {subject}, alongside the {iss} condition already there — required, not optional: Cerin's identity provider is shared across every customer, so without it anyone who registers the same audience could assume this agency too (Huawei's own form recommends this for a shared OIDC provider)",
                       )}
                       condition={<span className="text-main">Condition</span>}
                       add={<span className="text-main">Add</span>}
@@ -184,7 +184,7 @@ export function HuaweiBindWizard({
                 </StepList>
                 <div className="text-[11.5px] text-tertiary">
                   {t(
-                    'The trust agency you create is exactly what Nuphos can do in your account — note its name, it goes in the last step.',
+                    'The trust agency you create is exactly what Cerin can do in your account — note its name, it goes in the last step.',
                   )}
                 </div>
               </div>
@@ -225,7 +225,7 @@ export function HuaweiBindWizard({
                     type="text"
                     value={idpId}
                     onChange={(e) => onIdpIdChange(e.target.value)}
-                    placeholder="nuphos"
+                    placeholder="cerin"
                     className={inputClass}
                   />
                 </Field>
@@ -237,7 +237,7 @@ export function HuaweiBindWizard({
                     type="text"
                     value={agencyName}
                     onChange={(e) => onAgencyNameChange(e.target.value)}
-                    placeholder="nuphos-readonly"
+                    placeholder="cerin-readonly"
                     className={inputClass}
                   />
                 </Field>

@@ -57,9 +57,9 @@ test('a channel wake names the newest post in one line that opens the channel at
           null,
           createElement(AgentEventMessage, {
             metadata,
-            text: 'New messages in a Nuphos channel (channelId ops).',
+            text: 'New messages in a Cerin channel (channelId ops).',
             teamId: 'team',
-            onOpenNuphosLink: (href) => opened.push(href) > 0,
+            onOpenCerinLink: (href) => opened.push(href) > 0,
           }),
           createElement(Jump),
         ),
@@ -79,7 +79,7 @@ test('a channel wake names the newest post in one line that opens the channel at
   assert.equal(buttons.length, 1)
   assert.match(buttons[0]!.textContent!, /#ops·.*Mei Chendeploy failed on prod\+2 more/)
   await act(() => (buttons[0] as unknown as HTMLElement).click())
-  assert.deepEqual(opened, ['https://nuphos.ai/teams/team/agent/ops'])
+  assert.deepEqual(opened, ['https://platform.cerin.ai/teams/team/agent/ops'])
   assert.equal(jump, 'post-7')
 
   // A file alone, and a wake from before posts were carried: today's line.

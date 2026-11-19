@@ -5,7 +5,7 @@
 export const LINEAR_AUTHORIZE_URL = 'https://linear.app/oauth/authorize'
 export const LINEAR_TOKEN_URL = 'https://api.linear.app/oauth/token'
 export const LINEAR_GRAPHQL_URL = 'https://api.linear.app/graphql'
-export const USER_AGENT = 'nuphos-backend'
+export const USER_AGENT = 'cerin-backend'
 const LINEAR_FETCH_TIMEOUT_MS = 30_000
 
 export class LinearApiError extends Error {

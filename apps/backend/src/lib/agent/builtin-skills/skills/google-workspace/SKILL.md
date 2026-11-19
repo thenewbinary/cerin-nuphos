@@ -1,13 +1,13 @@
 ---
 name: google-workspace
-description: Read and act on the message sender's own Gmail, Google Drive and Google Calendar — search, read, label, draft and send mail; search, read, upload, and share Drive files and Google Docs/Sheets; list, create and update calendar events — through the Gmail, Google Drive or Google Calendar Personal Credential the member connected in Nuphos Settings. Use whenever the user asks about their email or inbox, wants a reply drafted or sent, asks to find, read, or save a file in their Google Drive, or asks about their schedule or to set up a meeting. Nuphos hands the agent a short-lived Google access token; the agent calls the Gmail, Drive and Calendar REST APIs directly with curl.
+description: Read and act on the message sender's own Gmail, Google Drive and Google Calendar — search, read, label, draft and send mail; search, read, upload, and share Drive files and Google Docs/Sheets; list, create and update calendar events — through the Gmail, Google Drive or Google Calendar Personal Credential the member connected in Cerin Settings. Use whenever the user asks about their email or inbox, wants a reply drafted or sent, asks to find, read, or save a file in their Google Drive, or asks about their schedule or to set up a meeting. Cerin hands the agent a short-lived Google access token; the agent calls the Gmail, Drive and Calendar REST APIs directly with curl.
 ---
 
 # google-workspace
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Gmail, Drive and Calendar are a member's private data, not team resources. The token is
 always the session owner's, and only in their own conversations: when a
@@ -41,14 +41,14 @@ that provider through this team: ask them to connect Gmail, Google Drive or Goog
 Settings → Personal Credentials, then retry. A 409
 `google_oauth_client_not_configured` means the team has no Google OAuth client
 yet: a team administrator adds one in Team settings (guide:
-https://docs.nuphos.ai/connectors/google-workspace). There is no team fallback.
+https://docs.platform.cerin.ai/connectors/google-workspace). There is no team fallback.
 
 A 409 `personal_credential_via_composio` means the member connected through
 Composio instead: there is no token, so skip the curl recipes below and run
 Composio's Gmail / Google Drive / Google Calendar tools
 (https://docs.composio.dev/toolkits/gmail,
 https://docs.composio.dev/toolkits/googledrive,
-https://docs.composio.dev/toolkits/googlecalendar) through Nuphos:
+https://docs.composio.dev/toolkits/googlecalendar) through Cerin:
 
 ```bash
 bash skills/google-workspace/scripts/composio.sh <teamId> GMAIL_FETCH_EMAILS '{"query":"is:unread newer_than:2d","max_results":20}'

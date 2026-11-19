@@ -24,7 +24,7 @@ const PANEL_KINDS = [
 ]
 
 const STARTERS: Record<DashboardPanelKind, string> = {
-  chart: `// Globals: params, nuphos (calls Nuphos APIs as you), emit(payload).
+  chart: `// Globals: params, cerin (calls Cerin APIs as you), emit(payload).
 // Emit a ChartPayload-shaped object.
 const rows = [
   { date: '2026-07-01', usd: 120 },
@@ -54,7 +54,7 @@ emit({ kind: 'scalar', title: 'Total spend', value: 17442, unit: 'usd', deltaPct
 // Code names shown inside the script help text.
 const GLOBALS: Record<string, string> = {
   '{params}': 'params',
-  '{nuphos}': 'nuphos',
+  '{cerin}': 'cerin',
   '{emit}': 'emit(payload)',
 }
 
@@ -171,9 +171,9 @@ export function PanelEditorModal({ teamId, panel, saving, onCancel, onSave }: Pr
               </div>
               <p className="text-[11px] text-tertiary">
                 {t(
-                  "Runs on one of your team's online runtimes when created, refreshed, or on the dashboard's auto-refresh schedule. Available globals: {params}, {nuphos} (read-only Nuphos APIs as the script author, limited to the credentials selected above), and {emit}. Editing the script creates a new version; old snapshots keep theirs.",
+                  "Runs on one of your team's online runtimes when created, refreshed, or on the dashboard's auto-refresh schedule. Available globals: {params}, {cerin} (read-only Cerin APIs as the script author, limited to the credentials selected above), and {emit}. Editing the script creates a new version; old snapshots keep theirs.",
                 )
-                  .split(/(\{params\}|\{nuphos\}|\{emit\})/)
+                  .split(/(\{params\}|\{cerin\}|\{emit\})/)
                   .map((part, i) => (
                     <Fragment key={i}>
                       {i % 2 ? <code className="text-secondary">{GLOBALS[part]}</code> : part}

@@ -29,7 +29,7 @@ export async function requireScopeAccess(args: {
   const { userId, teamId, scope, write } = args
 
   if (!isSkillsStoreConfigured()) {
-    return { ok: false, error: 'unavailable: this Nuphos server has no team skills store' }
+    return { ok: false, error: 'unavailable: this Cerin server has no team skills store' }
   }
   // Same rule as personal skill delivery: only the owner's own turn, never a guest's.
   if (scope === 'personal' && userId !== args.ownerUserId) {

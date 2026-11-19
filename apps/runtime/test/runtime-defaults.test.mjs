@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { nuphosApplyRuntimeDefaults, patchRuntimeDefaults } from '../image/runtime-defaults.mjs'
+import { cerinApplyRuntimeDefaults, patchRuntimeDefaults } from '../image/runtime-defaults.mjs'
 
 const option = (id, currentValue, values) => ({
   id,
@@ -9,7 +9,7 @@ const option = (id, currentValue, values) => ({
   currentValue,
   options: values.map((value) => ({ name: value, value })),
 })
-const params = (defaults) => ({ _meta: { 'ai.nuphos/runtimeDefaults': defaults } })
+const params = (defaults) => ({ _meta: { 'ai.cerin/runtimeDefaults': defaults } })
 
 test('native defaults apply model before model-dependent fast and effort choices', async () => {
   const writes = []
@@ -17,7 +17,7 @@ test('native defaults apply model before model-dependent fast and effort choices
   const fast = option('fast-mode', 'off', ['off', 'on'])
   const effort = option('reasoning_effort', 'low', ['low', 'high'])
   let options = [model]
-  const result = await nuphosApplyRuntimeDefaults(
+  const result = await cerinApplyRuntimeDefaults(
     {
       setSessionConfigOption: async (selection) => {
         writes.push(selection)
@@ -49,10 +49,10 @@ test('native defaults apply model before model-dependent fast and effort choices
 test('omitted defaults preserve native behavior, and already selected values require no write', async () => {
   const response = { sessionId: 's', configOptions: [option('fast_mode', 'off', ['off', 'on'])] }
 
-  assert.equal(await nuphosApplyRuntimeDefaults({}, {}, response), response)
-  assert.equal(await nuphosApplyRuntimeDefaults({}, params({}), response), response)
+  assert.equal(await cerinApplyRuntimeDefaults({}, {}, response), response)
+  assert.equal(await cerinApplyRuntimeDefaults({}, params({}), response), response)
   assert.deepEqual(
-    await nuphosApplyRuntimeDefaults({}, params({ fast: 'off' }), response),
+    await cerinApplyRuntimeDefaults({}, params({ fast: 'off' }), response),
     response,
   )
 })
@@ -62,7 +62,7 @@ test('fast off is explicitly applied and Claude effort IDs are supported', async
     option('fast-mode', 'on', ['on', 'off']),
     option('effort', 'medium', ['medium', 'max']),
   ]
-  const result = await nuphosApplyRuntimeDefaults(
+  const result = await cerinApplyRuntimeDefaults(
     {
       setSessionConfigOption: async ({ configId, value }) => {
         options = options.map((entry) =>
@@ -87,12 +87,12 @@ test('invalid, unavailable, rejected, and unacknowledged defaults fail before an
 
   for (const defaults of [{ model: 'missing' }, { effort: 'high' }, { fast: 'on' }]) {
     await assert.rejects(
-      nuphosApplyRuntimeDefaults({}, params(defaults), response),
+      cerinApplyRuntimeDefaults({}, params(defaults), response),
       /Settings → Agent/,
     )
   }
   await assert.rejects(
-    nuphosApplyRuntimeDefaults(
+    cerinApplyRuntimeDefaults(
       {
         setSessionConfigOption: async () => {
           throw new Error('Rejected')
@@ -104,7 +104,7 @@ test('invalid, unavailable, rejected, and unacknowledged defaults fail before an
     /Rejected/,
   )
   await assert.rejects(
-    nuphosApplyRuntimeDefaults(
+    cerinApplyRuntimeDefaults(
       { setSessionConfigOption: async () => response },
       params({ model: 'b' }),
       response,

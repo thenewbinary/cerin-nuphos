@@ -12,7 +12,7 @@ import type { Quota } from '@/lib/identity/device-login-quota'
 import type { SocialProvider } from '@/lib/identity/social'
 import type { Context } from 'hono'
 
-/** Where `nuphos login` sends people on a server with its own OIDC provider. */
+/** Where `cerin login` sends people on a server with its own OIDC provider. */
 export const DEVICE_PAGE_PATH = '/auth/social/device'
 
 const STYLE =
@@ -33,7 +33,7 @@ export function providerName(provider: SocialProvider) {
 }
 
 async function signedInUser(c: Context) {
-  const token = getCookie(c, '__Host-nuphos-social')
+  const token = getCookie(c, '__Host-cerin-social')
 
   return token ? ((await authenticateToken(token))?.user ?? null) : null
 }
@@ -104,7 +104,7 @@ export function createDeviceApproval(quota: Quota = redisQuota) {
 
     return c.html(
       page(
-        `<p><b>${escapeHtml(pending.clientName)}</b>${from} wants to sign in to Nuphos as <b>${showEmail(user.email)}</b>.</p><p>Code <code>${escapeHtml(code.toUpperCase())}</code></p><p class="muted">This signs the terminal in as you; agent tokens are not offered here. Approve only a code you started yourself.</p><form method="post"><input type="hidden" name="code" value="${escapeHtml(code)}"><button name="decision" value="approve">Approve</button><button name="decision" value="deny">Deny</button></form>${switchLinks}`,
+        `<p><b>${escapeHtml(pending.clientName)}</b>${from} wants to sign in to Cerin as <b>${showEmail(user.email)}</b>.</p><p>Code <code>${escapeHtml(code.toUpperCase())}</code></p><p class="muted">This signs the terminal in as you; agent tokens are not offered here. Approve only a code you started yourself.</p><form method="post"><input type="hidden" name="code" value="${escapeHtml(code)}"><button name="decision" value="approve">Approve</button><button name="decision" value="deny">Deny</button></form>${switchLinks}`,
       ),
     )
   })

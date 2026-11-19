@@ -37,7 +37,7 @@ async function post(index: number, type: 'user' | 'agent', id: string) {
     metadata: {
       version: 1,
       sender: { type, id, displayName: id },
-      source: type === 'user' ? 'nuphos' : 'agent.thread',
+      source: type === 'user' ? 'cerin' : 'agent.thread',
       ...(type === 'agent' ? { sourceSessionId: id } : {}),
       sentAt: new Date().toISOString(),
     },

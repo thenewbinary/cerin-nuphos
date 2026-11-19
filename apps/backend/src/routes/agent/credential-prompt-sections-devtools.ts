@@ -93,7 +93,7 @@ export function appendGrafanaInstanceLines(
   teamId: string,
 ) {
   if (grafanaInstances.length === 0) return
-  lines.push('', 'Grafana instances (proxied through Nuphos — no setup script):')
+  lines.push('', 'Grafana instances (proxied through Cerin — no setup script):')
   for (const instance of grafanaInstances) {
     const name = safePromptField(instance.name)
     const grafanaUrl = safePromptField(instance.grafanaUrl)
@@ -110,7 +110,7 @@ export function appendSonarqubeIntegrationLines(
   teamId: string,
 ) {
   if (sonarqubeIntegrations.length === 0) return
-  lines.push('', 'SonarQube integrations (proxied through Nuphos — no setup script):')
+  lines.push('', 'SonarQube integrations (proxied through Cerin — no setup script):')
   for (const integration of sonarqubeIntegrations) {
     const label = safePromptField(integration.label)
     const baseUrl = safePromptField(integration.baseUrl)
@@ -135,7 +135,7 @@ export function appendPosthogIntegrationLines(
       .join(', ')
 
     lines.push(
-      `- integrationId=${integration.integrationId}; label=${safePromptField(integration.label)}; host=${safePromptField(integration.apiBaseUrl)}; projects=[${projects}]; setupCommand="bash skills/posthog/scripts/setup-credentials.sh ${teamId} ${integration.integrationId} && source ~/.posthog/nuphos.env"`,
+      `- integrationId=${integration.integrationId}; label=${safePromptField(integration.label)}; host=${safePromptField(integration.apiBaseUrl)}; projects=[${projects}]; setupCommand="bash skills/posthog/scripts/setup-credentials.sh ${teamId} ${integration.integrationId} && source ~/.posthog/cerin.env"`,
     )
   }
 }
@@ -149,7 +149,7 @@ export function appendPlaudAccountLines(
   lines.push('', 'Plaud accounts:')
   for (const account of plaudAccounts) {
     lines.push(
-      `- bindingId=${account.bindingId}; label=${safePromptField(account.label)}; setupCommand="bash skills/plaud/scripts/setup-credentials.sh ${teamId} ${account.bindingId} && source ~/.plaud/nuphos.env"`,
+      `- bindingId=${account.bindingId}; label=${safePromptField(account.label)}; setupCommand="bash skills/plaud/scripts/setup-credentials.sh ${teamId} ${account.bindingId} && source ~/.plaud/cerin.env"`,
     )
   }
 }

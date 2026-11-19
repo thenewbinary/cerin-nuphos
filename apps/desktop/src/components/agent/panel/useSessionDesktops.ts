@@ -12,8 +12,8 @@ import type { Tab } from './model'
 
 type TurnView = Pick<Tab, 'sessionId' | 'messages' | 'streaming' | 'runtimeState' | 'foreign'>
 
-/** Providers may prefix MCP tools, as in `mcp__nuphos-desktop__click`. */
-const DESKTOP_TOOL = /(^|__|\.|\/)nuphos-desktop(__|\.|\/)/u
+/** Providers may prefix MCP tools, as in `mcp__cerin-desktop__click`. */
+const DESKTOP_TOOL = /(^|__|\.|\/)cerin-desktop(__|\.|\/)/u
 
 /** Turns whose desktop was already brought forward, so a tab the user closes stays closed. */
 const surfaced = new Set<string>()

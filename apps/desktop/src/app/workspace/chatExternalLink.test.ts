@@ -11,17 +11,17 @@ const noLookup = {
     throw new Error('unexpected lookup')
   },
 }
-const github = '/teams/t/repository/installations/7/repos/nuphos/nuphos'
+const github = '/teams/t/repository/installations/7/repos/thenewbinary/cerin-platform'
 const linear = '/teams/t/linear/workspaces/b'
 
 test('GitHub PR, repository and workflows use provider URLs', async () => {
   for (const [path, target] of [
-    [`${github}/pull-requests/42`, 'https://github.com/nuphos/nuphos/pull/42'],
-    [`${github}/pull-requests`, 'https://github.com/nuphos/nuphos/pulls'],
-    [`${github}/workflows`, 'https://github.com/nuphos/nuphos/actions'],
+    [`${github}/pull-requests/42`, 'https://github.com/thenewbinary/cerin-platform/pull/42'],
+    [`${github}/pull-requests`, 'https://github.com/thenewbinary/cerin-platform/pulls'],
+    [`${github}/workflows`, 'https://github.com/thenewbinary/cerin-platform/actions'],
   ]) {
     assert.equal(await resolveChatExternalLink(path, noLookup), target)
-    assert.equal(await resolveChatExternalLink(`https://nuphos.ai${path}`, noLookup), target)
+    assert.equal(await resolveChatExternalLink(`https://platform.cerin.ai${path}`, noLookup), target)
   }
 })
 
@@ -62,14 +62,14 @@ test('native pages, unknown paths, failed lookups and missing URLs retain the ap
     `${linear}/issues/EX-7`,
     `${linear}/teams/team1`,
   ]) {
-    assert.equal(await resolveChatExternalLink(path, noLookup), `https://nuphos.ai${path}`)
+    assert.equal(await resolveChatExternalLink(path, noLookup), `https://platform.cerin.ai${path}`)
   }
   assert.equal(
     await resolveChatExternalLink(`${linear}/teams/missing`, {
       ...noLookup,
       listLinearTeams: async () => ({ teams: [] }),
     }),
-    `https://nuphos.ai${linear}/teams/missing`,
+    `https://platform.cerin.ai${linear}/teams/missing`,
   )
 })
 

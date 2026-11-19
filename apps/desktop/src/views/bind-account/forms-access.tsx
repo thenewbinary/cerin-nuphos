@@ -44,11 +44,11 @@ export function TailscaleForm({ st, teamId }: { st: BindState; teamId: string })
         />
       </Field>
       <Field
-        label={t('How Nuphos authenticates')}
+        label={t('How Cerin authenticates')}
         hint={
           tailscaleFederated
             ? t(
-                'Nuphos proves its identity with a signed token each time, so no credential of yours is ever stored here.',
+                'Cerin proves its identity with a signed token each time, so no credential of yours is ever stored here.',
               )
             : t(
                 'The secret is encrypted before storage and exchanged for short-lived access tokens.',
@@ -85,8 +85,8 @@ export function TailscaleForm({ st, teamId }: { st: BindState; teamId: string })
           <ol className="text-[12px] text-secondary leading-relaxed space-y-1 list-decimal list-inside marker:text-tertiary">
             <li>{t('Admin Console → Settings → Trust credentials → New credential.')}</li>
             <Step text={t('Choose {value}.')} value={mono('OpenID Connect')} />
-            <Step text={t('Issuer URL: {value}')} value={mono('https://nuphos.ai')} />
-            <Step text={t('Subject: {value}')} value={mono(`nuphos:team:${teamId}`)} />
+            <Step text={t('Issuer URL: {value}')} value={mono('https://platform.cerin.ai')} />
+            <Step text={t('Subject: {value}')} value={mono(`cerin:team:${teamId}`)} />
             <Step
               text={t('Scopes: {scope} (add {extra} to list devices).')}
               scope={mono('auth_keys')}

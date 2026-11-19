@@ -28,7 +28,7 @@ type Props = {
   onOpenDiagram?: (id: string, name: string) => void
   onCloseDiagram?: () => void
   onRenameDiagram?: (name: string) => void
-  // Open a node's link: nuphos.ai pages open in-app, everything else external.
+  // Open a node's link: platform.cerin.ai pages open in-app, everything else external.
   onOpenUrl?: (url: string) => void
   /** Open a fresh agent chat and auto-send the given prompt. */
   onOpenAgentChat?: (prompt: string, options?: { send?: boolean }) => void
@@ -236,7 +236,7 @@ export function ArchitectureView({
           icon={Network}
           title={t('Architecture')}
           description={t(
-            'Architecture diagrams map how your systems connect. Create one from scratch, or let Nuphos chart your systems.',
+            'Architecture diagrams map how your systems connect. Create one from scratch, or let Cerin chart your systems.',
           )}
           primaryAction={{
             label: t('New diagram'),

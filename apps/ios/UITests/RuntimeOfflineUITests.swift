@@ -7,7 +7,7 @@ final class RuntimeOfflineUITests: XCTestCase {
     private let sessionId = "agent-ops"
     private let teamId = "64b5f1c2e4b0a1d2c3e4f5a6"
     private let runtimeId = "local:preview:preview-mac:claude-code"
-    private let offline = "The computer running this runtime is offline. Open Nuphos on it, or switch to another runtime."
+    private let offline = "The computer running this runtime is offline. Open Cerin on it, or switch to another runtime."
     private var live: URL!
     private var app: XCUIApplication!
 
@@ -69,9 +69,9 @@ final class RuntimeOfflineUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = [
             "-preview-home", "-preview-no-push",
-            "-open-links", "https://nuphos.ai/teams/\(teamId)/agent/\(sessionId)",
+            "-open-links", "https://platform.cerin.ai/teams/\(teamId)/agent/\(sessionId)",
         ]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
     }
 

@@ -18,7 +18,7 @@ const interaction: DiscordInteraction = {
   guild_id: 'guild',
   channel_id: 'thread',
   member: { user: { id: 'discord-user' } },
-  data: { custom_id: 'nuphos:tool:approve:decision' },
+  data: { custom_id: 'cerin:tool:approve:decision' },
   message: { id: 'card' },
 }
 
@@ -43,7 +43,7 @@ function approvalDependencies(
       },
     }),
     discordUserMappings: () => ({
-      findOne: async () => (options.linked === false ? null : { nuphosUserId: 'actor' }),
+      findOne: async () => (options.linked === false ? null : { cerinUserId: 'actor' }),
     }),
     getTeamMembership: async () => ({ role: 'MEMBER' }),
     findPreviewWaitByRef: async () =>
@@ -79,7 +79,7 @@ describe('Discord approvals', () => {
     const { calls, dependencies } = approvalDependencies()
 
     await processDiscordInteraction(
-      { ...interaction, data: { custom_id: 'nuphos:tool:reject:decision' } },
+      { ...interaction, data: { custom_id: 'cerin:tool:reject:decision' } },
       dependencies,
     )
     expect(calls.resolved[0]).toMatchObject({ payload: { decision: 'rejected' } })
@@ -157,7 +157,7 @@ describe('Discord thread mode commands', () => {
       }),
       discordInstallations: () => ({ findOne: async () => ({}) }),
       discordChannelMappings: () => ({ findOne: async () => ({}) }),
-      discordUserMappings: () => ({ findOne: async () => ({ nuphosUserId: 'actor' }) }),
+      discordUserMappings: () => ({ findOne: async () => ({ cerinUserId: 'actor' }) }),
       getTeamMembership: async () => ({ role: 'MEMBER' }),
       setSessionBypass: async (...args: unknown[]) => {
         changes.push(args)
@@ -166,7 +166,7 @@ describe('Discord thread mode commands', () => {
 
     for (const command of ['full-access', 'auto']) {
       await handleDiscordModeCommand(
-        { ...interaction, data: { name: 'nuphos', options: [{ type: 1, name: command }] } },
+        { ...interaction, data: { name: 'cerin', options: [{ type: 1, name: command }] } },
         dependencies,
       )
     }

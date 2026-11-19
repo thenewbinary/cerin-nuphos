@@ -40,17 +40,17 @@ export async function handleAssistantThreadStarted(envelope: SlackEventEnvelope)
   }
   const token = botContext.botToken
 
-  // Validate installation completeness before greeting: if nuphosTeamId is
+  // Validate installation completeness before greeting: if cerinTeamId is
   // absent the workspace was OAuth'd but not fully set up, so the user would
   // see a welcome prompt and then hit an error on their very first message.
   // Surface the problem immediately instead.
-  if (!botContext.nuphosTeamId) {
+  if (!botContext.cerinTeamId) {
     try {
       await postSlackMessage({
         token,
         channel: channelId,
         threadTs,
-        text: 'Nuphos is not fully installed for this Slack workspace yet. Ask an admin to complete the installation.',
+        text: 'Cerin is not fully installed for this Slack workspace yet. Ask an admin to complete the installation.',
       })
     } catch (err) {
       logEvent('warn', 'slack.assistant.install_error_msg_failed', {

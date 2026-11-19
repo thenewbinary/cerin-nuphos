@@ -10,7 +10,7 @@ for mode in release debug; do
   if [[ "$mode" == debug ]]; then flags=(-D DEBUG); fi
   swiftc "${flags[@]}" -parse-as-library -I "$test_dir" -L "$test_dir" -lPostHog \
     -Xlinker -rpath -Xlinker "$test_dir" \
-    nuphos-ios/Services/Analytics.swift nuphos-ios/Models/NuphosUser.swift tests/AnalyticsTests.swift \
+    cerin-ios/Services/Analytics.swift cerin-ios/Models/CerinUser.swift tests/AnalyticsTests.swift \
     -o "$test_dir/analytics-$mode"
   "$test_dir/analytics-$mode"
 done

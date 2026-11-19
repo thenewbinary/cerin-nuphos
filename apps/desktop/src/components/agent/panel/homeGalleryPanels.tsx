@@ -9,7 +9,7 @@ import { Checkbox } from '../../ui/checkbox'
 import { panelKey } from './homeWidgetSettings'
 
 import type { HomePanel } from './homeWidgetSettings'
-import type { NuphosDashboard } from '../../../dashboards/schema'
+import type { CerinDashboard } from '../../../dashboards/schema'
 
 type PanelOption = { id: string; title: string }
 
@@ -34,7 +34,7 @@ function DashboardRow({
   onToggle,
 }: {
   teamId: string
-  dashboard: NuphosDashboard
+  dashboard: CerinDashboard
   pinned: Set<string>
   onToggle: (pin: HomePanel) => void
 }) {
@@ -104,7 +104,7 @@ export function GalleryPanelPicker({
   selected: HomePanel[]
   onToggle: (pin: HomePanel) => void
 }) {
-  const [dashboards, setDashboards] = useState<NuphosDashboard[] | null>(null)
+  const [dashboards, setDashboards] = useState<CerinDashboard[] | null>(null)
   const pinned = new Set(selected.map(panelKey))
 
   useEffect(() => {

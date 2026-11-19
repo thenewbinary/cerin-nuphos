@@ -25,7 +25,7 @@
     <string name="convtext_delivery_unconfirmed">ยืนยันการส่งข้อความไม่ได้ กลับไปใช้การเชื่อมต่อเดิม</string>
     <string name="convtext_task_reloaded">งานนี้ถูกเปลี่ยนจากที่อื่นและโหลดใหม่แล้ว ลองส่งข้อความของคุณอีกครั้ง</string>
     <string name="convtext_connection_quiet">การเชื่อมต่อเงียบหายไปหลายครั้ง โปรดลองอีกครั้ง</string>
-    <string name="convtext_connection_lost">การเชื่อมต่อกับ Nuphos ขาดหาย</string>
+    <string name="convtext_connection_lost">การเชื่อมต่อกับ Cerin ขาดหาย</string>
     <string name="convtext_agent_error">เอเจนต์พบข้อผิดพลาด</string>
     <string name="convtext_phase_waiting_runtime">กำลังรอให้รันไทม์พร้อม…</string>
     <string name="convtext_phase_reconnecting">กำลังเชื่อมต่อใหม่…</string>
@@ -55,14 +55,14 @@
     <string name="convtext_conflict_not_resumable">ไม่สามารถตอบกลับก่อนหน้าต่อได้อีก</string>
     <string name="convtext_conflict_stream">สตรีมนั้นเป็นของงานอื่น</string>
     <string name="convtext_conflict_busy">งานนี้กำลังตอบกลับอีกรายการหนึ่งอยู่</string>
-    <string name="convtext_runtime_signed_out">รันไทม์นี้ออกจากระบบแล้ว ลงชื่อเข้าใช้จาก Nuphos บนคอมพิวเตอร์ที่รันอยู่ หรือสลับไปใช้รันไทม์อื่น</string>
+    <string name="convtext_runtime_signed_out">รันไทม์นี้ออกจากระบบแล้ว ลงชื่อเข้าใช้จาก Cerin บนคอมพิวเตอร์ที่รันอยู่ หรือสลับไปใช้รันไทม์อื่น</string>
     <string name="convtext_runtime_disabled">รันไทม์ของงานนี้ถูกปิดใช้งาน สลับไปใช้รันไทม์อื่นเพื่อดำเนินการต่อ</string>
     <string name="convtext_runtime_not_found">รันไทม์นี้ไม่มีในเวิร์กสเปซนี้แล้ว สลับไปใช้รันไทม์อื่นเพื่อดำเนินการต่อ</string>
-    <string name="convtext_runtime_offline">คอมพิวเตอร์ที่รันรันไทม์นี้ออฟไลน์อยู่ เปิด Nuphos บนเครื่องนั้น หรือสลับไปใช้รันไทม์อื่น</string>
+    <string name="convtext_runtime_offline">คอมพิวเตอร์ที่รันรันไทม์นี้ออฟไลน์อยู่ เปิด Cerin บนเครื่องนั้น หรือสลับไปใช้รันไทม์อื่น</string>
     <string name="convtext_runtime_paused">%1$s หยุดชั่วคราวอยู่ จะทำงานต่อเมื่อคุณส่งข้อความ</string>
     <string name="convtext_ask_owner">ขอเจ้าของ</string>
     <string name="convtext_ask_admin">ขอผู้ดูแลระบบ</string>
-    <string name="convtext_server_status">Nuphos ส่งสถานะ %1$d กลับมา</string>
+    <string name="convtext_server_status">Cerin ส่งสถานะ %1$d กลับมา</string>
     <string name="convtext_attachments_count">เลือกไฟล์แนบ 1 ถึง %1$d ไฟล์</string>
     <string name="convtext_attachment_name_length">ชื่อไฟล์แนบต้องมี 1 ถึง 512 อักขระ</string>
     <string name="convtext_attachment_size">%1$s ต้องมีขนาด 1 ถึง %2$d ไบต์</string>

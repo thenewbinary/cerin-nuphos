@@ -80,7 +80,7 @@ const MAX_INFLIGHT_ESTABLISHES: usize = 64;
 ///
 /// Timeout ordering contract (each layer strictly below the next, so the layer that owns the
 /// failure also reports it): gateway idle timeout (this) < pool `prompt_hard_timeout_secs` <
-/// client per-prompt timeout (Nuphos: 15 min).
+/// client per-prompt timeout (Cerin: 15 min).
 pub const ACP_PROMPT_IDLE_TIMEOUT_SECS: u64 = 180;
 
 /// Floor for the env override: below this a single slow chunk boundary would spuriously kill
@@ -719,7 +719,7 @@ fn refresh_session_passthrough(session: &mut AcpSession, params: Option<&Value>)
 
 const PERMISSION_POLICY_META_KEY: &str = "dev.openab/permissionPolicy";
 const PERMISSION_RELAY_TIMEOUT_SECS: u64 = 900;
-/// Covers a client noticing its lost connection and reattaching (Nuphos: up to ~10 s to detect a
+/// Covers a client noticing its lost connection and reattaching (Cerin: up to ~10 s to detect a
 /// moved device tunnel, then resume retries at 0, 1, 2, 5 and 10 s).
 const PERMISSION_REATTACH_GRACE: std::time::Duration = std::time::Duration::from_secs(30);
 
@@ -4228,7 +4228,7 @@ async fn handle_session_prompt(
         .channel
         .session_meta
         .as_ref()
-        .is_some_and(|meta| meta["ai.nuphos/runtimeAuthority"] == 2)
+        .is_some_and(|meta| meta["ai.cerin/runtimeAuthority"] == 2)
         .then(|| {
             (
                 event.channel.mcp_servers.clone(),
@@ -4265,7 +4265,7 @@ async fn handle_session_prompt(
             admitted = true;
             state.acp_session_requests.open(&channel_id);
             state.acp_session_operations.accepted(&channel_id);
-            if params.and_then(|p| p.pointer("/_meta/ai.nuphos~1acknowledgePrompt")).and_then(Value::as_bool) == Some(true) {
+            if params.and_then(|p| p.pointer("/_meta/ai.cerin~1acknowledgePrompt")).and_then(Value::as_bool) == Some(true) {
                 let _ = out_tx.send(json!({"jsonrpc":"2.0","method":"_openab/session/prompt_accepted","params":{"sessionId":session_id,"requestId":id}}).to_string());
             }
             let payload =
@@ -6225,7 +6225,7 @@ mod acp_handlers {
     #[test]
     fn parse_http_mcp_servers_keeps_http_entries_verbatim_and_caps() {
         let http = json!({
-            "name": "nuphos-credentials",
+            "name": "cerin-credentials",
             "type": "http",
             "url": "https://x.example/mcp",
             "headers": [{"name": "Authorization", "value": "Bearer t"}]
@@ -6422,7 +6422,7 @@ mod acp_handlers {
     #[tokio::test]
     async fn prompt_meta_refreshes_the_live_session_passthrough() {
         let sessions = new_sessions();
-        let stale = json!({"dev.openab/credentials": {"NUPHOS_TOKEN": "old"}});
+        let stale = json!({"dev.openab/credentials": {"CERIN_TOKEN": "old"}});
         let v = serde_json::to_value(
             handle_session_new(&sessions, json!(1), Vec::new(), Some(stale.clone()))
                 .await
@@ -6448,14 +6448,14 @@ mod acp_handlers {
         );
         assert_eq!(session.session_meta, Some(stale));
 
-        let fresh = json!({"dev.openab/credentials": {"NUPHOS_TOKEN": "new"}});
+        let fresh = json!({"dev.openab/credentials": {"CERIN_TOKEN": "new"}});
         let http = json!({"type": "http", "name": "tools", "url": "http://b/mcp", "headers": [
             {"name": "Authorization", "value": "Bearer new"}
         ]});
         refresh_session_passthrough(
             session,
             Some(&json!({"_meta": {
-                "ai.nuphos/acknowledgePrompt": true,
+                "ai.cerin/acknowledgePrompt": true,
                 "dev.openab/sessionMeta": fresh,
                 "dev.openab/mcpServers": [http, {"type": "stdio", "name": "x", "command": "sh"}],
             }})),
@@ -7523,7 +7523,7 @@ mod acp_review_fixes {
 
         let sessions = sessions_map();
         let server = json!({
-            "name": "nuphos-credentials",
+            "name": "cerin-credentials",
             "type": "http",
             "url": "https://x.example/mcp",
             "headers": [{"name": "Authorization", "value": "Bearer t"}]
@@ -7547,7 +7547,7 @@ mod acp_review_fixes {
         cancel.notify_one();
 
         let (out_tx, mut out_rx) = mpsc::unbounded_channel::<String>();
-        let params = json!({"sessionId": sid, "prompt": [{"type": "text", "text": "hi"}], "_meta":{"ai.nuphos/acknowledgePrompt":true}});
+        let params = json!({"sessionId": sid, "prompt": [{"type": "text", "text": "hi"}], "_meta":{"ai.cerin/acknowledgePrompt":true}});
         handle_session_prompt(
             &state,
             &sessions,
@@ -8344,7 +8344,7 @@ mod acp_ws_integration {
     #[test]
     fn steering_receipt_is_the_last_text_part() {
         let header =
-            json!({"type":"text","text":"<nuphos_message_metadata>{}</nuphos_message_metadata>"});
+            json!({"type":"text","text":"<cerin_message_metadata>{}</cerin_message_metadata>"});
         let link = json!({"type":"resource_link","uri":"file:///tmp/a.png","name":"a.png"});
         let words = json!({"type":"text","text":"Focus on tests"});
         assert_eq!(
@@ -8464,7 +8464,7 @@ mod acp_ws_integration {
         let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
         let seen = calls.clone();
         state.acp_session_credentials = Some(Arc::new(move |channel, expected, credentials| {
-            assert_eq!(expected, json!({"NUPHOS_TOKEN":"stale"}));
+            assert_eq!(expected, json!({"CERIN_TOKEN":"stale"}));
             seen.lock().unwrap().push((channel, credentials));
             Box::pin(async { Ok(()) })
         }));
@@ -8489,11 +8489,11 @@ mod acp_ws_integration {
             send(&mut ws, json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":1}})).await;
             let init = recv(&mut ws).await;
             assert_eq!(init["result"]["agentCapabilities"]["_meta"]["dev.openab/credentialRefresh"], true);
-            send(&mut ws, json!({"jsonrpc":"2.0","id":2,"method":"_openab/session/credentials","params":{"sessionId":"sess_173201f5-7973-4186-ae78-e63c2988d1b9","expected":{"NUPHOS_TOKEN":"stale"},"credentials":{"NUPHOS_TOKEN":"fresh"}}})).await;
+            send(&mut ws, json!({"jsonrpc":"2.0","id":2,"method":"_openab/session/credentials","params":{"sessionId":"sess_173201f5-7973-4186-ae78-e63c2988d1b9","expected":{"CERIN_TOKEN":"stale"},"credentials":{"CERIN_TOKEN":"fresh"}}})).await;
             let result = recv(&mut ws).await;
             if operator {
                 assert_eq!(result["result"], json!({}));
-                send(&mut ws, json!({"jsonrpc":"2.0","id":3,"method":"_openab/session/credentials","params":{"sessionId":"sess_173201f5-7973-4186-ae78-e63c2988d1b9","credentials":{"NUPHOS_TOKEN":"fresh"}}})).await;
+                send(&mut ws, json!({"jsonrpc":"2.0","id":3,"method":"_openab/session/credentials","params":{"sessionId":"sess_173201f5-7973-4186-ae78-e63c2988d1b9","credentials":{"CERIN_TOKEN":"fresh"}}})).await;
                 assert_eq!(recv(&mut ws).await["error"]["code"], -32602);
             } else {
                 assert_eq!(result["error"]["code"], -32003);
@@ -8503,7 +8503,7 @@ mod acp_ws_integration {
             *calls.lock().unwrap(),
             vec![(
                 "acp_173201f5-7973-4186-ae78-e63c2988d1b9".to_string(),
-                json!({"NUPHOS_TOKEN":"fresh"})
+                json!({"CERIN_TOKEN":"fresh"})
             )]
         );
     }
@@ -9059,11 +9059,11 @@ mod acp_ws_integration {
     async fn only_the_operator_credential_runs_an_advertised_runtime_job() {
         let _serialized = runtime_job::TEST_GUARD.lock().await;
         let address = serve_runtime_jobs(
-            RuntimeJobs::default().with_job("echo", sh_job("cat; printf \" $NUPHOS_TOKEN\"")),
+            RuntimeJobs::default().with_job("echo", sh_job("cat; printf \" $CERIN_TOKEN\"")),
         )
         .await;
         let job = json!({"jsonrpc":"2.0","id":2,"method":"_openab/runtime/job","params":{
-            "jobId":"ws-1","job":"echo","stdin":"hello","env":{"NUPHOS_TOKEN":"t0k"},
+            "jobId":"ws-1","job":"echo","stdin":"hello","env":{"CERIN_TOKEN":"t0k"},
             "timeoutMs":10_000,"maxStdoutBytes":1024
         }});
 

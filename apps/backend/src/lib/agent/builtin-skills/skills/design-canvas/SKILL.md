@@ -1,6 +1,6 @@
 ---
 name: design-canvas
-description: Lay out, review and iterate on a product's screens on a Nuphos Design canvas — pages of live HTML frames, sections, notes and flow arrows that the team edits beside you. Use whenever asked to design screens, mock up a UI, put screens on a canvas, build a user flow, or change a frame on an open design.
+description: Lay out, review and iterate on a product's screens on a Cerin Design canvas — pages of live HTML frames, sections, notes and flow arrows that the team edits beside you. Use whenever asked to design screens, mock up a UI, put screens on a canvas, build a user flow, or change a frame on an open design.
 ---
 
 # Design canvas
@@ -23,7 +23,7 @@ A **design** is a team document the user opens on the Designs page. It holds
 Positions are absolute top-left canvas units; nothing nests. A frame sits in a
 section when its rectangle falls inside the section's rectangle.
 
-You edit through the Nuphos REST API; the canvas updates live while the user
+You edit through the Cerin REST API; the canvas updates live while the user
 has it open. Never paste the HTML into the chat, and do not use the `artifact`
 tool for screens that belong on the canvas. **Do NOT create a plan** for design
 work.
@@ -76,12 +76,12 @@ same `id` and the complete new `html`. Generate stable unique string ids
 locally. Deleting a frame drops the links attached to it.
 
 Link to the design in your answer so the user can open it:
-`https://nuphos.ai/teams/<teamId>/designs/<designId>`.
+`https://platform.cerin.ai/teams/<teamId>/designs/<designId>`.
 
 ## Frames
 
 - A frame's `html` is **one complete document** with inline `<style>` and
-  `<script>`. It runs in a sandbox with no access to Nuphos, the user's session,
+  `<script>`. It runs in a sandbox with no access to Cerin, the user's session,
   cookies or storage; it may load libraries from public https CDNs; links open in
   the user's browser.
 - Size the frame like the device: phone `390×844`, tablet `834×1194`, desktop

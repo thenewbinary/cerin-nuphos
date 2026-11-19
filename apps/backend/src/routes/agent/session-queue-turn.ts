@@ -12,7 +12,7 @@ import { sessionReleased } from '@/lib/agent/session-released'
 import { startTraceSpan } from '@/lib/agent/tracing'
 import { resolveConversationChatRuntime } from '@/lib/claude-code-preview/agent-chat-runtime'
 import { AppError } from '@/lib/errors'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import { logEvent } from '@/lib/observability'
 
 import { launchAcceptedChatTurn } from './chat-post-run'
@@ -243,7 +243,7 @@ export async function launchQueuedChatTurn(
     requestId,
     streamId: chat.streamId,
     userId: actorUserId,
-    nuphosToken: signNuphosToken(actorUserId, QUEUED_TOKEN_TTL_SECONDS),
+    cerinToken: signCerinToken(actorUserId, QUEUED_TOKEN_TTL_SECONDS),
     locale: chat.locale,
     currentUrl: chat.currentUrl ?? null,
     localToolsEnabled: chat.localTools,

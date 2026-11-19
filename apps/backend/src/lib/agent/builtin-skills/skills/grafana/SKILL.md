@@ -1,13 +1,13 @@
 ---
 name: grafana
-description: Inspect and operate Grafana instances bound to an Nuphos team. All HTTP calls go through Nuphos backend's authenticated proxy — no SA token handling, no CORS, no extra setup. Covers dashboards, folders, datasources, queries (`/api/ds/query`), alerting, and Loki/Prometheus log + metric pulls.
+description: Inspect and operate Grafana instances bound to an Cerin team. All HTTP calls go through Cerin backend's authenticated proxy — no SA token handling, no CORS, no extra setup. Covers dashboards, folders, datasources, queries (`/api/ds/query`), alerting, and Loki/Prometheus log + metric pulls.
 ---
 
 # Grafana
 
-Use this skill when the user wants you to look at or change anything on a Grafana instance their team has bound to Nuphos — dashboards, panels, alerts, datasources, or to actually run a Loki / Prometheus query and read back metrics or logs.
+Use this skill when the user wants you to look at or change anything on a Grafana instance their team has bound to Cerin — dashboards, panels, alerts, datasources, or to actually run a Loki / Prometheus query and read back metrics or logs.
 
-There is **nothing to install**. You don't talk to Grafana directly — you call Nuphos backend, and Nuphos backend proxies the request to the bound Grafana with the team's service-account token injected. The agent never sees the SA token.
+There is **nothing to install**. You don't talk to Grafana directly — you call Cerin backend, and Cerin backend proxies the request to the bound Grafana with the team's service-account token injected. The agent never sees the SA token.
 
 ## Setup
 
@@ -18,8 +18,8 @@ instance the user means and reuse its `proxyBase` for every call — there is no
 to run and no token to fetch.
 
 ```bash
-# Reuse the helper from the nuphos-api skill (loads it if needed):
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+# Reuse the helper from the cerin-api skill (loads it if needed):
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://platform.cerin.ai}$1" "${@:2}"; }
 
 # Stash the instance id from the credential section for the rest of the session.
 GI=<instanceId from the credential section>
@@ -42,11 +42,11 @@ ac /teams/$TEAM/grafana-instances | python3 -m json.tool
 Every Grafana HTTP API path you'd hit on the upstream maps 1:1 onto:
 
 ```
-${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}/teams/$TEAM/grafana-instances/$GI/proxy/<grafana-path>
+${CERIN_BACKEND_URL:-https://platform.cerin.ai}/teams/$TEAM/grafana-instances/$GI/proxy/<grafana-path>
 ```
 
 - All HTTP methods are forwarded (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`).
-- The agent's `Authorization: Bearer $NUPHOS_TOKEN` is consumed by Nuphos backend; the proxy strips it and replaces it with the bound `Bearer <saToken>` before forwarding. **Don't** try to send a Grafana token yourself — it'll just be discarded.
+- The agent's `Authorization: Bearer $CERIN_TOKEN` is consumed by Cerin backend; the proxy strips it and replaces it with the bound `Bearer <saToken>` before forwarding. **Don't** try to send a Grafana token yourself — it'll just be discarded.
 - Cookies and `Set-Cookie` are stripped both ways. This is an API channel, not a browser session.
 - Query strings, request bodies, and response bodies pass through unchanged. You can stream Loki `tail` responses if needed.
 - 30 s upstream timeout. Long Prometheus range queries should narrow the time window or use `step=` rather than retrying.
@@ -158,13 +158,13 @@ ac "/teams/$TEAM/grafana-instances/$GI/proxy/api/datasources/proxy/uid/$DS_UID/a
   | python3 -m json.tool
 ```
 
-## Wiring a Grafana alert to a Nuphos agent trigger
+## Wiring a Grafana alert to a Cerin agent trigger
 
-Use this when the user says "watch this alert / when X fires, do Y" (post to Slack, investigate, scale something…). The pattern: Grafana keeps the condition (the alert rule), Nuphos receives the notification (a webhook trigger), and the conversation the trigger is bound to performs Y. Every firing lands in that same conversation.
+Use this when the user says "watch this alert / when X fires, do Y" (post to Slack, investigate, scale something…). The pattern: Grafana keeps the condition (the alert rule), Cerin receives the notification (a webhook trigger), and the conversation the trigger is bound to performs Y. Every firing lands in that same conversation.
 
-**Completion contract:** creating the Nuphos trigger is only step 1 and NEVER means the Watch is live. Finish the contact point, exact-rule routing, read-back, and drill in the same turn. A generated Watch prompt explicitly authorizes additive wiring scoped to that exact rule, so do not ask for a second confirmation. Preserve every existing notification receiver by default; only ask when the provider cannot preserve it without a genuine tradeoff. Never hand the user the webhook URL or Grafana setup instructions when this authenticated proxy can perform the writes.
+**Completion contract:** creating the Cerin trigger is only step 1 and NEVER means the Watch is live. Finish the contact point, exact-rule routing, read-back, and drill in the same turn. A generated Watch prompt explicitly authorizes additive wiring scoped to that exact rule, so do not ask for a second confirmation. Preserve every existing notification receiver by default; only ask when the provider cannot preserve it without a genuine tradeoff. Never hand the user the webhook URL or Grafana setup instructions when this authenticated proxy can perform the writes.
 
-If the requested destination is Slack, call `slack_list_destinations` before creating the trigger. The destination must come from the user's explicit Watch choice: `dm_self`, or one exact joined channel. Name that exact choice in the messageTemplate. If the user chose Nuphos, keep the result in the bound Nuphos conversation and do not add Slack delivery.
+If the requested destination is Slack, call `slack_list_destinations` before creating the trigger. The destination must come from the user's explicit Watch choice: `dm_self`, or one exact joined channel. Name that exact choice in the messageTemplate. If the user chose Cerin, keep the result in the bound Cerin conversation and do not add Slack delivery.
 
 1. **Create the webhook trigger** through the `triggers` skill (`triggerType: "webhook"`, `targetSessionId` this conversation unless the user names another of theirs; first list the triggers bound to it and reuse one that already receives this rule). Write the messageTemplate as the ACTION, branching on the Grafana payload — a webhook notification body has `status` ("firing" | "resolved"), `title`, `message`, and `alerts[]` with `labels`/`annotations`:
 
@@ -173,12 +173,12 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    Title: {{payload.title}}
    If the payload contains "test": true or "drill": true, or clearly identifies Grafana's contact-point test notification, reply "test delivery received" and STOP — no investigation.
    For Slack, first check the earlier firings in this conversation to see whether this alert has already been reported. Investigate, then call slack_post once when this firing is worth telling people about — a new problem, a material change, or its recovery; an unchanged repeat needs no post. Post to the exact destination the user approved, as written in the messageTemplate, including slackWorkspaceId when it is known: {"type":"channel","channelId":"<the selected stable ID>","slackWorkspaceId":"<its workspace>"} for a channel, or {"type":"dm_self"} for a DM. Keep bindConversation on unless this conversation is already bound to a Slack thread, in which case pass bindConversation=false.
-   For Nuphos-only delivery, keep the findings here and do not call slack_post.
+   For Cerin-only delivery, keep the findings here and do not call slack_post.
    ```
 
    Always include the drill line: delivery tests then cost one short reply instead of a full investigation session — send `{"test": true, "status": "firing"}` when verifying.
 
-   Each Slack post is one message from this conversation; replies in the thread under the first, bound post continue this conversation. Tell the user they can reply there to continue with Nuphos.
+   Each Slack post is one message from this conversation; replies in the thread under the first, bound post continue this conversation. Tell the user they can reply there to continue with Cerin.
 
    The result gives you `webhookUrl` and `webhookSecret` (returned only once).
 
@@ -188,7 +188,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    ac -X POST "/teams/$TEAM/grafana-instances/$GI/proxy/api/v1/provisioning/contact-points" \
      -H 'content-type: application/json' \
      -d "{
-       \"name\": \"nuphos-<trigger name>\",
+       \"name\": \"cerin-<trigger name>\",
        \"type\": \"webhook\",
        \"settings\": {
          \"url\": \"<webhookUrl>\",
@@ -204,27 +204,27 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    Grafana rules that directly select a contact point use an internal policy and do **not** pass through the user policy tree. Therefore adding a normal child policy while leaving `notification_settings.receiver` set does nothing. The safe Watch recipe is:
 
    1. Save the full rule and full policy tree for rollback, including response `ETag`, `resourceVersion`, `version`, `updated`, or equivalent concurrency metadata when present. Immediately before each full-resource PUT, GET that resource again and compare its canonical JSON with the snapshot you based the edit on. If it changed, abort and recompute instead of overwriting someone else's edit. When the Grafana endpoint/version exposes optimistic concurrency (`resourceVersion`, a version parameter, or `ETag`/`If-Match`), send it on the write. The legacy `/api/v1/provisioning/alert-rules/:uid` and `/policies` endpoints do not expose a general version parameter, so the immediate preflight comparison is mandatory there. Apply the same guard to rollback: restore a snapshot only when the current resource still equals the state written by this attempt; otherwise stop and report the concurrent edit.
-   2. Add a unique exact-match label to this rule, normally `nuphos_watch="<trigger id>"`. Fail closed if `nuphos_watch` already exists: reuse it only when its value, contact point, policy route, and trigger all match this same workflow. Never overwrite a different Watch's label. Otherwise choose a collision-free valid label key such as `nuphos_watch_<short trigger id>` (letters, digits, and underscores only), re-fetch the rule to prove that key is absent, and use that exact key/value in every matcher and read-back check. Use the trigger id, not only `alertname`, so duplicate rule names cannot broaden delivery.
+   2. Add a unique exact-match label to this rule, normally `cerin_watch="<trigger id>"`. Fail closed if `cerin_watch` already exists: reuse it only when its value, contact point, policy route, and trigger all match this same workflow. Never overwrite a different Watch's label. Otherwise choose a collision-free valid label key such as `cerin_watch_<short trigger id>` (letters, digits, and underscores only), re-fetch the rule to prove that key is absent, and use that exact key/value in every matcher and read-back check. Use the trigger id, not only `alertname`, so duplicate rule names cannot broaden delivery.
    3. If the rule has direct `notification_settings`, preserve its receiver/timing values, then set `notification_settings` to `null` in the full rule body so this rule uses the policy tree. PUT the complete rule back; preserve every unrelated field.
-   4. For a rule that was already policy-routed, prepend only an exact-label Nuphos route with `"continue": true`, then leave the original policy tree untouched so it continues to determine every prior delivery. Do not synthesize or reorder its receiver routes: route order, nested inheritance, `continue`, and mute intervals are semantic. Only when step 3 cleared a direct `notification_settings` receiver should you prepend an exact-label compatibility route for that direct receiver (copy its direct grouping/timing settings, `"continue": true`), followed by the exact-label Nuphos route with `"continue": false`; stopping there preserves the former direct receiver plus Nuphos without accidentally adding the policy tree's default receiver.
+   4. For a rule that was already policy-routed, prepend only an exact-label Cerin route with `"continue": true`, then leave the original policy tree untouched so it continues to determine every prior delivery. Do not synthesize or reorder its receiver routes: route order, nested inheritance, `continue`, and mute intervals are semantic. Only when step 3 cleared a direct `notification_settings` receiver should you prepend an exact-label compatibility route for that direct receiver (copy its direct grouping/timing settings, `"continue": true`), followed by the exact-label Cerin route with `"continue": false`; stopping there preserves the former direct receiver plus Cerin without accidentally adding the policy tree's default receiver.
    5. Re-fetch and compare the policy snapshot (and send its concurrency token where supported), then PUT the WHOLE policy tree back — never a partial tree, because Grafana replaces the tree.
 
-   Do not append the webhook integration to a shared receiver: that would send every alert using the receiver to Nuphos. If the user explicitly asks to replace existing notifications or enable Agent for a whole shared receiver, explain the blast radius and confirm that broader change separately.
+   Do not append the webhook integration to a shared receiver: that would send every alert using the receiver to Cerin. If the user explicitly asks to replace existing notifications or enable Agent for a whole shared receiver, explain the blast radius and confirm that broader change separately.
 
 4. **Control noise at every layer.** Grafana re-sends on `repeat_interval` while an alert stays firing. Set a long `repeat_interval` (e.g. `4h`) and a sensible `group_wait` so the trigger fires mostly on transitions; set `minIntervalSeconds` for retry bursts. For Slack, post only for a new problem, a material change, and its resolution. The Agent makes the semantic SRE judgment: repeated timestamps, minor metric movement, and unchanged evidence are not material and should not call `slack_post`.
 
 5. **Verify end-to-end before saying live**:
-   - GET the contact points and verify the new Nuphos receiver exists and targets this trigger.
-   - GET the alert rule and verify its unique `nuphos_watch` label plus policy-routing state.
-   - GET the policy tree and verify the exact-label Nuphos route exists, any compatibility route came only from cleared direct `notification_settings`, and the original policy tree is otherwise structurally unchanged.
-   - `POST /{triggerId}/test-fire` (see the `triggers` skill) with `{"test": true, "status": "firing", "title": "Nuphos wiring drill"}` to check the cheap action branch, then Grafana's contact-point test (`POST /api/v1/provisioning/contact-points/test` where supported) to prove Grafana contact point → trigger delivery.
-   - A contact-point test does **not** prove that this alert rule selects the expected preserved receiver(s) plus Nuphos. If this Grafana version exposes a rule-level preview/drill that evaluates the exact saved rule through notification routing, run it and verify every expected receiver. Otherwise state precisely: "contact-point delivery verified; exact-rule routing structurally verified but runtime routing unverified". Do not describe the whole workflow as end-to-end tested or fully live until a real firing delivery or supported rule-level routing drill proves that last hop.
+   - GET the contact points and verify the new Cerin receiver exists and targets this trigger.
+   - GET the alert rule and verify its unique `cerin_watch` label plus policy-routing state.
+   - GET the policy tree and verify the exact-label Cerin route exists, any compatibility route came only from cleared direct `notification_settings`, and the original policy tree is otherwise structurally unchanged.
+   - `POST /{triggerId}/test-fire` (see the `triggers` skill) with `{"test": true, "status": "firing", "title": "Cerin wiring drill"}` to check the cheap action branch, then Grafana's contact-point test (`POST /api/v1/provisioning/contact-points/test` where supported) to prove Grafana contact point → trigger delivery.
+   - A contact-point test does **not** prove that this alert rule selects the expected preserved receiver(s) plus Cerin. If this Grafana version exposes a rule-level preview/drill that evaluates the exact saved rule through notification routing, run it and verify every expected receiver. Otherwise state precisely: "contact-point delivery verified; exact-rule routing structurally verified but runtime routing unverified". Do not describe the whole workflow as end-to-end tested or fully live until a real firing delivery or supported rule-level routing drill proves that last hop.
 
-6. **Report** the verified chain and its exact status: rule → old receiver(s) + Nuphos contact point → trigger → selected destination. Call it fully live only when the runtime-routing requirement above passed; otherwise keep the explicit structural/runtime caveat. Name the contact point, the label key/value, any routing you changed, and the rule's former `notification_settings` if step 3 cleared them: Nuphos does not record them, and removing the trigger leaves them in Grafana.
+6. **Report** the verified chain and its exact status: rule → old receiver(s) + Cerin contact point → trigger → selected destination. Call it fully live only when the runtime-routing requirement above passed; otherwise keep the explicit structural/runtime caveat. Name the contact point, the label key/value, any routing you changed, and the rule's former `notification_settings` if step 3 cleared them: Cerin does not record them, and removing the trigger leaves them in Grafana.
 
 If any provider write or verification fails, restore the saved rule/policy snapshots, delete the newly created contact point, and delete the newly created trigger when safe. Report the exact failed API call; do not leave an enabled orphan trigger and call the workflow complete.
 
-To tear down, confirm with the user, then undo the Grafana side yourself with the same snapshot-and-compare care as above: remove the exact-label routes, restore the rule's former `notification_settings` if step 3 cleared them, remove the Nuphos label, and delete the contact point. Then delete the trigger. Deleting the trigger alone does not touch Grafana.
+To tear down, confirm with the user, then undo the Grafana side yourself with the same snapshot-and-compare care as above: remove the exact-label routes, restore the rule's former `notification_settings` if step 3 cleared them, remove the Cerin label, and delete the contact point. Then delete the trigger. Deleting the trigger alone does not touch Grafana.
 
 ## Safety
 
@@ -232,5 +232,5 @@ To tear down, confirm with the user, then undo the Grafana side yourself with th
 - **Confirm before mutating.** `POST /api/dashboards/db` (create / update dashboard), `DELETE /api/dashboards/uid/<uid>`, `POST/PUT/DELETE` on `/api/datasources`, `/api/folders`, `/api/alertmanager/...`, `/api/v1/provisioning/...` all change state. Summarize the exact change (which dashboard, which folder, which alert rule) and ask the user before sending the request. A generated Watch prompt already confirms the additive, exact-rule wiring described above; do not ask twice.
 - **Treat dashboards like code.** When updating a dashboard, fetch the current JSON first, modify the relevant fields, bump `version`, and POST back the full payload — don't write a "best guess" dashboard from scratch unless the user explicitly asked for net-new.
 - **Don't dump secrets.** `/api/datasources` responses include `secureJsonFields` (booleans, fine) but `basicAuthPassword` / `secureJsonData` should never be printed back to the user even if they appear; summarize "datasource X has basic auth configured" instead.
-- **No raw SA token.** The proxy holds it; you can't read it and you don't need to. If a user asks "what's the token", tell them it's stored encrypted on Nuphos backend and only an admin can rotate it via `DELETE` + re-bind.
+- **No raw SA token.** The proxy holds it; you can't read it and you don't need to. If a user asks "what's the token", tell them it's stored encrypted on Cerin backend and only an admin can rotate it via `DELETE` + re-bind.
 - **Errors from the proxy.** `404 grafana_instance_not_bound` means the `$GI` is wrong for this team. `502 grafana_unreachable` means the upstream Grafana is down or the URL is misconfigured — don't retry in a tight loop, tell the user. Anything else is the upstream Grafana's own status code, passed through verbatim.

@@ -177,7 +177,7 @@ export function deleteBox(
   return call('DELETE', box(deviceId, '', teamId), undefined, { retry: false })
 }
 
-/** Restarts the caller's other computer into the Nuphos Desktop update it downloaded. */
+/** Restarts the caller's other computer into the Cerin Desktop update it downloaded. */
 export function updateDeviceApp(deviceId: string, teamId: string): Promise<{ version: string }> {
   return call(
     'POST',
@@ -257,7 +257,7 @@ export async function boxBillingPage(teamId: string, vcpus?: number): Promise<{ 
     vcpus === undefined
       ? await billing(teamId, 'POST', 'portal')
       : await billing(teamId, 'POST', 'checkout', {
-          plan: `nuphos_box_${String(vcpus)}vcpu_monthly`,
+          plan: `cerin_box_${String(vcpus)}vcpu_monthly`,
         })
 
   if (!page.ok && page.error === 'already_subscribed')

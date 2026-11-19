@@ -30,7 +30,7 @@ test('runtime discovery skips other components, follows pages and preserves the 
   resetRuntimeReleaseCache()
   const originalFetch = globalThis.fetch
   const image = (version: string, provider = 'codex') =>
-    `ghcr.io/nuphos/runtime:${version}-${provider}`
+    `ghcr.io/thenewbinary/cerin-runtime:${version}-${provider}`
   const requests: string[] = []
   let responses: Response[] = []
 
@@ -55,7 +55,7 @@ test('runtime discovery skips other components, follows pages and preserves the 
         ],
         {
           headers: {
-            link: '<https://api.github.com/repos/nuphos/nuphos/releases?page=2>; rel="next"',
+            link: '<https://api.github.com/repos/thenewbinary/cerin-platform/releases?page=2>; rel="next"',
           },
         },
       ),
@@ -63,7 +63,7 @@ test('runtime discovery skips other components, follows pages and preserves the 
     ]
     expect(await latestRuntimeRelease('codex', true)).toEqual({
       version: '0.1.10',
-      url: 'https://github.com/nuphos/nuphos/releases/tag/runtime-v0.1.10',
+      url: 'https://github.com/thenewbinary/cerin-platform/releases/tag/runtime-v0.1.10',
       body: image('0.1.10'),
     })
     expect(requests).toHaveLength(2)
@@ -76,14 +76,14 @@ test('runtime discovery skips other components, follows pages and preserves the 
       Response.json([]),
       Response.json({
         tag_name: 'v0.1.9',
-        body: image('0.1.9').replace('nuphos/runtime', 'zeabur/nuphos-runtime'),
+        body: image('0.1.9').replace('cerin/runtime', 'zeabur/cerin-runtime'),
       }),
     ]
     expect((await latestRuntimeRelease('codex', true))?.url).toBe(
-      'https://github.com/zeabur/nuphos-runtime/releases/tag/v0.1.9',
+      'https://github.com/zeabur/cerin-runtime/releases/tag/v0.1.9',
     )
     expect(requests.at(-1)).toBe(
-      'https://api.github.com/repos/zeabur/nuphos-runtime/releases/latest',
+      'https://api.github.com/repos/zeabur/cerin-runtime/releases/latest',
     )
 
     resetRuntimeReleaseCache()
@@ -106,7 +106,7 @@ test('each provider follows the newest release that published it', async () => {
   resetRuntimeReleaseCache()
   const originalFetch = globalThis.fetch
   const image = (version: string, provider: string) =>
-    `ghcr.io/nuphos/runtime:${version}-${provider}`
+    `ghcr.io/thenewbinary/cerin-runtime:${version}-${provider}`
   const all = ['claude-code', 'codex', 'grok', 'antigravity', 'opencode', 'dsh']
 
   globalThis.fetch = (async (_url: FetchInput) =>

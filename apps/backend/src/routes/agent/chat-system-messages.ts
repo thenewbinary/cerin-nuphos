@@ -42,7 +42,7 @@ export const TEAM_SKILL_TOOL_MESSAGE = [
   '- Confirm the skill name and what will be stored BEFORE calling `skill_create` or `skill_upsert` — these mutate shared team state visible in the Skills library.',
   '- `skill_create`: only for a NEW skill directory. Provide name, description, and SKILL.md body; optional `files[]` for scripts/references.',
   '- `skill_upsert`: update existing files via `{ key: "skills/<name>/...", content }` entries. Use when revising an existing team skill.',
-  '- Never store secrets, API keys, tokens, or private keys in skill files. Reference env vars, Nuphos credentials, or ask the user to configure secrets separately.',
+  '- Never store secrets, API keys, tokens, or private keys in skill files. Reference env vars, Cerin credentials, or ask the user to configure secrets separately.',
   '- After saving, the skill appears in the registry on the next turn; use `skill("<name>")` to load the full SKILL.md before relying on it.',
   '- VIEWER team members cannot write skills; if the user lacks permission, explain that an EDITOR or ADMINISTRATOR must make the change or upgrade their role.',
 ].join('\n')
@@ -77,41 +77,41 @@ export function buildTurnRulesMessage(): string {
 }
 
 export const API_ROUTING_MESSAGE = [
-  '## Nuphos backend API routing',
+  '## Cerin backend API routing',
   '',
-  'When calling Nuphos backend APIs from the sandbox shell, never hard-code `https://api.nuphos.ai`.',
-  'Always use the `ac` helper from the nuphos-api skill, or build URLs from `${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}`. Local dev injects `NUPHOS_BACKEND_URL` so approved agent commands route back through the developer tunnel to the same backend this chat is using.',
+  'When calling Cerin backend APIs from the sandbox shell, never hard-code `https://platform.cerin.ai`.',
+  'Always use the `ac` helper from the cerin-api skill, or build URLs from `${CERIN_BACKEND_URL:-https://platform.cerin.ai}`. Local dev injects `CERIN_BACKEND_URL` so approved agent commands route back through the developer tunnel to the same backend this chat is using.',
 ].join('\n')
 
-export function buildNuphosLinksMessage(
+export function buildCerinLinksMessage(
   teamId: string | undefined,
   options?: { nativeClaudeSkills?: boolean },
 ): string {
   const nativeClaudeSkills = options?.nativeClaudeSkills === true
 
   return [
-    '## Nuphos resource links',
+    '## Cerin resource links',
     '',
-    `The canonical Nuphos web URL is https://nuphos.ai. The current team id is ${teamId ?? 'unknown'}.`,
-    'This is a formatting contract for every visible assistant prose message in the Nuphos transcript, not an optional suggestion and not only for the final answer.',
-    'When any assistant prose you write mentions a concrete resource that has a Nuphos GUI page and you know the identifiers needed for its URL, the first visible occurrence of that resource name/id MUST be a markdown link. This applies before, between, and after tool calls, inside paragraphs, bullet lists, markdown tables, and inline-code-looking identifiers in prose.',
-    'Do not leave a supported Nuphos resource as plain text in a result table when the same row or surrounding text contains the parent account/project/cluster/zone identifiers needed to build the URL.',
+    `The canonical Cerin web URL is https://platform.cerin.ai. The current team id is ${teamId ?? 'unknown'}.`,
+    'This is a formatting contract for every visible assistant prose message in the Cerin transcript, not an optional suggestion and not only for the final answer.',
+    'When any assistant prose you write mentions a concrete resource that has a Cerin GUI page and you know the identifiers needed for its URL, the first visible occurrence of that resource name/id MUST be a markdown link. This applies before, between, and after tool calls, inside paragraphs, bullet lists, markdown tables, and inline-code-looking identifiers in prose.',
+    'Do not leave a supported Cerin resource as plain text in a result table when the same row or surrounding text contains the parent account/project/cluster/zone identifiers needed to build the URL.',
     nativeClaudeSkills
-      ? 'Do not memorize, guess, or reconstruct Nuphos GUI routes. When a semantic script or Nuphos API response provides canonical `_links`/resource paths, copy those values verbatim. Otherwise search `skills/nuphos-api/references/gui-routes.md` and use a route only when every required id is known.'
-      : 'Do not memorize or guess GUI routes. Search the injected route catalog with `rg -i "<resource keyword>" skills/nuphos-api/references/gui-routes.md` before constructing Nuphos markdown links. The file is grep-friendly and lists route ids, keywords, required ids, URL templates, and suggested link text.',
+      ? 'Do not memorize, guess, or reconstruct Cerin GUI routes. When a semantic script or Cerin API response provides canonical `_links`/resource paths, copy those values verbatim. Otherwise search `skills/cerin-api/references/gui-routes.md` and use a route only when every required id is known.'
+      : 'Do not memorize or guess GUI routes. Search the injected route catalog with `rg -i "<resource keyword>" skills/cerin-api/references/gui-routes.md` before constructing Cerin markdown links. The file is grep-friendly and lists route ids, keywords, required ids, URL templates, and suggested link text.',
     ...(nativeClaudeSkills
       ? []
       : [
-          'Examples: `rg -i "s3|bucket" skills/nuphos-api/references/gui-routes.md`; `rg -i "ec2|instance" skills/nuphos-api/references/gui-routes.md`; `rg -i "grafana|dashboard" skills/nuphos-api/references/gui-routes.md`; `rg -i "pod|deployment|service" skills/nuphos-api/references/gui-routes.md`.',
-          'Use a catalog row only when you have every required id listed on that row. Use the exact displayed resource name/id as the markdown link text. Example: `[prod-cluster](https://nuphos.ai/teams/<teamId>/infra/aws/<accountId>/clusters/<region>/<clusterName>)`.',
+          'Examples: `rg -i "s3|bucket" skills/cerin-api/references/gui-routes.md`; `rg -i "ec2|instance" skills/cerin-api/references/gui-routes.md`; `rg -i "grafana|dashboard" skills/cerin-api/references/gui-routes.md`; `rg -i "pod|deployment|service" skills/cerin-api/references/gui-routes.md`.',
+          'Use a catalog row only when you have every required id listed on that row. Use the exact displayed resource name/id as the markdown link text. Example: `[prod-cluster](https://platform.cerin.ai/teams/<teamId>/infra/aws/<accountId>/clusters/<region>/<clusterName>)`.',
         ]),
     nativeClaudeSkills
-      ? 'Keep links useful rather than noisy: link each important resource once, then you may refer to it plainly later. If neither the response nor route catalog supplies a complete route, do not invent a Nuphos URL.'
-      : 'Keep links useful rather than noisy: link each important resource once, then you may refer to it plainly later. If the catalog has no matching route, or you are missing an id, do not invent a Nuphos URL.',
+      ? 'Keep links useful rather than noisy: link each important resource once, then you may refer to it plainly later. If neither the response nor route catalog supplies a complete route, do not invent a Cerin URL.'
+      : 'Keep links useful rather than noisy: link each important resource once, then you may refer to it plainly later. If the catalog has no matching route, or you are missing an id, do not invent a Cerin URL.',
     '',
     nativeClaudeSkills
       ? 'Before sending any visible assistant prose, scan it once and use every relevant canonical resource link returned by the operations you performed or resolved from the route catalog.'
-      : 'Before sending any visible assistant prose, scan that prose once: if a concrete supported Nuphos GUI resource appears without a markdown link and you know the URL from the catalog, rewrite that occurrence as a link before emitting it.',
+      : 'Before sending any visible assistant prose, scan that prose once: if a concrete supported Cerin GUI resource appears without a markdown link and you know the URL from the catalog, rewrite that occurrence as a link before emitting it.',
   ].join('\n')
 }
 

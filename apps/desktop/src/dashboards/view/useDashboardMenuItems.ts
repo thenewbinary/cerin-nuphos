@@ -10,7 +10,7 @@ import { t } from '../../i18n'
 import { canEditDashboard, moveTarget } from './visibility'
 
 import type { ContextMenuItem } from '../../components/ContextMenu'
-import type { DashboardVisibility, NuphosDashboard } from '../schema'
+import type { DashboardVisibility, CerinDashboard } from '../schema'
 import type { Dispatch, SetStateAction } from 'react'
 
 /**
@@ -19,14 +19,14 @@ import type { Dispatch, SetStateAction } from 'react'
  */
 export function useDashboardMenuItems(
   teamId: string,
-  setDashboards: Dispatch<SetStateAction<NuphosDashboard[]>>,
-  onDelete: (dashboard: NuphosDashboard) => void,
+  setDashboards: Dispatch<SetStateAction<CerinDashboard[]>>,
+  onDelete: (dashboard: CerinDashboard) => void,
 ) {
   const role = useTeamRole(teamId)
   const userId = useCurrentUser()?.id
 
   const move = useCallback(
-    async (dashboard: NuphosDashboard, visibility: DashboardVisibility) => {
+    async (dashboard: CerinDashboard, visibility: DashboardVisibility) => {
       try {
         const saved = await api.dashboardsUpdate(teamId, dashboard.id, { visibility })
 
@@ -38,7 +38,7 @@ export function useDashboardMenuItems(
     [teamId, setDashboards],
   )
 
-  return (row: NuphosDashboard): ContextMenuItem[] => {
+  return (row: CerinDashboard): ContextMenuItem[] => {
     const to = moveTarget(row, userId, role)
     const items: ContextMenuItem[] = []
 

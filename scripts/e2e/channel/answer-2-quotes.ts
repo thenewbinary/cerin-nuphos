@@ -20,7 +20,7 @@ const scenario: Scenario = {
       'e2e-teammate-reply',
       {
         version: 1,
-        source: 'nuphos',
+        source: 'cerin',
         sender: { type: 'user', id: 'e2e-teammate', displayName: 'Mei Chen' },
         replyTo: { authorName: 'E2E Bot', text: QUOTED },
       },

@@ -43,7 +43,7 @@ export function registerSlackMappingRoutes(slackRoutes: Hono<{ Variables: AuthVa
         workspaces.set(
           workspaceId,
           bot
-            ? { name: bot.workspaceName, ownerTeamId: bot.nuphosTeamId, botToken: bot.botToken }
+            ? { name: bot.workspaceName, ownerTeamId: bot.cerinTeamId, botToken: bot.botToken }
             : null,
         )
       }),

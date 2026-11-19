@@ -195,7 +195,7 @@ agent.put('/conversations/:sessionId/transcript', async (c) => {
   }
   // Verify the caller is a member of the resolved team before tagging the
   // conversation. Every input is client-supplied (body, query, URL headers),
-  // so we ask Nuphos whether the caller actually belongs to that team rather
+  // so we ask Cerin whether the caller actually belongs to that team rather
   // than trusting any of those sources directly. If verification fails the
   // conversation is stored without a teamId rather than reassigned.
   const teamId = await resolveVerifiedTeamId(c, readTeamIdCandidate(c, body.teamId))

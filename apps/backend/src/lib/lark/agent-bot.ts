@@ -123,7 +123,7 @@ export async function upsertLarkUserMapping(data: {
   appId: string
   larkOpenId: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   createdBy: string
   enabled?: boolean
 }): Promise<LarkUserMapping> {
@@ -132,7 +132,7 @@ export async function upsertLarkUserMapping(data: {
     { appId: data.appId, teamId: data.teamId, larkOpenId: data.larkOpenId },
     {
       $setOnInsert: { createdAt: now, createdBy: data.createdBy },
-      $set: { nuphosUserId: data.nuphosUserId, enabled: data.enabled ?? true, updatedAt: now },
+      $set: { cerinUserId: data.cerinUserId, enabled: data.enabled ?? true, updatedAt: now },
     },
     { upsert: true, returnDocument: 'after' },
   )

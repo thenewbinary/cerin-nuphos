@@ -12,7 +12,7 @@ type Dependencies = {
   save(report: FeedbackReport, ip: string): Promise<{ id: string }>
 }
 
-// Public, unauthenticated: any person or agent can report a Nuphos bug or
+// Public, unauthenticated: any person or agent can report a Cerin bug or
 // request a feature. Contract lives in lib/api/feedback.ts (/openapi.json).
 export function createFeedbackRoutes(dependencies: Dependencies) {
   const routes = new Hono()

@@ -1,4 +1,4 @@
-// The Nuphos native tools exposed to the Claude Code runtime, assembled per
+// The Cerin native tools exposed to the Claude Code runtime, assembled per
 // conversation from the same factories the classic agent uses.
 import { randomUUID } from 'node:crypto'
 
@@ -152,7 +152,7 @@ export async function previewAiSdkToolSets(
 ): Promise<Record<string, Record<string, unknown>>> {
   return {
     memory: await memoryTools(ctx),
-    // Skill authoring stays a Nuphos tool; discovery and loading are native skills.
+    // Skill authoring stays a Cerin tool; discovery and loading are native skills.
     skills: createTeamSkillTools(ctx.userId, ctx.teamId, {
       conversationId: ctx.sessionId,
       ...(ctx.conversationOwnerUserId

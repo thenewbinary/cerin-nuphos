@@ -32,7 +32,7 @@ export function NameStep({
     <div className="space-y-3">
       <p className="text-secondary text-[12.5px] leading-relaxed">
         {t(
-          'For a cluster with no reachable API server. You run one small pod in it; the pod dials out to Nuphos and nothing dials in. It needs no inbound port, no Service and no privileges.',
+          'For a cluster with no reachable API server. You run one small pod in it; the pod dials out to Cerin and nothing dials in. It needs no inbound port, no Service and no privileges.',
         )}
       </p>
       <label className="block">
@@ -48,7 +48,7 @@ export function NameStep({
           className="w-full px-2.5 py-1.5 rounded-md bg-surface border border-line-control text-main outline-none focus:border-line-focus font-mono text-[12.5px]"
         />
         <div className="text-[11px] text-tertiary mt-1">
-          {splice(t('Becomes the kubectl context Nuphos uses — {context}.'), {
+          {splice(t('Becomes the kubectl context Cerin uses — {context}.'), {
             context: <code>onprem/{label || 'acme-dc1'}/cluster</code>,
           })}
         </div>
@@ -135,7 +135,7 @@ export function InstallStep({
               : t('Tunnel connected.')}
           </span>
         ) : relayDown ? (
-          <span>{t('Nuphos cannot reach its own relay right now — this one is on us.')}</span>
+          <span>{t('Cerin cannot reach its own relay right now — this one is on us.')}</span>
         ) : (
           <span>
             {lastSeenAt
@@ -167,7 +167,7 @@ export function AccessStep({
     <div className="space-y-3">
       <p className="text-secondary text-[12.5px] leading-relaxed">
         {t(
-          'The tunnel carries bytes; it does not authenticate to Kubernetes. Run this to create a persistent ServiceAccount credential with cluster-admin access, then paste the kubeconfig it prints. Full access is required for resource management, terminals, port forwarding, and actions by Bots and tasks. Nuphos still applies your permission and confirmation settings before privileged actions. Delete the ServiceAccount Secret to revoke access.',
+          'The tunnel carries bytes; it does not authenticate to Kubernetes. Run this to create a persistent ServiceAccount credential with cluster-admin access, then paste the kubeconfig it prints. Full access is required for resource management, terminals, port forwarding, and actions by Bots and tasks. Cerin still applies your permission and confirmation settings before privileged actions. Delete the ServiceAccount Secret to revoke access.',
         )}
       </p>
       <WizardCopyableBlock value={persistentCredentialCommand(namespace)} />

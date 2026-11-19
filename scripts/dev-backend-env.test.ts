@@ -8,7 +8,7 @@ import { test } from 'node:test'
 const moduleUrl = new URL('./dev-backend-env.ts', import.meta.url).href
 
 test('backend local overrides beat shared images and are reread on restart', (t) => {
-  const root = mkdtempSync(join(tmpdir(), 'nuphos-env-test-'))
+  const root = mkdtempSync(join(tmpdir(), 'cerin-env-test-'))
 
   t.after(() => rmSync(root, { recursive: true, force: true }))
   mkdirSync(join(root, 'apps/backend'), { recursive: true })

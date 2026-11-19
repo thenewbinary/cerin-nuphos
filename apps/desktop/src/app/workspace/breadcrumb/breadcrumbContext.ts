@@ -6,7 +6,7 @@ import type {
   CloudflareResourceDetailRef,
   ConnectorDetailRef,
   LinearNavState,
-  NuphosDashboardRef,
+  CerinDashboardRef,
   RepoProvider,
 } from '../../../lib/appRoutes'
 import type { KubernetesClusterSelection } from '../../../lib/kubernetesCluster'
@@ -34,8 +34,8 @@ export type BreadcrumbContext = {
   s3Detail: AwsS3Detail | null
   architectureDetail: { diagramId: string; diagramName: string } | null
   designDetail: { designId: string; designName: string } | null
-  nuphosDashboard: NuphosDashboardRef | null
-  nuphosDashboards: { id: string; name: string }[] | undefined
+  cerinDashboard: CerinDashboardRef | null
+  cerinDashboards: { id: string; name: string }[] | undefined
   connectorDetail: ConnectorDetailRef | null
   agentSessionTitle: string | null
   agentSessionId: string | null

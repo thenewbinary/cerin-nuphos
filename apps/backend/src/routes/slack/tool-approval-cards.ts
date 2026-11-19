@@ -4,8 +4,8 @@ import { truncatePlain } from '@/routes/slack/shared'
 
 import type { SlackRuntime } from '@/routes/slack/types'
 
-export const TOOL_APPROVAL_ALLOW_ACTION = 'nuphos_tool_approval_allow'
-export const TOOL_APPROVAL_REJECT_ACTION = 'nuphos_tool_approval_reject'
+export const TOOL_APPROVAL_ALLOW_ACTION = 'cerin_tool_approval_allow'
+export const TOOL_APPROVAL_REJECT_ACTION = 'cerin_tool_approval_reject'
 
 type ToolApprovalOption = { optionId: string; name: string; kind: string }
 
@@ -30,7 +30,7 @@ export function buildToolApprovalBlocks(args: {
         title: { type: 'plain_text', text: 'Allow this tool once?' },
         text: {
           type: 'mrkdwn',
-          text: `Nuphos will run *${escapeSlackMrkdwn(truncatePlain(args.title, 160))}* once using your selected credentials.`,
+          text: `Cerin will run *${escapeSlackMrkdwn(truncatePlain(args.title, 160))}* once using your selected credentials.`,
         },
         confirm: { type: 'plain_text', text: 'Allow once' },
         deny: { type: 'plain_text', text: 'Cancel' },

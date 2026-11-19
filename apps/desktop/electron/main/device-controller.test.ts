@@ -6,8 +6,8 @@ import { after, mock, test } from 'node:test'
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dev-registration-'))
 
-process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
-process.env.NUPHOS_API_URL = 'http://127.0.0.1:3718'
+process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
+process.env.CERIN_API_URL = 'http://127.0.0.1:3718'
 delete process.env.ATLAS_API_URL
 mock.module('./env.ts', { namedExports: { isDev: true } })
 mock.module('../client-version.ts', {
@@ -52,7 +52,7 @@ test('a dev Desktop registers locally, but never when its endpoint is Cloud', as
   setApiUrl(null)
   await syncDeviceRegistration()
   assert.deepEqual(requests.splice(0), ['http://127.0.0.1:3718/agent/devices'])
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   await syncDeviceRegistration()
   assert.deepEqual(requests, [])
 })
@@ -61,7 +61,7 @@ test('switching to Cloud while machine metadata is pending cancels registration'
   setApiUrl(null)
   const registration = syncDeviceRegistration()
 
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   await registration
   assert.deepEqual(requests, [])
 })
@@ -85,7 +85,7 @@ test('an in-flight registration cannot be redirected to Cloud while reading the 
   const registration = syncDeviceRegistration()
 
   await readingToken
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   resolveToken('test-token')
   await registration
   assert.deepEqual(requests, ['http://127.0.0.1:3718/agent/devices'])

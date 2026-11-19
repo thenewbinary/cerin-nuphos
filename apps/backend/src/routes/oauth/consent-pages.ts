@@ -36,7 +36,7 @@ export function consentPage(
 
   return `<!doctype html>
 <html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Authorize · Nuphos</title>
+<title>Authorize · Cerin</title>
 <style>
   body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#0f1115;color:#e6e6e6;display:flex;min-height:100vh;margin:0;align-items:center;justify-content:center}
   .card{background:#171a21;border:1px solid #262b36;border-radius:12px;padding:28px;width:360px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
@@ -51,10 +51,10 @@ export function consentPage(
 </style></head>
 <body><div class="card">
   <h1>Authorize access</h1>
-  <p class="sub"><b>${appName}</b> wants to connect to your Nuphos account.</p>
+  <p class="sub"><b>${appName}</b> wants to connect to your Cerin account.</p>
   ${redirectNotice(params.redirectUri)}
   ${errorHtml}
-  <div class="scope">Scope: <b>${escapeHtml(params.scope)}</b> — talk to the Nuphos Agent on your behalf.</div>
+  <div class="scope">Scope: <b>${escapeHtml(params.scope)}</b> — talk to the Cerin Agent on your behalf.</div>
   <form method="post" action="/oauth/authorize">
     ${hidden('response_type', 'code')}
     ${hidden('client_id', params.clientId)}
@@ -90,7 +90,7 @@ export function consentPage(
 </div></body></html>`
 }
 
-// Consent page for a browser that already has a valid Nuphos session cookie:
+// Consent page for a browser that already has a valid Cerin session cookie:
 // no OTP, just an Authorize button. The hidden consent_token is the CSRF guard
 // — see signConsentToken.
 export function oneClickConsentPage(
@@ -114,7 +114,7 @@ export function oneClickConsentPage(
 
   return `<!doctype html>
 <html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Authorize · Nuphos</title>
+<title>Authorize · Cerin</title>
 <style>
   body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#0f1115;color:#e6e6e6;display:flex;min-height:100vh;margin:0;align-items:center;justify-content:center}
   .card{background:#171a21;border:1px solid #262b36;border-radius:12px;padding:28px;width:360px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
@@ -128,9 +128,9 @@ export function oneClickConsentPage(
 </style></head>
 <body><div class="card">
   <h1>Authorize access</h1>
-  <p class="sub"><b>${appName}</b> wants to connect to your Nuphos account.</p>
+  <p class="sub"><b>${appName}</b> wants to connect to your Cerin account.</p>
   ${redirectNotice(params.redirectUri)}
-  <div class="scope">Scope: <b>${escapeHtml(params.scope)}</b> — talk to the Nuphos Agent on your behalf.</div>
+  <div class="scope">Scope: <b>${escapeHtml(params.scope)}</b> — talk to the Cerin Agent on your behalf.</div>
   <p class="who">Signed in as <b>${escapeHtml(opts.email)}</b></p>
   <form method="post" action="/oauth/authorize">
     ${hidden('response_type', 'code')}

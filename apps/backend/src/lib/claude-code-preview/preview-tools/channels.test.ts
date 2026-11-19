@@ -247,7 +247,7 @@ test('files posted with a message are placed on the reader’s runtime, under th
     metadata: {
       version: 1,
       sender: { type: 'user', id: 'mei', displayName: 'Mei' },
-      source: 'nuphos',
+      source: 'cerin',
       sentAt: new Date().toISOString(),
     },
   } as never)
@@ -353,7 +353,7 @@ test('a member answers one post by its index, and the reply quotes it', async ()
     metadata: {
       version: 1,
       sender: { type: 'user', id: 'alice', displayName: 'Alice' },
-      source: 'nuphos',
+      source: 'cerin',
       sentAt: new Date().toISOString(),
     },
     createdAt: new Date(),

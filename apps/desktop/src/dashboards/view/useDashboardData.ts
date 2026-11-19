@@ -4,7 +4,7 @@ import { api } from '../../api'
 import { toast } from '../../components/ui/toast'
 import { t } from '../../i18n/index.ts'
 
-import type { DashboardViewRange, NuphosDashboard, NuphosDashboardDetail } from '../schema'
+import type { DashboardViewRange, CerinDashboard, CerinDashboardDetail } from '../schema'
 
 type Args = {
   teamId: string
@@ -29,8 +29,8 @@ export function useDashboardData({
   onDashboardOpened,
   onDashboardsChange,
 }: Args) {
-  const [dashboards, setDashboards] = useState<NuphosDashboard[]>([])
-  const [detail, setDetail] = useState<NuphosDashboardDetail | null>(null)
+  const [dashboards, setDashboards] = useState<CerinDashboard[]>([])
+  const [detail, setDetail] = useState<CerinDashboardDetail | null>(null)
   const [detailError, setDetailError] = useState(false)
   const [loading, setLoading] = useState(false)
   const loadSeq = useRef(0)

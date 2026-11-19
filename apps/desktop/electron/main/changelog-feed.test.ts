@@ -8,8 +8,8 @@ const entry = {
   title: 'Slack 訊息來源標示',
   summary: '現在每則 Slack 訊息都會標示來源對話。',
   date: '2026-08-12',
-  coverUrl: 'https://nuphos.ai/changelog-assets/cover.png',
-  url: 'https://nuphos.ai/changelog/slack-message-origin',
+  coverUrl: 'https://platform.cerin.ai/changelog-assets/cover.png',
+  url: 'https://platform.cerin.ai/changelog/slack-message-origin',
 }
 
 describe('parseChangelogFeed', () => {

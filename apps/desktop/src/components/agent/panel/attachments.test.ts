@@ -40,7 +40,7 @@ test('text, image, and uploading messages have sender details on their first ren
       displayName: user.name,
       avatarURL: user.avatarURL,
     })
-    assert.equal(message.metadata?.source, 'nuphos')
+    assert.equal(message.metadata?.source, 'cerin')
     assert.ok(message.createdAt)
     assert.equal(message.metadata?.sentAt, new Date(message.createdAt).toISOString())
     const ready = turn.buildUserMsg({

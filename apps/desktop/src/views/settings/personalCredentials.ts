@@ -93,7 +93,7 @@ export const PERSONAL_CONNECTORS: PersonalConnector[] = [
   },
 ]
 
-/** Global handler for the claimed nuphos://personal-credential deep link. */
+/** Global handler for the claimed cerin://personal-credential deep link. */
 export function announcePersonalCredential({
   provider,
   login,

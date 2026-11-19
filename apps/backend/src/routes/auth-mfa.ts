@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 
 import { AppError } from '@/lib/errors'
-import { getNuphosUserById } from '@/lib/identity'
+import { getCerinUserById } from '@/lib/identity'
 import {
   confirmTotpSetup,
   disableMfa,
@@ -84,7 +84,7 @@ authMfa.post('/reauth', requireAuth, async (c) => {
 authMfa.post('/verify', async (c) => {
   const sent = await body(c)
   const { userId, viaWebsite } = await verifyMfaChallenge(sent.mfaToken, answer(sent))
-  const user = await getNuphosUserById(userId)
+  const user = await getCerinUserById(userId)
 
   if (!user) throw new AppError(401, 'unauthorized', 'Account is no longer available')
 

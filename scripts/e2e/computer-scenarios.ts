@@ -27,7 +27,7 @@ export function forgetComputer(mongoUri: string, deviceId: string) {
   const script = `
     import { MongoClient } from 'mongodb'
     const client = await new MongoClient(process.argv[1]).connect()
-    await client.db('nuphos_e2e').collection('agent_devices').deleteOne({ deviceId: process.argv[2] })
+    await client.db('cerin_e2e').collection('agent_devices').deleteOne({ deviceId: process.argv[2] })
     await client.close()`
 
   execFileSync('bun', ['-e', script, mongoUri, deviceId], { cwd: BACKEND_DIR, timeout: 10_000 })

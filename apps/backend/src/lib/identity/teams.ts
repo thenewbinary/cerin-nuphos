@@ -4,11 +4,11 @@ import { upsertCachedTeam } from '@/lib/agent/directory'
 import { mapTeam, mapUser, teams, users } from '@/lib/identity/shared'
 import { inTokenTeamScope } from '@/lib/identity/token-team-scope'
 
-import type { NuphosTeamDoc } from '@/lib/identity/shared'
+import type { CerinTeamDoc } from '@/lib/identity/shared'
 import type {
-  NuphosTeam,
-  NuphosTeamMember,
-  NuphosTeamRole,
+  CerinTeam,
+  CerinTeamMember,
+  CerinTeamRole,
   TeamMembership,
   TeamUpdateInput,
 } from '@/lib/identity/types'
@@ -20,10 +20,10 @@ export async function getTeamMembership(
 ): Promise<TeamMembership | null> {
   if (!inTokenTeamScope(teamId)) return null
 
-  return getNuphosTeamMembership(userId, teamId)
+  return getCerinTeamMembership(userId, teamId)
 }
 
-export async function getMyTeams(userId: string): Promise<NuphosTeam[]> {
+export async function getMyTeams(userId: string): Promise<CerinTeam[]> {
   const userObjectId = new MongoObjectId(userId)
   const docs = await teams()
     .find({
@@ -49,7 +49,7 @@ export async function getMyTeams(userId: string): Promise<NuphosTeam[]> {
     })
 }
 
-export async function getTeamsByIds(teamIds: string[]): Promise<NuphosTeam[]> {
+export async function getTeamsByIds(teamIds: string[]): Promise<CerinTeam[]> {
   const ids = teamIds
     .filter((teamId) => MongoObjectId.isValid(teamId))
     .map((teamId) => new MongoObjectId(teamId))
@@ -69,7 +69,7 @@ export async function createTeamForUser(
   userId: string,
   name: string,
   importing?: { session: ClientSession; id: ObjectId },
-): Promise<NuphosTeam> {
+): Promise<CerinTeam> {
   const teamName = name.trim()
 
   if (!teamName) {
@@ -100,7 +100,7 @@ export async function createTeamForUser(
   // caller — derived, not restated, so a change to the seeding rule can never
   // make the response disagree with what was persisted.
   const creator = { userId: user._id, role: 'ADMINISTRATOR' as const, joinedAt: now }
-  const team: NuphosTeamDoc = {
+  const team: CerinTeamDoc = {
     _id: importing?.id ?? new MongoObjectId(),
     name: teamName,
     avatarUrl: '',
@@ -123,7 +123,7 @@ export async function updateTeam(
   teamId: string,
   actorUserId: string,
   input: TeamUpdateInput,
-): Promise<NuphosTeam | null> {
+): Promise<CerinTeam | null> {
   if (!MongoObjectId.isValid(teamId) || !MongoObjectId.isValid(actorUserId)) {
     return null
   }
@@ -144,7 +144,7 @@ export async function updateTeam(
     throw new Error('Requires team editor')
   }
 
-  const update: Partial<Pick<NuphosTeamDoc, 'name' | 'updatedAt'>> = {
+  const update: Partial<Pick<CerinTeamDoc, 'name' | 'updatedAt'>> = {
     updatedAt: new Date(),
   }
 
@@ -167,7 +167,7 @@ export async function updateTeam(
 export async function addUserToTeam(
   teamId: string,
   userId: string,
-  role: NuphosTeamRole = 'EDITOR',
+  role: CerinTeamRole = 'EDITOR',
 ): Promise<boolean> {
   if (!MongoObjectId.isValid(teamId) || !MongoObjectId.isValid(userId)) {
     throw new Error('Invalid teamId or userId')
@@ -181,7 +181,7 @@ export async function addUserToTeam(
 
   if (!user) return false
 
-  const filter: Filter<NuphosTeamDoc> = {
+  const filter: Filter<CerinTeamDoc> = {
     _id: teamObjectId,
     deletedAt: { $exists: false },
     members: {
@@ -222,7 +222,7 @@ export async function countActiveTeamMembers(teamId: string): Promise<number> {
 export async function getTeamMembers(
   teamId: string,
   opts?: { includeRemoved?: boolean },
-): Promise<NuphosTeamMember[]> {
+): Promise<CerinTeamMember[]> {
   if (!MongoObjectId.isValid(teamId)) return []
   const team = await teams().findOne({
     _id: new MongoObjectId(teamId),
@@ -260,7 +260,7 @@ export async function getTeamMembers(
   })
 }
 
-async function getNuphosTeamMembership(
+async function getCerinTeamMembership(
   userId: string,
   teamId: string,
 ): Promise<TeamMembership | null> {

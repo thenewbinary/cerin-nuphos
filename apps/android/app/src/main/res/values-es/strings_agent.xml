@@ -64,7 +64,7 @@
     <string name="agent_working">Procesando…</string>
     <string name="agent_ok">Aceptar</string>
     <string name="agent_first_runtime_title">Conecta tu primer entorno de ejecución</string>
-    <string name="agent_first_runtime_body">Abre Nuphos en tu computadora para añadir un Box o conectar tu propia computadora, o pide a un administrador del espacio de trabajo que conecte uno.</string>
+    <string name="agent_first_runtime_body">Abre Cerin en tu computadora para añadir un Box o conectar tu propia computadora, o pide a un administrador del espacio de trabajo que conecte uno.</string>
     <string name="agent_cloud">Nube</string>
     <plurals name="agent_runtime_count">
         <item quantity="one">%1$d entorno de ejecución</item>
@@ -88,7 +88,7 @@
     <string name="agent_percent">%1$d %%</string>
     <string name="agent_couldnt_load_runtimes">No se pudieron cargar los entornos de ejecución</string>
     <string name="agent_no_runtimes">No hay entornos de ejecución</string>
-    <string name="agent_no_runtimes_body">Abre Nuphos en tu computadora para conectarla y añadir un entorno de ejecución.</string>
+    <string name="agent_no_runtimes_body">Abre Cerin en tu computadora para conectarla y añadir un entorno de ejecución.</string>
     <string name="agent_deleting">Eliminando</string>
     <string name="agent_disabled">Deshabilitado</string>
     <string name="agent_offline">Sin conexión</string>
@@ -106,9 +106,9 @@
     <string name="agent_ask_admin_sign_in">Pide a un administrador que inicie sesión</string>
     <string name="agent_runtime_gone_body">Este entorno de ejecución ya no está en el espacio de trabajo actual. Actualiza los entornos de ejecución antes de continuar.</string>
     <string name="agent_runtime_disabled_body">Este entorno de ejecución está deshabilitado o se está quitando. Pide a un administrador que revise su estado guardado.</string>
-    <string name="agent_teammate_sign_in_body">%1$s pertenece a un compañero, así que solo esa persona puede iniciar sesión. Pídele que abra Nuphos en ella y elija Iniciar sesión en la página Entornos de ejecución.</string>
-    <string name="agent_host_sign_in_body">En %1$s, abre Nuphos, ve a la página Entornos de ejecución y elige Iniciar sesión para este entorno.</string>
-    <string name="agent_admin_sign_in_body">Un administrador del espacio de trabajo puede iniciar sesión desde la página Entornos de ejecución de Nuphos en su computadora.</string>
+    <string name="agent_teammate_sign_in_body">%1$s pertenece a un compañero, así que solo esa persona puede iniciar sesión. Pídele que abra Cerin en ella y elija Iniciar sesión en la página Entornos de ejecución.</string>
+    <string name="agent_host_sign_in_body">En %1$s, abre Cerin, ve a la página Entornos de ejecución y elige Iniciar sesión para este entorno.</string>
+    <string name="agent_admin_sign_in_body">Un administrador del espacio de trabajo puede iniciar sesión desde la página Entornos de ejecución de Cerin en su computadora.</string>
     <string name="agent_back_to_runtimes">Volver a entornos de ejecución</string>
     <string name="agent_runtime">Entorno de ejecución</string>
     <string name="agent_runtime_removed">Este entorno de ejecución se quitó.</string>
@@ -128,8 +128,8 @@
     <string name="agent_unreconciled">Es posible que una solicitud haya llegado al servidor. Actualiza el estado guardado antes de hacer otro cambio.</string>
     <string name="agent_refresh_runtime">Actualizar entorno de ejecución</string>
     <string name="agent_remove_named">¿Quitar %1$s?</string>
-    <string name="agent_remove_managed_body">Esto detiene el entorno de ejecución y elimina de forma permanente sus archivos y su inicio de sesión. Tu historial de tareas se conserva en Nuphos.</string>
-    <string name="agent_remove_body">Esto desconecta el entorno de ejecución. Tus tareas se conservan en Nuphos.</string>
+    <string name="agent_remove_managed_body">Esto detiene el entorno de ejecución y elimina de forma permanente sus archivos y su inicio de sesión. Tu historial de tareas se conserva en Cerin.</string>
+    <string name="agent_remove_body">Esto desconecta el entorno de ejecución. Tus tareas se conservan en Cerin.</string>
     <string name="agent_runtime_details">Detalles del entorno de ejecución</string>
     <string name="agent_manage_runtimes">Administrar entornos de ejecución</string>
     <string name="agent_for_new_tasks">Para tareas nuevas. Las tareas existentes conservan su entorno de ejecución actual.</string>

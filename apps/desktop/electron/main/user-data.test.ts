@@ -7,11 +7,11 @@ import { test } from 'node:test'
 import { hasProfile, resolveUserData } from './user-data.ts'
 
 const LEGACY = 'k8s-gui'
-const APP = 'Nuphos'
+const APP = 'Cerin'
 
 /** A throwaway appData directory, removed whether or not the test throws. */
 function withAppData(run: (appData: string) => void): void {
-  const appData = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-user-data-'))
+  const appData = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-user-data-'))
 
   try {
     run(appData)

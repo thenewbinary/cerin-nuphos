@@ -7,7 +7,7 @@ final class LoginUITests: XCTestCase {
             .appending(path: "tests/fixtures/\(fixtureName)")
         let app = XCUIApplication()
         app.launchArguments = ["-preview-login", "-preview-no-push"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         XCTAssertTrue(app.buttons["login.apple"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.buttons["login.google"].exists)

@@ -60,7 +60,7 @@ export function createLocalTools(localToolsEnabled: boolean): Record<string, unk
   })
 
   localTools.port_forward_start = clientToolWithLabel(
-    "Forward a Kubernetes service/pod port to a port on the user's local machine via the Nuphos desktop port-forwarder. " +
+    "Forward a Kubernetes service/pod port to a port on the user's local machine via the Cerin desktop port-forwarder. " +
       'ALWAYS prefer this over `kubectl port-forward` (either via `bash` in the sandbox, or via `local_exec`). Reasons: ' +
       '(1) the forward appears in the desktop UI so the user can see / stop it; ' +
       "(2) a forward opened inside the sandbox pod is unreachable from the user's machine — only this tool runs on their machine; " +
@@ -138,12 +138,12 @@ export async function wakeRefusal(deviceId: string, wake: (() => Promise<boolean
   }
 }
 
-/** A Box's `nuphos agent` has no terminal, so it is never offered one; say so when it is named. */
+/** A Box's `cerin agent` has no terminal, so it is never offered one; say so when it is named. */
 function noTerminal(device: string | undefined, devices: LocalExecDevice[]): string {
   const others = devices.length ? ` Terminals can open on: ${describeDevices(devices)}.` : ''
   const subject = device ? `Device ${device} cannot` : 'No selected device can'
 
-  return `${subject} open a terminal: a Box's \`nuphos agent\` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead.${others}`
+  return `${subject} open a terminal: a Box's \`cerin agent\` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead.${others}`
 }
 
 /**
@@ -167,7 +167,7 @@ export function createLocalExecTool(
         "You CAN operate on the user's local files and apps with this — listing, reading, moving, or deleting their files when asked. Never claim you cannot touch the local machine while this tool is available. " +
         'Returns the output and exit code of a command that exits on its own: npm, docker, git, make, cargo, gcloud, aws, etc. A command still running after about 40 seconds is stopped. ' +
         'Send commands directly. NEVER use this tool to launch or drive Terminal, iTerm, Windows Terminal or another terminal app to execute commands (including open -a Terminal, AppleScript/osascript do script or GUI keyboard automation). Use local_terminal for a terminal/dock request; if unavailable, report it rather than launching another app. ' +
-        "For cloud operations, use sandbox bash when Nuphos-managed credentials work; use local_exec when the fix requires the user's locally authenticated cloud CLI, including scoped connector permission changes on a device already signed in to the matching CLI with administration access. Verify the local cloud account and identity first. " +
+        "For cloud operations, use sandbox bash when Cerin-managed credentials work; use local_exec when the fix requires the user's locally authenticated cloud CLI, including scoped connector permission changes on a device already signed in to the matching CLI with administration access. Verify the local cloud account and identity first. " +
         "IMPORTANT: do NOT use this to run `kubectl port-forward`. Use the typed `port_forward_start` tool instead — `kubectl port-forward` via shell leaves no UI state, the user can't see or stop the forward, and a forward opened inside the sandbox is unreachable from the user's machine.",
       execute: async ({
         command,
@@ -187,7 +187,7 @@ export function createLocalExecTool(
         if (devices.length === 0) {
           return {
             error:
-              'No local device is usable in this conversation. Either none is selected in its credential selector, or the selected one is offline: Nuphos Desktop must be open and signed in on it, with local exec allowed. list_credentials shows which.',
+              'No local device is usable in this conversation. Either none is selected in its credential selector, or the selected one is offline: Cerin Desktop must be open and signed in on it, with local exec allowed. list_credentials shows which.',
           }
         }
         const deviceId = pickDevice(devices, device)

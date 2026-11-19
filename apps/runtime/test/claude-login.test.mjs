@@ -19,7 +19,7 @@ import {
 // write where they are told to, but on such a pod they do not spawn a CLI at all.
 const onManagedRuntime =
   process.env.HOME?.startsWith('/home/node') === true &&
-  Object.keys(process.env).some((name) => name.startsWith('NUPHOS_RUNTIME'))
+  Object.keys(process.env).some((name) => name.startsWith('CERIN_RUNTIME'))
 const spawnsCli = { skip: onManagedRuntime && 'never spawns a sign-in on a managed runtime' }
 
 const URL_LINE =
@@ -291,7 +291,7 @@ test(
             CLAUDE_CODE_EXECUTABLE: executable,
             CLAUDE_CONFIG_DIR: configDir,
             CLAUDE_SECURESTORAGE_CONFIG_DIR: configDir,
-            USER: 'nuphos-test-user',
+            USER: 'cerin-test-user',
           },
           stdio: ['pipe', 'pipe', 'inherit'],
         },
@@ -311,7 +311,7 @@ test(
       assert.equal(stored.configDir, configDir)
       assert.ok(stored.env.includes('CLAUDE_SECURESTORAGE_CONFIG_DIR'))
       // The login is stored for the account the agent's own status check looks under.
-      assert.equal(stored.user, 'nuphos-test-user')
+      assert.equal(stored.user, 'cerin-test-user')
     } finally {
       await rm(home, { recursive: true, force: true })
     }

@@ -199,7 +199,7 @@ export function RuntimeInstanceCard({
                   targetVersion: result.version,
                   releaseUrl:
                     previous.runtimeUpdate?.releaseUrl ??
-                    'https://github.com/nuphos/nuphos/releases?q=runtime-v',
+                    'https://github.com/thenewbinary/cerin-platform/releases?q=runtime-v',
                 },
               },
           )
@@ -211,7 +211,7 @@ export function RuntimeInstanceCard({
         {instance.deletion ? (
           <p className="px-4 py-3 text-xs leading-relaxed text-secondary" role="status">
             {instance.deletion.error ??
-              t('Removing the runtime and its files. Task history stays in Nuphos.')}
+              t('Removing the runtime and its files. Task history stays in Cerin.')}
           </p>
         ) : (
           <>
@@ -255,7 +255,7 @@ export function RuntimeInstanceCard({
             {instance.local && ownSignedInCli(instance) && (
               <p className="px-5 py-4 text-xs leading-relaxed text-tertiary">
                 {t(
-                  'This runtime is the {provider} already signed in on {device}, so it cannot be removed from Nuphos.',
+                  'This runtime is the {provider} already signed in on {device}, so it cannot be removed from Cerin.',
                   {
                     provider: AGENT_PROVIDER[instance.provider].label,
                     device: instance.local.deviceLabel,

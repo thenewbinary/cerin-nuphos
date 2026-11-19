@@ -6,7 +6,7 @@ import { credentialSource, getConversationBySessionId } from '@/lib/agent/db'
 import { verifyPreviewMcpToken } from '@/lib/claude-code-preview/mcp-token'
 import { desktopCallbackResponse } from '@/lib/desktop-callback-page'
 import { AppError } from '@/lib/errors'
-import { getNuphosUserById } from '@/lib/identity'
+import { getCerinUserById } from '@/lib/identity'
 import { isTokenRevoked } from '@/lib/internal-token/revocation'
 import { logError } from '@/lib/observability'
 import {
@@ -40,7 +40,7 @@ import type { PersonalCredentialProvider } from '@/models'
 export const personalCredentialRoutes = new Hono<{ Variables: AuthVariables }>()
 
 // The approver's app claims the staged grant with its signed-in session.
-const DESKTOP_RETURN = 'nuphos://personal-credential'
+const DESKTOP_RETURN = 'cerin://personal-credential'
 
 function providerParam(value: string | undefined): PersonalCredentialProvider {
   if (!PERSONAL_CREDENTIAL_PROVIDERS.includes(value as PersonalCredentialProvider)) {
@@ -192,7 +192,7 @@ personalCredentialTokenRoutes.get('/:provider/token', async (c) => {
     // In the shape each skill's setup script already reads for the team handout.
     if (provider === 'linear')
       return c.json({ ...handedOut(personal), accessToken: personal.token })
-    const owner = await getNuphosUserById(claims.own)
+    const owner = await getCerinUserById(claims.own)
 
     return c.json({
       ...handedOut(personal),

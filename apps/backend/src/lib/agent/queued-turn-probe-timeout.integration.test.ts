@@ -91,7 +91,7 @@ const conversation = {
 } as AgentConversation
 
 useRedis({ withRedis: (async () => null) as never, claimRun: async () => true })
-useIdentity({ signNuphosToken: () => 'test-token' })
+useIdentity({ signCerinToken: () => 'test-token' })
 useBoxWake({ wakeOfflineBox: async () => false })
 useDb({ db: () => ({ collection: () => ({ findOne: async () => null }) }) })
 useConversationChatRoute({

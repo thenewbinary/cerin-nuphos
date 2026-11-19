@@ -36,17 +36,17 @@ export async function handleDiscordModeCommand(
   } = dependencies
   const command = interaction.data?.options?.find((option) => option.type === 1)?.name
 
-  if (interaction.data?.name !== 'nuphos' || (command !== 'full-access' && command !== 'auto'))
+  if (interaction.data?.name !== 'cerin' || (command !== 'full-access' && command !== 'auto'))
     return null
   const guildId = interaction.guild_id
   const channelId = interaction.channel_id
   const discordUserId = interaction.member?.user?.id
 
   if (!guildId || !channelId || !discordUserId)
-    return 'Use this command inside a Nuphos conversation thread.'
+    return 'Use this command inside a Cerin conversation thread.'
   const thread = await discordAgentThreads().findOne({ guildId, threadChannelId: channelId })
 
-  if (!thread) return 'Use this command inside a Nuphos conversation thread.'
+  if (!thread) return 'Use this command inside a Cerin conversation thread.'
   const [installation, channel, mapping] = await Promise.all([
     discordInstallations().findOne({
       guildId,
@@ -63,13 +63,13 @@ export async function handleDiscordModeCommand(
     discordUserMappings().findOne({ guildId, discordUserId, teamId: thread.teamId, enabled: true }),
   ])
 
-  if (!installation || !channel) return 'Nuphos is not enabled for this thread.'
-  if (!mapping || !(await getTeamMembership(mapping.nuphosUserId, thread.teamId))) {
-    return 'Link your Discord account to this Nuphos workspace first.'
+  if (!installation || !channel) return 'Cerin is not enabled for this thread.'
+  if (!mapping || !(await getTeamMembership(mapping.cerinUserId, thread.teamId))) {
+    return 'Link your Discord account to this Cerin workspace first.'
   }
   // Permission grants are actor scoped: nobody can disarm a teammate's gate.
   try {
-    await setSessionBypass(thread.sessionId, mapping.nuphosUserId, command === 'full-access')
+    await setSessionBypass(thread.sessionId, mapping.cerinUserId, command === 'full-access')
   } catch (error) {
     // A Task under a Bot follows the Bot's mode; the refusal says where to change it.
     if (error instanceof AppError) return error.message
@@ -81,7 +81,7 @@ export async function handleDiscordModeCommand(
     discord_guild_id: guildId,
     discord_channel_id: channelId,
     discord_user_id: discordUserId,
-    nuphos_user_id: mapping.nuphosUserId,
+    cerin_user_id: mapping.cerinUserId,
     mode: command,
   })
 

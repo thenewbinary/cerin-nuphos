@@ -62,7 +62,7 @@
     <string name="agent_working">處理中…</string>
     <string name="agent_ok">確定</string>
     <string name="agent_first_runtime_title">連接你的第一個執行環境</string>
-    <string name="agent_first_runtime_body">在電腦上開啟 Nuphos 來新增 Box 或連接你自己的電腦，或請工作區管理員連接一個。</string>
+    <string name="agent_first_runtime_body">在電腦上開啟 Cerin 來新增 Box 或連接你自己的電腦，或請工作區管理員連接一個。</string>
     <string name="agent_cloud">雲端</string>
     <plurals name="agent_runtime_count">
         <item quantity="other">%1$d 個執行環境</item>
@@ -85,7 +85,7 @@
     <string name="agent_percent">%1$d%%</string>
     <string name="agent_couldnt_load_runtimes">無法載入執行環境</string>
     <string name="agent_no_runtimes">沒有執行環境</string>
-    <string name="agent_no_runtimes_body">在電腦上開啟 Nuphos，連接電腦並新增執行環境。</string>
+    <string name="agent_no_runtimes_body">在電腦上開啟 Cerin，連接電腦並新增執行環境。</string>
     <string name="agent_deleting">刪除中</string>
     <string name="agent_disabled">已停用</string>
     <string name="agent_offline">離線</string>
@@ -103,9 +103,9 @@
     <string name="agent_ask_admin_sign_in">請管理員登入</string>
     <string name="agent_runtime_gone_body">此執行環境已不在目前的工作區中。請先重新整理執行環境再繼續。</string>
     <string name="agent_runtime_disabled_body">此執行環境已停用或正在移除。請管理員檢查它已儲存的狀態。</string>
-    <string name="agent_teammate_sign_in_body">%1$s 屬於一位隊友，只有對方能登入。請對方在該電腦上開啟 Nuphos，並在「執行環境」頁面選擇「登入」。</string>
-    <string name="agent_host_sign_in_body">在 %1$s 上開啟 Nuphos，前往「執行環境」頁面，並為此執行環境選擇「登入」。</string>
-    <string name="agent_admin_sign_in_body">工作區管理員可以在自己電腦上的 Nuphos「執行環境」頁面登入。</string>
+    <string name="agent_teammate_sign_in_body">%1$s 屬於一位隊友，只有對方能登入。請對方在該電腦上開啟 Cerin，並在「執行環境」頁面選擇「登入」。</string>
+    <string name="agent_host_sign_in_body">在 %1$s 上開啟 Cerin，前往「執行環境」頁面，並為此執行環境選擇「登入」。</string>
+    <string name="agent_admin_sign_in_body">工作區管理員可以在自己電腦上的 Cerin「執行環境」頁面登入。</string>
     <string name="agent_back_to_runtimes">返回執行環境</string>
     <string name="agent_runtime">執行環境</string>
     <string name="agent_runtime_removed">此執行環境已移除。</string>
@@ -125,8 +125,8 @@
     <string name="agent_unreconciled">請求可能已送達伺服器。進行其他變更前，請先重新整理已儲存的狀態。</string>
     <string name="agent_refresh_runtime">重新整理執行環境</string>
     <string name="agent_remove_named">要移除 %1$s 嗎？</string>
-    <string name="agent_remove_managed_body">這會停止執行環境，並永久刪除其檔案與登入資料。你的任務紀錄會保留在 Nuphos 中。</string>
-    <string name="agent_remove_body">這會中斷執行環境的連線。你的任務會保留在 Nuphos 中。</string>
+    <string name="agent_remove_managed_body">這會停止執行環境，並永久刪除其檔案與登入資料。你的任務紀錄會保留在 Cerin 中。</string>
+    <string name="agent_remove_body">這會中斷執行環境的連線。你的任務會保留在 Cerin 中。</string>
     <string name="agent_runtime_details">執行環境詳細資料</string>
     <string name="agent_manage_runtimes">管理執行環境</string>
     <string name="agent_for_new_tasks">用於新任務。現有任務會保留目前的執行環境。</string>

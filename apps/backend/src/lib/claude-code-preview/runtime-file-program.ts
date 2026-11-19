@@ -40,7 +40,7 @@ try {
   const homes = [];
   if (typeof input.sessionId === 'string') {
     const id = (await import('node:crypto')).createHash('sha256').update(input.sessionId).digest('hex');
-    const home = path.join((await import('node:os')).homedir(), '.nuphos', 'session-homes', id);
+    const home = path.join((await import('node:os')).homedir(), '.cerin', 'session-homes', id);
     // Like the workspace, a home that is a link is refused rather than followed.
     const stat = await fs.lstat(home).catch(() => null);
     if (stat?.isDirectory()) homes.push(home, await fs.realpath(home));
@@ -53,7 +53,7 @@ try {
   // (attachment-job.mjs), outside the workspace. Only a read that asks for one reaches
   // it. /tmp is a link on macOS, so the directory it resolves to counts as well.
   const tmp = ['/tmp', await fs.realpath('/tmp').catch(() => '/tmp')];
-  const savedSecret = candidate => input.secret === true && input.action === 'read' && tmp.some(dir => /^nuphos-secret-[^\/\\]+[\/\\]\d+[\/\\][^\/\\]+$/.test(within(dir, candidate) ?? ''));
+  const savedSecret = candidate => input.secret === true && input.action === 'read' && tmp.some(dir => /^cerin-secret-[^\/\\]+[\/\\]\d+[\/\\][^\/\\]+$/.test(within(dir, candidate) ?? ''));
   const inside = candidate => within(root, candidate) !== null || inHome(candidate) || savedSecret(candidate);
   if (!inside(requested)) throw Error('forbidden_path');
   if (input.action === 'import') {
@@ -86,7 +86,7 @@ try {
       const stat = await fs.lstat(parent);
       if (!stat.isDirectory() || stat.isSymbolicLink() || await fs.realpath(parent) !== parent) throw Error('forbidden_path');
     }
-    const temporary = path.join(parent, '.nuphos-import-' + crypto.randomUUID());
+    const temporary = path.join(parent, '.cerin-import-' + crypto.randomUUID());
     try {
       handle = await fs.open(temporary, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | (constants.O_NOFOLLOW || 0), 384);
       await handle.writeFile(bytes); await handle.sync(); await handle.close(); handle = undefined;

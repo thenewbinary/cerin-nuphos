@@ -130,7 +130,7 @@ posthogIntegrationsRoutes.post(
       throw new AppError(
         503,
         'posthog_oauth_unavailable',
-        'PostHog OAuth needs a public HTTPS backend URL (NUPHOS_PUBLIC_BACKEND_URL); locally, run the dev launcher with its Cloudflare tunnel.',
+        'PostHog OAuth needs a public HTTPS backend URL (CERIN_PUBLIC_BACKEND_URL); locally, run the dev launcher with its Cloudflare tunnel.',
       )
     }
     const state = crypto.randomBytes(24).toString('hex')

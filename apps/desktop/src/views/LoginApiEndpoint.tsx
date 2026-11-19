@@ -6,8 +6,8 @@ import { toast } from '../components/ui/toast'
 import { t } from '../i18n'
 import { setAvatarApiOrigin } from '../lib/avatarUrl'
 
-const DEFAULT_API_URL = 'https://api.nuphos.ai'
-const EXAMPLE_URL = 'https://nuphos.example.com'
+const DEFAULT_API_URL = 'https://platform.cerin.ai'
+const EXAMPLE_URL = 'https://cerin.example.com'
 
 type Props = { inputClassName: string; onChange: () => void }
 
@@ -94,7 +94,7 @@ export function LoginApiEndpoint({ inputClassName, onChange }: Props) {
             onClick={() => void save(null)}
             className="titlebar-no-drag"
           >
-            {t('Use Nuphos Cloud')}
+            {t('Use Cerin Cloud')}
           </Button>
         )}
         <Button

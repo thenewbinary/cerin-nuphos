@@ -32,7 +32,7 @@ async function appendToBoundThreadTranscript(input: {
         slackChannelId: input.slackChannelId,
         slackThreadTs: input.slackThreadTs,
       },
-      { ts: input.ts, authorName: 'Nuphos', text: input.text, fromBot: true },
+      { ts: input.ts, authorName: 'Cerin', text: input.text, fromBot: true },
     )
   } catch (err) {
     logEvent('warn', 'slack.outbound.transcript_append_failed', {

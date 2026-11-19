@@ -1,11 +1,11 @@
-// Renderer-side view of the Nuphos web origin. The value itself is resolved in
-// the main process (electron/web-base-url.ts) from NUPHOS_WEB_URL and handed
+// Renderer-side view of the Cerin web origin. The value itself is resolved in
+// the main process (electron/web-base-url.ts) from CERIN_WEB_URL and handed
 // over the preload bridge, so a self-hosted deployment configures it at runtime
-// instead of the client compiling nuphos.ai in.
+// instead of the client compiling platform.cerin.ai in.
 //
 // The fallback matters: unit tests and any non-Electron render have no bridge.
 
-const DEFAULT_WEB_BASE_URL = 'https://nuphos.ai'
+const DEFAULT_WEB_BASE_URL = 'https://platform.cerin.ai'
 
 function resolve(): string {
   const fromBridge = (globalThis as { api?: { webBaseUrl?: string } }).api?.webBaseUrl
@@ -25,7 +25,7 @@ export const WEB_BASE_URL = resolve()
  *
  * This is the single answer to a question that used to be asked four different
  * ways, with four different results — most consequentially in the chat link
- * handler, which matched any `*.nuphos.ai` host and so routed a docs link into
+ * handler, which matched any `*.cerin.ai` host and so routed a docs link into
  * in-app navigation, landing on whatever app page shared the docs pathname.
  */
 export function isAppWebUrl(value: string): URL | null {

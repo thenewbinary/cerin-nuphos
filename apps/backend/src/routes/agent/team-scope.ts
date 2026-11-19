@@ -22,7 +22,7 @@ export function normalizeOptionalTeamId(value: unknown): string | undefined {
 function teamIdFromCurrentUrl(currentUrl: string | null): string | undefined {
   if (!currentUrl) return undefined
   try {
-    const url = new URL(currentUrl, 'https://nuphos.ai')
+    const url = new URL(currentUrl, 'https://platform.cerin.ai')
 
     return parseUrlContext(url.pathname, url.searchParams).teamId
   } catch {

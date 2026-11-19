@@ -33,10 +33,10 @@ describe('buildPreviewSystemPrompt', () => {
 
     expect(prompt).toContain('installed in `.claude/skills`')
     expect(prompt).toContain('call `request_user_decision` with category `approval`')
-    expect(prompt).not.toContain('nuphos-plan')
+    expect(prompt).not.toContain('cerin-plan')
     expect(prompt).toContain('native `architecture-diagram` skill FIRST')
-    expect(prompt).toContain('native `nuphos-dashboards` skill FIRST')
-    expect(prompt).toContain('canonical Nuphos REST APIs')
+    expect(prompt).toContain('native `cerin-dashboards` skill FIRST')
+    expect(prompt).toContain('canonical Cerin REST APIs')
     expect(prompt).toContain('through its API script')
     expect(prompt).not.toContain('bound cost_dashboard_')
     expect(prompt).not.toContain('call the skill tool with "architecture-diagram"')
@@ -88,7 +88,7 @@ test('Codex receives native skill paths and its runtime identity', async () => {
 
   expect(prompt).toContain('running as Codex')
   expect(prompt).toContain('installed in `.agents/skills`')
-  expect(prompt).toContain('nuphos-credentials')
+  expect(prompt).toContain('cerin-credentials')
   expect(prompt).toContain('## Approval before risky cloud changes')
   expect(prompt).not.toContain('Claude Code')
   expect(prompt).toContain('## Workspace')
@@ -130,7 +130,7 @@ describe.each(['claude-code', 'codex'] as const)('%s tooling description', (prov
     expect(prompt).not.toContain('injected into KUBECONFIG')
     expect(prompt).not.toContain('pre-authenticated')
     expect(prompt).not.toContain('Skill registry (authoritative)')
-    expect(prompt).not.toContain('classic Nuphos sandbox')
+    expect(prompt).not.toContain('classic Cerin sandbox')
     expect(prompt).not.toContain('bash access')
   })
 
@@ -143,7 +143,7 @@ describe.each(['claude-code', 'codex'] as const)('%s tooling description', (prov
 })
 
 for (const provider of ['claude-code', 'codex'] as const) {
-  test(`${provider} distinguishes provider login from Nuphos participants`, async () => {
+  test(`${provider} distinguishes provider login from Cerin participants`, async () => {
     const prompt = await buildPreviewSystemPrompt({
       provider,
       userId: 'user-1',
@@ -153,8 +153,8 @@ for (const provider of ['claude-code', 'codex'] as const) {
     })
 
     expect(prompt).toContain('Provider-supplied userEmail')
-    expect(prompt).toContain('NOT the Nuphos participant')
-    expect(prompt).toContain('sender.email, when present, is the sender’s Nuphos account email')
+    expect(prompt).toContain('NOT the Cerin participant')
+    expect(prompt).toContain('sender.email, when present, is the sender’s Cerin account email')
   })
 }
 
@@ -171,16 +171,16 @@ test('a computer’s own agent is told it runs there, not in the team sandbox', 
   const box = await on('box')
 
   expect(box).toContain('running as Codex on Box 1, the computer this conversation runs on')
-  expect(box).toContain('the `nuphos-desktop` tools for this conversation’s own desktop')
+  expect(box).toContain('the `cerin-desktop` tools for this conversation’s own desktop')
   expect(box).toContain(
-    'a page or website the user asks to open, or "a browser", goes to local_browser, the Nuphos browser, shown to them with its show action',
+    'a page or website the user asks to open, or "a browser", goes to local_browser, the Cerin browser, shown to them with its show action',
   )
   expect(box).toContain(
     'use this desktop’s Web Browser launcher, with get_app_state and click and not the shell, only when they ask for this desktop',
   )
   expect(box).toContain("local_exec is for the user's other devices, only when they ask for one")
   expect(box).not.toContain('inside the team sandbox')
-  expect(await on('mac')).not.toContain('nuphos-desktop')
+  expect(await on('mac')).not.toContain('cerin-desktop')
   // A runtime that is not a computer's, or one gone from the registry, keeps the sandbox line.
   expect(await on('gone')).toContain('inside the team sandbox')
 })

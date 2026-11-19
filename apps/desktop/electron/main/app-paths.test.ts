@@ -7,7 +7,7 @@ import { after, before, mock, test } from 'node:test'
 import { APP_NAME } from './env.ts'
 
 /** A throwaway appData directory holding a profile under each name. */
-const appData = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-app-paths-'))
+const appData = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-app-paths-'))
 const set = { names: [] as string[], paths: {} as Record<string, string> }
 const logged: string[] = []
 const real = { log: console.log, warn: console.warn }

@@ -4,7 +4,7 @@ export type SessionVisit = { sessionId: string; openedAt: number }
 const LIMIT = 8
 
 export function sessionHistoryKey(userId: string, teamId: string): string {
-  return `nuphos.sessionHistory.${JSON.stringify([userId, teamId])}`
+  return `cerin.sessionHistory.${JSON.stringify([userId, teamId])}`
 }
 
 export function parseSessionHistory(raw: string | null): SessionVisit[] {

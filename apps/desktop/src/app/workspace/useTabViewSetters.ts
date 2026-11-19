@@ -71,7 +71,7 @@ export function useTabViewSetters(tabId: string, updateTab: UpdateWorkspaceTab) 
         active: key,
         target: null,
         // Section-root nav: Dashboards always lands on its list page.
-        nuphosDashboard: null,
+        cerinDashboard: null,
         dashboardTarget: key === 'observability.dashboards' ? cur.dashboardTarget : null,
         traceDatasourceTarget: null,
         logDatasourceTarget: null,

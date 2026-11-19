@@ -18,7 +18,7 @@ function container(
   restarting = false,
 ): unknown {
   return {
-    Name: `/nuphos-dev-${service}-1`,
+    Name: `/cerin-dev-${service}-1`,
     Config: { Labels: { 'com.docker.compose.service': service } },
     State: {
       Status: status,
@@ -46,7 +46,7 @@ test('each store is judged on its own container, not on the shared compose resul
     kind: 'waiting',
     detail: 'restarting',
   })
-  assert.equal(found.get('rustfs')?.name, 'nuphos-dev-rustfs-1')
+  assert.equal(found.get('rustfs')?.name, 'cerin-dev-rustfs-1')
   assert.equal(found.get('rustfs')?.healthOutput, 'bucket x: HTTP 503')
 })
 
@@ -90,7 +90,7 @@ test('dev:reset is suggested only on evidence of a stale stack', () => {
     'not healthy after 120s (unhealthy): HTTP 503 — still watching; see bun run dev:logs',
   )
   assert.match(stale, /^exited \(code 1\): bucket x: HTTP 403 — .*bun run dev:reset$/)
-  assert.equal(looksStale('Container nuphos-dev-rustfs-1 is unhealthy'), false)
+  assert.equal(looksStale('Container cerin-dev-rustfs-1 is unhealthy'), false)
   assert.equal(
     looksStale('The AWS Access Key Id you provided does not exist: InvalidAccessKeyId'),
     true,

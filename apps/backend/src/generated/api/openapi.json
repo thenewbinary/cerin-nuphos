@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Nuphos API",
+    "title": "Cerin API",
     "version": "0.1.0",
-    "description": "Generated from the Nuphos API operation registry."
+    "description": "Generated from the Cerin API operation registry."
   },
   "servers": [
     {
@@ -1807,7 +1807,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -1911,7 +1911,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -2015,7 +2015,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -2111,7 +2111,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -2121,7 +2121,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Tailscale OAuth client binding id."
+              "description": "Cerin Tailscale OAuth client binding id."
             }
           }
         ],
@@ -2224,7 +2224,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -2317,7 +2317,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -2410,7 +2410,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -2495,7 +2495,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -2505,7 +2505,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Tailscale OAuth client binding id."
+              "description": "Cerin Tailscale OAuth client binding id."
             }
           }
         ],
@@ -2608,7 +2608,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -2801,7 +2801,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -3002,7 +3002,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -3165,7 +3165,7 @@
           "Linode accounts"
         ],
         "summary": "List bound Linode accounts",
-        "description": "List Linode accounts connected to a Nuphos team without returning raw Linode tokens.",
+        "description": "List Linode accounts connected to a Cerin team without returning raw Linode tokens.",
         "security": [
           {
             "bearerAuth": []
@@ -3179,7 +3179,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           }
         ],
@@ -3244,7 +3244,7 @@
           "Linode accounts"
         ],
         "summary": "List Linode instances",
-        "description": "List Linode instances for a bound Linode account through Nuphos, without exposing the underlying Linode token.",
+        "description": "List Linode instances for a bound Linode account through Cerin, without exposing the underlying Linode token.",
         "security": [
           {
             "bearerAuth": []
@@ -3258,7 +3258,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -3268,7 +3268,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Linode account binding id."
+              "description": "Cerin Linode account binding id."
             }
           }
         ],
@@ -3356,7 +3356,7 @@
           "Linode accounts"
         ],
         "summary": "List LKE clusters",
-        "description": "List Linode Kubernetes Engine clusters for a bound Linode account through Nuphos.",
+        "description": "List Linode Kubernetes Engine clusters for a bound Linode account through Cerin.",
         "security": [
           {
             "bearerAuth": []
@@ -3370,7 +3370,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -3380,7 +3380,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Linode account binding id."
+              "description": "Cerin Linode account binding id."
             }
           }
         ],
@@ -3456,7 +3456,7 @@
           "Hetzner accounts"
         ],
         "summary": "List bound Hetzner accounts",
-        "description": "List Hetzner Cloud accounts connected to a Nuphos team without returning raw Hetzner API tokens.",
+        "description": "List Hetzner Cloud accounts connected to a Cerin team without returning raw Hetzner API tokens.",
         "security": [
           {
             "bearerAuth": []
@@ -3470,7 +3470,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           }
         ],
@@ -3549,7 +3549,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -3559,7 +3559,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Hetzner account binding id."
+              "description": "Cerin Hetzner account binding id."
             }
           }
         ],
@@ -3604,7 +3604,7 @@
           "Hetzner accounts"
         ],
         "summary": "List Hetzner servers",
-        "description": "List Hetzner Cloud servers for a bound Hetzner account through Nuphos, without exposing the underlying Hetzner API token.",
+        "description": "List Hetzner Cloud servers for a bound Hetzner account through Cerin, without exposing the underlying Hetzner API token.",
         "security": [
           {
             "bearerAuth": []
@@ -3618,7 +3618,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -3628,7 +3628,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Hetzner account binding id."
+              "description": "Cerin Hetzner account binding id."
             }
           }
         ],
@@ -3714,7 +3714,7 @@
           "Tailscale clients"
         ],
         "summary": "List bound Tailscale OAuth clients",
-        "description": "List Tailscale OAuth clients connected to a Nuphos team without returning raw client secrets.",
+        "description": "List Tailscale OAuth clients connected to a Cerin team without returning raw client secrets.",
         "security": [
           {
             "bearerAuth": []
@@ -3728,7 +3728,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           }
         ],
@@ -3812,7 +3812,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -3822,7 +3822,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Tailscale OAuth client binding id."
+              "description": "Cerin Tailscale OAuth client binding id."
             }
           }
         ],
@@ -3949,7 +3949,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -3959,7 +3959,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Tencent account binding id."
+              "description": "Cerin Tencent account binding id."
             }
           }
         ],
@@ -4028,7 +4028,7 @@
           "Tencent accounts"
         ],
         "summary": "List TKE clusters",
-        "description": "List Tencent Kubernetes Engine clusters for a bound Tencent account through Nuphos.",
+        "description": "List Tencent Kubernetes Engine clusters for a bound Tencent account through Cerin.",
         "security": [
           {
             "bearerAuth": []
@@ -4042,7 +4042,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -4052,7 +4052,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Tencent account binding id."
+              "description": "Cerin Tencent account binding id."
             }
           }
         ],
@@ -4166,7 +4166,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -4176,7 +4176,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Alibaba Cloud account binding id."
+              "description": "Cerin Alibaba Cloud account binding id."
             }
           }
         ],
@@ -4245,7 +4245,7 @@
           "Alibaba Cloud accounts"
         ],
         "summary": "List ACK clusters",
-        "description": "List Alibaba Cloud Container Service (ACK) clusters for a bound Alibaba Cloud account through Nuphos.",
+        "description": "List Alibaba Cloud Container Service (ACK) clusters for a bound Alibaba Cloud account through Cerin.",
         "security": [
           {
             "bearerAuth": []
@@ -4259,7 +4259,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -4269,7 +4269,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Alibaba Cloud account binding id."
+              "description": "Cerin Alibaba Cloud account binding id."
             }
           }
         ],
@@ -4369,7 +4369,7 @@
           "Alibaba Cloud accounts"
         ],
         "summary": "List ECS instances",
-        "description": "List Alibaba Cloud ECS instances for a bound Alibaba Cloud account through Nuphos.",
+        "description": "List Alibaba Cloud ECS instances for a bound Alibaba Cloud account through Cerin.",
         "security": [
           {
             "bearerAuth": []
@@ -4383,7 +4383,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -4393,7 +4393,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Alibaba Cloud account binding id."
+              "description": "Cerin Alibaba Cloud account binding id."
             }
           }
         ],
@@ -4522,7 +4522,7 @@
           "Alibaba Cloud accounts"
         ],
         "summary": "List Simple Application Server instances",
-        "description": "List Alibaba Cloud Simple Application Server (SWAS) instances for a bound Alibaba Cloud account through Nuphos.",
+        "description": "List Alibaba Cloud Simple Application Server (SWAS) instances for a bound Alibaba Cloud account through Cerin.",
         "security": [
           {
             "bearerAuth": []
@@ -4536,7 +4536,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -4546,7 +4546,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Alibaba Cloud account binding id."
+              "description": "Cerin Alibaba Cloud account binding id."
             }
           }
         ],
@@ -4700,7 +4700,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -4710,7 +4710,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Volcengine account binding id."
+              "description": "Cerin Volcengine account binding id."
             }
           }
         ],
@@ -4770,7 +4770,7 @@
           "Volcengine accounts"
         ],
         "summary": "List VKE clusters",
-        "description": "List Volcengine Kubernetes Engine (VKE) clusters for a bound Volcengine account through Nuphos.",
+        "description": "List Volcengine Kubernetes Engine (VKE) clusters for a bound Volcengine account through Cerin.",
         "security": [
           {
             "bearerAuth": []
@@ -4784,7 +4784,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -4794,7 +4794,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Volcengine account binding id."
+              "description": "Cerin Volcengine account binding id."
             }
           }
         ],
@@ -4894,7 +4894,7 @@
           "Volcengine accounts"
         ],
         "summary": "List ECS instances",
-        "description": "List Volcengine ECS instances for a bound Volcengine account through Nuphos.",
+        "description": "List Volcengine ECS instances for a bound Volcengine account through Cerin.",
         "security": [
           {
             "bearerAuth": []
@@ -4908,7 +4908,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -4918,7 +4918,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Volcengine account binding id."
+              "description": "Cerin Volcengine account binding id."
             }
           }
         ],
@@ -5061,7 +5061,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -5071,7 +5071,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos Huawei Cloud account binding id."
+              "description": "Cerin Huawei Cloud account binding id."
             }
           }
         ],
@@ -5155,7 +5155,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -5242,7 +5242,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -5651,7 +5651,7 @@
           "Zeabur providers"
         ],
         "summary": "List bound Zeabur providers",
-        "description": "List Zeabur user and team identities connected to a Nuphos team without returning raw provider credentials.",
+        "description": "List Zeabur user and team identities connected to a Cerin team without returning raw provider credentials.",
         "security": [
           {
             "bearerAuth": []
@@ -5665,7 +5665,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           }
         ],
@@ -5758,7 +5758,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -5859,7 +5859,7 @@
             "schema": {
               "type": "string",
               "pattern": "^[a-f0-9]{24}$",
-              "description": "Nuphos team id."
+              "description": "Cerin team id."
             }
           },
           {
@@ -16165,8 +16165,8 @@
         "tags": [
           "Feedback"
         ],
-        "summary": "Report a Nuphos bug or request a feature",
-        "description": "Public, unauthenticated. Any person or agent that hits a problem using Nuphos, or misses a capability, can file it here. Reports are recorded for the Nuphos team to triage by hand. Rate limited per client; 429 means retry later.",
+        "summary": "Report a Cerin bug or request a feature",
+        "description": "Public, unauthenticated. Any person or agent that hits a problem using Cerin, or misses a capability, can file it here. Reports are recorded for the Cerin team to triage by hand. Rate limited per client; 429 means retry later.",
         "requestBody": {
           "required": true,
           "content": {
@@ -16266,7 +16266,7 @@
                   },
                   "subject_token": {
                     "type": "string",
-                    "description": "The conversation token (`NUPHOS_TOKEN`) to narrow."
+                    "description": "The conversation token (`CERIN_TOKEN`) to narrow."
                   },
                   "subject_token_type": {
                     "type": "string",
@@ -16293,7 +16293,7 @@
                   "audience": {
                     "type": "string",
                     "enum": [
-                      "nuphos-preview-mcp"
+                      "cerin-preview-mcp"
                     ]
                   },
                   "team_id": {
@@ -16509,7 +16509,7 @@
                                   "agent",
                                   "system"
                                 ],
-                                "description": "`agent`: an agent session acting for `userId`. `system`: Nuphos itself."
+                                "description": "`agent`: an agent session acting for `userId`. `system`: Cerin itself."
                               },
                               "userId": {
                                 "type": "string"
@@ -16534,7 +16534,7 @@
                               "authorization",
                               "failed_runs"
                             ],
-                            "description": "`request`: an API call, from an app, an agent or a script. `rollback`: Nuphos undid a write the scheduler could not follow. `expiry`, `authorization`, `failed_runs`: Nuphos paused it because it expired, could no longer run as its owner, or kept failing."
+                            "description": "`request`: an API call, from an app, an agent or a script. `rollback`: Cerin undid a write the scheduler could not follow. `expiry`, `authorization`, `failed_runs`: Cerin paused it because it expired, could no longer run as its owner, or kept failing."
                           },
                           "client": {
                             "type": "string",
@@ -16542,7 +16542,7 @@
                           },
                           "reason": {
                             "type": "string",
-                            "description": "Why Nuphos changed it."
+                            "description": "Why Cerin changed it."
                           },
                           "before": {
                             "type": "object",

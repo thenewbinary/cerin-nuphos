@@ -62,7 +62,7 @@
     <string name="agent_working">Memproses…</string>
     <string name="agent_ok">OK</string>
     <string name="agent_first_runtime_title">Hubungkan runtime pertama Anda</string>
-    <string name="agent_first_runtime_body">Buka Nuphos di komputer Anda untuk menambahkan Box atau menghubungkan komputer Anda sendiri, atau minta administrator workspace untuk menghubungkannya.</string>
+    <string name="agent_first_runtime_body">Buka Cerin di komputer Anda untuk menambahkan Box atau menghubungkan komputer Anda sendiri, atau minta administrator workspace untuk menghubungkannya.</string>
     <string name="agent_cloud">Cloud</string>
     <plurals name="agent_runtime_count">
         <item quantity="other">%1$d runtime</item>
@@ -85,7 +85,7 @@
     <string name="agent_percent">%1$d%%</string>
     <string name="agent_couldnt_load_runtimes">Tidak dapat memuat runtime</string>
     <string name="agent_no_runtimes">Tidak ada runtime</string>
-    <string name="agent_no_runtimes_body">Buka Nuphos di komputer Anda untuk menghubungkannya dan menambahkan runtime.</string>
+    <string name="agent_no_runtimes_body">Buka Cerin di komputer Anda untuk menghubungkannya dan menambahkan runtime.</string>
     <string name="agent_deleting">Menghapus</string>
     <string name="agent_disabled">Nonaktif</string>
     <string name="agent_offline">Offline</string>
@@ -103,9 +103,9 @@
     <string name="agent_ask_admin_sign_in">Minta administrator untuk masuk</string>
     <string name="agent_runtime_gone_body">Runtime ini tidak lagi ada di workspace saat ini. Muat ulang runtime sebelum melanjutkan.</string>
     <string name="agent_runtime_disabled_body">Runtime ini dinonaktifkan atau sedang dihapus. Minta administrator untuk memeriksa status tersimpannya.</string>
-    <string name="agent_teammate_sign_in_body">%1$s milik rekan tim, jadi hanya mereka yang dapat masuk. Minta mereka membuka Nuphos di komputer itu dan memilih Masuk di halaman Runtime.</string>
-    <string name="agent_host_sign_in_body">Di %1$s, buka Nuphos, buka halaman Runtime, lalu pilih Masuk untuk runtime ini.</string>
-    <string name="agent_admin_sign_in_body">Administrator workspace dapat masuk dari halaman Runtime di Nuphos pada komputer mereka.</string>
+    <string name="agent_teammate_sign_in_body">%1$s milik rekan tim, jadi hanya mereka yang dapat masuk. Minta mereka membuka Cerin di komputer itu dan memilih Masuk di halaman Runtime.</string>
+    <string name="agent_host_sign_in_body">Di %1$s, buka Cerin, buka halaman Runtime, lalu pilih Masuk untuk runtime ini.</string>
+    <string name="agent_admin_sign_in_body">Administrator workspace dapat masuk dari halaman Runtime di Cerin pada komputer mereka.</string>
     <string name="agent_back_to_runtimes">Kembali ke runtime</string>
     <string name="agent_runtime">Runtime</string>
     <string name="agent_runtime_removed">Runtime ini telah dihapus.</string>
@@ -125,8 +125,8 @@
     <string name="agent_unreconciled">Permintaan mungkin sudah sampai ke server. Muat ulang status tersimpan sebelum melakukan perubahan lain.</string>
     <string name="agent_refresh_runtime">Muat ulang runtime</string>
     <string name="agent_remove_named">Hapus %1$s?</string>
-    <string name="agent_remove_managed_body">Ini menghentikan runtime dan menghapus file serta info masuknya secara permanen. Riwayat tugas Anda tetap ada di Nuphos.</string>
-    <string name="agent_remove_body">Ini memutuskan sambungan runtime. Tugas Anda tetap ada di Nuphos.</string>
+    <string name="agent_remove_managed_body">Ini menghentikan runtime dan menghapus file serta info masuknya secara permanen. Riwayat tugas Anda tetap ada di Cerin.</string>
+    <string name="agent_remove_body">Ini memutuskan sambungan runtime. Tugas Anda tetap ada di Cerin.</string>
     <string name="agent_runtime_details">Detail runtime</string>
     <string name="agent_manage_runtimes">Kelola runtime</string>
     <string name="agent_for_new_tasks">Untuk tugas baru. Tugas yang ada tetap memakai runtime saat ini.</string>

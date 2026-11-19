@@ -42,7 +42,7 @@ const registrationSchema = z.preprocess(
       deviceId,
       platform: z.literal('android'),
       environment: z.literal('production'),
-      bundleId: z.literal('ai.nuphos.android'),
+      bundleId: z.literal('ai.cerin.android'),
       projectId: z.string().regex(/^[a-z][a-z0-9-]{4,62}$/),
     }),
   ]),

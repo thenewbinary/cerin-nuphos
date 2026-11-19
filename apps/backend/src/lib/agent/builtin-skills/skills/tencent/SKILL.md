@@ -1,33 +1,33 @@
 ---
 name: tencent
-description: Run Tencent Cloud CLI (tccli) commands from the sandbox to inspect or change Tencent resources (TKE, CVM, CLB, VPC, etc.). Includes a script to load short-lived credentials for an Nuphos-bound Tencent account.
+description: Run Tencent Cloud CLI (tccli) commands from the sandbox to inspect or change Tencent resources (TKE, CVM, CLB, VPC, etc.). Includes a script to load short-lived credentials for an Cerin-bound Tencent account.
 ---
 
 # Tencent Cloud CLI (tccli)
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
-Use this skill when the user wants to inspect or change Tencent Cloud resources directly with `tccli`. Authenticate before any `tccli` call — either with credentials Nuphos mints for a bound account (preferred), or with credentials the user pasted in.
+Use this skill when the user wants to inspect or change Tencent Cloud resources directly with `tccli`. Authenticate before any `tccli` call — either with credentials Cerin mints for a bound account (preferred), or with credentials the user pasted in.
 
 ## When to skip this skill
 
-For anything Nuphos already exposes via its own API — listing TKE clusters, fetching kubeconfigs — call the Nuphos backend route directly instead of `tccli`. Same data, no setup, smaller blast radius:
+For anything Cerin already exposes via its own API — listing TKE clusters, fetching kubeconfigs — call the Cerin backend route directly instead of `tccli`. Same data, no setup, smaller blast radius:
 
 - List TKE clusters in a bound account → `GET /teams/:teamId/tencent-accounts/:accountId/clusters`
 - Run kubectl against a TKE cluster → its context is `tencent/<account>/<cluster>` in the kubeconfig the kubectl skill sets up
 
-Use this skill when the user asks for something Nuphos does not expose (e.g. COS, CLB, VPC/security-group edits, CVM, Cloud Monitor), or hands you keys for an account Nuphos isn't connected to.
+Use this skill when the user asks for something Cerin does not expose (e.g. COS, CLB, VPC/security-group edits, CVM, Cloud Monitor), or hands you keys for an account Cerin isn't connected to.
 
 ## Setup
 
 ```bash
 # Authenticate. Pick ONE path:
 
-# (a) PREFERRED — short-lived assumed-role STS credentials for an Nuphos-bound
+# (a) PREFERRED — short-lived assumed-role STS credentials for an Cerin-bound
 #     account. Writes ~/.tccli/default.credential + default.configure so plain
 #     `tccli` calls work. These expire (assumed-role session) — re-run to refresh.
 bash skills/tencent/scripts/setup-credentials.sh <teamId> <accountId> [region]
@@ -39,12 +39,12 @@ tccli cvm DescribeRegions --region ap-guangzhou \
 
 `tccli` is provided by the runtime image's tool manifest, not baked into it:
 the first call installs the pinned build from its hash-locked requirements and
-can take a while, so let it finish rather than interrupt it. `nuphos-tools list`
+can take a while, so let it finish rather than interrupt it. `cerin-tools list`
 shows the tool and its state. If the command is missing entirely, or that
 install keeps failing, report the runtime mismatch instead of doing an unpinned
 package install during the task.
 
-Nuphos uses OIDC web-identity federation here (like AWS): the customer registers Nuphos as a CAM OIDC identity provider and creates a CAM role trusting it, then Nuphos calls `sts:AssumeRoleWithWebIdentity` to get short-lived credentials — no long-lived keys are stored. `setup-credentials.sh` calls `GET /teams/:teamId/tencent-accounts/:accountId/credentials` on the Nuphos backend with the user's `NUPHOS_TOKEN` and writes a `token`-type tccli profile (SecretId/SecretKey + token). These expire (assumed-role session), so re-run the script to refresh. The credentials carry exactly the role's permissions.
+Cerin uses OIDC web-identity federation here (like AWS): the customer registers Cerin as a CAM OIDC identity provider and creates a CAM role trusting it, then Cerin calls `sts:AssumeRoleWithWebIdentity` to get short-lived credentials — no long-lived keys are stored. `setup-credentials.sh` calls `GET /teams/:teamId/tencent-accounts/:accountId/credentials` on the Cerin backend with the user's `CERIN_TOKEN` and writes a `token`-type tccli profile (SecretId/SecretKey + token). These expire (assumed-role session), so re-run the script to refresh. The credentials carry exactly the role's permissions.
 
 Always run `tccli sts GetCallerIdentity --region <region>` first to confirm which account/role you are about to operate on, and tell the user before doing anything mutating.
 

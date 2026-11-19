@@ -236,7 +236,7 @@ function DatabaseDetail({
       </div>
       <ConfirmDialog
         open={confirmRemove}
-        title={t('Remove database from Nuphos?')}
+        title={t('Remove database from Cerin?')}
         description={
           connection.providerOrigin
             ? t(
@@ -248,7 +248,7 @@ function DatabaseDetail({
                 { name: connection.name },
               )
         }
-        confirmLabel={t('Remove from Nuphos')}
+        confirmLabel={t('Remove from Cerin')}
         destructive
         onConfirm={remove}
         onClose={() => setConfirmRemove(false)}

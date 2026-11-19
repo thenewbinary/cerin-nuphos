@@ -1,11 +1,11 @@
 ---
 name: architecture-diagram
-description: Design conventions and an API-based workflow for building clear system architecture diagrams on the user's Nuphos canvas. Use whenever asked to draw, build, map, or restructure an architecture, system, or infrastructure diagram.
+description: Design conventions and an API-based workflow for building clear system architecture diagrams on the user's Cerin canvas. Use whenever asked to draw, build, map, or restructure an architecture, system, or infrastructure diagram.
 ---
 
 # Designing a good architecture diagram
 
-You edit the open diagram through the canonical Nuphos REST API. Never reply
+You edit the open diagram through the canonical Cerin REST API. Never reply
 with Mermaid / DOT / ASCII — the canvas is the only output surface. GET the
 diagram first, modify its `nodes` and `views`, and PUT each coherent increment
 back so the canvas updates while you work. **Do NOT create a plan** for diagram
@@ -41,7 +41,7 @@ What separates a clear diagram from a tangled one is not the tool — it's these
 
 The biggest failure is a thin, single-provider snapshot: you explore the cluster and stop, missing that the same system spans Cloudflare, GitHub, etc. Every touchpoint that leaves one provider's boundary is a **thread into another connected system — follow it**:
 
-- **A public domain → its DNS provider.** A domain on an ingress/load balancer is managed somewhere. Check the DNS provider (Cloudflare, Route53, …) and add the **zone** as a node with an edge. (e.g. `api.nuphos.ai` → a Cloudflare zone managing its DNS.)
+- **A public domain → its DNS provider.** A domain on an ingress/load balancer is managed somewhere. Check the DNS provider (Cloudflare, Route53, …) and add the **zone** as a node with an edge. (e.g. `platform.cerin.ai` → a Cloudflare zone managing its DNS.)
 - **A container image / registry → what builds & pushes it.** An ECR/GCR/Artifact-Registry repo is fed by CI. Go to the source repo (GitHub/GitLab), find the workflow that builds and pushes, and add the **repo + CI pipeline** with a "pushes image" edge. (e.g. ECR ← GitHub Actions in the repo.)
 - **A running service → its source repo and what deploys it** (Actions, Argo, Flux).
 - **Secrets / config / connection strings → where they originate.**
@@ -89,9 +89,9 @@ Every node is one of two kinds:
 
 - **Concrete** — it maps to a real resource/page, so set its **`url`**. There is NO separate "resource tag" (no provider/type/id); the url *is* the binding. Use the app's own page URL — the same path you'd land on by browsing to the resource in the UI — so a double-click navigates **in-app**:
 
-  `https://nuphos.ai/teams/<teamId>/infra/aws/<accountId>/clusters/<region>/<cluster>/workloads/deployments/namespaces/<ns>/resources/deployment/<name>`
+  `https://platform.cerin.ai/teams/<teamId>/infra/aws/<accountId>/clusters/<region>/<cluster>/workloads/deployments/namespaces/<ns>/resources/deployment/<name>`
 
-  Don't guess the path. Build it from the **same GUI route catalog** you use for markdown links: `rg -i "<resource keyword>" skills/nuphos-api/references/gui-routes.md` (e.g. `pod|deployment|service`, `s3|bucket`, `ec2|instance`) gives the URL template and the ids it needs. A non-`nuphos.ai` URL still works — it just opens in the external browser — but prefer the in-app page URL whenever the resource has one.
+  Don't guess the path. Build it from the **same GUI route catalog** you use for markdown links: `rg -i "<resource keyword>" skills/cerin-api/references/gui-routes.md` (e.g. `pod|deployment|service`, `s3|bucket`, `ec2|instance`) gives the URL template and the ids it needs. A non-`platform.cerin.ai` URL still works — it just opens in the external browser — but prefer the in-app page URL whenever the resource has one.
 
 - **Abstract** — a logical box with no real counterpart (a user, an external/third-party system, a conceptual boundary). Leave `url` unset and give it a sensible `kind` for colour.
 

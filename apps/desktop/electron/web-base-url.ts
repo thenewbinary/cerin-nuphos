@@ -1,16 +1,16 @@
-// The Nuphos web origin the desktop app treats as "ours".
+// The Cerin web origin the desktop app treats as "ours".
 //
 // It decides three things that must agree: which links render as in-app
 // mentions, which open in the app instead of a browser, and which a
-// `nuphos://open` deep link is allowed to carry. Before this module each of
+// `cerin://open` deep link is allowed to carry. Before this module each of
 // those spelled the host out itself, and they disagreed — see isAppWebUrl.
 //
 // Runtime configuration, not build-time: a self-hosted deployment sets
-// NUPHOS_WEB_URL the same way it already sets NUPHOS_API_URL, and the renderer
+// CERIN_WEB_URL the same way it already sets CERIN_API_URL, and the renderer
 // reads the resolved value over the preload bridge rather than compiling its
 // own copy in.
 
-const DEFAULT_WEB_BASE_URL = 'https://nuphos.ai'
+const DEFAULT_WEB_BASE_URL = 'https://platform.cerin.ai'
 
 function normalize(raw: string | undefined): string {
   const trimmed = raw?.trim()
@@ -25,12 +25,12 @@ function normalize(raw: string | undefined): string {
   }
 }
 
-export const WEB_BASE_URL = normalize(process.env.NUPHOS_WEB_URL)
+export const WEB_BASE_URL = normalize(process.env.CERIN_WEB_URL)
 
 const WEB_BASE_HOST = new URL(WEB_BASE_URL).hostname
 
 /**
- * Hosts a `nuphos://open?url=` payload may carry. Wider than {@link isAppWebUrl}
+ * Hosts a `cerin://open?url=` payload may carry. Wider than {@link isAppWebUrl}
  * on purpose: this is the main-process allowlist for a URL arriving from
  * outside the app, and links in the wild still use the www/app aliases.
  */

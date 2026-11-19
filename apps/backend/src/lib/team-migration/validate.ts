@@ -60,7 +60,7 @@ export async function validateTeamArchive(bytes: Buffer) {
 
   if (sums.bytes !== manifest.totals.bytes || sums.records !== manifest.totals.records)
     invalidArchive('manifest totals disagree')
-  const directory = mkdtempSync(join(tmpdir(), 'nuphos-import-'))
+  const directory = mkdtempSync(join(tmpdir(), 'cerin-import-'))
   const paths = new Map<MigrationPart, string>()
   const keys = new Map<MigrationPart, Set<string>>()
 

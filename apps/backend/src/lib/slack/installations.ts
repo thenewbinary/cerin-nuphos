@@ -10,7 +10,7 @@ import type { SlackWorkspaceBinding } from '@/models'
 export type ResolvedSlackBot = {
   botToken: string
   botUserId: string
-  nuphosTeamId: string
+  cerinTeamId: string
   binding: SlackWorkspaceBinding
 }
 
@@ -27,7 +27,7 @@ export async function getSlackBindingForTeam(
 
 export async function getSlackBindingByWorkspaceId(
   slackTeamId: string,
-): Promise<{ nuphosTeamId: ObjectId; binding: SlackWorkspaceBinding } | null> {
+): Promise<{ cerinTeamId: ObjectId; binding: SlackWorkspaceBinding } | null> {
   const doc = await teamByosBindings().findOne(
     { 'slackWorkspaces.slackTeamId': slackTeamId },
     { projection: { slackWorkspaces: 1 } },
@@ -38,7 +38,7 @@ export async function getSlackBindingByWorkspaceId(
 
   if (!binding) return null
 
-  return { nuphosTeamId: doc._id, binding }
+  return { cerinTeamId: doc._id, binding }
 }
 
 /**
@@ -49,7 +49,7 @@ export async function getSlackBindingByWorkspaceId(
 export async function resolveInstalledWorkspaceBot(slackTeamId: string): Promise<{
   botToken: string
   workspaceName: string
-  nuphosTeamId: string
+  cerinTeamId: string
 } | null> {
   const installed = await getSlackBindingByWorkspaceId(slackTeamId)
 
@@ -58,7 +58,7 @@ export async function resolveInstalledWorkspaceBot(slackTeamId: string): Promise
   return {
     botToken: decryptSlackSecret(installed.binding.encryptedBotToken),
     workspaceName: installed.binding.slackTeamName,
-    nuphosTeamId: installed.nuphosTeamId.toHexString(),
+    cerinTeamId: installed.cerinTeamId.toHexString(),
   }
 }
 
@@ -71,7 +71,7 @@ export async function resolveSlackBotForWorkspace(
     return {
       botToken: decryptSlackSecret(installed.binding.encryptedBotToken),
       botUserId: installed.binding.botUserId,
-      nuphosTeamId: installed.nuphosTeamId.toHexString(),
+      cerinTeamId: installed.cerinTeamId.toHexString(),
       binding: installed.binding,
     }
   }
@@ -79,7 +79,7 @@ export async function resolveSlackBotForWorkspace(
     return {
       botToken: config.slack.botToken,
       botUserId: config.slack.botUserId ?? '',
-      nuphosTeamId: '',
+      cerinTeamId: '',
       binding: {
         id: new ObjectId(),
         slackTeamId,
@@ -110,7 +110,7 @@ export async function resolveSlackBotForTeam(teamId: ObjectId): Promise<Resolved
     return {
       botToken: decryptSlackSecret(binding.encryptedBotToken),
       botUserId: binding.botUserId,
-      nuphosTeamId: teamId.toHexString(),
+      cerinTeamId: teamId.toHexString(),
       binding,
     }
   }
@@ -118,7 +118,7 @@ export async function resolveSlackBotForTeam(teamId: ObjectId): Promise<Resolved
     return {
       botToken: config.slack.botToken,
       botUserId: config.slack.botUserId ?? '',
-      nuphosTeamId: teamId.toHexString(),
+      cerinTeamId: teamId.toHexString(),
       binding: {
         id: new ObjectId(),
         slackTeamId: '',
@@ -159,11 +159,11 @@ export async function assertSlackWorkspaceAvailable(
 ): Promise<void> {
   const existing = await getSlackBindingByWorkspaceId(slackTeamId)
 
-  if (existing && !existing.nuphosTeamId.equals(teamId)) {
+  if (existing && !existing.cerinTeamId.equals(teamId)) {
     throw new AppError(
       409,
       'slack_workspace_taken',
-      'This Slack workspace is already connected to another Nuphos team',
+      'This Slack workspace is already connected to another Cerin team',
     )
   }
 }

@@ -38,7 +38,7 @@ describe('buildChannelLinkedInteractionResponse', () => {
   test('asks for an invite when the bot is not in the channel', () => {
     const text = confirmationText('not_in_channel')
 
-    expect(text).toContain('/invite @Nuphos')
+    expect(text).toContain('/invite @Cerin')
     expect(text).not.toContain('said hello')
   })
 
@@ -49,6 +49,6 @@ describe('buildChannelLinkedInteractionResponse', () => {
   })
 
   test('keeps a picker so more channels can be linked', () => {
-    expect(confirmationText('posted')).toContain('nuphos_link_channel')
+    expect(confirmationText('posted')).toContain('cerin_link_channel')
   })
 })

@@ -24,10 +24,10 @@ export function agentConfig() {
       min: 1,
       max: AGENT_OUTPUT_TOKEN_CONFIG_MAX,
     }),
-    backendUrl: optional('NUPHOS_BACKEND_URL') ?? optional('ATLAS_BACKEND_URL'),
+    backendUrl: optional('CERIN_BACKEND_URL') ?? optional('ATLAS_BACKEND_URL'),
     // Reachable from outside the cluster. Self-hosted runtimes fetch skills
-    // and call Nuphos tools here; managed pods keep using the Service.
-    publicBackendUrl: optional('NUPHOS_PUBLIC_BACKEND_URL'),
+    // and call Cerin tools here; managed pods keep using the Service.
+    publicBackendUrl: optional('CERIN_PUBLIC_BACKEND_URL'),
     triggers: {
       // A team member keeps the historical personal ceiling while the team
       // also has a larger shared ceiling.

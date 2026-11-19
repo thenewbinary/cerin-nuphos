@@ -32,8 +32,8 @@ const WORKSPACE = 'T1'
 const CHANNEL = 'C1'
 const BOT_USER = 'UBOT'
 const SLACK_USER = 'USLACK'
-const NUPHOS_USER = '62e6289482f5f9d9408f1a79'
-const OTHER_NUPHOS_USER = '69f3f2cb3a343b67cf568765'
+const CERIN_USER = '62e6289482f5f9d9408f1a79'
+const OTHER_CERIN_USER = '69f3f2cb3a343b67cf568765'
 const TEAM = '6a6198d06a7585a89e02775d'
 
 type PostedMessage = { channel: string; threadTs?: string; text: string }
@@ -73,7 +73,7 @@ function makeMapping(overrides?: Partial<SlackChannelMapping>): SlackChannelMapp
     slackChannelId: CHANNEL,
     teamId: TEAM,
     enabled: true,
-    createdBy: NUPHOS_USER,
+    createdBy: CERIN_USER,
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,
@@ -85,7 +85,7 @@ function makeUserMapping(): SlackUserMapping {
     slackWorkspaceId: WORKSPACE,
     slackUserId: SLACK_USER,
     teamId: TEAM,
-    nuphosUserId: NUPHOS_USER,
+    cerinUserId: CERIN_USER,
     enabled: true,
     createdBy: 'auto:slack-email',
     createdAt: new Date(),
@@ -99,7 +99,7 @@ function makeThread(overrides?: Partial<SlackAgentThread>): SlackAgentThread {
     slackChannelId: CHANNEL,
     slackThreadTs: '100.1',
     teamId: TEAM,
-    agentUserId: NUPHOS_USER,
+    agentUserId: CERIN_USER,
     sessionId: 'slack-mention-session-1',
     createdBySlackUserId: SLACK_USER,
     origin: 'slack',
@@ -178,7 +178,7 @@ useSlackInstallations({
   resolveSlackBotForWorkspace: async () => ({
     botToken: 'xoxb-test',
     botUserId: BOT_USER,
-    nuphosTeamId: state.installTeamId,
+    cerinTeamId: state.installTeamId,
     binding: null,
   }),
 })
@@ -186,7 +186,7 @@ useSlackInstallations({
 useIdentity({
   getTeamMembers: async () => [],
   getTeamMembership: async () => (teamMember ? { role: 'MEMBER' } : null),
-  signNuphosToken: () => 'test-token',
+  signCerinToken: () => 'test-token',
 })
 
 useAgentDb({ getConversationWithMessages: async () => null })
@@ -251,7 +251,7 @@ function threadReplyEnvelope(text: string, threadTs = '100.1') {
   }
 }
 
-// Nuphos answers a thread reply only when it is mentioned. In a notification
+// Cerin answers a thread reply only when it is mentioned. In a notification
 // thread the mention arrives here as a plain message event; in a thread the
 // bot's own mention started, it arrives as app_mention (threadMentionEnvelope).
 function mentionReplyEnvelope(text: string, threadTs = '100.1') {
@@ -288,7 +288,7 @@ describe('bare mention', () => {
     expect(threadUpserts).toHaveLength(1)
     expect(agentRuns).toHaveLength(0)
     expect(posted).toHaveLength(1)
-    expect(posted[0]!.text).toContain('What would you like Nuphos to look into?')
+    expect(posted[0]!.text).toContain('What would you like Cerin to look into?')
     expect(eventMarks).toEqual([{ eventId: 'Ev-mention', status: 'completed' }])
 
     // The next mention in the hint thread runs a turn in the same conversation.
@@ -305,7 +305,7 @@ describe('bare mention', () => {
 
     expect(threadUpserts).toHaveLength(0)
     expect(posted).toHaveLength(1)
-    expect(posted[0]!.text).toContain("isn't linked to Nuphos yet")
+    expect(posted[0]!.text).toContain("isn't linked to Cerin yet")
     expect(eventMarks).toEqual([{ eventId: 'Ev-mention', status: 'completed' }])
   })
 
@@ -322,7 +322,7 @@ describe('bare mention', () => {
         user: SLACK_USER,
         // A top-level mention: the notice sits beside it, not in a new thread.
         threadTs: undefined,
-        text: expect.stringContaining("doesn't match any Nuphos user"),
+        text: expect.stringContaining("doesn't match any Cerin user"),
       }),
     ])
     expect(eventMarks).toEqual([{ eventId: 'Ev-mention', status: 'completed' }])
@@ -335,21 +335,21 @@ describe('thread replies never fail silently', () => {
 
     expect(agentRuns).toHaveLength(1)
     expect(agentRuns[0]!.firstMessage).toBe('check prod')
-    expect(claimActors).toEqual([NUPHOS_USER])
+    expect(claimActors).toEqual([CERIN_USER])
     expect(eventMarks).toEqual([{ eventId: 'Ev-mention', status: 'completed' }])
   })
 
   test('a teammate message arriving during finalization starts the successor turn', async () => {
     state.thread = makeThread({ origin: 'agent_notification' })
-    state.userMapping = { ...makeUserMapping(), nuphosUserId: OTHER_NUPHOS_USER }
+    state.userMapping = { ...makeUserMapping(), cerinUserId: OTHER_CERIN_USER }
     const {
       agentRuns: liveRuns,
       createAgentRun,
       registerAgentRun,
     } = await import('@/routes/agent/run-registry')
-    const run = createAgentRun(NUPHOS_USER, state.thread.sessionId, 'stream-owner', {
+    const run = createAgentRun(CERIN_USER, state.thread.sessionId, 'stream-owner', {
       requestId: 'request-owner',
-      userId: NUPHOS_USER,
+      userId: CERIN_USER,
       sessionId: state.thread.sessionId,
       streamId: 'stream-owner',
       route: 'slack.agent',
@@ -361,7 +361,7 @@ describe('thread replies never fail silently', () => {
       const handling = handleThreadMessage(mentionReplyEnvelope('what about GCP?'))
 
       for (let attempt = 0; attempt < 50; attempt++) {
-        if (await hasPendingUserMessages(NUPHOS_USER, state.thread.sessionId)) break
+        if (await hasPendingUserMessages(CERIN_USER, state.thread.sessionId)) break
         await Bun.sleep(5)
       }
       run.done = true
@@ -370,10 +370,10 @@ describe('thread replies never fail silently', () => {
       await handling
 
       expect(agentRuns).toHaveLength(1)
-      expect(claimActors).toEqual([OTHER_NUPHOS_USER])
+      expect(claimActors).toEqual([OTHER_CERIN_USER])
       expect(agentRuns[0]!.firstMessage).toBe('what about GCP?')
       expect(eventMarks).toEqual([{ eventId: 'Ev-reply', status: 'completed' }])
-      expect(await drainPendingUserMessages(NUPHOS_USER, state.thread.sessionId)).toEqual([])
+      expect(await drainPendingUserMessages(CERIN_USER, state.thread.sessionId)).toEqual([])
     } finally {
       run.done = true
       run.releaseOwnership()
@@ -389,7 +389,7 @@ describe('thread replies never fail silently', () => {
 
     expect(agentRuns).toHaveLength(0)
     expect(posted).toHaveLength(1)
-    expect(posted[0]!.text).toContain('no longer linked to Nuphos')
+    expect(posted[0]!.text).toContain('no longer linked to Cerin')
     expect(eventMarks).toEqual([{ eventId: 'Ev-reply', status: 'completed' }])
   })
 
@@ -401,7 +401,7 @@ describe('thread replies never fail silently', () => {
 
     expect(agentRuns).toHaveLength(0)
     expect(posted).toHaveLength(1)
-    expect(posted[0]!.text).toContain('linked to a different Nuphos team')
+    expect(posted[0]!.text).toContain('linked to a different Cerin team')
     expect(eventMarks).toEqual([{ eventId: 'Ev-reply', status: 'completed' }])
   })
 
@@ -484,7 +484,7 @@ describe('only a mention gets an answer', () => {
       expect.objectContaining({
         user: SLACK_USER,
         threadTs: '100.1',
-        text: expect.stringContaining('not linked to Nuphos yet'),
+        text: expect.stringContaining('not linked to Cerin yet'),
       }),
     ])
     expect(eventMarks).toEqual([{ eventId: 'Ev-reply', status: 'completed' }])
@@ -501,7 +501,7 @@ describe('only a mention gets an answer', () => {
     expect(ephemerals).toEqual([
       expect.objectContaining({
         user: SLACK_USER,
-        text: expect.stringContaining('no longer a member of this Nuphos team'),
+        text: expect.stringContaining('no longer a member of this Cerin team'),
       }),
     ])
   })
@@ -548,7 +548,7 @@ describe('an unbound thread under a message the bot posted', () => {
     state.thread = null
     state.threadReplies = [
       {
-        text: "I posted this, but it is not attached to a Nuphos conversation, so replies here don't reach me.",
+        text: "I posted this, but it is not attached to a Cerin conversation, so replies here don't reach me.",
       },
     ]
 
@@ -579,7 +579,7 @@ describe('a thread forked off a proactive post', () => {
       notificationContext: REPORT,
       // Only the seed, which carries the root's own ts: the agent has not
       // spoken in this thread yet.
-      recentMessages: [{ ts: '100.1', authorName: 'Nuphos', text: REPORT, fromBot: true }],
+      recentMessages: [{ ts: '100.1', authorName: 'Cerin', text: REPORT, fromBot: true }],
     })
 
     await handleThreadMessage(mentionReplyEnvelope('why is it half the bill?'))
@@ -595,10 +595,10 @@ describe('a thread forked off a proactive post', () => {
       sessionId: 'slack-mention-fork-session-1',
       notificationContext: REPORT,
       recentMessages: [
-        { ts: '100.1', authorName: 'Nuphos', text: REPORT, fromBot: true },
+        { ts: '100.1', authorName: 'Cerin', text: REPORT, fromBot: true },
         { ts: '100.2', authorName: 'Someone', text: 'why is it half the bill?' },
         // The agent answered: the report is in the transcript from here on.
-        { ts: '100.3', authorName: 'Nuphos', text: 'Because the bundles…', fromBot: true },
+        { ts: '100.3', authorName: 'Cerin', text: 'Because the bundles…', fromBot: true },
       ],
     })
 
@@ -617,7 +617,7 @@ describe('a mention in a thread the agent already follows', () => {
     state.thread = makeThread({
       recentMessages: [
         { ts: '100.1', authorName: 'Yuan', text: 'how many boxes are running?' },
-        { ts: '100.2', authorName: 'Nuphos', text: '8 boxes are running', fromBot: true },
+        { ts: '100.2', authorName: 'Cerin', text: '8 boxes are running', fromBot: true },
         { ts: '100.3', authorName: 'Tony', text: 'the oldest one is mine' },
         { ts: '100.4', authorName: 'Devin', text: 'mine is the 8c16g one' },
         { ts: '100.5', authorName: 'Yuan', text: 'can you see what Tony and Devin said?' },

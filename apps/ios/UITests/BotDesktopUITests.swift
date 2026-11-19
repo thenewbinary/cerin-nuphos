@@ -9,7 +9,7 @@ final class BotDesktopUITests: XCTestCase {
             .appending(path: "tests/fixtures/bot-desktop-responses.json")
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
 
         let button = app.buttons["chat.desktop"]
@@ -33,7 +33,7 @@ final class BotDesktopUITests: XCTestCase {
             .appending(path: "tests/fixtures/bot-desktop-responses.json")
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
 
         app.staticTexts["Sign-in helper"].firstMatch.tap()

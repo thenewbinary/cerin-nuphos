@@ -1,7 +1,7 @@
 // aws-eks-access-audit.ts — attribution for the mutating EKS access calls the
 // connector makes inside a customer account.
 //
-// CloudTrail records these as `<ConnectorRole>/nuphos-byos`, which identifies
+// CloudTrail records these as `<ConnectorRole>/cerin-byos`, which identifies
 // the connector session, not the human (or agent turn) that caused it. Since
 // `CreateAccessEntry` / `AssociateAccessPolicy` / `UpdateClusterConfig` all
 // trip high-risk-mutation monitoring, every one of them emits a structured log

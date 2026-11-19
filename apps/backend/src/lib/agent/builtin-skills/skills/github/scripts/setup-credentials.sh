@@ -1,29 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <installationId|personal> [--for-commit] [--team]
 
-  teamId          Nuphos team id (24-char hex)
+  teamId          Cerin team id (24-char hex)
   installationId  Numeric GitHub App installation id (from
                   GET /teams/<teamId>/github-installations), or \`personal\` for the
                   conversation owner's own GitHub account when this conversation
                   selected it (no team installation needed)
 
-  --for-commit    Require and print the current Nuphos participant co-author trailer.
+  --for-commit    Require and print the current Cerin participant co-author trailer.
   --team          Use the team's App identity even when the turn's member connected
                   a Personal Credential (their own GitHub account is the default).
 
 Environment:
   GH_CONFIG_DIR     Optional. Defaults to \$XDG_CONFIG_HOME/gh or \$HOME/.config/gh.
   GIT_CONFIG_GLOBAL Optional. Respected by git when supplied.
-  NUPHOS_TOKEN       Required. Already exported in the Nuphos agent sandbox.
-  NUPHOS_BACKEND_URL Required. Base URL of the Nuphos backend API; defaults to https://api.nuphos.ai.
+  CERIN_TOKEN       Required. Already exported in the Cerin agent sandbox.
+  CERIN_BACKEND_URL Required. Base URL of the Cerin backend API; defaults to https://platform.cerin.ai.
 
 Mints a fresh GitHub App installation token (≤1 h) and configures \`gh\`
 auth so any subsequent tool call can run \`gh\` / \`gh api\` without
@@ -49,7 +49,7 @@ team_id="$1"
 installation_id="$2"
 
 if ! [[ "$team_id" =~ ^[0-9a-fA-F]{24}$ ]]; then
-  echo "invalid teamId: expected a 24-char hex Nuphos team id, got '$team_id'" >&2
+  echo "invalid teamId: expected a 24-char hex Cerin team id, got '$team_id'" >&2
   exit 1
 fi
 
@@ -62,8 +62,8 @@ else
   exit 1
 fi
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set in this sandbox" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is not set in this sandbox" >&2
   exit 1
 fi
 
@@ -88,8 +88,8 @@ team_get() {
     --retry 2 \
     --retry-delay 1 \
     --retry-all-errors \
-    -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") \
-    "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}/teams/$team_id/$1"
+    -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") \
+    "${CERIN_BACKEND_URL:-https://platform.cerin.ai}/teams/$team_id/$1"
 }
 
 token_response="$(team_get "$token_path")"
@@ -116,7 +116,7 @@ print(actor.get("login", "") + " through the team GitHub App, limited to its per
 ')"
 
 if [ -z "$token" ]; then
-  echo "Nuphos backend returned no token" >&2
+  echo "Cerin backend returned no token" >&2
   exit 1
 fi
 
@@ -168,9 +168,9 @@ import json, re, sys
 author = json.load(sys.stdin).get("commitCoAuthor") or {}
 name, email = author.get("name"), author.get("email")
 if not isinstance(name, str) or not name.strip() or re.search(r"[\x00-\x1f\x7f<>]", name):
-    sys.exit("Missing or invalid Nuphos participant name; stop before committing")
+    sys.exit("Missing or invalid Cerin participant name; stop before committing")
 if not isinstance(email, str) or not re.fullmatch(r"[^\s<>@\x00-\x1f\x7f]+@[^\s<>@\x00-\x1f\x7f]+", email):
-    sys.exit("Missing or invalid Nuphos participant email; stop before committing")
+    sys.exit("Missing or invalid Cerin participant email; stop before committing")
 print(f"Co-authored-by: {name.strip()} <{email}>")
 '
 fi

@@ -60,7 +60,7 @@ async function uploadEntriesAsArchive(
   archiveName: string,
   label?: string,
 ): Promise<TransferGroup> {
-  const tmpZip = join(tmpdir(), `nuphos-upload-${String(Date.now())}-${String(uploadTmpSeq++)}.zip`)
+  const tmpZip = join(tmpdir(), `cerin-upload-${String(Date.now())}-${String(uploadTmpSeq++)}.zip`)
 
   try {
     await zipEntriesToFile(entries, tmpZip)

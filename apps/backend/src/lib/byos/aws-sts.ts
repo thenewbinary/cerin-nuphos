@@ -78,7 +78,7 @@ async function resolveOidcTeamForRole(roleArn: string): Promise<string | null> {
 }
 
 /**
- * sts:AssumeRoleWithWebIdentity with a Nuphos-issued token for this team.
+ * sts:AssumeRoleWithWebIdentity with a Cerin-issued token for this team.
  * The call is unsigned — AWS authenticates the token against our JWKS — so
  * no client credentials are involved.
  */
@@ -88,7 +88,7 @@ export async function assumeRoleWithWebIdentityForTeam(
   opts: AssumeOptions = {},
 ): Promise<TempCredentials> {
   const sts = new STSClient({ region: 'us-east-1' })
-  const sessionName = sanitizeSessionName(opts.sessionName ?? 'nuphos-byos')
+  const sessionName = sanitizeSessionName(opts.sessionName ?? 'cerin-byos')
   const cmd = new AssumeRoleWithWebIdentityCommand({
     RoleArn: roleArn,
     RoleSessionName: sessionName,

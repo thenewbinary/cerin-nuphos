@@ -86,7 +86,7 @@ jobs:
       # Manual signing from stored assets. A runner's keychain starts empty, so
       # automatic signing would ask Apple for a new certificate on every run and
       # exhaust the account's limit. The Apple Distribution identity and the
-      # App Store profile for ai.nuphos.ios are created once and reused.
+      # App Store profile for ai.cerin.ios are created once and reused.
       - name: Install the signing identity
         env:
           P12_BASE64: ${{ secrets.APPLE_DIST_CERT_P12_BASE64 }}
@@ -114,12 +114,12 @@ jobs:
           rm -f "$P12"
           PROFILES="$HOME/Library/MobileDevice/Provisioning Profiles"
           mkdir -p "$PROFILES"
-          echo "$PROFILE_BASE64" | base64 -d > "$PROFILES/nuphos-appstore.mobileprovision"
-          echo "$WIDGETS_PROFILE_BASE64" | base64 -d > "$PROFILES/nuphos-widgets-appstore.mobileprovision"
-          echo "$NOTIFICATIONS_PROFILE_BASE64" | base64 -d > "$PROFILES/nuphos-notifications-appstore.mobileprovision"
+          echo "$PROFILE_BASE64" | base64 -d > "$PROFILES/cerin-appstore.mobileprovision"
+          echo "$WIDGETS_PROFILE_BASE64" | base64 -d > "$PROFILES/cerin-widgets-appstore.mobileprovision"
+          echo "$NOTIFICATIONS_PROFILE_BASE64" | base64 -d > "$PROFILES/cerin-notifications-appstore.mobileprovision"
           # Only the Share Extension needs this; a build from before it existed ignores it.
           if [ -n "$SHARE_PROFILE_BASE64" ]; then
-            echo "$SHARE_PROFILE_BASE64" | base64 -d > "$PROFILES/nuphos-share-appstore.mobileprovision"
+            echo "$SHARE_PROFILE_BASE64" | base64 -d > "$PROFILES/cerin-share-appstore.mobileprovision"
           fi
           security find-identity -v -p codesigning "$KEYCHAIN"
 
@@ -130,10 +130,10 @@ jobs:
         run: |
           set -euo pipefail
           PROFILE_PLIST="$RUNNER_TEMP/profile.plist"
-          security cms -D -i "$HOME/Library/MobileDevice/Provisioning Profiles/nuphos-appstore.mobileprovision" > "$PROFILE_PLIST"
+          security cms -D -i "$HOME/Library/MobileDevice/Provisioning Profiles/cerin-appstore.mobileprovision" > "$PROFILE_PLIST"
           if ! /usr/libexec/PlistBuddy -c 'Print :Entitlements:aps-environment' "$PROFILE_PLIST" >/dev/null 2>&1; then
             echo "::warning::The App Store profile lacks aps-environment; this build ships without push notifications."
-            /usr/libexec/PlistBuddy -c 'Delete :aps-environment' nuphos-ios/nuphos-ios.entitlements
+            /usr/libexec/PlistBuddy -c 'Delete :aps-environment' cerin-ios/cerin-ios.entitlements
           fi
 
       # The build number is the UTC minute of this run. Build numbers must keep
@@ -160,9 +160,9 @@ jobs:
           BUILD_NUMBER: ${{ steps.build.outputs.number }}
         run: |
           set -euo pipefail
-          xcodebuild -project nuphos-ios.xcodeproj -scheme nuphos-ios -configuration Release \
+          xcodebuild -project cerin-ios.xcodeproj -scheme cerin-ios -configuration Release \
             -destination 'generic/platform=iOS' \
-            -archivePath "$RUNNER_TEMP/nuphos.xcarchive" \
+            -archivePath "$RUNNER_TEMP/cerin.xcarchive" \
             MARKETING_VERSION="$VERSION" \
             CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
             archive | tail -40
@@ -177,7 +177,7 @@ jobs:
         run: |
           set -euo pipefail
           xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/nuphos.xcarchive" \
+            -archivePath "$RUNNER_TEMP/cerin.xcarchive" \
             -exportOptionsPlist ExportOptions.plist \
             -exportPath "$RUNNER_TEMP/export" \
             -authenticationKeyPath "$KEY_PATH" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER" | tail -40

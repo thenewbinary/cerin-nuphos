@@ -1,5 +1,5 @@
 // The signed-in accounts this app remembers. desktop.yaml keeps the active
-// one at its top level, as before, so `nuphos login` and older builds read it
+// one at its top level, as before, so `cerin login` and older builds read it
 // unchanged; the others wait in its `accounts` list, each with the backend
 // that issued its token. One file, so a switch is one write.
 

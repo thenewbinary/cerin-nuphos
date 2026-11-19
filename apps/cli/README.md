@@ -1,6 +1,6 @@
-# Nuphos CLI
+# Cerin CLI
 
-`nuphos` is a terminal client for Nuphos agents. It talks to the
+`cerin` is a terminal client for Cerin agents. It talks to the
 same API as the desktop and iOS apps (`POST /agent/chat` and its event stream),
 and its layout follows the Codex CLI: it takes over the whole terminal, the
 conversation scrolls above a composer pinned to the bottom, and a reply streams
@@ -9,25 +9,25 @@ in full rather than in a fixed-height box.
 ## Install
 
 ```sh
-curl -fsSL https://nuphos.ai/install | sh
+curl -fsSL https://cerin.ai/install | sh
 ```
 
-`nuphos.ai/install` redirects to `apps/cli/install.sh` at a release tag. It
+`cerin.ai/install` redirects to `apps/cli/install.sh` at a release tag. It
 installs the newest release for macOS or Linux (x86_64 and arm64) into
 `~/.local/bin`, after checking its SHA-256. When that directory is not on
 `PATH`, it adds one `export PATH=…` line to your login shell's profile
 (`~/.zprofile` for zsh, `~/.bash_profile` or `~/.profile` for bash), once;
-open a new shell afterwards. `NUPHOS_NO_MODIFY_PATH=1` skips that,
-`NUPHOS_VERSION` pins a version and `NUPHOS_INSTALL_DIR` changes the directory.
+open a new shell afterwards. `CERIN_NO_MODIFY_PATH=1` skips that,
+`CERIN_VERSION` pins a version and `CERIN_INSTALL_DIR` changes the directory.
 
-The TUI checks for a newer release when it starts and says so; `nuphos update`
-installs it in place. `NUPHOS_NO_UPDATE_CHECK=1` turns the check off.
+The TUI checks for a newer release when it starts and says so; `cerin update`
+installs it in place. `CERIN_NO_UPDATE_CHECK=1` turns the check off.
 
 ## Usage
 
 ```sh
-nuphos                    # TUI: new agent in the default team
-nuphos resume [SESSION]   # TUI on a previous agent, or a picker
+cerin                    # TUI: new agent in the default team
+cerin resume [SESSION]   # TUI on a previous agent, or a picker
 ```
 
 A new agent opens on a home screen with the shortcuts; typing anything
@@ -37,72 +37,72 @@ kitty keyboard protocol) lists your agents as the desktop's sidebar does (Pinned
 switching away from a reply leaves it running on the server.
 
 It opens in the team used last (the first team the first time) and shows
-which one; `/team` in the TUI, `nuphos team NAME` or `--team` switch it.
+which one; `/team` in the TUI, `cerin team NAME` or `--team` switch it.
 
-Over SSH, or on Linux without a display, `nuphos login` shows a code
-instead of opening a browser: enter it at nuphos.ai/device on any device and
+Over SSH, or on Linux without a display, `cerin login` shows a code
+instead of opening a browser: enter it at platform.cerin.ai/device on any device and
 approve it as yourself, or as an agent with its own name in one team. An
 agent's messages show as that agent, via you, and it cannot change your
-account, tokens, team membership or billing. `nuphos login --device` picks
-this flow anywhere; `nuphos login --token -` takes an agent token minted on
-nuphos.ai, and `NUPHOS_CLI_TOKEN` uses one without saving it. Each device
-sign-in and agent token is listed by `nuphos token list` and on nuphos.ai,
+account, tokens, team membership or billing. `cerin login --device` picks
+this flow anywhere; `cerin login --token -` takes an agent token minted on
+platform.cerin.ai, and `CERIN_CLI_TOKEN` uses one without saving it. Each device
+sign-in and agent token is listed by `cerin token list` and on platform.cerin.ai,
 and can be revoked on its own. An agent signed in with its own token can
 change the name and avatar its messages show, and nothing else, with
-`nuphos agent-profile --name NAME --avatar FILE|URL`.
+`cerin agent-profile --name NAME --avatar FILE|URL`.
 
 The first run
 signs in through the browser and, if you are not in a team yet, asks for a
-name and creates one. Add a Box or connect your own computer in Nuphos, then sign in an existing runtime:
+name and creates one. Add a Box or connect your own computer in Cerin, then sign in an existing runtime:
 
 ```sh
-nuphos team "Acme" --create           # create a team and make it the default
-nuphos agents "Claude Code" --login   # sign a Cloud runtime in again
+cerin team "Acme" --create           # create a team and make it the default
+cerin agents "Claude Code" --login   # sign a Cloud runtime in again
 ```
 
-Add a Box or connect your own computer in Nuphos. Signing in
+Add a Box or connect your own computer in Cerin. Signing in
 opens the provider's page; paste the code it shows back into the terminal.
 
 Every TUI action is also a command that needs no terminal, for scripts and
 other agents. `--json` prints machine-readable output.
 
 ```sh
-nuphos exec "list the EKS clusters"          # send, print the reply, exit
-echo "..." | nuphos exec --session ID        # continue an agent
-nuphos exec --approve --agent Codex "..."    # allow commands needing approval
-nuphos conversations [QUERY]                 # recent agents / find one by title
-nuphos triggers [SESSION]                    # a task's Triggers (or yours) with last and next run
-nuphos triggers usage TRIGGER                # what a trigger spent in the last 7 days
-nuphos team [NAME] [--create]                # list teams / set the default / create
-nuphos agents                                # list runtimes (Claude Code, Codex, …)
-nuphos agents NAME --session ID              # move a task to runtime NAME
-nuphos agents NAME --default                 # start every new task in the team on NAME
-nuphos agents NAME --login                   # sign an existing runtime in
-nuphos bots                                  # list your Bots in the team
-nuphos bots NAME --create [--avatar A]       # create a Bot; it runs with Full Access
-nuphos bots NAME --create --agent RUNTIME    # ... on a chosen runtime
-nuphos model                                 # list the runtime's models
-nuphos model [VALUE] [--effort E] --session ID
-nuphos stop --session ID
-nuphos login | logout
-nuphos login --device                        # sign in with a code approved on another device
-nuphos login --token -                       # an agent token from nuphos.ai/settings/tokens, on stdin
-nuphos token list | revoke ID                # your device sign-ins and agent tokens
-nuphos agent                                 # run this computer's runtimes
-nuphos agent --join -                        # join with a one-time token from stdin, then run them
+cerin exec "list the EKS clusters"          # send, print the reply, exit
+echo "..." | cerin exec --session ID        # continue an agent
+cerin exec --approve --agent Codex "..."    # allow commands needing approval
+cerin conversations [QUERY]                 # recent agents / find one by title
+cerin triggers [SESSION]                    # a task's Triggers (or yours) with last and next run
+cerin triggers usage TRIGGER                # what a trigger spent in the last 7 days
+cerin team [NAME] [--create]                # list teams / set the default / create
+cerin agents                                # list runtimes (Claude Code, Codex, …)
+cerin agents NAME --session ID              # move a task to runtime NAME
+cerin agents NAME --default                 # start every new task in the team on NAME
+cerin agents NAME --login                   # sign an existing runtime in
+cerin bots                                  # list your Bots in the team
+cerin bots NAME --create [--avatar A]       # create a Bot; it runs with Full Access
+cerin bots NAME --create --agent RUNTIME    # ... on a chosen runtime
+cerin model                                 # list the runtime's models
+cerin model [VALUE] [--effort E] --session ID
+cerin stop --session ID
+cerin login | logout
+cerin login --device                        # sign in with a code approved on another device
+cerin login --token -                       # an agent token from platform.cerin.ai/settings/tokens, on stdin
+cerin token list | revoke ID                # your device sign-ins and agent tokens
+cerin agent                                 # run this computer's runtimes
+cerin agent --join -                        # join with a one-time token from stdin, then run them
 ```
 
-`nuphos agent` runs this computer's local runtimes, as the desktop app does: the
+`cerin agent` runs this computer's local runtimes, as the desktop app does: the
 Claude Code and Codex you already have installed show up in every team you
 belong to while it runs. Only you can start an agent on them, but once
 you move an agent onto this computer, anyone in that team can continue
 it, and their messages run commands here, as you. It needs Node.js 22 or newer. On first
 use it downloads the runtime for this release (openab and the ACP adapters)
-into `~/.local/share/nuphos/runtime`. On macOS it reuses your terminal Claude
+into `~/.local/share/cerin/runtime`. On macOS it reuses your terminal Claude
 login; if none exists, it asks you to sign in to that shared login. Linux and
-Windows use a separate Claude sign-in for Nuphos. Codex uses your `codex login`. It
+Windows use a separate Claude sign-in for Cerin. Codex uses your `codex login`. It
 runs as its own computer, so the desktop app on the same computer is unaffected;
-`NUPHOS_LOCAL_RUNTIME_DIR` points it at a locally staged runtime instead.
+`CERIN_LOCAL_RUNTIME_DIR` points it at a locally staged runtime instead.
 
 On macOS, the Desktop app and the iPhone can open this Mac's screen as the
 desktop of a conversation running here, as they can with the desktop app. The
@@ -111,7 +111,7 @@ terminal or `node`. The first time the screen is opened, macOS asks on this Mac
 to allow `mac-screen-host` under **Screen Recording** (to show the screen) and
 **Accessibility** (to control it); open it again after allowing. Someone must be
 signed in to the Mac's desktop, since a locked Mac or the login window cannot be
-shown. `nuphos agent` runs as a LaunchAgent in that desktop, also when started
+shown. `cerin agent` runs as a LaunchAgent in that desktop, also when started
 over SSH while someone is signed in (see below). On a Mac
 without a display, approve the two prompts once through the built-in Screen
 Sharing.
@@ -121,52 +121,52 @@ Sharing.
 A machine nobody signs in on, such as a VM, a Mac mini or a container, joins
 with a one-time token instead of a session. Create one while signed in
 (`POST /agent/devices/join-tokens`, valid 15 minutes by default), or on a
-self-hosted backend with `nuphos-admin join-token --team <id>` in its container
+self-hosted backend with `cerin-admin join-token --team <id>` in its container
 (and add `--api-url` with that backend's URL), then on the machine:
 
 ```sh
-curl -fsSL https://nuphos.ai/install | sh -s -- --join <token>
+curl -fsSL https://cerin.ai/install | sh -s -- --join <token>
 ```
 
-Given `--join`, the installer starts `nuphos agent` by its path, so
+Given `--join`, the installer starts `cerin agent` by its path, so
 it works before `~/.local/bin` is on `PATH`. From a script or cloud-init, write
 the token to a file only the runtime's account can read and pipe it:
-`nuphos agent --join - < /run/nuphos-join`.
+`cerin agent --join - < /run/cerin-join`.
 
 The token works once. The machine keeps its own credential in
-`~/.local/share/nuphos/agent/device-credential.json` (`NUPHOS_AGENT_HOME`
+`~/.local/share/cerin/agent/device-credential.json` (`CERIN_AGENT_HOME`
 moves it); later runs need neither the token nor a sign-in. The credential
 opens only this machine's tunnel. Revoking it
 (`DELETE /agent/devices/<deviceId>/credential`) disconnects the machine, and
-`nuphos agent` then exits with status 78, as it does for a used or expired
+`cerin agent` then exits with status 78, as it does for a used or expired
 token, until it joins again with a new one.
 
-On Linux with systemd, `nuphos agent` does not stay in the foreground: it
-installs the user service `nuphos-agent` and starts it, so the runtime starts
+On Linux with systemd, `cerin agent` does not stay in the foreground: it
+installs the user service `cerin-agent` and starts it, so the runtime starts
 again after a crash or a reboot. With `--join` it returns once the machine has
-joined. The service runs `nuphos agent` with the `PATH` and `NUPHOS_*`
-variables of the shell that installed it (kept in `~/.config/nuphos/agent.env`);
-run `nuphos agent` again to refresh them. A revoked computer or a refused token
-exits with status 78, which the service does not restart. `nuphos update`
+joined. The service runs `cerin agent` with the `PATH` and `CERIN_*`
+variables of the shell that installed it (kept in `~/.config/cerin/agent.env`);
+run `cerin agent` again to refresh them. A revoked computer or a refused token
+exits with status 78, which the service does not restart. `cerin update`
 restarts the service on the new version. Its log is
-`journalctl --user -u nuphos-agent -f`; `systemctl --user disable --now
-nuphos-agent` stops it. Without linger, user services start at the user's first
-sign-in rather than at boot: `nuphos agent` turns linger on when the system
+`journalctl --user -u cerin-agent -f`; `systemctl --user disable --now
+cerin-agent` stops it. Without linger, user services start at the user's first
+sign-in rather than at boot: `cerin agent` turns linger on when the system
 allows it, and otherwise asks you to run `sudo loginctl enable-linger "$USER"`.
 Use a dedicated non-root account: anyone who controls that account acts as this
-machine in Nuphos, and agents' commands run as it. On Linux without a systemd
+machine in Cerin, and agents' commands run as it. On Linux without a systemd
 user manager (a container), or when a systemd unit runs it directly,
-`nuphos agent` runs the runtime in the foreground.
+`cerin agent` runs the runtime in the foreground.
 
-On macOS, `nuphos agent` likewise installs the LaunchAgent `ai.nuphos.agent`
-(`~/Library/LaunchAgents/ai.nuphos.agent.plist`) and loads it into your desktop
+On macOS, `cerin agent` likewise installs the LaunchAgent `ai.cerin.agent`
+(`~/Library/LaunchAgents/ai.cerin.agent.plist`) and loads it into your desktop
 session, so the runtime keeps running after the terminal closes and starts
 again after a crash and whenever you sign in. With `--join` it returns once the
 machine has joined. A LaunchAgent starts at sign-in, so for a start at boot turn
 on automatic login for that user. Over SSH with nobody signed in to the Mac's
 desktop, it is written and starts at the next sign-in. A revoked computer exits
 with status 0 under launchd, which restarts only a failed exit. Its log is
-`~/Library/Logs/nuphos-agent.log`; `launchctl bootout gui/$(id -u)/ai.nuphos.agent`
+`~/Library/Logs/cerin-agent.log`; `launchctl bootout gui/$(id -u)/ai.cerin.agent`
 stops it until the next sign-in, and removing the plist as well stops it for good.
 
 ### Your own model provider
@@ -174,12 +174,12 @@ stops it until the next sign-in, and removing the plist as well stops it for goo
 Claude Code and Codex can bill your own provider instead of a Claude or
 ChatGPT sign-in: Amazon Bedrock, Google Vertex AI, Microsoft Foundry, Azure
 OpenAI, or any Anthropic- or OpenAI-compatible gateway. Set the variables each
-CLI already reads where you run `nuphos agent`; it passes on only the ones in
+CLI already reads where you run `cerin agent`; it passes on only the ones in
 the list below, and only when set. The service keeps them with its other
-variables (`~/.config/nuphos/agent.env` or the LaunchAgent plist, both readable
-only by you), so run `nuphos agent` again from a shell with the new values to
+variables (`~/.config/cerin/agent.env` or the LaunchAgent plist, both readable
+only by you), so run `cerin agent` again from a shell with the new values to
 change or remove them. A container or a hand-written unit just sets them in the
-environment of `nuphos agent`.
+environment of `cerin agent`.
 
 | Agent       | Provider                         | Variables                                                                                                                                                                                       |
 | ----------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -190,12 +190,12 @@ environment of `nuphos agent`.
 | Codex       | Azure OpenAI, gateway or API key | `OPENAI_API_KEY`, and `OPENAI_BASE_URL` (for Azure OpenAI `https://<resource>.openai.azure.com/openai/v1`)                                                                                      |
 
 Claude Code also takes `ANTHROPIC_MODEL` and `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL`
-for the model ids of your provider. Codex sends the model you pick in Nuphos, so
+for the model ids of your provider. Codex sends the model you pick in Cerin, so
 name an Azure OpenAI deployment after the model (`gpt-5.5`). Every agent on the
-computer uses the provider, which counts as its sign-in: Nuphos lists the agent
-as signed in, shows no plan usage for it, and `nuphos agent` does not ask you to
+computer uses the provider, which counts as its sign-in: Cerin lists the agent
+as signed in, shows no plan usage for it, and `cerin agent` does not ask you to
 sign Claude Code in.
-On start `nuphos agent` prints which variables it passes, by name; no value is
+On start `cerin agent` prints which variables it passes, by name; no value is
 written to a log or to the runtime's own config. The values reach the agents'
 processes, so the commands an agent runs can read them, as they can read a
 key in any CLI's own environment. On a shared computer, everyone allowed to
@@ -210,22 +210,22 @@ the agent id. New agents use the mode last picked in `/full-access`
 (Full Access by default). In Full Access nothing asks for approval. In Auto Mode,
 a command that needs approval is denied unless `--approve` is given; the exit status is 0, 1 on error, or 2 when an approval was denied.
 
-The CLI keeps its own sign-in in `~/.config/nuphos/cli.yaml`
-(`NUPHOS_CLI_CONFIG` overrides it), next to the desktop app's `desktop.yaml`.
-`nuphos login` starts from the desktop app's sign-in when it has one, and opens
-the browser otherwise; `nuphos logout` signs out of the CLI only. The API
+The CLI keeps its own sign-in in `~/.config/cerin/cli.yaml`
+(`CERIN_CLI_CONFIG` overrides it), next to the desktop app's `desktop.yaml`.
+`cerin login` starts from the desktop app's sign-in when it has one, and opens
+the browser otherwise; `cerin logout` signs out of the CLI only. The API
 endpoint saved on the desktop's sign-in screen (`cli.api-url`) applies here
 too. On macOS the token itself is a login-keychain item that only the CLI
-reads (service `ai.nuphos.cli.session`; the desktop app keeps its own), so
-macOS asks for access just once, when `nuphos login` copies the desktop's
+reads (service `ai.cerin.cli.session`; the desktop app keeps its own), so
+macOS asks for access just once, when `cerin login` copies the desktop's
 sign-in. On Windows the token is a Credential Manager item and on Linux a
 Secret Service item (gnome-keyring, KWallet), under the same service name;
 neither asks. A token an older version left in `cli.yaml` moves there on the
 next run. A Linux without a Secret Service (a headless server), or a store
 that refuses the write (locked, in an SSH session), keeps the token in the
-file, readable only by you. `nuphos auth status` shows who is signed in
-and where the token is. `NUPHOS_API_URL` and `NUPHOS_TEAM` override the endpoint and the team, and
-`NUPHOS_DEBUG_FRAMES=<file>` appends every stream event to a file.
+file, readable only by you. `cerin auth status` shows who is signed in
+and where the token is. `CERIN_API_URL` and `CERIN_TEAM` override the endpoint and the team, and
+`CERIN_DEBUG_FRAMES=<file>` appends every stream event to a file.
 
 In the composer:
 
@@ -240,7 +240,7 @@ In the composer:
 | `y` / `n`              | answer a command waiting for approval                                                                   |
 | `/model`               | model and reasoning effort                                                                              |
 | `/full-access`         | switch Full Access: allow the agent's actions without asking; new agents start in the last pick         |
-| `/agents`              | the runtimes this team runs on: choose one, add a Nuphos-managed or self-hosted one, `l` to sign one in |
+| `/agents`              | the runtimes this team runs on: choose one, add a Cerin-managed or self-hosted one, `l` to sign one in |
 | `/team`                | switch team                                                                                             |
 | `/new`, `/resume`      | start or continue an agent                                                                              |
 | `/archive`             | archive this agent, start a new one                                                                     |
@@ -264,19 +264,19 @@ gh workflow run release-cli.yml --ref main -f tag=cli-v0.2.0
 ```
 
 `.github/workflows/release-cli.yml` builds the four binaries, and the
-`nuphos agent` runtime for each platform, and publishes them as the
-`CLI v0.2.0` GitHub Release, which the installer and `nuphos update` pick up.
+`cerin agent` runtime for each platform, and publishes them as the
+`CLI v0.2.0` GitHub Release, which the installer and `cerin update` pick up.
 
-To try `nuphos agent` from a checkout, stage the runtime and point at it:
+To try `cerin agent` from a checkout, stage the runtime and point at it:
 
 ```sh
 cd apps/desktop && node local-runtime/prepare.mjs --targets linux-x64 --require
 bun build electron/main/local-runtime/cli-host.ts --target=node --format=esm \
   --outfile build/local-runtime/linux-x64/host.mjs
-NUPHOS_LOCAL_RUNTIME_DIR=$PWD/build/local-runtime/linux-x64 nuphos agent
+CERIN_LOCAL_RUNTIME_DIR=$PWD/build/local-runtime/linux-x64 cerin agent
 ```
 
-`nuphos.ai/install` is pinned to the tag of the `install.sh` it serves (the
+`cerin.ai/install` is pinned to the tag of the `install.sh` it serves (the
 `/install` redirect in the landing page's `next.config.ts`). Move it to the new
 tag when a release changes `install.sh`.
 
@@ -294,8 +294,8 @@ The CLI release build uses the protected `desktop-release` environment and the
 same Developer ID Application certificate and notarization credentials as Desktop.
 The pinned `apple-actions/import-codesign-certs` action manages the temporary signing
 keychain; the CLI script only signs, verifies, and submits the binary for notarization.
-Both macOS architectures are signed with identifier `ai.nuphos.cli`, Team ID
-`6T873K59LQ`, hardened runtime, and a secure timestamp before packaging and hashing.
+Both macOS architectures are signed with identifier `ai.cerin.cli`, Team ID
+`MT4V6HEGSU`, hardened runtime, and a secure timestamp before packaging and hashing.
 Signing or notarization failure blocks publication. Linux binaries remain unsigned.
 Only macOS builds require the environment's release approval; Linux builds do not.
 
@@ -304,14 +304,14 @@ An upgrade from an older unsigned CLI can still require a one-time authorization
 To verify a release on macOS, extract its archive and run:
 
 ```sh
-codesign --verify --strict --verbose=2 ./nuphos
-codesign --display --verbose=4 --requirements - ./nuphos
+codesign --verify --strict --verbose=2 ./cerin
+codesign --display --verbose=4 --requirements - ./cerin
 ```
 
-Check `Identifier=ai.nuphos.cli`, `TeamIdentifier=6T873K59LQ`, and a Developer ID
+Check `Identifier=ai.cerin.cli`, `TeamIdentifier=MT4V6HEGSU`, and a Developer ID
 Application authority. For the end-to-end upgrade check, sign in with one signed
 release, read the session, install a second signed release at the same path with
-`nuphos update`, and read the session again. The second read must not prompt for
+`cerin update`, and read the session again. The second read must not prompt for
 Keychain authorization. This requires two signed releases and a macOS login session;
 a Linux CI run cannot establish that behavior. Raw binaries cannot carry a stapled
 notarization ticket; macOS retrieves the ticket online.

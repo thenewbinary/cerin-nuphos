@@ -46,7 +46,7 @@ test('a realistic set of team names spreads across the palette', () => {
     'さくらインターネット',
     '카카오엔터프라이즈',
     'Platform Team',
-    'nuphos',
+    'cerin',
     '客戶成功部',
     'SRE',
     'Data Infra',

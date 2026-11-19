@@ -1,15 +1,15 @@
 /** Stop an orphaned local backend before it can keep reconciling shared runtimes. */
-const state = globalThis as typeof globalThis & { __nuphosStopLauncherWatchdog?: () => void }
+const state = globalThis as typeof globalThis & { __cerinStopLauncherWatchdog?: () => void }
 
 export function watchDevLauncher(raw: string | undefined, onExit: () => void): () => void {
-  state.__nuphosStopLauncherWatchdog?.()
+  state.__cerinStopLauncherWatchdog?.()
   const pid = Number(raw)
 
   if (!raw || !/^\d+$/u.test(raw) || !Number.isSafeInteger(pid) || pid <= 1) return () => {}
 
   const stop = () => {
     clearInterval(timer)
-    if (state.__nuphosStopLauncherWatchdog === stop) delete state.__nuphosStopLauncherWatchdog
+    if (state.__cerinStopLauncherWatchdog === stop) delete state.__cerinStopLauncherWatchdog
   }
   const check = () => {
     try {
@@ -23,7 +23,7 @@ export function watchDevLauncher(raw: string | undefined, onExit: () => void): (
   const timer = setInterval(check, 1_000)
 
   timer.unref()
-  state.__nuphosStopLauncherWatchdog = stop
+  state.__cerinStopLauncherWatchdog = stop
   check()
 
   return stop

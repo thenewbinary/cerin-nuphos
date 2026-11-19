@@ -5,7 +5,7 @@ import { errorHandler } from '@/lib/errors'
 
 import { initialBindingAccess, newBindingAccess } from './initial-access'
 
-import type { NuphosTeam } from '@/lib/identity/types'
+import type { CerinTeam } from '@/lib/identity/types'
 import type { TeamAuthVariables } from '@/middleware/auth/types'
 
 const shared = { bindingShareDefault: 'team' } as const
@@ -54,7 +54,7 @@ describe('newBindingAccess', () => {
 
   app.use('*', async (c, next) => {
     c.set('userId', 'u1')
-    c.set('team', closed as NuphosTeam)
+    c.set('team', closed as CerinTeam)
     await next()
   })
   app.post('/', async (c) => c.json(await newBindingAccess(c)))

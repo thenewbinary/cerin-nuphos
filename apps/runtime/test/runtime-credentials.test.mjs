@@ -6,16 +6,16 @@ import { join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 
-import { nuphosBridgeMcpServers } from '../image/mcp-bridge-config.mjs'
+import { cerinBridgeMcpServers } from '../image/mcp-bridge-config.mjs'
 import { currentAuthorization, relay } from '../image/mcp-http-bridge.mjs'
 
 const guard = fileURLToPath(new URL('../image/runtime-guard.sh', import.meta.url))
 
 function credentialsDir(token) {
-  const dir = mkdtempSync(join(tmpdir(), 'nuphos-credentials-'))
+  const dir = mkdtempSync(join(tmpdir(), 'cerin-credentials-'))
 
-  writeFileSync(join(dir, 'NUPHOS_TOKEN'), token)
-  writeFileSync(join(dir, 'NUPHOS_PLAN_API_TOKEN'), token)
+  writeFileSync(join(dir, 'CERIN_TOKEN'), token)
+  writeFileSync(join(dir, 'CERIN_PLAN_API_TOKEN'), token)
 
   return dir
 }
@@ -27,9 +27,9 @@ const http = (name, value) => ({
   headers: [{ name: 'Authorization', value }],
 })
 
-test('bearer-only Nuphos MCP servers are bridged only when credential files exist', () => {
+test('bearer-only Cerin MCP servers are bridged only when credential files exist', () => {
   const servers = [
-    http('nuphos-tools', 'Bearer spawn'),
+    http('cerin-tools', 'Bearer spawn'),
     http('other', 'Basic x'),
     {
       ...http('multi', 'Bearer y'),
@@ -37,17 +37,17 @@ test('bearer-only Nuphos MCP servers are bridged only when credential files exis
     },
   ]
 
-  assert.equal(nuphosBridgeMcpServers(servers, {}, '/node'), servers)
-  const [bridged, basic, multi] = nuphosBridgeMcpServers(
+  assert.equal(cerinBridgeMcpServers(servers, {}, '/node'), servers)
+  const [bridged, basic, multi] = cerinBridgeMcpServers(
     servers,
     { OPENAB_CREDENTIALS_DIR: '/c' },
     '/node',
   )
 
   assert.deepEqual(bridged, {
-    name: 'nuphos-tools',
+    name: 'cerin-tools',
     command: '/node',
-    args: ['/opt/nuphos-runtime/mcp-http-bridge.mjs', 'http://backend/nuphos-tools'],
+    args: ['/opt/cerin-runtime/mcp-http-bridge.mjs', 'http://backend/cerin-tools'],
     env: [{ name: 'OPENAB_CREDENTIALS_DIR', value: '/c' }],
   })
   assert.equal(basic, servers[1])
@@ -70,12 +70,12 @@ test('the MCP bridge authorizes every request with the token current at call tim
   const options = { url: new URL('http://backend/mcp'), env, post, write: (m) => written.push(m) }
 
   await relay('{"jsonrpc":"2.0","id":1,"method":"tools/list"}', options)
-  writeFileSync(join(dir, 'NUPHOS_TOKEN'), 'turn-2\n')
+  writeFileSync(join(dir, 'CERIN_TOKEN'), 'turn-2\n')
   await relay('{"jsonrpc":"2.0","method":"notifications/initialized"}', options)
 
   assert.deepEqual(seen, ['Bearer turn-1', 'Bearer turn-2'])
   assert.deepEqual(written, [{ jsonrpc: '2.0', id: 1, result: { ok: 1 } }])
-  rmSync(join(dir, 'NUPHOS_TOKEN'))
+  rmSync(join(dir, 'CERIN_TOKEN'))
   await relay('{"jsonrpc":"2.0","id":2,"method":"tools/list"}', options)
   assert.equal(seen.length, 3)
   assert.equal(seen[2], undefined, 'a revoked credential sends no authorization')
@@ -102,12 +102,12 @@ test('the MCP bridge turns transport and HTTP failures into JSON-RPC errors', as
     {
       jsonrpc: '2.0',
       id: 7,
-      error: { code: -32000, message: 'Nuphos MCP HTTP 401: {"code":"unauthorized"}' },
+      error: { code: -32000, message: 'Cerin MCP HTTP 401: {"code":"unauthorized"}' },
     },
     {
       jsonrpc: '2.0',
       id: 8,
-      error: { code: -32000, message: 'Nuphos MCP request failed: ECONNREFUSED' },
+      error: { code: -32000, message: 'Cerin MCP request failed: ECONNREFUSED' },
     },
     { jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } },
   ])
@@ -116,13 +116,13 @@ test('the MCP bridge turns transport and HTTP failures into JSON-RPC errors', as
 test('every bash, nested ones included, reads the current conversation token', () => {
   const dir = credentialsDir('turn-1')
   const run = (extra = {}) =>
-    spawnSync('bash', ['-c', 'printf "%s %s" "$NUPHOS_TOKEN" "$NUPHOS_PLAN_API_TOKEN"'], {
+    spawnSync('bash', ['-c', 'printf "%s %s" "$CERIN_TOKEN" "$CERIN_PLAN_API_TOKEN"'], {
       env: {
         PATH: process.env.PATH,
         BASH_ENV: guard,
         OPENAB_CREDENTIALS_DIR: dir,
-        NUPHOS_TOKEN: 'spawn',
-        NUPHOS_PLAN_API_TOKEN: 'spawn',
+        CERIN_TOKEN: 'spawn',
+        CERIN_PLAN_API_TOKEN: 'spawn',
         ...extra,
       },
       encoding: 'utf8',
@@ -131,10 +131,10 @@ test('every bash, nested ones included, reads the current conversation token', (
     }).stdout
 
   assert.equal(run(), 'turn-1 turn-1')
-  writeFileSync(join(dir, 'NUPHOS_TOKEN'), 'turn-2')
-  writeFileSync(join(dir, 'NUPHOS_PLAN_API_TOKEN'), 'turn-2')
+  writeFileSync(join(dir, 'CERIN_TOKEN'), 'turn-2')
+  writeFileSync(join(dir, 'CERIN_PLAN_API_TOKEN'), 'turn-2')
   assert.equal(run(), 'turn-2 turn-2')
   assert.equal(run({ OPENAB_CREDENTIALS_DIR: '' }), 'spawn spawn')
-  rmSync(join(dir, 'NUPHOS_TOKEN'))
+  rmSync(join(dir, 'CERIN_TOKEN'))
   assert.equal(run(), ' turn-2', 'a revoked credential unsets the stale env token')
 })

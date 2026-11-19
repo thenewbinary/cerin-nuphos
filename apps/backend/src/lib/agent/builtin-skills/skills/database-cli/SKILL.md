@@ -19,7 +19,7 @@ do not spend the turn installing it.
 
 ## Credentials
 
-Nuphos does not currently mint database credentials. Use credentials only when:
+Cerin does not currently mint database credentials. Use credentials only when:
 
 - The user provides a connection string or host/user/database details.
 - The user points to a Kubernetes Secret and explicitly approves reading the

@@ -46,7 +46,7 @@ const write = (op: string) => async (filter: never, update: never) => {
   return null
 }
 
-useIdentity({ signNuphosToken: () => 'test-token' })
+useIdentity({ signCerinToken: () => 'test-token' })
 useConversationChatRoute({
   resolveConversationChatRuntime: async () => ({ runtime: 'claude-code' }),
 })

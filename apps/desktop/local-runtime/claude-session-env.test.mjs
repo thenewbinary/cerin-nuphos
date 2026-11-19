@@ -15,22 +15,22 @@ import path from 'node:path'
 import { test } from 'node:test'
 
 import { shellGuardEnv } from '../electron/main/local-runtime/shell-guard.ts'
-import { nuphosDesktopClaudeEnv } from './claude-session-env.mjs'
+import { cerinDesktopClaudeEnv } from './claude-session-env.mjs'
 
 test(
   'macOS preserves the Keychain home while shell tools use their session configuration',
   { skip: process.platform === 'win32' },
   (t) => {
-    const root = mkdtempSync(path.join(os.tmpdir(), "nuphos tools ' space-"))
+    const root = mkdtempSync(path.join(os.tmpdir(), "cerin tools ' space-"))
     t.after(() => rmSync(root, { recursive: true, force: true }))
     const isolated = {
       HOME: root,
       USERPROFILE: root,
       GH_CONFIG_DIR: path.join(root, '.config', 'gh'),
       AWS_SHARED_CREDENTIALS_FILE: path.join(root, '.aws', 'credentials'),
-      NUPHOS_SESSION_HOME: root,
+      CERIN_SESSION_HOME: root,
     }
-    const env = nuphosDesktopClaudeEnv(
+    const env = cerinDesktopClaudeEnv(
       isolated,
       { HOME: '/host', USERPROFILE: '/host-profile' },
       'darwin',
@@ -58,7 +58,7 @@ test(
       HOME: path.join(root, 'other'),
       USERPROFILE: path.join(root, 'other'),
     }
-    const next = nuphosDesktopClaudeEnv(other, { HOME: '/host' }, 'darwin')
+    const next = cerinDesktopClaudeEnv(other, { HOME: '/host' }, 'darwin')
     assert.notEqual(next.CLAUDE_CODE_SHELL_PREFIX, env.CLAUDE_CODE_SHELL_PREFIX)
   },
 )
@@ -66,20 +66,20 @@ test(
 test('Linux and Windows retain the existing session environment', () => {
   const env = { HOME: '/isolated', GH_CONFIG_DIR: '/isolated/gh' }
   for (const platform of ['linux', 'win32'])
-    assert.equal(nuphosDesktopClaudeEnv(env, { HOME: '/host' }, platform), env)
-  assert.deepEqual(nuphosDesktopClaudeEnv({}, { HOME: '/host' }, 'darwin'), {})
+    assert.equal(cerinDesktopClaudeEnv(env, { HOME: '/host' }, platform), env)
+  assert.deepEqual(cerinDesktopClaudeEnv({}, { HOME: '/host' }, 'darwin'), {})
 })
 
 test(
   'the wrapper cannot overwrite a file through a session symlink',
   { skip: process.platform === 'win32' },
   (t) => {
-    const root = mkdtempSync(path.join(os.tmpdir(), 'nuphos-shell-link-'))
+    const root = mkdtempSync(path.join(os.tmpdir(), 'cerin-shell-link-'))
     t.after(() => rmSync(root, { recursive: true, force: true }))
     const target = path.join(root, 'protected')
     writeFileSync(target, 'unchanged')
     symlinkSync(target, path.join(root, 'tool-shell.sh'))
-    assert.throws(() => nuphosDesktopClaudeEnv({ HOME: root }, { HOME: '/host' }, 'darwin'))
+    assert.throws(() => cerinDesktopClaudeEnv({ HOME: root }, { HOME: '/host' }, 'darwin'))
     assert.equal(readFileSync(target, 'utf8'), 'unchanged')
   },
 )
@@ -88,7 +88,7 @@ test(
   'a macOS tool command, run by /bin/sh through the wrapper, reads the current conversation token',
   { skip: process.platform === 'win32' },
   (t) => {
-    const root = mkdtempSync(path.join(os.tmpdir(), 'nuphos-tool-shell-'))
+    const root = mkdtempSync(path.join(os.tmpdir(), 'cerin-tool-shell-'))
     t.after(() => rmSync(root, { recursive: true, force: true }))
     const credentials = path.join(root, 'credentials')
     mkdirSync(credentials)
@@ -96,27 +96,27 @@ test(
       path.join(import.meta.dirname, '../../runtime/image/runtime-guard.sh'),
       path.join(root, 'runtime-guard.sh'),
     )
-    const wrapper = nuphosDesktopClaudeEnv(
+    const wrapper = cerinDesktopClaudeEnv(
       { HOME: path.join(root, 'session-home') },
       { HOME: root },
       'darwin',
     ).CLAUDE_CODE_SHELL_PREFIX
     // Claude Code runs `bash -c "<prefix> <command>"` with a socket for stdin.
     const token = () =>
-      spawnSync('/bin/bash', ['-c', `'${wrapper}' 'printf %s "$NUPHOS_TOKEN"'`], {
+      spawnSync('/bin/bash', ['-c', `'${wrapper}' 'printf %s "$CERIN_TOKEN"'`], {
         env: {
           PATH: process.env.PATH,
           ...shellGuardEnv({ bundle: { root }, openabHome: root }),
           OPENAB_CREDENTIALS_DIR: credentials,
-          NUPHOS_TOKEN: 'spawn',
+          CERIN_TOKEN: 'spawn',
         },
         encoding: 'utf8',
         stdio: 'pipe',
       }).stdout
 
-    writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), 'turn-1')
+    writeFileSync(path.join(credentials, 'CERIN_TOKEN'), 'turn-1')
     assert.equal(token(), 'turn-1')
-    writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), 'turn-2')
+    writeFileSync(path.join(credentials, 'CERIN_TOKEN'), 'turn-2')
     assert.equal(token(), 'turn-2')
   },
 )

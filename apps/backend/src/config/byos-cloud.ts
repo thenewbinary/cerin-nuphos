@@ -1,6 +1,6 @@
 import { boundedInt, optional, optionalList } from './env'
 
-// Direct data access plus the five clouds Nuphos reaches by web-identity
+// Direct data access plus the five clouds Cerin reaches by web-identity
 // federation. Only AWS carries the signing key / issuer / JWKS — the others
 // reuse it and differ solely in the audience they pin.
 export function byosCloudConfig() {
@@ -25,7 +25,7 @@ export function byosCloudConfig() {
     aws: {
       sessionDurationSec: 3600,
       oidc: {
-        // RS256 signing key for the Nuphos web-identity issuer (PEM; generate
+        // RS256 signing key for the Cerin web-identity issuer (PEM; generate
         // with `openssl genrsa 2048`). Rotation: deploy the new key, but keep
         // serving the old JWKS until outstanding tokens (tokenTtlSec) expire.
         privateKey: optional('AWS_BYOS_OIDC_PRIVATE_KEY'),
@@ -46,16 +46,16 @@ export function byosCloudConfig() {
     gcp: {
       tokenLifetimeSec: 3600,
       // OIDC workload identity federation (like AWS/Azure/Tencent/Aliyun/
-      // Volcengine): the pool and provider live in *Nuphos's own* GCP project and
-      // trust the shared Nuphos issuer, so customers create nothing — they grant
+      // Volcengine): the pool and provider live in *Cerin's own* GCP project and
+      // trust the shared Cerin issuer, so customers create nothing — they grant
       // Token Creator on their service account to
       //   principal://iam.googleapis.com/projects/<projectNumber>/locations/global/
-      //     workloadIdentityPools/<poolId>/subject/nuphos:team:<teamId>
+      //     workloadIdentityPools/<poolId>/subject/cerin:team:<teamId>
       // and Google itself enforces that a token minted for team A can never
       // impersonate team B's service account. The signing key / issuer / JWKS come
       // from byos.aws.oidc; the audience is the provider's own resource path.
       wif: {
-        // Numeric project number (not the project ID) of the Nuphos project that
+        // Numeric project number (not the project ID) of the Cerin project that
         // owns the pool — the principal:// identifier only accepts the number.
         projectNumber: optional('GCP_BYOS_WIF_PROJECT_NUMBER'),
         poolId: optional('GCP_BYOS_WIF_POOL_ID'),
@@ -65,8 +65,8 @@ export function byosCloudConfig() {
     tencent: {
       // OIDC web-identity federation (like AWS/Aliyun/Volcengine): the customer
       // creates a CAM OIDC identity provider (issuer + JWKS shared with the AWS
-      // connector — one Nuphos IdP) and a CAM role trusting it, and Nuphos stores
-      // only the role ARN + provider name. At runtime Nuphos mints a per-team
+      // connector — one Cerin IdP) and a CAM role trusting it, and Cerin stores
+      // only the role ARN + provider name. At runtime Cerin mints a per-team
       // token and calls sts:AssumeRoleWithWebIdentity — no static Tencent keys.
       // The signing key / issuer / JWKS come from byos.aws.oidc; only the
       // audience differs — it is the client id the customer configures on the
@@ -79,8 +79,8 @@ export function byosCloudConfig() {
     aliyun: {
       // OIDC web-identity federation (like AWS/Volcengine): the customer creates
       // a RAM OIDC identity provider (issuer + JWKS shared with the AWS connector
-      // — one Nuphos IdP) and a RAM role trusting it, and Nuphos stores only the
-      // role ARN. At runtime Nuphos mints a per-team token and calls
+      // — one Cerin IdP) and a RAM role trusting it, and Cerin stores only the
+      // role ARN. At runtime Cerin mints a per-team token and calls
       // sts:AssumeRoleWithOIDC — unsigned, no static Aliyun keys. The signing key
       // / issuer / JWKS come from byos.aws.oidc; only the audience differs — it is
       // the client id the customer configures on the OIDC provider, pinned as the
@@ -91,10 +91,10 @@ export function byosCloudConfig() {
       },
     },
     volcengine: {
-      // OIDC web-identity federation (like AWS): the customer registers Nuphos
+      // OIDC web-identity federation (like AWS): the customer registers Cerin
       // as an IAM OIDC identity provider (issuer + JWKS below, shared with the
-      // AWS connector — one Nuphos IdP), creates a role trusting it, and Nuphos
-      // stores only the role TRN. At runtime Nuphos mints a per-team RS256 token
+      // AWS connector — one Cerin IdP), creates a role trusting it, and Cerin
+      // stores only the role TRN. At runtime Cerin mints a per-team RS256 token
       // and calls sts:AssumeRoleWithOIDC — unsigned, no static Volcengine keys.
       // The signing key / issuer / JWKS come from byos.aws.oidc; only the
       // audience differs. `audience` is the client id the customer enters when
@@ -105,11 +105,11 @@ export function byosCloudConfig() {
       },
     },
     huawei: {
-      // OIDC federation via IAM5 trust agencies: the customer registers Nuphos
+      // OIDC federation via IAM5 trust agencies: the customer registers Cerin
       // as an OIDC provider (issuer + JWKS shared with the AWS connector — one
-      // Nuphos IdP) and assigns a trust agency to its audience; Nuphos stores
+      // Cerin IdP) and assigns a trust agency to its audience; Cerin stores
       // the account (domain) id, provider name, and agency name. At runtime
-      // Nuphos mints a per-team token and calls STS AssumeAgencyWithOIDC — no
+      // Cerin mints a per-team token and calls STS AssumeAgencyWithOIDC — no
       // static Huawei keys. The signing key / issuer / JWKS come from
       // byos.aws.oidc; only the audience differs — it is the client id the
       // customer registers on the provider, pinned as the token `aud`.
@@ -121,9 +121,9 @@ export function byosCloudConfig() {
     azure: {
       // OIDC workload identity federation (like AWS/Tencent/Aliyun/Volcengine):
       // the customer creates an Entra ID app registration with a federated
-      // credential trusting the Nuphos issuer (issuer + JWKS shared with the AWS
-      // connector — one Nuphos IdP) and grants it an Azure RBAC role on a
-      // subscription. Nuphos stores only tenantId + clientId + subscriptionId — no
+      // credential trusting the Cerin issuer (issuer + JWKS shared with the AWS
+      // connector — one Cerin IdP) and grants it an Azure RBAC role on a
+      // subscription. Cerin stores only tenantId + clientId + subscriptionId — no
       // client secret — mints a per-team token, and exchanges it for an ARM access
       // token at the Entra token endpoint (grant_type=client_credentials +
       // client_assertion). The signing key / issuer / JWKS come from byos.aws.oidc.

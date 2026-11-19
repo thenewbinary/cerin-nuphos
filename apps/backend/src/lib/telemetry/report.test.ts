@@ -51,7 +51,7 @@ describe('health report', () => {
   })
 
   test('cannot be switched on without a key', async () => {
-    await expect(setTelemetryEnabled(true)).rejects.toThrow('NUPHOS_TELEMETRY_KEY is not set')
+    await expect(setTelemetryEnabled(true)).rejects.toThrow('CERIN_TELEMETRY_KEY is not set')
   })
 
   test('the allowlist rejects a field it does not name', () => {

@@ -27,7 +27,7 @@ test('selectCrashDiagnostic ignores successful startup markers', () => {
   const diagnostic = selectCrashDiagnostic([
     'VITE v8.0.10 ready in 201 ms',
     'Local: http://localhost:5173/',
-    '[nuphos-dev] electron window opened',
+    '[cerin-dev] electron window opened',
   ])
 
   assert.equal(diagnostic, null)

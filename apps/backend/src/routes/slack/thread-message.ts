@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import type { SlackEventEnvelope, SlackRuntime } from '@/routes/slack/types'
 
 import { appendMessageOriginLine, buildSlackMessageOrigin } from '@/lib/agent/message-origin'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import {
   appendSlackThreadMessage,
   getSlackAgentThread,
@@ -24,7 +24,7 @@ import {
   resolveSlackMentionNames,
 } from '@/routes/slack/render'
 import {
-  explainUnboundNuphosThread,
+  explainUnboundCerinThread,
   postSenderNotice,
   stripBotMention,
   SUBTYPES_WITH_ATTACHMENTS,
@@ -93,11 +93,11 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
   if (!thread) {
     // This handler sees every threaded reply in every channel the bot is in, so
     // silence is right for a thread between other people. Under a root the bot
-    // itself posted it is not: someone is talking to Nuphos and getting nothing
+    // itself posted it is not: someone is talking to Cerin and getting nothing
     // back, which is exactly how an unbound proactive post reads today. Tell
     // them how to reach it instead of dropping the message.
     if (runtime.botUserId && event.parent_user_id === runtime.botUserId) {
-      await explainUnboundNuphosThread(runtime, event.channel, event.thread_ts)
+      await explainUnboundCerinThread(runtime, event.channel, event.thread_ts)
       await markSlackEvent(eventId, 'completed')
 
       return
@@ -108,7 +108,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
   }
   const allowed = await verifyThreadTeamAccess({
     runtime,
-    botNuphosTeamId: botContext.nuphosTeamId,
+    botCerinTeamId: botContext.cerinTeamId,
     thread,
     slackWorkspaceId,
     channelId: event.channel,
@@ -146,7 +146,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
     Boolean(runtime.botUserId) && (event.text ?? '').includes(`<@${runtime.botUserId}>`)
   const history = (thread.recentMessages ?? []).filter((record) => record.ts !== event.ts)
 
-  // Nuphos answers only when mentioned. Unmentioned replies stay in the
+  // Cerin answers only when mentioned. Unmentioned replies stay in the
   // thread history above and reach the agent with the next mention.
   if (!mentionsBot) {
     await markSlackEvent(eventId, 'ignored')
@@ -170,8 +170,8 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
       event.thread_ts,
       event.user,
       email
-        ? "Your Slack email doesn't match any Nuphos user on this team, so I can't act on your reply. Link your account in Nuphos → Settings → Slack first."
-        : "Your Slack account is not linked to Nuphos yet, so I can't act on your reply. Link it in Nuphos → Settings → Slack first.",
+        ? "Your Slack email doesn't match any Cerin user on this team, so I can't act on your reply. Link your account in Cerin → Settings → Slack first."
+        : "Your Slack account is not linked to Cerin yet, so I can't act on your reply. Link it in Cerin → Settings → Slack first.",
     )
     await markSlackEvent(eventId, 'completed')
 
@@ -182,7 +182,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
     !(await checkNotificationReplyAccess({
       runtime,
       thread,
-      senderNuphosUserId: senderMapping.nuphosUserId,
+      senderCerinUserId: senderMapping.cerinUserId,
       senderSlackUserId: event.user,
       channelId: event.channel,
       threadTs: event.thread_ts,
@@ -191,7 +191,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
   ) {
     return
   }
-  const turnNuphosToken = signNuphosToken(senderMapping.nuphosUserId, 60 * 60 * 8)
+  const turnCerinToken = signCerinToken(senderMapping.cerinUserId, 60 * 60 * 8)
   const channelName = await fetchSlackChannelName(runtime.botToken, slackWorkspaceId, event.channel)
   const threadAttachments = await ingestSlackAttachments({
     runtime,
@@ -231,7 +231,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
     threadTs: event.thread_ts,
     eventId,
     renderedText,
-    actorUserId: senderMapping.nuphosUserId,
+    actorUserId: senderMapping.cerinUserId,
     reactionMessageTs: event.ts,
   })
 
@@ -244,7 +244,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
   beginThreadStatus(runtime, event.channel, event.thread_ts)
 
   try {
-    const turnIdentity = getSlackThreadTurnIdentity(thread, senderMapping.nuphosUserId)
+    const turnIdentity = getSlackThreadTurnIdentity(thread, senderMapping.cerinUserId)
     const messages = await buildMessagesForRenderedTurn({
       sessionId: thread.sessionId,
       userId: turnIdentity.conversationOwnerUserId,
@@ -252,7 +252,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
       messageId: `slack-${event.event_ts ?? event.ts ?? randomUUID()}`,
       renderedText,
       carried: claim.carried,
-      actorUserId: senderMapping.nuphosUserId,
+      actorUserId: senderMapping.cerinUserId,
       attachmentParts: threadAttachments.parts,
       origin: messageOrigin,
     })
@@ -266,7 +266,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
       teamId: thread.teamId,
       channel: event.channel,
       threadTs: event.thread_ts,
-      nuphosToken: turnNuphosToken,
+      cerinToken: turnCerinToken,
       sender: { slackUserId: event.user, displayName: senderName },
       messages,
       firstMessage: resolvedText,

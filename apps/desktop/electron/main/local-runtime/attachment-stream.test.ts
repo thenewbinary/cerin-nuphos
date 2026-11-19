@@ -49,8 +49,8 @@ test('the fixed downloader handles spaces and Unicode paths without a shell or c
     assert.equal(result.paths.length, 1)
     assert.equal(await readFile(result.paths[0]!, 'utf8'), 'red')
     assert.ok(
-      relative(join(workspace, '.nuphos-attachments'), result.paths[0]!).startsWith(
-        'nuphos-attachments-',
+      relative(join(workspace, '.cerin-attachments'), result.paths[0]!).startsWith(
+        'cerin-attachments-',
       ),
     )
     assert.ok(result.paths[0]!.endsWith('圖片.png'))
@@ -73,11 +73,11 @@ test('invalid requests are closed without running a downloader', async () => {
 
 test('expired local batches are reclaimed without blocking new downloads on cleanup failure', async () => {
   const workspace = await mkdtemp(join(tmpdir(), 'attachment-retention-'))
-  const root = join(workspace, '.nuphos-attachments')
-  const expired = join(root, 'nuphos-attachments-expired')
-  const recent = join(root, 'nuphos-attachments-recent')
+  const root = join(workspace, '.cerin-attachments')
+  const expired = join(root, 'cerin-attachments-expired')
+  const recent = join(root, 'cerin-attachments-recent')
   const unrelated = join(root, 'keep-other-directory')
-  const locked = join(root, 'nuphos-attachments-locked')
+  const locked = join(root, 'cerin-attachments-locked')
   const canLock = process.platform !== 'win32' && process.getuid?.() !== 0
   const server = createServer((_request, response) => response.end('red'))
 
@@ -140,7 +140,7 @@ test('an absent bundle or unknown instance cannot open an attachment stream', as
 test('a symlinked attachment root cannot redirect downloads or stale cleanup', async () => {
   const workspace = await mkdtemp(join(tmpdir(), 'attachment-root-link-'))
   const outside = await mkdtemp(join(tmpdir(), 'attachment-outside-'))
-  const expired = join(outside, 'nuphos-attachments-expired')
+  const expired = join(outside, 'cerin-attachments-expired')
 
   try {
     await mkdir(expired)
@@ -148,7 +148,7 @@ test('a symlinked attachment root cannot redirect downloads or stale cleanup', a
     const old = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)
 
     await utimes(expired, old, old)
-    await symlink(outside, join(workspace, '.nuphos-attachments'), 'junction')
+    await symlink(outside, join(workspace, '.cerin-attachments'), 'junction')
     const result = await request(new LocalAttachmentStream(workspace, program), {
       files: [{ name: 'image.png', url: 'https://example.test/image', size: 3 }],
     })
@@ -156,7 +156,7 @@ test('a symlinked attachment root cannot redirect downloads or stale cleanup', a
     assert.equal(result, null)
     assert.equal(await readFile(join(expired, 'keep.txt'), 'utf8'), 'keep')
     assert.deepEqual(await (await import('node:fs/promises')).readdir(outside), [
-      'nuphos-attachments-expired',
+      'cerin-attachments-expired',
     ])
   } finally {
     await rm(workspace, { recursive: true, force: true })

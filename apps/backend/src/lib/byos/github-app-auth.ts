@@ -27,7 +27,7 @@ export function isGithubAppConfigured(): boolean {
 export function getGithubAppSlug(): string | undefined {
   const slug = config.byos.github.appSlug
 
-  return slug === 'zeabur-atlas' ? 'nuphos' : slug
+  return slug === 'zeabur-atlas' ? 'cerin' : slug
 }
 
 function base64url(input: string | Buffer): string {

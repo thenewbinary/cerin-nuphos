@@ -141,30 +141,30 @@ const SAFE = /^[\w.:/-]+$/
 
 /**
  * Installs the CLI and starts its agent with the join token, sent on stdin so the token is in no
- * command line. The agent keeps running after ssh ends and logs to ~/.nuphos-agent.log.
+ * command line. The agent keeps running after ssh ends and logs to ~/.cerin-agent.log.
  */
 export function sshJoinScript({ token, apiUrl }: { token: string; apiUrl: string | null }): string {
-  const api = apiUrl && apiUrl !== 'https://api.nuphos.ai' ? apiUrl : null
+  const api = apiUrl && apiUrl !== 'https://platform.cerin.ai' ? apiUrl : null
 
   if (!SAFE.test(token) || (api && !SAFE.test(api))) throw new Error('Unexpected join token')
-  const env = [api && `NUPHOS_API_URL='${api}'`, `NUPHOS_JOIN_TOKEN='${token}'`]
+  const env = [api && `CERIN_API_URL='${api}'`, `CERIN_JOIN_TOKEN='${token}'`]
     .filter(Boolean)
     .join(' ')
 
   return [
     'set -e',
     // The CLI is run by its full path, so the installer has no PATH advice to give.
-    'curl -fsSL https://nuphos.ai/install | PATH="$HOME/.local/bin:$PATH" sh',
-    'test -x "$HOME/.local/bin/nuphos" || { echo "The Nuphos CLI did not install." >&2; exit 1; }',
-    `${env} nohup "$HOME/.local/bin/nuphos" agent >"$HOME/.nuphos-agent.log" 2>&1 </dev/null &`,
+    'curl -fsSL https://cerin.ai/install | PATH="$HOME/.local/bin:$PATH" sh',
+    'test -x "$HOME/.local/bin/cerin" || { echo "The Cerin CLI did not install." >&2; exit 1; }',
+    `${env} nohup "$HOME/.local/bin/cerin" agent >"$HOME/.cerin-agent.log" 2>&1 </dev/null &`,
     'agent=$!',
-    'cred="$HOME/.local/share/nuphos/agent/device-credential.json"',
+    'cred="$HOME/.local/share/cerin/agent/device-credential.json"',
     // An agent that cannot start (no Node.js, a refused token) exits at once: say why now.
     'sleep 5',
     'i=0; while [ $i -lt 60 ] && [ ! -s "$cred" ] && kill -0 $agent 2>/dev/null; do sleep 1; i=$((i+1)); done',
     // With systemd the CLI exits once the service it installed has joined.
-    '[ -s "$cred" ] || kill -0 $agent 2>/dev/null || { cat "$HOME/.nuphos-agent.log" >&2; exit 1; }',
-    'echo "Started the Nuphos agent. Its log is ~/.nuphos-agent.log."',
+    '[ -s "$cred" ] || kill -0 $agent 2>/dev/null || { cat "$HOME/.cerin-agent.log" >&2; exit 1; }',
+    'echo "Started the Cerin agent. Its log is ~/.cerin-agent.log."',
     // Which computer it is, so Desktop waits for this one: new, joined again or already there.
     'sed -n \'s/.*"deviceId": *"\\([^"]*\\)".*/Device: \\1/p\' "$cred" 2>/dev/null || true',
     '',

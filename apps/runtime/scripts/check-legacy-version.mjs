@@ -21,7 +21,7 @@ export function checkLegacyVersion(version, refs) {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const refs = execFileSync(
     'git',
-    ['ls-remote', '--tags', '--refs', 'https://github.com/zeabur/nuphos-runtime.git'],
+    ['ls-remote', '--tags', '--refs', 'https://github.com/zeabur/cerin-runtime.git'],
     { encoding: 'utf8', timeout: 30_000 },
   )
   checkLegacyVersion(process.argv[2], refs)

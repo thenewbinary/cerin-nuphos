@@ -53,7 +53,7 @@ export function ChannelPane({
   titlebarClassName,
   onOpenSession,
   onOpenTask,
-  onOpenNuphosLink,
+  onOpenCerinLink,
   fixes,
 }: {
   teamId: string
@@ -66,7 +66,7 @@ export function ChannelPane({
   titlebarClassName?: string
   onOpenSession: (sessionId: string) => void
   onOpenTask?: (sessionId: string) => void
-  onOpenNuphosLink?: (href: string, beside?: boolean) => boolean
+  onOpenCerinLink?: (href: string, beside?: boolean) => boolean
   /** What the workspace lends to repair an agent that could not reply. */
   fixes?: ChannelFixes
 }) {
@@ -190,7 +190,7 @@ export function ChannelPane({
             channelId={channelId}
             chat={scrollRef}
             onOpenTask={canOpenTask ? (onOpenTask ?? onOpenSession) : undefined}
-            onOpenLink={onOpenNuphosLink}
+            onOpenLink={onOpenCerinLink}
           />
         </div>
         {bot && <BotTriggers key={bot} teamId={teamId} botId={bot} />}
@@ -249,7 +249,7 @@ export function ChannelPane({
               viewerId={user.id}
               teamId={teamId}
               onOpenSession={onOpenSession}
-              onOpenNuphosLink={onOpenNuphosLink}
+              onOpenCerinLink={onOpenCerinLink}
               channelId={channelId}
               extraRows={questions.rows}
               fixes={fixes}

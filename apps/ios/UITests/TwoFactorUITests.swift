@@ -9,7 +9,7 @@ final class TwoFactorUITests: XCTestCase {
             .appending(path: "tests/fixtures/\(fixture)")
         let app = XCUIApplication()
         app.launchArguments = arguments + ["-preview-no-push"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": path.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": path.path]
         app.launch()
         return app
     }

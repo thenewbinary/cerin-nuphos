@@ -16,7 +16,7 @@ type MfaChallengeDoc = {
   expiresAt: Date
   /** Set when the app asks to answer with a passkey. */
   passkeyChallenge?: string
-  /** Started by nuphos.ai's server, so the session is recorded as `startSession` would. */
+  /** Started by platform.cerin.ai's server, so the session is recorded as `startSession` would. */
   viaWebsite?: boolean
 }
 

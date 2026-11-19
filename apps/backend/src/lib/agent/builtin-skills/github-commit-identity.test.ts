@@ -20,8 +20,8 @@ test('commit setup reports the current participant without changing Git authors'
     GH_CONFIG_DIR: join(root, 'gh'),
     GIT_CONFIG_GLOBAL: globalConfig,
     GIT_CONFIG_NOSYSTEM: '1',
-    NUPHOS_TOKEN: 'fixture',
-    NUPHOS_BACKEND_URL: 'https://fixture.invalid',
+    CERIN_TOKEN: 'fixture',
+    CERIN_BACKEND_URL: 'https://fixture.invalid',
     TEST_AUTHOR_NAME: 'Current Teammate',
     TEST_AUTHOR_EMAIL: 'teammate@example.invalid',
   }
@@ -125,7 +125,7 @@ esac
       'Signed-off-by: Octo Cat <octo@example.invalid>\n',
     )
     const log = readFileSync(calls, 'utf8').trim().split('\n')
-    const probe = /refs\/heads\/(nuphos\/signoff-probe-\S+)/.exec(log[2] ?? '')?.[1]
+    const probe = /refs\/heads\/(cerin\/signoff-probe-\S+)/.exec(log[2] ?? '')?.[1]
     expect(probe).toBeDefined()
     expect(log.at(-1)).toBe(`api -X DELETE repos/octo/repo/git/refs/heads/${probe}`)
 

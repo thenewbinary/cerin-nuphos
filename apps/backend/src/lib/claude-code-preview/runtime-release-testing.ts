@@ -1,4 +1,4 @@
-// Test-only: stands in for the nuphos-runtime GitHub Releases feed and the ghcr manifests
+// Test-only: stands in for the cerin-runtime GitHub Releases feed and the ghcr manifests
 // behind it, so a test can say which release is the latest one — and which tags the
 // registry actually serves — without reaching the network.
 
@@ -8,7 +8,7 @@ import { OPENAB_PROVIDERS } from './runtime-provider'
 import {
   latestRuntimeRelease,
   LEGACY_RUNTIME_REPOSITORY,
-  NUPHOS_RUNTIME_REPOSITORY,
+  CERIN_RUNTIME_REPOSITORY,
   resetRuntimeReleaseCache,
 } from './runtime-release'
 
@@ -56,7 +56,7 @@ function feed({
   const legacyTags = new Set(
     legacyPublished.flatMap((value) => OPENAB_PROVIDERS.map((provider) => `${value}-${provider}`)),
   )
-  const repository = legacy ? LEGACY_RUNTIME_REPOSITORY : NUPHOS_RUNTIME_REPOSITORY
+  const repository = legacy ? LEGACY_RUNTIME_REPOSITORY : CERIN_RUNTIME_REPOSITORY
   const body = (advertises ?? OPENAB_PROVIDERS)
     .map((provider) => `${repository}:${version}-${provider}`)
     .join('\n')
@@ -71,20 +71,20 @@ function feed({
       const tag = manifest[1]!
 
       return Promise.resolve(
-        (url.includes('/v2/zeabur/nuphos-runtime/') ? legacyTags : tags).has(tag)
+        (url.includes('/v2/zeabur/cerin-runtime/') ? legacyTags : tags).has(tag)
           ? new Response(null, { headers: { 'docker-content-digest': digestOf(tag) } })
           : new Response(null, { status: 404 }),
       )
     }
 
-    if (legacy && url.includes('/repos/nuphos/nuphos/releases?'))
+    if (legacy && url.includes('/repos/thenewbinary/cerin-platform/releases?'))
       return Promise.resolve(Response.json([]))
     if (legacy && version && url.includes('/releases/latest')) {
       return Promise.resolve(Response.json({ tag_name: `v${version}`, body }))
     }
 
     return Promise.resolve(
-      version && url.includes('/repos/nuphos/nuphos/releases?')
+      version && url.includes('/repos/thenewbinary/cerin-platform/releases?')
         ? Response.json([{ tag_name: `runtime-v${version}`, body }])
         : new Response('', { status: 500 }),
     )

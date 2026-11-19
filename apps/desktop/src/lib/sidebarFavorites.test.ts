@@ -125,7 +125,7 @@ test('first sync discards ownerless legacy cache and keeps cloud favorites', asy
   const teamId = 'migration-team'
 
   storage.setItem(
-    'nuphos.sidebarFavorites',
+    'cerin.sidebarFavorites',
     JSON.stringify({ [teamId]: [{ label: 'Local', key: 'local' }] }),
   )
   remote.set(teamId, {
@@ -135,7 +135,7 @@ test('first sync discards ownerless legacy cache and keeps cloud favorites', asy
   })
 
   assert.deepEqual(readSidebarFavorites('user-a', teamId), [])
-  assert.equal(storage.getItem('nuphos.sidebarFavorites'), null)
+  assert.equal(storage.getItem('cerin.sidebarFavorites'), null)
   await syncSidebarFavorites('user-a', teamId)
 
   assert.deepEqual(readSidebarFavorites('user-a', teamId), [{ label: 'Cloud', key: 'cloud' }])

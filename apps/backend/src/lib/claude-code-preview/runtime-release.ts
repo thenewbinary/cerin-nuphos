@@ -4,17 +4,17 @@ import { IMAGE_PROVIDERS } from './runtime-provider'
 
 import type { OpenAbProvider } from './runtime-provider'
 
-export const RUNTIME_RELEASES_URL = 'https://github.com/nuphos/nuphos/releases'
-const legacyReleasesUrl = 'https://github.com/zeabur/nuphos-runtime/releases'
+export const RUNTIME_RELEASES_URL = 'https://github.com/thenewbinary/cerin-platform/releases'
+const legacyReleasesUrl = 'https://github.com/zeabur/cerin-runtime/releases'
 
-export const NUPHOS_RUNTIME_REPOSITORY = 'ghcr.io/nuphos/runtime'
-export const LEGACY_RUNTIME_REPOSITORY = 'ghcr.io/zeabur/nuphos-runtime'
+export const CERIN_RUNTIME_REPOSITORY = 'ghcr.io/thenewbinary/cerin-runtime'
+export const LEGACY_RUNTIME_REPOSITORY = 'ghcr.io/zeabur/cerin-runtime'
 
 /** Registry selection follows the trusted release feed, never an arbitrary body URL. */
 export function runtimeReleaseRepository(release: RuntimeRelease): string {
   return release.url.startsWith(`${legacyReleasesUrl}/tag/`)
     ? LEGACY_RUNTIME_REPOSITORY
-    : NUPHOS_RUNTIME_REPOSITORY
+    : CERIN_RUNTIME_REPOSITORY
 }
 
 export function stableRuntimeVersion(value: unknown): value is string {
@@ -90,7 +90,7 @@ async function fetchReleases(): Promise<Map<OpenAbProvider, RuntimeRelease>> {
   for (let page = 1; ; page++) {
     if (found.size === IMAGE_PROVIDERS.length) break
     const response = await fetch(
-      `https://api.github.com/repos/nuphos/nuphos/releases?per_page=100&page=${String(page)}`,
+      `https://api.github.com/repos/thenewbinary/cerin-platform/releases?per_page=100&page=${String(page)}`,
       { headers, signal },
     )
 
@@ -105,7 +105,7 @@ async function fetchReleases(): Promise<Map<OpenAbProvider, RuntimeRelease>> {
   // The first monorepo image is published only after the migration is merged.
   // Keep existing installations updatable until that cutover succeeds.
   const response = await fetch(
-    'https://api.github.com/repos/zeabur/nuphos-runtime/releases/latest',
+    'https://api.github.com/repos/zeabur/cerin-runtime/releases/latest',
     { headers, signal },
   )
 
@@ -154,7 +154,7 @@ export function latestCliRelease(): Promise<RuntimeRelease | null> {
   if (!cliCached || cliCached.expires <= Date.now())
     cliCached = {
       expires: Date.now() + 10 * 60_000,
-      result: fetch('https://api.github.com/repos/nuphos/nuphos/releases?per_page=50', {
+      result: fetch('https://api.github.com/repos/thenewbinary/cerin-platform/releases?per_page=50', {
         headers: { Accept: 'application/vnd.github+json' },
         signal: AbortSignal.timeout(5_000),
       })

@@ -24,13 +24,13 @@ test('each conversation and each teammate in it runs Hermes from a profile of it
     mkdirSync(join(home, '.hermes'))
     writeFileSync(join(home, '.hermes', 'config.yaml'), ROOT_CONFIG)
     const env = (session) => agentEnv('hermes', { env: session }, { HOME: home, PATH: '/bin' })
-    const owner = env({ NUPHOS_SESSION_ID: 'conversation-a', NUPHOS_TOKEN: 'a' })
-    const again = env({ NUPHOS_SESSION_ID: 'conversation-a', NUPHOS_TOKEN: 'a' })
-    const other = env({ NUPHOS_SESSION_ID: 'conversation-b', NUPHOS_TOKEN: 'b' })
+    const owner = env({ CERIN_SESSION_ID: 'conversation-a', CERIN_TOKEN: 'a' })
+    const again = env({ CERIN_SESSION_ID: 'conversation-a', CERIN_TOKEN: 'a' })
+    const other = env({ CERIN_SESSION_ID: 'conversation-b', CERIN_TOKEN: 'b' })
     const teammate = env({
-      NUPHOS_SESSION_ID: 'conversation-a',
-      NUPHOS_SESSION_ACTOR: 'teammate',
-      NUPHOS_TOKEN: 't',
+      CERIN_SESSION_ID: 'conversation-a',
+      CERIN_SESSION_ACTOR: 'teammate',
+      CERIN_TOKEN: 't',
     })
     // A profile per session home, under the root that holds the login.
     assert.equal(owner.HERMES_HOME, again.HERMES_HOME)
@@ -294,8 +294,8 @@ function signInOnComputer({ env = {}, broken = false } = {}) {
       env: {
         PATH: process.env.PATH,
         HOME: home,
-        NUPHOS_AGENT_EXECUTABLE: cli,
-        NUPHOS_AGENT_HOME: home,
+        CERIN_AGENT_EXECUTABLE: cli,
+        CERIN_AGENT_HOME: home,
         ...env,
       },
     },

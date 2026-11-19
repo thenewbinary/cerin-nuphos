@@ -10,16 +10,16 @@ function onboardingBlocks(): unknown[] {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: '*Welcome to Nuphos Agent!*\nPick a Slack channel where your team can @mention me. I will reply in threads and act on behalf of whoever mentions me.',
+        text: '*Welcome to Cerin Agent!*\nPick a Slack channel where your team can @mention me. I will reply in threads and act on behalf of whoever mentions me.',
       },
     },
     {
       type: 'actions',
-      block_id: 'nuphos_onboarding',
+      block_id: 'cerin_onboarding',
       elements: [
         {
           type: 'conversations_select',
-          action_id: 'nuphos_link_channel',
+          action_id: 'cerin_link_channel',
           placeholder: { type: 'plain_text', text: 'Select a channel' },
           filter: { include: ['public', 'private'] },
         },
@@ -30,7 +30,7 @@ function onboardingBlocks(): unknown[] {
       elements: [
         {
           type: 'mrkdwn',
-          text: 'Private channels only work after you `/invite @Nuphos` there first.',
+          text: 'Private channels only work after you `/invite @Cerin` there first.',
         },
       ],
     },
@@ -46,7 +46,7 @@ function announcementNote(channelId: string, outcome: ChannelAnnouncement): stri
     case 'not_in_channel':
       // The bot holds no channels:join scope, so it cannot add itself; an
       // invite is the only way in, for public channels as much as private.
-      return `Invite me with \`/invite @Nuphos\` in <#${channelId}> so I can see and answer mentions there.`
+      return `Invite me with \`/invite @Cerin\` in <#${channelId}> so I can see and answer mentions there.`
     case 'failed':
       return `@mention me in <#${channelId}> to start. (I couldn't post an intro there just now.)`
   }
@@ -69,11 +69,11 @@ function linkedChannelBlocks(
     },
     {
       type: 'actions',
-      block_id: 'nuphos_onboarding',
+      block_id: 'cerin_onboarding',
       elements: [
         {
           type: 'conversations_select',
-          action_id: 'nuphos_link_channel',
+          action_id: 'cerin_link_channel',
           placeholder: { type: 'plain_text', text: 'Link another channel' },
           filter: { include: ['public', 'private'] },
         },
@@ -86,15 +86,15 @@ export async function autoLinkInstaller(args: {
   slackWorkspaceId: string
   teamId: string
   installerSlackUserId: string | null
-  requesterNuphosUserId: string
+  requesterCerinUserId: string
 }): Promise<void> {
   if (!args.installerSlackUserId) return
   await upsertSlackUserMapping({
     slackWorkspaceId: args.slackWorkspaceId,
     slackUserId: args.installerSlackUserId,
     teamId: args.teamId,
-    nuphosUserId: args.requesterNuphosUserId,
-    createdBy: args.requesterNuphosUserId,
+    cerinUserId: args.requesterCerinUserId,
+    createdBy: args.requesterCerinUserId,
     enabled: true,
   })
 }
@@ -109,7 +109,7 @@ export async function sendSlackInstallWelcomeDm(args: {
   await postSlackMessage({
     token: args.botToken,
     channel: dmChannelId,
-    text: `Nuphos is connected to ${args.slackTeamName}. Pick a channel below to get started.`,
+    text: `Cerin is connected to ${args.slackTeamName}. Pick a channel below to get started.`,
     blocks: onboardingBlocks(),
   })
 }
@@ -126,7 +126,7 @@ export function linkChannelPromptBlocks(args: {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `This channel isn't linked to Nuphos yet. A team administrator can link <#${args.channelId}> with the button below — then mention me again.`,
+        text: `This channel isn't linked to Cerin yet. A team administrator can link <#${args.channelId}> with the button below — then mention me again.`,
       },
     },
     ...(args.isExtShared
@@ -144,12 +144,12 @@ export function linkChannelPromptBlocks(args: {
       : []),
     {
       type: 'actions',
-      block_id: 'nuphos_link_channel_prompt',
+      block_id: 'cerin_link_channel_prompt',
       elements: [
         {
           type: 'button',
           style: 'primary',
-          action_id: 'nuphos_link_channel',
+          action_id: 'cerin_link_channel',
           text: { type: 'plain_text', text: 'Link this channel' },
           value: args.channelId,
         },
@@ -161,10 +161,10 @@ export function linkChannelPromptBlocks(args: {
 export async function linkChannelFromSlackInteraction(args: {
   botToken: string
   slackWorkspaceId: string
-  nuphosTeamId: string
+  cerinTeamId: string
   channelId: string
   linkedBySlackUserId: string
-  linkedByNuphosUserId?: string
+  linkedByCerinUserId?: string
 }): Promise<{ channelName: string | null }> {
   // Verify the bot can actually see the channel before persisting the mapping.
   // For a private channel the bot has not been invited to, conversations.info
@@ -178,13 +178,13 @@ export async function linkChannelFromSlackInteraction(args: {
   await upsertSlackChannelMapping({
     slackWorkspaceId: args.slackWorkspaceId,
     slackChannelId: args.channelId,
-    teamId: args.nuphosTeamId,
-    createdBy: args.linkedByNuphosUserId ?? args.linkedBySlackUserId,
+    teamId: args.cerinTeamId,
+    createdBy: args.linkedByCerinUserId ?? args.linkedBySlackUserId,
     enabled: true,
   })
 
   logEvent('info', 'slack.onboarding.channel_linked', {
-    team_id: args.nuphosTeamId,
+    team_id: args.cerinTeamId,
     slack_workspace_id: args.slackWorkspaceId,
     slack_channel_id: args.channelId,
     linked_by_slack_user_id: args.linkedBySlackUserId,
@@ -221,7 +221,7 @@ export async function announceChannelLink(args: {
     await postSlackMessage({
       token: args.botToken,
       channel: args.channelId,
-      text: "👋 Nuphos is now linked to this channel. @mention me and I'll pick it up in a thread — I act on behalf of whoever mentions me.",
+      text: "👋 Cerin is now linked to this channel. @mention me and I'll pick it up in a thread — I act on behalf of whoever mentions me.",
     })
 
     return 'posted'
@@ -241,17 +241,17 @@ export async function announceChannelLink(args: {
   }
 }
 
-export async function resolveNuphosUserForSlackActor(args: {
+export async function resolveCerinUserForSlackActor(args: {
   slackWorkspaceId: string
-  nuphosTeamId: ObjectId
+  cerinTeamId: ObjectId
   slackUserId: string
 }): Promise<string | null> {
   const { getSlackUserMapping } = await import('@/lib/slack/agent-bot')
   const existing = await getSlackUserMapping(
     args.slackWorkspaceId,
-    args.nuphosTeamId.toHexString(),
+    args.cerinTeamId.toHexString(),
     args.slackUserId,
   )
 
-  return existing?.nuphosUserId ?? null
+  return existing?.cerinUserId ?? null
 }

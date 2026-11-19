@@ -1,5 +1,5 @@
 // Removes the conversation's CLI homes that apps/runtime/image/session-home.mjs
-// creates: <runtime HOME>/.nuphos/session-homes/<sha256(sessionId)> for the
+// creates: <runtime HOME>/.cerin/session-homes/<sha256(sessionId)> for the
 // owner and <sha256(sessionId)>.<sha256(actor)> for each teammate, unless a
 // process still runs with that HOME or inside it (a turn that just started, or
 // a shell left running). The next session start recreates a home.
@@ -12,7 +12,7 @@ const { createHash, randomUUID } = await import('node:crypto');
 const { sessionId } = JSON.parse(await fs.readFile(path.join(process.argv[2], 'params.json'), 'utf8'));
 if (typeof sessionId !== 'string' || !sessionId.trim()) process.exit(2);
 const id = createHash('sha256').update(sessionId).digest('hex');
-const homes = path.join(os.homedir(), '.nuphos', 'session-homes');
+const homes = path.join(os.homedir(), '.cerin', 'session-homes');
 let unreadable;
 const done = (result) => { process.stdout.write(JSON.stringify({ result, unreadable })); process.exit(0); };
 // Processes of this user, each marked whether it is inside the runtime's tree:

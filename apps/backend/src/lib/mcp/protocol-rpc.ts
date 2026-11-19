@@ -63,5 +63,5 @@ export type ToolHandler = (args: Record<string, unknown>) => Promise<ToolResult>
 // ─── Server metadata ────────────────────────────────────────────────────────
 
 export const MCP_PROTOCOL_VERSION = '2025-06-18'
-export const MCP_SERVER_NAME = 'nuphos-agent'
+export const MCP_SERVER_NAME = 'cerin-agent'
 export const MCP_SERVER_VERSION = '0.1.0'

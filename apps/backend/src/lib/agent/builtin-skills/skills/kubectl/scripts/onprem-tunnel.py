@@ -26,7 +26,7 @@ import sys
 import threading
 import urllib.parse
 
-STATE_DIR = os.path.expanduser("~/.nuphos/tunnels")
+STATE_DIR = os.path.expanduser("~/.cerin/tunnels")
 BUFFER_BYTES = 64 * 1024
 CONNECT_TIMEOUT_SEC = 15
 

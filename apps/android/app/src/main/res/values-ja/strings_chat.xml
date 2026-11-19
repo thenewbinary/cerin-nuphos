@@ -43,7 +43,7 @@
     <string name="chat_triggers_refresh">更新</string>
     <string name="chat_image_preparing">画像を準備中…</string>
     <string name="chat_image_share">画像を共有</string>
-    <string name="chat_image_saved">Pictures/Nuphos に保存しました</string>
+    <string name="chat_image_saved">Pictures/Cerin に保存しました</string>
     <string name="chat_image_export_failed">画像をエクスポートできませんでした。有効期限が切れている可能性があります。もう一度お試しください。</string>
     <string name="chat_image_save">画像を保存</string>
     <string name="chat_plan_loading">プランを読み込み中…</string>

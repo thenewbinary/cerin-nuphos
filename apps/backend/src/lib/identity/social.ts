@@ -232,7 +232,7 @@ export async function signInSocial(provider: SocialProvider, claims: SocialClaim
     const existing = await users().findOne({ email })
 
     // The operator's own identity provider is trusted to own its verified emails, so it
-    // links accounts made another way (e.g. by `nuphos-admin bootstrap`).
+    // links accounts made another way (e.g. by `cerin-admin bootstrap`).
     if (existing && provider === 'oidc' && !existing.oidcID && !existing.deletedAt) {
       await users().updateOne(
         { _id: existing._id },

@@ -1,4 +1,4 @@
-// `local_browser` under `nuphos agent`, with no Desktop: each tab is a page of a headless
+// `local_browser` under `cerin agent`, with no Desktop: each tab is a page of a headless
 // Chromium on the computer, driven over its debugging pipe, so no debugging port is opened.
 
 import { join } from 'node:path'
@@ -35,7 +35,7 @@ const TAB_ACTIONS = new Set([
   'record_stop',
 ])
 const NO_SCREEN =
-  'This computer runs Nuphos without a screen, so its tabs cannot be shown; take a screenshot instead.'
+  'This computer runs Cerin without a screen, so its tabs cannot be shown; take a screenshot instead.'
 
 const isHttp = (url: string | undefined): url is string =>
   url !== undefined && /^https?:\/\//i.test(url)
@@ -213,7 +213,7 @@ export function createCliBrowser(launch: () => Browser, harDir: string) {
       return text(
         await stopRecording(tab, {
           dir: harDir,
-          creator: { name: 'Nuphos CLI', version: process.env.NUPHOS_CLI_VERSION ?? 'dev' },
+          creator: { name: 'Cerin CLI', version: process.env.CERIN_CLI_VERSION ?? 'dev' },
         }),
       )
     const { data } = await within(

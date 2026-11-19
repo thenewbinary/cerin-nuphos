@@ -65,19 +65,19 @@ function assertAllowedGoogleRedirectUri(raw: string): void {
   // Local desktop / dev clients run an ephemeral HTTP listener on a
   // random port with a client-chosen path, so we only constrain the
   // hostname here. Public hosts still require an exact callback path
-  // (see the nuphos check below).
+  // (see the cerin check below).
   const isLocal =
     (url.protocol === 'http:' || url.protocol === 'https:') &&
     (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
 
   if (isLocal) return
 
-  const isNuphos =
+  const isCerin =
     url.protocol === 'https:' &&
-    (url.hostname === 'nuphos.ai' || url.hostname === 'www.nuphos.ai') &&
+    (url.hostname === 'platform.cerin.ai' || url.hostname === 'www.platform.cerin.ai') &&
     url.pathname === '/api/google/callback'
 
-  if (isNuphos) return
+  if (isCerin) return
 
   throw new Error('Google OAuth redirect URI is not allowed')
 }

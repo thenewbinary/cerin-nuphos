@@ -24,14 +24,14 @@ export function SlackAccountsCard({
         <div className="text-[13px] font-medium text-main">{t('Slack accounts')}</div>
         <div className="mt-0.5 text-[12px] text-tertiary">
           {t(
-            'Which Nuphos user it acts as when someone @mentions Nuphos. Usually auto-linked by email on install.',
+            'Which Cerin user it acts as when someone @mentions Cerin. Usually auto-linked by email on install.',
           )}
         </div>
       </div>
       {!loading && !myMapping && (
         <div className="border-b border-line-control/60 px-4 py-3 text-[12.5px] text-tertiary">
           {t(
-            'Your Slack account is not linked yet — it links automatically when your Slack email matches your Nuphos account email.',
+            'Your Slack account is not linked yet — it links automatically when your Slack email matches your Cerin account email.',
           )}
         </div>
       )}
@@ -46,8 +46,8 @@ export function SlackAccountsCard({
       ) : (
         <div className="divide-y divide-line-control/60">
           {linkedAccountRows.map((mapping) => {
-            const member = memberById.get(mapping.nuphosUserId)
-            const isSelf = mapping.nuphosUserId === currentUserId
+            const member = memberById.get(mapping.cerinUserId)
+            const isSelf = mapping.cerinUserId === currentUserId
 
             return (
               <div key={mapping.id} className="flex items-center gap-3 px-4 py-3">
@@ -60,7 +60,7 @@ export function SlackAccountsCard({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 text-[13px] text-main">
                     <span className="truncate">
-                      {member ? member.name || member.email : mapping.nuphosUserId}
+                      {member ? member.name || member.email : mapping.cerinUserId}
                     </span>
                     {isSelf && (
                       <span className="flex-shrink-0 rounded border border-line-control px-1.5 py-0.5 text-[11px] text-tertiary">

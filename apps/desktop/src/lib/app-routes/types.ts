@@ -59,7 +59,7 @@ export type ConnectorDetailRef = {
 
 // Open dashboard drill-down on the Dashboards page.
 // The list view is represented by a null value.
-export type NuphosDashboardRef = {
+export type CerinDashboardRef = {
   dashboardId: string
   /** Breadcrumb label; a URL-restored ref starts as a placeholder and is
    *  refined by the view once the dashboard list loads. */
@@ -114,7 +114,7 @@ export type NavigationSnapshot = {
   // Open design drill-down — encoded into the URL so it round-trips.
   designDetail?: { designId: string; designName: string } | null
   // Selected dashboard — encoded into the URL so it round-trips.
-  nuphosDashboard?: NuphosDashboardRef | null
+  cerinDashboard?: CerinDashboardRef | null
   // Linear page drill-down — encoded into the URL so it round-trips.
   linearNav?: LinearNavState | null
   // Cloudflare drill-down (Workers/R2/Pages/D1/KV); mirrors awsDetail.

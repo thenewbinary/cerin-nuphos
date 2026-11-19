@@ -118,7 +118,7 @@ export function readMachineKey(platform: NodeJS.Platform = process.platform): st
  * holds its own runtime tunnel.
  */
 export function stableDeviceId(machineKey: string, kind: DeviceKind): string {
-  const h = createHash('sha256').update(`nuphos-device-v1\0${kind}\0${machineKey}`).digest('hex')
+  const h = createHash('sha256').update(`cerin-device-v1\0${kind}\0${machineKey}`).digest('hex')
 
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`
 }

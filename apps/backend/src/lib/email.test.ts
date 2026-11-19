@@ -30,7 +30,7 @@ function stubFetch(status: number, body = ''): Captured[] {
 function configure(email: Partial<typeof config.email>) {
   Object.assign(config.email, {
     resendApiKey: undefined,
-    from: 'Nuphos <noreply@example.com>',
+    from: 'Cerin <noreply@example.com>',
     ...email,
   })
 }
@@ -61,7 +61,7 @@ describe('sendEmail', () => {
     expect(calls[0]?.url).toBe('https://api.resend.com/emails')
     expect(new Headers(calls[0]?.init.headers).get('authorization')).toBe('Bearer re_key')
     expect(JSON.parse(calls[0]?.init.body as string)).toEqual({
-      from: 'Nuphos <noreply@example.com>',
+      from: 'Cerin <noreply@example.com>',
       to: ['a@example.com'],
       subject: 'Hi',
       html: '<p>Hi</p>',
@@ -81,6 +81,6 @@ describe('sendEmail', () => {
   test('names the missing key', async () => {
     configure({})
 
-    await expect(sendEmail(message)).rejects.toThrow('RESEND_API_KEY / NUPHOS_EMAIL_FROM')
+    await expect(sendEmail(message)).rejects.toThrow('RESEND_API_KEY / CERIN_EMAIL_FROM')
   })
 })

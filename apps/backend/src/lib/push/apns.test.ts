@@ -17,7 +17,7 @@ const { privateKey, publicKey } = generateKeyPairSync('ec', { namedCurve: 'prime
 const credentials: ApnsCredentials = {
   keyId: 'KEY123',
   teamId: 'TEAM456',
-  bundleId: 'ai.nuphos.ios',
+  bundleId: 'ai.cerin.ios',
   privateKey: privateKey.export({ type: 'pkcs8', format: 'pem' }),
   environment: 'production',
 }
@@ -72,7 +72,7 @@ describe('sendApns', () => {
     expect(calls[0]?.host).toBe('https://api.sandbox.push.apple.com')
     expect(calls[1]?.host).toBe('https://api.push.apple.com')
     expect(calls[0]?.headers[':path']).toBe(`/3/device/${'ab'.repeat(32)}`)
-    expect(calls[0]?.headers['apns-topic']).toBe('ai.nuphos.ios')
+    expect(calls[0]?.headers['apns-topic']).toBe('ai.cerin.ios')
     expect(calls[0]?.headers['apns-push-type']).toBe('alert')
     expect(calls[0]?.headers['apns-collapse-id']).toBe('session-1')
     expect(calls[0]?.headers.authorization).toStartWith('bearer ')

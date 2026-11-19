@@ -61,8 +61,8 @@ export function findMissingShared(root, adapters) {
       )
 
       return [
-        [file, 'function nuphosSessionHomeEnv'],
-        ...(provider === 'codex' ? [[file, 'function nuphosCodexSessionConfig']] : []),
+        [file, 'function cerinSessionHomeEnv'],
+        ...(provider === 'codex' ? [[file, 'function cerinCodexSessionConfig']] : []),
       ]
     }),
   ]

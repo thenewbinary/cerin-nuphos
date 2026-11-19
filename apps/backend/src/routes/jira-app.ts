@@ -21,7 +21,7 @@ export const jiraAppRoutes = new Hono()
 
 // The Electron deep-link target. Matches linear-callback — same scheme,
 // different hostname so the desktop can route by it.
-const DESKTOP_CALLBACK = 'nuphos://jira-callback'
+const DESKTOP_CALLBACK = 'cerin://jira-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)

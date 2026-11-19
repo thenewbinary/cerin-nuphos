@@ -12,7 +12,7 @@ mock.module('../../api', () => ({
     ) => {
       reads.push({ sessionId, options })
 
-      return { sessionId, title: 'Nuphos SRE', kind: 'bot', avatar: 'owl', messages: [] }
+      return { sessionId, title: 'Cerin SRE', kind: 'bot', avatar: 'owl', messages: [] }
     },
   },
 }))
@@ -26,10 +26,10 @@ const { resolveMentionLabel } = await import('./resolveLabel')
 test("an agent session's chip reads its name without any of its messages", async () => {
   const label = await resolveMentionLabel(
     { type: 'agent-session', teamId: 'team-1', sessionId: 'long-session' } as never,
-    'https://nuphos.ai/teams/team-1/agent/long-session',
+    'https://platform.cerin.ai/teams/team-1/agent/long-session',
   )
 
-  expect(label).toBe('Nuphos SRE')
+  expect(label).toBe('Cerin SRE')
   expect(reads).toEqual([
     {
       sessionId: 'long-session',
