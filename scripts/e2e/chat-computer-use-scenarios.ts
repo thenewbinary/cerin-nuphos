@@ -5,7 +5,9 @@ import { randomUUID } from 'node:crypto'
 import { resolve } from 'node:path'
 
 import { client, must } from './binding-access-scenarios.ts'
-import { until } from './processes.ts'
+import { rowOf } from './leave-helpers.ts'
+import { artifacts, until } from './processes.ts'
+import { onLaptop, sharedTask } from './shared-task-helpers.ts'
 
 import type { Client, Flow } from './binding-access-scenarios.ts'
 import type { Stack } from './stack.ts'
@@ -197,7 +199,92 @@ export async function removalKeepsComputerFlow(
   }
 }
 
+
+// Scratch only (#3395 captures): the notice after removing someone, and the invite confirm.
+async function shots3395(page: Page, stack: Stack) {
+  const owner = client(stack.apiUrl, stack.token)
+  let deviceId = ''
+
+  await until('the app to be online as its computer', async () => {
+    const state = await page.evaluate(() =>
+      (window as unknown as { api: { localRuntimeGetState: () => Promise<AppComputer> } }).api
+        .localRuntimeGetState()
+        .catch(() => null),
+    )
+
+    deviceId = state?.connection === 'online' ? (state.deviceId ?? '') : ''
+
+    return deviceId
+  })
+  const ownerId = await userId(owner)
+  const kept = await join(stack, owner, 'leo')
+  const fresh = await join(stack, owner, 'sam')
+  const nameOf = async (as: Client) => {
+    const me = (await as('GET', '/auth/me')).body as { user?: { name?: string }; name?: string }
+
+    return me.user?.name ?? me.name ?? ''
+  }
+  const freshName = await nameOf(fresh.member)
+  const share = `/agent/devices/${deviceId}/share?teamId=${stack.teamId}`
+
+  await owner('PUT', share, { level: 'full', everyone: false, userIds: [kept.id], managerIds: [] })
+  const title = 'E2E chat on this computer'
+  const sessionId = await sharedTask(stack, stack.token, title)
+
+  onLaptop(stack, sessionId, ownerId, deviceId)
+  await owner('POST', `/agent/conversations/${sessionId}/participants?teamId=${stack.teamId}`, {
+    userIds: [kept.id],
+    grantComputerUse: true,
+  })
+  const shot = (name: string) => page.screenshot({ path: `${artifacts}/3395-${name}.png` })
+
+  try {
+    await page.reload()
+    await page.getByRole('tab', { name: 'Tasks' }).click()
+    const row = rowOf(page, title)
+
+    await row.waitFor({ timeout: 30_000 })
+    await row.click()
+    const opener = page.getByTitle('Share with a teammate')
+
+    await opener.click()
+    await page.waitForTimeout(800)
+    await shot('share-open')
+    try {
+      await page.getByRole('button', { name: /Can reply|Can view/ }).first().click()
+      await page.getByRole('menuitem', { name: 'Remove' }).click()
+      await page.getByText(/can still use/).first().waitFor({ timeout: 15_000 })
+      await page.waitForTimeout(600)
+      await shot('remove-notice')
+    } catch (error) {
+      await shot('remove-debug')
+      console.log(`shots 3395 remove: ${String(error)}`)
+    }
+    try {
+      if (!(await page.getByText(/^Add to chat$|^Add to task$/).isVisible().catch(() => false)))
+        await opener.click()
+      await page.getByText(freshName, { exact: false }).last().click()
+      await page.getByRole('button', { name: /^Add 1 person$/ }).click()
+      await page.getByText(/^Also share /).first().waitFor({ timeout: 15_000 })
+      await page.waitForTimeout(600)
+      await shot('invite-confirm')
+      await page.getByRole('button', { name: 'Cancel' }).last().click()
+    } catch (error) {
+      await shot('invite-debug')
+      console.log(`shots 3395 invite: ${String(error)}`)
+    }
+  } finally {
+    await page.keyboard.press('Escape').catch(() => undefined)
+    await owner('PUT', share, { level: 'off', everyone: false, userIds: [], managerIds: [] })
+  }
+}
+
 export const chatComputerUseScenarios: Scenario[] = [
+  {
+    name: 'shots: #3395 remove notice and invite confirm',
+    run: async (page, stack) => shots3395(page, stack),
+    expected: /"error_code":"computer_use_required"/,
+  },
   {
     name: 'removing someone from a chat, or undoing their invite, leaves their computer use',
     run: async (page, stack) => removalKeepsComputerFlow(page, stack),
