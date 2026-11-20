@@ -4,7 +4,7 @@ import * as atlas from './atlas'
 import { connectorCallbackError, connectorCallbackParams } from './connector-oauth-callback'
 
 // Shared scheme with asana-install / jira-install — sentry uses a distinct
-// hostname (nuphos://sentry-callback) so the dispatcher in main.ts can route by
+// hostname (cerin://sentry-callback) so the dispatcher in main.ts can route by
 // it without colliding.
 export const SENTRY_CALLBACK_HOST = 'sentry-callback'
 const INSTALL_TIMEOUT_MS = 10 * 60 * 1000

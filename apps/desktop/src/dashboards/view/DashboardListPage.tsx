@@ -61,7 +61,7 @@ export function DashboardListPage({
         icon={LayoutGrid}
         title={t('Custom boards')}
         description={t(
-          'Dashboards chart what matters to your team — cloud spend, AI usage, delivery, and system health — with panels that pull live data from Nuphos and your connected accounts. Create one and add panels, or have Nuphos build it.',
+          'Dashboards chart what matters to your team — cloud spend, AI usage, delivery, and system health — with panels that pull live data from Cerin and your connected accounts. Create one and add panels, or have Cerin build it.',
         )}
         {...(canCreate
           ? {
@@ -73,7 +73,7 @@ export function DashboardListPage({
               agentAction: {
                 label: t('Build it for me'),
                 prompt:
-                  'Build me a Nuphos dashboard from my connected accounts — add a useful set of panels automatically.',
+                  'Build me a Cerin dashboard from my connected accounts — add a useful set of panels automatically.',
               },
             }
           : {})}

@@ -3,8 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Welcome to Nuphos</title>
+    <title>Welcome to Cerin</title>
     <style>
+      @font-face {
+        font-family: 'Space Grotesk';
+        src: url('../fonts/space-grotesk-latin-variable.woff2') format('woff2');
+        font-weight: 300 700;
+        font-display: swap;
+      }
       html,
       body {
         height: 100%;
@@ -27,8 +33,8 @@
         const response = await fetch('./nuphos.json')
         const brand = await response.json()
         const light = new URLSearchParams(location.search).get('theme') === 'light'
-        brand.theme.background = light ? '#fcfcfd' : '#18181b'
-        brand.theme.ink = light ? '#18181b' : '#ffffff'
+        brand.theme.background = light ? '#F7F7F8' : '#0E0E10'
+        brand.theme.ink = light ? '#0E0E10' : '#F7F7F8'
         document.body.style.background = brand.theme.background
         brand.lockIn.at = 1.0
         mountLogoIntro(document.getElementById('stage'), brand, {

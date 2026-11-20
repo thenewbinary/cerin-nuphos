@@ -40,7 +40,7 @@ test('refuses other schemes and malformed URLs', async () => {
     'data:text/html,<script>alert(1)</script>',
     'vscode://file/tmp/x',
     'ms-msdt:/id PCWDiagnostic',
-    'nuphos://open?url=https://nuphos.ai',
+    'cerin://open?url=https://nuphos.ai',
     ' file:///etc/passwd',
     '//example.com',
     'not a url',

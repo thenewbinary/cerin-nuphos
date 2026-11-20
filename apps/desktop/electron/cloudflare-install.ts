@@ -3,7 +3,7 @@ import { shell } from 'electron'
 import * as atlas from './atlas.ts'
 import { connectorCallbackError, connectorCallbackParams } from './connector-oauth-callback.ts'
 
-// Shared nuphos:// scheme with github/gitlab — distinct hostname so the
+// Shared cerin:// scheme with github/gitlab — distinct hostname so the
 // dispatcher in main.ts routes by it without colliding.
 export const CLOUDFLARE_CALLBACK_HOST = 'cloudflare-callback'
 const INSTALL_TIMEOUT_MS = 10 * 60 * 1000
@@ -13,7 +13,7 @@ type Pending = {
   resolve: (result: CloudflareBindResult) => void
   reject: (err: Error) => void
   timeout: NodeJS.Timeout
-  // Fallback poller: the nuphos:// deep link can be captured by another app
+  // Fallback poller: the cerin:// deep link can be captured by another app
   // (e.g. an installed production build owns the scheme), so we also watch the
   // backend for the binding the callback creates and resolve from that.
   poll?: NodeJS.Timeout
@@ -51,7 +51,7 @@ export async function startInstall(
     }, INSTALL_TIMEOUT_MS)
 
     // Poll the backend for a result keyed by this exact `state`. This resolves
-    // the bind even when the nuphos:// deep link is captured by another app
+    // the bind even when the cerin:// deep link is captured by another app
     // instance, and unlike an account-list diff it works for re-binds (which
     // preserve the binding id) and never false-positives on a pre-existing
     // account. The result endpoint is one-shot server-side.

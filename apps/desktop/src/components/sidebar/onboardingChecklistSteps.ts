@@ -59,13 +59,13 @@ export const STEPS: StepDef[] = [
   {
     id: 'integrate',
     label: t('Connect your cloud assets'),
-    description: t('Link a cloud account so Nuphos can manage it.'),
+    description: t('Link a cloud account so Cerin can manage it.'),
     navKey: 'team.integrations',
     completeOnOpen: false,
   },
   {
     id: 'chat',
-    label: t('Ask Nuphos your first question'),
+    label: t('Ask Cerin your first question'),
     description: t('Deploy, debug, or query in plain language.'),
     navKey: 'team.agent',
     completeOnOpen: true,

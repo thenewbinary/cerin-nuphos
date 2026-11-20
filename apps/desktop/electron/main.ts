@@ -125,7 +125,7 @@ registerAppScheme()
 
 // Custom URL scheme used by the GitHub App setup redirect.
 // Dev Electron identifies as com.github.electron, so do not steal the production
-// nuphos:// handler unless a local deep-link test explicitly opts in.
+// cerin:// handler unless a local deep-link test explicitly opts in.
 if (!isDev) {
   app.setAsDefaultProtocolClient(githubInstall.GITHUB_PROTOCOL)
 } else if (process.env.ATLAS_REGISTER_NUPHOS_PROTOCOL === '1' && process.argv.length >= 2) {

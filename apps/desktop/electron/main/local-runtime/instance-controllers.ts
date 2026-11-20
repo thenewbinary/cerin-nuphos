@@ -206,7 +206,7 @@ export class InstanceControllers {
   }
 
   async request(request: unknown, userId: string | null): Promise<unknown> {
-    if (!userId) throw new Error('Sign in to Nuphos first')
+    if (!userId) throw new Error('Sign in to Cerin first')
     if (!request || typeof request !== 'object') throw new Error('Invalid instance request')
     const body = request as { method?: string; instanceId?: unknown; provider?: unknown }
 

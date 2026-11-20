@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { api } from '../api'
 import { CodeInput, codeInputClasses } from '../components/CodeInput'
-import { NuphosLogo } from '../components/NuphosLogo'
+import { CerinLogo } from '../components/CerinLogo'
 import { Button } from '../components/ui/button'
 import { toast } from '../components/ui/toast'
 import { useErrorShake } from '../hooks/useErrorShake'
@@ -138,7 +138,7 @@ export function LoginView({ onLogin, accounts = [], notice, onCancel }: Props) {
   }
 
   // Named for why the screen is shown: an account to sign in to again comes first.
-  let title = t('Welcome to Nuphos')
+  let title = t('Welcome to Cerin')
 
   if (notice) title = t('Sign in again')
   else if (onCancel) title = t('Add an account')
@@ -152,7 +152,7 @@ export function LoginView({ onLogin, accounts = [], notice, onCancel }: Props) {
       <div className="flex-1 min-h-0 overflow-y-auto flex items-start justify-center px-8 pt-[18vh] pb-8">
         <div className="w-full max-w-[360px] flex flex-col items-start text-left">
           <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm">
-            <NuphosLogo className="h-12 w-12" variant="white-bg" />
+            <CerinLogo className="h-12 w-12" variant="white-bg" />
           </div>
           <h1 className="text-[20px] font-semibold text-main mb-1.5">{title}</h1>
           <p className="text-[13.5px] text-secondary leading-relaxed mb-8">

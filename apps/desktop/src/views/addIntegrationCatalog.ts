@@ -110,9 +110,9 @@ const ITEM_META: Record<AddIntegrationKey, { name: string; description: string }
     name: 'instabox',
     description: t('Computers for your Bots and tasks, billed to your instabox account.'),
   },
-  slack: { name: 'Slack', description: t('Chat with Nuphos from Slack channels.') },
-  discord: { name: 'Discord', description: t('Mention Nuphos in Discord channels.') },
-  lark: { name: 'Lark (Feishu)', description: t('Chat with Nuphos from Lark (Feishu) groups.') },
+  slack: { name: 'Slack', description: t('Chat with Cerin from Slack channels.') },
+  discord: { name: 'Discord', description: t('Mention Cerin in Discord channels.') },
+  lark: { name: 'Lark (Feishu)', description: t('Chat with Cerin from Lark (Feishu) groups.') },
 }
 
 // Alternate names people type instead of the official one. These have to be

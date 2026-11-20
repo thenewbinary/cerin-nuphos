@@ -29,7 +29,7 @@ export function runtimeStatusView(
   if (runtime?.credentialRevoked) return { label: t('Connection revoked'), tone: 'error' }
   if (statusError) return { label: t('Status unavailable'), tone: 'error' }
   if (runtime?.online) return { label: t('Online'), tone: 'online' }
-  // Nuphos runs a managed agent, so not answering yet means its pod is still starting.
+  // Cerin runs a managed agent, so not answering yet means its pod is still starting.
   if (runtime?.configured)
     return instance.kind === 'managed'
       ? { label: t('Starting…'), tone: 'pending' }
@@ -89,17 +89,17 @@ export const QUOTA_LABEL_CLASS: Record<QuotaTone, string> = {
 export function runtimeRemovalDescription(instance: RuntimeInstance): string {
   if (instance.kind === 'managed')
     return t(
-      'This permanently deletes the runtime, its disks, workspaces, and sign-in, and stops tasks running on it. Your task history stays in Nuphos. Move any workspace you want to keep to another runtime before removing this one.',
+      'This permanently deletes the runtime, its disks, workspaces, and sign-in, and stops tasks running on it. Your task history stays in Cerin. Move any workspace you want to keep to another runtime before removing this one.',
     )
   const local = instance.local
 
   if (!local)
     return t(
-      'This disconnects the external runtime. Its files remain on the external machine. Your tasks stay in Nuphos and can be moved to another runtime with their history.',
+      'This disconnects the external runtime. Its files remain on the external machine. Your tasks stay in Cerin and can be moved to another runtime with their history.',
     )
   if (!local.instanceId && !local.box)
     return t(
-      'This removes {name} from Nuphos. Its CLI sign-in on {device} is yours and stays; while it is signed in there, {name} is listed again.',
+      'This removes {name} from Cerin. Its CLI sign-in on {device} is yours and stays; while it is signed in there, {name} is listed again.',
       { name: instance.label, device: local.deviceLabel },
     )
   if (local.online === false)
@@ -109,17 +109,17 @@ export function runtimeRemovalDescription(instance: RuntimeInstance): string {
     )
   if (local.instanceId)
     return t(
-      'This removes the runtime and its sign-in from {device}. Your conversation history stays in Nuphos.',
+      'This removes the runtime and its sign-in from {device}. Your conversation history stays in Cerin.',
       { device: local.deviceLabel },
     )
 
   return instance.provider === 'codex'
     ? t(
-        'This signs {name} out on {device} and deletes its settings there. Tasks on it stop working; their history stays in Nuphos.',
+        'This signs {name} out on {device} and deletes its settings there. Tasks on it stop working; their history stays in Cerin.',
         { name: instance.label, device: local.deviceLabel },
       )
     : t(
-        'This signs {name} out on {device} and deletes its CLI history and settings there. Tasks on it stop working; their history stays in Nuphos.',
+        'This signs {name} out on {device} and deletes its CLI history and settings there. Tasks on it stop working; their history stays in Cerin.',
         { name: instance.label, device: local.deviceLabel },
       )
 }

@@ -5,9 +5,9 @@ import { parseLocale, setMessages, systemLocale, t } from './i18n.ts'
 
 test('menu text is English until a language is loaded, then translated', () => {
   setMessages({})
-  assert.equal(t('Quit {app}', { app: 'Nuphos' }), 'Quit Nuphos')
+  assert.equal(t('Quit {app}', { app: 'Cerin' }), 'Quit Cerin')
   setMessages({ 'Quit {app}': '結束 {app}' })
-  assert.equal(t('Quit {app}', { app: 'Nuphos' }), '結束 Nuphos')
+  assert.equal(t('Quit {app}', { app: 'Cerin' }), '結束 Cerin')
   assert.equal(t('Hide Others'), 'Hide Others')
   setMessages({})
 })

@@ -2,7 +2,7 @@
 //
 // It decides three things that must agree: which links render as in-app
 // mentions, which open in the app instead of a browser, and which a
-// `nuphos://open` deep link is allowed to carry. Before this module each of
+// `cerin://open` deep link is allowed to carry. Before this module each of
 // those spelled the host out itself, and they disagreed — see isAppWebUrl.
 //
 // Runtime configuration, not build-time: a self-hosted deployment sets
@@ -30,7 +30,7 @@ export const WEB_BASE_URL = normalize(process.env.NUPHOS_WEB_URL)
 const WEB_BASE_HOST = new URL(WEB_BASE_URL).hostname
 
 /**
- * Hosts a `nuphos://open?url=` payload may carry. Wider than {@link isAppWebUrl}
+ * Hosts a `cerin://open?url=` payload may carry. Wider than {@link isAppWebUrl}
  * on purpose: this is the main-process allowlist for a URL arriving from
  * outside the app, and links in the wild still use the www/app aliases.
  */

@@ -123,7 +123,7 @@ test('a Computer Use that refuses its caller says so instead of failing vaguely'
   )
 
   await cua.close()
-  assert.match(JSON.stringify(result.content), /refused Nuphos as its caller/u)
+  assert.match(JSON.stringify(result.content), /refused Cerin as its caller/u)
 })
 
 test('a call carries Codex turn metadata, and only approval requests get an approval answer', async () => {

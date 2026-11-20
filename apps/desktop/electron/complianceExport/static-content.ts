@@ -1,5 +1,5 @@
 export function complianceReadme(): string {
-  return `Nuphos compliance audit export
+  return `Cerin compliance audit export
 ================================
 
 audit-events.csv is the human-readable record of who acted, when, which
@@ -24,7 +24,7 @@ display copies and secrets are intentionally not exported.
 
 Trust boundary: this export is currently unsigned and self-contained. Passing
 verification proves that the package is internally consistent and complete
-against its manifest; it does not authenticate Nuphos as the origin or prevent
+against its manifest; it does not authenticate Cerin as the origin or prevent
 someone with rewrite access from rebuilding the entire package. Trusted KMS
 signatures and historical anchor proofs are planned but not yet implemented.
 

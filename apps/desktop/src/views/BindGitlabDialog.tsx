@@ -258,7 +258,7 @@ export function BindGitlabDialog({ open, teamId, onClose, onBound }: Props) {
                 .split('{scheme}')
                 .map((part, i) => (
                   <Fragment key={i}>
-                    {i > 0 && <span className="font-mono">nuphos://</span>}
+                    {i > 0 && <span className="font-mono">cerin://</span>}
                     {part}
                   </Fragment>
                 ))}

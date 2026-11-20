@@ -114,8 +114,8 @@ test('the primary action keeps its label readable', () => {
 
 test('conversions produce what Tailwind and CSS expect', () => {
   assert.equal(cssVariable('surface.canvas'), '--color-surface-canvas')
-  assert.equal(hexToChannels('#F5F4F2'), '245, 244, 242')
-  assert.equal(cssValue({ color: '#1C1A17', alpha: 0.04 }), 'rgba(28, 26, 23, 0.04)')
+  assert.equal(hexToChannels('#F7F7F8'), '247, 247, 248')
+  assert.equal(cssValue({ color: '#0E0E10', alpha: 0.04 }), 'rgba(14, 14, 16, 0.04)')
 })
 
 test('Tailwind gets a nested color and a variable for every token', () => {
@@ -124,6 +124,6 @@ test('Tailwind gets a nested color and a variable for every token', () => {
 
   assert.equal(colors.state.hover, 'var(--color-state-hover)')
   assert.equal(colors.data['1']({ opacityValue: '0.4' }), 'rgba(var(--color-data-1), 0.4)')
-  assert.equal(variables.html['--color-surface-canvas'], '20, 19, 18')
-  assert.equal(variables['html.light']['--color-state-hover'], 'rgba(28, 26, 23, 0.04)')
+  assert.equal(variables.html['--color-surface-canvas'], '14, 14, 16')
+  assert.equal(variables['html.light']['--color-state-hover'], 'rgba(14, 14, 16, 0.04)')
 })

@@ -4,7 +4,7 @@ import * as atlas from './atlas'
 import { connectorCallbackError, connectorCallbackParams } from './connector-oauth-callback'
 
 // Shared scheme with the other connector installs — plaud uses a distinct
-// hostname (nuphos://plaud-callback) so the dispatcher in main.ts can route by
+// hostname (cerin://plaud-callback) so the dispatcher in main.ts can route by
 // it without colliding.
 export const PLAUD_CALLBACK_HOST = 'plaud-callback'
 const INSTALL_TIMEOUT_MS = 10 * 60 * 1000

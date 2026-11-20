@@ -85,13 +85,13 @@ export function ErrorBlock({ message }: { message: string }) {
           : 'credential'
     const fixWithAgent = () => {
       const prompt = [
-        `The Nuphos-bound ${credentialLabel} hit a permission error: ${error.message}`,
+        `The Cerin-bound ${credentialLabel} hit a permission error: ${error.message}`,
         details?.operation ? `Missing or blocked operation: \`${details.operation}\`.` : null,
         details?.regions && details.regions.length > 0
           ? `Regions checked: ${details.regions.join(', ')}.`
           : null,
         details?.upstreamMessage ? `Upstream error: ${details.upstreamMessage}` : null,
-        'Please diagnose and fix the missing permission so Nuphos can perform this operation, then verify it works.',
+        'Please diagnose and fix the missing permission so Cerin can perform this operation, then verify it works.',
       ]
         .filter(Boolean)
         .join(' ')

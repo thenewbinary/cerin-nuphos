@@ -35,7 +35,7 @@ export function writeLoginItem(
 ): LoginItemState {
   if (typeof openAtLogin !== 'boolean') throw new Error('openAtLogin must be true or false')
   if (!loginItemSupported(app, platform))
-    throw new Error('Opening Nuphos at login is not available on this computer.')
+    throw new Error('Opening Cerin at login is not available on this computer.')
   app.setLoginItemSettings({ openAtLogin })
 
   return readLoginItem(app, platform)

@@ -136,7 +136,7 @@ export function handleDeepLink(url: string) {
       return
     }
     // macOS delivers open-url without raising a window; Windows/Linux raise it
-    // in second-instance. Do it here so "Open Nuphos" visibly lands either way.
+    // in second-instance. Do it here so "Open Cerin" visibly lands either way.
     if (app.isReady()) windowHooks?.showMainWindow()
     void install.handleCallback(url)
 
@@ -205,11 +205,11 @@ export function handleDeepLink(url: string) {
 }
 
 /**
- * Opens a Nuphos page in the workspace, as a `nuphos://open` link would;
+ * Opens a Cerin page in the workspace, as a `cerin://open` link would;
  * resolves once the workspace has it.
  */
 export function openAppPath(path: string): Promise<void> {
-  const payload = appOpenDeepLink.parseAppOpenUrl(`nuphos://open?path=${encodeURIComponent(path)}`)
+  const payload = appOpenDeepLink.parseAppOpenUrl(`cerin://open?path=${encodeURIComponent(path)}`)
 
   if (payload) queueDeepLink('deep-link:app-open', payload)
 

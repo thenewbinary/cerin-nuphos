@@ -75,7 +75,7 @@ export function BindAsanaDialog({ open, teamId, onClose, onBound }: Props) {
       onClose={close}
       title={t('Connect {name}', { name: 'Asana' })}
       description={t(
-        'Authorize Nuphos to read and create tasks in your Asana account so it can open, comment on, and complete them.',
+        'Authorize Cerin to read and create tasks in your Asana account so it can open, comment on, and complete them.',
       )}
       width={460}
     >
@@ -111,7 +111,7 @@ export function BindAsanaDialog({ open, teamId, onClose, onBound }: Props) {
                 text={t(
                   'If nothing happens, make sure your browser allowed the popup and that your OS routes {scheme} URLs to this app.',
                 )}
-                scheme={<span className="font-mono">nuphos://</span>}
+                scheme={<span className="font-mono">cerin://</span>}
               />
             </div>
           </div>

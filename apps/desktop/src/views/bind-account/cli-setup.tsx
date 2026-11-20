@@ -63,13 +63,13 @@ export function CloudCliSetupChoice({
     <div className="pb-1 pt-2" aria-busy={check.checking || starting}>
       <div className="pb-5">
         <h3 className="text-[22px] font-semibold leading-[1.25] tracking-[-0.025em] text-main">
-          {check.checking ? t('A quicker way to connect.') : t('Let Nuphos take it from here.')}
+          {check.checking ? t('A quicker way to connect.') : t('Let Cerin take it from here.')}
         </h3>
         <p className="mt-2 text-[13px] leading-relaxed text-secondary">
           {check.checking
             ? t('Looking for the {name} command-line tool on this computer.', { name: label })
             : t(
-                'We found the {name} CLI on this computer. Nuphos can walk through setup with you, right in a new task.',
+                'We found the {name} CLI on this computer. Cerin can walk through setup with you, right in a new task.',
                 { name: label },
               )}
         </p>

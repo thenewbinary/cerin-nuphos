@@ -35,7 +35,7 @@ export function sshJoinNotice(problem: SshJoinProblem | 'timeout', host: string)
     case 'timeout':
       return {
         title: t('{host} has not come online yet', { host }),
-        description: t('Nuphos was started there. Its log is ~/.nuphos-agent.log on that machine.'),
+        description: t('Cerin was started there. Its log is ~/.nuphos-agent.log on that machine.'),
       }
     case 'failed':
       return {

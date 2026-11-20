@@ -24,7 +24,7 @@ function microphoneHelp(cause: unknown): string {
   const name = (cause as { name?: unknown } | null)?.name
 
   if (name === 'NotAllowedError' || name === 'SecurityError')
-    return t('Allow Nuphos to use the microphone in System Settings, then try again.')
+    return t('Allow Cerin to use the microphone in System Settings, then try again.')
   if (name === 'NotFoundError') return t('No microphone was found.')
 
   return t('The microphone could not be started.')

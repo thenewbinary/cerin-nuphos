@@ -4,7 +4,7 @@ import * as atlas from './atlas'
 import { connectorCallbackError, connectorCallbackParams } from './connector-oauth-callback'
 
 // Shared scheme with linear-install / github-install — jira uses a distinct
-// hostname (nuphos://jira-callback) so the dispatcher in main.ts can route by
+// hostname (cerin://jira-callback) so the dispatcher in main.ts can route by
 // it without colliding.
 export const JIRA_CALLBACK_HOST = 'jira-callback'
 const INSTALL_TIMEOUT_MS = 10 * 60 * 1000

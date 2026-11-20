@@ -17,7 +17,7 @@ function announceControl(human: boolean): void {
   new Notification({
     title: t('This Mac is controlled from your phone'),
     body: t(
-      'Nuphos on your phone took over this screen. It stops when the phone hands it back or closes the desktop.',
+      'Cerin on your phone took over this screen. It stops when the phone hands it back or closes the desktop.',
     ),
   }).show()
 }

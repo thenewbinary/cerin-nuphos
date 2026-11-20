@@ -139,7 +139,7 @@ export async function saveCustomProvider(
       await store.set(account(userId, provider), key)
     } catch {
       throw new Error(
-        'This computer has no secure credential store Nuphos can use, so the key was not saved.',
+        'This computer has no secure credential store Cerin can use, so the key was not saved.',
       )
     }
   } else if (!readCustomProviders(userDir)[provider]) throw new Error('Enter the API key.')

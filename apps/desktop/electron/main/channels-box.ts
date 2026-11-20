@@ -245,7 +245,7 @@ export const boxChannels = {
       approvalId: string(approvalId),
       title: string(title),
       body: string(body),
-      openInbox: () => handleDeepLink(`nuphos://open?path=${inbox}`),
+      openInbox: () => handleDeepLink(`cerin://open?path=${inbox}`),
     })
   },
 }

@@ -1,35 +1,35 @@
 import type { AgentChatSkillTarget } from './types.ts'
 
-export function openInNuphosSkillBody(target: AgentChatSkillTarget): string {
+export function openInCerinSkillBody(target: AgentChatSkillTarget): string {
   const source = target === 'codex' ? 'codex' : 'claude-code'
   const opener = target === 'codex' ? 'Codex' : 'Claude Code'
 
   return `---
 name: open-in-nuphos
-description: Open a Nuphos Agent chat with bug context, prompts, and local files when ${opener} needs Nuphos to investigate something.
+description: Open a Cerin Agent chat with bug context, prompts, and local files when ${opener} needs Cerin to investigate something.
 ---
 
-# Open in Nuphos
+# Open in Cerin
 
-Use this skill when you encounter a bug, failed command, confusing runtime behavior, or investigation that should be handed to Nuphos Agent.
+Use this skill when you encounter a bug, failed command, confusing runtime behavior, or investigation that should be handed to Cerin Agent.
 
 ## Workflow
 
 1. Summarize the observed bug, expected behavior, actual behavior, commands run, relevant error output, repository path, and any hypothesis worth checking.
 2. Put long logs or diagnostics into local files and pass those paths as \`file\` query parameters.
-3. Open Nuphos with:
+3. Open Cerin with:
 
 \`\`\`sh
 scripts/open-in-nuphos --source ${source} --team-id team_xxx --prompt "Investigate this bug..." --file /path/to/error.log
 \`\`\`
 
-The helper opens \`nuphos://agent-chat\` and Nuphos will start an Agent chat with the prompt and attached local file paths.
+The helper opens \`cerin://agent-chat\` and Cerin will start an Agent chat with the prompt and attached local file paths.
 
 Prefer passing files for logs or large command output instead of pasting everything into the prompt.
 `
 }
 
-export const openInNuphosHelperScript = `#!/usr/bin/env bash
+export const openInCerinHelperScript = `#!/usr/bin/env bash
 set -euo pipefail
 
 source_name=""
@@ -99,7 +99,7 @@ if draft == "1":
 for file_path in files:
     params.append(("file", file_path))
 
-url = "nuphos://agent-chat?" + urllib.parse.urlencode(params)
+url = "cerin://agent-chat?" + urllib.parse.urlencode(params)
 system = platform.system()
 if system == "Darwin":
     subprocess.run(["open", url], check=True)

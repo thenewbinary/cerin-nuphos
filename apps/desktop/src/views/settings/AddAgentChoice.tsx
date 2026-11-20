@@ -46,7 +46,7 @@ export function Choice({
   )
 }
 
-/** Add computer's first step: a computer rented from Nuphos or your own. */
+/** Add computer's first step: a computer rented from Cerin or your own. */
 export function AddAgentChoices({
   boxAvailable,
   footer,
@@ -66,7 +66,7 @@ export function AddAgentChoices({
       {boxAvailable && (
         <Choice
           icon={<Box className="h-4 w-4" />}
-          title={t('Rent a computer from Nuphos')}
+          title={t('Rent a computer from Cerin')}
           description={RENTED_COMPUTER_DESCRIPTION}
           onClick={onCloud}
         />

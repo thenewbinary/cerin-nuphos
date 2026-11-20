@@ -94,7 +94,7 @@ export function LoginApiEndpoint({ inputClassName, onChange }: Props) {
             onClick={() => void save(null)}
             className="titlebar-no-drag"
           >
-            {t('Use Nuphos Cloud')}
+            {t('Use Cerin Cloud')}
           </Button>
         )}
         <Button

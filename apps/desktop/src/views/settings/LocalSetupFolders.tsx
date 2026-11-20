@@ -90,7 +90,7 @@ export function LocalSetupFolders({
       </div>
       <p className="text-[12px] text-tertiary">
         {t(
-          'Nuphos only reads these folders. A skill name found in two of them syncs from the one listed first.',
+          'Cerin only reads these folders. A skill name found in two of them syncs from the one listed first.',
         )}
       </p>
     </div>

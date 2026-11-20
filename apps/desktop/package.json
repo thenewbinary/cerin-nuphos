@@ -94,8 +94,8 @@
     "vite-plugin-electron-renderer": "^0.14.6"
   },
   "build": {
-    "appId": "ai.nuphos.desktop",
-    "productName": "Nuphos",
+    "appId": "ai.cerin.desktop",
+    "productName": "Cerin",
     "artifactName": "${productName}-${version}-${arch}.${ext}",
     "directories": {
       "output": "release",
@@ -107,9 +107,9 @@
     ],
     "protocols": [
       {
-        "name": "Nuphos",
+        "name": "Cerin",
         "schemes": [
-          "nuphos"
+          "cerin"
         ]
       }
     ],
@@ -148,8 +148,8 @@
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
       "extendInfo": {
-        "NSAppleEventsUsageDescription": "Nuphos uses automation to notify Computer Use when an agent turn ends.",
-        "NSMicrophoneUsageDescription": "Nuphos uses the microphone for voice input in the composer."
+        "NSAppleEventsUsageDescription": "Cerin uses automation to notify Computer Use when an agent turn ends.",
+        "NSMicrophoneUsageDescription": "Cerin uses the microphone for voice input in the composer."
       },
       "notarize": true,
       "binaries": [

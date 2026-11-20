@@ -78,7 +78,7 @@ function InlineSignIn({ provider }: { provider: CliLoginProvider }) {
 /** The CLI may be installed but out of sight: a GUI app reads the login shell's PATH. */
 function MissingCli({ command }: { command: string }) {
   const [pre, post = ''] = t(
-    'Nuphos couldn’t find {command} on this computer. If it’s installed, add it to your login shell’s PATH, then reopen Nuphos.',
+    'Cerin couldn’t find {command} on this computer. If it’s installed, add it to your login shell’s PATH, then reopen Cerin.',
   ).split('{command}')
 
   return (
@@ -210,7 +210,7 @@ export function LocalAgentsStep({
 
 /**
  * The same account cards, usable in-place without the onboarding screen. With a team its
- * admins may rent a computer from Nuphos there instead; `onCloud` closes what the cards sit in.
+ * admins may rent a computer from Cerin there instead; `onCloud` closes what the cards sit in.
  */
 export function LocalAgentSetupCards({
   teamId,
@@ -230,7 +230,7 @@ export function LocalAgentSetupCards({
           className="rounded-lg bg-state-selected px-4 py-3 text-[12.5px] leading-5 text-secondary"
         >
           {t(
-            'Local runtimes are disabled in development builds connected to Nuphos Cloud. This keeps the installed app’s connection active. You can continue to preview onboarding.',
+            'Local runtimes are disabled in development builds connected to Cerin Cloud. This keeps the installed app’s connection active. You can continue to preview onboarding.',
           )}
         </p>
       )}
@@ -252,7 +252,7 @@ export function LocalAgentSetupCards({
           </span>
           <span className="min-w-0 flex-1">
             <span className="block text-[13.5px] font-medium text-main">
-              {t('Rent a computer from Nuphos')}
+              {t('Rent a computer from Cerin')}
             </span>
             <span className="block text-[12px] text-tertiary">{RENTED_COMPUTER_DESCRIPTION}</span>
           </span>

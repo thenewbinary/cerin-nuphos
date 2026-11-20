@@ -65,7 +65,7 @@ export function InstallButton({ provider }: { provider: CliLoginProvider }) {
       else
         toast.info(
           t('{name} was installed but not found yet', { name }),
-          t('Restart Nuphos, then check again.'),
+          t('Restart Cerin, then check again.'),
         )
     } catch (err) {
       toast.apiError(t('Could not install {name}', { name }), err, {
@@ -254,7 +254,7 @@ export function LocalAgentCard({
           <div className="text-[13px] font-medium text-main">{name}</div>
           <div className="mt-0.5 text-[12px] text-tertiary">
             {t(
-              "Once {name} is installed and signed in, your own Bots and tasks in any of your teams can run it here while Nuphos is open — including shell commands with your user's access. Teammates you share this computer with can run it too, on your sign-in.",
+              "Once {name} is installed and signed in, your own Bots and tasks in any of your teams can run it here while Cerin is open — including shell commands with your user's access. Teammates you share this computer with can run it too, on your sign-in.",
               { name },
             )}{' '}
             {connectors}

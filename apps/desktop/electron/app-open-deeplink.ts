@@ -5,7 +5,7 @@ export type AppOpenDeepLinkPayload = {
   path: string
 }
 
-const PROTOCOL = 'nuphos:'
+const PROTOCOL = 'cerin:'
 const HOST = 'open'
 
 function normalizePath(value: string | null): string | null {

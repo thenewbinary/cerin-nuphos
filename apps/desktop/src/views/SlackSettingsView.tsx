@@ -120,7 +120,7 @@ export function SlackSettingsView({
         open={confirmDisconnectOpen}
         title={t('Disconnect {name}', { name: 'Slack' })}
         description={t(
-          'Disconnect {name} from Nuphos? The bot token is revoked and channel links stop working until you install again.',
+          'Disconnect {name} from Cerin? The bot token is revoked and channel links stop working until you install again.',
           { name: installation?.slackTeamName ?? 'Slack' },
         )}
         confirmLabel={t('Disconnect')}
@@ -134,7 +134,7 @@ export function SlackSettingsView({
             <h1 className="text-[20px] font-semibold text-main">Slack</h1>
             <p className="mt-1 text-[13px] text-tertiary">
               {t(
-                'Install Nuphos in Slack, pick channels from the bot DM, then @mention Nuphos in those channels.',
+                'Install Cerin in Slack, pick channels from the bot DM, then @mention Cerin in those channels.',
               )}
             </p>
           </div>
@@ -186,7 +186,7 @@ export function SlackSettingsView({
           </div>
           <div className="mt-0.5 text-[12px] text-tertiary">
             {t(
-              "Channels chosen in Slack or linked by an admin. Nuphos responds to @mentions here and can post notifications — including channels served by another workspace's installation.",
+              "Channels chosen in Slack or linked by an admin. Cerin responds to @mentions here and can post notifications — including channels served by another workspace's installation.",
             )}
           </div>
         </div>
@@ -195,7 +195,7 @@ export function SlackSettingsView({
         ) : channelMappings.length === 0 ? (
           <div className="px-4 py-6 text-[13px] text-tertiary">
             {t(
-              'No channels linked yet. After installing, open your DM with the Nuphos bot and pick a channel.',
+              'No channels linked yet. After installing, open your DM with the Cerin bot and pick a channel.',
             )}
           </div>
         ) : (

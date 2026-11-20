@@ -3,8 +3,8 @@ import os from 'node:os'
 import path from 'node:path'
 
 import {
-  openInNuphosHelperScript,
-  openInNuphosSkillBody,
+  openInCerinHelperScript,
+  openInCerinSkillBody,
 } from './agent-chat-skill/content-open-in-nuphos.ts'
 
 import type {
@@ -65,13 +65,13 @@ function legacyHelperPath(target: AgentChatSkillTarget, skill: SkillDefinition):
 const SKILLS: SkillDefinition[] = [
   {
     id: 'open-in-nuphos',
-    name: 'Open in Nuphos',
-    description: 'Open a Nuphos Agent chat with bug context, prompts, and local files.',
+    name: 'Open in Cerin',
+    description: 'Open a Cerin Agent chat with bug context, prompts, and local files.',
     helperName: 'open-in-nuphos',
     legacyName: LEGACY_SKILL_NAME,
     legacyHelperName: 'open-agent-chat.sh',
-    skillBody: openInNuphosSkillBody,
-    helperScript: openInNuphosHelperScript,
+    skillBody: openInCerinSkillBody,
+    helperScript: openInCerinHelperScript,
   },
 ]
 

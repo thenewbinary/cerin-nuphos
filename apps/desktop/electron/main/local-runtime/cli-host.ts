@@ -201,7 +201,7 @@ const deps: ConstructorParameters<typeof LocalRuntimeController>[0] = {
       status,
       onChange: (connected, superseded, revoked) => {
         onChange(connected, superseded, revoked)
-        if (superseded) stop('Another Nuphos app on this computer took over the local runtime.')
+        if (superseded) stop('Another Cerin app on this computer took over the local runtime.')
       },
       ...desktops(status, instances),
     })
@@ -225,7 +225,7 @@ const macScreenHost = {
   ...cliMacScreenHost(bundleRoot, () => owner),
   ...(e2eMacScreenHost && { binary: () => e2eMacScreenHost }),
 }
-// Keeps this computer's Nuphos current when idle, as the Desktop does (cli-auto-update.ts).
+// Keeps this computer's Cerin current when idle, as the Desktop does (cli-auto-update.ts).
 const autoUpdate = cliAutoUpdate(apiUrl, () => tunnel?.sendStatus())
 
 /** The tunnel's desktops, whose holders ride along with the agents' status. */
@@ -278,10 +278,10 @@ if (!deviceCredential)
   setInterval(() => {
     const fresh = currentToken()
 
-    if (!stopping && fresh !== signedIn) stop('Signed out of Nuphos; stopping the local runtimes.')
+    if (!stopping && fresh !== signedIn) stop('Signed out of Cerin; stopping the local runtimes.')
   }, 2_000)
 for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP'] as const) process.on(signal, () => stop())
-console.log(`Running this computer's agents for Nuphos as "${device.label}". Press Ctrl-C to stop.`)
+console.log(`Running this computer's agents for Cerin as "${device.label}". Press Ctrl-C to stop.`)
 console.log(
   'Agents you move onto this computer can be continued by anyone in that team, and their messages run commands here.',
 )

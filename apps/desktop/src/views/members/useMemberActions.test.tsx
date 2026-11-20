@@ -88,7 +88,7 @@ test('the no-email note mentions copying the link only when there is one', async
   answered = { role: 'EDITOR' }
   shown.length = 0
   await submit()
-  assert.equal(shown[0]?.description, 'Ask leo@acme.dev to sign in to Nuphos with this address.')
+  assert.equal(shown[0]?.description, 'Ask leo@acme.dev to sign in to Cerin with this address.')
   emailSent = true
   answered = {}
 })

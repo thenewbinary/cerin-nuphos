@@ -28,7 +28,7 @@ const TURN_END_MS = 2_000
 const CANCELLED = 'The call was cancelled before it ran.'
 const REFUSED = 'Sky Computer Use native pipe startup failed'
 const REFUSED_HELP =
-  'Computer Use on this Mac refused Nuphos as its caller, so retrying will not help. Update the ChatGPT app on this Mac and try again.'
+  'Computer Use on this Mac refused Cerin as its caller, so retrying will not help. Update the ChatGPT app on this Mac and try again.'
 
 export const failed = (text: string): CuaToolResult => ({
   content: [{ type: 'text', text }],

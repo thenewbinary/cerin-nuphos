@@ -141,18 +141,18 @@ test('an outdated computer is named, and its Update opens the update in place', 
   let confirming = 0
   const copy = outdatedCopy('Studio Mac', { update: () => confirming++ })
 
-  assert.equal(copy.text, 'Nuphos on Studio Mac is out of date. Bots and tasks on it may fail.')
+  assert.equal(copy.text, 'Cerin on Studio Mac is out of date. Bots and tasks on it may fail.')
   assert.equal(copy.action?.label, 'Update')
   copy.action?.run()
   assert.equal(confirming, 1)
 })
 
 test('an outdated computer this viewer cannot update says who can, with no button', () => {
-  const copy = outdatedCopy('Studio Mac', { hint: 'Ask its owner to update Nuphos on it.' })
+  const copy = outdatedCopy('Studio Mac', { hint: 'Ask its owner to update Cerin on it.' })
 
   assert.equal(
     copy.text,
-    'Nuphos on Studio Mac is out of date. Bots and tasks on it may fail. Ask its owner to update Nuphos on it.',
+    'Cerin on Studio Mac is out of date. Bots and tasks on it may fail. Ask its owner to update Cerin on it.',
   )
   assert.equal(copy.action, null)
 })

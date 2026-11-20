@@ -4,7 +4,7 @@ import * as atlas from './atlas'
 import { connectorCallbackError, connectorCallbackParams } from './connector-oauth-callback'
 
 // Shared scheme with github-install / gitlab-install — linear uses a distinct
-// hostname (nuphos://linear-callback) so the dispatcher in main.ts can route by
+// hostname (cerin://linear-callback) so the dispatcher in main.ts can route by
 // it without colliding.
 export const LINEAR_CALLBACK_HOST = 'linear-callback'
 const INSTALL_TIMEOUT_MS = 10 * 60 * 1000

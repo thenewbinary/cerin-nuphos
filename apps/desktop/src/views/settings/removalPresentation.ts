@@ -5,7 +5,7 @@ import { isOwner } from './boxPresentation.ts'
 import type { AgentDevice } from '../../api/device-types'
 
 /** Shown when the backend gives no reason, e.g. an older backend without the route. */
-const REMOVE_FALLBACK = t('Could not remove it. Update Nuphos and try again.')
+const REMOVE_FALLBACK = t('Could not remove it. Update Cerin and try again.')
 
 /** How its owner removes a machine, any time: a Box is deleted, a computer forgotten. */
 export function removal(device: AgentDevice) {
@@ -19,7 +19,7 @@ export function removal(device: AgentDevice) {
       confirm: t('Delete computer'),
       error: t('Could not delete computer'),
       description: t(
-        "This permanently deletes the computer, its files and its runtimes' sign-ins, and stops tasks running on it. Your task history stays in Nuphos.",
+        "This permanently deletes the computer, its files and its runtimes' sign-ins, and stops tasks running on it. Your task history stays in Cerin.",
       ),
     }
 
@@ -31,11 +31,11 @@ export function removal(device: AgentDevice) {
     error: t('Could not remove computer'),
     description: device.online
       ? t(
-          '{name} is online. Removing it disconnects it now and stops any task running on it. Tasks it ran stay in Nuphos. To add it back, open Nuphos on that computer.',
+          '{name} is online. Removing it disconnects it now and stops any task running on it. Tasks it ran stay in Cerin. To add it back, open Cerin on that computer.',
           { name: device.label },
         )
       : t(
-          'This removes the computer and its runtimes from Nuphos. Opening Nuphos on it registers it again. Your task history stays in Nuphos.',
+          'This removes the computer and its runtimes from Cerin. Opening Cerin on it registers it again. Your task history stays in Cerin.',
         ),
   }
 }

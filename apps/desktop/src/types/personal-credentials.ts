@@ -16,7 +16,7 @@ export type PersonalCredential = {
   connectedAt: string
 }
 
-/** Outcome of a nuphos://personal-credential deep link, claimed by the main process. */
+/** Outcome of a cerin://personal-credential deep link, claimed by the main process. */
 export type PersonalCredentialDeepLinkPayload = {
   provider: PersonalCredentialProvider
   login?: string
