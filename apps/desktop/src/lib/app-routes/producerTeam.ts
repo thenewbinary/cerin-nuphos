@@ -21,6 +21,9 @@ export function teamPageLocation(
   } = navigation
 
   if (active === 'team.home') return pageLocation(`/teams/${pathSegment(scope.teamId)}/home`)
+  if (active === 'team.morning-paper') {
+    return pageLocation(`/teams/${pathSegment(scope.teamId)}/paper`)
+  }
   if (active === 'team.agents') {
     return pageLocation(`/teams/${pathSegment(scope.teamId)}/agents`)
   }

@@ -31,6 +31,10 @@ const T = 'team1'
 // live PTY cannot be carried in a URL.
 const CASES: { name: string; nav: NavigationSnapshot }[] = [
   // -- team sections
+  {
+    name: 'morning paper',
+    nav: emptyNavigation({ kind: 'team', teamId: T }, 'team.morning-paper'),
+  },
   { name: 'agents', nav: emptyNavigation({ kind: 'team', teamId: T }, 'team.agents') },
   { name: 'new tab', nav: emptyNavigation({ kind: 'team', teamId: T }, 'team.new-tab') },
   { name: 'agent home', nav: emptyNavigation({ kind: 'team', teamId: T }, 'team.agent') },

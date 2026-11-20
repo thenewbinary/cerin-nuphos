@@ -13,11 +13,12 @@ import {
   Monitor,
   Terminal,
   Network,
+  Newspaper,
   Palette,
   Sparkles,
 } from 'lucide-react'
 
-import { t } from '../i18n/index.ts'
+import { t, tKey } from '../i18n/index.ts'
 
 import type { LucideIcon } from 'lucide-react'
 
@@ -66,6 +67,12 @@ const LEGACY_INBOX_NAV_ITEM: TeamOverviewNavItem = {
   icon: Inbox,
 }
 
+const MORNING_PAPER_NAV_ITEM: TeamOverviewNavItem = {
+  key: 'team.morning-paper',
+  label: tKey('morningPaper.home'),
+  icon: Newspaper,
+}
+
 export const HOME_NAV_ITEM: TeamOverviewNavItem = {
   key: 'team.home',
   label: t('Stats'),
@@ -73,6 +80,7 @@ export const HOME_NAV_ITEM: TeamOverviewNavItem = {
 }
 
 const MAIN_PANE_NAV_ITEMS = [
+  MORNING_PAPER_NAV_ITEM,
   HOME_NAV_ITEM,
   ARCHIVED_CHATS_NAV_ITEM,
   LEGACY_INBOX_NAV_ITEM,
@@ -89,8 +97,9 @@ export const TEAM_WORKSPACE_NAV_ITEMS: TeamOverviewNavItem[] = [
   { key: 'team.monitoring', label: t('Monitoring'), icon: HeartPulse },
 ]
 
-/** The sidebar's untitled top section: the chat entry plus Connectors. */
+/** The sidebar's untitled top section: Home, the chat entry, and Connectors. */
 export const TEAM_SIDEBAR_NAV_ITEMS: TeamOverviewNavItem[] = [
+  MORNING_PAPER_NAV_ITEM,
   NEW_CHAT_NAV_ITEM,
   CONNECTORS_NAV_ITEM,
 ]

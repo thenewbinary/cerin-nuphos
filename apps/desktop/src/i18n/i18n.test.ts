@@ -3,7 +3,8 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { test } from 'node:test'
 
-import { MESSAGES, matchLocale, t } from './index.ts'
+import { MESSAGES, matchLocale, t, tKey } from './index.ts'
+import en from './locales/en.json' with { type: 'json' }
 
 const SRC = join(import.meta.dirname, '..')
 /** The main process translates its menu bar and notifications the same way. */
@@ -65,6 +66,12 @@ test('every locale keeps its keys sorted', () => {
 
     assert.deepEqual(keys, [...keys].sort(), `${code}: run node scripts/sort-locales.mjs`)
   }
+})
+
+test('the English catalog is sorted and keyed text follows t()', () => {
+  assert.deepEqual(Object.keys(en), Object.keys(en).sort())
+  assert.equal(tKey('morningPaper.title'), 'Morning paper')
+  assert.equal(tKey('morningPaper.home'), t('Home'))
 })
 
 test('t falls back to English and fills placeholders', () => {

@@ -1,4 +1,8 @@
+import { Newspaper } from 'lucide-react'
 import { useRef } from 'react'
+
+import { tKey } from '../../i18n'
+import { SidebarNavIcon, SidebarNavItem } from '../SidebarNavItem'
 
 import { SidebarArchiveSection } from './SidebarArchiveSection'
 import { SidebarInboxPage } from './SidebarInboxPage'
@@ -47,6 +51,14 @@ export function SidebarTeamPages({
 
   return (
     <div data-mode-pages className="flex min-h-0 flex-1 flex-col">
+      <div className="shrink-0 px-2.5 pb-2">
+        <SidebarNavItem
+          icon={<SidebarNavIcon icon={Newspaper} />}
+          label={tKey('morningPaper.home')}
+          active={listProps.active === 'team.morning-paper'}
+          onClick={() => listProps.onSelect('team.morning-paper')}
+        />
+      </div>
       <SidebarSwipePages
         page={page}
         onPage={changePage}

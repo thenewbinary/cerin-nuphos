@@ -99,6 +99,7 @@ export function navigationFromAppPath(path: string): NavigationSnapshot | null {
   if (rest.length === 0 || rest[0] === 'home')
     return emptyNavigation(teamScope, rest.length === 0 ? 'team.agent' : 'team.home')
 
+  if (rest[0] === 'paper') return emptyNavigation(teamScope, 'team.morning-paper')
   switch (rest[0]) {
     case 'agents':
       return emptyNavigation(teamScope, 'team.agents')

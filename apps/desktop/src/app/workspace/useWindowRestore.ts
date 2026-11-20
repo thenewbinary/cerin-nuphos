@@ -176,5 +176,5 @@ export function useWindowRestore({
     }
   }, [restored, layout, activeId, storesVersion, stores, handle, report])
 
-  return handle
+  return { ...handle, restored }
 }
