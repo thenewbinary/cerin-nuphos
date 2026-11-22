@@ -107,7 +107,7 @@ export function DecisionTile({
   const options = quickChoices(row.request).slice(0, 3)
 
   return (
-    <article className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-line-control bg-elevated">
+    <article className="flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-line-control bg-elevated">
       <button
         type="button"
         onClick={onOpen}
@@ -135,7 +135,7 @@ export function DecisionTile({
           {row.request.question}
         </span>
       </button>
-      <div className="flex flex-wrap items-center gap-2 border-t border-line-control/70 px-5 py-4">
+      <div className="flex min-h-[104px] flex-wrap content-start items-start gap-2 border-t border-line-control/70 px-5 py-4">
         {options.map((option, index) => (
           <button
             key={option}
@@ -188,7 +188,7 @@ export function BotTile({
     <button
       type="button"
       onClick={onOpen}
-      className="w-[208px] shrink-0 rounded-2xl border border-line-control bg-elevated p-4 text-left outline-none transition-[background-color,border-color,transform] duration-150 hover:bg-state-hover active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-1 focus-visible:ring-offset-surface-raised"
+      className="w-full min-w-0 rounded-2xl border border-line-control bg-elevated p-4 text-left outline-none transition-[background-color,border-color,transform] duration-150 hover:bg-state-hover active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-1 focus-visible:ring-offset-surface-raised"
     >
       <span className="flex min-w-0 items-center gap-3">
         <AgentAvatar

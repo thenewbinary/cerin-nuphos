@@ -153,7 +153,7 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
                 <h2 className="mb-4 font-display text-xl font-medium leading-7 tracking-[-0.02em]">
                   {t('Bots')}
                 </h2>
-                <div className="flex gap-3 overflow-x-auto pb-2">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
                   {bots.map(({ bot, status }) => (
                     <BotTile
                       key={bot.sessionId}
