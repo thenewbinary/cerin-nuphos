@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { morningPaperItems } from './morningPaperItems.ts'
+import { botActivity, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
 
 import type { AgentConversation, AgentInputRequest } from '../../api/agent-types.ts'
 import type { InboxQuestion } from '../inbox/inboxItems.ts'
@@ -176,4 +176,142 @@ test('a first visit uses its arrival time and shows no historical activity', () 
   })
 
   assert.deepEqual(result.changed, [])
+})
+
+function activity(
+  overrides: Partial<Parameters<typeof botActivity>[0]> = {},
+): ReturnType<typeof botActivity> {
+  return botActivity({
+    conversations: [],
+    decisions: [],
+    unreadSessionIds: new Set(),
+    runtimeStates: new Map(),
+    isBot: (row) => Boolean(row.avatar),
+    lastSeenAt: NOW - DAY,
+    ...overrides,
+  })
+}
+
+test('bot activity orders waiting, working and finished ahead of idle, then newest first', () => {
+  const rows = [
+    conversation('idle', { avatar: 'face', lastActiveAt: at(NOW - 2 * DAY) }),
+    conversation('working-older', {
+      avatar: 'face',
+      lastActiveAt: at(NOW - 3 * HOUR),
+      runtimeState: { state: 'active' },
+    }),
+    conversation('finished', { avatar: 'face', lastActiveAt: at(NOW - 4 * HOUR) }),
+    conversation('waiting', {
+      avatar: 'face',
+      lastActiveAt: at(NOW - 5 * HOUR),
+      activeRun: { streamId: 'run', startedAt: null },
+      inputRequests: [request('question')],
+    }),
+    conversation('working-newer', {
+      avatar: 'face',
+      lastActiveAt: at(NOW - HOUR),
+      activeRun: { streamId: 'run', startedAt: null },
+    }),
+  ]
+  const result = activity({ conversations: rows })
+
+  assert.deepEqual(
+    result.map(({ bot, status }) => [bot.sessionId, status]),
+    [
+      ['waiting', 'waiting'],
+      ['working-newer', 'working'],
+      ['working-older', 'working'],
+      ['finished', 'finished'],
+      ['idle', 'idle'],
+    ],
+  )
+})
+
+test('bot activity rolls nested task work, decisions and unread finishes up to their Bots', () => {
+  const workingBot = conversation('working-bot', {
+    avatar: 'face',
+    lastActiveAt: at(NOW - 3 * DAY),
+  })
+  const parent = conversation('parent', {
+    parentSessionId: workingBot.sessionId,
+    lastActiveAt: at(NOW - 2 * DAY),
+  })
+  const workingTask = conversation('working-task', {
+    parentSessionId: parent.sessionId,
+    lastActiveAt: at(NOW - HOUR),
+    runtimeState: { state: 'active' },
+  })
+  const waitingBot = conversation('waiting-bot', {
+    avatar: 'face',
+    lastActiveAt: at(NOW - 4 * DAY),
+  })
+  const waitingTask = conversation('waiting-task', {
+    parentSessionId: waitingBot.sessionId,
+    lastActiveAt: at(NOW - 2 * HOUR),
+  })
+  const finishedBot = conversation('finished-bot', {
+    avatar: 'face',
+    lastActiveAt: at(NOW - 5 * DAY),
+  })
+  const finishedTask = conversation('finished-task', {
+    parentSessionId: finishedBot.sessionId,
+    lastActiveAt: at(NOW - 3 * DAY),
+    activitySeq: 1,
+  })
+  const result = activity({
+    conversations: [
+      workingBot,
+      parent,
+      workingTask,
+      waitingBot,
+      waitingTask,
+      finishedBot,
+      finishedTask,
+    ],
+    decisions: [{ ...decision(waitingTask.sessionId, 'question'), bot: waitingBot }],
+    unreadSessionIds: new Set([finishedTask.sessionId]),
+  })
+
+  assert.deepEqual(
+    result.map(({ bot, status, lastActiveAt }) => ({ id: bot.sessionId, status, lastActiveAt })),
+    [
+      { id: waitingBot.sessionId, status: 'waiting', lastActiveAt: waitingTask.lastActiveAt },
+      { id: workingBot.sessionId, status: 'working', lastActiveAt: workingTask.lastActiveAt },
+      { id: finishedBot.sessionId, status: 'finished', lastActiveAt: finishedTask.lastActiveAt },
+    ],
+  )
+})
+
+test('an owned Bot without work, questions or new activity defaults to idle', () => {
+  const idle = conversation('idle', { avatar: 'face', lastActiveAt: at(NOW - 2 * DAY) })
+  const shared = conversation('shared', {
+    avatar: 'face',
+    isOwner: false,
+    activeRun: { streamId: 'run', startedAt: null },
+  })
+  const channel = conversation('channel', {
+    avatar: 'face',
+    kind: 'channel',
+    activeRun: { streamId: 'run', startedAt: null },
+  })
+  const result = activity({ conversations: [shared, channel, idle] })
+
+  assert.deepEqual(
+    result.map(({ bot, status }) => [bot.sessionId, status]),
+    [['idle', 'idle']],
+  )
+})
+
+test('scoreboard counts come from the three visible buckets', () => {
+  const waiting = conversation('waiting')
+  const finished = conversation('finished')
+  const changed = conversation('changed', { lastActiveAt: at(NOW - HOUR) })
+  const result = select({
+    conversations: [waiting, finished, changed],
+    decisions: [decision(waiting.sessionId, 'question')],
+    unreadSessionIds: new Set([finished.sessionId]),
+    lastSeenAt: NOW - 2 * HOUR,
+  })
+
+  assert.deepEqual(morningPaperCounts(result), { decisions: 1, finished: 1, changed: 1 })
 })

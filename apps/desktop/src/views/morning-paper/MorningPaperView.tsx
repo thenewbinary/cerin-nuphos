@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react'
 
-import { AgentAvatar } from '../../components/agent/AgentAvatar.tsx'
 import { useAgentSessions } from '../../components/sidebar/agentSessions.ts'
-import { chatPreview, chatTime } from '../../components/sidebar/chat-preview.ts'
 import { t, tKey } from '../../i18n/index.ts'
 import { isBotRow, useAgentAvatarPicks } from '../../lib/agentAvatarChoices.ts'
 import { useAgentRuntimeStates } from '../../lib/agentRuntimeStates.ts'
 import { useAgentUnreadSessions } from '../../lib/agentUnreadSessions.ts'
-import { inboxSource } from '../inbox/inboxItems.ts'
+import { answerInboxWithUndo } from '../inbox/answerInboxWithUndo.ts'
+import { sendHeldAnswer } from '../inbox/useInbox.ts'
 import { useInboxQuestions } from '../inbox/useInboxQuestions.ts'
 
-import { morningPaperItems } from './morningPaperItems.ts'
+import { botActivity, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
 import { readMorningPaperLastSeen, recordMorningPaperLastSeen } from './morningPaperLastSeen.ts'
+import { BotTile, CountTile, DecisionTile } from './scoreboardTiles.tsx'
 
 import type { AgentConversation } from '../../api/agent-types.ts'
-import type { ReactNode } from 'react'
+import type { InboxQuestion } from '../inbox/inboxItems.ts'
+import type { HeldReply } from '../inbox/useInbox.ts'
 
 type Props = {
   teamId: string
@@ -48,25 +49,39 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
     }
   }, [currentUserId, teamId])
 
+  useEffect(() => sendHeldAnswer, [])
+
   const conversations = sessions.data ?? []
+  const isBot = (conversation: AgentConversation) =>
+    isBotRow(conversation, avatarPicks.get(conversation.sessionId))
   const items = morningPaperItems({
     conversations,
     decisions: questions ?? [],
     unreadSessionIds,
     runtimeStates,
-    isBot: (conversation) => isBotRow(conversation, avatarPicks.get(conversation.sessionId)),
+    isBot,
     lastSeenAt: visit.lastSeenAt,
     now: visit.enteredAt,
   })
+  const counts = morningPaperCounts(items)
+  const bots = botActivity({
+    conversations,
+    decisions: questions ?? [],
+    unreadSessionIds,
+    runtimeStates,
+    isBot,
+    lastSeenAt: visit.lastSeenAt,
+  })
   const loading = sessions.data === undefined || questions === null
+  const answer = (row: InboxQuestion, reply: HeldReply) => answerInboxWithUndo(teamId, row, reply)
 
   return (
     <div className="selectable min-h-0 flex-1 overflow-y-auto bg-main text-main">
-      <div className="mx-auto w-full max-w-[1120px] px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
-        <header className="border-b border-line-control pb-8">
+      <div className="mx-auto w-full max-w-[1180px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12">
+        <header>
           <time
             dateTime={new Date(visit.enteredAt).toISOString()}
-            className="text-[13px] leading-5 text-tertiary"
+            className="font-mono text-[10px] uppercase leading-4 tracking-[0.18em] text-tertiary"
           >
             {new Intl.DateTimeFormat(undefined, {
               weekday: 'long',
@@ -75,7 +90,7 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
               day: 'numeric',
             }).format(visit.enteredAt)}
           </time>
-          <h1 className="mt-3 font-display text-4xl font-medium leading-[1.1] tracking-[-0.03em] text-balance sm:text-5xl">
+          <h1 className="mt-2 font-display text-3xl font-medium leading-tight tracking-[-0.03em] text-balance sm:text-4xl">
             {tKey('morningPaper.title')}
           </h1>
         </header>
@@ -85,141 +100,74 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
             {t('Loading…')}
           </div>
         ) : (
-          <div className="mt-10 grid grid-cols-1 gap-x-14 gap-y-12 lg:grid-cols-2">
-            <Section
-              title={tKey('morningPaper.decisionsTitle')}
-              empty={tKey('morningPaper.decisionsEmpty')}
-              className="lg:col-span-2"
-            >
-              {items.decisions.map((row) => (
-                <PaperRow
-                  key={row.request.id}
-                  conversation={inboxSource(row)}
-                  title={row.request.question}
-                  detail={row.bot ? conversationTitle(row.conversation) : undefined}
-                  sourceTitle={conversationTitle(inboxSource(row))}
-                  at={row.request.updatedAt ?? row.request.askedAt}
-                  onOpen={() => onOpenConversation(row.conversation.sessionId)}
-                />
-              ))}
-            </Section>
+          <main className="mt-8 space-y-10">
+            <section className="grid grid-cols-2 gap-3 sm:gap-4">
+              <CountTile
+                label={tKey('morningPaper.finishedTitle')}
+                count={counts.finished}
+                conversations={items.finished}
+                onOpenConversation={onOpenConversation}
+              />
+              <CountTile
+                label={tKey('morningPaper.changedTitle')}
+                count={counts.changed}
+                conversations={items.changed}
+                onOpenConversation={onOpenConversation}
+              />
+            </section>
 
-            <Section
-              title={tKey('morningPaper.finishedTitle')}
-              empty={tKey('morningPaper.finishedEmpty')}
-            >
-              {items.finished.map((conversation) => (
-                <PaperRow
-                  key={conversation.sessionId}
-                  conversation={conversation}
-                  title={conversationTitle(conversation)}
-                  at={conversation.lastActiveAt}
-                  onOpen={() => onOpenConversation(conversation.sessionId)}
-                />
-              ))}
-            </Section>
+            <section>
+              <div className="mb-4 flex items-center gap-2.5">
+                <h2 className="font-display text-xl font-medium leading-7 tracking-[-0.02em]">
+                  {tKey('morningPaper.decisionsTitle')}
+                </h2>
+                <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-action-primary px-2 font-mono text-[11px] leading-none tabular-nums text-inverse">
+                  {counts.decisions}
+                </span>
+              </div>
+              {items.decisions.length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  {items.decisions.map((row) => (
+                    <DecisionTile
+                      key={row.request.id}
+                      row={row}
+                      onAnswer={(reply) => answer(row, reply)}
+                      onOpen={() => onOpenConversation(row.conversation.sessionId)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-line-control bg-elevated px-5 py-6">
+                  <p
+                    className="truncate text-sm leading-5 text-tertiary"
+                    title={tKey('morningPaper.decisionsEmpty')}
+                  >
+                    {tKey('morningPaper.decisionsEmpty')}
+                  </p>
+                </div>
+              )}
+            </section>
 
-            <Section
-              title={tKey('morningPaper.changedTitle')}
-              empty={tKey('morningPaper.changedEmpty')}
-            >
-              {items.changed.map((conversation) => (
-                <PaperRow
-                  key={conversation.sessionId}
-                  conversation={conversation}
-                  title={conversationTitle(conversation)}
-                  detail={chatPreview(conversation.lastMessage, conversation.faces)}
-                  at={conversation.lastActiveAt}
-                  onOpen={() => onOpenConversation(conversation.sessionId)}
-                />
-              ))}
-            </Section>
-          </div>
+            {bots.length > 0 && (
+              <section>
+                <h2 className="mb-4 font-display text-xl font-medium leading-7 tracking-[-0.02em]">
+                  {t('Bots')}
+                </h2>
+                <div className="flex gap-3 overflow-x-auto pb-2">
+                  {bots.map(({ bot, status }) => (
+                    <BotTile
+                      key={bot.sessionId}
+                      bot={bot}
+                      status={status}
+                      onOpen={() => onOpenConversation(bot.sessionId)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+          </main>
         )}
       </div>
     </div>
   )
-}
-
-function Section({
-  title,
-  empty,
-  className = '',
-  children,
-}: {
-  title: string
-  empty: string
-  className?: string
-  children: ReactNode
-}) {
-  return (
-    <section className={className}>
-      <h2 className="font-display text-lg font-medium leading-6 tracking-[-0.01em]">{title}</h2>
-      <div className="mt-5 border-t border-line-control">
-        {children}
-        {!Array.isArray(children) || children.length === 0 ? (
-          <p className="py-5 text-sm leading-6 text-tertiary">{empty}</p>
-        ) : null}
-      </div>
-    </section>
-  )
-}
-
-function PaperRow({
-  conversation,
-  title,
-  detail,
-  sourceTitle,
-  at,
-  onOpen,
-}: {
-  conversation: AgentConversation
-  title: string
-  detail?: string
-  sourceTitle?: string
-  at: string
-  onOpen: () => void
-}) {
-  const time = chatTime(at)
-
-  return (
-    <button
-      type="button"
-      onClick={onOpen}
-      className="flex w-full min-w-0 items-start gap-3 rounded-sm border-b border-line-control px-2 py-4 text-left outline-none transition-colors hover:bg-state-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-line-focus"
-    >
-      <AgentAvatar
-        agentId={conversation.sessionId}
-        avatar={conversation.avatar}
-        avatarBackground={conversation.avatarBackground}
-        provider={conversation.agentRuntime}
-        size={28}
-        showBadge={false}
-      />
-      <span className="min-w-0 flex-1">
-        <span className="block break-words text-[15px] font-medium leading-6 text-main">
-          {title}
-        </span>
-        {detail && (
-          <span className="mt-1 line-clamp-2 break-words text-sm leading-5 text-secondary">
-            {detail}
-          </span>
-        )}
-        {sourceTitle && (
-          <span className="mt-2 block break-words text-xs leading-4 text-tertiary">
-            {sourceTitle}
-          </span>
-        )}
-      </span>
-      {time && (
-        <time dateTime={at} className="shrink-0 pt-0.5 text-xs leading-5 text-tertiary">
-          {time}
-        </time>
-      )}
-    </button>
-  )
-}
-
-function conversationTitle(conversation: AgentConversation): string {
-  return conversation.title || conversation.firstMessage || t('Untitled task')
 }

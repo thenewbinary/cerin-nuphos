@@ -2,18 +2,18 @@ import { Inbox } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 
 import { EmptyState } from '../components/EmptyState'
-import { toast } from '../components/ui/toast'
 import { useWorkspaceTab } from '../hooks/useWorkspaceTab'
 import { t } from '../i18n'
 
+import { answerInboxWithUndo } from './inbox/answerInboxWithUndo'
 import { ChannelMentions } from './inbox/ChannelMentions'
 import { DecisionCard } from './inbox/DecisionCard'
+import { snoozeQuestion } from './inbox/dismissQuestion'
 import { openQuestion } from './inbox/inboxItems'
 import { selectInboxQuestion, useInboxSelection } from './inbox/inboxSelection'
 import { openListed } from './inbox/openListed'
 import { useChannelMentions } from './inbox/useChannelMentions'
-import { snoozeQuestion } from './inbox/dismissQuestion'
-import { ANSWER_UNDO_MS, holdAnswer, sendHeldAnswer } from './inbox/useInbox'
+import { sendHeldAnswer } from './inbox/useInbox'
 import { useInboxQuestions } from './inbox/useInboxQuestions'
 
 import type { InboxQuestion } from './inbox/inboxItems'
@@ -109,35 +109,11 @@ export function InboxView({
 
   const answer = (row: InboxQuestion, reply: HeldReply) => {
     // The answered question leaves the list, and the one that takes its place opens.
-    const dismissed = 'dismissed' in reply
-
     move(rows?.at(at + 1) ?? rows?.at(at - 1))
-    const undo = holdAnswer(teamId, row.conversation.sessionId, row.request.id, reply, (reason) =>
-      toast.error(
-        dismissed ? t('Could not dismiss question') : t('Could not send your answer'),
-        reason,
-      ),
-    )
-
-    toast.success(
-      dismissed
-        ? t('Dismissed')
-        : t('Answered “{answer}”', {
-            answer: reply.choices?.join(', ') ?? reply.text ?? row.request.question,
-          }),
-      undefined,
-      {
-        timeoutMs: ANSWER_UNDO_MS,
-        dedupe: false,
-        action: {
-          label: t('Undo'),
-          // Once sent, the answer stays: the question is not opened again.
-          onClick: () => {
-            if (undo()) selectInboxQuestion(teamId, row.request.id)
-          },
-        },
-      },
-    )
+    answerInboxWithUndo(teamId, row, reply, () => {
+      // Once sent, the answer stays: the question is not opened again.
+      selectInboxQuestion(teamId, row.request.id)
+    })
   }
 
   const caughtUp = all?.length === 0 && mentions.length === 0

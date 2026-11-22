@@ -6,5 +6,9 @@
   "morningPaper.finishedEmpty": "Nothing finished recently.",
   "morningPaper.finishedTitle": "Finished",
   "morningPaper.home": "Home",
+  "morningPaper.statusFinished": "Finished",
+  "morningPaper.statusIdle": "Idle",
+  "morningPaper.statusWaiting": "Waiting on you",
+  "morningPaper.statusWorking": "Working",
   "morningPaper.title": "Morning paper"
 }
