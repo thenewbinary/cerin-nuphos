@@ -90,7 +90,7 @@ function DecisionPill({
             onClick={() => onAnswer({ choices: [option] })}
             className={`${ACTION_BUTTON} ${
               index === 0
-                ? 'bg-action-primary text-inverse hover:opacity-90'
+                ? 'bg-data-1 text-inverse hover:bg-data-1/90'
                 : 'border border-line-control bg-surface-sheet text-primary hover:bg-state-hover'
             }`}
           >

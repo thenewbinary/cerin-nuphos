@@ -141,7 +141,7 @@ export function OutcomeCounters({
             <div className="whitespace-nowrap font-display text-[48px] font-light leading-none tracking-[-0.055em] tabular-nums text-main sm:text-[52px] lg:text-[60px] xl:text-[64px]">
               {metric.value}
             </div>
-            <div className="mt-3 line-clamp-2 font-mono text-[9px] font-medium uppercase leading-[1.5] tracking-[0.16em] text-tertiary">
+            <div className="mt-3 line-clamp-2 font-mono text-[11px] font-medium uppercase leading-[1.5] tracking-[0.16em] text-tertiary">
               {metric.label}
             </div>
           </div>

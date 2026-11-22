@@ -12,7 +12,12 @@ import { useInboxQuestions } from '../inbox/useInboxQuestions.ts'
 import { DecisionStack } from './decisionPills.tsx'
 import { MatrixFlow } from './matrixFlow.tsx'
 import { MatrixHero, OutcomeCounters } from './matrixHero.tsx'
-import { botActivity, flowModel, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
+import {
+  botActivity,
+  flowModel,
+  morningPaperCounts,
+  morningPaperItems,
+} from './morningPaperItems.ts'
 import { readMorningPaperLastSeen, recordMorningPaperLastSeen } from './morningPaperLastSeen.ts'
 import { useMorningPaperOutcomes } from './morningPaperOutcomes.ts'
 import { ProofStrip } from './proofStrip.tsx'
@@ -53,18 +58,35 @@ function viewModel({
 }: ViewModelInput) {
   const isBot = (conversation: AgentConversation) =>
     isBotRow(conversation, avatarPicks.get(conversation.sessionId))
-  const activityInput = { conversations, decisions, unreadSessionIds, runtimeStates, isBot, lastSeenAt }
+  const activityInput = {
+    conversations,
+    decisions,
+    unreadSessionIds,
+    runtimeStates,
+    isBot,
+    lastSeenAt,
+  }
   const items = morningPaperItems({ ...activityInput, now })
   const counts = morningPaperCounts(items)
   const bots = botActivity(activityInput)
   const flow = flowModel(bots, conversations, isBot)
   const objective = outcomes?.objective ?? tKey('morningPaper.title')
-  const counters = outcomes?.metrics ?? [
-    { id: 'finished', value: String(counts.finished), label: tKey('morningPaper.finishedTitle') },
-    { id: 'changed', value: String(counts.changed), label: tKey('morningPaper.changedTitle') },
-    { id: 'decisions', value: String(counts.decisions), label: tKey('morningPaper.decisionsTitle') },
-    { id: 'bots', value: String(bots.length), label: t('Bots') },
-  ]
+  const counters = outcomes
+    ? outcomes.metrics.filter((metric) => !metric.featured)
+    : [
+        {
+          id: 'finished',
+          value: String(counts.finished),
+          label: tKey('morningPaper.finishedTitle'),
+        },
+        { id: 'changed', value: String(counts.changed), label: tKey('morningPaper.changedTitle') },
+        {
+          id: 'decisions',
+          value: String(counts.decisions),
+          label: tKey('morningPaper.decisionsTitle'),
+        },
+        { id: 'bots', value: String(bots.length), label: t('Bots') },
+      ]
 
   return {
     conversations,
@@ -125,7 +147,11 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
   return (
     <div className="selectable min-h-0 flex-1 overflow-y-auto bg-main text-main">
       <div className="mx-auto w-full max-w-[1180px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12">
-        <MatrixHero enteredAt={visit.enteredAt} objective={model.objective} metrics={model.heroMetrics} />
+        <MatrixHero
+          enteredAt={visit.enteredAt}
+          objective={model.objective}
+          metrics={model.heroMetrics}
+        />
 
         {loading ? (
           <div role="status" className="py-8 text-sm text-tertiary">

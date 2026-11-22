@@ -41,7 +41,7 @@ export function FlowLines({ geometry }: { geometry: FlowGeometry }) {
           key={edge.id}
           d={edge.d}
           fill="none"
-          stroke="rgb(var(--color-line-control))"
+          stroke="color-mix(in srgb, rgb(var(--color-text-tertiary)) 52%, rgb(var(--color-line-control)))"
           strokeWidth="1"
           vectorEffect="non-scaling-stroke"
         />
@@ -65,7 +65,11 @@ export function FlowLines({ geometry }: { geometry: FlowGeometry }) {
           cx={dot.x}
           cy={dot.y}
           r="2.25"
-          fill={dot.working ? 'rgb(var(--color-data-1))' : 'rgb(var(--color-line-control))'}
+          fill={
+            dot.working
+              ? 'rgb(var(--color-data-1))'
+              : 'color-mix(in srgb, rgb(var(--color-text-tertiary)) 52%, rgb(var(--color-line-control)))'
+          }
         />
       ))}
     </svg>
@@ -206,10 +210,10 @@ export function EdgePill({
   return (
     <span
       aria-hidden
-      className="absolute z-20 flex h-7 min-w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-1.5 rounded-full matrix-inverse-panel px-2.5 font-mono text-[11px] font-medium tabular-nums text-inverse shadow-[var(--surface-shadow)]"
+      className="absolute z-20 flex h-7 min-w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-1.5 rounded-full matrix-inverse-panel px-2.5 font-mono text-[12px] font-medium tabular-nums text-inverse shadow-[var(--surface-shadow)]"
       style={{ left: position.x, top: position.y }}
     >
-      <Icon className="size-3" strokeWidth={1.8} />
+      <Icon className="size-3.5" strokeWidth={1.8} />
       {count}
     </span>
   )

@@ -3,7 +3,14 @@ import type { FlowModel } from './morningPaperItems.ts'
 export type FlowPoint = { x: number; y: number }
 type Edge = { id: string; d: string; working?: boolean }
 type Dot = FlowPoint & { id: string; working?: boolean }
-type Box = { left: number; top: number; right: number; bottom: number; width: number; height: number }
+type Box = {
+  left: number
+  top: number
+  right: number
+  bottom: number
+  width: number
+  height: number
+}
 type Draft = { edges: Edge[]; dots: Dot[] }
 
 type Elements = {
@@ -77,74 +84,129 @@ function goalRoute(draft: Draft, goal: Box, lead: Box, horizontal: boolean, work
   return midpoint(start, end)
 }
 
-function simpleRoute(draft: Draft, boxes: Boxes, working: boolean): FlowPoint {
-  const hasDepartments = boxes.departments.length > 0
+function directRoute(draft: Draft, boxes: Boxes, working: boolean): FlowPoint {
   const start = { x: centerX(boxes.lead), y: boxes.lead.bottom }
-  const end = {
-    x: hasDepartments ? centerX(boxes.group) : centerX(boxes.proof),
-    y: hasDepartments ? boxes.group.top : boxes.proof.top,
-  }
+  const end = { x: centerX(boxes.proof), y: boxes.proof.top }
 
-  edgeBetween(draft, 'lead-departments', start, end, working)
+  edgeBetween(draft, 'lead-proof', start, end, working)
   dot(draft, 'route-start', start.x, start.y)
-  dot(draft, 'route-end', end.x, end.y, working)
-  if (hasDepartments) {
-    edgeBetween(
-      draft,
-      'departments-proof',
-      { x: centerX(boxes.group), y: boxes.group.bottom },
-      { x: centerX(boxes.proof), y: boxes.proof.top },
-    )
-    dot(draft, 'proof-end', centerX(boxes.proof), boxes.proof.top)
-  }
+  dot(draft, 'proof-end', end.x, end.y, working)
 
   return midpoint(start, end)
 }
 
-function desktopRoute(draft: Draft, boxes: Boxes, model: FlowModel): FlowPoint {
+function departmentRoute(draft: Draft, boxes: Boxes, model: FlowModel): FlowPoint {
   const { lead, departments, proof } = boxes
-  const top = Math.min(...departments.map((department) => department.top))
-  const bottom = Math.max(...departments.map((department) => department.bottom))
-  const xs = departments.map(centerX)
-  const routeBusY = lead.bottom + (top - lead.bottom) / 2
-  const proofBusY = bottom + (proof.top - bottom) / 2
-  const minX = Math.min(...xs)
-  const maxX = Math.max(...xs)
+  const rows: {
+    departments: { box: Box; index: number }[]
+    top: number
+    bottom: number
+  }[] = []
+
+  departments.forEach((box, index) => {
+    const row = rows.find(({ top }) => Math.abs(top - box.top) < 2)
+
+    if (row) {
+      row.departments.push({ box, index })
+      row.bottom = Math.max(row.bottom, box.bottom)
+    } else {
+      rows.push({ departments: [{ box, index }], top: box.top, bottom: box.bottom })
+    }
+  })
+  rows.sort((a, b) => a.top - b.top)
+
+  const leadX = centerX(lead)
+  const proofX = centerX(proof)
+  const inputTrunkX = Math.max(
+    0,
+    Math.min(...departments.map((department) => department.left)) - 12,
+  )
+  const outputTrunkX = Math.min(
+    boxes.group.right,
+    Math.max(...departments.map((department) => department.right)) + 28,
+  )
   const anyWorking = model.departments.some(({ activity }) => activity.status === 'working')
+  const routes = rows.map((row, rowIndex) => {
+    const previous = rowIndex === 0 ? undefined : rows[rowIndex - 1]
+    const next = rowIndex === rows.length - 1 ? undefined : rows[rowIndex + 1]
+    const inputY = previous
+      ? previous.bottom + ((row.top - previous.bottom) * 2) / 3
+      : lead.bottom + (row.top - lead.bottom) / 2
+    const outputY = next
+      ? row.bottom + (next.top - row.bottom) / 3
+      : row.bottom + (proof.top - row.bottom) / 2
+
+    return { row, inputY, outputY }
+  })
+  const first = routes[0]
+  const last = routes.at(-1)
+
+  if (!last) return directRoute(draft, boxes, anyWorking)
 
   edgeBetween(
     draft,
     'lead-route',
-    { x: centerX(lead), y: lead.bottom },
-    { x: centerX(lead), y: routeBusY },
+    { x: leadX, y: lead.bottom },
+    { x: leadX, y: first.inputY },
     anyWorking,
   )
-  if (minX !== maxX) {
-    edge(draft, 'route-bus', `M${coordinate(minX, routeBusY)} L${coordinate(maxX, routeBusY)}`, anyWorking)
-    edge(draft, 'proof-bus', `M${coordinate(minX, proofBusY)} L${coordinate(maxX, proofBusY)}`)
+  if (first.inputY !== last.inputY) {
+    edgeBetween(
+      draft,
+      'route-trunk',
+      { x: inputTrunkX, y: first.inputY },
+      { x: inputTrunkX, y: last.inputY },
+      anyWorking,
+    )
+    edgeBetween(
+      draft,
+      'proof-trunk',
+      { x: outputTrunkX, y: first.outputY },
+      { x: outputTrunkX, y: last.outputY },
+    )
   }
-  edgeBetween(
-    draft,
-    'proof-route',
-    { x: centerX(proof), y: proofBusY },
-    { x: centerX(proof), y: proof.top },
-  )
-  dot(draft, 'lead-route', centerX(lead), routeBusY, anyWorking)
-  dot(draft, 'proof-route', centerX(proof), proofBusY)
+  dot(draft, 'lead-route', leadX, first.inputY, anyWorking)
 
-  departments.forEach((department, index) => {
-    const x = centerX(department)
-    const working = model.departments[index]?.activity.status === 'working'
-    const id = String(index)
+  routes.forEach(({ row, inputY, outputY }, rowIndex) => {
+    const xs = row.departments.map(({ box }) => centerX(box))
+    const minX = Math.min(...xs)
+    const maxX = Math.max(...xs)
+    const inputStart = rowIndex === 0 ? Math.min(inputTrunkX, leadX) : inputTrunkX
+    const inputEnd = rowIndex === 0 ? Math.max(maxX, leadX) : maxX
+    const outputStart = rowIndex === routes.length - 1 ? Math.min(minX, proofX) : minX
+    const outputEnd = rowIndex === routes.length - 1 ? Math.max(outputTrunkX, proofX) : outputTrunkX
 
-    edgeBetween(draft, `department-${id}`, { x, y: routeBusY }, { x, y: department.top }, working)
-    edgeBetween(draft, `department-proof-${id}`, { x, y: department.bottom }, { x, y: proofBusY })
-    dot(draft, `department-${id}`, x, routeBusY, working)
-    dot(draft, `department-proof-${id}`, x, proofBusY)
+    edge(
+      draft,
+      `route-bus-${String(rowIndex)}`,
+      `M${coordinate(inputStart, inputY)} L${coordinate(inputEnd, inputY)}`,
+      anyWorking,
+    )
+    edge(
+      draft,
+      `proof-bus-${String(rowIndex)}`,
+      `M${coordinate(outputStart, outputY)} L${coordinate(outputEnd, outputY)}`,
+    )
+    dot(draft, `route-trunk-${String(rowIndex)}`, inputTrunkX, inputY, anyWorking)
+    dot(draft, `proof-trunk-${String(rowIndex)}`, outputTrunkX, outputY)
+
+    row.departments.forEach(({ box, index }) => {
+      const x = centerX(box)
+      const working = model.departments[index]?.activity.status === 'working'
+      const id = String(index)
+
+      edgeBetween(draft, `department-${id}`, { x, y: inputY }, { x, y: box.top }, working)
+      edgeBetween(draft, `department-proof-${id}`, { x, y: box.bottom }, { x, y: outputY })
+      dot(draft, `department-${id}`, x, inputY, working)
+      dot(draft, `department-proof-${id}`, x, outputY)
+    })
   })
-  dot(draft, 'proof-end', centerX(proof), proof.top)
 
-  return { x: centerX(lead), y: routeBusY }
+  edgeBetween(draft, 'proof-route', { x: proofX, y: last.outputY }, { x: proofX, y: proof.top })
+  dot(draft, 'proof-route', proofX, last.outputY)
+  dot(draft, 'proof-end', proofX, proof.top)
+
+  return { x: leadX, y: first.inputY }
 }
 
 export function measureFlowGeometry(elements: Elements, model: FlowModel): FlowGeometry {
@@ -159,11 +221,17 @@ export function measureFlowGeometry(elements: Elements, model: FlowModel): FlowG
   const horizontal =
     boxes.lead.left > boxes.goal.left && Math.abs(centerY(boxes.lead) - centerY(boxes.goal)) < 100
   const draft: Draft = { edges: [], dots: [] }
-  const goalPill = goalRoute(draft, boxes.goal, boxes.lead, horizontal, model.lead?.status === 'working')
+  const goalPill = goalRoute(
+    draft,
+    boxes.goal,
+    boxes.lead,
+    horizontal,
+    model.lead?.status === 'working',
+  )
   const routePill =
-    horizontal && boxes.departments.length > 0
-      ? desktopRoute(draft, boxes, model)
-      : simpleRoute(draft, boxes, model.departments.some(({ activity }) => activity.status === 'working'))
+    boxes.departments.length > 0
+      ? departmentRoute(draft, boxes, model)
+      : directRoute(draft, boxes, model.lead?.status === 'working')
 
   return { width: rootBox.width, height: rootBox.height, ...draft, goalPill, routePill }
 }
