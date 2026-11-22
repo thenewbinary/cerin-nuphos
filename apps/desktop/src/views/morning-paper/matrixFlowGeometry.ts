@@ -150,7 +150,9 @@ function departmentRoute(draft: Draft, boxes: Boxes, model: FlowModel): FlowPoin
     { x: leadX, y: first.inputY },
     anyWorking,
   )
-  if (first.inputY !== last.inputY) {
+  const trunks = first.inputY !== last.inputY
+
+  if (trunks) {
     edgeBetween(
       draft,
       'route-trunk',
@@ -171,10 +173,13 @@ function departmentRoute(draft: Draft, boxes: Boxes, model: FlowModel): FlowPoin
     const xs = row.departments.map(({ box }) => centerX(box))
     const minX = Math.min(...xs)
     const maxX = Math.max(...xs)
-    const inputStart = rowIndex === 0 ? Math.min(inputTrunkX, leadX) : inputTrunkX
+    // One row has no trunks to reach, so its buses span only the cards, lead and proof.
+    const inputLeft = trunks ? inputTrunkX : minX
+    const outputRight = trunks ? outputTrunkX : maxX
+    const inputStart = rowIndex === 0 ? Math.min(inputLeft, leadX) : inputLeft
     const inputEnd = rowIndex === 0 ? Math.max(maxX, leadX) : maxX
     const outputStart = rowIndex === routes.length - 1 ? Math.min(minX, proofX) : minX
-    const outputEnd = rowIndex === routes.length - 1 ? Math.max(outputTrunkX, proofX) : outputTrunkX
+    const outputEnd = rowIndex === routes.length - 1 ? Math.max(outputRight, proofX) : outputRight
 
     edge(
       draft,
@@ -187,8 +192,10 @@ function departmentRoute(draft: Draft, boxes: Boxes, model: FlowModel): FlowPoin
       `proof-bus-${String(rowIndex)}`,
       `M${coordinate(outputStart, outputY)} L${coordinate(outputEnd, outputY)}`,
     )
-    dot(draft, `route-trunk-${String(rowIndex)}`, inputTrunkX, inputY, anyWorking)
-    dot(draft, `proof-trunk-${String(rowIndex)}`, outputTrunkX, outputY)
+    if (trunks) {
+      dot(draft, `route-trunk-${String(rowIndex)}`, inputTrunkX, inputY, anyWorking)
+      dot(draft, `proof-trunk-${String(rowIndex)}`, outputTrunkX, outputY)
+    }
 
     row.departments.forEach(({ box, index }) => {
       const x = centerX(box)
