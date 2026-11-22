@@ -128,6 +128,47 @@ export function botActivity({
     )
 }
 
+export type FlowModel = {
+  lead: BotActivity | null
+  departments: { activity: BotActivity; taskCount: number }[]
+}
+
+export function flowModel(
+  bots: readonly BotActivity[],
+  conversations: readonly AgentConversation[],
+  isBot: (conversation: AgentConversation) => boolean,
+): FlowModel {
+  const byId = new Map(conversations.map((conversation) => [conversation.sessionId, conversation]))
+  const taskCounts = new Map(bots.map(({ bot }) => [bot.sessionId, 0]))
+
+  for (const conversation of conversations) {
+    if (!ownedWork(conversation) || isBot(conversation)) continue
+    const bot = botAbove(conversation, byId, isBot)
+
+    if (bot && taskCounts.has(bot.sessionId)) {
+      taskCounts.set(bot.sessionId, (taskCounts.get(bot.sessionId) ?? 0) + 1)
+    }
+  }
+
+  const lead =
+    bots.find(({ bot }) => /chief/i.test(bot.title)) ??
+    bots.reduce<BotActivity | null>((current, activity) => {
+      if (!current) return activity
+
+      return (taskCounts.get(activity.bot.sessionId) ?? 0) >
+        (taskCounts.get(current.bot.sessionId) ?? 0)
+        ? activity
+        : current
+    }, null)
+
+  return {
+    lead,
+    departments: bots
+      .filter((activity) => activity !== lead)
+      .map((activity) => ({ activity, taskCount: taskCounts.get(activity.bot.sessionId) ?? 0 })),
+  }
+}
+
 export function morningPaperItems({
   conversations,
   decisions,

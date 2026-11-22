@@ -9,11 +9,18 @@ import { answerInboxWithUndo } from '../inbox/answerInboxWithUndo.ts'
 import { sendHeldAnswer } from '../inbox/useInbox.ts'
 import { useInboxQuestions } from '../inbox/useInboxQuestions.ts'
 
-import { botActivity, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
+import { DecisionStack } from './decisionPills.tsx'
+import { MatrixFlow } from './matrixFlow.tsx'
+import { MatrixHero, OutcomeCounters } from './matrixHero.tsx'
+import { botActivity, flowModel, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
 import { readMorningPaperLastSeen, recordMorningPaperLastSeen } from './morningPaperLastSeen.ts'
-import { BotTile, CountTile, DecisionTile } from './scoreboardTiles.tsx'
+import { useMorningPaperOutcomes } from './morningPaperOutcomes.ts'
+import { ProofStrip } from './proofStrip.tsx'
+import './morningPaperMatrix.css'
 
+import type { MorningPaperOutcomes } from './morningPaperOutcomes.ts'
 import type { AgentConversation } from '../../api/agent-types.ts'
+import type { RuntimeExecution } from '../../lib/runtimeExecution.ts'
 import type { InboxQuestion } from '../inbox/inboxItems.ts'
 import type { HeldReply } from '../inbox/useInbox.ts'
 
@@ -21,6 +28,56 @@ type Props = {
   teamId: string
   currentUserId: string
   onOpenConversation: (sessionId: string) => void
+}
+
+type ViewModelInput = {
+  conversations: readonly AgentConversation[]
+  decisions: readonly InboxQuestion[]
+  unreadSessionIds: ReadonlySet<string>
+  runtimeStates: ReadonlyMap<string, RuntimeExecution>
+  avatarPicks: ReadonlyMap<string, string | null>
+  outcomes: MorningPaperOutcomes | null
+  lastSeenAt: number
+  now: number
+}
+
+function viewModel({
+  conversations,
+  decisions,
+  unreadSessionIds,
+  runtimeStates,
+  avatarPicks,
+  outcomes,
+  lastSeenAt,
+  now,
+}: ViewModelInput) {
+  const isBot = (conversation: AgentConversation) =>
+    isBotRow(conversation, avatarPicks.get(conversation.sessionId))
+  const activityInput = { conversations, decisions, unreadSessionIds, runtimeStates, isBot, lastSeenAt }
+  const items = morningPaperItems({ ...activityInput, now })
+  const counts = morningPaperCounts(items)
+  const bots = botActivity(activityInput)
+  const flow = flowModel(bots, conversations, isBot)
+  const objective = outcomes?.objective ?? tKey('morningPaper.title')
+  const counters = outcomes?.metrics ?? [
+    { id: 'finished', value: String(counts.finished), label: tKey('morningPaper.finishedTitle') },
+    { id: 'changed', value: String(counts.changed), label: tKey('morningPaper.changedTitle') },
+    { id: 'decisions', value: String(counts.decisions), label: tKey('morningPaper.decisionsTitle') },
+    { id: 'bots', value: String(bots.length), label: t('Bots') },
+  ]
+
+  return {
+    conversations,
+    isBot,
+    items,
+    counts,
+    flow,
+    objective,
+    counters,
+    heroMetrics: outcomes?.metrics ?? [],
+    proof: outcomes?.proof ?? [],
+    workingCount: bots.filter(({ status }) => status === 'working').length,
+  }
 }
 
 export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: Props) {
@@ -37,6 +94,7 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
   const unreadSessionIds = useAgentUnreadSessions()
   const runtimeStates = useAgentRuntimeStates()
   const avatarPicks = useAgentAvatarPicks()
+  const outcomes = useMorningPaperOutcomes(teamId)
 
   useEffect(() => {
     const record = () => recordMorningPaperLastSeen(currentUserId, teamId, Date.now())
@@ -51,26 +109,15 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
 
   useEffect(() => sendHeldAnswer, [])
 
-  const conversations = sessions.data ?? []
-  const isBot = (conversation: AgentConversation) =>
-    isBotRow(conversation, avatarPicks.get(conversation.sessionId))
-  const items = morningPaperItems({
-    conversations,
+  const model = viewModel({
+    conversations: sessions.data ?? [],
     decisions: questions ?? [],
     unreadSessionIds,
     runtimeStates,
-    isBot,
+    avatarPicks,
+    outcomes,
     lastSeenAt: visit.lastSeenAt,
     now: visit.enteredAt,
-  })
-  const counts = morningPaperCounts(items)
-  const bots = botActivity({
-    conversations,
-    decisions: questions ?? [],
-    unreadSessionIds,
-    runtimeStates,
-    isBot,
-    lastSeenAt: visit.lastSeenAt,
   })
   const loading = sessions.data === undefined || questions === null
   const answer = (row: InboxQuestion, reply: HeldReply) => answerInboxWithUndo(teamId, row, reply)
@@ -78,93 +125,46 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
   return (
     <div className="selectable min-h-0 flex-1 overflow-y-auto bg-main text-main">
       <div className="mx-auto w-full max-w-[1180px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12">
-        <header>
-          <time
-            dateTime={new Date(visit.enteredAt).toISOString()}
-            className="font-mono text-[10px] uppercase leading-4 tracking-[0.18em] text-tertiary"
-          >
-            {new Intl.DateTimeFormat(undefined, {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            }).format(visit.enteredAt)}
-          </time>
-          <h1 className="mt-2 font-display text-3xl font-medium leading-tight tracking-[-0.03em] text-balance sm:text-4xl">
-            {tKey('morningPaper.title')}
-          </h1>
-        </header>
+        <MatrixHero enteredAt={visit.enteredAt} objective={model.objective} metrics={model.heroMetrics} />
 
         {loading ? (
           <div role="status" className="py-8 text-sm text-tertiary">
             {t('Loading…')}
           </div>
         ) : (
-          <main className="mt-8 space-y-10">
-            <section className="grid grid-cols-2 gap-3 sm:gap-4">
-              <CountTile
-                label={tKey('morningPaper.finishedTitle')}
-                count={counts.finished}
-                conversations={items.finished}
-                onOpenConversation={onOpenConversation}
-              />
-              <CountTile
-                label={tKey('morningPaper.changedTitle')}
-                count={counts.changed}
-                conversations={items.changed}
-                onOpenConversation={onOpenConversation}
-              />
-            </section>
+          <main className="mt-8 space-y-8 sm:mt-10 sm:space-y-10">
+            <OutcomeCounters metrics={model.counters} working={model.workingCount > 0} />
 
-            <section>
-              <div className="mb-4 flex items-center gap-2.5">
-                <h2 className="font-display text-xl font-medium leading-7 tracking-[-0.02em]">
-                  {tKey('morningPaper.decisionsTitle')}
-                </h2>
-                <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-action-primary px-2 font-mono text-[11px] leading-none tabular-nums text-inverse">
-                  {counts.decisions}
-                </span>
-              </div>
-              {items.decisions.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {items.decisions.map((row) => (
-                    <DecisionTile
-                      key={row.request.id}
-                      row={row}
-                      onAnswer={(reply) => answer(row, reply)}
-                      onOpen={() => onOpenConversation(row.conversation.sessionId)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-dashed border-line-control bg-elevated px-5 py-6">
-                  <p
-                    className="truncate text-sm leading-5 text-tertiary"
-                    title={tKey('morningPaper.decisionsEmpty')}
-                  >
-                    {tKey('morningPaper.decisionsEmpty')}
-                  </p>
-                </div>
+            <div
+              className={
+                model.flow.lead && model.items.decisions.length > 0
+                  ? 'grid min-w-0 gap-8 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start'
+                  : undefined
+              }
+            >
+              {model.flow.lead && (
+                <MatrixFlow
+                  objective={model.objective}
+                  model={model.flow}
+                  workingCount={model.workingCount}
+                  decisionCount={model.counts.decisions}
+                  onOpenConversation={onOpenConversation}
+                />
               )}
-            </section>
+              <DecisionStack
+                rows={model.items.decisions}
+                onAnswer={answer}
+                onOpenConversation={onOpenConversation}
+              />
+            </div>
 
-            {bots.length > 0 && (
-              <section>
-                <h2 className="mb-4 font-display text-xl font-medium leading-7 tracking-[-0.02em]">
-                  {t('Bots')}
-                </h2>
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
-                  {bots.map(({ bot, status }) => (
-                    <BotTile
-                      key={bot.sessionId}
-                      bot={bot}
-                      status={status}
-                      onOpen={() => onOpenConversation(bot.sessionId)}
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
+            <ProofStrip
+              proof={model.proof}
+              finished={model.items.finished}
+              conversations={model.conversations}
+              isBot={model.isBot}
+              onOpenConversation={onOpenConversation}
+            />
           </main>
         )}
       </div>

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { botActivity, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
+import { botActivity, flowModel, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
 
 import type { AgentConversation, AgentInputRequest } from '../../api/agent-types.ts'
 import type { InboxQuestion } from '../inbox/inboxItems.ts'
@@ -314,4 +314,65 @@ test('scoreboard counts come from the three visible buckets', () => {
   })
 
   assert.deepEqual(morningPaperCounts(result), { decisions: 1, finished: 1, changed: 1 })
+})
+
+function flowBot(
+  sessionId: string,
+  overrides: Partial<AgentConversation> = {},
+): ReturnType<typeof botActivity>[number] {
+  const bot = conversation(sessionId, { avatar: 'face', ...overrides })
+
+  return { bot, status: 'idle', lastActiveAt: bot.lastActiveAt }
+}
+
+test('flow selects the chief and keeps department order with nested task counts', () => {
+  const bots = [
+    flowBot('alpha'),
+    flowBot('chief', { title: 'Chief of Staff' }),
+    flowBot('beta'),
+  ]
+  const alphaTask = conversation('alpha-task', { parentSessionId: 'alpha' })
+  const betaParent = conversation('beta-parent', { parentSessionId: 'beta' })
+  const betaNested = conversation('beta-nested', { parentSessionId: 'beta-parent' })
+  const result = flowModel(
+    bots,
+    [...bots.map(({ bot }) => bot), alphaTask, betaParent, betaNested],
+    (row) => Boolean(row.avatar),
+  )
+
+  assert.equal(result.lead?.bot.sessionId, 'chief')
+  assert.deepEqual(
+    result.departments.map(({ activity: { bot }, taskCount }) => [bot.sessionId, taskCount]),
+    [
+      ['alpha', 1],
+      ['beta', 2],
+    ],
+  )
+})
+
+test('flow falls back to the bot with the most tasks', () => {
+  const bots = [flowBot('first'), flowBot('busiest'), flowBot('last')]
+  const tasks = [
+    conversation('first-task', { parentSessionId: 'first' }),
+    conversation('busy-one', { parentSessionId: 'busiest' }),
+    conversation('busy-two', { parentSessionId: 'busiest' }),
+  ]
+  const result = flowModel(
+    bots,
+    [...bots.map(({ bot }) => bot), ...tasks],
+    (row) => Boolean(row.avatar),
+  )
+
+  assert.equal(result.lead?.bot.sessionId, 'busiest')
+  assert.deepEqual(
+    result.departments.map(({ activity: { bot }, taskCount }) => [bot.sessionId, taskCount]),
+    [
+      ['first', 1],
+      ['last', 0],
+    ],
+  )
+})
+
+test('flow is empty without bots', () => {
+  assert.deepEqual(flowModel([], [], () => false), { lead: null, departments: [] })
 })
