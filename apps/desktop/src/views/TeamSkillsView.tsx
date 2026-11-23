@@ -231,7 +231,7 @@ export function TeamSkillsView({
                   )
                 : withNode(
                     t(
-                      'Skills are reusable instructions that teach Nuphos how your team works. Ask Nuphos to create one, or upload skill directories under {path} to your team bucket.',
+                      'Skills are reusable instructions that teach Cerin how your team works. Ask Cerin to create one, or upload skill directories under {path} to your team bucket.',
                     ),
                     '{path}',
                     <code className="px-1 py-0.5 bg-state-selected rounded">

@@ -117,7 +117,7 @@ export function SecretCard({
         {phase === 'outdated' && (
           <div className="mt-1.5 text-[12px] text-status-warning">
             {t(
-              'The computer running this task needs a newer Nuphos Desktop to save a secret. Update Nuphos Desktop there, then ask again.',
+              'The computer running this task needs a newer Cerin Desktop to save a secret. Update Cerin Desktop there, then ask again.',
             )}
           </div>
         )}

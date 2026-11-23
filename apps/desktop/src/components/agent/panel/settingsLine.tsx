@@ -19,7 +19,7 @@ function Value({ children }: { children: ReactNode }) {
 function Actor({ by }: { by: NonNullable<AgentTimelineEvent['by']> }) {
   if (by.type === 'person') return <Person person={by} />
   if (by.type === 'runtime') return <Runtime runtime={by} />
-  if (by.type === 'nuphos') return <Value>Nuphos</Value>
+  if (by.type === 'nuphos') return <Value>Cerin</Value>
 
   return (
     <>
@@ -149,11 +149,11 @@ function settingsSentence(
 
 // The apps as they name themselves; a client not here shows as it sent itself.
 const CLIENT: Record<string, string> = {
-  desktop: 'Nuphos Desktop',
+  desktop: 'Cerin Desktop',
   ios: 'Nuphos for iOS',
   android: 'Nuphos for Android',
-  web: 'Nuphos on the web',
-  cli: 'Nuphos CLI',
+  web: 'Cerin on the web',
+  cli: 'Cerin CLI',
   api: 'API',
 }
 

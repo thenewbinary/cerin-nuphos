@@ -3,7 +3,7 @@ type Props = {
   variant?: 'dark-bg' | 'white-bg'
 }
 
-export function NuphosLogo({ className, variant = 'dark-bg' }: Props) {
+export function CerinLogo({ className, variant = 'dark-bg' }: Props) {
   return (
     <img
       className={className}

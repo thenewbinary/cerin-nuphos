@@ -229,7 +229,7 @@ export class LocalRuntimeController {
     const adapter = this.deps.bundle()?.adapters[provider]
 
     if (!adapter) {
-      agent.error = 'This build of Nuphos does not include this local runtime for this computer.'
+      agent.error = 'This build of Cerin does not include this local runtime for this computer.'
 
       return
     }

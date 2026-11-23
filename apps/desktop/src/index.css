@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/fonts/space-grotesk-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     /* Legacy status names, aliases of the semantic status tokens (#1632). */
@@ -49,8 +73,7 @@
     --color-background-base: var(--color-surface-sheet);
     --color-background-surface: var(--color-surface-sheet);
     --color-background-elevated: var(--color-surface-raised);
-    /* App canvas background / sidebar — night mode #0E0F11, deeper than the
-       content surface (#1C1D1F). */
+    /* App canvas and sidebar share Cerin ink, deeper than the content sheet. */
     --color-appBg: var(--color-surface-canvas);
     /*
      * The agent page shares the workspace content canvas in both themes. Keep
@@ -63,11 +86,11 @@
      * Team Activity heatmap: empty, then four steps of the data color mixed
      * into the sheet, so busier cells read as stronger without a second hue.
      */
-    --color-heatmap-0: 39, 38, 36;
-    --color-heatmap-1: 48, 54, 63;
-    --color-heatmap-2: 67, 80, 99;
-    --color-heatmap-3: 91, 111, 142;
-    --color-heatmap-4: 124, 156, 203;
+    --color-heatmap-0: 32, 31, 34;
+    --color-heatmap-1: 38, 42, 69;
+    --color-heatmap-2: 56, 72, 130;
+    --color-heatmap-3: 77, 100, 189;
+    --color-heatmap-4: 158, 174, 255;
     --scrollbar-thumb: rgba(255, 255, 255, 0.18);
     --scrollbar-thumb-hover: rgba(255, 255, 255, 0.28);
     /*
@@ -147,11 +170,11 @@
   html.light {
     color-scheme: light;
     /* Heatmap: the same data steps over the light sheet. */
-    --color-heatmap-0: 238, 236, 232;
-    --color-heatmap-1: 207, 213, 222;
-    --color-heatmap-2: 166, 179, 198;
-    --color-heatmap-3: 117, 137, 168;
-    --color-heatmap-4: 47, 79, 127;
+    --color-heatmap-0: 240, 240, 242;
+    --color-heatmap-1: 221, 226, 255;
+    --color-heatmap-2: 172, 185, 255;
+    --color-heatmap-3: 106, 137, 255;
+    --color-heatmap-4: 49, 87, 255;
     --scrollbar-thumb: rgba(36, 35, 38, 0.16);
     --scrollbar-thumb-hover: rgba(36, 35, 38, 0.26);
     /*
@@ -163,7 +186,7 @@
        aubergine instead. */
     --color-slack-text: 97, 31, 105;
     --sheet-shadow:
-      0 0 0 1px rgba(28, 26, 23, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04),
+      0 0 0 1px rgba(14, 14, 16, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04),
       0 3px 8px -3px rgba(0, 0, 0, 0.1);
     /* A light ink tint, matching the @member chip. */
     --mention-chip-bg: rgba(var(--color-text-primary), 0.1);
@@ -199,19 +222,35 @@
   body {
     background-color: rgb(var(--color-background-base));
     color: rgb(var(--color-text-base));
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 13px;
     line-height: 1.45;
     letter-spacing: -0.005em;
-    /* Keep the lighter greyscale rendering across themes. Combined with the
-       light theme's near-black token, this avoids the dense pure-black texture
-       that made Nuphos typography look heavier than Codex at the same weight. */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow: hidden;
     user-select: none;
     -webkit-user-select: none;
     cursor: default;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   }
 
   .cloud-logo-aws,
@@ -373,8 +412,8 @@
        text-primary, which is ink in the light theme and vanishes on the fill. */
     --color-text-base: 255, 255, 255;
     --color-text-primary: 255, 255, 255;
-    --color-text-secondary: 184, 180, 173;
-    --color-text-tertiary: 160, 156, 149;
+    --color-text-secondary: 197, 199, 206;
+    --color-text-tertiary: 162, 165, 175;
     color: #ffffff;
     background-color: #2e2e2e;
   }
@@ -419,7 +458,7 @@
      its selectors work as in a conversation, and overrides only the fill and
      the tokens that fill pins: a bubble a shade apart from an agent's
      (state.selected), the text color at a step beyond its alpha, with the
-     theme's own text on it. One rule for both themes, a neutral warm gray;
+     theme's own text on it. One rule for both themes, a neutral gray;
      blue is kept for links and data. The text stays at WCAG AA
      (chatBubble.test.ts). `html` lifts it past `html.light .user-message-bubble`. */
   html .user-message-bubble.chat-bubble-mine {
@@ -471,7 +510,7 @@
     word-break: break-word;
   }
 
-  /* Inline mention chip rendered inside the composer for Nuphos row links. */
+  /* Inline mention chip rendered inside the composer for Cerin row links. */
   .atlas-mention {
     display: inline-flex;
     align-items: center;
@@ -2135,8 +2174,8 @@
 }
 .mongo-json-shiki code {
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-    monospace;
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   white-space: pre;
 }
 

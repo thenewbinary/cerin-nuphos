@@ -216,10 +216,10 @@ export function AgentMemoriesView({
             icon={Brain}
             title={t('Memories')}
             description={t(
-              'Memories are facts Nuphos saves about your team and its work as you work together. Chat with your Bots and tasks and useful context accumulates here.',
+              'Memories are facts Cerin saves about your team and its work as you work together. Chat with your Bots and tasks and useful context accumulates here.',
             )}
             agentAction={{
-              label: t('Teach Nuphos something'),
+              label: t('Teach Cerin something'),
               prompt:
                 'I want to teach you something about our team or systems so you remember it — ask me what to remember.',
             }}

@@ -14,28 +14,28 @@
 /** @type {{ light: Theme, dark: Theme }} */
 export const themes = {
   light: {
-    // Surfaces, from the desk up. Matches nuphos.ai's light palette.
-    'surface.canvas': '#F5F4F2',
-    'surface.sheet': '#FCFBF9',
-    'surface.raised': '#FFFFFE',
-    'surface.sunken': '#EEECE8',
+    // Cerin paper surfaces: white sheets over a quiet alternate-paper canvas.
+    'surface.canvas': '#F7F7F8',
+    'surface.sheet': '#FFFFFF',
+    'surface.raised': '#FFFFFF',
+    'surface.sunken': '#F0F0F2',
 
-    'state.hover': { color: '#1C1A17', alpha: 0.04 },
-    'state.selected': { color: '#1C1A17', alpha: 0.07 },
+    'state.hover': { color: '#0E0E10', alpha: 0.04 },
+    'state.selected': { color: '#0E0E10', alpha: 0.07 },
 
-    'text.primary': '#1C1A17',
-    'text.secondary': '#5C5852',
-    'text.tertiary': '#69645D',
-    'text.inverse': '#FCFBF9',
-    // A link in running text: the system's one blue, so it reads as a link without a brand colour.
-    'text.link': '#2F4F7F',
+    'text.primary': '#0E0E10',
+    'text.secondary': '#4D5564',
+    'text.tertiary': '#626773',
+    'text.inverse': '#FFFFFF',
+    // Cobalt belongs to running links and data, not primary actions.
+    'text.link': '#2347E9',
 
     // Lines belong to controls only; areas are separated by surfaces, not dividers.
-    'line.control': '#E2DFDA',
-    'line.focus': '#69645D',
+    'line.control': '#E3E2E5',
+    'line.focus': '#4D5564',
 
     // The primary action is ink: no separate brand color competes with content.
-    'action.primary': '#1C1A17',
+    'action.primary': '#0E0E10',
 
     'status.success': '#2B7346',
     'status.warning': '#A04606',
@@ -43,52 +43,52 @@ export const themes = {
     // Something needs the person's attention: unread counts, waiting questions.
     'status.attention': '#B83A0A',
 
-    // Data series and heatmaps: one muted blue, intensity by opacity.
-    'data.1': '#2F4F7F',
+    // Data series and heatmaps: Cerin cobalt, intensity by opacity.
+    'data.1': '#3157FF',
 
     // A Bot's character may sit on one of these: light tints behind colourful art.
     'avatar.sand': '#F2E7D3',
     'avatar.peach': '#F8DCCB',
     'avatar.rose': '#F6D5DE',
-    'avatar.lilac': '#E5DCF5',
+    'avatar.lilac': '#F4EFFF',
     'avatar.sky': '#D6E6F7',
     'avatar.mint': '#D3EEDF',
     'avatar.sage': '#E1E9D1',
     'avatar.slate': '#E1E4EA',
   },
   dark: {
-    // As warm as the light theme, no warmer: it reads as black.
-    'surface.canvas': '#141312',
-    'surface.sheet': '#1A1917',
-    'surface.raised': '#242321',
-    'surface.sunken': '#272624',
+    // The dark rail is Cerin ink; adjacent sheets lift it in neutral steps.
+    'surface.canvas': '#0E0E10',
+    'surface.sheet': '#171719',
+    'surface.raised': '#201F22',
+    'surface.sunken': '#262629',
 
     'state.hover': { color: '#FFFFFF', alpha: 0.05 },
     'state.selected': { color: '#FFFFFF', alpha: 0.08 },
 
-    'text.primary': '#F2F0EC',
-    'text.secondary': '#B8B4AD',
-    'text.tertiary': '#A09C95',
-    'text.inverse': '#1A1917',
-    'text.link': '#7C9CCB',
+    'text.primary': '#F7F7F8',
+    'text.secondary': '#C5C7CE',
+    'text.tertiary': '#A2A5AF',
+    'text.inverse': '#0E0E10',
+    'text.link': '#9EAEFF',
 
-    'line.control': '#33312E',
-    'line.focus': '#A09C95',
+    'line.control': '#343439',
+    'line.focus': '#A2A5AF',
 
-    'action.primary': '#F2F0EC',
+    'action.primary': '#F7F7F8',
 
     'status.success': '#5FB57E',
     'status.warning': '#F5A623',
     'status.danger': '#EF6252',
     'status.attention': '#F47A3F',
 
-    'data.1': '#7C9CCB',
+    'data.1': '#9EAEFF',
 
     // The characters are drawn for light discs, so the tints stay light in the dark.
     'avatar.sand': '#F2E7D3',
     'avatar.peach': '#F8DCCB',
     'avatar.rose': '#F6D5DE',
-    'avatar.lilac': '#E5DCF5',
+    'avatar.lilac': '#F4EFFF',
     'avatar.sky': '#D6E6F7',
     'avatar.mint': '#D3EEDF',
     'avatar.sage': '#E1E9D1',
@@ -101,7 +101,7 @@ export function cssVariable(name) {
   return `--color-${name.replaceAll('.', '-')}`
 }
 
-/** `#F5F4F2` → `245, 244, 242`, the channel form Tailwind's opacity modifier needs. */
+/** `#F7F7F8` → `247, 247, 248`, the channel form Tailwind's opacity modifier needs. */
 export function hexToChannels(hex) {
   const value = Number.parseInt(hex.slice(1), 16)
 

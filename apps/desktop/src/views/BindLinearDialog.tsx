@@ -75,7 +75,7 @@ export function BindLinearDialog({ open, teamId, onClose, onBound }: Props) {
       onClose={close}
       title={t('Connect {name}', { name: 'Linear' })}
       description={t(
-        'Authorize Nuphos to read and create issues in your Linear workspace so it can open and close tickets.',
+        'Authorize Cerin to read and create issues in your Linear workspace so it can open and close tickets.',
       )}
       width={460}
     >
@@ -111,7 +111,7 @@ export function BindLinearDialog({ open, teamId, onClose, onBound }: Props) {
                 text={t(
                   'If nothing happens, make sure your browser allowed the popup and that your OS routes {scheme} URLs to this app.',
                 )}
-                scheme={<span className="font-mono">nuphos://</span>}
+                scheme={<span className="font-mono">cerin://</span>}
               />
             </div>
           </div>

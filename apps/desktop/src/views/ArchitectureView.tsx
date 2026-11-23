@@ -236,7 +236,7 @@ export function ArchitectureView({
           icon={Network}
           title={t('Architecture')}
           description={t(
-            'Architecture diagrams map how your systems connect. Create one from scratch, or let Nuphos chart your systems.',
+            'Architecture diagrams map how your systems connect. Create one from scratch, or let Cerin chart your systems.',
           )}
           primaryAction={{
             label: t('New diagram'),

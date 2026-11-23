@@ -113,7 +113,7 @@ test('a person’s computer never removes a default agent or touches its login',
 
   await assert.rejects(
     controller.instanceRequest({ method: 'remove', provider: 'codex' }),
-    /Only a computer from Nuphos/u,
+    /Only a computer from Cerin/u,
   )
   assert.equal(existsSync(path.join(owner, 'auth.json')), true)
   assert.deepEqual(signedIn(controller), { 'claude-code': true, codex: true })

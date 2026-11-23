@@ -23,7 +23,7 @@ export async function pickUpConversationInSlack(sessionId: string, teamId?: stri
     }
     toast.success(
       t('Picked up in Slack'),
-      t('Reply in your Slack DM with Nuphos to continue with this task.'),
+      t('Reply in your Slack DM with Cerin to continue with this task.'),
     )
   } catch (err) {
     toast.apiError(t('Couldn’t pick this task up in Slack'), err)

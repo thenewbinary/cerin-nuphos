@@ -236,6 +236,7 @@ export function WorkspaceSplits({
                 active: activeId === rect.id,
                 sidebar,
                 initialState: seeds.get(rect.id),
+                windowRestored: win.restored,
                 registerStore,
                 registerLinkOpener,
               }}

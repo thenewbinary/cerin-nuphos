@@ -22,7 +22,7 @@ const promptData = (value: string): string => JSON.stringify(value)
 
 function watchDestinationCopy(destination: WatchDestination): string {
   return destination.type === 'nuphos'
-    ? 'Nuphos.'
+    ? 'Cerin.'
     : destination.type === 'slack_dm'
       ? 'my Slack DM, with a replyable incident thread.'
       : `Slack channel #${destination.channelName} (${destination.channelId}), with a replyable incident thread.`

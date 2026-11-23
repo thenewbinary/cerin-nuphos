@@ -117,7 +117,7 @@ const controller: LocalRuntimeController = new LocalRuntimeController({
       activity: sleep.taskActivity,
       connectBackend: (reclaim) => {
         if (!deviceRegistrationAllowed(isDev))
-          throw new Error('Development builds do not register computers with Nuphos Cloud')
+          throw new Error('Development builds do not register computers with Cerin Cloud')
         const { api, token } = authSession.context()
 
         if (!token) throw new Error('Not signed in')
@@ -265,7 +265,7 @@ export async function setLocalCustomProvider(
 ): Promise<LocalRuntimeState> {
   const { userId } = controller.state()
 
-  if (!userId) throw new Error('Sign in to Nuphos first.')
+  if (!userId) throw new Error('Sign in to Cerin first.')
   await saveCustomProvider(providerKeys, ownDir(userId), userId, provider, value)
   await controller.refresh(true, [provider === 'codex' ? 'codex' : 'claude-code'])
 

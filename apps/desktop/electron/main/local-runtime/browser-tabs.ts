@@ -68,7 +68,7 @@ function track(window: BrowserWindow, conversation: string, opener?: WebContents
 
   tabs.set(contents, { conversation, window, opener })
   // Its downloads are saved with no save dialog, which the agent could not answer.
-  saveDownloadsOf(contents, conversation, () => path.join(app.getPath('downloads'), 'Nuphos'))
+  saveDownloadsOf(contents, conversation, () => path.join(app.getPath('downloads'), 'Cerin'))
   // Shown once, unseen, the page paints and can be captured; hidden again, it sleeps
   // like a background tab, so an idle tab costs no battery.
   window.once('ready-to-show', () => {
@@ -280,7 +280,7 @@ export async function runBrowserCall(call: BrowserCall): Promise<CuaToolResult> 
     return text(
       await stopRecording(contents, {
         dir: path.join(app.getPath('userData'), 'har'),
-        creator: { name: 'Nuphos Desktop', version: app.getVersion() },
+        creator: { name: 'Cerin Desktop', version: app.getVersion() },
       }),
     )
   }

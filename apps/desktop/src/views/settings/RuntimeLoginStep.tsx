@@ -246,7 +246,7 @@ export function RuntimeLoginStep({
         {step.kind === 'input' && step.secret && (
           <p className="text-xs leading-5 text-tertiary">
             {t(
-              'Nuphos encrypts it on its way to the runtime, which keeps it; Nuphos does not keep a copy.',
+              'Cerin encrypts it on its way to the runtime, which keeps it; Cerin does not keep a copy.',
             )}
           </p>
         )}

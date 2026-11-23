@@ -8,7 +8,7 @@ const never = () => Promise.reject(new Error('should not be called'))
 test('claims the staged grant with the one-time code', async () => {
   const calls: string[][] = []
   const result = await completePersonalCredentialUrl(
-    'nuphos://personal-credential?provider=github&state=s&code=c',
+    'cerin://personal-credential?provider=github&state=s&code=c',
     (provider, state, code) => {
       calls.push([provider, state, code])
 
@@ -22,7 +22,7 @@ test('claims the staged grant with the one-time code', async () => {
 
 test('passes a provider error through without completing', async () => {
   const result = await completePersonalCredentialUrl(
-    'nuphos://personal-credential?provider=linear&error=access_denied',
+    'cerin://personal-credential?provider=linear&error=access_denied',
     never,
   )
 
@@ -34,7 +34,7 @@ test('reports the backend error code of a failed claim', async () => {
     `__ATLAS_API_ERROR__${JSON.stringify({ message: 'gone', code: 'oauth_not_ready' })}`,
   )
   const result = await completePersonalCredentialUrl(
-    'nuphos://personal-credential?provider=github&state=s&code=c',
+    'cerin://personal-credential?provider=github&state=s&code=c',
     () => Promise.reject(err),
   )
 
@@ -43,8 +43,8 @@ test('reports the backend error code of a failed claim', async () => {
 
 test('ignores unknown providers and other links', async () => {
   assert.equal(
-    await completePersonalCredentialUrl('nuphos://personal-credential?provider=x', never),
+    await completePersonalCredentialUrl('cerin://personal-credential?provider=x', never),
     null,
   )
-  assert.equal(await completePersonalCredentialUrl('nuphos://open', never), null)
+  assert.equal(await completePersonalCredentialUrl('cerin://open', never), null)
 })

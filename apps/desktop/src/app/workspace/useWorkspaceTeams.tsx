@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { api, isNetworkError, isSessionRejected } from '../../api'
 import { readAccountStorage, writeAccountStorage } from '../../app/accountStorage'
@@ -33,7 +33,9 @@ export function useWorkspaceTeams(a: Args) {
     loadTeamsTokenRef,
     setTeamsLoaded,
     updateActiveTab,
+    windowRestored,
   } = a
+  const morningPaperDefaultedRef = useRef(false)
 
   const navigateHistory = useCallback(
     (direction: -1 | 1) => {
@@ -74,10 +76,21 @@ export function useWorkspaceTeams(a: Args) {
       // invitation may still arrive, and the auto-entry effect makes that call
       // once both lists have resolved.
       if (!teamId) return
+      if (!morningPaperDefaultedRef.current && windowRestored) {
+        morningPaperDefaultedRef.current = true
+        const state = workspaceStore.getState()
+
+        if (state.sessionId === null && !state.mainPageOpen) {
+          workspaceActions.openMainPage(teamId, (tab) => ({
+            ...tab,
+            active: 'team.morning-paper',
+          }))
+        }
+      }
       writeAccountStorage(LAST_TEAM_STORAGE_KEY, teamId)
       setError(null)
     },
-    [setTeams, setTeamsLoaded, setError, workspaceActions, workspaceStore],
+    [setTeams, setTeamsLoaded, setError, windowRestored, workspaceActions, workspaceStore],
   )
 
   const loadTeams = useCallback(async () => {

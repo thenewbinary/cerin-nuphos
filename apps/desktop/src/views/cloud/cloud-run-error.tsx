@@ -16,7 +16,7 @@ export function CloudRunErrorBlock({
 }: {
   error: AtlasError
   onRetry: () => void
-  /** Shown only when the Nuphos agent can self-grant IAM in this project. */
+  /** Shown only when the Cerin agent can self-grant IAM in this project. */
   onFixInChat?: () => void
 }) {
   useReportVisibleError(error.message, 'cloud_run_error_block')
@@ -103,8 +103,8 @@ export function CloudRunErrorBlock({
             onClick={onFixInChat}
             title={
               apiDisabled
-                ? t('Ask Nuphos to enable the API')
-                : t('Ask Nuphos to grant the missing role')
+                ? t('Ask Cerin to enable the API')
+                : t('Ask Cerin to grant the missing role')
             }
           >
             <Sparkles className="w-3.5 h-3.5" strokeWidth={1.8} />

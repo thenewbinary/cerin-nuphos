@@ -26,6 +26,7 @@ export type WorkspaceTabPaneProps = {
   renderAgentPage?: boolean
   dockVisible?: boolean
   isTeamAdmin: boolean
+  teamName?: string
   tab: WorkspaceTabState
   active: boolean
   mounted: boolean

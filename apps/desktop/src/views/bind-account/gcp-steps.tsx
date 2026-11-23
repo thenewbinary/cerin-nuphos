@@ -37,7 +37,7 @@ export function GcpWizardStepContent({
    *  full list below, since the admin list drops 'Enable APIs'. */
   step: number
   purpose: 'operational'
-  /** Nuphos's principal for the Token Creator grant; null until it loads. */
+  /** Cerin's principal for the Token Creator grant; null until it loads. */
   wif: GcpWifInfo | null
   saEmail: string
   onSaEmailChange: (v: string) => void
@@ -54,7 +54,7 @@ export function GcpWizardStepContent({
       </div>
       <Field
         label={t('Service Account Email')}
-        hint={t('Nuphos will impersonate this service account.')}
+        hint={t('Cerin will impersonate this service account.')}
       >
         <input
           type="text"
@@ -161,7 +161,7 @@ export function GcpWizardStepContent({
         <StepNote>
           <Fill
             text={t(
-              'Prefer least-privilege? {role} is broad — you can instead add only the roles Nuphos needs (e.g. Kubernetes Engine Admin, Compute Viewer). Add each one here.',
+              'Prefer least-privilege? {role} is broad — you can instead add only the roles Cerin needs (e.g. Kubernetes Engine Admin, Compute Viewer). Add each one here.',
             )}
             role={<span className="text-main">{spec.roleLabel}</span>}
           />

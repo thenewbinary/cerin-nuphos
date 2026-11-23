@@ -201,7 +201,7 @@ export function agentStatesOf(
   const entries = LOCAL_AGENT_PROVIDERS.map((provider): [LocalAgentProvider, LocalAgentState] => {
     const agent = agents[provider]
     const error = context.superseded
-      ? 'Another Nuphos app on this computer took over the local runtime.'
+      ? 'Another Cerin app on this computer took over the local runtime.'
       : agent.error
 
     return [

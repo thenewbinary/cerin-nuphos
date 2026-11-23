@@ -4,7 +4,7 @@ import * as atlas from './atlas'
 import { connectorCallbackError, connectorCallbackParams } from './connector-oauth-callback'
 
 // Shared scheme with jira-install / linear-install — asana uses a distinct
-// hostname (nuphos://asana-callback) so the dispatcher in main.ts can route by
+// hostname (cerin://asana-callback) so the dispatcher in main.ts can route by
 // it without colliding.
 export const ASANA_CALLBACK_HOST = 'asana-callback'
 const INSTALL_TIMEOUT_MS = 10 * 60 * 1000

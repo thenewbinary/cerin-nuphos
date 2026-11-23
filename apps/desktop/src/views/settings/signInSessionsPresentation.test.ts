@@ -8,7 +8,7 @@ import type { SignInSession } from '../../types/team.ts'
 test('an app that names itself is shown by name, without the version it claims', () => {
   assert.equal(
     sessionDevice({ client: 'nuphos-desktop/1.2.0', userAgent: 'node' }),
-    'Nuphos Desktop',
+    'Cerin Desktop',
   )
   assert.equal(
     sessionDevice({ client: 'nuphos-android/1.4.0', userAgent: null }),
@@ -16,7 +16,7 @@ test('an app that names itself is shown by name, without the version it claims',
   )
   assert.equal(
     sessionDevice({ client: 'nuphos-desktop/1.verify-at.evil-phish.com', userAgent: null }),
-    'Nuphos Desktop',
+    'Cerin Desktop',
   )
   // Not a property of a plain object either.
   assert.equal(sessionDevice({ client: 'constructor/1', userAgent: null }), 'Unknown device')

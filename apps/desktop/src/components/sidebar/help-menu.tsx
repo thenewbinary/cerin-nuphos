@@ -95,7 +95,7 @@ function UpdateItems({ update, onUpdate }: { update: ReadyUpdate; onUpdate: () =
           hint={<span className="tabular-nums">{update.percent}%</span>}
           disabled
         >
-          {t('Downloading Nuphos {version}…', { version: update.version })}
+          {t('Downloading Cerin {version}…', { version: update.version })}
         </MenuItem>
       )}
       {installerUrl && (
@@ -194,7 +194,7 @@ export function SidebarHelpMenu({ onOpenShortcutsHelp }: { onOpenShortcutsHelp?:
           open={asking}
           title={t('Update ready')}
           description={t(
-            'Restart to finish installing Nuphos {version}. Bots and tasks on this computer stop, so replies still running there are cut off.',
+            'Restart to finish installing Cerin {version}. Bots and tasks on this computer stop, so replies still running there are cut off.',
             { version: update.version },
           )}
           confirmLabel={t('Update')}

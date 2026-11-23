@@ -157,6 +157,7 @@ export function WorkspaceMainPane({
                           conversationId={mainPageOpen ? null : ws.selectedSessionId}
                           key={tab.id}
                           tab={tab}
+                          teamName={teams.find((team) => team.id === tab.scope.teamId)?.name}
                           isTeamAdmin={
                             teams.find((t) => t.id === tab.scope.teamId)?.role === 'ADMINISTRATOR'
                           }

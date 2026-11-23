@@ -21,10 +21,10 @@ export function showFirstLaunchIntro() {
 
   url.searchParams.set('theme', light ? 'light' : 'dark')
   frame.src = url.href
-  frame.title = t('Welcome to Nuphos')
+  frame.title = t('Welcome to Cerin')
   frame.setAttribute('sandbox', 'allow-scripts allow-same-origin')
   frame.className = 'first-launch-intro'
-  frame.style.background = light ? '#fcfcfd' : '#18181b'
+  frame.style.background = light ? '#F7F7F8' : '#0E0E10'
   let dismissing = false
   const dismiss = () => {
     clearTimeout(timeout)

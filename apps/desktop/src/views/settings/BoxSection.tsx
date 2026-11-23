@@ -101,8 +101,8 @@ export function BoxSection({
           !canCreate && (
             <span className="text-[11.5px] text-tertiary">
               {admin
-                ? t('Ask {name} to rent a computer from Nuphos.', { name: admin })
-                : t('Administrators rent computers from Nuphos.')}
+                ? t('Ask {name} to rent a computer from Cerin.', { name: admin })
+                : t('Administrators rent computers from Cerin.')}
             </span>
           )
         }

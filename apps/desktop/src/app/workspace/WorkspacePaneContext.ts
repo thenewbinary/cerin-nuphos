@@ -26,6 +26,8 @@ export type WorkspacePaneValue = {
   /** The window's one sidebar; the active pane hands it what to show. */
   sidebar: SidebarSlot
   initialState?: WorkspaceState
+  /** Saved panes have had their chance to load before an initial landing page opens. */
+  windowRestored: boolean
   registerStore: (store: WorkspaceStore) => () => void
   /** How this pane opens a Nuphos link someone outside it asked for; only the focused pane is asked. */
   registerLinkOpener: (paneId: string, open: (href: string) => unknown) => () => void

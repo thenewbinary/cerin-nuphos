@@ -1,0 +1,541 @@
+/*
+ * Morning paper dashboard. Colors come from the Cerin semantic tokens only;
+ * the per-theme values below are mixes of those tokens.
+ */
+
+.dashboard-canvas {
+  /* No serif is bundled, so the greeting and titles use the system one. */
+  --dashboard-serif:
+    ui-serif, 'New York', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Noto Serif',
+    'DejaVu Serif', serif;
+  --dashboard-ink: color-mix(in srgb, rgb(var(--color-surface-canvas)) 88%, transparent);
+  --dashboard-edge: color-mix(in srgb, rgb(var(--color-text-primary)) 13%, transparent);
+  --dashboard-highlight: color-mix(in srgb, rgb(var(--color-text-primary)) 20%, transparent);
+  --dashboard-sheen: color-mix(in srgb, rgb(var(--color-text-primary)) 8%, transparent);
+  --dashboard-panel-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 46%, transparent);
+  --dashboard-tile-fill: color-mix(in srgb, rgb(var(--color-surface-sheet)) 38%, transparent);
+  --dashboard-card-fill: color-mix(in srgb, rgb(var(--color-surface-sunken)) 70%, transparent);
+  --dashboard-glow: color-mix(in srgb, rgb(var(--color-data-1)) 20%, transparent);
+  --dashboard-inner: color-mix(in srgb, rgb(var(--color-text-primary)) 3.5%, transparent);
+  --dashboard-numeral-weight: 200;
+
+  background:
+    radial-gradient(
+      ellipse 62% 460px at 86% 40px,
+      color-mix(in srgb, rgb(var(--color-data-1)) 11%, transparent),
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 46% 520px at 0% 520px,
+      color-mix(in srgb, rgb(var(--color-status-warning)) 3.5%, transparent),
+      transparent 78%
+    ),
+    radial-gradient(
+      ellipse 60% 620px at 100% 980px,
+      color-mix(in srgb, rgb(var(--color-data-1)) 5%, transparent),
+      transparent 76%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0,
+      color-mix(in srgb, rgb(var(--color-surface-canvas)) 72%, transparent) 260px
+    );
+}
+
+html.light .dashboard-canvas {
+  --dashboard-ink: color-mix(in srgb, rgb(var(--color-text-primary)) 16%, transparent);
+  --dashboard-edge: color-mix(in srgb, rgb(var(--color-text-primary)) 8%, transparent);
+  --dashboard-highlight: var(--surface-inner-highlight);
+  --dashboard-sheen: color-mix(in srgb, rgb(var(--color-surface-raised)) 96%, transparent);
+  --dashboard-panel-fill: color-mix(in srgb, rgb(var(--color-surface-sunken)) 46%, transparent);
+  --dashboard-tile-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 88%, transparent);
+  --dashboard-card-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 82%, transparent);
+  --dashboard-glow: color-mix(in srgb, rgb(var(--color-data-1)) 16%, transparent);
+  --dashboard-inner: color-mix(in srgb, rgb(var(--color-surface-raised)) 70%, transparent);
+  --dashboard-numeral-weight: 250;
+}
+
+.dashboard-column {
+  container: dashboard / inline-size;
+}
+
+.dashboard-serif {
+  font-family: var(--dashboard-serif);
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+/* Glass --------------------------------------------------------------- */
+
+.dashboard-glass {
+  border: 1px solid var(--dashboard-edge);
+  background:
+    linear-gradient(150deg, var(--dashboard-sheen) 0%, transparent 46%), var(--dashboard-panel-fill);
+  box-shadow:
+    inset 0 1px 0 var(--dashboard-highlight),
+    var(--surface-shadow),
+    0 36px 72px -44px var(--dashboard-ink);
+  -webkit-backdrop-filter: blur(30px) saturate(135%);
+  backdrop-filter: blur(30px) saturate(135%);
+}
+
+.dashboard-panel {
+  padding: 20px;
+  border-radius: 28px;
+}
+
+.dashboard-eyebrow {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.005em;
+  color: rgb(var(--color-text-tertiary));
+}
+
+.dashboard-title {
+  font-family: var(--dashboard-serif);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: -0.018em;
+  overflow-wrap: break-word;
+  color: rgb(var(--color-text-primary));
+}
+
+.dashboard-eyebrow + .dashboard-title {
+  margin-top: 4px;
+}
+
+/* Hero ---------------------------------------------------------------- */
+
+.dashboard-hero {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.dashboard-greeting {
+  max-width: 760px;
+  font-family: var(--dashboard-serif);
+  font-size: clamp(34px, 6.4cqi, 62px);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.022em;
+  overflow-wrap: break-word;
+  color: rgb(var(--color-text-primary));
+}
+
+.dashboard-value-deck {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.dashboard-value-card {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 140px;
+  overflow: hidden;
+  padding: 18px 20px;
+  border: 1px solid var(--dashboard-edge);
+  border-radius: 26px;
+  background:
+    linear-gradient(155deg, var(--dashboard-sheen) 0%, transparent 58%), var(--dashboard-card-fill);
+  box-shadow:
+    inset 0 1px 0 var(--dashboard-highlight),
+    var(--surface-shadow);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  backdrop-filter: blur(30px) saturate(140%);
+}
+
+.dashboard-value-label {
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.14em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgb(var(--color-text-tertiary));
+}
+
+.dashboard-value-figure {
+  margin-top: 14px;
+  overflow: hidden;
+  font-family: var(--dashboard-serif);
+  font-size: 36px;
+  font-variant-numeric: lining-nums;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgb(var(--color-text-primary));
+}
+
+.dashboard-value-caption {
+  margin-top: 6px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgb(var(--color-text-secondary));
+}
+
+.dashboard-value-single {
+  min-height: 116px;
+}
+
+/* One number never needs the full column. */
+.dashboard-hero-single .dashboard-value-deck {
+  max-width: 320px;
+}
+
+/* Pulse --------------------------------------------------------------- */
+
+.dashboard-pulse-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.dashboard-tile {
+  display: flex;
+  min-width: 0;
+  min-height: 190px;
+  flex-direction: column;
+  padding: 16px;
+  border: 1px solid var(--dashboard-edge);
+  border-radius: 22px;
+  background:
+    linear-gradient(165deg, var(--dashboard-sheen) 0%, transparent 62%), var(--dashboard-tile-fill);
+  box-shadow:
+    inset 0 1px 0 var(--dashboard-highlight),
+    inset 0 0 0 1px var(--dashboard-inner),
+    0 18px 36px -28px var(--dashboard-ink);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.dashboard-number {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 54px;
+  font-variant-numeric: lining-nums;
+  font-weight: var(--dashboard-numeral-weight);
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+  color: rgb(var(--color-text-primary));
+}
+
+.dashboard-number-of {
+  margin-left: 3px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.38em;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: rgb(var(--color-text-tertiary));
+}
+
+/* Monitor ------------------------------------------------------------- */
+
+.dashboard-headline {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 76px;
+  font-variant-numeric: lining-nums;
+  font-weight: var(--dashboard-numeral-weight);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  color: rgb(var(--color-text-primary));
+}
+
+.dashboard-chart {
+  --dashboard-chip-gutter: 104px;
+
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 260px;
+}
+
+.dashboard-chart-plot {
+  position: absolute;
+  inset: 0 var(--dashboard-chip-gutter) 0 0;
+}
+
+.dashboard-chart-end {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: currentColor;
+  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 18%, transparent);
+  transform: translate(-50%, -50%);
+}
+
+.dashboard-chart-leaders {
+  position: absolute;
+  top: 0;
+  left: calc(100% - var(--dashboard-chip-gutter));
+  width: 22px;
+  height: 100%;
+  overflow: visible;
+}
+
+.dashboard-chart-chip {
+  position: absolute;
+  left: calc(100% - var(--dashboard-chip-gutter) + 22px);
+  display: flex;
+  max-width: calc(var(--dashboard-chip-gutter) - 22px);
+  height: 38px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px 0 11px;
+  border: 1px solid var(--dashboard-edge);
+  border-radius: 9999px;
+  background:
+    linear-gradient(160deg, var(--dashboard-sheen) 0%, transparent 70%), var(--dashboard-card-fill);
+  box-shadow:
+    inset 0 1px 0 var(--dashboard-highlight),
+    0 14px 28px -16px var(--dashboard-ink);
+  transform: translateY(-50%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.dashboard-chart-chip-label {
+  display: none;
+}
+
+/* Proof --------------------------------------------------------------- */
+
+.dashboard-proof-result {
+  background:
+    linear-gradient(165deg, var(--dashboard-sheen) 0%, transparent 62%), var(--dashboard-tile-fill);
+}
+
+.dashboard-proof-done {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, rgb(var(--color-status-success)) 26%, transparent);
+  border-radius: 9999px;
+  background: color-mix(in srgb, rgb(var(--color-status-success)) 13%, transparent);
+  color: rgb(var(--color-status-success));
+}
+
+.dashboard-proof-card {
+  border: 1px solid var(--dashboard-edge);
+  background: var(--dashboard-tile-fill);
+  box-shadow:
+    inset 0 1px 0 var(--dashboard-highlight),
+    0 24px 48px -32px var(--dashboard-ink);
+}
+
+.dashboard-proof-caption {
+  border: 1px solid var(--dashboard-edge);
+  background: color-mix(in srgb, rgb(var(--color-surface-raised)) 78%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--dashboard-highlight),
+    0 10px 24px -14px var(--dashboard-ink);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
+}
+
+/* Wider columns ------------------------------------------------------- */
+
+@container dashboard (min-width: 520px) {
+  .dashboard-panel {
+    padding: 28px;
+    border-radius: 32px;
+  }
+
+  .dashboard-title {
+    font-size: 32px;
+  }
+
+  .dashboard-pulse-grid {
+    gap: 14px;
+    margin-top: 26px;
+  }
+
+  .dashboard-tile {
+    min-height: 224px;
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .dashboard-number {
+    font-size: 68px;
+  }
+
+  .dashboard-headline {
+    font-size: 104px;
+  }
+
+  .dashboard-chart {
+    --dashboard-chip-gutter: 176px;
+  }
+
+  .dashboard-chart-chip-label {
+    display: block;
+  }
+}
+
+/* A lone total is named by its series, on every width. */
+.dashboard-chart.dashboard-chart-plain {
+  --dashboard-chip-gutter: 122px;
+}
+
+.dashboard-chart-plain .dashboard-chart-chip-label {
+  display: block;
+}
+
+/* A lone card tilts beside the greeting; below that width it sits compact under it. */
+@container dashboard (min-width: 540px) {
+  .dashboard-hero-single {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .dashboard-hero-single .dashboard-hero-copy {
+    padding-top: 10px;
+    padding-bottom: 28px;
+  }
+
+  .dashboard-hero-single .dashboard-value-deck {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 224px;
+    height: 164px;
+    flex: none;
+    margin-bottom: -20px;
+  }
+
+  .dashboard-hero-single .dashboard-value-card {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 216px;
+    min-height: 150px;
+    box-shadow:
+      inset 0 1px 0 var(--dashboard-highlight),
+      0 30px 56px -26px var(--dashboard-ink),
+      0 0 72px -18px var(--dashboard-glow);
+    transform: rotate(1.5deg);
+  }
+}
+
+/* Two cards stack: the lead one in front, the other tucked behind it. */
+@container dashboard (min-width: 760px) {
+  .dashboard-hero {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .dashboard-hero-copy {
+    padding-top: 10px;
+    padding-bottom: 28px;
+  }
+
+  .dashboard-hero:not(.dashboard-hero-single) .dashboard-value-deck {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 408px;
+    height: 190px;
+    flex: none;
+    margin-bottom: -24px;
+  }
+
+  .dashboard-hero:not(.dashboard-hero-single) .dashboard-value-card {
+    position: absolute;
+  }
+
+  .dashboard-hero:not(.dashboard-hero-single) .dashboard-value-front {
+    z-index: 2;
+    top: 0;
+    right: 0;
+    width: 244px;
+    min-height: 158px;
+    padding: 20px 22px;
+    box-shadow:
+      inset 0 1px 0 var(--dashboard-highlight),
+      0 34px 60px -26px var(--dashboard-ink),
+      0 0 80px -18px var(--dashboard-glow);
+    transform: rotate(1.5deg);
+  }
+
+  .dashboard-hero:not(.dashboard-hero-single) .dashboard-value-front .dashboard-value-figure {
+    font-size: 42px;
+  }
+
+  .dashboard-hero:not(.dashboard-hero-single) .dashboard-value-back {
+    z-index: 1;
+    top: 40px;
+    left: 0;
+    width: 204px;
+    min-height: 136px;
+    padding: 16px 52px 16px 18px;
+    box-shadow:
+      inset 0 1px 0 var(--dashboard-highlight),
+      0 24px 44px -24px var(--dashboard-ink);
+    transform: rotate(-7deg);
+  }
+
+  .dashboard-hero:not(.dashboard-hero-single) .dashboard-value-back .dashboard-value-figure {
+    font-size: 32px;
+  }
+}
+
+@container dashboard (min-width: 960px) {
+  .dashboard-pulse-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  /* The deck overhangs the panel below; its title keeps clear of it. */
+  .dashboard-hero-single .dashboard-value-deck {
+    margin-bottom: -44px;
+  }
+
+  .dashboard-hero:not(.dashboard-hero-single) .dashboard-value-deck {
+    margin-bottom: -56px;
+  }
+
+  .dashboard-column:has(.dashboard-hero-single) .dashboard-pulse-header {
+    max-width: calc(100% - 252px);
+  }
+
+  .dashboard-column:has(.dashboard-value-back) .dashboard-pulse-header {
+    max-width: calc(100% - 416px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dashboard-value-card {
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dashboard-value-deck:hover .dashboard-value-front,
+  .dashboard-hero-single .dashboard-value-deck:hover .dashboard-value-card {
+    transform: rotate(0deg) translateY(-3px);
+  }
+
+  .dashboard-value-deck:hover .dashboard-value-back {
+    transform: rotate(-9deg) translate(-6px, 2px);
+  }
+}

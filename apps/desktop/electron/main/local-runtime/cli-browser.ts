@@ -35,7 +35,7 @@ const TAB_ACTIONS = new Set([
   'record_stop',
 ])
 const NO_SCREEN =
-  'This computer runs Nuphos without a screen, so its tabs cannot be shown; take a screenshot instead.'
+  'This computer runs Cerin without a screen, so its tabs cannot be shown; take a screenshot instead.'
 
 const isHttp = (url: string | undefined): url is string =>
   url !== undefined && /^https?:\/\//i.test(url)

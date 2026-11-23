@@ -90,11 +90,11 @@ export function LarkSettingsView({
         description={
           installation?.tenantName
             ? t(
-                'Disconnect {name} from Nuphos? The stored app credentials are removed and the bot stops responding until you connect again.',
+                'Disconnect {name} from Cerin? The stored app credentials are removed and the bot stops responding until you connect again.',
                 { name: installation.tenantName },
               )
             : t(
-                'Disconnect this Lark app from Nuphos? The stored app credentials are removed and the bot stops responding until you connect again.',
+                'Disconnect this Lark app from Cerin? The stored app credentials are removed and the bot stops responding until you connect again.',
               )
         }
         confirmLabel={t('Disconnect')}
@@ -174,7 +174,7 @@ export function LarkSettingsView({
           <div className="text-[13px] font-medium text-main">{t('Groups')}</div>
           <div className="mt-0.5 text-[12px] text-tertiary">
             {t(
-              'Add the Nuphos bot to a Feishu / Lark group and it links automatically. Toggle which groups Nuphos responds in, then @mention Nuphos there.',
+              'Add the Cerin bot to a Feishu / Lark group and it links automatically. Toggle which groups Cerin responds in, then @mention Cerin there.',
             )}
           </div>
         </div>
@@ -211,7 +211,7 @@ export function LarkSettingsView({
               <li>
                 <Fill
                   text={t('Search for your app — {name} — and add it.')}
-                  name={<span className="text-main">{installation?.tenantName || 'Nuphos'}</span>}
+                  name={<span className="text-main">{installation?.tenantName || 'Cerin'}</span>}
                 />
               </li>
               <li>
@@ -228,7 +228,7 @@ export function LarkSettingsView({
                 text={t(
                   'Shortcut: just @mention {name} in a group the bot is already in — it auto-links on the first mention.',
                 )}
-                name={<span className="text-main">{installation?.tenantName || 'Nuphos'}</span>}
+                name={<span className="text-main">{installation?.tenantName || 'Cerin'}</span>}
               />
             </div>
           </div>

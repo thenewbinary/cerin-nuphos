@@ -1,0 +1,14 @@
+{
+  "morningPaper.changedEmpty": "Nothing new since your last visit.",
+  "morningPaper.changedTitle": "Since you last looked",
+  "morningPaper.decisionsEmpty": "Nothing needs your decision.",
+  "morningPaper.decisionsTitle": "Needs your decision",
+  "morningPaper.finishedEmpty": "Nothing finished recently.",
+  "morningPaper.finishedTitle": "Finished",
+  "morningPaper.home": "Home",
+  "morningPaper.statusFinished": "Finished",
+  "morningPaper.statusIdle": "Idle",
+  "morningPaper.statusWaiting": "Waiting on you",
+  "morningPaper.statusWorking": "Working",
+  "morningPaper.title": "Morning paper"
+}

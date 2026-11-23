@@ -74,7 +74,7 @@ export function BindAccountDialog({
     st.setCloudflareConnecting(true)
     try {
       // Resolves when Cloudflare redirects back through the backend and the
-      // desktop receives the nuphos://cloudflare-callback deep link.
+      // desktop receives the cerin://cloudflare-callback deep link.
       await api.atlasStartCloudflareConnect(teamId, scopes)
       if (attempt !== cloudflareAttempt.current) return
       reset()
@@ -120,7 +120,7 @@ export function BindAccountDialog({
       description={
         cliCheck.visible
           ? undefined
-          : t('Grant Nuphos access to this {name} integration.', { name: providerLabel })
+          : t('Grant Cerin access to this {name} integration.', { name: providerLabel })
       }
       width={500}
       footer={footerContent}

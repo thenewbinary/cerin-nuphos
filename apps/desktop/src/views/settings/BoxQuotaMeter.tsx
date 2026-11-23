@@ -52,7 +52,7 @@ export function BoxQuotaMeter({
     return (
       <div className="flex items-center justify-between gap-3 rounded-xl border border-line-control px-4 py-3">
         <p className="text-[13px] text-secondary">
-          {t("Your team's plan doesn't include computers from Nuphos.")}
+          {t("Your team's plan doesn't include computers from Cerin.")}
         </p>
         <Button size="sm" type="button" onClick={onChoosePlan}>
           {t('Choose a plan')}

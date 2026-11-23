@@ -105,12 +105,12 @@ export function diskFullCopy(
 }
 
 /**
- * A computer whose Nuphos is older than supported: said before the message goes, not after it
+ * A computer whose Cerin is older than supported: said before the message goes, not after it
  * fails. Update opens the computer card's own update in place; a viewer who cannot update it
  * reads the card's words for who can.
  */
 export function outdatedCopy(box: string, fix: { update?: () => void; hint?: string }): BannerCopy {
-  const text = t('Nuphos on {box} is out of date. Bots and tasks on it may fail.', { box })
+  const text = t('Cerin on {box} is out of date. Bots and tasks on it may fail.', { box })
 
   if (fix.update) return { text, action: { label: t('Update'), run: fix.update } }
 

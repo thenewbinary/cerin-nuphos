@@ -141,7 +141,7 @@ export const UserMessage = memo(
                 <span
                   className="shrink-0 rounded bg-surface-hover px-1.5 py-0.5 text-[10px] text-tertiary"
                   title={t(
-                    'Posted in Discord by someone with no linked Nuphos account. The name is the one they chose.',
+                    'Posted in Discord by someone with no linked Cerin account. The name is the one they chose.',
                   )}
                 >
                   {t('Discord · unverified')}

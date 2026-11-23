@@ -46,7 +46,7 @@ export function JoinDialog({ join, onClose }: { join: BoxJoin; onClose: () => vo
           </div>
           <p className="text-[11.5px] leading-4 text-tertiary">
             {t(
-              'Uses your SSH config, keys and ssh-agent on this computer. Nuphos never sees them.',
+              'Uses your SSH config, keys and ssh-agent on this computer. Cerin never sees them.',
             )}
           </p>
           {ssh.output && (

@@ -150,7 +150,7 @@ export type CloudflareOAuthResult =
     }
 
 // Polling fallback for the OAuth bind: returns the result keyed by `state` once
-// the backend callback has completed, even if the nuphos:// deep link was
+// the backend callback has completed, even if the cerin:// deep link was
 // captured by another app instance. One-shot on the server, so never retry.
 export async function pollCloudflareOAuthResult(state: string): Promise<CloudflareOAuthResult> {
   return call<CloudflareOAuthResult>(

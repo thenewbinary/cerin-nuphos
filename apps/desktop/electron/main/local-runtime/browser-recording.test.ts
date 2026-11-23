@@ -18,7 +18,7 @@ import type { RecordedTab } from './browser-recording.ts'
 
 const temp = mkdtempSync(join(tmpdir(), 'har-test-'))
 let recording: typeof Recording
-const output = { dir: join(temp, 'har'), creator: { name: 'Nuphos Desktop', version: '1.0.0' } }
+const output = { dir: join(temp, 'har'), creator: { name: 'Cerin Desktop', version: '1.0.0' } }
 
 before(async () => {
   recording = await import('./browser-recording.ts')

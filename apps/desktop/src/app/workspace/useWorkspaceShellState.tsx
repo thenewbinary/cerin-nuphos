@@ -193,6 +193,7 @@ export function useWorkspaceShellState() {
 
   return {
     ...workspace,
+    windowRestored: pane?.windowRestored ?? true,
     teams,
     setTeams,
     pendingInvitations,

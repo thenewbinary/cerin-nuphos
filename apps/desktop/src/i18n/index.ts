@@ -1,5 +1,7 @@
 import { readLocalStorage, writeLocalStorage } from '../app/localStorage.ts'
 
+import { englishText, fillText, LOCALES, matchLocale } from './languages.ts'
+import en from './locales/en.json' with { type: 'json' }
 import es from './locales/es.json' with { type: 'json' }
 import id from './locales/id.json' with { type: 'json' }
 import ja from './locales/ja.json' with { type: 'json' }
@@ -7,7 +9,6 @@ import ko from './locales/ko.json' with { type: 'json' }
 import th from './locales/th.json' with { type: 'json' }
 import zhCN from './locales/zh-CN.json' with { type: 'json' }
 import zhTW from './locales/zh-TW.json' with { type: 'json' }
-import { englishText, fillText, LOCALES, matchLocale } from './languages.ts'
 
 import type { Locale } from './languages.ts'
 
@@ -79,6 +80,11 @@ export function t(text: string, vars?: Record<string, string | number>): string 
   sources.set(out, fill(english, sourceText))
 
   return out
+}
+
+/** Resolves a stable catalog key, then follows the same translation fallback as t(). */
+export function tKey(key: keyof typeof en, vars?: Record<string, string | number>): string {
+  return t(en[key], vars)
 }
 
 /** Text is read once at startup, so switching reloads every open window. */
