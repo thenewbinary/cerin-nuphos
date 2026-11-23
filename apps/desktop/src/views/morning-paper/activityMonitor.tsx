@@ -16,7 +16,8 @@ const CHART_RIGHT = 1000
 const CHART_TOP = 40
 const CHART_BOTTOM = 204
 const LABEL_Y = 236
-const CHIP_GAP = 48
+const CHIP_GAP = 42
+const LEADER = 22
 
 type ChartLine = {
   id: string
@@ -80,7 +81,7 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
     <div className="relative mt-6">
       <div className="pointer-events-none relative z-10 w-fit">
         <div className="dashboard-eyebrow">{t('Tasks')}</div>
-        <div className="dashboard-headline mt-1">{activity.total.toLocaleString()}</div>
+        <div className="dashboard-headline mt-2">{activity.total.toLocaleString()}</div>
       </div>
       <div className="dashboard-chart -mt-4">
         <div className="dashboard-chart-plot">
@@ -164,6 +165,27 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
             })}
           </div>
         </div>
+        <svg
+          aria-hidden
+          viewBox={`0 0 ${String(LEADER)} ${String(HEIGHT)}`}
+          preserveAspectRatio="none"
+          className="dashboard-chart-leaders"
+        >
+          {geometries.map(({ line, points }, index) => (
+            <line
+              key={line.id}
+              x1="0"
+              x2={LEADER}
+              y1={points.at(-1)?.y ?? CHART_BOTTOM}
+              y2={chipPositions.get(line.id) ?? CHART_BOTTOM}
+              stroke={seriesColor(index)}
+              strokeOpacity={index === 0 ? 0.7 : 0.5}
+              strokeWidth="1"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </svg>
         {geometries.map(({ line }, index) => (
           <div
             key={line.id}
@@ -172,31 +194,31 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
               top: `${String(((chipPositions.get(line.id) ?? CHART_BOTTOM) / HEIGHT) * 100)}%`,
             }}
           >
-            <span className="min-w-0 flex-1 text-right">
+            <span
+              aria-hidden
+              className="size-2 shrink-0 rounded-full"
+              style={{ background: seriesColor(index) }}
+            />
+            {line.bot && <BotAvatarStack bots={[line.bot]} size={22} />}
+            <span className="min-w-0">
               {line.bot?.title && (
                 <span className="dashboard-chart-chip-label truncate text-[10px] leading-3 text-tertiary">
                   {line.bot.title}
                 </span>
               )}
-              <span className="block truncate text-[14px] font-medium leading-4 tabular-nums text-main">
+              <span className="block truncate text-[13px] font-medium leading-4 tabular-nums text-main">
                 {line.total.toLocaleString()}
               </span>
             </span>
-            {line.bot ? (
-              <BotAvatarStack bots={[line.bot]} size={24} />
-            ) : (
-              <span className="inline-flex size-7 shrink-0 items-center justify-center">
-                <span
-                  aria-hidden
-                  className={`size-2.5 rounded-full ${index === 0 ? 'bg-status-warning' : 'bg-text-tertiary'}`}
-                />
-              </span>
-            )}
           </div>
         ))}
       </div>
     </div>
   )
+}
+
+function seriesColor(index: number): string {
+  return index === 0 ? 'rgb(var(--color-status-warning))' : 'rgb(var(--color-text-tertiary))'
 }
 
 function chartLines(activity: FinishedPerDay): ChartLine[] {

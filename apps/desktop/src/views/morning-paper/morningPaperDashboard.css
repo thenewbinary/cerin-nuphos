@@ -9,13 +9,14 @@
     ui-serif, 'New York', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Noto Serif',
     'DejaVu Serif', serif;
   --dashboard-ink: color-mix(in srgb, rgb(var(--color-surface-canvas)) 88%, transparent);
-  --dashboard-edge: color-mix(in srgb, rgb(var(--color-text-primary)) 10%, transparent);
-  --dashboard-highlight: color-mix(in srgb, rgb(var(--color-text-primary)) 9%, transparent);
-  --dashboard-sheen: color-mix(in srgb, rgb(var(--color-text-primary)) 5.5%, transparent);
-  --dashboard-panel-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 58%, transparent);
-  --dashboard-tile-fill: color-mix(in srgb, rgb(var(--color-surface-sheet)) 52%, transparent);
-  --dashboard-card-fill: color-mix(in srgb, rgb(var(--color-surface-sunken)) 82%, transparent);
+  --dashboard-edge: color-mix(in srgb, rgb(var(--color-text-primary)) 13%, transparent);
+  --dashboard-highlight: color-mix(in srgb, rgb(var(--color-text-primary)) 20%, transparent);
+  --dashboard-sheen: color-mix(in srgb, rgb(var(--color-text-primary)) 8%, transparent);
+  --dashboard-panel-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 46%, transparent);
+  --dashboard-tile-fill: color-mix(in srgb, rgb(var(--color-surface-sheet)) 38%, transparent);
+  --dashboard-card-fill: color-mix(in srgb, rgb(var(--color-surface-sunken)) 70%, transparent);
   --dashboard-glow: color-mix(in srgb, rgb(var(--color-data-1)) 20%, transparent);
+  --dashboard-inner: color-mix(in srgb, rgb(var(--color-text-primary)) 3.5%, transparent);
   --dashboard-numeral-weight: 200;
 
   background:
@@ -43,13 +44,14 @@
 
 html.light .dashboard-canvas {
   --dashboard-ink: color-mix(in srgb, rgb(var(--color-text-primary)) 16%, transparent);
-  --dashboard-edge: color-mix(in srgb, rgb(var(--color-text-primary)) 8%, transparent);
+  --dashboard-edge: color-mix(in srgb, rgb(var(--color-text-primary)) 10%, transparent);
   --dashboard-highlight: var(--surface-inner-highlight);
   --dashboard-sheen: color-mix(in srgb, rgb(var(--color-surface-raised)) 96%, transparent);
-  --dashboard-panel-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 56%, transparent);
-  --dashboard-tile-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 66%, transparent);
+  --dashboard-panel-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 50%, transparent);
+  --dashboard-tile-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 60%, transparent);
   --dashboard-card-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 82%, transparent);
   --dashboard-glow: color-mix(in srgb, rgb(var(--color-data-1)) 16%, transparent);
+  --dashboard-inner: color-mix(in srgb, rgb(var(--color-surface-raised)) 70%, transparent);
   --dashboard-numeral-weight: 250;
 }
 
@@ -116,7 +118,7 @@ html.light .dashboard-canvas {
 .dashboard-greeting {
   max-width: 760px;
   font-family: var(--dashboard-serif);
-  font-size: 40px;
+  font-size: clamp(34px, 6.4cqi, 62px);
   font-weight: 400;
   line-height: 1.06;
   letter-spacing: -0.022em;
@@ -187,7 +189,7 @@ html.light .dashboard-canvas {
 }
 
 .dashboard-value-single {
-  flex: 0 1 auto;
+  min-height: 116px;
 }
 
 /* Pulse --------------------------------------------------------------- */
@@ -211,6 +213,7 @@ html.light .dashboard-canvas {
     linear-gradient(165deg, var(--dashboard-sheen) 0%, transparent 62%), var(--dashboard-tile-fill);
   box-shadow:
     inset 0 1px 0 var(--dashboard-highlight),
+    inset 0 0 0 1px var(--dashboard-inner),
     0 18px 36px -28px var(--dashboard-ink);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
@@ -238,17 +241,17 @@ html.light .dashboard-canvas {
 /* Monitor ------------------------------------------------------------- */
 
 .dashboard-headline {
-  font-family: var(--dashboard-serif);
-  font-size: 64px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 76px;
   font-variant-numeric: lining-nums;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  font-weight: var(--dashboard-numeral-weight);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
   color: rgb(var(--color-text-primary));
 }
 
 .dashboard-chart {
-  --dashboard-chip-gutter: 76px;
+  --dashboard-chip-gutter: 104px;
 
   position: relative;
   width: 100%;
@@ -271,15 +274,24 @@ html.light .dashboard-canvas {
   transform: translate(-50%, -50%);
 }
 
+.dashboard-chart-leaders {
+  position: absolute;
+  top: 0;
+  left: calc(100% - var(--dashboard-chip-gutter));
+  width: 22px;
+  height: 100%;
+  overflow: visible;
+}
+
 .dashboard-chart-chip {
   position: absolute;
-  right: 0;
+  left: calc(100% - var(--dashboard-chip-gutter) + 22px);
   display: flex;
-  max-width: calc(var(--dashboard-chip-gutter) - 14px);
-  height: 40px;
+  max-width: calc(var(--dashboard-chip-gutter) - 22px);
+  height: 36px;
   align-items: center;
-  gap: 8px;
-  padding: 0 6px 0 12px;
+  gap: 7px;
+  padding: 0 12px 0 10px;
   border: 1px solid var(--dashboard-edge);
   border-radius: 9999px;
   background:
@@ -328,10 +340,6 @@ html.light .dashboard-canvas {
     font-size: 32px;
   }
 
-  .dashboard-greeting {
-    font-size: 54px;
-  }
-
   .dashboard-pulse-grid {
     gap: 14px;
     margin-top: 26px;
@@ -348,11 +356,11 @@ html.light .dashboard-canvas {
   }
 
   .dashboard-headline {
-    font-size: 84px;
+    font-size: 104px;
   }
 
   .dashboard-chart {
-    --dashboard-chip-gutter: 132px;
+    --dashboard-chip-gutter: 156px;
   }
 
   .dashboard-chart-chip-label {
@@ -360,8 +368,8 @@ html.light .dashboard-canvas {
   }
 }
 
-/* A lone card tilts beside the greeting, on a second plate for depth. */
-@container dashboard (min-width: 560px) {
+/* A lone card tilts beside the greeting; below that width it sits under it. */
+@container dashboard (min-width: 640px) {
   .dashboard-hero-single {
     flex-direction: row;
     align-items: flex-start;
@@ -378,29 +386,10 @@ html.light .dashboard-canvas {
     position: relative;
     z-index: 2;
     display: block;
-    width: 268px;
-    height: 176px;
+    width: 240px;
+    height: 164px;
     flex: none;
     margin-bottom: -20px;
-  }
-
-  .dashboard-hero-single .dashboard-value-deck::before {
-    position: absolute;
-    top: 30px;
-    left: 0;
-    width: 204px;
-    height: 132px;
-    border: 1px solid var(--dashboard-edge);
-    border-radius: 26px;
-    background:
-      linear-gradient(155deg, var(--dashboard-sheen) 0%, transparent 58%),
-      var(--dashboard-card-fill);
-    box-shadow:
-      inset 0 1px 0 var(--dashboard-highlight),
-      0 24px 44px -24px var(--dashboard-ink);
-    content: '';
-    opacity: 0.72;
-    transform: rotate(-7deg);
   }
 
   .dashboard-hero-single .dashboard-value-card {
@@ -482,10 +471,6 @@ html.light .dashboard-canvas {
 }
 
 @container dashboard (min-width: 960px) {
-  .dashboard-greeting {
-    font-size: 62px;
-  }
-
   .dashboard-pulse-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -500,7 +485,7 @@ html.light .dashboard-canvas {
   }
 
   .dashboard-column:has(.dashboard-hero-single) .dashboard-pulse-header {
-    max-width: calc(100% - 276px);
+    max-width: calc(100% - 252px);
   }
 
   .dashboard-column:has(.dashboard-value-back) .dashboard-pulse-header {
