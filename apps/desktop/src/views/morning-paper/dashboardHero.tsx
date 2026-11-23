@@ -2,9 +2,11 @@ import { useId } from 'react'
 
 import { t, tKey } from '../../i18n/index.ts'
 
+import { BotAvatarStack } from './botAvatarStack.tsx'
 import { greetingKey } from './morningPaperItems.ts'
 
 import type { OutcomeMetric } from './morningPaperOutcomes.ts'
+import type { AgentConversation } from '../../api/agent-types.ts'
 
 function greetingText(date: Date, name: string): string {
   switch (greetingKey(date)) {
@@ -22,11 +24,14 @@ export function DashboardHero({
   name,
   metrics,
   workingCount,
+  workingBots,
 }: {
   enteredAt: number
   name: string
   metrics: readonly OutcomeMetric[]
   workingCount: number
+  /** Set when the lone card counts work in progress: the Bots doing it sit under the figure. */
+  workingBots?: readonly AgentConversation[]
 }) {
   const single = metrics.length === 1
 
@@ -68,6 +73,7 @@ export function DashboardHero({
               metric={metric}
               position={index === 0 ? 'front' : 'back'}
               single={single}
+              workingBots={single ? workingBots : undefined}
             />
           ))}
         </div>
@@ -80,10 +86,12 @@ function ValueCard({
   metric,
   position,
   single,
+  workingBots,
 }: {
   metric: OutcomeMetric
   position: 'front' | 'back'
   single: boolean
+  workingBots?: readonly AgentConversation[]
 }) {
   const gradientId = `dashboard-spark-${useId().replaceAll(':', '')}`
   const geometry = trendGeometry(metric.trend)
@@ -130,6 +138,18 @@ function ValueCard({
         <div className="dashboard-value-label">{metric.label}</div>
         <div className="dashboard-value-figure">{metric.value}</div>
         {metric.caption && <div className="dashboard-value-caption">{metric.caption}</div>}
+        {workingBots && (
+          <div className="mt-4 flex min-h-6 min-w-0 items-center gap-2 text-[12px] leading-4 text-secondary">
+            {workingBots.length > 0 ? (
+              <BotAvatarStack bots={workingBots} size={22} />
+            ) : (
+              <span className="inline-flex items-center gap-1.5">
+                <span aria-hidden className="size-1.5 rounded-full bg-line-control" />
+                {tKey('morningPaper.statusIdle')}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </article>
   )

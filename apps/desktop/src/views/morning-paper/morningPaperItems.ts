@@ -22,7 +22,7 @@ export function firstName(raw: string | null | undefined): string {
 
   if (!value) return ''
   const token = value.includes('@')
-    ? value.split('@', 1)[0].split(/[._-]/).find(Boolean) ?? ''
+    ? (value.split('@', 1)[0].split(/[._-]/).find(Boolean) ?? '')
     : value.split(/\s+/, 1)[0]
 
   return token ? token.charAt(0).toUpperCase() + token.slice(1) : ''
@@ -230,6 +230,29 @@ export function finishedPerDay({
     total: totals.reduce((sum, count) => sum + count, 0),
     bots,
   }
+}
+
+/** Running total per day, so a plotted line ends on the series total. */
+export function runningTotals(counts: readonly number[]): number[] {
+  let sum = 0
+
+  return counts.map((count) => {
+    sum += count
+
+    return sum
+  })
+}
+
+/** Owned tasks (not Bots themselves) with a turn or background run under way. */
+export function tasksInProgress({
+  conversations,
+  runtimeStates,
+  isBot,
+}: Pick<MorningPaperInput, 'conversations' | 'runtimeStates' | 'isBot'>): AgentConversation[] {
+  return conversations.filter(
+    (conversation) =>
+      ownedWork(conversation) && !isBot(conversation) && isWorking(conversation, runtimeStates),
+  )
 }
 
 export function morningPaperItems({

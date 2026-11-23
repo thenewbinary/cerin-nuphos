@@ -8,6 +8,8 @@ import {
   greetingKey,
   morningPaperCounts,
   morningPaperItems,
+  runningTotals,
+  tasksInProgress,
 } from './morningPaperItems.ts'
 
 import type { AgentConversation, AgentInputRequest } from '../../api/agent-types.ts'
@@ -430,4 +432,36 @@ test('finishedPerDay honors a shorter window and keeps an empty series deliberat
   assert.deepEqual(empty.totals, [0, 0, 0, 0, 0, 0, 0])
   assert.equal(empty.total, 0)
   assert.deepEqual(empty.bots, [])
+})
+
+test('runningTotals accumulates per-day counts and ends on the series total', () => {
+  assert.deepEqual(runningTotals([0, 0, 0, 0, 1, 1, 3]), [0, 0, 0, 0, 1, 2, 5])
+  assert.deepEqual(runningTotals([0, 0, 1, 0]), [0, 0, 1, 1])
+  assert.deepEqual(runningTotals([]), [])
+})
+
+test('tasksInProgress keeps owned running tasks and leaves out Bots, channels and idle work', () => {
+  const bot = conversation('bot', { avatar: 'face', activeRun: { streamId: 's', startedAt: null } })
+  const running = conversation('running', {
+    parentSessionId: bot.sessionId,
+    activeRun: { streamId: 's', startedAt: null },
+  })
+  const idle = conversation('idle', { parentSessionId: bot.sessionId })
+  const foreign = conversation('foreign', {
+    isOwner: false,
+    activeRun: { streamId: 's', startedAt: null },
+  })
+  const channel = conversation('channel', {
+    kind: 'channel',
+    activeRun: { streamId: 's', startedAt: null },
+  })
+
+  assert.deepEqual(
+    tasksInProgress({
+      conversations: [bot, running, idle, foreign, channel],
+      runtimeStates: new Map(),
+      isBot: (row) => Boolean(row.avatar),
+    }).map((row) => row.sessionId),
+    ['running'],
+  )
 })

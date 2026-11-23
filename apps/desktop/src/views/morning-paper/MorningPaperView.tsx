@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { useAgentSessions } from '../../components/sidebar/agentSessions.ts'
 import { useCurrentUser } from '../../hooks/useCurrentUser.ts'
-import { t, tKey } from '../../i18n/index.ts'
+import { t } from '../../i18n/index.ts'
 import { isBotRow, useAgentAvatarPicks } from '../../lib/agentAvatarChoices.ts'
 import { useAgentRuntimeStates } from '../../lib/agentRuntimeStates.ts'
 import { useAgentUnreadSessions } from '../../lib/agentUnreadSessions.ts'
@@ -22,6 +22,7 @@ import {
   firstName,
   morningPaperCounts,
   morningPaperItems,
+  tasksInProgress,
 } from './morningPaperItems.ts'
 import { readMorningPaperLastSeen, recordMorningPaperLastSeen } from './morningPaperLastSeen.ts'
 import { useMorningPaperOutcomes } from './morningPaperOutcomes.ts'
@@ -100,10 +101,9 @@ function viewModel({
     ? outcomes.metrics.filter((metric) => metric.featured).slice(0, 2)
     : [
         {
-          id: 'finished',
-          value: String(activity.total),
-          label: tKey('morningPaper.finishedTitle'),
-          trend: activity.totals,
+          id: 'in-progress',
+          value: String(tasksInProgress({ conversations, runtimeStates, isBot }).length),
+          label: t('In progress'),
         },
       ]
 
@@ -200,6 +200,7 @@ export function MorningPaperView({ teamId, teamName, currentUserId, onOpenConver
               name={greetingName}
               metrics={model.heroMetrics}
               workingCount={model.workingBots.length}
+              workingBots={outcomes ? undefined : model.workingBots}
             />
 
             {loading ? (

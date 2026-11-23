@@ -7,6 +7,7 @@ import { t, tKey } from '../../i18n/index.ts'
 import { LeadGlow } from './activityGlow.tsx'
 import { smoothPath } from './activityPath.ts'
 import { BotAvatarStack } from './botAvatarStack.tsx'
+import { runningTotals } from './morningPaperItems.ts'
 
 import type { FinishedPerDay } from './morningPaperItems.ts'
 import type { AgentConversation } from '../../api/agent-types.ts'
@@ -211,11 +212,9 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
             />
             {line.bot && <BotAvatarStack bots={[line.bot]} size={22} />}
             <span className="min-w-0">
-              {line.bot?.title && (
-                <span className="dashboard-chart-chip-label truncate text-[10px] leading-3 text-tertiary">
-                  {line.bot.title}
-                </span>
-              )}
+              <span className="dashboard-chart-chip-label truncate text-[10px] leading-3 text-tertiary">
+                {line.bot ? line.bot.title : tKey('morningPaper.finishedTitle')}
+              </span>
               <span className="block truncate text-[14px] font-medium leading-[18px] tabular-nums text-main">
                 {line.total.toLocaleString()}
               </span>
@@ -235,13 +234,13 @@ function chartLines(activity: FinishedPerDay): ChartLine[] {
   const bots = activity.bots.slice(0, 3)
 
   if (bots.length === 0) {
-    return [{ id: 'total', counts: activity.totals, total: activity.total }]
+    return [{ id: 'total', counts: runningTotals(activity.totals), total: activity.total }]
   }
 
   return bots.map((series) => ({
     id: series.bot.sessionId,
     bot: series.bot,
-    counts: series.counts,
+    counts: runningTotals(series.counts),
     total: series.total,
   }))
 }

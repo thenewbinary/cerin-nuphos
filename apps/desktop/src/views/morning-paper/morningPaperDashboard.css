@@ -192,6 +192,11 @@ html.light .dashboard-canvas {
   min-height: 116px;
 }
 
+/* One number never needs the full column. */
+.dashboard-hero-single .dashboard-value-deck {
+  max-width: 320px;
+}
+
 /* Pulse --------------------------------------------------------------- */
 
 .dashboard-pulse-grid {
@@ -386,18 +391,22 @@ html.light .dashboard-canvas {
   }
 }
 
-/* A lone total has no bot to name, so its chip needs little room. */
+/* A lone total is named by its series, on every width. */
 .dashboard-chart.dashboard-chart-plain {
-  --dashboard-chip-gutter: 84px;
+  --dashboard-chip-gutter: 122px;
 }
 
-/* A lone card tilts beside the greeting; below that width it sits under it. */
-@container dashboard (min-width: 640px) {
+.dashboard-chart-plain .dashboard-chart-chip-label {
+  display: block;
+}
+
+/* A lone card tilts beside the greeting; below that width it sits compact under it. */
+@container dashboard (min-width: 540px) {
   .dashboard-hero-single {
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 32px;
+    gap: 24px;
   }
 
   .dashboard-hero-single .dashboard-hero-copy {
@@ -409,7 +418,7 @@ html.light .dashboard-canvas {
     position: relative;
     z-index: 2;
     display: block;
-    width: 240px;
+    width: 224px;
     height: 164px;
     flex: none;
     margin-bottom: -20px;
@@ -419,7 +428,7 @@ html.light .dashboard-canvas {
     position: absolute;
     top: 0;
     right: 0;
-    width: 232px;
+    width: 216px;
     min-height: 150px;
     box-shadow:
       inset 0 1px 0 var(--dashboard-highlight),
