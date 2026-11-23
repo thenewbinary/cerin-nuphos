@@ -141,27 +141,27 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
               ))}
             </g>
           ))}
+        </svg>
+        <div aria-hidden className="pointer-events-none absolute inset-0">
           {activity.days.map((day, index) => {
             const x =
               CHART_LEFT +
               (index / Math.max(1, activity.days.length - 1)) * (CHART_RIGHT - CHART_LEFT)
 
             return (
-              <text
+              <span
                 key={day}
-                x={x}
-                y="226"
-                textAnchor={dayAnchor(index, activity.days.length)}
-                fill="rgb(var(--color-text-tertiary))"
-                fillOpacity="0.8"
-                fontSize="10"
-                fontFamily="JetBrains Mono, monospace"
+                className="absolute top-[90%] whitespace-nowrap font-mono text-[10px] leading-none text-tertiary/80"
+                style={{
+                  left: `${String((x / WIDTH) * 100)}%`,
+                  transform: dayAnchor(index, activity.days.length),
+                }}
               >
                 {dayFormat.format(day)}
-              </text>
+              </span>
             )
           })}
-        </svg>
+        </div>
         {geometries.map(({ line }, index) => (
           <div
             key={line.id}
@@ -220,11 +220,11 @@ function chartGeometries(lines: readonly ChartLine[]) {
   })
 }
 
-function dayAnchor(index: number, count: number): 'start' | 'middle' | 'end' {
-  if (index === 0) return 'start'
-  if (index === count - 1) return 'end'
+function dayAnchor(index: number, count: number): 'none' | 'translateX(-50%)' | 'translateX(-100%)' {
+  if (index === 0) return 'none'
+  if (index === count - 1) return 'translateX(-100%)'
 
-  return 'middle'
+  return 'translateX(-50%)'
 }
 
 function spreadChips(lines: readonly { id: string; y: number }[]): Map<string, number> {

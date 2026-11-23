@@ -85,7 +85,7 @@ html.light .dashboard-tile {
 }
 
 .dashboard-value-single {
-  flex: 0 1 250px;
+  flex: 0 1 auto;
 }
 
 .dashboard-chart-chip {
@@ -96,6 +96,42 @@ html.light .dashboard-tile {
   backdrop-filter: blur(16px);
 }
 
+@container (min-width: 640px) {
+  .dashboard-hero-single {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .dashboard-hero-single .dashboard-hero-copy {
+    padding-top: 8px;
+    padding-bottom: 20px;
+  }
+
+  .dashboard-hero-single .dashboard-value-deck {
+    position: relative;
+    display: block;
+    width: 250px;
+    height: 182px;
+    flex: none;
+    margin-right: 8px;
+  }
+
+  .dashboard-hero-single .dashboard-value-card {
+    position: absolute;
+    width: 224px;
+    min-height: 144px;
+  }
+
+  .dashboard-hero-single .dashboard-value-single {
+    top: 26px;
+    right: 20px;
+    left: auto;
+    transform: rotate(-2deg);
+  }
+}
+
 @media (min-width: 1024px) {
   .dashboard-value-deck {
     position: relative;
@@ -104,6 +140,10 @@ html.light .dashboard-tile {
     height: 182px;
     flex: none;
     margin-right: 8px;
+  }
+
+  .dashboard-hero-single .dashboard-value-deck {
+    width: 382px;
   }
 
   .dashboard-value-card {

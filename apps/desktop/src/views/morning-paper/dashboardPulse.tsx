@@ -22,7 +22,7 @@ export function DashboardPulse({
   onAnswer,
   onOpenConversation,
 }: {
-  title: string
+  title?: string
   eyebrow?: string
   finished: number
   changed: number
@@ -36,16 +36,22 @@ export function DashboardPulse({
 }) {
   return (
     <section className="dashboard-glass dashboard-panel p-5 sm:p-6">
-      <header>
-        {eyebrow && (
-          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-tertiary">
-            {eyebrow}
-          </p>
-        )}
-        <h2 className="mt-2 break-words font-display text-[30px] font-light leading-[1.12] tracking-[-0.04em] text-main sm:text-[34px]">
-          {title}
-        </h2>
-      </header>
+      {Boolean(title ?? eyebrow) && (
+        <header>
+          {eyebrow && (
+            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-tertiary">
+              {eyebrow}
+            </p>
+          )}
+          {title && (
+            <h2
+              className={`${eyebrow ? 'mt-2' : ''} break-words font-display text-[30px] font-light leading-[1.12] tracking-[-0.04em] text-main sm:text-[34px]`}
+            >
+              {title}
+            </h2>
+          )}
+        </header>
+      )}
       <div className="dashboard-pulse-grid mt-6">
         <article className="dashboard-tile">
           <CardLabel label={tKey('morningPaper.finishedTitle')} dot="bg-status-success" />

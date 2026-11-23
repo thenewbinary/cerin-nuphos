@@ -118,15 +118,6 @@ function viewModel({
     workingBots,
     changedBots,
     activity,
-    pulseTitle:
-      outcomes?.objective ??
-      [
-        counts.finished.toLocaleString(),
-        tKey('morningPaper.finishedTitle'),
-        '·',
-        bots.length.toLocaleString(),
-        t('Bots'),
-      ].join(' '),
     heroMetrics,
     proof: outcomes?.proof ?? [],
   }
@@ -165,6 +156,8 @@ export function MorningPaperView({ teamId, teamName, currentUserId, onOpenConver
   const avatarPicks = useAgentAvatarPicks()
   const outcomes = useMorningPaperOutcomes(teamId)
   const greetingName = viewerFirstName(user, teamName)
+  const objective = outcomes?.objective.trim()
+  const workspaceName = teamName?.trim()
 
   useEffect(() => {
     const record = () => recordMorningPaperLastSeen(currentUserId, teamId, Date.now())
@@ -217,8 +210,8 @@ export function MorningPaperView({ teamId, teamName, currentUserId, onOpenConver
           ) : (
             <main className="mt-8 space-y-6 sm:mt-9 sm:space-y-7">
               <DashboardPulse
-                title={model.pulseTitle}
-                eyebrow={teamName?.trim()}
+                title={objective?.length ? objective : workspaceName}
+                eyebrow={objective ? workspaceName : undefined}
                 finished={model.counts.finished}
                 changed={model.counts.changed}
                 changedBots={model.changedBots}

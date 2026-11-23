@@ -103,7 +103,13 @@ export function ProofStrip({
                 showBadge={false}
               />
             )}
-            <span className="line-clamp-1 min-w-0 flex-1 break-all font-mono text-[9px] font-medium uppercase leading-4 tracking-[0.12em] text-secondary">
+            <span
+              className={`min-w-0 flex-1 text-secondary ${
+                proof.length === 0
+                  ? 'line-clamp-2 break-words font-sans text-sm font-normal normal-case leading-5 tracking-normal'
+                  : 'line-clamp-1 break-all font-mono text-[9px] font-medium uppercase leading-4 tracking-[0.12em]'
+              }`}
+            >
               {card.caption}
             </span>
             <ArrowUpRight
