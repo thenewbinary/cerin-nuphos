@@ -6,7 +6,7 @@ import { MorningPaperView } from '../../views/morning-paper/MorningPaperView.tsx
 import type { ScopeRenderContext } from './context.ts'
 
 export function renderTeamMorningPaperPage(ctx: ScopeRenderContext): React.ReactNode | undefined {
-  const { scope, active, currentUserId, onOpenConversation, renderPage } = ctx
+  const { scope, active, currentUserId, teamName, onOpenConversation, renderPage } = ctx
 
   if (scope.kind !== 'team' || active !== 'team.morning-paper') return undefined
 
@@ -17,6 +17,7 @@ export function renderTeamMorningPaperPage(ctx: ScopeRenderContext): React.React
     <MorningPaperView
       key={`${currentUserId}:${scope.teamId}`}
       teamId={scope.teamId}
+      teamName={teamName}
       currentUserId={currentUserId}
       onOpenConversation={onOpenConversation}
     />,

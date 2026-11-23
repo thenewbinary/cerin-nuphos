@@ -1,9 +1,10 @@
-// No app data source exists yet; returning null keeps Home on real activity counts.
+// No app data source exists yet; returning null keeps the dashboard on real activity counts.
 // The screenshot harness replaces this hook with sample outcomes outside src.
 export type OutcomeMetric = {
   id: string
   value: string
   label: string
+  caption?: string
   featured?: boolean
   trend?: number[]
 }

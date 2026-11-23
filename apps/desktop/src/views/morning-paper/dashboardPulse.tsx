@@ -11,6 +11,7 @@ import type { HeldReply } from '../inbox/useInbox.ts'
 
 export function DashboardPulse({
   title,
+  eyebrow,
   finished,
   changed,
   changedBots,
@@ -22,6 +23,7 @@ export function DashboardPulse({
   onOpenConversation,
 }: {
   title: string
+  eyebrow?: string
   finished: number
   changed: number
   changedBots: readonly AgentConversation[]
@@ -35,9 +37,11 @@ export function DashboardPulse({
   return (
     <section className="dashboard-glass dashboard-panel p-5 sm:p-6">
       <header>
-        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-tertiary">
-          {tKey('morningPaper.home')}
-        </p>
+        {eyebrow && (
+          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-tertiary">
+            {eyebrow}
+          </p>
+        )}
         <h2 className="mt-2 break-words font-display text-[30px] font-light leading-[1.12] tracking-[-0.04em] text-main sm:text-[34px]">
           {title}
         </h2>

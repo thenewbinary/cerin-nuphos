@@ -8,6 +8,26 @@ import type { InboxQuestion } from '../inbox/inboxItems.ts'
 
 const RECENT_FINISHED_MS = 7 * 24 * 60 * 60 * 1000
 
+export function greetingKey(date: Date): 'morning' | 'afternoon' | 'evening' {
+  const hour = date.getHours()
+
+  if (hour >= 5 && hour < 12) return 'morning'
+  if (hour >= 12 && hour < 18) return 'afternoon'
+
+  return 'evening'
+}
+
+export function firstName(raw: string | null | undefined): string {
+  const value = raw?.trim() ?? ''
+
+  if (!value) return ''
+  const token = value.includes('@')
+    ? value.split('@', 1)[0].split(/[._-]/).find(Boolean) ?? ''
+    : value.split(/\s+/, 1)[0]
+
+  return token ? token.charAt(0).toUpperCase() + token.slice(1) : ''
+}
+
 export type MorningPaperItems = {
   decisions: InboxQuestion[]
   finished: AgentConversation[]

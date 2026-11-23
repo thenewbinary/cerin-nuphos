@@ -1,17 +1,30 @@
 import { useId } from 'react'
 
-import { tKey } from '../../i18n/index.ts'
+import { t, tKey } from '../../i18n/index.ts'
+
+import { greetingKey } from './morningPaperItems.ts'
 
 import type { OutcomeMetric } from './morningPaperOutcomes.ts'
 
+function greetingText(date: Date, name: string): string {
+  switch (greetingKey(date)) {
+    case 'morning':
+      return t('Good morning, {name}', { name })
+    case 'afternoon':
+      return t('Good afternoon, {name}', { name })
+    case 'evening':
+      return t('Good evening, {name}', { name })
+  }
+}
+
 export function DashboardHero({
   enteredAt,
-  objective,
+  name,
   metrics,
   workingCount,
 }: {
   enteredAt: number
-  objective: string
+  name: string
   metrics: readonly OutcomeMetric[]
   workingCount: number
 }) {
@@ -19,7 +32,7 @@ export function DashboardHero({
     <header className="flex min-w-0 flex-col gap-7 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
       <div className="min-w-0 flex-1 lg:pb-5 lg:pt-2">
         <h1 className="max-w-[760px] break-words font-display text-[42px] font-light leading-[1.04] tracking-[-0.05em] text-main sm:text-[52px]">
-          {objective}
+          {greetingText(new Date(enteredAt), name)}
         </h1>
         <div className="mt-4 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-[12px] text-secondary">
           <time dateTime={new Date(enteredAt).toISOString()}>
@@ -90,8 +103,14 @@ function ValueCard({
         >
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgb(var(--color-data-1))" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="rgb(var(--color-data-1))" stopOpacity="0" />
+              <stop
+                offset="0%"
+                stopColor="color-mix(in srgb, rgb(var(--color-data-1)) 18%, transparent)"
+              />
+              <stop
+                offset="100%"
+                stopColor="color-mix(in srgb, rgb(var(--color-data-1)) 0%, transparent)"
+              />
             </linearGradient>
           </defs>
           <path d={geometry.area} fill={`url(#${gradientId})`} />
@@ -112,6 +131,9 @@ function ValueCard({
         <div className="mt-6 whitespace-nowrap font-display text-[36px] font-light leading-none tracking-[-0.05em] tabular-nums text-main">
           {metric.value}
         </div>
+        {metric.caption && (
+          <div className="mt-2 truncate text-[10px] leading-4 text-tertiary">{metric.caption}</div>
+        )}
       </div>
     </article>
   )

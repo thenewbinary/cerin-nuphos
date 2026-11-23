@@ -4,6 +4,8 @@ import test from 'node:test'
 import {
   botActivity,
   finishedPerDay,
+  firstName,
+  greetingKey,
   morningPaperCounts,
   morningPaperItems,
 } from './morningPaperItems.ts'
@@ -15,6 +17,30 @@ const NOW = Date.parse('2026-11-20T12:00:00Z')
 const HOUR = 60 * 60 * 1000
 const DAY = 24 * HOUR
 const at = (milliseconds: number) => new Date(milliseconds).toISOString()
+const atHour = (hour: number) => greetingKey(new Date(2026, 10, 22, hour))
+
+test('greetingKey uses local morning, afternoon and evening boundaries', () => {
+  assert.equal(atHour(0), 'evening')
+  assert.equal(atHour(4), 'evening')
+  assert.equal(atHour(5), 'morning')
+  assert.equal(atHour(11), 'morning')
+  assert.equal(atHour(12), 'afternoon')
+  assert.equal(atHour(17), 'afternoon')
+  assert.equal(atHour(18), 'evening')
+  assert.equal(atHour(23), 'evening')
+})
+
+test('firstName extracts and capitalises display names and email local parts', () => {
+  assert.equal(firstName(' Isaac Efik '), 'Isaac')
+  assert.equal(firstName('chris'), 'Chris')
+  assert.equal(firstName('isaac.live@example.com'), 'Isaac')
+  assert.equal(firstName('isaac_live-example@example.com'), 'Isaac')
+  assert.equal(firstName('isaac..live@example.com'), 'Isaac')
+  assert.equal(firstName(''), '')
+  assert.equal(firstName('   '), '')
+  assert.equal(firstName(null), '')
+  assert.equal(firstName(undefined), '')
+})
 
 function conversation(
   sessionId: string,

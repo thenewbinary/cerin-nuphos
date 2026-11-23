@@ -1,4 +1,4 @@
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, CheckCircle2 } from 'lucide-react'
 
 import { AgentAvatar } from '../../components/agent/AgentAvatar.tsx'
 import { t } from '../../i18n/index.ts'
@@ -76,16 +76,18 @@ export function ProofStrip({
             />
           ) : (
             <span className="absolute inset-0 flex items-center justify-center bg-data-1/10 pb-10">
-              <span className="flex size-20 items-center justify-center rounded-full border border-data-1/20 bg-surface-sheet/60 backdrop-blur-md">
-                {card.bot && (
+              <span className="flex size-20 items-center justify-center rounded-full border border-data-1/20 bg-data-1/10 backdrop-blur-md">
+                {card.bot ? (
                   <AgentAvatar
                     agentId={card.bot.sessionId}
                     avatar={card.bot.avatar}
                     avatarBackground={card.bot.avatarBackground}
                     provider={card.bot.agentRuntime}
-                    size={64}
+                    size={72}
                     showBadge={false}
                   />
+                ) : (
+                  <CheckCircle2 aria-hidden className="size-12 text-data-1" strokeWidth={1.4} />
                 )}
               </span>
             </span>

@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
 import { useAgentSessions } from '../../components/sidebar/agentSessions.ts'
+import { useCurrentUser } from '../../hooks/useCurrentUser.ts'
 import { t, tKey } from '../../i18n/index.ts'
 import { isBotRow, useAgentAvatarPicks } from '../../lib/agentAvatarChoices.ts'
 import { useAgentRuntimeStates } from '../../lib/agentRuntimeStates.ts'
@@ -15,7 +16,13 @@ import { useInboxQuestions } from '../inbox/useInboxQuestions.ts'
 import { ActivityMonitor } from './activityMonitor.tsx'
 import { DashboardHero } from './dashboardHero.tsx'
 import { DashboardPulse } from './dashboardPulse.tsx'
-import { botActivity, finishedPerDay, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
+import {
+  botActivity,
+  finishedPerDay,
+  firstName,
+  morningPaperCounts,
+  morningPaperItems,
+} from './morningPaperItems.ts'
 import { readMorningPaperLastSeen, recordMorningPaperLastSeen } from './morningPaperLastSeen.ts'
 import { useMorningPaperOutcomes } from './morningPaperOutcomes.ts'
 import { ProofStrip } from './proofStrip.tsx'
@@ -29,6 +36,7 @@ import type { HeldReply } from '../inbox/useInbox.ts'
 
 type Props = {
   teamId: string
+  teamName?: string
   currentUserId: string
   onOpenConversation: (sessionId: string) => void
 }
@@ -90,7 +98,6 @@ function viewModel({
     now,
     days: 7,
   })
-  const objective = outcomes?.objective ?? tKey('morningPaper.home')
   const heroMetrics = outcomes
     ? outcomes.metrics.filter((metric) => metric.featured).slice(0, 2)
     : [
@@ -111,7 +118,6 @@ function viewModel({
     workingBots,
     changedBots,
     activity,
-    objective,
     pulseTitle:
       outcomes?.objective ??
       [
@@ -126,7 +132,21 @@ function viewModel({
   }
 }
 
-export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: Props) {
+function viewerFirstName(user: ReturnType<typeof useCurrentUser>, teamName?: string): string {
+  for (const raw of [user?.name, user?.email, user?.username]) {
+    const name = firstName(raw)
+
+    if (name) return name
+  }
+
+  const workspace = teamName?.trim()
+
+  if (workspace) return workspace
+
+  return t('Workspace')
+}
+
+export function MorningPaperView({ teamId, teamName, currentUserId, onOpenConversation }: Props) {
   const [visit] = useState(() => {
     const enteredAt = Date.now()
 
@@ -137,12 +157,14 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
   })
   const [refreshing, setRefreshing] = useState(false)
   const queryClient = useQueryClient()
+  const user = useCurrentUser()
   const sessions = useAgentSessions(teamId)
   const questions = useInboxQuestions(teamId)
   const unreadSessionIds = useAgentUnreadSessions()
   const runtimeStates = useAgentRuntimeStates()
   const avatarPicks = useAgentAvatarPicks()
   const outcomes = useMorningPaperOutcomes(teamId)
+  const greetingName = viewerFirstName(user, teamName)
 
   useEffect(() => {
     const record = () => recordMorningPaperLastSeen(currentUserId, teamId, Date.now())
@@ -183,7 +205,7 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
         <div className="mx-auto w-full max-w-[1180px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12">
           <DashboardHero
             enteredAt={visit.enteredAt}
-            objective={model.objective}
+            name={greetingName}
             metrics={model.heroMetrics}
             workingCount={model.workingBots.length}
           />
@@ -196,6 +218,7 @@ export function MorningPaperView({ teamId, currentUserId, onOpenConversation }: 
             <main className="mt-8 space-y-6 sm:mt-9 sm:space-y-7">
               <DashboardPulse
                 title={model.pulseTitle}
+                eyebrow={teamName?.trim()}
                 finished={model.counts.finished}
                 changed={model.counts.changed}
                 changedBots={model.changedBots}

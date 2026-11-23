@@ -69,6 +69,7 @@ export const WorkspaceTabPane = memo(
     onRequestBindGitlab,
     onOpenSettingsSection,
     isTeamAdmin,
+    teamName,
     renderAgentPage = true,
     dockVisible = true,
   }: WorkspaceTabPaneProps) => {
@@ -177,6 +178,7 @@ export const WorkspaceTabPane = memo(
                             active={tab.active}
                             databaseConnections={databaseConnections}
                             currentUserId={user.id}
+                            teamName={teamName}
                             filter={tab.filter}
                             browserUrl={tab.browserUrl}
                             onBrowserNavigate={onBrowserNavigate}

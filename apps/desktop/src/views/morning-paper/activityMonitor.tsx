@@ -1,8 +1,9 @@
-import { Activity, CheckCircle2, RefreshCw } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 
 import { relativeTimeFromNow } from '../../components/agent/panel/textUtils.ts'
 import { t, tKey } from '../../i18n/index.ts'
 
+import { smoothPath } from './activityPath.ts'
 import { BotAvatarStack } from './botAvatarStack.tsx'
 
 import type { FinishedPerDay } from './morningPaperItems.ts'
@@ -21,8 +22,6 @@ type ChartLine = {
   counts: number[]
   total: number
 }
-
-type Point = { x: number; y: number }
 
 export function ActivityMonitor({
   activity,
@@ -163,7 +162,7 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
             )
           })}
         </svg>
-        {geometries.map(({ line }) => (
+        {geometries.map(({ line }, index) => (
           <div
             key={line.id}
             className="dashboard-chart-chip absolute right-0 flex h-8 max-w-[116px] -translate-y-1/2 items-center gap-1.5 rounded-full px-2"
@@ -174,12 +173,11 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
             {line.bot ? (
               <BotAvatarStack bots={[line.bot]} size={18} />
             ) : (
-              <span className="inline-flex size-[22px] items-center justify-center rounded-full bg-surface-raised text-tertiary">
-                {activity.total > 0 ? (
-                  <CheckCircle2 aria-hidden className="size-3" strokeWidth={1.7} />
-                ) : (
-                  <Activity aria-hidden className="size-3" strokeWidth={1.7} />
-                )}
+              <span className="inline-flex size-[18px] items-center justify-center">
+                <span
+                  aria-hidden
+                  className={`size-2 rounded-full ${index === 0 ? 'bg-status-warning' : 'bg-text-tertiary'}`}
+                />
               </span>
             )}
             <span className="truncate font-mono text-[10px] font-medium tabular-nums text-secondary">
@@ -227,30 +225,6 @@ function dayAnchor(index: number, count: number): 'start' | 'middle' | 'end' {
   if (index === count - 1) return 'end'
 
   return 'middle'
-}
-
-function smoothPath(points: readonly Point[]): string {
-  if (points.length === 0) return ''
-  let d = `M${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`
-
-  for (let index = 1; index < points.length; index += 1) {
-    const previous = points[index - 1]
-    const point = points[index]
-    const before = points[index - 2] ?? previous
-    const after = points[index + 1] ?? point
-    const control1 = {
-      x: previous.x + (point.x - before.x) / 6,
-      y: previous.y + (point.y - before.y) / 6,
-    }
-    const control2 = {
-      x: point.x - (after.x - previous.x) / 6,
-      y: point.y - (after.y - previous.y) / 6,
-    }
-
-    d += ` C${control1.x.toFixed(2)} ${control1.y.toFixed(2)} ${control2.x.toFixed(2)} ${control2.y.toFixed(2)} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`
-  }
-
-  return d
 }
 
 function spreadChips(lines: readonly { id: string; y: number }[]): Map<string, number> {

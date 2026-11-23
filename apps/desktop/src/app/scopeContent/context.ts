@@ -34,6 +34,7 @@ export type ScopeContentProps = {
   scope: Scope
   active: string
   currentUserId: string
+  teamName?: string
   filter: string
   browserUrl?: string
   onBrowserNavigate?: (url: string) => void
