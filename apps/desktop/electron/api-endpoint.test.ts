@@ -56,7 +56,7 @@ test('endpoint changes notify runtime listeners after the new endpoint takes eff
 })
 
 test('the Cerin backend is not Nuphos Cloud, so Nuphos updates and usage data stay off', () => {
-  setApiUrl('https://api.cerin.ai')
+  setApiUrl('https://platform.cerin.ai')
   assert.equal(isNuphosCloud(), false)
   setApiUrl('https://api.nuphos.ai')
   assert.equal(isNuphosCloud(), true)

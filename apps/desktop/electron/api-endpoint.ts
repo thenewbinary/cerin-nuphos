@@ -11,7 +11,7 @@ import { normalizedApi } from './auth/accounts.ts'
 import { authSession } from './auth-session.ts'
 import { CLI_CONFIG_PATH } from './cli-config-path.ts'
 
-const DEFAULT_API_URL = 'https://api.cerin.ai'
+const DEFAULT_API_URL = 'https://platform.cerin.ai'
 
 // Nuphos's hosted backend. Auto-update, the changelog feed and usage analytics
 // are Nuphos services, so they stay on only for this host, never for the default.

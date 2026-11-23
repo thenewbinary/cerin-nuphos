@@ -6,7 +6,7 @@ import { toast } from '../components/ui/toast'
 import { t } from '../i18n'
 import { setAvatarApiOrigin } from '../lib/avatarUrl'
 
-const DEFAULT_API_URL = 'https://api.cerin.ai'
+const DEFAULT_API_URL = 'https://platform.cerin.ai'
 const EXAMPLE_URL = 'https://nuphos.example.com'
 
 type Props = { inputClassName: string; onChange: () => void }

@@ -35,7 +35,7 @@ export class AuthSession {
   private controller = new AbortController()
   private readonly listeners = new Set<AuthSessionListener>()
 
-  constructor(api = 'https://api.cerin.ai') {
+  constructor(api = 'https://platform.cerin.ai') {
     this.ctx = { epoch: 0, api, token: null, userId: null, signal: this.controller.signal }
   }
 
