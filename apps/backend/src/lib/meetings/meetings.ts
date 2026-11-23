@@ -97,7 +97,7 @@ export async function joinMeeting(actor: ThreadActor, meetingUrl: string, brief?
   const bot = await speakingBot(await authorizeThreadActor(actor))
 
   await assertMeetingBudget(actor.teamId, recallConfig().botsPerTeamPerDay)
-  const botName = bot.title || 'Nuphos agent'
+  const botName = bot.title || 'Cerin agent'
   const botId = await createMeetingBot({
     meetingUrl: url.href,
     botName,

@@ -1,13 +1,24 @@
-import { describe, expect, test } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
+
+import { config } from '@/config'
 
 import { buildDownloadLinkEmail } from './download-link-email'
 
+const originalWebUrl = config.auth.publicWebUrl
+
+beforeEach(() => {
+  config.auth.publicWebUrl = 'https://cerin.ai'
+})
+afterEach(() => {
+  config.auth.publicWebUrl = originalWebUrl
+})
+
 describe('buildDownloadLinkEmail', () => {
   const expectedLinks = [
-    'https://nuphos.ai/download',
-    'https://nuphos.ai/api/desktop/download?arch=arm64',
-    'https://nuphos.ai/api/desktop/download?arch=x64',
-    'https://nuphos.ai/api/desktop/download?platform=windows',
+    'https://cerin.ai/download',
+    'https://cerin.ai/api/desktop/download?arch=arm64',
+    'https://cerin.ai/api/desktop/download?arch=x64',
+    'https://cerin.ai/api/desktop/download?platform=windows',
   ]
 
   test('every link appears in both the text and the HTML body', () => {
@@ -25,6 +36,6 @@ describe('buildDownloadLinkEmail', () => {
   test('the download page link is the first URL in the text body', () => {
     const email = buildDownloadLinkEmail()
 
-    expect(email.text.match(/https:\/\/\S+/)?.[0]).toBe('https://nuphos.ai/download')
+    expect(email.text.match(/https:\/\/\S+/)?.[0]).toBe('https://cerin.ai/download')
   })
 })

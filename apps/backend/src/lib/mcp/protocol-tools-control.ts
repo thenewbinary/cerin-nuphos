@@ -10,7 +10,7 @@ export const CONTROL_TOOL_DEFINITIONS = [
     inputSchema: {
       type: 'object',
       properties: {
-        team_id: { type: 'string', description: 'The Nuphos team. See nuphos_list_teams.' },
+        team_id: { type: 'string', description: 'The Cerin team. See nuphos_list_teams.' },
       },
       required: ['team_id'],
     },
@@ -19,7 +19,7 @@ export const CONTROL_TOOL_DEFINITIONS = [
     name: 'nuphos_events',
     description:
       "Read what a session's running turn streams (text, reasoning and tool events, " +
-      'as the Nuphos app shows them live), after a cursor. Call without cursor to ' +
+      'as the Cerin app shows them live), after a cursor. Call without cursor to ' +
       'read the running turn from its start; pass the returned cursor to get only ' +
       'what came since, also after a reconnect; keep passing it and the next turn ' +
       'is picked up when it starts. Only the running turn is read: running false ' +
@@ -37,7 +37,7 @@ export const CONTROL_TOOL_DEFINITIONS = [
   {
     name: 'nuphos_stop',
     description:
-      "Stop the session's running turn, as the Stop button in Nuphos does. " +
+      "Stop the session's running turn, as the Stop button in Cerin does. " +
       'You must be able to reply in the session.',
     inputSchema: {
       type: 'object',

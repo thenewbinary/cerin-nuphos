@@ -9,18 +9,18 @@ usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <accountId> [region]
 
-Fetches the team's Alibaba Cloud RAM credentials from the Nuphos backend (using
-the user's NUPHOS_TOKEN) for an Nuphos-bound Alibaba Cloud account, then writes
+Fetches the team's Alibaba Cloud RAM credentials from the Cerin backend (using
+the user's NUPHOS_TOKEN) for an Cerin-bound Alibaba Cloud account, then writes
 them to ~/.aliyun/config.json so plain \`aliyun\` CLI commands work.
 
 Arguments:
-  teamId     Nuphos team id (24-char hex)
-  accountId  Nuphos Alibaba Cloud account binding id (24-char hex)
+  teamId     Cerin team id (24-char hex)
+  accountId  Cerin Alibaba Cloud account binding id (24-char hex)
   region     Optional default region. If omitted, the backend's partition-aware
              defaultRegion is used (cn-hangzhou for China / ap-southeast-1 for
              International accounts).
 
-Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.nuphos.ai).
+Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
 EOF
   exit 1
 }
@@ -42,7 +42,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 # Conversation tokens are accepted by the ordinary team API; its auth
 # middleware applies the conversation's credential selection automatically.
@@ -76,7 +76,7 @@ for attempt in 1 2 3; do
 done
 
 if [ "$http_code" != "200" ]; then
-  echo "Nuphos backend returned HTTP ${http_code} for ${url}:" >&2
+  echo "Cerin backend returned HTTP ${http_code} for ${url}:" >&2
   cat "$tmp" >&2
   echo >&2
   exit 1

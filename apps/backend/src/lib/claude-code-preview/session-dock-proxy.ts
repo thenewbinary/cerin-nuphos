@@ -68,7 +68,7 @@ const proxyTool: DeviceTool = {
   audit: (raw) => `[browser] phone open ${(raw as DockFetchRequest).url}`,
   errorReason: 'browser_error',
   noDevice: 'No computer of yours is online for this conversation.',
-  unsupported: 'The computer went offline, or its Nuphos Desktop needs an update.',
+  unsupported: 'The computer went offline, or its Cerin Desktop needs an update.',
 }
 
 /** Fetches one request of the phone's page from the owner's Mac. */

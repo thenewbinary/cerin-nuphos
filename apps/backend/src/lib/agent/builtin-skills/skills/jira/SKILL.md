@@ -1,6 +1,6 @@
 ---
 name: jira
-description: Operate on Jira issues — read, create, comment, and transition — through a Jira Cloud site the user's team has bound to Nuphos via OAuth. Use whenever the user asks to open/track/close a Jira issue, file a ticket for an incident, comment on an issue, or check issue status. Nuphos backend hands the agent a short-lived Atlassian access token + cloudId; the agent calls api.atlassian.com/ex/jira/<cloudId>/rest/api/3 directly with curl.
+description: Operate on Jira issues — read, create, comment, and transition — through a Jira Cloud site the user's team has bound to Cerin via OAuth. Use whenever the user asks to open/track/close a Jira issue, file a ticket for an incident, comment on an issue, or check issue status. Cerin backend hands the agent a short-lived Atlassian access token + cloudId; the agent calls api.atlassian.com/ex/jira/<cloudId>/rest/api/3 directly with curl.
 ---
 
 # jira
@@ -14,7 +14,7 @@ Changing runtime-global settings is possible, but strongly discouraged unless th
 Use this skill when the user wants you to read or change Jira issues on their
 behalf — file a ticket for an incident, create/comment/transition an issue, or
 look up issue status — using the **Jira Cloud site** their team has already
-bound to Nuphos. This closes the loop: detect a problem (via the
+bound to Cerin. This closes the loop: detect a problem (via the
 monitoring/cloud skills) → open a Jira issue with the root cause → comment
 progress → transition it to Done when the fix is verified.
 
@@ -22,7 +22,7 @@ progress → transition it to Done when the fix is verified.
 
 ```bash
 # 1. Discover the Jira sites the team has bound.
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 ac /teams/$TEAM/jira-sites | python3 -m json.tool
 # → { "sites": [ { "id": "<bindingId>", "siteName": "Acme",
 #       "siteUrl": "https://acme.atlassian.net", "cloudId": "<uuid>", ... } ] }

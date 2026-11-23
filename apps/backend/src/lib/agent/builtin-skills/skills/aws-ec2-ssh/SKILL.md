@@ -11,7 +11,7 @@ There are two channels. **Default to SSM** — it needs no open inbound port, no
 
 ## When to skip this skill
 
-- **Data Nuphos already exposes** (list instances, VPCs, security groups) → the backend routes or the `aws` skill's read commands. Don't connect just to read metadata.
+- **Data Cerin already exposes** (list instances, VPCs, security groups) → the backend routes or the `aws` skill's read commands. Don't connect just to read metadata.
 - **Fleet log collection** → use the `loki` skill.
 - **Interactive shell for a human** → the desktop terminal, not the agent.
 

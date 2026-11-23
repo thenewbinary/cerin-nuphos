@@ -223,7 +223,7 @@ describe('waking a channel’s agents', () => {
       message: {
         source: 'agent.resource',
         actorUserId: 'agent-a-owner',
-        renderedText: 'New messages in a Nuphos channel (channelId channel).',
+        renderedText: 'New messages in a Cerin channel (channelId channel).',
         metadata: {
           sender: { type: 'system', id: 'channel:channel', displayName: 'channel title' },
           source: 'agent.resource',
@@ -284,7 +284,7 @@ describe('waking a channel’s agents', () => {
       'agent.resource',
       {
         version: 1,
-        sender: { type: 'system', id: 'nuphos:decision', displayName: 'Nuphos' },
+        sender: { type: 'system', id: 'nuphos:decision', displayName: 'Cerin' },
         source: 'agent.resource',
         sentAt: new Date().toISOString(),
       },
@@ -663,7 +663,7 @@ describe('a person posting while an agent’s turn runs', () => {
     const [steer] = steers
 
     expect(steer!.userId).toBe('agent-a-owner')
-    expect(steer!.text).toStartWith('New messages in a Nuphos channel (channelId channel).')
+    expect(steer!.text).toStartWith('New messages in a Cerin channel (channelId channel).')
     expect(steer!.text).toContain('go ahead')
     expect(steer!.text).toContain('"fromOwner": true')
     expect(steer!.metadata).toMatchObject({

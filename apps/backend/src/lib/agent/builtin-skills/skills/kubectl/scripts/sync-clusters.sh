@@ -13,11 +13,11 @@ if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
 fi
 
 if [ -z "${NUPHOS_TOKEN:-}" ] || [ -z "${NUPHOS_SESSION_ID:-}" ]; then
-  echo "NUPHOS_TOKEN / NUPHOS_SESSION_ID are not set — this script only works inside the Nuphos agent sandbox." >&2
+  echo "NUPHOS_TOKEN / NUPHOS_SESSION_ID are not set — this script only works inside the Cerin agent sandbox." >&2
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}/agent-sessions/${NUPHOS_SESSION_ID}/kubeconfig"
 connect_timeout=10
@@ -74,7 +74,7 @@ if [ "$http_code" = "204" ]; then
 fi
 
 if [ "$http_code" != "200" ]; then
-  echo "Nuphos backend returned HTTP ${http_code}:" >&2
+  echo "Cerin backend returned HTTP ${http_code}:" >&2
   cat "$tmp" >&2
   echo >&2
   exit 1

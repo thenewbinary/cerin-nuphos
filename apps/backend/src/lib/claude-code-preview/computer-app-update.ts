@@ -42,7 +42,7 @@ export async function requestComputerAppUpdate(
   const status = await deps.status(userId, deviceId)
 
   if (!status)
-    throw new AppError(409, 'runtime_offline', 'The computer is offline. Open Nuphos on it first.')
+    throw new AppError(409, 'runtime_offline', 'The computer is offline. Open Cerin on it first.')
   const update = status.app?.update
 
   if (!update?.ready)

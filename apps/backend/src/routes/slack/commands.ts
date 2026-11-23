@@ -11,8 +11,8 @@ import type { AuthVariables } from '@/middleware/auth'
 import type { Hono } from 'hono'
 
 const USAGE_MESSAGE = [
-  '*Nuphos commands*',
-  '• `/nuphos pickup` — continue one of your recent Nuphos conversations from Slack',
+  '*Cerin commands*',
+  '• `/nuphos pickup` — continue one of your recent Cerin conversations from Slack',
 ].join('\n')
 
 async function respondToSlashCommand(args: {
@@ -32,7 +32,7 @@ async function respondToSlashCommand(args: {
       if (!botContext?.nuphosTeamId) {
         response = {
           response_type: 'ephemeral',
-          text: 'Nuphos is not fully installed for this Slack workspace yet.',
+          text: 'Cerin is not fully installed for this Slack workspace yet.',
         }
       } else {
         response = await buildPickupCommandResponse({
@@ -54,7 +54,7 @@ async function respondToSlashCommand(args: {
       text:
         err instanceof AppError
           ? err.message
-          : 'Nuphos hit an error while handling this command. Try again in a moment.',
+          : 'Cerin hit an error while handling this command. Try again in a moment.',
     }
   }
   await postSlackResponseUrl(args.responseUrl, response)

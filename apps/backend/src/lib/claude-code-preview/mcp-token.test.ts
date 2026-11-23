@@ -1,4 +1,6 @@
-import { describe, expect, test } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
+
+import { config } from '@/config'
 
 import { mintRuntimeSkillsToken } from './runtime-skills-token'
 import {
@@ -8,6 +10,15 @@ import {
   scopedPathAllowed,
   verifyPreviewMcpToken,
 } from './mcp-token'
+
+const originalPublicBaseUrl = config.auth.publicBaseUrl
+
+beforeEach(() => {
+  config.auth.publicBaseUrl = 'https://api.cerin.ai'
+})
+afterEach(() => {
+  config.auth.publicBaseUrl = originalPublicBaseUrl
+})
 
 describe('preview MCP token', () => {
   test('round-trips its (user, session, team) scope', async () => {
@@ -23,7 +34,7 @@ describe('preview MCP token', () => {
       own: 'user-1',
       sid: 'conv-1',
       tid: 'team-1',
-      ori: 'https://api.nuphos.ai',
+      ori: 'https://api.cerin.ai',
     })
     // Never the general session-token shape — only conversation-aware
     // middleware may accept it.

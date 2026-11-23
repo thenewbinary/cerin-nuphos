@@ -43,10 +43,10 @@ export async function handleDiscordModeCommand(
   const discordUserId = interaction.member?.user?.id
 
   if (!guildId || !channelId || !discordUserId)
-    return 'Use this command inside a Nuphos conversation thread.'
+    return 'Use this command inside a Cerin conversation thread.'
   const thread = await discordAgentThreads().findOne({ guildId, threadChannelId: channelId })
 
-  if (!thread) return 'Use this command inside a Nuphos conversation thread.'
+  if (!thread) return 'Use this command inside a Cerin conversation thread.'
   const [installation, channel, mapping] = await Promise.all([
     discordInstallations().findOne({
       guildId,
@@ -63,9 +63,9 @@ export async function handleDiscordModeCommand(
     discordUserMappings().findOne({ guildId, discordUserId, teamId: thread.teamId, enabled: true }),
   ])
 
-  if (!installation || !channel) return 'Nuphos is not enabled for this thread.'
+  if (!installation || !channel) return 'Cerin is not enabled for this thread.'
   if (!mapping || !(await getTeamMembership(mapping.nuphosUserId, thread.teamId))) {
-    return 'Link your Discord account to this Nuphos workspace first.'
+    return 'Link your Discord account to this Cerin workspace first.'
   }
   // Permission grants are actor scoped: nobody can disarm a teammate's gate.
   try {

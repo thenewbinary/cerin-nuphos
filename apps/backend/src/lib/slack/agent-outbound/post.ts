@@ -52,7 +52,7 @@ export function createSlackOutboundPost(setup: {
       if (input.destination.type === 'dm_self') {
         if (!selfMapping) {
           return rejectBeforeDelivery(
-            'Your Slack account is not linked to this Nuphos team, so I cannot DM you. Link it in Settings → Slack first.',
+            'Your Slack account is not linked to this Cerin team, so I cannot DM you. Link it in Settings → Slack first.',
           )
         }
         channelId = await dependencies.openDm(sendToken, selfMapping.slackUserId)

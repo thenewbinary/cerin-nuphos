@@ -8,7 +8,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: 'nuphos_ask',
     description:
-      'Send a prompt to the Nuphos Agent and get its response. Blocks until the ' +
+      'Send a prompt to the Cerin Agent and get its response. Blocks until the ' +
       'agent finishes. The agent keeps running in the background even if this ' +
       'call times out — reconnect with nuphos_check using the same session_id. ' +
       'Pass session_id back on a later call to continue a multi-turn conversation, ' +
@@ -18,18 +18,18 @@ export const TOOL_DEFINITIONS = [
       'Set wait to false to return as soon as the turn is accepted and poll ' +
       'nuphos_check instead. ' +
       'ALWAYS call nuphos_list_teams first: team_id is required, and every ' +
-      'conversation runs inside one of your Nuphos teams.',
+      'conversation runs inside one of your Cerin teams.',
     inputSchema: {
       type: 'object',
       properties: {
         prompt: {
           type: 'string',
-          description: 'The instruction or question for the Nuphos Agent.',
+          description: 'The instruction or question for the Cerin Agent.',
         },
         team_id: {
           type: 'string',
           description:
-            "The Nuphos team to run in — required. Scopes the agent to that team's " +
+            "The Cerin team to run in — required. Scopes the agent to that team's " +
             'cloud accounts and resources, and makes the conversation visible in ' +
             "that team's workspace. You must be a member of the team; call " +
             'nuphos_list_teams to discover your teams and their ids.',
@@ -91,7 +91,7 @@ export const TOOL_DEFINITIONS = [
             'Answer an open request of the session, from the requests that ' +
             'nuphos_check returns. For a question, prompt is the answer and the agent ' +
             'that asked carries on with it; questions that ask for a secret or to ' +
-            'connect an account are answered in Nuphos only. For a tool_authorization, ' +
+            'connect an account are answered in Cerin only. For a tool_authorization, ' +
             'prompt is "approve" or "deny".',
         },
         context: {
@@ -143,7 +143,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: 'nuphos_list_teams',
     description:
-      'List the Nuphos teams you belong to. Pass a returned team_id to ' +
+      'List the Cerin teams you belong to. Pass a returned team_id to ' +
       "nuphos_ask to scope the agent to that team's cloud accounts and " +
       'resources.',
     inputSchema: { type: 'object', properties: {} },
@@ -158,7 +158,7 @@ export const TOOL_DEFINITIONS = [
     inputSchema: {
       type: 'object',
       properties: {
-        team_id: { type: 'string', description: 'The Nuphos team. See nuphos_list_teams.' },
+        team_id: { type: 'string', description: 'The Cerin team. See nuphos_list_teams.' },
         search: {
           type: 'string',
           description: 'Only sessions whose title or first message contains this.',
@@ -212,8 +212,8 @@ export const TOOL_DEFINITIONS = [
   {
     name: 'nuphos_capabilities',
     description:
-      'Discover what the Nuphos Agent can do — supported task types and limits. ' +
-      'Call this first if you are unsure whether Nuphos can handle a task.',
+      'Discover what the Cerin Agent can do — supported task types and limits. ' +
+      'Call this first if you are unsure whether Cerin can handle a task.',
     inputSchema: { type: 'object', properties: {} },
   },
 ] as const
@@ -222,7 +222,7 @@ export function getCapabilities(): unknown {
   return {
     agent: MCP_SERVER_NAME,
     description:
-      'The Nuphos Agent provisions and operates cloud infrastructure on Nuphos: ' +
+      'The Cerin Agent provisions and operates cloud infrastructure on Cerin: ' +
       'servers and Kubernetes clusters across BYOS providers (AWS, GCP, Tencent, ' +
       'Aliyun, Hetzner, Linode, Volcengine, …), inspecting and debugging ' +
       'deployments, and answering infrastructure questions.',

@@ -149,7 +149,7 @@ export async function verifyTeamSpecificTrust(
     throw new AppError(
       400,
       'huawei_identity_not_usable',
-      `Trust agency "${identity.agencyName}" does not condition its trust policy on oidc:sub = "${subject}" for identity provider "${identity.idpId}" alone — Nuphos's identity provider is shared across every customer, so every statement granting sts:agencies:assumeWithOIDC to it must carry that exact condition, with no broader or conflicting statement. Fix the agency's trust policy.`,
+      `Trust agency "${identity.agencyName}" does not condition its trust policy on oidc:sub = "${subject}" for identity provider "${identity.idpId}" alone — Cerin's identity provider is shared across every customer, so every statement granting sts:agencies:assumeWithOIDC to it must carry that exact condition, with no broader or conflicting statement. Fix the agency's trust policy.`,
     )
   }
 }

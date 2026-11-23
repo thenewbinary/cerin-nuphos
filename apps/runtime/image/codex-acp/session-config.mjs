@@ -8,6 +8,7 @@ export function nuphosCodexSessionConfig(config, meta, processEnv = process.env)
   const allowed = new Set([
     'NUPHOS_TOKEN',
     'NUPHOS_BACKEND_URL',
+    'NUPHOS_PUBLIC_URL',
     'NUPHOS_TEAM_ID',
     'TEAM',
     'NUPHOS_SESSION_ID',

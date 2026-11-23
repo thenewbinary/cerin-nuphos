@@ -1,6 +1,6 @@
 ---
 name: secureframe
-description: Read a team's Secureframe compliance posture (failing tests that need attention) through the Nuphos API. Use when the user asks what compliance or security issues their infrastructure has, what is failing in Secureframe, or what to remediate for SOC 2 / ISO 27001 / HIPAA / PCI / GDPR.
+description: Read a team's Secureframe compliance posture (failing tests that need attention) through the Cerin API. Use when the user asks what compliance or security issues their infrastructure has, what is failing in Secureframe, or what to remediate for SOC 2 / ISO 27001 / HIPAA / PCI / GDPR.
 ---
 
 # Secureframe compliance
@@ -9,8 +9,8 @@ Use this skill when the user wants to know which compliance checks are failing o
 what needs remediating for their security frameworks (SOC 2, ISO 27001, HIPAA,
 PCI, GDPR) as tracked by Secureframe.
 
-The Secureframe API key/secret is held **server-side** by Nuphos. You never
-handle it — read everything through the Nuphos API with `ac`. Do not ask the
+The Secureframe API key/secret is held **server-side** by Cerin. You never
+handle it — read everything through the Cerin API with `ac`. Do not ask the
 user for Secureframe credentials, and do not paste them into chat.
 
 ## Discovering the integration
@@ -61,4 +61,4 @@ and `raw` (the full attributes blob for anything not normalized — e.g.
 - Read-only. This skill only reads compliance status; it never writes to
   Secureframe.
 - Never print or echo the Secureframe API key/secret (reads go through the
-  Nuphos API above, which keeps them server-side).
+  Cerin API above, which keeps them server-side).

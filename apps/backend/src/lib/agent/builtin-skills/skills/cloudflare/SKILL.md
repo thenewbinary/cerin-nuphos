@@ -1,6 +1,6 @@
 ---
 name: cloudflare
-description: Use Cloudflare API credentials bound in Nuphos to inspect or change Cloudflare account resources.
+description: Use Cloudflare API credentials bound in Cerin to inspect or change Cloudflare account resources.
 ---
 
 # cloudflare
@@ -23,7 +23,7 @@ a ready-to-run `setupCommand`. Pick the matching account and run its `setupComma
 bash skills/cloudflare/scripts/setup-credentials.sh <teamId> <accountId>
 ```
 
-The script calls `GET /teams/$TEAM/cloudflare-accounts/$ACCOUNT_ID/credentials` on Nuphos backend with the user's `NUPHOS_TOKEN`. When running inside an Nuphos agent sandbox, it prefers the agent-session path automatically. It writes a private env file at `~/.cloudflare/nuphos.env`.
+The script calls `GET /teams/$TEAM/cloudflare-accounts/$ACCOUNT_ID/credentials` on Cerin backend with the user's `NUPHOS_TOKEN`. When running inside an Cerin agent sandbox, it prefers the agent-session path automatically. It writes a private env file at `~/.cloudflare/nuphos.env`.
 
 Then call Cloudflare with curl:
 
@@ -43,12 +43,12 @@ environment.
 
 ```bash
 # Reuse the helper from the nuphos-api skill (loads it if needed):
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 ac /teams/$TEAM/cloudflare-accounts | python3 -m json.tool
 ```
 
-## Nuphos API
+## Cerin API
 
 - `GET /teams/$TEAM/cloudflare-accounts` — list bound Cloudflare accounts (`accountId`, `accountName`)
 - `POST /teams/$TEAM/cloudflare-accounts` (admin) — bind an account with `accountId` and a scoped API token as `apiKey`
@@ -62,4 +62,4 @@ ac /teams/$TEAM/cloudflare-accounts | python3 -m json.tool
 - Treat the returned key as sensitive. Do not print it, commit it, or paste it into final answers.
 - Confirm with the user before mutations such as changing DNS records, zones, workers, rules, WAF, access policies, or account settings.
 - If a Cloudflare call returns 401/403, re-run the setup script first. If it still fails, explain the missing Cloudflare permission or account mismatch.
-- Zone GraphQL Analytics (`httpRequestsAdaptiveGroups` and similar) needs the `analytics.read` scope. Grants connected before Nuphos requested it fail with a missing `com.cloudflare.api.account.zone.analytics.read` permission: ask the user to reconnect the account with Update scopes on its Cloudflare permissions page instead of retrying.
+- Zone GraphQL Analytics (`httpRequestsAdaptiveGroups` and similar) needs the `analytics.read` scope. Grants connected before Cerin requested it fail with a missing `com.cloudflare.api.account.zone.analytics.read` permission: ask the user to reconnect the account with Update scopes on its Cloudflare permissions page instead of retrying.

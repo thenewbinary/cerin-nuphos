@@ -96,13 +96,13 @@ export function newRecoveryCodes(): { codes: string[]; hashes: string[] } {
 export function otpauthUrl(email: string, secret: string): string {
   const params = new URLSearchParams({
     secret,
-    issuer: 'Nuphos',
+    issuer: 'Cerin',
     algorithm: 'SHA1',
     digits: String(DIGITS),
     period: String(STEP_SECONDS),
   })
 
-  const label = encodeURIComponent(`Nuphos:${email}`)
+  const label = encodeURIComponent(`Cerin:${email}`)
 
   return `otpauth://totp/${label}?${params.toString()}`
 }

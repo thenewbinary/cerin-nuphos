@@ -202,7 +202,7 @@ export async function pairTeamRuntime(
       throw new AppError(
         422,
         'runtime_provider_undetected',
-        'Nuphos connected to this agent but could not tell whether it runs Claude Code or Codex. Make sure the agent image is up to date.',
+        'Cerin connected to this agent but could not tell whether it runs Claude Code or Codex. Make sure the agent image is up to date.',
       )
     const label = args.label || new URL(url).hostname.slice(0, 120)
     const runtime = await registerTeamRuntime({

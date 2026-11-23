@@ -111,7 +111,7 @@ export function createTeamSkillTools(
       'With `scope: "personal"` it is written to the conversation owner\'s personal skills instead, loaded only on that owner\'s turns; use that when the user asks for a skill for themselves only. ' +
       'Use when the user explicitly asks to add, document, or codify a repeatable playbook (deploy checklist, incident runbook, provider workflow). ' +
       'Confirm the skill name and scope with the user in plain language BEFORE calling — a team skill mutates shared team state. ' +
-      'Do NOT store secrets, API keys, tokens, or private keys in skill files; reference env vars or Nuphos credential flows instead. ' +
+      'Do NOT store secrets, API keys, tokens, or private keys in skill files; reference env vars or Cerin credential flows instead. ' +
       'If the skill already exists, use `skill_upsert` to revise it instead of creating a duplicate.',
     inputSchema: z.object({
       label,

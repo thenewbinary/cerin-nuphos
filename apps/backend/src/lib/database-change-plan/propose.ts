@@ -143,7 +143,7 @@ export async function proposeMongoDatabasePlan(
       {
         title: `Execute ${action.operation}`,
         description:
-          'An authorized executor explicitly runs the immutable approved statement through the Nuphos database gateway.',
+          'An authorized executor explicitly runs the immutable approved statement through the Cerin database gateway.',
         jobs: [
           {
             title: `${action.database}.${action.collection}`,

@@ -1,6 +1,6 @@
 ---
 name: gitlab
-description: Operate on GitLab projects, merge requests, pipelines, and repository contents through a GitLab account the user's team has bound to Nuphos. Nuphos backend hands out the binding's short-lived OAuth token; the agent talks to the GitLab API and clones or pushes over HTTPS directly. Use whenever the user asks about their GitLab repos, MRs, CI pipelines, wants code read from a GitLab repo, or asks to open/update/comment on merge requests.
+description: Operate on GitLab projects, merge requests, pipelines, and repository contents through a GitLab account the user's team has bound to Cerin. Cerin backend hands out the binding's short-lived OAuth token; the agent talks to the GitLab API and clones or pushes over HTTPS directly. Use whenever the user asks about their GitLab repos, MRs, CI pipelines, wants code read from a GitLab repo, or asks to open/update/comment on merge requests.
 ---
 
 # gitlab
@@ -11,11 +11,11 @@ Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_S
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
-Use this skill when the user wants you to interact with GitLab on their behalf — list projects, inspect merge requests or CI pipelines, read repository files, clone a repo, push branches, or open/comment on MRs — using the **GitLab account** their team has bound to Nuphos. Works for gitlab.com and self-hosted GitLab alike.
+Use this skill when the user wants you to interact with GitLab on their behalf — list projects, inspect merge requests or CI pipelines, read repository files, clone a repo, push branches, or open/comment on MRs — using the **GitLab account** their team has bound to Cerin. Works for gitlab.com and self-hosted GitLab alike.
 
 Like the github skill, the backend hands the sandbox a **short-lived access token** (~2 h, auto-refreshed server-side; fetch again on 401). The GitLab connect dialog lets users choose scopes before authorizing. Its default selection requests read access plus `write_repository` and `api`, so you can read, clone, push branches, create/update merge requests, and post MR notes when the bound GitLab account itself has permission in the target project.
 
-Older bindings may still have only `read_api read_user read_repository`. Check the `scope` returned by `/token` or printed by `setup-credentials.sh` before mutating. If the token lacks `api` or `write_repository`, ask a team admin to reconnect the GitLab account from the desktop app so Nuphos receives the newer write-capable grant.
+Older bindings may still have only `read_api read_user read_repository`. Check the `scope` returned by `/token` or printed by `setup-credentials.sh` before mutating. If the token lacks `api` or `write_repository`, ask a team admin to reconnect the GitLab account from the desktop app so Cerin receives the newer write-capable grant.
 
 ## Setup
 
@@ -48,7 +48,7 @@ environment.
 
 ```bash
 # Reuse the helper from the nuphos-api skill (loads it if needed):
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 ac /teams/$TEAM/gitlab-bindings | python3 -m json.tool
 # → { "bindings": [ { "id": "...", "hostUrl": "https://gitlab.com", "username": "...", ... } ] }
@@ -115,7 +115,7 @@ the selected `bindingId`, `project` (numeric id or full path) and the MR `iid`.
 The link shows the MR and its state in the session sidebar; it does not wake the
 conversation on MR events. Do not bind unrelated search results.
 
-## Nuphos proxy fallback
+## Cerin proxy fallback
 
 The backend also proxies a small read-only subset — handy for a quick look without running setup. `/teams/$TEAM/gitlab-bindings/namespaces` (team-level, no binding id) flattens every top-level group/user namespace across all bindings with project counts; per binding there are `/teams/$TEAM/gitlab-bindings/$GB/projects?namespace=<root>`, `.../projects/:id/merge-requests`, and `.../projects/:id/pipelines`.
 

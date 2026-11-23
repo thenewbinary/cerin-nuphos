@@ -160,6 +160,9 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /** POSTs with bounded retries; never throws. Returns whether it was delivered. */
 export async function sendHealthReport(body: string, wait = sleep): Promise<boolean> {
+  const url = config.telemetry.url
+
+  if (!url || !config.telemetry.key) return false
   let status: number | undefined
   let attempts = 0
 
@@ -167,7 +170,7 @@ export async function sendHealthReport(body: string, wait = sleep): Promise<bool
     if (delay) await wait(delay)
     attempts++
     try {
-      const res = await fetch(config.telemetry.url, {
+      const res = await fetch(url, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -193,6 +196,7 @@ export async function sendHealthReport(body: string, wait = sleep): Promise<bool
 let windowStartedAt = Date.now()
 
 export async function reportHealth(now = Date.now()): Promise<void> {
+  if (!config.telemetry.key || !config.telemetry.url) return
   const window = takeTelemetryWindow()
   const windowSeconds = Math.round((now - windowStartedAt) / 1000)
 
@@ -214,10 +218,10 @@ export async function reportHealth(now = Date.now()): Promise<void> {
 let timer: ReturnType<typeof setInterval> | undefined
 let reporting = false
 
-/** Starts the 5-minute report loop when NUPHOS_TELEMETRY_KEY is set. The timer
+/** Starts the 5-minute report loop when a key and explicit URL are set. The timer
  *  is unref'd and holds nothing to flush, so shutdown has nothing to stop. */
 export function startHealthTelemetry(): void {
-  if (!config.telemetry.key || timer) return
+  if (!config.telemetry.key || !config.telemetry.url || timer) return
   setTelemetryRecording(true)
   windowStartedAt = Date.now()
   timer = setInterval(() => {
@@ -247,7 +251,7 @@ export type TelemetryStatus = {
 /** What an admin sees: whether reports go out, and the exact last one sent. */
 export async function telemetryStatus(): Promise<TelemetryStatus> {
   const state = await stateCollection().findOne({ _id: STATE_ID })
-  const configured = Boolean(config.telemetry.key)
+  const configured = Boolean(config.telemetry.key && config.telemetry.url)
 
   return {
     configured,
@@ -265,6 +269,13 @@ export async function setTelemetryEnabled(enabled: boolean): Promise<TelemetrySt
       400,
       'telemetry_key_missing',
       'NUPHOS_TELEMETRY_KEY is not set; set it and restart the backend to send health reports',
+    )
+  }
+  if (enabled && !config.telemetry.url) {
+    throw new AppError(
+      400,
+      'telemetry_url_missing',
+      'NUPHOS_TELEMETRY_URL is not set; set it and restart the backend to send health reports',
     )
   }
   await stateCollection().updateOne(

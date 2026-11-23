@@ -22,11 +22,11 @@ export function buildNuphosInteropBlocks(args: NuphosInteropArgs): unknown[] {
   const question = args.question.trim()
   const quoted = truncatePlain(question, INTEROP_QUOTE_MAX)
   const contextNotes = [
-    'Sent from the Nuphos app',
-    ...(quoted.length < question.length ? ['Full message in Nuphos'] : []),
+    'Sent from the Cerin app',
+    ...(quoted.length < question.length ? ['Full message in Cerin'] : []),
     ...(args.attachmentCount
       ? [
-          `${String(args.attachmentCount)} attachment${args.attachmentCount === 1 ? '' : 's'} sent in Nuphos`,
+          `${String(args.attachmentCount)} attachment${args.attachmentCount === 1 ? '' : 's'} sent in Cerin`,
         ]
       : []),
   ]
@@ -71,7 +71,7 @@ function interopFallbackText(args: NuphosInteropArgs): string {
 
   return [`*@${name}* says:`, ...(quoteLines ? [quoteLines] : [])]
     .join('\n')
-    .concat('\n_Sent from the Nuphos app_')
+    .concat('\n_Sent from the Cerin app_')
 }
 
 /**

@@ -53,7 +53,7 @@ export async function getAwsIamPermissions(roleArn: string): Promise<AwsIamPermi
       callerUserId: null,
       warnings: [
         summarizeError(
-          'AssumeRole failed — Nuphos connector cannot reach this role (check trust policy and sts:AssumeRole)',
+          'AssumeRole failed — Cerin connector cannot reach this role (check trust policy and sts:AssumeRole)',
           e,
         ),
       ],

@@ -60,7 +60,7 @@ async function verifyRoleAssumable(teamId: ObjectId, roleArn: string): Promise<T
   throw new AppError(
     400,
     'role_not_assumable',
-    `Nuphos cannot assume ${roleArn}. Its trust policy must trust the Nuphos OIDC identity provider for sts:AssumeRoleWithWebIdentity with sub "nuphos:team:${teamId.toHexString()}". (${name}: ${message})`,
+    `Cerin cannot assume ${roleArn}. Its trust policy must trust the Cerin OIDC identity provider for sts:AssumeRoleWithWebIdentity with sub "nuphos:team:${teamId.toHexString()}". (${name}: ${message})`,
     { roleArn, awsError: name },
   )
 }

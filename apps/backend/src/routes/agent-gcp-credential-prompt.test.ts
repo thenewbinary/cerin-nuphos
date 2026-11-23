@@ -1,6 +1,15 @@
-import { describe, expect, test } from 'bun:test'
+import { afterAll, describe, expect, test } from 'bun:test'
+
+import { config } from '@/config'
 
 import { renderAgentCredentialPrompt } from './agent'
+
+const originalWebUrl = config.auth.publicWebUrl
+
+config.auth.publicWebUrl = 'https://cerin.ai'
+afterAll(() => {
+  config.auth.publicWebUrl = originalWebUrl
+})
 
 const TEAM_ID = '64b5f1c2e4b0a1d2c3e4f5a6'
 
@@ -75,9 +84,9 @@ describe('GCP credentials in the agent prompt', () => {
 
   test('carries a GUI link for the instance list and an SSH template', () => {
     expect(line).toContain(
-      `guiLinks={gceInstances:"https://nuphos.ai/teams/${TEAM_ID}/infra/gcp/example-project/gce-instances"}`,
+      `guiLinks={gceInstances:"https://cerin.ai/teams/${TEAM_ID}/infra/gcp/example-project/gce-instances"}`,
     )
-    expect(line).toContain('gceSsh:"https://nuphos.ai/teams/')
+    expect(line).toContain('gceSsh:"https://cerin.ai/teams/')
     expect(line).toContain('/gce/<region>/instances/<instanceName>/ssh"')
   })
 
@@ -117,7 +126,7 @@ describe('On-prem Kubernetes credentials in the agent prompt', () => {
 
   test('links to the shared Kubernetes resource UI', () => {
     expect(prompt).toContain(
-      `https://nuphos.ai/teams/${TEAM_ID}/k8s/onprem/${clusterId}/onprem/${clusterId}/workloads/pods`,
+      `https://cerin.ai/teams/${TEAM_ID}/k8s/onprem/${clusterId}/onprem/${clusterId}/workloads/pods`,
     )
   })
 })

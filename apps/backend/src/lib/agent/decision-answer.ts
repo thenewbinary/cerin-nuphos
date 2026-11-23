@@ -184,7 +184,7 @@ async function wakeAsker(
     conversation,
     notice,
     'agent.resource',
-    systemSender(SENDER, 'Nuphos'),
+    systemSender(SENDER, 'Cerin'),
   ).catch(async (error: unknown) => {
     await reopenInputRequest(conversation.sessionId, conversation.userId, request)
     throw error
@@ -230,7 +230,7 @@ async function tellAbout(
         target,
         answerNotice(request, answer, who, asker),
         'agent.resource',
-        systemSender(SENDER, 'Nuphos'),
+        systemSender(SENDER, 'Cerin'),
       )
 
       run.catch((error: unknown) => {

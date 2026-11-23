@@ -43,7 +43,7 @@ fi
 
 command -v tailscaled >/dev/null 2>&1 || bash "$(dirname "$0")/install.sh"
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 url="${base%/}/teams/${team_id}/tailscale-clients/${client_id}/tailnet-sessions"
 
 response="$(mktemp)"
@@ -63,7 +63,7 @@ if [ "$status" != "200" ]; then
 
 Common causes:
   403 tailscale_sandbox_access_disabled — an admin has not enabled private
-      network access for this binding in Nuphos.
+      network access for this binding in Cerin.
   403 tailscale_client_agent_access_denied — the binding is not selected in
       this session's credential selector.
   403 tailscale_auth_key_denied — the customer's OAuth client lacks the

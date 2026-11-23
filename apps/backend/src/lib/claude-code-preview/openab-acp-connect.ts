@@ -48,7 +48,7 @@ function connectionFailure(url: string, event: SocketEvent): Error {
     return new AppError(
       409,
       'runtime_offline',
-      'The computer running this agent is offline. Open Nuphos on it with the local agent turned on.',
+      'The computer running this agent is offline. Open Cerin on it with the local agent turned on.',
       // No runtimeId: that would make the failed turn queue for the computer (queueForOfflineComputer).
       { deviceId: parseLocalRuntimeUrl(url)?.deviceId },
     )

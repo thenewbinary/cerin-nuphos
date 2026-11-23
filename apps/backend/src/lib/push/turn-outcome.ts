@@ -7,7 +7,7 @@ export function conversationTitle(
 
   if (title) return title
 
-  return truncate(conversation?.firstMessage?.trim() ?? '', 60) || 'Nuphos'
+  return truncate(conversation?.firstMessage?.trim() ?? '', 60) || 'Cerin'
 }
 
 export type TurnOutcome =

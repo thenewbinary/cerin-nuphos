@@ -94,7 +94,7 @@ export async function getGceInstanceSshAccess(
     throw new AppError(
       400,
       'gce_no_external_ip',
-      `GCE instance ${name} has no external IP; SSH from Nuphos requires a reachable address`,
+      `GCE instance ${name} has no external IP; SSH from Cerin requires a reachable address`,
     )
   }
 
@@ -125,14 +125,14 @@ export async function getGceInstanceSshAccess(
     throw new AppError(
       400,
       'os_login_not_enabled',
-      `OS Login is not enabled on ${name} or its project. Nuphos SSH for GCE requires enable-oslogin=TRUE in instance or project metadata (and the service account needs roles/compute.osLogin).`,
+      `OS Login is not enabled on ${name} or its project. Cerin SSH for GCE requires enable-oslogin=TRUE in instance or project metadata (and the service account needs roles/compute.osLogin).`,
     )
   }
   if (isTrueish(osLogin2fa)) {
     throw new AppError(
       400,
       'os_login_2fa_required',
-      `OS Login 2FA (enable-oslogin-2fa=TRUE) is enabled on ${name}; Nuphos SSH cannot satisfy the second factor. Disable 2FA on this instance or use the gcloud CLI.`,
+      `OS Login 2FA (enable-oslogin-2fa=TRUE) is enabled on ${name}; Cerin SSH cannot satisfy the second factor. Disable 2FA on this instance or use the gcloud CLI.`,
     )
   }
 

@@ -9,15 +9,15 @@ usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <accountId>
 
-Fetches Cloudflare API credentials from Nuphos backend (using the user's
-NUPHOS_TOKEN) for an Nuphos-bound account, then writes a private env file at
+Fetches Cloudflare API credentials from Cerin backend (using the user's
+NUPHOS_TOKEN) for an Cerin-bound account, then writes a private env file at
 ~/.cloudflare/nuphos.env for later curl/API calls.
 
 Arguments:
-  teamId     Nuphos team id (24-char hex)
+  teamId     Cerin team id (24-char hex)
   accountId  Cloudflare account id (32-char hex) bound to the team
 
-Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.nuphos.ai).
+Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
 EOF
   exit 1
 }
@@ -36,7 +36,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}/teams/${team_id}/cloudflare-accounts/${account_id}/credentials"
 
@@ -49,7 +49,7 @@ http_code="$(curl -sS -o "$tmp" -w '%{http_code}' \
   "$url")"
 
 if [ "$http_code" != "200" ]; then
-  echo "Nuphos backend returned HTTP ${http_code} for ${url}:" >&2
+  echo "Cerin backend returned HTTP ${http_code} for ${url}:" >&2
   cat "$tmp" >&2
   echo >&2
   exit 1

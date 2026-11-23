@@ -1,6 +1,6 @@
 ---
 name: linode
-description: Run linode-cli commands from the sandbox to inspect or change Linode/Akamai Cloud resources, including LKE clusters. Includes a setup script for selected Nuphos-bound Linode accounts.
+description: Run linode-cli commands from the sandbox to inspect or change Linode/Akamai Cloud resources, including LKE clusters. Includes a setup script for selected Cerin-bound Linode accounts.
 ---
 
 # Linode CLI
@@ -13,11 +13,11 @@ Changing runtime-global settings is possible, but strongly discouraged unless th
 
 Use this skill when the user wants to inspect or change Linode/Akamai Cloud resources directly with `linode-cli`, including Linode instances, LKE clusters, NodeBalancers, firewalls, volumes, object storage, images, and account events.
 
-`linode-cli` is provided by the runtime image's tool manifest, not baked into it: the first call installs the pinned build from its hash-locked requirements and can take a while, so let it finish rather than interrupt it. `nuphos-tools list` shows the tool and its state. If the command is missing entirely, or that install keeps failing, report the runtime mismatch instead of doing an unpinned package install during the task; do not conclude that Nuphos lacks Linode credentials.
+`linode-cli` is provided by the runtime image's tool manifest, not baked into it: the first call installs the pinned build from its hash-locked requirements and can take a while, so let it finish rather than interrupt it. `nuphos-tools list` shows the tool and its state. If the command is missing entirely, or that install keeps failing, report the runtime mismatch instead of doing an unpinned package install during the task; do not conclude that Cerin lacks Linode credentials.
 
-## Prefer Nuphos API for first-party reads
+## Prefer Cerin API for first-party reads
 
-For read-only data Nuphos already exposes, call the Nuphos API first. These list
+For read-only data Cerin already exposes, call the Cerin API first. These list
 routes wrap their results in an object, so extract the array before piping to a
 `jq` filter (e.g. `.clusters[]`, not `.[]`):
 
@@ -80,7 +80,7 @@ kubectl --context linode/prod/my-cluster get ns
 ```
 
 Note: LKE API servers may sit behind an IP allowlist, so `kubectl` can hang/time
-out from the sandbox. If it does, fall back to the `linode-cli`/Nuphos API reads
+out from the sandbox. If it does, fall back to the `linode-cli`/Cerin API reads
 above rather than retrying `kubectl`.
 
 ## Safety

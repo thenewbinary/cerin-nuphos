@@ -8,7 +8,7 @@ fi
 
 team_id="$1"
 integration_id="$2"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.nuphos.ai}}"
+base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.cerin.ai}}"
 base="${base%/}"
 
 urlencode() {

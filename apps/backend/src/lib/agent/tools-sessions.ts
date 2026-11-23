@@ -24,7 +24,7 @@ const LIST_DESCRIPTION =
 
 const READ_DESCRIPTION =
   "Read one conversation's transcript in compact form: one line per message (`#index role: text`), tool calls summarized as `[tool: name]`. " +
-  'A Nuphos session link (`/teams/<team>/agent/<session_id>`) in a message names a conversation; pass its last segment as session_id. ' +
+  'A Cerin session link (`/teams/<team>/agent/<session_id>`) in a message names a conversation; pass its last segment as session_id. ' +
   'Pages by message index — pass the returned next_index to continue. Read only the window you need. ' +
   'A turn still running is the last line of the last page, marked in progress with its start and last update times, and returned in in_progress; once it ends it is replaced by the stored message. ' +
   "A Bot's current standing instructions are returned in full in instructions, whatever its transcript shows. " +

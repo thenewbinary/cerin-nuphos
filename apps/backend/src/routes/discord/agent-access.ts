@@ -138,7 +138,7 @@ export async function resolveDiscordChannel(
     throw new AppError(
       403,
       'discord_channel_not_enabled',
-      'Nuphos is not enabled in that Discord channel',
+      'Cerin is not enabled in that Discord channel',
     )
   }
 

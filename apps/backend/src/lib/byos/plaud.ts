@@ -1,4 +1,5 @@
 import { publicBackendUrl } from '@/lib/claude-code-preview/runtime-backend-url'
+import { publicWebUrl } from '@/lib/public-urls'
 import { decryptPlaudSecret, encryptPlaudSecret } from '@/lib/byos/secrets'
 import { tokenStillFresh } from '@/lib/byos/token-freshness'
 import { teamByosBindings } from '@/models'
@@ -60,8 +61,8 @@ export async function registerPlaudClient(redirectUri: string): Promise<string> 
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({
-      client_name: 'Nuphos',
-      client_uri: 'https://nuphos.ai',
+      client_name: 'Cerin',
+      client_uri: publicWebUrl(),
       redirect_uris: [redirectUri],
       grant_types: ['authorization_code', 'refresh_token'],
       response_types: ['code'],

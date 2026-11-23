@@ -176,7 +176,7 @@ export async function nuphosUploadReplyImages(text, state) {
           token = (
             await fs.readFile(path.join(state.credentialsDir, 'NUPHOS_TOKEN'), 'utf8')
           ).trim()
-        const base = `${(env.NUPHOS_BACKEND_URL || 'https://api.nuphos.ai').replace(/\/$/, '')}/agent-sessions/${encodeURIComponent(env.NUPHOS_SESSION_ID)}/teams/${encodeURIComponent(env.TEAM || env.NUPHOS_TEAM_ID)}/file-transfers`
+        const base = `${(env.NUPHOS_BACKEND_URL || 'https://api.cerin.ai').replace(/\/$/, '')}/agent-sessions/${encodeURIComponent(env.NUPHOS_SESSION_ID)}/teams/${encodeURIComponent(env.TEAM || env.NUPHOS_TEAM_ID)}/file-transfers`
         const signal = uploadSignal
         const request = async (url, options) => {
           const result = await fetch(url, { ...options, signal })
@@ -209,6 +209,7 @@ export async function nuphosUploadReplyImages(text, state) {
         if (state.cache.size >= 128) state.cache.clear()
         state.cache.set(key, { id: group, expiresAt: Date.parse(created.expiresAt) })
       }
+      // Protocol marker recognized by existing clients; no request goes to this host.
       output += `![${match[1]}](https://nuphos.ai/_reply-images/${group})`
     } catch (error) {
       // No native errors: they can expose local paths, URLs or credentials.

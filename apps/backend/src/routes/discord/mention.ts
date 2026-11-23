@@ -118,7 +118,7 @@ export async function handleDiscordMention(
     if (!userMapping || !membership) {
       await sendDiscordMessage(
         event.channel_id,
-        'Link your Discord account first: in Nuphos, open Connectors → Add connector → Discord.',
+        'Link your Discord account first: in Cerin, open Connectors → Add connector → Discord.',
       ).catch(() => {})
       await markDiscordEvent(event.id, 'completed')
 
@@ -127,7 +127,7 @@ export async function handleDiscordMention(
     const text = discordMessageText(event, botUserId, registeredThread !== null)
 
     if (!text) {
-      await sendDiscordMessage(event.channel_id, 'What would you like Nuphos to look into?')
+      await sendDiscordMessage(event.channel_id, 'What would you like Cerin to look into?')
       await markDiscordEvent(event.id, 'completed')
 
       return
@@ -140,7 +140,7 @@ export async function handleDiscordMention(
             await createDiscordThread({
               channelId: event.channel_id,
               messageId: event.id,
-              name: text.replace(/\s+/g, ' ').slice(0, 80) || 'Nuphos conversation',
+              name: text.replace(/\s+/g, ' ').slice(0, 80) || 'Cerin conversation',
             })
           ).id
     const thread = await getOrCreateDiscordThread({

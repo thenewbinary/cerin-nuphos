@@ -215,7 +215,7 @@ export async function persistSlackBinding(
     if (e instanceof Error && 'code' in e && (e as { code?: number }).code === 11000) {
       return {
         error: 'workspace_taken',
-        error_description: 'This Slack workspace is already connected to another Nuphos team',
+        error_description: 'This Slack workspace is already connected to another Cerin team',
       }
     }
     throw e

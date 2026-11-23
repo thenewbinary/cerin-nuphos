@@ -137,7 +137,7 @@ const RUNTIME_OUTDATED_JOB_MESSAGE =
 const RUNTIME_KEY_REJECTED_MESSAGE =
   'The agent rejected its operator credential. Rotate it in the agent settings, then refresh.'
 const PUBLIC_URL_MISSING_MESSAGE =
-  'A self-hosted agent was selected, but this Nuphos deployment has no public backend URL for it to call. Set NUPHOS_PUBLIC_BACKEND_URL on the backend.'
+  'A self-hosted agent was selected, but this Cerin deployment has no public backend URL for it to call. Set NUPHOS_PUBLIC_BACKEND_URL on the backend.'
 
 function timeoutError(): PanelExecError {
   return new PanelExecError(

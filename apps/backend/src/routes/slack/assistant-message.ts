@@ -84,7 +84,7 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
       runtime,
       event.channel,
       threadTs,
-      'Nuphos is not fully installed for this Slack workspace yet.',
+      'Cerin is not fully installed for this Slack workspace yet.',
     )
     await markSlackEvent(eventId, 'completed')
 
@@ -112,8 +112,8 @@ export async function handleAssistantMessage(envelope: SlackEventEnvelope): Prom
       event.channel,
       threadTs,
       email
-        ? "Your Slack email doesn't match any Nuphos user on this team. Link your account in Nuphos → Settings → Slack."
-        : 'Your Slack account is not linked to Nuphos yet. Link it in Nuphos → Settings → Slack.',
+        ? "Your Slack email doesn't match any Cerin user on this team. Link your account in Cerin → Settings → Slack."
+        : 'Your Slack account is not linked to Cerin yet. Link it in Cerin → Settings → Slack.',
     )
     await markSlackEvent(eventId, 'completed')
 

@@ -110,7 +110,7 @@ async function request(path) {
     // client won't forward the bearer token to an arbitrary host. The `+ '/'`
     // boundary rejects look-alikes like `<backend>.evil.com`.
     if (path !== backendUrl && !path.startsWith(`${backendUrl}/`)) {
-      throw new Error('nuphos client may only call the Nuphos backend origin')
+      throw new Error('nuphos client may only call the Cerin backend origin')
     }
     url = path
   } else {

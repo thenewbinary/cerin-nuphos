@@ -31,11 +31,7 @@ import type { AuthVariables } from '@/middleware/auth'
 import type { Context } from 'hono'
 
 function verificationUri(): string {
-  const origin = new URL(config.auth.publicBaseUrl).origin
-
-  return ['https://api.nuphos.ai', 'https://nuphos.ai'].includes(origin)
-    ? 'https://nuphos.ai/device'
-    : `${config.auth.publicBaseUrl}${DEVICE_PAGE_PATH}`
+  return `${config.auth.publicBaseUrl}${DEVICE_PAGE_PATH}`
 }
 
 const agentFields = {

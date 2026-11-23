@@ -8,9 +8,9 @@
 // Inlined into both adapter bundles: no imports.
 
 export const NUPHOS_QUESTION_ASKED =
-  'The question is now shown to the user in Nuphos. Do not choose for them; continue only with work that does not depend on it, or end your turn. Their answer arrives as a new message.'
+  'The question is now shown to the user in Cerin. Do not choose for them; continue only with work that does not depend on it, or end your turn. Their answer arrives as a new message.'
 export const NUPHOS_QUESTION_FAILED =
-  'Nuphos could not show this question to the user. Ask it with the nuphos-tools request_user_decision tool instead.'
+  'Cerin could not show this question to the user. Ask it with the nuphos-tools request_user_decision tool instead.'
 // A hung tools server must not hold the agent's turn.
 export const NUPHOS_QUESTION_TIMEOUT_MS = 15_000
 

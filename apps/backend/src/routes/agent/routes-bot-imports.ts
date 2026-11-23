@@ -78,7 +78,7 @@ botImportRoutes.post('/bot-imports/preview', (c) =>
       throw new AppError(
         400,
         'invalid_bot_bundle',
-        'The export is invalid, unsafe or unsupported. Check the Nuphos export instructions and remove credentials before exporting again.',
+        'The export is invalid, unsafe or unsupported. Check the Cerin export instructions and remove credentials before exporting again.',
       )
     }
   }),

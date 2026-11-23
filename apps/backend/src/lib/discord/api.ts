@@ -54,7 +54,7 @@ export type DiscordGuild = { id: string; name: string }
 
 export const NUPHOS_DISCORD_COMMAND = {
   name: 'nuphos',
-  description: 'Manage Nuphos in this Discord channel',
+  description: 'Manage Cerin in this Discord channel',
   // Channel administration is enforced in the handler; members may change their own mode.
   default_member_permissions: null,
   dm_permission: false,
@@ -64,12 +64,12 @@ export const NUPHOS_DISCORD_COMMAND = {
     {
       type: 1,
       name: 'enable',
-      description: 'Allow linked workspace members to mention Nuphos in this channel',
+      description: 'Allow linked workspace members to mention Cerin in this channel',
     },
     {
       type: 1,
       name: 'disable',
-      description: 'Stop Nuphos from accepting mentions in this channel',
+      description: 'Stop Cerin from accepting mentions in this channel',
     },
   ],
 } as const

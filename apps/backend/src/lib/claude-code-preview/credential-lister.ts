@@ -145,6 +145,6 @@ export const deviceLister: Lister = lister<AgentCredentialOptions['devices'][num
     label: `${d.label} (${d.platform})`,
     usage: d.available
       ? `Authorized for this conversation; any participant who may reply can request local_exec on device=${id}. No separate owner confirmation is needed.`
-      : 'Selected, but offline or with local exec turned off; local_exec cannot reach it until Nuphos Desktop is open on it with local exec allowed.',
+      : 'Selected, but offline or with local exec turned off; local_exec cannot reach it until Cerin Desktop is open on it with local exec allowed.',
   }),
 })

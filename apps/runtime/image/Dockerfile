@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.19
 
-# The Nuphos runtime image. BASE_IMAGE is any image built from
+# The Cerin runtime image. BASE_IMAGE is any image built from
 # openab/Dockerfile; only its `openab` binary is used.
 # See the repository README for the build.
 #
@@ -82,7 +82,7 @@ RUN cd /opt/nuphos-claude-agent-acp \
  && ln -s "/opt/nuphos-claude-agent-acp/node_modules/@anthropic-ai/claude-agent-sdk-linux-$(node -p process.arch)/claude" \
       /usr/local/bin/claude \
  && claude --version
-# claude.ai connectors act as the signed-in account's owner, not the Nuphos
+# claude.ai connectors act as the signed-in account's owner, not the Cerin
 # sender. host.mjs sets this too, but a pod without a join token never runs it.
 ENV PATH="/opt/nuphos-claude-agent-acp/node_modules/.bin:${PATH}" \
     OPENAB_AGENT_COMMAND="claude-agent-acp" \
@@ -106,7 +106,7 @@ ENV PATH="/opt/nuphos-codex-acp/node_modules/.bin:${PATH}" \
     OPENAB_ADAPTER_VERSION="codex-acp@1.1.4"
 
 # Grok Build, Antigravity and OpenCode speak ACP themselves, so they take no adapter:
-# the shim adds the Nuphos layer in front of the agent. None is in this image (the
+# the shim adds the Cerin layer in front of the agent. None is in this image (the
 # first two are proprietary); tools/manifest.json installs the pinned build on first
 # use, into the home volume.
 FROM common AS grok
@@ -200,7 +200,7 @@ ARG RUNTIME_PROVIDER
 COPY --from=openab /usr/local/bin/openab /usr/local/bin/openab
 
 # The `nuphos agent` host from that CLI release. A container given NUPHOS_JOIN_TOKEN runs
-# it instead of openab and joins Nuphos as a device, the way a Box does (runtime-start.sh).
+# it instead of openab and joins Cerin as a device, the way a Box does (runtime-start.sh).
 ARG NUPHOS_AGENT_VERSION=0.8.3
 RUN arch=$(case "$(dpkg --print-architecture)" in amd64) echo x64 ;; *) dpkg --print-architecture ;; esac) \
  && asset="nuphos-agent-linux-${arch}.tar.gz" \
@@ -220,7 +220,7 @@ ARG OPENAB_BUILD_SHA
 ENV OPENAB_BUILD_SHA="${OPENAB_BUILD_SHA}" \
     HOME=/home/node
 
-# What a Nuphos-provisioned pod has always set, which a self-hosted container had
+# What a Cerin-provisioned pod has always set, which a self-hosted container had
 # to rediscover by hand. None of them can move into config.toml — openab reads
 # them only as environment.
 #
@@ -231,7 +231,7 @@ ENV OPENAB_BUILD_SHA="${OPENAB_BUILD_SHA}" \
 # rather than drop the line, or those platforms are denied instead.
 #
 # The runtime console serves `GET /`: a fresh volume opens a setup page, and each
-# Nuphos team connects with its own revocable key through a pairing code. The console
+# Cerin team connects with its own revocable key through a pairing code. The console
 # keeps its state beside the tools on the home volume. Override with
 # OPENAB_RUNTIME_CONSOLE=false and a password in OPENAB_ACP_AUTH_KEY.
 ENV OPENAB_ACP_ENABLED=true \

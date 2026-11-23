@@ -97,8 +97,8 @@ export async function computeAwsSelfCapabilities({
         ? `Allowed to call ${SELF_READ_ACTIONS.filter((a) => allowedSet.has(a)).join(', ')} on itself.`
         : 'Simulator reports the role cannot read its own IAM metadata.',
       writeReason: canWrite
-        ? `Allowed to call ${SELF_WRITE_ACTIONS.filter((a) => allowedSet.has(a)).join(', ')} on itself — you can adjust Nuphos's scope from this role without re-binding.`
-        : "This role cannot rewrite its own IAM policies. To change Nuphos's scope you'll need a separately-credentialed IAM admin.",
+        ? `Allowed to call ${SELF_WRITE_ACTIONS.filter((a) => allowedSet.has(a)).join(', ')} on itself — you can adjust Cerin's scope from this role without re-binding.`
+        : "This role cannot rewrite its own IAM policies. To change Cerin's scope you'll need a separately-credentialed IAM admin.",
     }
   } catch {
     // No iam:SimulatePrincipalPolicy. Fall back to scanning what we read.

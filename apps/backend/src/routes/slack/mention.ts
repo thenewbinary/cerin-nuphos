@@ -128,8 +128,8 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
       event.thread_ts,
       event.user,
       email
-        ? "Your Slack email doesn't match any Nuphos user on this team. Open your DM with me or go to Nuphos → Settings → Slack to link your account."
-        : 'Your Slack account is not linked to Nuphos yet. Open your DM with me or link your account in Nuphos → Settings → Slack.',
+        ? "Your Slack email doesn't match any Cerin user on this team. Open your DM with me or go to Cerin → Settings → Slack to link your account."
+        : 'Your Slack account is not linked to Cerin yet. Open your DM with me or link your account in Cerin → Settings → Slack.',
     )
     await markSlackEvent(eventId, 'completed')
 
@@ -155,7 +155,7 @@ export async function handleAppMention(envelope: SlackEventEnvelope): Promise<vo
       runtime,
       event.channel,
       slackThreadTs,
-      'What would you like Nuphos to look into? Mention me in this thread with your question.',
+      'What would you like Cerin to look into? Mention me in this thread with your question.',
     )
     await markSlackEvent(eventId, 'completed')
 

@@ -125,7 +125,7 @@ async function completeDiscordInteraction(
   } catch (err) {
     logError('discord.interaction.error', err, { interaction_id: interaction.id })
     await dependencies.editResponse(interaction.application_id, interaction.token, {
-      content: 'Nuphos could not complete this interaction. Please try again.',
+      content: 'Cerin could not complete this interaction. Please try again.',
     })
   }
 }

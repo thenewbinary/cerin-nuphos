@@ -94,7 +94,7 @@ function savedEventFromItem(scope: MemoryScope, item: MemoryListItem, title?: st
 export const nativeMemoryProvider: MemoryProvider = {
   meta: {
     id: 'native',
-    displayName: 'Nuphos Memory',
+    displayName: 'Cerin Memory',
     dataResidency: 'local',
     spiVersion: MEMORY_SPI_VERSION,
   },

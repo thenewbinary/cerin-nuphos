@@ -197,6 +197,6 @@ export async function finishMongoDatabasePlanExecutionWithRetry(
   throw new AppError(
     503,
     'database_change_finalization_failed',
-    'The database operation finished, but Nuphos could not persist its final Plan status. Do not retry the mutation; reload the Plan and retry status reconciliation.',
+    'The database operation finished, but Cerin could not persist its final Plan status. Do not retry the mutation; reload the Plan and retry status reconciliation.',
   )
 }

@@ -67,10 +67,10 @@ export function signInSource(header: (name: string) => string | undefined): Sign
 
 // A Map, so a client like `constructor/1` cannot reach Object.prototype.
 const APPS = new Map([
-  ['nuphos-desktop', 'Nuphos Desktop'],
-  ['nuphos-ios', 'Nuphos for iOS'],
-  ['nuphos-android', 'Nuphos for Android'],
-  ['nuphos-cli', 'Nuphos CLI'],
+  ['nuphos-desktop', 'Cerin Desktop'],
+  ['nuphos-ios', 'Cerin for iOS'],
+  ['nuphos-android', 'Cerin for Android'],
+  ['nuphos-cli', 'Cerin CLI'],
 ])
 const BROWSERS: [RegExp, string][] = [
   [/Edg\//, 'Edge'],

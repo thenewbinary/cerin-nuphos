@@ -43,7 +43,7 @@ fi
 
 if [ -r "$env_path" ]; then
   # setup-credentials.sh owns this mode-0600 file. The GraphQL helper sources
-  # it again independently; this read is for the Nuphos team id used in links.
+  # it again independently; this read is for the Cerin team id used in links.
   # shellcheck disable=SC1090
   source "$env_path"
 fi
@@ -127,7 +127,7 @@ PY
 )"
 
 if [ -n "$nuphos_team_id" ] && [ -n "$nuphos_session_id" ]; then
-  session_url="https://nuphos.ai/teams/${nuphos_team_id}/agent/${nuphos_session_id}"
+  session_url="${NUPHOS_PUBLIC_URL:-${NUPHOS_BACKEND_URL:-https://api.cerin.ai}}/teams/${nuphos_team_id}/agent/${nuphos_session_id}"
   python3 - "$attachment_payload" "$issue_id" "$session_url" "$nuphos_session_id" <<'PY'
 import json
 import sys
@@ -141,7 +141,7 @@ query = """mutation CreateAttachment($input: AttachmentCreateInput!) {
 }"""
 attachment_input = {
     "issueId": issue_id,
-    "title": "Nuphos session",
+    "title": "Cerin session",
     "subtitle": "Source context",
     "url": session_url,
     "metadata": {"nuphosSessionId": session_id},
@@ -160,7 +160,7 @@ with open(sys.argv[1]) as src:
 issue["sourceLink"] = {"success": False, "url": sys.argv[2]}
 print(json.dumps(issue, ensure_ascii=False, indent=2))
 PY
-    echo "The Linear issue was created, but its Nuphos session Link failed. Do not rerun issue-create.sh; attach the URL to issue $issue_id with attachmentCreate." >&2
+    echo "The Linear issue was created, but its Cerin session Link failed. Do not rerun issue-create.sh; attach the URL to issue $issue_id with attachmentCreate." >&2
     exit 1
   fi
 fi

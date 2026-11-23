@@ -153,7 +153,7 @@ const unreachable = () =>
   new AppError(
     502,
     'runtime_unreachable',
-    'Nuphos could not reach this agent to finish connecting. Check that its address is reachable from Nuphos, then generate a new pairing code.',
+    'Cerin could not reach this agent to finish connecting. Check that its address is reachable from Cerin, then generate a new pairing code.',
   )
 
 export async function exchangePairingCode(

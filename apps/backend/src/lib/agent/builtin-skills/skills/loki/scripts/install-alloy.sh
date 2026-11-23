@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install & configure Grafana Alloy on a GCE VM so its logs ship to Loki.
 #
-# Runs ON the target VM as root. The Nuphos agent pipes it over SSH:
+# Runs ON the target VM as root. The Cerin agent pipes it over SSH:
 #   gcloud compute ssh <vm> --zone <zone> --command \
 #     "sudo LOKI_URL=http://10.0.0.5:3100 ENV_LABEL=stage SERVICE_LABEL=c-engine bash -s" \
 #     < skills/loki/scripts/install-alloy.sh
@@ -81,7 +81,7 @@ fi
 
 mkdir -p /etc/alloy
 cat > /etc/alloy/config.alloy <<EOF
-// Managed by Nuphos (loki skill). Re-running the installer overwrites this file.
+// Managed by Cerin (loki skill). Re-running the installer overwrites this file.
 loki.write "default" {
   endpoint {
     url = "${LOKI_URL}/loki/api/v1/push"

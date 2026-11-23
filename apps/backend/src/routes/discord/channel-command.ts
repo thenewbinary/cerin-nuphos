@@ -156,11 +156,11 @@ export async function handleDiscordChannelCommand(
     return 'This command is only available inside a Discord server channel.'
   }
   if (!canManageDiscordChannel(interaction.member?.permissions)) {
-    return 'You need the Discord Manage Channels permission to change Nuphos access here.'
+    return 'You need the Discord Manage Channels permission to change Cerin access here.'
   }
   const installation = await dependencies.findInstallation(guildId)
 
-  if (!installation) return 'This server is not connected to a Nuphos workspace.'
+  if (!installation) return 'This server is not connected to a Cerin workspace.'
   const userMapping = await dependencies.findUserMapping({
     guildId,
     teamId: installation.teamId,
@@ -171,7 +171,7 @@ export async function handleDiscordChannelCommand(
     : null
 
   if (!userMapping || membership?.role !== 'ADMINISTRATOR') {
-    return 'Only a linked Nuphos workspace administrator can change channel access.'
+    return 'Only a linked Cerin workspace administrator can change channel access.'
   }
   let channel: Awaited<ReturnType<DiscordChannelCommandDependencies['getChannel']>>
 
@@ -186,7 +186,7 @@ export async function handleDiscordChannelCommand(
       discord_error_code: error instanceof DiscordApiError ? error.code : undefined,
     })
     if (error instanceof DiscordApiError && error.status === 403) {
-      return 'Nuphos cannot access this channel. In Discord, open Edit Channel → Permissions, add the Nuphos bot, and allow View Channel, Send Messages, Read Message History, Create Public Threads, and Send Messages in Threads. For a private thread, also invite Nuphos to the thread. Then retry this command. /nuphos enable does not change Discord permissions.'
+      return 'Cerin cannot access this channel. In Discord, open Edit Channel → Permissions, add the Cerin bot, and allow View Channel, Send Messages, Read Message History, Create Public Threads, and Send Messages in Threads. For a private thread, also invite Cerin to the thread. Then retry this command. /nuphos enable does not change Discord permissions.'
     }
     if (error instanceof DiscordApiError && error.status === 404) {
       return 'Discord could not find this channel. Open an existing server channel and retry the command.'
@@ -219,6 +219,6 @@ export async function handleDiscordChannelCommand(
   })
 
   return command === 'enable'
-    ? '✅ Nuphos is enabled in this channel. Linked workspace members can now mention @Nuphos.'
-    : '⛔ Nuphos is disabled in this channel.'
+    ? '✅ Cerin is enabled in this channel. Linked workspace members can now mention @Cerin.'
+    : '⛔ Cerin is disabled in this channel.'
 }

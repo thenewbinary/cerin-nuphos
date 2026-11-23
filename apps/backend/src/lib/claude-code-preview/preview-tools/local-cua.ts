@@ -34,9 +34,9 @@ const cuaTool: DeviceTool = {
   audit: (args) => `[computer-use] ${String(args.code)}`,
   errorReason: 'computer_use_error',
   noDevice:
-    'No local device is usable in this conversation. Either no Mac is selected in its credential selector, or the selected one is offline: Nuphos Desktop must be open and signed in on it, with local exec allowed. list_credentials shows which.',
+    'No local device is usable in this conversation. Either no Mac is selected in its credential selector, or the selected one is offline: Cerin Desktop must be open and signed in on it, with local exec allowed. list_credentials shows which.',
   unsupported:
-    'The device disconnected or does not support Computer Use (it needs Nuphos Desktop on macOS).',
+    'The device disconnected or does not support Computer Use (it needs Cerin Desktop on macOS).',
 }
 
 const definition = {

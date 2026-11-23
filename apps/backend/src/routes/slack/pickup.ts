@@ -17,7 +17,7 @@ export const PICKUP_SESSION_ACTION = 'nuphos_pickup_session'
 const PICKUP_LIST_LIMIT = 5
 
 const NOT_LINKED_MESSAGE =
-  'Your Slack account is not linked to Nuphos yet. Link it in Nuphos → Settings → Slack first.'
+  'Your Slack account is not linked to Cerin yet. Link it in Cerin → Settings → Slack first.'
 
 type PickupIdentity = {
   nuphosTeamId: string
@@ -70,7 +70,7 @@ export async function buildPickupCommandResponse(args: {
   if (conversations.length === 0) {
     return {
       response_type: 'ephemeral',
-      text: 'You have no recent Nuphos conversations on this team to pick up.',
+      text: 'You have no recent Cerin conversations on this team to pick up.',
     }
   }
   const bound = new Set(
@@ -113,7 +113,7 @@ export async function buildPickupCommandResponse(args: {
 
   return {
     response_type: 'ephemeral',
-    text: 'Pick up a Nuphos conversation',
+    text: 'Pick up a Cerin conversation',
     blocks,
   }
 }
@@ -141,7 +141,7 @@ export async function handlePickupSessionInteraction(args: {
     const botContext = await resolveSlackBotForWorkspace(args.slackWorkspaceId)
 
     if (!botContext?.nuphosTeamId) {
-      await respond('Nuphos is not fully installed for this Slack workspace yet.')
+      await respond('Cerin is not fully installed for this Slack workspace yet.')
 
       return
     }
@@ -179,7 +179,7 @@ export async function handlePickupSessionInteraction(args: {
     await respond(
       result.status === 'already_bound'
         ? `This conversation already has a Slack thread: <${result.thread.url}|open it> and reply there.`
-        : `Done — continue in <${result.thread.url}|your DM with Nuphos>.`,
+        : `Done — continue in <${result.thread.url}|your DM with Cerin>.`,
     )
   } catch (err) {
     logError('slack.session_pickup.interaction_error', err, {
@@ -190,7 +190,7 @@ export async function handlePickupSessionInteraction(args: {
     await respond(
       err instanceof AppError
         ? err.message
-        : 'Nuphos hit an error while picking up that conversation. Try again in a moment.',
+        : 'Cerin hit an error while picking up that conversation. Try again in a moment.',
     ).catch(() => {
       // The response_url itself failed; the error is already logged above.
     })

@@ -7,7 +7,7 @@ fi
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 source "$script_dir/../../_runtime/scripts/nuphos-token.sh"
 auth_token="$(nuphos_token)"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.nuphos.ai}}"
+base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.cerin.ai}}"
 body=$(python3 -c 'import json, sys; print(json.dumps({"tool": sys.argv[1], "arguments": json.load(sys.stdin)}))' "$3")
 # Server resolves the selected binding, account and authorizing member. No raw secrets.
 curl -sS --fail-with-body --max-time 60 \

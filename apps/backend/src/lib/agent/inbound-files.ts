@@ -170,7 +170,7 @@ export function renderInboundFileInstruction(ingested: IngestedFiles): string {
 
   return (
     `[The user attached ${String(ingested.fileNames.length)} file(s) to this message; they are in the ` +
-    `Nuphos file-transfer store (transfer group ${ingested.groupId}): ${names}. To work with them, ` +
+    `Cerin file-transfer store (transfer group ${ingested.groupId}): ${names}. To work with them, ` +
     `load the file-transfer skill and pull them into the sandbox: ` +
     `bash skills/file-transfer/scripts/transfer-pull.sh "$TEAM" ${ingested.groupId} ./uploads]`
   )

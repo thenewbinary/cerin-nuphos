@@ -62,7 +62,7 @@ larkInstallationsRoutes.put('/', requireTeamRole('ADMINISTRATOR'), async (c) => 
     throw new AppError(
       400,
       'invalid_request',
-      'The event Encrypt Key is required (Nuphos fails closed without it)',
+      'The event Encrypt Key is required (Cerin fails closed without it)',
     )
   }
 

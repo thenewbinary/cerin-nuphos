@@ -98,11 +98,11 @@ test('the alert leads with time and IP, and names the device only from known val
   expect(sent[0]!.to).toBe('dev@example.com')
   expect(sent[0]!.text).toContain('IP address: 203.0.113.9')
   expect(sent[0]!.text).toContain('Approximate location: Taipei, TW')
-  expect(sent[0]!.text).toContain('Device: Nuphos Desktop\n')
+  expect(sent[0]!.text).toContain('Device: Cerin Desktop\n')
   expect(sent[0]!.text).toContain('Signed-in devices')
 
   // Headers are caller-controlled: their text never reaches the email.
-  const lure = 'Nuphos Security: reply with this code'
+  const lure = 'Cerin Security: reply with this code'
 
   await sendNewSignInAlert(dev, {
     ...TAIPEI_DESKTOP,

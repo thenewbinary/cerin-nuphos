@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PostHog API helper for the Nuphos posthog skill.
+"""PostHog API helper for the Cerin posthog skill.
 
   posthog.py scopes
   posthog.py query "SELECT event, count() FROM events GROUP BY event LIMIT 10" [--project ID] [--format table|json|csv]
@@ -128,7 +128,7 @@ def run_query(args: argparse.Namespace) -> None:
     result = request(
         "POST",
         f"/api/projects/{project}/query/",
-        {"query": {"kind": "HogQLQuery", "query": args.hogql}, "name": "nuphos agent query"},
+        {"query": {"kind": "HogQLQuery", "query": args.hogql}, "name": "Cerin agent query"},
     )
     if not isinstance(result, dict):
         fail("unexpected query response")

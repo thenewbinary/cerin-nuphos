@@ -1,4 +1,5 @@
 import { config } from '@/config'
+import { publicWebUrl } from '@/lib/public-urls'
 
 export type GoogleProfile = {
   id: string
@@ -65,7 +66,7 @@ function assertAllowedGoogleRedirectUri(raw: string): void {
   // Local desktop / dev clients run an ephemeral HTTP listener on a
   // random port with a client-chosen path, so we only constrain the
   // hostname here. Public hosts still require an exact callback path
-  // (see the nuphos check below).
+  // (see the configured public origins below).
   const isLocal =
     (url.protocol === 'http:' || url.protocol === 'https:') &&
     (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
@@ -74,7 +75,9 @@ function assertAllowedGoogleRedirectUri(raw: string): void {
 
   const isNuphos =
     url.protocol === 'https:' &&
-    (url.hostname === 'nuphos.ai' || url.hostname === 'www.nuphos.ai') &&
+    [new URL(config.auth.publicBaseUrl).origin, new URL(publicWebUrl()).origin].includes(
+      url.origin,
+    ) &&
     url.pathname === '/api/google/callback'
 
   if (isNuphos) return

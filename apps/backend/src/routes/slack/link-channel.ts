@@ -55,7 +55,7 @@ export async function handleLinkChannelInteraction(args: {
     return await deliver({
       response_type: 'ephemeral',
       replace_original: false,
-      text: 'Nuphos is not installed for this Slack workspace yet.',
+      text: 'Cerin is not installed for this Slack workspace yet.',
     })
   }
 
@@ -78,8 +78,8 @@ export async function handleLinkChannelInteraction(args: {
 
   if (actorMembership?.role !== 'ADMINISTRATOR') {
     const adminHint = linkedByNuphosUserId
-      ? 'Only team administrators can link channels to Nuphos.'
-      : 'Your Slack account is not linked to a Nuphos administrator. Link it in Nuphos → Settings → Slack — note that only team administrators can link channels.'
+      ? 'Only team administrators can link channels to Cerin.'
+      : 'Your Slack account is not linked to a Cerin administrator. Link it in Cerin → Settings → Slack — note that only team administrators can link channels.'
 
     logEvent('info', 'slack.onboarding.channel_link.denied', {
       slack_workspace_id: slackWorkspaceId,
@@ -116,7 +116,7 @@ export async function handleLinkChannelInteraction(args: {
       linkedBySlackUserId: slackUserId,
       linkedByNuphosUserId: linkedByNuphosUserId ?? undefined,
     })
-  const inviteHint = `I couldn't access <#${channelId}>. If it's a private channel, run \`/invite @Nuphos\` there first, then pick it again.`
+  const inviteHint = `I couldn't access <#${channelId}>. If it's a private channel, run \`/invite @Cerin\` there first, then pick it again.`
 
   // Home-tab select: no response_url, so success shows up by re-publishing the
   // view (the channel appears under "Linked channels") and failure guidance is

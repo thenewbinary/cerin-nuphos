@@ -1,6 +1,6 @@
 ---
 name: vanta
-description: Read a team's Vanta compliance posture (failing tests / vulnerabilities that need attention) through the Nuphos API. Use when the user asks what compliance or security issues their infrastructure has, what is failing in Vanta, or what to remediate for SOC 2 / ISO 27001 / HIPAA.
+description: Read a team's Vanta compliance posture (failing tests / vulnerabilities that need attention) through the Cerin API. Use when the user asks what compliance or security issues their infrastructure has, what is failing in Vanta, or what to remediate for SOC 2 / ISO 27001 / HIPAA.
 ---
 
 # Vanta compliance
@@ -9,8 +9,8 @@ Use this skill when the user wants to know which compliance checks are failing o
 what infrastructure issues need to be resolved for their security frameworks
 (SOC 2, ISO 27001, HIPAA, PCI, GDPR) as tracked by Vanta.
 
-The Vanta access token is held **server-side** by Nuphos. You never handle it —
-read everything through the Nuphos API with `ac`. Do not ask the user for a Vanta
+The Vanta access token is held **server-side** by Cerin. You never handle it —
+read everything through the Cerin API with `ac`. Do not ask the user for a Vanta
 token, and do not paste tokens into chat.
 
 ## Discovering the integration
@@ -61,4 +61,4 @@ Fields: `id`, `name`, `category`, `status`, `failureDescription`,
 
 - Read-only. This skill only reads compliance status; it never writes to Vanta.
 - Never print or echo the Vanta token (it is not exposed to the sandbox by
-  default — reads go through the Nuphos API above).
+  default — reads go through the Cerin API above).

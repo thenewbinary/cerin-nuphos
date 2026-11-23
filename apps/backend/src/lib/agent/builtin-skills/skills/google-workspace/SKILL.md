@@ -1,6 +1,6 @@
 ---
 name: google-workspace
-description: Read and act on the message sender's own Gmail, Google Drive and Google Calendar — search, read, label, draft and send mail; search, read, upload, and share Drive files and Google Docs/Sheets; list, create and update calendar events — through the Gmail, Google Drive or Google Calendar Personal Credential the member connected in Nuphos Settings. Use whenever the user asks about their email or inbox, wants a reply drafted or sent, asks to find, read, or save a file in their Google Drive, or asks about their schedule or to set up a meeting. Nuphos hands the agent a short-lived Google access token; the agent calls the Gmail, Drive and Calendar REST APIs directly with curl.
+description: Read and act on the message sender's own Gmail, Google Drive and Google Calendar — search, read, label, draft and send mail; search, read, upload, and share Drive files and Google Docs/Sheets; list, create and update calendar events — through the Gmail, Google Drive or Google Calendar Personal Credential the member connected in Cerin Settings. Use whenever the user asks about their email or inbox, wants a reply drafted or sent, asks to find, read, or save a file in their Google Drive, or asks about their schedule or to set up a meeting. Cerin hands the agent a short-lived Google access token; the agent calls the Gmail, Drive and Calendar REST APIs directly with curl.
 ---
 
 # google-workspace
@@ -40,15 +40,14 @@ A 404 `personal_credential_not_connected` means this member has not connected
 that provider through this team: ask them to connect Gmail, Google Drive or Google Calendar under
 Settings → Personal Credentials, then retry. A 409
 `google_oauth_client_not_configured` means the team has no Google OAuth client
-yet: a team administrator adds one in Team settings (guide:
-https://docs.nuphos.ai/connectors/google-workspace). There is no team fallback.
+yet: a team administrator adds one in Team settings {{GOOGLE_WORKSPACE_GUIDE}}. There is no team fallback.
 
 A 409 `personal_credential_via_composio` means the member connected through
 Composio instead: there is no token, so skip the curl recipes below and run
 Composio's Gmail / Google Drive / Google Calendar tools
 (https://docs.composio.dev/toolkits/gmail,
 https://docs.composio.dev/toolkits/googledrive,
-https://docs.composio.dev/toolkits/googlecalendar) through Nuphos:
+https://docs.composio.dev/toolkits/googlecalendar) through Cerin:
 
 ```bash
 bash skills/google-workspace/scripts/composio.sh <teamId> GMAIL_FETCH_EMAILS '{"query":"is:unread newer_than:2d","max_results":20}'

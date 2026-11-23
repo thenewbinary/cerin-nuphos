@@ -76,7 +76,7 @@ export async function assertLarkAppAvailable(appId: string, teamId: ObjectId): P
     throw new AppError(
       409,
       'lark_app_taken',
-      'This Lark app is already connected to another Nuphos team',
+      'This Lark app is already connected to another Cerin team',
     )
   }
 }

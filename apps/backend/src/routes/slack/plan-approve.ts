@@ -32,7 +32,7 @@ const REFUSALS: Record<string, [reason: string, message?: string]> = {
   plan_not_proposed: ['plan_not_proposed'],
   plan_incomplete: [
     'plan_incomplete',
-    'This plan is missing required sections (steps, cost, or risk) and cannot be approved yet — open it in Nuphos.',
+    'This plan is missing required sections (steps, cost, or risk) and cannot be approved yet — open it in Cerin.',
   ],
   approval_race_lost: ['approval_race_lost'],
 }
@@ -70,7 +70,7 @@ export async function handlePlanApproveInteraction(args: {
   } catch {
     await reject(
       'malformed_value',
-      'This approval button is malformed — open the plan in Nuphos instead.',
+      'This approval button is malformed — open the plan in Cerin instead.',
     )
 
     return
@@ -80,7 +80,7 @@ export async function handlePlanApproveInteraction(args: {
   if (!planId || !sessionId) {
     await reject(
       'malformed_value',
-      'This approval button is malformed — open the plan in Nuphos instead.',
+      'This approval button is malformed — open the plan in Cerin instead.',
     )
 
     return
@@ -91,7 +91,7 @@ export async function handlePlanApproveInteraction(args: {
   if (!botContext) {
     await reject(
       'workspace_not_installed',
-      'Nuphos is not fully installed for this Slack workspace.',
+      'Cerin is not fully installed for this Slack workspace.',
       {
         plan_id: planId,
         session_id: sessionId,
@@ -113,7 +113,7 @@ export async function handlePlanApproveInteraction(args: {
   if (!thread || thread.slackWorkspaceId !== args.slackWorkspaceId) {
     await reject(
       'thread_unresolved',
-      "Approved plans resume in their original Slack thread, but I couldn't match this one — open the plan in Nuphos to approve and run it there.",
+      "Approved plans resume in their original Slack thread, but I couldn't match this one — open the plan in Cerin to approve and run it there.",
       { plan_id: planId, session_id: sessionId, thread_found: Boolean(thread) },
     )
 
@@ -130,7 +130,7 @@ export async function handlePlanApproveInteraction(args: {
   if (!mapping) {
     await reject(
       'user_not_linked',
-      'Your Slack account is not linked to Nuphos yet. Link it in Nuphos → Settings → Slack, then press Approve again.',
+      'Your Slack account is not linked to Cerin yet. Link it in Cerin → Settings → Slack, then press Approve again.',
       { plan_id: planId, session_id: sessionId, team_id: teamId },
     )
 
@@ -145,7 +145,7 @@ export async function handlePlanApproveInteraction(args: {
   if (!membership) {
     await reject(
       'not_team_member',
-      "Your Nuphos account is no longer a member of this team, so you can't approve this plan.",
+      "Your Cerin account is no longer a member of this team, so you can't approve this plan.",
       {
         plan_id: planId,
         session_id: sessionId,
@@ -233,7 +233,7 @@ export async function handlePlanApproveInteraction(args: {
         elements: [
           {
             type: 'mrkdwn',
-            text: `✅ Approved by <@${args.slackUserId}> — Nuphos is starting execution in this thread.`,
+            text: `✅ Approved by <@${args.slackUserId}> — Cerin is starting execution in this thread.`,
           },
         ],
       },

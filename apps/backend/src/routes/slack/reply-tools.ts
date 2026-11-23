@@ -118,7 +118,7 @@ export function createSlackReplyToolContext(args: {
         return {
           ok: false,
           error:
-            'Slack workspace search is unavailable: this workspace must re-install Nuphos to grant the search scopes. Answer with your other tools instead.',
+            'Slack workspace search is unavailable: this workspace must re-install Cerin to grant the search scopes. Answer with your other tools instead.',
         }
       }
       // Bot-token search needs an action_token from the triggering event. If it

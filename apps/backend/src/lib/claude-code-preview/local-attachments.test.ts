@@ -73,7 +73,7 @@ test('a Desktop that cannot take a value inline is refused as outdated, not as a
     await expect(failed).rejects.toMatchObject({
       status: 409,
       code: 'runtime_outdated',
-      message: expect.stringContaining('Nuphos Desktop 0.95.0 or later'),
+      message: expect.stringContaining('Cerin Desktop 0.95.0 or later'),
     })
     // Refused before anything crosses: the old Desktop never sees the value.
     expect(desktop.opened()).toBe(false)
