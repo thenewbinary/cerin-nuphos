@@ -1,8 +1,10 @@
 import { RefreshCw } from 'lucide-react'
+import { useId } from 'react'
 
 import { relativeTimeFromNow } from '../../components/agent/panel/textUtils.ts'
 import { t, tKey } from '../../i18n/index.ts'
 
+import { LeadGlow } from './activityGlow.tsx'
 import { smoothPath } from './activityPath.ts'
 import { BotAvatarStack } from './botAvatarStack.tsx'
 
@@ -76,6 +78,8 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
     geometries.map(({ line, points }) => ({ id: line.id, y: points.at(-1)?.y ?? CHART_BOTTOM })),
   )
   const dayFormat = new Intl.DateTimeFormat(undefined, { weekday: 'short' })
+  const glowId = `dashboard-activity-${useId().replaceAll(':', '')}`
+  const lead = geometries[0]
 
   return (
     <div className="relative mt-6">
@@ -83,7 +87,7 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
         <div className="dashboard-eyebrow">{t('Tasks')}</div>
         <div className="dashboard-headline mt-2">{activity.total.toLocaleString()}</div>
       </div>
-      <div className="dashboard-chart -mt-4">
+      <div className={`dashboard-chart -mt-4 ${lines[0].bot ? '' : 'dashboard-chart-plain'}`}>
         <div className="dashboard-chart-plot">
           <svg
             role="img"
@@ -105,8 +109,14 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
                 vectorEffect="non-scaling-stroke"
               />
             ))}
+            {lead.line.total > 0 && (
+              <LeadGlow
+                id={glowId}
+                d={`${lead.d} L${String(CHART_RIGHT)} ${String(CHART_BOTTOM)} L${String(CHART_LEFT)} ${String(CHART_BOTTOM)} Z`}
+              />
+            )}
             {[...geometries].reverse().map(({ line, d }) => {
-              const lead = line.id === geometries[0].line.id
+              const leading = line.id === geometries[0].line.id
               const index = geometries.findIndex((geometry) => geometry.line.id === line.id)
 
               return (
@@ -115,10 +125,10 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
                   d={d}
                   fill="none"
                   stroke={
-                    lead ? 'rgb(var(--color-status-warning))' : 'rgb(var(--color-text-tertiary))'
+                    leading ? 'rgb(var(--color-status-warning))' : 'rgb(var(--color-text-tertiary))'
                   }
-                  strokeOpacity={lead ? 1 : 0.7 - index * 0.14}
-                  strokeWidth={lead ? 2.6 : 2.2}
+                  strokeOpacity={leading ? 1 : 0.7 - index * 0.14}
+                  strokeWidth={leading ? 2.6 : 2.2}
                   strokeDasharray="9 9"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -206,7 +216,7 @@ function ActivityChart({ activity }: { activity: FinishedPerDay }) {
                   {line.bot.title}
                 </span>
               )}
-              <span className="block truncate text-[13px] font-medium leading-4 tabular-nums text-main">
+              <span className="block truncate text-[14px] font-medium leading-[18px] tabular-nums text-main">
                 {line.total.toLocaleString()}
               </span>
             </span>

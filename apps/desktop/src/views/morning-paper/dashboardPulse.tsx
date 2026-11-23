@@ -56,7 +56,7 @@ export function DashboardPulse({
           <CardLabel label={tKey('morningPaper.changedTitle')} dot="bg-data-1" />
           <div className="dashboard-number mt-8">{changed}</div>
           <div className="mt-auto flex items-center justify-between gap-2 pt-5">
-            <BotAvatarStack bots={changedBots} size={24} />
+            {changedBots.length > 0 && <BotAvatarStack bots={changedBots} size={24} />}
             <Activity aria-hidden className="size-4 shrink-0 text-tertiary" strokeWidth={1.5} />
           </div>
         </article>

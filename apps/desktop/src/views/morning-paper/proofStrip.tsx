@@ -1,6 +1,7 @@
-import { ArrowUpRight, CheckCircle2 } from 'lucide-react'
+import { ArrowUpRight, Check, CheckCircle2 } from 'lucide-react'
 
 import { AgentAvatar } from '../../components/agent/AgentAvatar.tsx'
+import { relativeTimeFromNow } from '../../components/agent/panel/textUtils.ts'
 import { t } from '../../i18n/index.ts'
 import { botAbove } from '../inbox/inboxItems.ts'
 
@@ -18,6 +19,7 @@ type ProofCard = {
   caption: string
   image?: string
   bot?: AgentConversation
+  finishedAt?: string
 }
 
 export function ProofStrip({
@@ -58,6 +60,7 @@ export function ProofStrip({
           sessionId: conversation.sessionId,
           caption: conversation.title || conversation.firstMessage || t('Untitled task'),
           bot: producer(conversation.sessionId),
+          finishedAt: conversation.lastActiveAt,
         }))
 
   if (cards.length === 0) return null
@@ -94,18 +97,49 @@ export function ProofStrip({
             aria-label={card.caption}
             title={card.caption}
             onClick={() => onOpenConversation(card.sessionId)}
-            className={`${CARD} flex min-h-[124px] flex-col justify-between gap-5 p-4`}
+            className={`${CARD} dashboard-proof-result flex min-h-[132px] flex-col justify-between gap-5 p-4`}
           >
-            <span className="flex w-full min-w-0 items-center gap-2">
-              {card.bot && <ProofAvatar bot={card.bot} size={24} />}
-              <CheckCircle2
-                aria-hidden
-                className="size-4 shrink-0 text-status-success"
-                strokeWidth={1.6}
-              />
-              <ArrowUpRight aria-hidden className={`${ARROW} ml-auto`} strokeWidth={1.5} />
+            <span className="flex w-full min-w-0 items-center gap-3">
+              {card.bot ? (
+                <ProofAvatar bot={card.bot} size={32} />
+              ) : (
+                <span aria-hidden className="dashboard-proof-done">
+                  <Check className="size-4" strokeWidth={2} />
+                </span>
+              )}
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[14px] font-medium leading-5 tracking-[-0.005em] text-main">
+                  {card.bot ? card.bot.title : t('Completed')}
+                </span>
+                <span className="flex min-w-0 items-center gap-1.5 text-[12px] leading-4 text-secondary">
+                  {card.bot && (
+                    <>
+                      <CheckCircle2
+                        aria-hidden
+                        className="size-3.5 shrink-0 text-status-success"
+                        strokeWidth={1.7}
+                      />
+                      <span className="shrink-0">{t('Completed')}</span>
+                    </>
+                  )}
+                  {card.finishedAt && (
+                    <>
+                      {card.bot && (
+                        <span
+                          aria-hidden
+                          className="size-[3px] shrink-0 rounded-full bg-line-control"
+                        />
+                      )}
+                      <time dateTime={card.finishedAt} className="truncate text-tertiary">
+                        {relativeTimeFromNow(card.finishedAt)}
+                      </time>
+                    </>
+                  )}
+                </span>
+              </span>
+              <ArrowUpRight aria-hidden className={`${ARROW} self-start`} strokeWidth={1.5} />
             </span>
-            <span className="line-clamp-2 w-full min-w-0 break-words text-[14px] font-medium leading-[1.4] tracking-[-0.005em] text-main">
+            <span className="line-clamp-2 w-full min-w-0 break-words text-[12px] leading-[1.45] text-tertiary">
               {card.caption}
             </span>
           </button>

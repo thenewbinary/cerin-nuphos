@@ -44,11 +44,11 @@
 
 html.light .dashboard-canvas {
   --dashboard-ink: color-mix(in srgb, rgb(var(--color-text-primary)) 16%, transparent);
-  --dashboard-edge: color-mix(in srgb, rgb(var(--color-text-primary)) 10%, transparent);
+  --dashboard-edge: color-mix(in srgb, rgb(var(--color-text-primary)) 8%, transparent);
   --dashboard-highlight: var(--surface-inner-highlight);
   --dashboard-sheen: color-mix(in srgb, rgb(var(--color-surface-raised)) 96%, transparent);
-  --dashboard-panel-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 50%, transparent);
-  --dashboard-tile-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 60%, transparent);
+  --dashboard-panel-fill: color-mix(in srgb, rgb(var(--color-surface-sunken)) 46%, transparent);
+  --dashboard-tile-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 88%, transparent);
   --dashboard-card-fill: color-mix(in srgb, rgb(var(--color-surface-raised)) 82%, transparent);
   --dashboard-glow: color-mix(in srgb, rgb(var(--color-data-1)) 16%, transparent);
   --dashboard-inner: color-mix(in srgb, rgb(var(--color-surface-raised)) 70%, transparent);
@@ -288,10 +288,10 @@ html.light .dashboard-canvas {
   left: calc(100% - var(--dashboard-chip-gutter) + 22px);
   display: flex;
   max-width: calc(var(--dashboard-chip-gutter) - 22px);
-  height: 36px;
+  height: 38px;
   align-items: center;
-  gap: 7px;
-  padding: 0 12px 0 10px;
+  gap: 8px;
+  padding: 0 14px 0 11px;
   border: 1px solid var(--dashboard-edge);
   border-radius: 9999px;
   background:
@@ -309,6 +309,24 @@ html.light .dashboard-canvas {
 }
 
 /* Proof --------------------------------------------------------------- */
+
+.dashboard-proof-result {
+  background:
+    linear-gradient(165deg, var(--dashboard-sheen) 0%, transparent 62%), var(--dashboard-tile-fill);
+}
+
+.dashboard-proof-done {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, rgb(var(--color-status-success)) 26%, transparent);
+  border-radius: 9999px;
+  background: color-mix(in srgb, rgb(var(--color-status-success)) 13%, transparent);
+  color: rgb(var(--color-status-success));
+}
 
 .dashboard-proof-card {
   border: 1px solid var(--dashboard-edge);
@@ -360,12 +378,17 @@ html.light .dashboard-canvas {
   }
 
   .dashboard-chart {
-    --dashboard-chip-gutter: 156px;
+    --dashboard-chip-gutter: 176px;
   }
 
   .dashboard-chart-chip-label {
     display: block;
   }
+}
+
+/* A lone total has no bot to name, so its chip needs little room. */
+.dashboard-chart.dashboard-chart-plain {
+  --dashboard-chip-gutter: 84px;
 }
 
 /* A lone card tilts beside the greeting; below that width it sits under it. */
