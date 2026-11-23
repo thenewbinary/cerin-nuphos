@@ -88,7 +88,7 @@ export function DashboardPulse({
                     : 'bg-line-control'
                 }`}
               />
-              {tKey('morningPaper.statusWorking')}
+              {working > 0 ? tKey('morningPaper.statusWorking') : tKey('morningPaper.statusIdle')}
             </span>
           </div>
         </article>

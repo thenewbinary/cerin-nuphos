@@ -107,7 +107,7 @@ function ValueCard({
           aria-hidden
           viewBox="0 0 200 76"
           preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-x-3 bottom-1 h-[82px] w-[calc(100%-24px)]"
+          className="pointer-events-none absolute inset-x-3 bottom-2 h-[40px] w-[calc(100%-24px)]"
         >
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -132,7 +132,7 @@ function ValueCard({
           />
         </svg>
       )}
-      <div className="relative z-10">
+      <div className={`relative z-10 ${geometry ? 'pb-10' : ''}`}>
         <div className="truncate font-mono text-[9px] font-medium uppercase leading-4 tracking-[0.18em] text-tertiary">
           {metric.label}
         </div>
