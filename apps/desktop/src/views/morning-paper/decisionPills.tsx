@@ -13,9 +13,9 @@ import type { InboxQuestion } from '../inbox/inboxItems.ts'
 import type { HeldReply } from '../inbox/useInbox.ts'
 
 const ACTION_BUTTON =
-  'inline-flex h-8 max-w-full cursor-pointer items-center justify-center rounded-full px-3 text-[11px] font-medium outline-none transition-[background-color,color,opacity,transform] duration-150 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-1 focus-visible:ring-offset-surface-raised'
+  'inline-flex h-8 max-w-full cursor-pointer items-center justify-center rounded-full px-3.5 text-[12px] font-medium outline-none transition-[background-color,color,opacity,transform] duration-150 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-1 focus-visible:ring-offset-surface-raised'
 const ICON_BUTTON =
-  'inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-tertiary outline-none transition-[background-color,color] hover:bg-state-hover hover:text-main focus-visible:ring-2 focus-visible:ring-line-focus'
+  'inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-full text-tertiary outline-none transition-[background-color,color] hover:bg-state-hover hover:text-main focus-visible:ring-2 focus-visible:ring-line-focus'
 
 export function DecisionPulseCard({
   rows,
@@ -32,9 +32,9 @@ export function DecisionPulseCard({
     return (
       <article className="dashboard-tile">
         <CardHeader count={0} />
-        <div className="dashboard-number mt-7">0</div>
-        <div className="mt-auto flex min-w-0 items-center gap-2 pt-5 text-[11px] text-secondary">
-          <CheckCircle2 aria-hidden className="size-3.5 shrink-0 text-tertiary" strokeWidth={1.6} />
+        <div className="dashboard-number mt-8">0</div>
+        <div className="mt-auto flex min-w-0 items-center gap-2 pt-5 text-[12px] leading-4 text-secondary">
+          <CheckCircle2 aria-hidden className="size-4 shrink-0 text-tertiary" strokeWidth={1.5} />
           <span className="line-clamp-1 min-w-0 break-words">
             {tKey('morningPaper.decisionsEmpty')}
           </span>
@@ -51,9 +51,9 @@ export function DecisionPulseCard({
   return (
     <article className="dashboard-tile">
       <div className="flex min-w-0 items-start justify-between gap-2">
-        <CardHeader count={rows.length} />
+        <CardHeader count={rows.length > 1 ? undefined : rows.length} />
         {rows.length > 1 && (
-          <div className="flex shrink-0 items-center gap-0.5">
+          <div className="-mr-1.5 flex shrink-0 items-center gap-0.5">
             <button
               type="button"
               aria-label={t('Back')}
@@ -63,7 +63,7 @@ export function DecisionPulseCard({
             >
               <ChevronLeft aria-hidden className="size-3.5" strokeWidth={1.7} />
             </button>
-            <span className="font-mono text-[9px] tabular-nums text-tertiary">
+            <span className="text-[11px] tabular-nums text-tertiary">
               {index + 1}/{rows.length}
             </span>
             <button
@@ -81,21 +81,21 @@ export function DecisionPulseCard({
       <button
         type="button"
         onClick={() => onOpenConversation(row.conversation.sessionId)}
-        className="mt-3 flex w-full min-w-0 items-start gap-2 rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-line-focus"
+        className="mt-5 flex w-full min-w-0 items-start gap-2.5 rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-line-focus"
       >
         <AgentAvatar
           agentId={source.sessionId}
           avatar={source.avatar}
           avatarBackground={source.avatarBackground}
           provider={source.agentRuntime}
-          size={22}
+          size={24}
           showBadge={false}
         />
-        <span className="line-clamp-3 min-w-0 flex-1 break-words pt-0.5 text-[12px] font-medium leading-[1.45] text-main">
+        <span className="line-clamp-3 min-w-0 flex-1 break-words text-[14px] font-medium leading-[1.4] tracking-[-0.005em] text-main">
           “{row.request.question}”
         </span>
       </button>
-      <div className="mt-auto flex min-w-0 flex-wrap items-center gap-1.5 pt-3">
+      <div className="mt-auto flex min-w-0 flex-wrap items-center gap-1.5 pt-4">
         {options.map((option, optionIndex) => (
           <button
             key={option}
@@ -105,7 +105,7 @@ export function DecisionPulseCard({
             className={`${ACTION_BUTTON} ${
               optionIndex === 0
                 ? 'bg-action-primary text-inverse hover:opacity-90'
-                : 'border border-line-control bg-surface-sheet/60 text-primary hover:bg-state-hover'
+                : 'border border-line-control/80 bg-surface-raised/50 text-primary hover:bg-state-hover'
             }`}
           >
             <span className="truncate">{option}</span>
@@ -125,14 +125,16 @@ export function DecisionPulseCard({
   )
 }
 
-function CardHeader({ count }: { count: number }) {
+function CardHeader({ count }: { count?: number }) {
   return (
-    <div className="flex min-w-0 items-center gap-2">
-      <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-status-warning" />
-      <span className="line-clamp-2 min-w-0 break-words text-[10px] font-medium leading-[1.35] text-secondary">
+    <div className="flex min-w-0 items-center gap-2.5">
+      <span aria-hidden className="size-2 shrink-0 rounded-full bg-status-warning" />
+      <span className="line-clamp-2 min-w-0 break-words text-[13px] font-medium leading-[1.3] text-main">
         {tKey('morningPaper.decisionsTitle')}
       </span>
-      <span className="shrink-0 font-mono text-[9px] tabular-nums text-tertiary">{count}</span>
+      {count !== undefined && (
+        <span className="shrink-0 text-[11px] tabular-nums text-tertiary">{count}</span>
+      )}
     </div>
   )
 }

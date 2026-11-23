@@ -31,56 +31,48 @@ export function DashboardHero({
   const single = metrics.length === 1
 
   return (
-    <div className="@container">
-      <header
-        className={`flex min-w-0 flex-col gap-7 lg:flex-row lg:items-start lg:justify-between lg:gap-8 ${
-          single ? 'dashboard-hero-single' : ''
-        }`}
-      >
-        <div className="dashboard-hero-copy min-w-0 flex-1 lg:pb-5 lg:pt-2">
-          <h1 className="max-w-[760px] break-words font-display text-[42px] font-light leading-[1.04] tracking-[-0.05em] text-main sm:text-[52px]">
-            {greetingText(new Date(enteredAt), name)}
-          </h1>
-          <div className="mt-4 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-[12px] text-secondary">
-            <time dateTime={new Date(enteredAt).toISOString()}>
-              {new Intl.DateTimeFormat(undefined, {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              }).format(enteredAt)}
-            </time>
-            {workingCount > 0 && (
+    <header className={`dashboard-hero ${single ? 'dashboard-hero-single' : ''}`}>
+      <div className="dashboard-hero-copy min-w-0 flex-1">
+        <h1 className="dashboard-greeting">{greetingText(new Date(enteredAt), name)}</h1>
+        <div className="mt-4 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-[14px] leading-5 text-secondary">
+          <time dateTime={new Date(enteredAt).toISOString()}>
+            {new Intl.DateTimeFormat(undefined, {
+              weekday: 'long',
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            }).format(enteredAt)}
+          </time>
+          {workingCount > 0 && (
+            <span
+              role="status"
+              aria-label={`${String(workingCount)} ${tKey('morningPaper.statusWorking')}`}
+              className="inline-flex items-center gap-2 text-tertiary"
+            >
+              <span aria-hidden className="size-1 rounded-full bg-line-control" />
               <span
-                role="status"
-                aria-label={`${String(workingCount)} ${tKey('morningPaper.statusWorking')}`}
-                className="inline-flex items-center gap-2 text-tertiary"
-              >
-                <span aria-hidden className="size-1 rounded-full bg-line-control" />
-                <span
-                  aria-hidden
-                  className="size-2 animate-pulse rounded-full bg-status-success motion-reduce:animate-none"
-                />
-                <span className="font-medium tabular-nums text-secondary">{workingCount}</span>
-                <span>{tKey('morningPaper.statusWorking')}</span>
-              </span>
-            )}
-          </div>
-        </div>
-        {metrics.length > 0 && (
-          <div className="dashboard-value-deck">
-            {metrics.slice(0, 2).map((metric, index) => (
-              <ValueCard
-                key={metric.id}
-                metric={metric}
-                position={index === 0 ? 'front' : 'back'}
-                single={single}
+                aria-hidden
+                className="size-2 animate-pulse rounded-full bg-status-success motion-reduce:animate-none"
               />
-            ))}
-          </div>
-        )}
-      </header>
-    </div>
+              <span className="font-medium tabular-nums text-secondary">{workingCount}</span>
+              <span>{tKey('morningPaper.statusWorking')}</span>
+            </span>
+          )}
+        </div>
+      </div>
+      {metrics.length > 0 && (
+        <div className="dashboard-value-deck">
+          {metrics.slice(0, 2).map((metric, index) => (
+            <ValueCard
+              key={metric.id}
+              metric={metric}
+              position={index === 0 ? 'front' : 'back'}
+              single={single}
+            />
+          ))}
+        </div>
+      )}
+    </header>
   )
 }
 
@@ -98,7 +90,7 @@ function ValueCard({
 
   return (
     <article
-      className={`dashboard-glass dashboard-value-card dashboard-value-${position} ${
+      className={`dashboard-value-card dashboard-value-${position} ${
         single ? 'dashboard-value-single' : ''
       }`}
     >
@@ -107,13 +99,13 @@ function ValueCard({
           aria-hidden
           viewBox="0 0 200 76"
           preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-x-3 bottom-2 h-[40px] w-[calc(100%-24px)]"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[52px] w-full"
         >
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="0%"
-                stopColor="color-mix(in srgb, rgb(var(--color-data-1)) 18%, transparent)"
+                stopColor="color-mix(in srgb, rgb(var(--color-data-1)) 22%, transparent)"
               />
               <stop
                 offset="100%"
@@ -126,22 +118,18 @@ function ValueCard({
             d={geometry.line}
             fill="none"
             stroke="rgb(var(--color-data-1))"
-            strokeOpacity="0.34"
-            strokeWidth="1.2"
+            strokeOpacity="0.55"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
           />
         </svg>
       )}
-      <div className={`relative z-10 ${geometry ? 'pb-10' : ''}`}>
-        <div className="truncate font-mono text-[9px] font-medium uppercase leading-4 tracking-[0.18em] text-tertiary">
-          {metric.label}
-        </div>
-        <div className="mt-6 whitespace-nowrap font-display text-[36px] font-light leading-none tracking-[-0.05em] tabular-nums text-main">
-          {metric.value}
-        </div>
-        {metric.caption && (
-          <div className="mt-2 truncate text-[10px] leading-4 text-tertiary">{metric.caption}</div>
-        )}
+      <div className={`relative z-10 ${geometry ? 'pb-9' : ''}`}>
+        <div className="dashboard-value-label">{metric.label}</div>
+        <div className="dashboard-value-figure">{metric.value}</div>
+        {metric.caption && <div className="dashboard-value-caption">{metric.caption}</div>}
       </div>
     </article>
   )

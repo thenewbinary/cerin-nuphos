@@ -76,9 +76,7 @@ function viewModel({
   const counts = morningPaperCounts(items)
   const activities = botActivity(activityInput)
   const bots = activities.map(({ bot }) => bot)
-  const workingBots = activities
-    .filter(({ status }) => status === 'working')
-    .map(({ bot }) => bot)
+  const workingBots = activities.filter(({ status }) => status === 'working').map(({ bot }) => bot)
   const byId = new Map(conversations.map((conversation) => [conversation.sessionId, conversation]))
   const changedBotIds = new Set<string>()
   const changedBots: AgentConversation[] = []
@@ -195,48 +193,50 @@ export function MorningPaperView({ teamId, teamName, currentUserId, onOpenConver
   return (
     <div className="selectable min-h-0 flex-1 overflow-x-hidden overflow-y-auto bg-main text-main">
       <div className="dashboard-canvas min-h-full">
-        <div className="mx-auto w-full max-w-[1180px] px-5 py-8 sm:px-8 sm:py-10 lg:px-12">
-          <DashboardHero
-            enteredAt={visit.enteredAt}
-            name={greetingName}
-            metrics={model.heroMetrics}
-            workingCount={model.workingBots.length}
-          />
+        <div className="mx-auto w-full max-w-[1240px] px-5 py-9 sm:px-8 sm:py-12 lg:px-12">
+          <div className="dashboard-column">
+            <DashboardHero
+              enteredAt={visit.enteredAt}
+              name={greetingName}
+              metrics={model.heroMetrics}
+              workingCount={model.workingBots.length}
+            />
 
-          {loading ? (
-            <div role="status" className="py-8 text-sm text-tertiary">
-              {t('Loading…')}
-            </div>
-          ) : (
-            <main className="mt-8 space-y-6 sm:mt-9 sm:space-y-7">
-              <DashboardPulse
-                title={objective?.length ? objective : workspaceName}
-                eyebrow={objective ? workspaceName : undefined}
-                finished={model.counts.finished}
-                changed={model.counts.changed}
-                changedBots={model.changedBots}
-                working={model.workingBots.length}
-                bots={model.bots}
-                workingBots={model.workingBots}
-                decisions={model.items.decisions}
-                onAnswer={answer}
-                onOpenConversation={onOpenConversation}
-              />
-              <ActivityMonitor
-                activity={model.activity}
-                updatedAt={sessions.dataUpdatedAt || visit.enteredAt}
-                refreshing={refreshing}
-                onRefresh={refresh}
-              />
-              <ProofStrip
-                proof={model.proof}
-                finished={model.items.finished}
-                conversations={model.conversations}
-                isBot={model.isBot}
-                onOpenConversation={onOpenConversation}
-              />
-            </main>
-          )}
+            {loading ? (
+              <div role="status" className="py-8 text-sm text-tertiary">
+                {t('Loading…')}
+              </div>
+            ) : (
+              <main className="mt-9 space-y-6 sm:space-y-8">
+                <DashboardPulse
+                  title={objective?.length ? objective : workspaceName}
+                  eyebrow={objective ? workspaceName : undefined}
+                  finished={model.counts.finished}
+                  changed={model.counts.changed}
+                  changedBots={model.changedBots}
+                  working={model.workingBots.length}
+                  bots={model.bots}
+                  workingBots={model.workingBots}
+                  decisions={model.items.decisions}
+                  onAnswer={answer}
+                  onOpenConversation={onOpenConversation}
+                />
+                <ActivityMonitor
+                  activity={model.activity}
+                  updatedAt={sessions.dataUpdatedAt || visit.enteredAt}
+                  refreshing={refreshing}
+                  onRefresh={refresh}
+                />
+                <ProofStrip
+                  proof={model.proof}
+                  finished={model.items.finished}
+                  conversations={model.conversations}
+                  isBot={model.isBot}
+                  onOpenConversation={onOpenConversation}
+                />
+              </main>
+            )}
+          </div>
         </div>
       </div>
     </div>

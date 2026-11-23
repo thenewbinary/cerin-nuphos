@@ -58,7 +58,7 @@ export function ProofStrip({
   if (cards.length === 0) return null
 
   return (
-    <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
       {cards.map((card) => (
         <button
           key={card.id}
@@ -66,7 +66,7 @@ export function ProofStrip({
           aria-label={card.caption}
           title={card.caption}
           onClick={() => onOpenConversation(card.sessionId)}
-          className="group relative aspect-[16/10] min-w-0 overflow-hidden rounded-[22px] border border-line-control/80 bg-surface-raised/60 text-left shadow-[var(--surface-shadow)] outline-none backdrop-blur-xl transition-[border-color,transform] duration-150 hover:border-line-focus/60 focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface-sheet motion-safe:active:scale-[0.96]"
+          className="dashboard-proof-card group relative aspect-[16/10] min-w-0 overflow-hidden rounded-[24px] text-left outline-none backdrop-blur-xl transition-[border-color,transform] duration-150 hover:border-line-focus/60 focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface-sheet motion-safe:active:scale-[0.96]"
         >
           {card.image ? (
             <img
@@ -75,7 +75,7 @@ export function ProofStrip({
               className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none"
             />
           ) : (
-            <span className="absolute inset-0 flex items-center justify-center bg-data-1/10 pb-10">
+            <span className="absolute inset-0 flex items-center justify-center bg-data-1/[0.07] pb-11">
               <span className="flex size-20 items-center justify-center rounded-full border border-data-1/20 bg-data-1/10 backdrop-blur-md">
                 {card.bot ? (
                   <AgentAvatar
@@ -92,7 +92,7 @@ export function ProofStrip({
               </span>
             </span>
           )}
-          <span className="absolute inset-x-2 bottom-2 flex h-11 min-w-0 items-center gap-2 rounded-2xl border border-line-control/60 bg-surface-sheet/80 px-3 shadow-[var(--surface-shadow)] backdrop-blur-xl">
+          <span className="dashboard-proof-caption absolute inset-x-2 bottom-2 flex h-11 min-w-0 items-center gap-2.5 rounded-[18px] px-3">
             {card.bot && (
               <AgentAvatar
                 agentId={card.bot.sessionId}
@@ -106,8 +106,8 @@ export function ProofStrip({
             <span
               className={`min-w-0 flex-1 text-secondary ${
                 proof.length === 0
-                  ? 'line-clamp-2 break-words font-sans text-sm font-normal normal-case leading-5 tracking-normal'
-                  : 'line-clamp-1 break-all font-mono text-[9px] font-medium uppercase leading-4 tracking-[0.12em]'
+                  ? 'line-clamp-2 break-words text-[12px] leading-4'
+                  : 'line-clamp-1 break-all text-[10px] font-medium uppercase leading-4 tracking-[0.14em]'
               }`}
             >
               {card.caption}
