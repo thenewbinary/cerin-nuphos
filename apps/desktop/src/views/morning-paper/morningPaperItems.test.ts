@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { botActivity, flowModel, morningPaperCounts, morningPaperItems } from './morningPaperItems.ts'
+import {
+  botActivity,
+  finishedPerDay,
+  morningPaperCounts,
+  morningPaperItems,
+} from './morningPaperItems.ts'
 
 import type { AgentConversation, AgentInputRequest } from '../../api/agent-types.ts'
 import type { InboxQuestion } from '../inbox/inboxItems.ts'
@@ -316,63 +321,87 @@ test('scoreboard counts come from the three visible buckets', () => {
   assert.deepEqual(morningPaperCounts(result), { decisions: 1, finished: 1, changed: 1 })
 })
 
-function flowBot(
-  sessionId: string,
-  overrides: Partial<AgentConversation> = {},
-): ReturnType<typeof botActivity>[number] {
-  const bot = conversation(sessionId, { avatar: 'face', ...overrides })
-
-  return { bot, status: 'idle', lastActiveAt: bot.lastActiveAt }
-}
-
-test('flow selects the chief and keeps department order with nested task counts', () => {
-  const bots = [
-    flowBot('alpha'),
-    flowBot('chief', { title: 'Chief of Staff' }),
-    flowBot('beta'),
+test('finishedPerDay counts local days and rolls nested tasks into their Bots', () => {
+  const alpha = conversation('alpha', { avatar: 'face' })
+  const beta = conversation('beta', { avatar: 'face' })
+  const parent = conversation('parent', { parentSessionId: alpha.sessionId })
+  const rows = [
+    conversation('alpha-today', {
+      parentSessionId: alpha.sessionId,
+      lastActiveAt: at(NOW - HOUR),
+    }),
+    conversation('alpha-yesterday', {
+      parentSessionId: alpha.sessionId,
+      lastActiveAt: at(NOW - DAY),
+    }),
+    conversation('alpha-nested', {
+      parentSessionId: parent.sessionId,
+      lastActiveAt: at(NOW - 2 * DAY),
+    }),
+    conversation('beta-today', {
+      parentSessionId: beta.sessionId,
+      lastActiveAt: at(NOW - 2 * HOUR),
+    }),
+    conversation('unassigned', { lastActiveAt: at(NOW - 3 * HOUR) }),
+    conversation('outside', {
+      parentSessionId: alpha.sessionId,
+      lastActiveAt: at(NOW - 8 * DAY),
+    }),
+    conversation('invalid', { parentSessionId: alpha.sessionId, lastActiveAt: 'not a date' }),
   ]
-  const alphaTask = conversation('alpha-task', { parentSessionId: 'alpha' })
-  const betaParent = conversation('beta-parent', { parentSessionId: 'beta' })
-  const betaNested = conversation('beta-nested', { parentSessionId: 'beta-parent' })
-  const result = flowModel(
-    bots,
-    [...bots.map(({ bot }) => bot), alphaTask, betaParent, betaNested],
-    (row) => Boolean(row.avatar),
-  )
+  const result = finishedPerDay({
+    conversations: [alpha, beta, parent, ...rows],
+    finished: rows,
+    isBot: (row) => Boolean(row.avatar),
+    now: NOW,
+    days: 7,
+  })
 
-  assert.equal(result.lead?.bot.sessionId, 'chief')
+  assert.equal(result.days.length, 7)
+  assert.deepEqual(result.totals, [0, 0, 0, 0, 1, 1, 3])
+  assert.equal(result.total, 5)
   assert.deepEqual(
-    result.departments.map(({ activity: { bot }, taskCount }) => [bot.sessionId, taskCount]),
+    result.bots.map(({ bot, counts, total }) => ({ id: bot.sessionId, counts, total })),
     [
-      ['alpha', 1],
-      ['beta', 2],
+      { id: 'alpha', counts: [0, 0, 0, 0, 1, 1, 1], total: 3 },
+      { id: 'beta', counts: [0, 0, 0, 0, 0, 0, 1], total: 1 },
     ],
   )
 })
 
-test('flow falls back to the bot with the most tasks', () => {
-  const bots = [flowBot('first'), flowBot('busiest'), flowBot('last')]
-  const tasks = [
-    conversation('first-task', { parentSessionId: 'first' }),
-    conversation('busy-one', { parentSessionId: 'busiest' }),
-    conversation('busy-two', { parentSessionId: 'busiest' }),
+test('finishedPerDay honors a shorter window and keeps an empty series deliberate', () => {
+  const bot = conversation('bot', { avatar: 'face' })
+  const rows = [
+    conversation('included', {
+      parentSessionId: bot.sessionId,
+      lastActiveAt: at(NOW - 2 * DAY),
+    }),
+    conversation('excluded', {
+      parentSessionId: bot.sessionId,
+      lastActiveAt: at(NOW - 3 * DAY),
+    }),
   ]
-  const result = flowModel(
-    bots,
-    [...bots.map(({ bot }) => bot), ...tasks],
-    (row) => Boolean(row.avatar),
-  )
+  const result = finishedPerDay({
+    conversations: [bot, ...rows],
+    finished: rows,
+    isBot: (row) => Boolean(row.avatar),
+    now: NOW,
+    days: 3,
+  })
 
-  assert.equal(result.lead?.bot.sessionId, 'busiest')
-  assert.deepEqual(
-    result.departments.map(({ activity: { bot }, taskCount }) => [bot.sessionId, taskCount]),
-    [
-      ['first', 1],
-      ['last', 0],
-    ],
-  )
-})
+  assert.deepEqual(result.totals, [1, 0, 0])
+  assert.equal(result.total, 1)
+  assert.deepEqual(result.bots[0]?.counts, [1, 0, 0])
 
-test('flow is empty without bots', () => {
-  assert.deepEqual(flowModel([], [], () => false), { lead: null, departments: [] })
+  const empty = finishedPerDay({
+    conversations: [],
+    finished: [],
+    isBot: () => false,
+    now: NOW,
+    days: 7,
+  })
+
+  assert.deepEqual(empty.totals, [0, 0, 0, 0, 0, 0, 0])
+  assert.equal(empty.total, 0)
+  assert.deepEqual(empty.bots, [])
 })

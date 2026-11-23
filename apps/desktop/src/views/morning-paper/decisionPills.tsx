@@ -1,4 +1,5 @@
-import { Hand, X } from 'lucide-react'
+import { CheckCircle2, ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { useState } from 'react'
 
 import { AgentAvatar } from '../../components/agent/AgentAvatar.tsx'
 import { parseChoiceRequest } from '../../components/agent/panel/connectCardModel.ts'
@@ -12,9 +13,11 @@ import type { InboxQuestion } from '../inbox/inboxItems.ts'
 import type { HeldReply } from '../inbox/useInbox.ts'
 
 const ACTION_BUTTON =
-  'inline-flex h-8 max-w-full cursor-pointer items-center justify-center rounded-full px-3 text-[12px] font-medium outline-none transition-[background-color,color,opacity,transform] duration-150 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-1 focus-visible:ring-offset-surface-raised'
+  'inline-flex h-8 max-w-full cursor-pointer items-center justify-center rounded-full px-3 text-[11px] font-medium outline-none transition-[background-color,color,opacity,transform] duration-150 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-1 focus-visible:ring-offset-surface-raised'
+const ICON_BUTTON =
+  'inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-tertiary outline-none transition-[background-color,color] hover:bg-state-hover hover:text-main focus-visible:ring-2 focus-visible:ring-line-focus'
 
-export function DecisionStack({
+export function DecisionPulseCard({
   rows,
   onAnswer,
   onOpenConversation,
@@ -23,75 +26,86 @@ export function DecisionStack({
   onAnswer: (row: InboxQuestion, reply: HeldReply) => void
   onOpenConversation: (sessionId: string) => void
 }) {
-  if (rows.length === 0) return null
+  const [selected, setSelected] = useState(0)
 
-  return (
-    <section aria-label={tKey('morningPaper.decisionsTitle')} className="min-w-0">
-      <h2
-        aria-label={tKey('morningPaper.decisionsTitle')}
-        className="mb-3 flex items-center gap-2.5 text-main"
-      >
-        <Hand aria-hidden className="size-5 text-secondary" strokeWidth={1.5} />
-        <span className="font-display text-[42px] font-light leading-none tracking-[-0.05em] tabular-nums">
-          {rows.length}
-        </span>
-      </h2>
-      <div className="space-y-2.5">
-        {rows.map((row) => (
-          <DecisionPill
-            key={row.request.id}
-            row={row}
-            onAnswer={(reply) => onAnswer(row, reply)}
-            onOpen={() => onOpenConversation(row.conversation.sessionId)}
-          />
-        ))}
-      </div>
-    </section>
-  )
-}
+  if (rows.length === 0) {
+    return (
+      <article className="dashboard-tile">
+        <CardHeader count={0} />
+        <div className="dashboard-number mt-7">0</div>
+        <div className="mt-auto flex min-w-0 items-center gap-2 pt-5 text-[11px] text-secondary">
+          <CheckCircle2 aria-hidden className="size-3.5 shrink-0 text-tertiary" strokeWidth={1.6} />
+          <span className="line-clamp-1 min-w-0 break-words">
+            {tKey('morningPaper.decisionsEmpty')}
+          </span>
+        </div>
+      </article>
+    )
+  }
 
-function DecisionPill({
-  row,
-  onAnswer,
-  onOpen,
-}: {
-  row: InboxQuestion
-  onAnswer: (reply: HeldReply) => void
-  onOpen: () => void
-}) {
+  const index = Math.min(selected, rows.length - 1)
+  const row = rows[index]
   const source = inboxSource(row)
   const options = quickChoices(row.request).slice(0, 3)
 
   return (
-    <article className="min-w-0 overflow-hidden rounded-xl border border-line-control bg-elevated">
+    <article className="dashboard-tile">
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <CardHeader count={rows.length} />
+        {rows.length > 1 && (
+          <div className="flex shrink-0 items-center gap-0.5">
+            <button
+              type="button"
+              aria-label={t('Back')}
+              title={t('Back')}
+              onClick={() => setSelected((index - 1 + rows.length) % rows.length)}
+              className={ICON_BUTTON}
+            >
+              <ChevronLeft aria-hidden className="size-3.5" strokeWidth={1.7} />
+            </button>
+            <span className="font-mono text-[9px] tabular-nums text-tertiary">
+              {index + 1}/{rows.length}
+            </span>
+            <button
+              type="button"
+              aria-label={t('Forward')}
+              title={t('Forward')}
+              onClick={() => setSelected((index + 1) % rows.length)}
+              className={ICON_BUTTON}
+            >
+              <ChevronRight aria-hidden className="size-3.5" strokeWidth={1.7} />
+            </button>
+          </div>
+        )}
+      </div>
       <button
         type="button"
-        onClick={onOpen}
-        className="flex w-full min-w-0 items-start gap-2.5 p-3.5 pb-2.5 text-left outline-none transition-colors hover:bg-state-hover focus-visible:bg-state-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-line-focus"
+        onClick={() => onOpenConversation(row.conversation.sessionId)}
+        className="mt-3 flex w-full min-w-0 items-start gap-2 rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-line-focus"
       >
         <AgentAvatar
           agentId={source.sessionId}
           avatar={source.avatar}
           avatarBackground={source.avatarBackground}
           provider={source.agentRuntime}
-          size={24}
+          size={22}
           showBadge={false}
         />
-        <span className="line-clamp-2 min-w-0 flex-1 break-words pt-0.5 text-[13px] font-medium leading-[1.45] text-main">
-          {row.request.question}
+        <span className="line-clamp-3 min-w-0 flex-1 break-words pt-0.5 text-[12px] font-medium leading-[1.45] text-main">
+          “{row.request.question}”
         </span>
       </button>
-      <div className="flex min-w-0 flex-wrap items-center gap-1.5 px-3.5 pb-3 pl-[50px]">
-        {options.map((option, index) => (
+      <div className="mt-auto flex min-w-0 flex-wrap items-center gap-1.5 pt-3">
+        {options.map((option, optionIndex) => (
           <button
             key={option}
             type="button"
             title={option}
-            onClick={() => onAnswer({ choices: [option] })}
+            onClick={() => onAnswer(row, { choices: [option] })}
             className={`${ACTION_BUTTON} ${
-              index === 0
-                ? 'bg-data-1 text-inverse hover:bg-data-1/90'
-                : 'border border-line-control bg-surface-sheet text-primary hover:bg-state-hover'
+              optionIndex === 0
+                ? 'bg-action-primary text-inverse hover:opacity-90'
+                : 'border border-line-control bg-surface-sheet/60 text-primary hover:bg-state-hover'
             }`}
           >
             <span className="truncate">{option}</span>
@@ -101,13 +115,25 @@ function DecisionPill({
           type="button"
           aria-label={t('Dismiss')}
           title={t('Dismiss')}
-          onClick={() => onAnswer({ dismissed: true })}
+          onClick={() => onAnswer(row, { dismissed: true })}
           className="ml-auto inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-tertiary outline-none transition-[background-color,color,transform] duration-150 hover:bg-state-hover hover:text-main active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-line-focus"
         >
-          <X aria-hidden className="size-3.5" strokeWidth={1.8} />
+          <X aria-hidden className="size-3.5" strokeWidth={1.7} />
         </button>
       </div>
     </article>
+  )
+}
+
+function CardHeader({ count }: { count: number }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-status-warning" />
+      <span className="line-clamp-2 min-w-0 break-words text-[10px] font-medium leading-[1.35] text-secondary">
+        {tKey('morningPaper.decisionsTitle')}
+      </span>
+      <span className="shrink-0 font-mono text-[9px] tabular-nums text-tertiary">{count}</span>
+    </div>
   )
 }
 

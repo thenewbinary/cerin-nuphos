@@ -128,44 +128,87 @@ export function botActivity({
     )
 }
 
-export type FlowModel = {
-  lead: BotActivity | null
-  departments: { activity: BotActivity; taskCount: number }[]
+export type FinishedBotSeries = {
+  bot: AgentConversation
+  counts: number[]
+  total: number
 }
 
-export function flowModel(
-  bots: readonly BotActivity[],
-  conversations: readonly AgentConversation[],
-  isBot: (conversation: AgentConversation) => boolean,
-): FlowModel {
-  const byId = new Map(conversations.map((conversation) => [conversation.sessionId, conversation]))
-  const taskCounts = new Map(bots.map(({ bot }) => [bot.sessionId, 0]))
+export type FinishedPerDay = {
+  days: number[]
+  totals: number[]
+  total: number
+  bots: FinishedBotSeries[]
+}
 
-  for (const conversation of conversations) {
-    if (!ownedWork(conversation) || isBot(conversation)) continue
+const calendarDayKey = (timestamp: number) => {
+  const date = new Date(timestamp)
+
+  return date.getFullYear() * 10_000 + (date.getMonth() + 1) * 100 + date.getDate()
+}
+
+export function finishedPerDay({
+  conversations,
+  finished,
+  isBot,
+  now,
+  days = 7,
+}: {
+  conversations: readonly AgentConversation[]
+  finished: readonly AgentConversation[]
+  isBot: (conversation: AgentConversation) => boolean
+  now: number
+  days?: number
+}): FinishedPerDay {
+  const dayCount = Math.max(1, Math.floor(days))
+  const today = new Date(now)
+
+  today.setHours(0, 0, 0, 0)
+
+  const dayStarts = Array.from({ length: dayCount }, (_, index) => {
+    const date = new Date(today)
+
+    date.setDate(today.getDate() - dayCount + index + 1)
+
+    return date.getTime()
+  })
+  const dayIndexes = new Map(dayStarts.map((day, index) => [calendarDayKey(day), index]))
+  const totals = Array.from({ length: dayCount }, () => 0)
+  const byId = new Map(conversations.map((conversation) => [conversation.sessionId, conversation]))
+  const byBot = new Map<string, FinishedBotSeries>()
+
+  for (const conversation of finished) {
+    const timestamp = activityAt(conversation)
+
+    if (timestamp === null) continue
+    const dayIndex = dayIndexes.get(calendarDayKey(timestamp))
+
+    if (dayIndex === undefined) continue
+    totals[dayIndex] += 1
+
     const bot = botAbove(conversation, byId, isBot)
 
-    if (bot && taskCounts.has(bot.sessionId)) {
-      taskCounts.set(bot.sessionId, (taskCounts.get(bot.sessionId) ?? 0) + 1)
+    if (!bot) continue
+    const series = byBot.get(bot.sessionId) ?? {
+      bot,
+      counts: Array.from({ length: dayCount }, () => 0),
+      total: 0,
     }
+
+    series.counts[dayIndex] += 1
+    series.total += 1
+    byBot.set(bot.sessionId, series)
   }
 
-  const lead =
-    bots.find(({ bot }) => /chief/i.test(bot.title)) ??
-    bots.reduce<BotActivity | null>((current, activity) => {
-      if (!current) return activity
-
-      return (taskCounts.get(activity.bot.sessionId) ?? 0) >
-        (taskCounts.get(current.bot.sessionId) ?? 0)
-        ? activity
-        : current
-    }, null)
+  const bots = [...byBot.values()].sort(
+    (a, b) => b.total - a.total || a.bot.title.localeCompare(b.bot.title),
+  )
 
   return {
-    lead,
-    departments: bots
-      .filter((activity) => activity !== lead)
-      .map((activity) => ({ activity, taskCount: taskCounts.get(activity.bot.sessionId) ?? 0 })),
+    days: dayStarts,
+    totals,
+    total: totals.reduce((sum, count) => sum + count, 0),
+    bots,
   }
 }
 

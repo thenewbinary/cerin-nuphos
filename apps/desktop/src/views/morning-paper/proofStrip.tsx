@@ -58,7 +58,7 @@ export function ProofStrip({
   if (cards.length === 0) return null
 
   return (
-    <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {cards.map((card) => (
         <button
           key={card.id}
@@ -66,7 +66,7 @@ export function ProofStrip({
           aria-label={card.caption}
           title={card.caption}
           onClick={() => onOpenConversation(card.sessionId)}
-          className="group relative aspect-[16/10] min-w-0 overflow-hidden rounded-xl border border-line-control bg-surface-sunken text-left outline-none transition-[border-color,transform] duration-150 hover:border-line-focus/60 focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface-sheet motion-safe:active:scale-[0.96]"
+          className="group relative aspect-[16/10] min-w-0 overflow-hidden rounded-[22px] border border-line-control/80 bg-surface-raised/60 text-left shadow-[var(--surface-shadow)] outline-none backdrop-blur-xl transition-[border-color,transform] duration-150 hover:border-line-focus/60 focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-2 focus-visible:ring-offset-surface-sheet motion-safe:active:scale-[0.96]"
         >
           {card.image ? (
             <img
@@ -76,7 +76,7 @@ export function ProofStrip({
             />
           ) : (
             <span className="absolute inset-0 flex items-center justify-center bg-data-1/10 pb-10">
-              <span className="flex size-20 items-center justify-center rounded-full border border-data-1/20 bg-surface-sheet/60">
+              <span className="flex size-20 items-center justify-center rounded-full border border-data-1/20 bg-surface-sheet/60 backdrop-blur-md">
                 {card.bot && (
                   <AgentAvatar
                     agentId={card.bot.sessionId}
@@ -90,7 +90,7 @@ export function ProofStrip({
               </span>
             </span>
           )}
-          <span className="absolute inset-x-0 bottom-0 flex h-11 min-w-0 items-center gap-2 border-t border-line-control/70 bg-main/90 px-3 backdrop-blur-md">
+          <span className="absolute inset-x-2 bottom-2 flex h-11 min-w-0 items-center gap-2 rounded-2xl border border-line-control/60 bg-surface-sheet/80 px-3 shadow-[var(--surface-shadow)] backdrop-blur-xl">
             {card.bot && (
               <AgentAvatar
                 agentId={card.bot.sessionId}
