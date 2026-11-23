@@ -4,7 +4,7 @@
 
 import type { AccountSummary } from '../types'
 
-const CLOUD_ORIGIN = 'https://api.nuphos.ai'
+const CLOUD_ORIGIN = 'https://api.cerin.ai'
 
 export function accountName(account: AccountSummary): string {
   const user = account.userInfo

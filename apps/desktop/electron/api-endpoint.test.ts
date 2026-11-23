@@ -10,7 +10,7 @@ process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.dev.test.yaml')
 process.env.NUPHOS_API_URL = 'http://127.0.0.1:3718'
 delete process.env.ATLAS_API_URL
 
-const { apiUrl, setApiUrl, deviceRegistrationAllowed } = await import('./api-endpoint.ts')
+const { apiUrl, setApiUrl, deviceRegistrationAllowed, isNuphosCloud } = await import('./api-endpoint.ts')
 const { authSession } = await import('./auth-session.ts')
 
 test('resetting the endpoint returns to the launch-time one, not Nuphos Cloud', () => {
@@ -52,5 +52,13 @@ test('endpoint changes notify runtime listeners after the new endpoint takes eff
   unsubscribe()
   setApiUrl('https://api.nuphos.ai')
   assert.deepEqual(allowed, [false, true])
+  setApiUrl(null)
+})
+
+test('the Cerin backend is not Nuphos Cloud, so Nuphos updates and usage data stay off', () => {
+  setApiUrl('https://api.cerin.ai')
+  assert.equal(isNuphosCloud(), false)
+  setApiUrl('https://api.nuphos.ai')
+  assert.equal(isNuphosCloud(), true)
   setApiUrl(null)
 })

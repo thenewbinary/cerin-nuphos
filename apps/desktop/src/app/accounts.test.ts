@@ -32,8 +32,9 @@ test('an account is named by its user, else by its id', () => {
   assert.equal(accountName(bob), 'bob')
 })
 
-test('only a backend other than Nuphos Cloud is named', () => {
-  assert.equal(backendLabel('https://api.nuphos.ai'), null)
+test('only a backend other than the default Cerin backend is named', () => {
+  assert.equal(backendLabel('https://api.cerin.ai'), null)
+  assert.equal(backendLabel('https://api.nuphos.ai'), 'api.nuphos.ai')
   assert.equal(backendLabel('https://nuphos.example.com'), 'nuphos.example.com')
   assert.equal(backendLabel('http://127.0.0.1:3718'), '127.0.0.1:3718')
 })
