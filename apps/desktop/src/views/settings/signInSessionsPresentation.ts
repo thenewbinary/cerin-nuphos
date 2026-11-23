@@ -4,8 +4,8 @@ import type { SignInSession } from '../../types'
 
 const APPS: Record<string, string> = {
   'nuphos-desktop': 'Cerin Desktop',
-  'nuphos-ios': t('Nuphos for iOS'),
-  'nuphos-android': t('Nuphos for Android'),
+  'nuphos-ios': t('Cerin for iOS'),
+  'nuphos-android': t('Cerin for Android'),
   'nuphos-cli': 'Cerin CLI',
 }
 const BROWSERS: [RegExp, string][] = [

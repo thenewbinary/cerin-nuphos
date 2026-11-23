@@ -227,7 +227,7 @@ export function AliyunBindWizard({
                     type="text"
                     value={oidcProviderArn}
                     onChange={(e) => onOidcProviderArnChange(e.target.value)}
-                    placeholder="acs:ram::123456789012345:oidc-provider/nuphos"
+                    placeholder="acs:ram::123456789012345:oidc-provider/cerin"
                     className="w-full h-9 px-2.5 rounded-md bg-surface border border-line-control focus:border-line-focus outline-none text-[12.5px] font-mono placeholder:text-tertiary text-main"
                   />
                 </Field>

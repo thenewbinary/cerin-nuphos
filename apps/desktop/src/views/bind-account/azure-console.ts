@@ -19,5 +19,5 @@ export function azureAppName(_purpose: 'operational'): string {
 }
 
 export function azureCredentialName(_purpose: 'operational'): string {
-  return 'nuphos'
+  return 'cerin'
 }

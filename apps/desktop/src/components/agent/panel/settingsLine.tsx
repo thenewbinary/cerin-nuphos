@@ -150,8 +150,8 @@ function settingsSentence(
 // The apps as they name themselves; a client not here shows as it sent itself.
 const CLIENT: Record<string, string> = {
   desktop: 'Cerin Desktop',
-  ios: 'Nuphos for iOS',
-  android: 'Nuphos for Android',
+  ios: 'Cerin for iOS',
+  android: 'Cerin for Android',
   web: 'Cerin on the web',
   cli: 'Cerin CLI',
   api: 'API',

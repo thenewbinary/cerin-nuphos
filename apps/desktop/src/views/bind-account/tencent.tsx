@@ -273,7 +273,7 @@ export function TencentBindWizard({
                     type="text"
                     value={providerId}
                     onChange={(e) => onProviderIdChange(e.target.value)}
-                    placeholder="nuphos"
+                    placeholder="cerin"
                     className="w-full h-9 px-2.5 rounded-md bg-surface border border-line-control focus:border-line-focus outline-none text-[12.5px] font-mono placeholder:text-tertiary text-main"
                   />
                 </Field>

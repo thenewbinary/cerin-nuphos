@@ -141,7 +141,7 @@ export async function submitAliyun(st: BindState, env: SubmitEnv) {
   if (!ALIYUN_OIDC_PROVIDER_ARN_PATTERN.test(oidcProviderArn)) {
     toast.error(
       t('Invalid OIDC provider ARN. Must be like {example}', {
-        example: 'acs:ram::123456789012345:oidc-provider/nuphos',
+        example: 'acs:ram::123456789012345:oidc-provider/cerin',
       }),
     )
 
