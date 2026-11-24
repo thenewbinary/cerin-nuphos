@@ -128,7 +128,7 @@ Object.assign(config.agent, { publicBackendUrl: 'https://api.nuphos.test/' })
 Object.assign(config.byos.github, {
   clientId: 'Iv1.client',
   clientSecret: 'gh-secret',
-  setupRedirect: 'nuphos://github-callback',
+  setupRedirect: 'cerin://github-callback',
   encryptionKey: 'k',
 })
 Object.assign(config.byos.linear, {
@@ -255,7 +255,7 @@ describe.each(['github', 'linear', 'gmail', 'google-drive', 'google-calendar'])(
       const state = await start(provider, 'alice')
       const link = await callback(provider, state)
 
-      expect(link.protocol).toBe('nuphos:')
+      expect(link.protocol).toBe('cerin:')
       expect(saved).toHaveLength(0)
       const res = await complete(provider, 'alice', state, link.searchParams.get('code') ?? '')
 

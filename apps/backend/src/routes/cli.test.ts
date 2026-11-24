@@ -23,10 +23,7 @@ describe('GET /cli/latest', () => {
       globalThis.fetch = (async (input: string | URL | Request) => {
         requests.push(input instanceof Request ? input.url : String(input))
 
-        return Response.json([
-          { tag_name: 'runtime-v99.0.0' },
-          { tag_name: 'cli-v0.5.4' },
-        ])
+        return Response.json([{ tag_name: 'runtime-v99.0.0' }, { tag_name: 'cli-v0.5.4' }])
       }) as typeof fetch
 
       const res = await createCliRoutes().request('/latest')

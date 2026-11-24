@@ -36,7 +36,7 @@ export const cloudflarePendingOAuth = (): Collection<CloudflarePendingOAuth> =>
 /**
  * Result of a completed Cloudflare OAuth callback, keyed by the same `state`
  * token the desktop holds. The desktop polls this so the bind completes, or
- * fails with Cloudflare's reason, even when the `nuphos://` deep link is
+ * fails with Cloudflare's reason, even when the `cerin://` deep link is
  * captured by another app instance. Holds only non-sensitive metadata (never
  * tokens); a Mongo TTL index reaps it.
  */

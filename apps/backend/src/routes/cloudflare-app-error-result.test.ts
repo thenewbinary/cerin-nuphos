@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb'
 import { useModels } from '@/lib/test/doubles/models'
 
 // Cloudflare's rejection (e.g. an unregistered scope) must reach the desktop's
-// poll, not only the nuphos:// deep link another app instance may capture.
+// poll, not only the cerin:// deep link another app instance may capture.
 const TEAM = new ObjectId()
 const results = new Map<string, Record<string, unknown>>()
 

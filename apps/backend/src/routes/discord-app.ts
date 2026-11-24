@@ -15,7 +15,7 @@ import type { DiscordPendingOAuth } from '@/lib/discord/store'
 import type { Context } from 'hono'
 
 export const discordAppRoutes = new Hono()
-const CALLBACK = 'nuphos://discord-callback'
+const CALLBACK = 'cerin://discord-callback'
 
 const callback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, CALLBACK, params)

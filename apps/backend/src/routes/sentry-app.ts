@@ -20,7 +20,7 @@ export const sentryAppRoutes = new Hono()
 
 // The Electron deep-link target. Matches asana-callback — same scheme,
 // different hostname so the desktop can route by it.
-const DESKTOP_CALLBACK = 'nuphos://sentry-callback'
+const DESKTOP_CALLBACK = 'cerin://sentry-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)

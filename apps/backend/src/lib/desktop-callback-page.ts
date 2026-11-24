@@ -1,4 +1,4 @@
-// Connector OAuth callbacks must not end in a bare 302 to the nuphos:// deep
+// Connector OAuth callbacks must not end in a bare 302 to the cerin:// deep
 // link: a custom-scheme navigation never commits a document, so the provider's
 // authorize page (and its submit spinner) would stay on screen forever. This
 // page commits, then fires the same deep link from script.
@@ -44,7 +44,7 @@ ${PAGE_STYLE}</head>
 </body></html>`
 }
 
-// Build the nuphos://<host> deep link from params and return the landing page
+// Build the cerin://<host> deep link from params and return the landing page
 // as the response. Shared by every connector's OAuth /setup callback so the
 // escaping boundary and page markup live in exactly one place.
 export function desktopCallbackResponse(

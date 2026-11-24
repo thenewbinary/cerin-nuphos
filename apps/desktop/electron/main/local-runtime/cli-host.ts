@@ -95,7 +95,6 @@ let tunnel: RuntimeTunnelClient | undefined
 const launchToken = process.env.NUPHOS_SESSION_TOKEN || null
 
 delete process.env.NUPHOS_SESSION_TOKEN
-
 const launch = { token: launchToken, keychainAccount: readCliConfig()?.keychainAccount }
 const currentToken = () => cliSessionToken(readCliConfig(), launch)
 
@@ -173,7 +172,6 @@ const deps: ConstructorParameters<typeof LocalRuntimeController>[0] = {
         const fresh = deviceCredential?.credential ?? currentToken()
 
         if (!fresh || (!deviceCredential && fresh !== signedIn)) throw new Error('Signed out')
-
         const headers = {
           authorization: `Bearer ${fresh}`,
           [CLIENT_VERSION_HEADER]: CLIENT_VERSION_VALUE,
@@ -293,7 +291,6 @@ setInterval(() => {
 
     return online && cli?.installed === true && !cli.loggedIn
   })
-
   // Added agents follow their own provider's refresh, which also probes every instance.
   const instanceSignedOut = instances.some(({ cli }) => cli?.installed === true && !cli.loggedIn)
 

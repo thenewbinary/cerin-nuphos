@@ -23,7 +23,7 @@ export const gitlabAppRoutes = new Hono()
 
 // The Electron deep-link target. Matches GITHUB_PROTOCOL — same scheme,
 // different hostname so the desktop can route by it.
-const DESKTOP_CALLBACK = 'nuphos://gitlab-callback'
+const DESKTOP_CALLBACK = 'cerin://gitlab-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)

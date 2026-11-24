@@ -8,7 +8,7 @@ import { publicWebUrl } from '@/lib/public-urls'
  * which stranded users who already had the desktop app installed. This page
  * closes both halves of the flow:
  *
- *  - App installed: the page immediately fires the `nuphos://open` deep link,
+ *  - App installed: the page immediately fires the `cerin://open` deep link,
  *    so the desktop app comes to the front. The app refreshes pending
  *    invitations on window focus and pops its invitation flow (onboarding
  *    pick screen for new accounts, the takeover modal for signed-in users) —
@@ -32,7 +32,7 @@ function escapeHtml(value: string): string {
     .replaceAll("'", '&#39;')
 }
 
-const OPEN_APP_URL = 'nuphos://open'
+const OPEN_APP_URL = 'cerin://open'
 
 // Builder with no network calls, so copy and escaping are
 // unit-testable (same split as desktop-callback-page / buildInvitationEmail).
