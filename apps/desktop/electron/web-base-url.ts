@@ -11,6 +11,7 @@
 // own copy in.
 
 const DEFAULT_WEB_BASE_URL = 'https://platform.cerin.ai'
+export const LEGACY_WEB_BASE_URL = 'https://nuphos.ai'
 
 function normalize(raw: string | undefined): string {
   const trimmed = raw?.trim()
@@ -45,19 +46,25 @@ export const ALLOWED_WEB_HOSTS: ReadonlySet<string> = new Set([
 /**
  * Is this an app page on our own web origin?
  *
- * Exact origin, deliberately. Host, because `docs.` and `api.` are different
+ * Exact origins, deliberately. Host, because `docs.` and `api.` are different
  * services rather than app pages; scheme and port too, because a same-host
  * `http://` URL is not ours — trusting it would let a downgraded link render as
- * a trusted app mention. Accepts a bare path, which resolves against the
- * configured origin.
+ * a trusted app mention. The default cloud deployment also accepts its exact
+ * legacy origin. Accepts a bare path, which resolves against the configured origin.
  *
  * Returns the parsed URL so callers don't re-parse, or null.
  */
 export function isAppWebUrl(value: string): URL | null {
   try {
     const url = new URL(value, WEB_BASE_URL)
+    const legacyAuthority = /^https:\/\/([^/?#]*)/iu.exec(value)?.[1]
+    const ownOrigin =
+      url.origin === WEB_BASE_URL ||
+      (WEB_BASE_URL === DEFAULT_WEB_BASE_URL &&
+        url.origin === LEGACY_WEB_BASE_URL &&
+        legacyAuthority?.toLowerCase() === 'nuphos.ai')
 
-    return url.origin === WEB_BASE_URL ? url : null
+    return ownOrigin ? url : null
   } catch {
     return null
   }

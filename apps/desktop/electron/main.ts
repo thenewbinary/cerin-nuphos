@@ -127,11 +127,13 @@ registerAppScheme()
 // Dev Electron identifies as com.github.electron, so do not steal the production
 // cerin:// handler unless a local deep-link test explicitly opts in.
 if (!isDev) {
-  app.setAsDefaultProtocolClient(githubInstall.GITHUB_PROTOCOL)
+  for (const protocol of [githubInstall.GITHUB_PROTOCOL, 'nuphos']) {
+    app.setAsDefaultProtocolClient(protocol)
+  }
 } else if (process.env.ATLAS_REGISTER_NUPHOS_PROTOCOL === '1' && process.argv.length >= 2) {
-  app.setAsDefaultProtocolClient(githubInstall.GITHUB_PROTOCOL, process.execPath, [
-    path.resolve(process.argv[1] ?? ''),
-  ])
+  for (const protocol of [githubInstall.GITHUB_PROTOCOL, 'nuphos']) {
+    app.setAsDefaultProtocolClient(protocol, process.execPath, [path.resolve(process.argv[1] ?? '')])
+  }
 }
 
 // Single-instance lock: required so deep-link relaunches on Windows / Linux are

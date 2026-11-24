@@ -56,7 +56,10 @@ export function isCallbackUrl(rawUrl: string): boolean {
   try {
     const parsed = new URL(rawUrl)
 
-    return parsed.protocol === `${GITHUB_PROTOCOL}:` && parsed.hostname === 'github-callback'
+    return (
+      (parsed.protocol === `${GITHUB_PROTOCOL}:` || parsed.protocol === 'nuphos:') &&
+      parsed.hostname === 'github-callback'
+    )
   } catch {
     return false
   }
@@ -72,7 +75,7 @@ export async function handleCallback(rawUrl: string): Promise<void> {
 
     return
   }
-  if (parsed.protocol !== `${GITHUB_PROTOCOL}:`) return
+  if (parsed.protocol !== `${GITHUB_PROTOCOL}:` && parsed.protocol !== 'nuphos:') return
   if (parsed.hostname !== 'github-callback' && parsed.host !== 'github-callback') return
 
   const installationIdRaw = parsed.searchParams.get('installation_id')

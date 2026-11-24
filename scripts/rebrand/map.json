@@ -43,7 +43,14 @@
         "apps/android/app/src/main/java/ai/nuphos/android/ui/chat/SessionMention.kt",
         "apps/android/app/src/test/java/ai/nuphos/android/session/ConversationLinksTest.kt",
         "apps/android/app/src/test/java/ai/nuphos/android/NuphosLogicTest.kt",
-        "apps/android/app/src/test/java/ai/nuphos/android/SessionMentionTest.kt"
+        "apps/android/app/src/test/java/ai/nuphos/android/SessionMentionTest.kt",
+        "apps/desktop/electron/web-base-url.ts",
+        "apps/desktop/electron/web-base-url.test.ts",
+        "apps/desktop/electron/deep-link-compat.test.ts",
+        "apps/desktop/src/lib/webBaseUrl.ts",
+        "apps/desktop/src/lib/webBaseUrl.test.ts",
+        "apps/desktop/src/lib/atlasLinkMention.test.ts",
+        "apps/desktop/src/app/workspace/useWorkspaceLinkOpeners.test.tsx"
       ]
     },
     {

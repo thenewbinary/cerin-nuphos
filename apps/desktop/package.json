@@ -109,7 +109,8 @@
       {
         "name": "Cerin",
         "schemes": [
-          "cerin"
+          "cerin",
+          "nuphos"
         ]
       }
     ],

@@ -144,3 +144,15 @@ test('opening a conversation from inside Settings opens it in view, as Archived 
     assert.equal(state.settingsOpen, false)
   })
 })
+
+test('a legacy cloud conversation link opens in the app', async () => {
+  const { openInApp } = await import('./openInApp')
+  const sessionId = '11111111-2222-4333-8444-555555555555'
+
+  await paneUnderSettings(({ state }) => {
+    openInApp(`https://nuphos.ai/teams/${TEAM}/agent/${sessionId}`)
+
+    assert.deepEqual(state.conversations, [sessionId])
+    assert.equal(state.settingsOpen, false)
+  })
+})

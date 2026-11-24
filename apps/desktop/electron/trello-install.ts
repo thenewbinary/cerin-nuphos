@@ -71,7 +71,10 @@ export function isCallbackUrl(rawUrl: string): boolean {
   try {
     const u = new URL(rawUrl)
 
-    return u.protocol === 'cerin:' && u.hostname === TRELLO_CALLBACK_HOST
+    return (
+      (u.protocol === 'cerin:' || u.protocol === 'nuphos:') &&
+      u.hostname === TRELLO_CALLBACK_HOST
+    )
   } catch {
     return false
   }
@@ -87,7 +90,11 @@ export async function handleCallback(rawUrl: string): Promise<void> {
 
     return
   }
-  if (parsed.protocol !== 'cerin:' || parsed.hostname !== TRELLO_CALLBACK_HOST) return
+  if (
+    (parsed.protocol !== 'cerin:' && parsed.protocol !== 'nuphos:') ||
+    parsed.hostname !== TRELLO_CALLBACK_HOST
+  )
+    return
 
   const state = parsed.searchParams.get('state')
 

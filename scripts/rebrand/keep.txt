@@ -18,3 +18,10 @@ apps/android/app/src/main/java/ai/nuphos/android/ui/chat/SessionMention.kt nupho
 apps/android/app/src/test/java/ai/nuphos/android/session/ConversationLinksTest.kt nuphos\.ai   # tests exact legacy host acceptance and lookalike rejection
 apps/android/app/src/test/java/ai/nuphos/android/NuphosLogicTest.kt nuphos\.ai   # tests exact legacy plan-link handling
 apps/android/app/src/test/java/ai/nuphos/android/SessionMentionTest.kt nuphos\.ai   # tests mentions containing legacy conversation links
+apps/desktop/electron/web-base-url.ts nuphos\.ai   # exact legacy cloud origin and raw-authority validation
+apps/desktop/electron/web-base-url.test.ts nuphos\.ai   # tests exact legacy host acceptance and lookalike rejection
+apps/desktop/electron/deep-link-compat.test.ts nuphos\.ai   # tests legacy app-open links and strict web-origin validation
+apps/desktop/src/lib/webBaseUrl.ts nuphos\.ai   # exact legacy cloud origin and raw-authority validation
+apps/desktop/src/lib/webBaseUrl.test.ts nuphos\.ai   # tests exact legacy host acceptance and lookalike rejection
+apps/desktop/src/lib/atlasLinkMention.test.ts nuphos\.ai   # tests legacy conversation-link mentions
+apps/desktop/src/app/workspace/useWorkspaceLinkOpeners.test.tsx nuphos\.ai   # tests opening legacy cloud conversation links

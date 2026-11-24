@@ -17,7 +17,7 @@ import {
 import { isConnectorsPage } from '../../lib/connectorScopeCrumb'
 import { requestArtifactOpen } from '../../lib/sessionArtifacts'
 import { isTeamId } from '../../lib/teamId'
-import { ATLAS_WEB_BASE_URL, toAbsoluteAtlasUrl } from '../../lib/webBaseUrl'
+import { isAppWebUrl, toAbsoluteAtlasUrl } from '../../lib/webBaseUrl'
 import { settingsLinkTarget, settingsSectionForPage } from '../../views/settings/settingsNav'
 
 import { navigationForLink } from './linkNavigation'
@@ -89,20 +89,9 @@ export function useWorkspaceLinkOpeners(a: Args) {
 
   const openNuphosLinkInNewTab = useCallback(
     (href: string, beside = false): boolean => {
-      const trimmed = href.trim()
-      let url: URL
+      const url = isAppWebUrl(href.trim())
 
-      try {
-        url = new URL(trimmed, ATLAS_WEB_BASE_URL)
-      } catch {
-        return false
-      }
-
-      const isRelativeNuphosLink = trimmed.startsWith('/teams/')
-      const isCanonicalNuphosLink = url.origin === ATLAS_WEB_BASE_URL
-
-      if (!isRelativeNuphosLink && !isCanonicalNuphosLink) return false
-      if (!url.pathname.startsWith('/teams/')) return false
+      if (!url || !url.pathname.startsWith('/teams/')) return false
 
       const navigation = navigationForLink(url)
 

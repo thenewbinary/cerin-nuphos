@@ -6,6 +6,7 @@
 // The fallback matters: unit tests and any non-Electron render have no bridge.
 
 const DEFAULT_WEB_BASE_URL = 'https://platform.cerin.ai'
+export const LEGACY_WEB_BASE_URL = 'https://nuphos.ai'
 
 function resolve(): string {
   const fromBridge = (globalThis as { api?: { webBaseUrl?: string } }).api?.webBaseUrl
@@ -18,10 +19,10 @@ export const WEB_BASE_URL = resolve()
 /**
  * Is this an app page on our own web origin?
  *
- * Exact origin: host, because `docs.` and `api.` are different services rather
+ * Exact origins: host, because `docs.` and `api.` are different services rather
  * than app pages; scheme and port too, because a same-host `http://` URL is not
- * ours. A bare path resolves against the configured origin. Returns the parsed
- * URL so callers don't re-parse, or null.
+ * ours. The default cloud deployment also accepts its exact legacy origin. A
+ * bare path resolves against the configured origin. Returns the parsed URL, or null.
  *
  * This is the single answer to a question that used to be asked four different
  * ways, with four different results — most consequentially in the chat link
@@ -31,8 +32,14 @@ export const WEB_BASE_URL = resolve()
 export function isAppWebUrl(value: string): URL | null {
   try {
     const url = new URL(value, WEB_BASE_URL)
+    const legacyAuthority = /^https:\/\/([^/?#]*)/iu.exec(value)?.[1]
+    const ownOrigin =
+      url.origin === WEB_BASE_URL ||
+      (WEB_BASE_URL === DEFAULT_WEB_BASE_URL &&
+        url.origin === LEGACY_WEB_BASE_URL &&
+        legacyAuthority?.toLowerCase() === 'nuphos.ai')
 
-    return url.origin === WEB_BASE_URL ? url : null
+    return ownOrigin ? url : null
   } catch {
     return null
   }

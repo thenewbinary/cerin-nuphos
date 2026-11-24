@@ -41,6 +41,23 @@ test('subdomains are not app pages', async () => {
   assert.equal(m.isAppWebUrl('https://api.platform.cerin.ai/teams/x'), null)
 })
 
+test('accepts only the exact legacy host for the default cloud deployment', async () => {
+  const m = await load(undefined)
+  const legacy = 'https://nuphos.ai/teams/x'
+
+  assert.ok(m.isAppWebUrl(legacy))
+  for (const url of [
+    legacy.replace('https:', 'http:'),
+    legacy.replace('nuphos.ai', 'www.nuphos.ai'),
+    legacy.replace('nuphos.ai', 'app.nuphos.ai'),
+    legacy.replace('nuphos.ai', 'nuphos.ai:443'),
+    legacy.replace('nuphos.ai', 'user@nuphos.ai'),
+    legacy.replace('nuphos.ai', 'nuphos.ai.evil.example'),
+  ])
+    assert.equal(m.isAppWebUrl(url), null, url)
+  assert.equal((await load({ webBaseUrl: 'https://example.com' })).isAppWebUrl(legacy), null)
+})
+
 test('a same-host URL on another scheme or port is not ours', async () => {
   const m = await load({ webBaseUrl: 'https://platform.cerin.ai' })
 

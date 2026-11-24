@@ -15,7 +15,7 @@ type Complete = (
 // cerin://personal-credential?provider=…&state=…&code=… (or &error=…). The
 // backend only stages the grant; the member who started the flow claims it
 // with the one-time code, so the code never leaves the main process.
-const PROTOCOL = 'cerin:'
+const PROTOCOLS = new Set(['cerin:', 'nuphos:'])
 const HOST = 'personal-credential'
 const PROVIDERS: readonly PersonalCredentialProvider[] = [
   'github',
@@ -29,7 +29,7 @@ function parse(rawUrl: string): URL | null {
   try {
     const url = new URL(rawUrl)
 
-    return url.protocol === PROTOCOL && url.hostname === HOST ? url : null
+    return PROTOCOLS.has(url.protocol) && url.hostname === HOST ? url : null
   } catch {
     return null
   }

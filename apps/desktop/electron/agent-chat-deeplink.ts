@@ -9,7 +9,7 @@ export type AgentChatDeepLinkPayload = {
   autoSend: boolean
 }
 
-const PROTOCOL = 'cerin:'
+const PROTOCOLS = new Set(['cerin:', 'nuphos:'])
 const HOST = 'agent-chat'
 
 function isTruthyParam(value: string | null): boolean {
@@ -34,7 +34,7 @@ export function isAgentChatUrl(rawUrl: string): boolean {
   try {
     const url = new URL(rawUrl)
 
-    return url.protocol === PROTOCOL && url.hostname === HOST
+    return PROTOCOLS.has(url.protocol) && url.hostname === HOST
   } catch {
     return false
   }
@@ -48,7 +48,7 @@ export function parseAgentChatUrl(rawUrl: string): AgentChatDeepLinkPayload | nu
   } catch {
     return null
   }
-  if (url.protocol !== PROTOCOL || url.hostname !== HOST) return null
+  if (!PROTOCOLS.has(url.protocol) || url.hostname !== HOST) return null
 
   const prompt = url.searchParams.get('prompt')?.trim() ?? ''
   const cwd = url.searchParams.get('cwd')?.trim() || undefined

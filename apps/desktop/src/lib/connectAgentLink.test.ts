@@ -16,6 +16,9 @@ function link(params: Record<string, string>): string {
 
 test('recognizes only the connect-runtime host', () => {
   assert.equal(isConnectAgentLink(link({ url: 'https://a.example', code: CODE })), true)
+  const legacy = link({ url: 'https://a.example', code: CODE }).replace('cerin:', 'nuphos:')
+  assert.equal(isConnectAgentLink(legacy), true)
+  assert.equal(parseConnectAgentLink(legacy)?.code, CODE)
   assert.equal(isConnectAgentLink('cerin://open?path=/'), false)
   assert.equal(isConnectAgentLink('https://connect-runtime/?code=x'), false)
 })
