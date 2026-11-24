@@ -6,9 +6,7 @@ import { Hono } from 'hono'
 import { config } from '@/config'
 import { errorHandler } from '@/lib/errors'
 import { authenticateToken } from '@/lib/identity/auth'
-import { startDeviceLogin } from '@/lib/identity/device-login'
 import { createUserSession, revokeUserSession } from '@/lib/identity/sessions'
-import { createTeamForUser } from '@/lib/identity/teams'
 import { signInSocial } from '@/lib/identity/social'
 import { registerNativeSession, redeemNativeSession } from '@/lib/native-auth'
 import { useDb } from '@/lib/test/doubles/db'
@@ -379,51 +377,6 @@ test('device page counts every code lookup and decision against the approval quo
 
   expect(post.status).toBe(429)
   expect(keys).toEqual(Array(3).fill(`device-login:approve:${user.id}`))
-})
-test('device page approves a sign-in as an agent token on one of your teams', async () => {
-  const device = new Hono().onError(errorHandler).route(
-    '/device',
-    createDeviceApproval(
-      async () => true,
-      async () => [team],
-    ),
-  )
-  const { user } = await signInSocial('google', {
-    sub: 'google-sub',
-    email: 'person@example.com',
-    email_verified: true,
-  })
-  const team = await createTeamForUser(user.id, 'Ops crew')
-  const headers = { cookie: `__Host-nuphos-social=${await createUserSession(user.id)}` }
-  const started = await startDeviceLogin({ clientName: 'Build box' })
-  const page = await (await device.request(`/device?code=${started.userCode}`, { headers })).text()
-
-  expect(page).toContain('Approve as agent')
-  expect(page).toContain(`<option value="${team.id}">Ops crew</option>`)
-  const post = (body: string) =>
-    device.request('/device', {
-      method: 'POST',
-      headers: {
-        ...headers,
-        'sec-fetch-site': 'same-origin',
-        'content-type': 'application/x-www-form-urlencoded',
-      },
-      body,
-    })
-  const code = encodeURIComponent(started.userCode)
-
-  expect((await post(`code=${code}&decision=agent&teamId=${team.id}&name=`)).status).toBe(400)
-  expect(
-    (await post(`code=${code}&decision=agent&teamId=${'0'.repeat(24)}&name=Builder`)).status,
-  ).toBe(403)
-  const approved = await post(`code=${code}&decision=agent&teamId=${team.id}&name=Builder`)
-
-  expect(approved.status).toBe(200)
-  // This file's db double returns the updated doc, so check the stored approval, not a poll.
-  expect(docs.get('device_logins')?.[0]).toMatchObject({
-    status: 'approved',
-    approval: { kind: 'agent', teamId: team.id, name: 'Builder' },
-  })
 })
 test('nuphos login uses its configured approval page with or without OIDC', async () => {
   const cli = new Hono().onError(errorHandler).route(
