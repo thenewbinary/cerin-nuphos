@@ -170,9 +170,16 @@ async fn fetch() -> Result<PathBuf> {
 
     let base = std::env::var("NUPHOS_DOWNLOAD_URL")
         .unwrap_or_else(|_| format!("https://github.com/thenewbinary/cerin-nuphos/releases/download/cli-v{VERSION}"));
-    let asset = format!("nuphos-agent-{platform}.tar.gz");
     eprintln!("Downloading the local runtime for {platform}…");
-    let checksum = get(format!("{base}/{asset}.sha256")).await?;
+    // Releases before the rename, and mirrors of them, have only the old name.
+    let mut asset = format!("cerin-agent-{platform}.tar.gz");
+    let checksum = match get(format!("{base}/{asset}.sha256")).await {
+        Ok(checksum) => checksum,
+        Err(_) => {
+            asset = format!("nuphos-agent-{platform}.tar.gz");
+            get(format!("{base}/{asset}.sha256")).await?
+        }
+    };
     let archive = get(format!("{base}/{asset}")).await?;
     let expected = String::from_utf8_lossy(&checksum).split_whitespace().next().unwrap_or_default().to_string();
     unpack(&archive, &expected, &asset, &root, &dir, &[])?;
