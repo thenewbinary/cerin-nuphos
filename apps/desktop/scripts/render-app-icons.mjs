@@ -189,7 +189,7 @@ for (const [letter, file] of Object.entries(CHARACTERS)) {
     const bled = screenshot(page(file, layout, BLEED, false), SIZE + BLEED * 2)
 
     const name = `app_icon_${id.toLowerCase()}`
-    // Only B2 has a single-color mark that matches its framing (nuphos.ai/brand); the
+    // Only B2 has a single-color mark that matches its framing (platform.cerin.ai/brand); the
     // checked-in drawable is a trace of it, not generated here.
     const monochrome = MONOCHROME.has(id)
       ? `\n    <monochrome android:drawable="@drawable/${name}_monochrome" />`

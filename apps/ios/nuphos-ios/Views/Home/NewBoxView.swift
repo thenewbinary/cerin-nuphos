@@ -46,7 +46,7 @@ struct NewBoxView: View {
             }.padding(24).frame(maxWidth: 560).frame(maxWidth: .infinity)
         }
         .background(Theme.canvas)
-        .navigationTitle("Rent a computer from Nuphos")
+        .navigationTitle("Rent a computer from Cerin")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(creating)
         .alert(
@@ -56,7 +56,7 @@ struct NewBoxView: View {
         ) { _ in
             Button("Not now", role: .cancel) {}
         } message: { failure in
-            Text(failure.plan ? "\(failure.message)\n\n\(String(localized: "Choose a plan in Nuphos on your computer."))" : failure.message)
+            Text(failure.plan ? "\(failure.message)\n\n\(String(localized: "Choose a plan in Cerin on your computer."))" : failure.message)
         }
         // Desktop polls the new Box every second while its runtimes join.
         .task(id: made?.deviceId) {
@@ -72,7 +72,7 @@ struct NewBoxView: View {
 
     private var form: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text("A Linux computer Nuphos runs, with Claude Code, Codex, OpenCode and more on it. Running computers count against your plan's vCPU; paused ones do not.")
+            Text("A Linux computer Cerin runs, with Claude Code, Codex, OpenCode and more on it. Running computers count against your plan's vCPU; paused ones do not.")
                 .font(.callout).foregroundStyle(Theme.body)
             VStack(alignment: .leading, spacing: 12) {
                 Text("Name").font(.footnote.weight(.medium)).foregroundStyle(Theme.body)

@@ -13,7 +13,7 @@ import type { RuntimeInstance } from './runtime-instances'
 
 // Fixed, shell-free program the backend hands to a runtime's `panel` job, which
 // is the generic "run this Node program on the agent" job (dashboards use it for
-// panel scripts). The runtime signs itself in and Nuphos holds no provider
+// panel scripts). The runtime signs itself in and Cerin holds no provider
 // token, so only the runtime can read its own credential — this program reads it
 // in place, asks the provider for the account's usage windows, and prints one
 // sentinel line carrying the provider's response. The credential itself never
@@ -230,7 +230,7 @@ export async function reportedQuota(
 }
 
 /** Asks the agent that holds the credential; the same path for self-hosted and
- *  Nuphos-hosted agents, because they are the same runtime. */
+ *  Cerin-hosted agents, because they are the same runtime. */
 export async function probeRuntimeQuota(
   teamId: string,
   instance: RuntimeInstance,

@@ -4,7 +4,7 @@ import { afterAll, beforeEach, describe, expect, mock, test } from 'bun:test'
 
 import * as configActual from '@/config'
 
-// The pool lives in Nuphos's own GCP project, so these are deploy constants
+// The pool lives in Cerin's own GCP project, so these are deploy constants
 // rather than anything a customer supplies.
 const PROJECT_NUMBER = '548156476377'
 const POOL_ID = 'nuphos'
@@ -90,7 +90,7 @@ describe('gcpWifConfigured', () => {
     wifOverrides.projectNumber = PROJECT_NUMBER
     wifOverrides.poolId = POOL_ID
     wifOverrides.providerId = PROVIDER_ID
-    // Pool coordinates alone are useless: without the shared Nuphos signing key
+    // Pool coordinates alone are useless: without the shared Cerin signing key
     // there is no token to present to it.
     expect(gcpWifConfigured()).toBe(false)
 

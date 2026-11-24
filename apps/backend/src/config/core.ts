@@ -38,7 +38,7 @@ export function coreConfig() {
       publicBaseUrl,
       // Browser-facing links use NUPHOS_PUBLIC_URL, or the API base when unset.
       publicWebUrl,
-      // Browser-facing OAuth authorize base (e.g. https://nuphos.ai, which
+      // Browser-facing OAuth authorize base (e.g. https://platform.cerin.ai, which
       // proxies /oauth/authorize* to the API). Empty = same as publicBaseUrl.
       oauthAuthorizeBaseUrl: optional('NUPHOS_OAUTH_AUTHORIZE_BASE_URL')?.replace(/\/$/, ''),
       // ES256 conversation tokens from a dedicated internal issuer, kept apart

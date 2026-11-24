@@ -31,7 +31,7 @@ export async function keepUndeliveredSend(
         parts: message.chat.message.parts,
         ...(message.metadata ? { metadata: message.metadata } : {}),
       },
-      // Nuphos's notice, shown as its event line, never as the agent's reply.
+      // Cerin's notice, shown as its event line, never as the agent's reply.
       {
         id: `${message.id}-undelivered`,
         role: 'user',

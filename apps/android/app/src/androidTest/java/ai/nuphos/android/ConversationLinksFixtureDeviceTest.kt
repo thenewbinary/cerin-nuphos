@@ -175,8 +175,8 @@ class ConversationLinksFixtureDeviceTest {
     }
 
     private fun link(team: String = a, id: String = "fixture-chat"): String {
-        val url = "https://nuphos.ai/teams/$team/agent/$id"
-        return if (websiteEnvelope) "nuphos://open?url=${Uri.encode(url)}&path=${Uri.encode(Uri.parse(url).path)}" else url
+        val url = "https://platform.cerin.ai/teams/$team/agent/$id"
+        return if (websiteEnvelope) "cerin://open?url=${Uri.encode(url)}&path=${Uri.encode(Uri.parse(url).path)}" else url
     }
     private fun awaitActivity(start: () -> Unit): MainActivity {
         // Match the Activity class rather than the original URI: production consumes its intent.
@@ -384,14 +384,14 @@ class ConversationLinksFixtureDeviceTest {
         instrumentation.runOnMainSync { setState(AuthSession.State.SignedOut(null)) }
         launch(link() + "?token=attacker")
         assertNull(app.conversationLinks.value.value)
-        warm("nuphos://google-callback?token=attacker")
+        warm("cerin://google-callback?token=attacker")
         instrumentation.waitForIdleSync()
         assertNull(auth.token)
         assertTrue(auth.state is AuthSession.State.SignedOut)
         assertNull(app.conversationLinks.value.value)
-        warm("nuphos://github-callback?state=fixture")
+        warm("cerin://github-callback?state=fixture")
         compose.waitUntil(5_000) { ConnectorIntents.callback.value != null }
-        assertEquals("nuphos://github-callback?state=fixture", ConnectorIntents.callback.value)
+        assertEquals("cerin://github-callback?state=fixture", ConnectorIntents.callback.value)
     }
 
     @Test fun websiteEnvelopeColdWarmWorkspaceAndRecreation() {
@@ -424,19 +424,19 @@ class ConversationLinksFixtureDeviceTest {
 
     @Test fun invalidWebsiteEnvelopeCannotHijackOAuthOrReadContent() {
         instrumentation.runOnMainSync { setState(AuthSession.State.SignedOut(null)) }
-        launch("nuphos://open?url=${Uri.encode(link())}&url=${Uri.encode(link(b))}")
+        launch("cerin://open?url=${Uri.encode(link())}&url=${Uri.encode(link(b))}")
         assertNull(app.conversationLinks.value.value)
-        warm("nuphos://open?url=${Uri.encode("https://evil.example/teams/$a/agent/fixture-chat")}")
+        warm("cerin://open?url=${Uri.encode("https://evil.example/teams/$a/agent/fixture-chat")}")
         instrumentation.waitForIdleSync()
         assertNull(app.conversationLinks.value.value)
         assertFalse(requests.any { it.url.encodedPath.startsWith("/agent/conversations") })
-        warm("nuphos://google-callback?token=attacker")
+        warm("cerin://google-callback?token=attacker")
         instrumentation.waitForIdleSync()
         assertNull(auth.token)
         assertTrue(auth.state is AuthSession.State.SignedOut)
-        warm("nuphos://github-callback?state=fixture")
+        warm("cerin://github-callback?state=fixture")
         compose.waitUntil(5_000) { ConnectorIntents.callback.value != null }
-        assertEquals("nuphos://github-callback?state=fixture", ConnectorIntents.callback.value)
+        assertEquals("cerin://github-callback?state=fixture", ConnectorIntents.callback.value)
     }
 
     @Test fun platformManifestMatcherCoversOnlySupportedConversationPaths() {
@@ -446,16 +446,16 @@ class ConversationLinksFixtureDeviceTest {
             return app.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
                 .any { it.activityInfo.name == MainActivity::class.java.name }
         }
-        assertTrue(matches("nuphos://open?url=${Uri.encode(link())}"))
-        assertFalse(matches("nuphos://open.evil?url=${Uri.encode(link())}"))
+        assertTrue(matches("cerin://open?url=${Uri.encode(link())}"))
+        assertFalse(matches("cerin://open.evil?url=${Uri.encode(link())}"))
         assertTrue(matches(link()))
         assertTrue(matches(link() + "/"))
         assertFalse(matches(link() + "/extra"))
-        assertFalse(matches("https://nuphos.ai/teams/$a/settings"))
-        assertFalse(matches("https://nuphos.ai/teams/$a/agent/"))
-        assertFalse(matches(link().replace("nuphos.ai", "nuphos.ai.evil.example")))
+        assertFalse(matches("https://platform.cerin.ai/teams/$a/settings"))
+        assertFalse(matches("https://platform.cerin.ai/teams/$a/agent/"))
+        assertFalse(matches(link().replace("platform.cerin.ai", "platform.cerin.ai.evil.example")))
         assertFalse(matches(link().replace("https:", "http:")))
-        assertTrue(matches("nuphos://google-callback"))
-        assertTrue(matches("nuphos://github-callback"))
+        assertTrue(matches("cerin://google-callback"))
+        assertTrue(matches("cerin://github-callback"))
     }
 }

@@ -217,7 +217,7 @@ export abstract class OpenAbAcpLifecycle {
 
 /**
  * The user's own text is the last block: Claude Code reads a slash command only
- * there, so everything Nuphos adds (attribution, recall, history, attachments)
+ * there, so everything Cerin adds (attribution, recall, history, attachments)
  * goes in the blocks before it.
  */
 export function attachmentPrompt(

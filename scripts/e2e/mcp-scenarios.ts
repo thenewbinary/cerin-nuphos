@@ -136,7 +136,7 @@ export const mcpScenarios: Scenario[] = [
 
       must(
         init.serverInfo.name === 'nuphos-agent',
-        `the Nuphos server, got ${init.serverInfo.name}`,
+        `the Cerin server, got ${init.serverInfo.name}`,
       )
       const { tools } = await rpc<{ tools: { name: string }[] }>('tools/list')
       const names = tools.map((listed) => listed.name)

@@ -1008,14 +1008,14 @@ describe('OpenAbAcpClient', () => {
     await loading
   })
 
-  test('appends the Nuphos system prompt through _meta on session/new and session/load', async () => {
+  test('appends the Cerin system prompt through _meta on session/new and session/load', async () => {
     const h = harness()
     const client = await OpenAbAcpClient.connect({
       url: 'ws://openab/acp',
       authKey: 'key',
       socketFactory: h.connect,
     })
-    const creating = client.createSession('/workspace', [], 'You are the Nuphos Agent.')
+    const creating = client.createSession('/workspace', [], 'You are the Cerin Agent.')
     const newFrame = await nextSent(h.socket(), 0)
 
     expect(newFrame.params).toEqual({
@@ -1024,19 +1024,19 @@ describe('OpenAbAcpClient', () => {
       _meta: {
         'ai.nuphos/runtimeAuthority': 2,
         'dev.openab/permissionPolicy': 'relay',
-        systemPrompt: { append: 'You are the Nuphos Agent.' },
+        systemPrompt: { append: 'You are the Cerin Agent.' },
       },
     })
     h.socket().receive({ jsonrpc: '2.0', id: newFrame.id, result: { sessionId: 'sess_sp' } })
     await creating
 
-    const loading = client.loadSession('sess_sp', '/workspace', [], 'You are the Nuphos Agent.')
+    const loading = client.loadSession('sess_sp', '/workspace', [], 'You are the Cerin Agent.')
     const loadFrame = await nextSent(h.socket(), 1)
 
     expect((loadFrame.params as { _meta: unknown })._meta).toEqual({
       'ai.nuphos/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
-      systemPrompt: { append: 'You are the Nuphos Agent.' },
+      systemPrompt: { append: 'You are the Cerin Agent.' },
     })
     h.socket().receive({ jsonrpc: '2.0', id: loadFrame.id, result: {} })
     await loading

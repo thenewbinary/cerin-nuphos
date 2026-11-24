@@ -5,7 +5,7 @@ import Foundation
         let state = "expected-state"
         let code = String(repeating: "c", count: 43)
         func parse(_ query: String) -> NuphosWeb.CallbackResult? {
-            NuphosWeb.parseCallback(URL(string: "nuphos://google-callback?\(query)")!, expectedState: state)
+            NuphosWeb.parseCallback(URL(string: "cerin://google-callback?\(query)")!, expectedState: state)
         }
         precondition(parse("state=\(state)&code=\(code)") == .code(code))
         precondition(parse("state=wrong&code=\(code)") == nil)
@@ -16,8 +16,8 @@ import Foundation
         precondition(parse("state=\(state)&code=\(code)&error=cancelled") == .failure("Sign-in did not complete. Please try again."))
         precondition(parse("state=\(state)&code=\(code)&authuser=0") == .code(code))
         precondition(parse("state=\(state)&code=\(code)#") == .code(code))
-        precondition(NuphosWeb.parseCallback(URL(string: "nuphos://google-callback/?state=\(state)&code=\(code)")!, expectedState: state) == .code(code))
-        precondition(NuphosWeb.parseCallback(URL(string: "nuphos://other?state=\(state)&code=\(code)")!, expectedState: state) == nil)
+        precondition(NuphosWeb.parseCallback(URL(string: "cerin://google-callback/?state=\(state)&code=\(code)")!, expectedState: state) == .code(code))
+        precondition(NuphosWeb.parseCallback(URL(string: "cerin://other?state=\(state)&code=\(code)")!, expectedState: state) == nil)
         let verifier = try NuphosWeb.randomSecret()
         precondition(verifier.count == 43)
         precondition(NuphosWeb.challenge("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk") == "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM")
@@ -35,8 +35,8 @@ import Foundation
         precondition(NuphosWeb.options(providers: "oidc", oidcName: "Acme SSO") == .init(providers: [.oidc], oidcName: "Acme SSO"))
         precondition(NuphosWeb.options(providers: "oidc", oidcName: nil).oidcName == "SSO")
         precondition(NuphosWeb.options(providers: "oidc", oidcName: "  ").oidcName == "SSO")
-        let oidc = NuphosWeb.loginURL(baseURL: URL(string: "https://nuphos.example.com")!, handle: "h", provider: .oidc)
-        precondition(oidc.absoluteString == "https://nuphos.example.com/auth/social/oidc/start?handle=h")
+        let oidc = NuphosWeb.loginURL(baseURL: URL(string: "https://cerin.example.com")!, handle: "h", provider: .oidc)
+        precondition(oidc.absoluteString == "https://cerin.example.com/auth/social/oidc/start?handle=h")
         print("Social login callback and PKCE checks passed")
     }
 }

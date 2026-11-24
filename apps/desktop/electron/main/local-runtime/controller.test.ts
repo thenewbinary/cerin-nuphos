@@ -126,7 +126,7 @@ function harness(
       tunnelChange?.(connected, superseded, revoked)
     },
     status: () => tunnelStatus?.(),
-    /** What a stream from Nuphos gets when it asks for this agent. */
+    /** What a stream from Cerin gets when it asks for this agent. */
     stream: (provider: LocalAgentProvider) => tunnelRuntime?.(provider) ?? null,
     envReads,
     reportUsage: (value: unknown) => {

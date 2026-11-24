@@ -20,19 +20,19 @@ const KEY = 'nuphos.workspace.lastTeamId'
 beforeEach(() => store.clear())
 
 test('each account reads only what it stored', () => {
-  setStorageAccount('a@https://api.nuphos.ai')
+  setStorageAccount('a@https://platform.cerin.ai')
   writeAccountStorage(KEY, 'team-a')
-  setStorageAccount('b@https://nuphos.example.com')
+  setStorageAccount('b@https://cerin.example.com')
   assert.equal(readAccountStorage(KEY), null)
   writeAccountStorage(KEY, 'team-b')
-  setStorageAccount('a@https://api.nuphos.ai')
+  setStorageAccount('a@https://platform.cerin.ai')
   assert.equal(readAccountStorage(KEY), 'team-a')
 })
 
 test('state from before accounts were kept apart goes to the first account only', () => {
   store.set(KEY, 'team-old')
-  setStorageAccount('a@https://api.nuphos.ai')
+  setStorageAccount('a@https://platform.cerin.ai')
   assert.equal(readAccountStorage(KEY), 'team-old')
-  setStorageAccount('b@https://nuphos.example.com')
+  setStorageAccount('b@https://cerin.example.com')
   assert.equal(readAccountStorage(KEY), null)
 })

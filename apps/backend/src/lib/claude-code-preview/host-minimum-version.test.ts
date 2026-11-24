@@ -13,7 +13,7 @@ import type { LocalRuntimeStatus } from '@/lib/agent/devices/local-runtime/proto
 
 const agents = {}
 
-describe('the oldest Nuphos a computer may run', () => {
+describe('the oldest Cerin a computer may run', () => {
   test('a Desktop below the floor is out of date, one at it is not', () => {
     // #3829: before 0.127.0 a downloaded update waits for a manual restart.
     expect(MINIMUM_HOST_VERSION.desktop).toBe('0.127.0')

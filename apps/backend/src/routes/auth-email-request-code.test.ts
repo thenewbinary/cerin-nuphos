@@ -28,7 +28,7 @@ const fetchSpy = spyOn(globalThis, 'fetch').mockImplementation((() =>
   Promise.resolve(resend())) as unknown as typeof fetch)
 
 beforeAll(() => {
-  Object.assign(config.email, { resendApiKey: 're_test', from: 'Nuphos <code@example.com>' })
+  Object.assign(config.email, { resendApiKey: 're_test', from: 'Cerin <code@example.com>' })
   config.email.devLogOtp = false
 })
 afterEach(() => {

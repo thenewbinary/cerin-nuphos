@@ -10,7 +10,7 @@ import { createInteractionRepliers } from '@/routes/slack/interaction-replies'
 import { resumeApprovedPlanTurn } from '@/routes/slack/plan-resume'
 
 // Approve button pressed on a plan review card. Approves the plan as the
-// mapped Nuphos user (same gates as the in-app approval), kicks the execution
+// mapped Cerin user (same gates as the in-app approval), kicks the execution
 // turn asynchronously, and replaces the card so the button disappears.
 //
 // Runs DETACHED from the interaction HTTP response: the approval does real work
@@ -102,7 +102,7 @@ export async function handlePlanApproveInteraction(args: {
   }
   repliers.setBotToken(botContext.botToken)
   // The thread is the scoping root and is resolved FIRST: a channel-mapped
-  // channel can belong to a different Nuphos team than the workspace's OAuth
+  // channel can belong to a different Cerin team than the workspace's OAuth
   // binding, and the plan, the user mappings, and the membership gate all live
   // in the THREAD's team. Scoping any of them to botContext.nuphosTeamId
   // silently broke every cross-team approval (plans #88/#89). The button
@@ -136,7 +136,7 @@ export async function handlePlanApproveInteraction(args: {
 
     return
   }
-  // A stored mapping outlives team membership: if the mapped Nuphos user has
+  // A stored mapping outlives team membership: if the mapped Cerin user has
   // since been removed from the team, the stale mapping must not still let them
   // approve. The in-app approval endpoint enforces this via team-scoped auth;
   // mirror that gate here rather than trusting the mapping alone.

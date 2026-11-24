@@ -42,7 +42,7 @@ useModels({
           { id: new ObjectId(), roleArn: 'arn:aws:iam::123456789012:role/Deploy', access },
         ],
         tencentAccounts: [
-          { id: new ObjectId(), roleArn: 'qcs::cam::uin/100001:roleName/Nuphos', access },
+          { id: new ObjectId(), roleArn: 'qcs::cam::uin/100001:roleName/Cerin', access },
           { id: new ObjectId(), roleArn: 'qcs::cam::uin/200002:role/4611686018427387905', access },
         ],
         azureAccounts: [

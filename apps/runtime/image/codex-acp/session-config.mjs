@@ -59,7 +59,7 @@ export function nuphosCodexSessionConfig(config, meta, processEnv = process.env)
       typeof context.developerInstructions === 'string' ? context.developerInstructions : '',
     // Codex sizes the available-skills catalog at 2% of the model's context window by
     // default — 5,440 tokens at 272k — and truncates descriptions to fit, which cuts most
-    // of a team's skills in half. Nuphos pays for the catalog on every turn either way, so
+    // of a team's skills in half. Cerin pays for the catalog on every turn either way, so
     // a session asks for Codex's own ceiling instead; a catalog past it is still shared
     // fairly, and every name and locator is kept. Thread config outranks the account's
     // config.toml, and unlike a baked one it survives the home volume.
@@ -72,7 +72,7 @@ export function nuphosCodexSessionConfig(config, meta, processEnv = process.env)
     // never exists here, so every call fails with "Browser is not available: iab".
     // The account syncs it in when the owner enabled it in the App; Codex lets a
     // per-plugin setting outrank that account state only while `_default` is set,
-    // so one is supplied when absent. Nuphos's browser is local_browser.
+    // so one is supplied when absent. Cerin's browser is local_browser.
     plugins: {
       ...config.plugins,
       _default: config.plugins?._default ?? { enabled: true },

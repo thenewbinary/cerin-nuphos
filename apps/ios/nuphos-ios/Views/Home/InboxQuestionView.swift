@@ -179,7 +179,7 @@ struct InboxQuestionView: View {
         Task { await inbox.hold(question, with: .answer(answer)) }
     }
 
-    /// Nuphos pages open in the app, as a conversation's links do; anything else leaves.
+    /// Cerin pages open in the app, as a conversation's links do; anything else leaves.
     private func open(link url: URL) {
         if !PushNotifications.shared.open(url) { openURL(url) }
     }

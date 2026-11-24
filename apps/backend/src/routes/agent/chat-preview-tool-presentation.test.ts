@@ -490,7 +490,7 @@ describe('approval lifecycle with one runtime card', () => {
 })
 
 describe('Full Access permission requests', () => {
-  test('a Nuphos question card is not shown again for its runtime call', async () => {
+  test('a Cerin question card is not shown again for its runtime call', async () => {
     const h = harness()
     const question = { category: 'approval', question: 'Send it?', options: ['Send', 'Wait'] }
 

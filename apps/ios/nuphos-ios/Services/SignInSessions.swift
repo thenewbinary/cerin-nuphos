@@ -19,10 +19,10 @@ struct SignInSession: Decodable, Identifiable, Equatable {
 /// The labels Desktop's `signInSessionsPresentation.ts` shows.
 enum SignInSessions {
     private static let apps = [
-        "nuphos-desktop": "Nuphos Desktop",
-        "nuphos-ios": "Nuphos for iOS",
-        "nuphos-android": "Nuphos for Android",
-        "nuphos-cli": "Nuphos CLI",
+        "nuphos-desktop": "Cerin Desktop",
+        "nuphos-ios": "Cerin for iOS",
+        "nuphos-android": "Cerin for Android",
+        "nuphos-cli": "Cerin CLI",
     ]
     private static let browsers = [("Edg/", "Edge"), ("Firefox/", "Firefox"), ("Chrome/", "Chrome"), ("Safari/", "Safari")]
     private static let systems = [("iPhone|iPad", "iOS"), ("Android", "Android"), ("Macintosh|Mac OS X", "macOS"), ("Windows", "Windows"), ("Linux", "Linux")]
@@ -34,9 +34,9 @@ enum SignInSessions {
     static func device(_ session: SignInSession) -> String {
         if let name = apps[String((session.client ?? "").prefix { $0 != "/" })] { return name }
         let ua = session.userAgent ?? ""
-        // The nuphos.ai web sign-in reaches the backend from the website's server.
+        // The platform.cerin.ai web sign-in reaches the backend from the website's server.
         if session.client == nil, ua.range(of: #"^(node|undici)\b"#, options: [.regularExpression, .caseInsensitive]) != nil {
-            return String(localized: "Web sign-in (nuphos.ai)")
+            return String(localized: "Web sign-in (platform.cerin.ai)")
         }
         func first(_ list: [(String, String)]) -> String? {
             list.first { ua.range(of: $0.0, options: .regularExpression) != nil }?.1

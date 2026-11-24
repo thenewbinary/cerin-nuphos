@@ -10,11 +10,11 @@ import Foundation
         })
         let alice = NuphosUser(id: "alice", email: "a@example.com", name: "Alice", username: "", avatarURL: "")
         let bob = NuphosUser(id: "bob", email: "b@example.com", name: "Bob", username: "", avatarURL: "")
-        try store.save(user: alice, token: "alice-secret", origin: "https://api.nuphos.ai")
+        try store.save(user: alice, token: "alice-secret", origin: "https://platform.cerin.ai")
         let aliceID = store.active!.id
         precondition(store.acceptsNotification(accountID: "alice"))
         precondition(!store.acceptsNotification(accountID: "bob"))
-        try store.save(user: bob, token: "bob-secret", origin: "https://api.nuphos.ai")
+        try store.save(user: bob, token: "bob-secret", origin: "https://platform.cerin.ai")
         let bobID = store.active!.id
         precondition(store.accounts.count == 2)
         precondition(!store.acceptsNotification(accountID: nil))
@@ -43,10 +43,10 @@ import Foundation
         precondition(restored.hasRegistry)
         let broken = SavedAccounts(read: { "not valid JSON" }, write: { _ in preconditionFailure("corrupt data must not be overwritten") })
         precondition(broken.error != nil)
-        do { try broken.save(user: alice, token: "synthetic", origin: "https://api.nuphos.ai"); preconditionFailure("must refuse overwrite") } catch {}
+        do { try broken.save(user: alice, token: "synthetic", origin: "https://platform.cerin.ai"); preconditionFailure("must refuse overwrite") } catch {}
         let locked = SavedAccounts(read: { throw URLError(.noPermissionsToReadFile) }, write: { _ in preconditionFailure("locked data must not be overwritten") })
         precondition(locked.error != nil)
-        do { try locked.save(user: alice, token: "synthetic", origin: "https://api.nuphos.ai"); preconditionFailure("must refuse overwrite") } catch {}
+        do { try locked.save(user: alice, token: "synthetic", origin: "https://platform.cerin.ai"); preconditionFailure("must refuse overwrite") } catch {}
         print("Saved account registry tests passed")
     }
 }

@@ -35,7 +35,7 @@ export async function setupSlackAgentIndexes(): Promise<void> {
     await createReverseMappingIndex()
   } catch (err) {
     if (!isDuplicateKeyError(err)) throw err
-    // Older rows allowed several active Slack identities for one Nuphos user.
+    // Older rows allowed several active Slack identities for one Cerin user.
     // Only scan and migrate when the invariant cannot be installed because
     // such rows actually exist; established deployments skip this work.
     const duplicateReverseMappings = await slackUserMappings()

@@ -6,7 +6,7 @@ import type { MessageMetadata } from './message-metadata'
 
 const CHANNEL: MessageMetadata = {
   version: 1,
-  sender: { type: 'system', id: 'channel:c1', displayName: 'Nuphos channel' },
+  sender: { type: 'system', id: 'channel:c1', displayName: 'Cerin channel' },
   source: 'agent.resource',
   resourceUrl: '/teams/t/agent/c1',
   sentAt: '2026-11-10T00:00:00.000Z',

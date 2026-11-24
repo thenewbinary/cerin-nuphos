@@ -66,7 +66,7 @@ class BotMentionFixtureDeviceTest {
         ) + listOfNotNull(
             // A post that links the other Bot, as a picked mention is sent.
             if (id == "chat-plain") post("m", """{"type":"user","id":"viewer","displayName":"Preview User"}""",
-                "Ask https://nuphos.ai/teams/${team.id}/agent/bot-box how the login fix went", "2026-11-08T09:40:00Z") else null,
+                "Ask https://platform.cerin.ai/teams/${team.id}/agent/bot-box how the login fix went", "2026-11-08T09:40:00Z") else null,
         )
         return """{"sessionId":"$id","kind":"channel","title":"${bot.title}","isOwner":true,"transcriptUpdatedAt":"t","messageCount":2,"activitySeq":2,"readSeq":2,
             "faces":[{"id":"${bot.id}","name":"${bot.title}","agent":{"avatar":"${bot.avatar}"}}],"messages":[${posts.joinToString(",")}]}"""

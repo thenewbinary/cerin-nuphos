@@ -9,7 +9,7 @@ import Foundation
 ///   the message, even on a Claude Code / Codex runtime.
 /// - `stream_not_resumable`: the stream is gone. A Claude Code / Codex runtime
 ///   keeps its own transcript and may already hold the message, so only the
-///   Nuphos runtime starts over, and only after `afterStreamGone` finds no
+///   Cerin runtime starts over, and only after `afterStreamGone` finds no
 ///   reply and no run on the server.
 struct ResumeFallback {
     enum StreamGone: Equatable {

@@ -161,7 +161,7 @@ describe('pickUpConversationInSlack', () => {
   })
 
   test('a lost bind race resolves to the winner’s thread', async () => {
-    bindError = new Error('This Nuphos conversation is already bound to a Slack thread')
+    bindError = new Error('This Cerin conversation is already bound to a Slack thread')
     racedThread = thread({ slackThreadTs: '1600.001' })
     const result = await pickUpConversationInSlack(args, dependencies)
 

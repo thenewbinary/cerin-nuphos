@@ -26,7 +26,7 @@ class AccountApiTest {
         response = """{"token":"fixture-session"}"""
         assertEquals("fixture-session", api.passwordSignIn(" fixture@example.com ", " password with spaces "))
         assertEquals("POST", requests.last().method)
-        assertEquals("https://api.nuphos.ai/auth/password/sign-in", requests.last().url.toString())
+        assertEquals("https://platform.cerin.ai/auth/password/sign-in", requests.last().url.toString())
         assertNull(requests.last().header("Authorization"))
         assertEquals("""{"email":"fixture@example.com","password":" password with spaces "}""", body())
     }
@@ -183,7 +183,7 @@ class AccountApiTest {
         assertEquals(true, sessions[0].current)
         assertNull(sessions[1].current)
         assertEquals("GET", requests.last().method)
-        assertEquals("https://api.nuphos.ai/auth/sessions", requests.last().url.toString())
+        assertEquals("https://platform.cerin.ai/auth/sessions", requests.last().url.toString())
         assertEquals("Bearer fixture-token", requests.last().header("Authorization"))
 
         status = 204; response = ""

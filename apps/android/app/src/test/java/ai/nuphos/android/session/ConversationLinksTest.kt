@@ -6,7 +6,7 @@ import org.junit.Test
 
 class ConversationLinksTest {
     private val team = "69e989027ab63e8d6a0ffcb6"
-    private val url = "https://nuphos.ai/teams/$team/agent/8dbdbda6-5c6a-4676-a8f9-dbead7d02741"
+    private val url = "https://platform.cerin.ai/teams/$team/agent/8dbdbda6-5c6a-4676-a8f9-dbead7d02741"
 
     @Test fun exactConversationPathAndOptionalTrailingSlash() {
         val target = ConversationLink.parse(url)!!
@@ -18,27 +18,27 @@ class ConversationLinksTest {
     @Test fun rejectUntrustedAndAmbiguousUrls() {
         listOf(
             url.replace("https:", "http:"), url.replace("https:", "nuphos:"),
-            url.replace("nuphos.ai", "nuphos.ai.evil.example"),
-            url.replace("nuphos.ai", "www.nuphos.ai"),
-            url.replace("nuphos.ai", "user@nuphos.ai"),
-            url.replace("nuphos.ai", "nuphos.ai:443"),
+            url.replace("platform.cerin.ai", "platform.cerin.ai.evil.example"),
+            url.replace("platform.cerin.ai", "www.platform.cerin.ai"),
+            url.replace("platform.cerin.ai", "user@nuphos.ai"),
+            url.replace("platform.cerin.ai", "platform.cerin.ai:443"),
             url.replace("/teams/", "/%74eams/"),
             url.replace(team, "../other"), url.replace("/agent/", "/agents/"),
             "$url/extra", "$url//", "$url?token=secret", "$url?", "$url#fragment",
             url.replace("/agent/", "/agent/%2f"), "$url%00", "$url\\extra",
-            "https://nuphos.ai/teams/$team/agent/", "not a URL",
+            "https://platform.cerin.ai/teams/$team/agent/", "not a URL",
         ).forEach { assertNull(it, ConversationLink.parse(it)) }
     }
 
     private fun encoded(value: String) = java.net.URLEncoder.encode(value, "UTF-8")
-    private fun envelope(value: String = url) = "nuphos://open?url=${encoded(value)}"
+    private fun envelope(value: String = url) = "cerin://open?url=${encoded(value)}"
 
     @Test fun websiteEnvelopeResolvesToTheSameAuthorizedDestination() {
         val expected = ConversationLink.parse(url)
         assertEquals(expected, ConversationLink.parseIncoming(url))
         assertEquals(expected, ConversationLink.parseIncoming(envelope()))
         assertEquals(expected, ConversationLink.parseIncoming("${envelope()}&path=${encoded(java.net.URI(url).rawPath)}"))
-        assertEquals(expected, ConversationLink.parseIncoming("nuphos://open?path=${encoded(java.net.URI(url).rawPath)}&url=${encoded(url)}"))
+        assertEquals(expected, ConversationLink.parseIncoming("cerin://open?path=${encoded(java.net.URI(url).rawPath)}&url=${encoded(url)}"))
         assertEquals(expected, ConversationLink.parseIncoming(envelope("$url/")))
         assertNull("Only the incoming-intent boundary unwraps envelopes", ConversationLink.parse(envelope()))
     }
@@ -51,17 +51,17 @@ class ConversationLinksTest {
             envelope().replace("//open?", "//google-callback?"),
             "${envelope()}#fragment", "${envelope()}&url=${encoded(url)}",
             "${envelope()}&path=x&path=x", "${envelope()}&unknown=x",
-            "${envelope()}&", "nuphos://open?path=${encoded(java.net.URI(url).rawPath)}",
-            "nuphos://open?%75rl=${encoded(url)}", "nuphos://open?url=%ZZ",
+            "${envelope()}&", "cerin://open?path=${encoded(java.net.URI(url).rawPath)}",
+            "cerin://open?%75rl=${encoded(url)}", "cerin://open?url=%ZZ",
             "${envelope()}&path=${encoded("/teams/other/agent/other")}",
-            envelope(url.replace("nuphos.ai", "evil.example")), envelope("$url?token=secret"),
+            envelope(url.replace("platform.cerin.ai", "evil.example")), envelope("$url?token=secret"),
             envelope("$url#fragment"), envelope(url.replace("/teams/", "/%74eams/")),
             envelope(encoded(url)), envelope(envelope()), envelope(url.replace("https:", "http:")),
-            envelope(url.replace("nuphos.ai", "nuphos.ai.evil.example")),
-            envelope(url.replace("nuphos.ai", "user@nuphos.ai")),
-            envelope(url.replace("nuphos.ai", "www.nuphos.ai")),
+            envelope(url.replace("platform.cerin.ai", "platform.cerin.ai.evil.example")),
+            envelope(url.replace("platform.cerin.ai", "user@nuphos.ai")),
+            envelope(url.replace("platform.cerin.ai", "www.platform.cerin.ai")),
             envelope(url.replace("/agent/", "/agent/%252f")),
-            "nuphos://open?url=${"a".repeat(4096)}",
+            "cerin://open?url=${"a".repeat(4096)}",
         ).forEach { assertNull(it, ConversationLink.parseIncoming(it)) }
     }
 

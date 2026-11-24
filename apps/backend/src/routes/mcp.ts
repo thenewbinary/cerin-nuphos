@@ -1,8 +1,8 @@
-// MCP (Model Context Protocol) server for the Nuphos Agent.
+// MCP (Model Context Protocol) server for the Cerin Agent.
 //
-// Exposes the Nuphos Agent to external MCP clients — Claude Code, Codex, and any
+// Exposes the Cerin Agent to external MCP clients — Claude Code, Codex, and any
 // other MCP-capable agent — so a developer's coding assistant can talk to the
-// Nuphos Agent directly. Both Claude Code and Codex are native MCP clients, so
+// Cerin Agent directly. Both Claude Code and Codex are native MCP clients, so
 // an MCP server is the zero-glue integration surface (no custom CLI or A2A
 // bridge required on the caller's side).
 //
@@ -49,7 +49,7 @@ export const mcp = new Hono<{ Variables: McpVariables }>()
 // MCP clients (Claude Code, Codex) can discover the authorization server and
 // run the native browser OAuth flow. Accepts either:
 //   1. an MCP OAuth access token (issued by /oauth/token via the browser flow), or
-//   2. a raw Nuphos session token (the manual `--header` path from #285).
+//   2. a raw Cerin session token (the manual `--header` path from #285).
 const requireMcpAuth: MiddlewareHandler<{ Variables: McpVariables }> = async (c, next) => {
   const challenge = `Bearer resource_metadata="${config.auth.publicBaseUrl}/.well-known/oauth-protected-resource"`
   const header = c.req.header('Authorization')
@@ -69,7 +69,7 @@ const requireMcpAuth: MiddlewareHandler<{ Variables: McpVariables }> = async (c,
   let userId: string | null = claims?.sub ?? null
 
   if (!userId) {
-    // Back-compat: accept a raw Nuphos session token so the paste-a-token path
+    // Back-compat: accept a raw Cerin session token so the paste-a-token path
     // keeps working alongside the OAuth flow.
     userId = (await authenticateToken(token))?.user.id ?? null
   }

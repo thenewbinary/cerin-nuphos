@@ -43,7 +43,7 @@
     <string name="connectors_field_integration_token">통합 토큰</string>
     <string name="connectors_field_account_email">계정 이메일</string>
     <string name="connectors_field_management_api_key">Management API 키</string>
-    <string name="connectors_note_aws">역할이 이미 Nuphos를 신뢰하도록 설정되어 있어야 합니다. 서버가 저장 전에 접근 권한을 확인합니다.</string>
+    <string name="connectors_note_aws">역할이 이미 Cerin를 신뢰하도록 설정되어 있어야 합니다. 서버가 저장 전에 접근 권한을 확인합니다.</string>
     <string name="connectors_note_azure">먼저 앱의 페더레이션 자격 증명과 역할 할당을 설정하세요.</string>
     <string name="connectors_category_infrastructure">인프라</string>
     <string name="connectors_category_observability">관측성</string>

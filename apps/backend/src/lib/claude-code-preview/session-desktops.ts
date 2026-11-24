@@ -115,11 +115,11 @@ export async function boxDesktops(
 
 /**
  * What the device list tells the person whose computer it is: the runtime id it opens its
- * desktop by (runtime-desktop.ts), when its host opens one on request, and the Nuphos Desktop
+ * desktop by (runtime-desktop.ts), when its host opens one on request, and the Cerin Desktop
  * running it with the update it found (computer-app-update.ts). The runtime id names the
  * computer, which needs no agent for it: the catalog lists a runtime only per installed agent.
  * A Box opens through its own link and updates its host instead. Everyone who sees a computer
- * is told when the Nuphos on it should be updated (host-minimum-version.ts).
+ * is told when the Cerin on it should be updated (host-minimum-version.ts).
  */
 export async function ownComputer(
   {

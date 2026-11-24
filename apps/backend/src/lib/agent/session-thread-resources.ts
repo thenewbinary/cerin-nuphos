@@ -63,7 +63,7 @@ function slackResource(thread: SlackThreadRef, firstMessage?: string): SessionTh
   }
 }
 
-// Nuphos names the Discord threads it opens after the message that started the session.
+// Cerin names the Discord threads it opens after the message that started the session.
 function discordResource(thread: DiscordThreadRef, firstMessage?: string): SessionThreadResource {
   return {
     id: `discord:${thread.threadChannelId}`,
@@ -119,9 +119,9 @@ export async function sessionThreadResources(
 }
 
 /**
- * Unbinding deletes the routing row, so the thread is treated like one Nuphos
+ * Unbinding deletes the routing row, so the thread is treated like one Cerin
  * never joined: the session stops posting there and a new mention starts a new
- * session. A thread Nuphos posted itself (a slack_post root) stays bound.
+ * session. A thread Cerin posted itself (a slack_post root) stays bound.
  */
 export async function unlinkSessionThread(sessionId: string, id: string) {
   const [provider, channelId, threadTs] = id.split(':')

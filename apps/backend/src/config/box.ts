@@ -1,7 +1,7 @@
 import { boundedInt, optional } from './env'
 
 /**
- * Boxes: cloud machines Nuphos creates on instabox for a user, registered as that
+ * Boxes: cloud machines Cerin creates on instabox for a user, registered as that
  * user's devices through a one-time join token. One partner key for the whole
  * deployment; the feature is off when it is unset.
  */
@@ -13,7 +13,7 @@ export type BoxConfig = {
   defaultVcpuLimit?: number
   /**
    * Hours a month a team without its own `boxVcpuLimit` may run Boxes at `defaultVcpuLimit`.
-   * Set, such a team has one Box, which Nuphos pauses when idle; unset is unlimited.
+   * Set, such a team has one Box, which Cerin pauses when idle; unset is unlimited.
    */
   defaultMonthlyHours?: number
   /** The billing service clients open to buy or change a plan; unset shows no Upgrade. */

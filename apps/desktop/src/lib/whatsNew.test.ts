@@ -11,8 +11,8 @@ function entry(slug: string): ChangelogEntry {
     title: slug,
     summary: '',
     date: '2026-08-12',
-    coverUrl: 'https://nuphos.ai/c.png',
-    url: `https://nuphos.ai/changelog/${slug}`,
+    coverUrl: 'https://platform.cerin.ai/c.png',
+    url: `https://platform.cerin.ai/changelog/${slug}`,
   }
 }
 

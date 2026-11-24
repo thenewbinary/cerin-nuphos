@@ -1,4 +1,4 @@
-// The connect script carries the promises Nuphos makes to a customer's
+// The connect script carries the promises Cerin makes to a customer's
 // security review. They are one careless edit away from silently going away,
 // and nothing else in CI would notice, so pin them here.
 import { readFileSync } from 'node:fs'

@@ -17,7 +17,7 @@ export const INSTANCE = instanceKey(process.env.NUPHOS_DEV_INSTANCE, ROOT)
 // Desktop's sign-in for this instance, apart from the installed app's cli.yaml.
 export const CLI_CONFIG_DIR = join(homedir(), '.config/nuphos')
 export const DEV_CLI_CONFIG = join(CLI_CONFIG_DIR, `cli.dev.${INSTANCE}.yaml`)
-// Electron's profile and single-instance lock: `Nuphos Dev (<suffix>)`. " local"
+// Electron's profile and single-instance lock: `Cerin Dev (<suffix>)`. " local"
 // keeps it apart from a Desktop that once ran against another backend.
 export const DESKTOP_SUFFIX = `${INSTANCE} local`
 // Start at 3718 so ports line up with the named-tunnel hostnames (3718→api-dev-example-1

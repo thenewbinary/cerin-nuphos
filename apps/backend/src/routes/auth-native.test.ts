@@ -144,7 +144,7 @@ const post = (path: string, body: unknown) =>
 const VERIFIER = 'a'.repeat(64)
 const CHALLENGE = createHash('sha256').update(VERIFIER).digest('base64url')
 const REDIRECT = 'http://127.0.0.1:51000/callback'
-const NUPHOS_CALLBACK = 'https://nuphos.ai/api/google/callback'
+const NUPHOS_CALLBACK = 'https://platform.cerin.ai/api/google/callback'
 
 async function registerHandle(codeChallenge = CHALLENGE): Promise<string> {
   const res = await post('/auth/native/session', {
@@ -449,7 +449,7 @@ describe('an attacker who registered the handle', () => {
   // The one-click remote account takeover this design has to stop.
   //
   // Registration is unauthenticated, so an attacker can run step 1 from their
-  // own server, then send the victim a plain nuphos.ai link carrying the
+  // own server, then send the victim a plain platform.cerin.ai link carrying the
   // handle. The victim sees a genuine Google account chooser and picks their
   // own account, which binds *their* identity to the attacker's handle. The
   // attacker holds the handle and the PKCE verifier — PKCE proves who

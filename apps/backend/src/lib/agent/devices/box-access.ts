@@ -17,7 +17,7 @@ import type { AgentDevice } from './store'
 import type { NuphosTeamRole } from '@/lib/identity/types'
 
 /**
- * What a person may do with a computer: `use` runs its agents through Nuphos; `manage` also opens
+ * What a person may do with a computer: `use` runs its agents through Cerin; `manage` also opens
  * a shell on it, signs its agents in and out, and chooses who uses it.
  */
 export type DeviceAccessLevel = 'use' | 'manage' | 'owner'

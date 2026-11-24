@@ -20,7 +20,7 @@ export { HOME_REFRESH_ACTION } from '@/lib/slack/home-tab/blocks'
 
 export type { SlackHomeCredentialGroup, SlackHomeViewModel } from '@/lib/slack/home-tab/blocks'
 
-// Which of the team's cloud credential bindings this Nuphos user may use,
+// Which of the team's cloud credential bindings this Cerin user may use,
 // grouped by provider. Applies the same per-binding member allowlist the REST
 // routes enforce (lib/byos/access.ts); bindings without an access field are
 // team-wide by default.
@@ -104,7 +104,7 @@ export function buildSlackHomeViewFromModel(model: SlackHomeViewModel): Record<s
   }
 }
 
-// Shown when the Slack workspace has no Nuphos team binding (including the
+// Shown when the Slack workspace has no Cerin team binding (including the
 // legacy env-token install, which carries no team).
 export function buildDisconnectedSlackHomeView(): Record<string, unknown> {
   return {
@@ -141,7 +141,7 @@ export async function buildConnectedSlackHomeView(args: {
       ? listAccessibleTeamCredentials(args.nuphosTeamId, args.nuphosUserId)
       : Promise.resolve([]),
   ])
-  // A mapping can outlive team membership; a viewer whose Nuphos user is no
+  // A mapping can outlive team membership; a viewer whose Cerin user is no
   // longer a member renders as unlinked (same gate the message handlers apply).
   const member = args.nuphosUserId
     ? (members.find((entry) => entry.id === args.nuphosUserId) ?? null)

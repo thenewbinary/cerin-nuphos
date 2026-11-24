@@ -24,7 +24,7 @@ struct RootView: View {
         .background(Theme.canvas.ignoresSafeArea())
         .animation(.easeInOut(duration: 0.25), value: isSignedIn)
         .task { await session.restore() }
-        // nuphos.ai's "Open in Nuphos" hands the page over as nuphos://open.
+        // platform.cerin.ai's "Open in Cerin" hands the page over as cerin://open.
         .onOpenURL { PushNotifications.shared.open($0) }
         .onChange(of: scenePhase, initial: true) { _, phase in
             Analytics.shared.setActive(phase == .active)

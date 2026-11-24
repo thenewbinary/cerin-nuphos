@@ -1,6 +1,6 @@
-// Token minting/verification and PKCE for the Nuphos MCP OAuth server.
+// Token minting/verification and PKCE for the Cerin MCP OAuth server.
 //
-// Access tokens are self-contained HS256 JWTs (same primitive as the Nuphos
+// Access tokens are self-contained HS256 JWTs (same primitive as the Cerin
 // session token) audience-bound to the MCP resource. Authorization codes and
 // refresh tokens are opaque random strings; only their SHA-256 hashes are
 // stored, so a DB read never yields a usable credential.
@@ -119,7 +119,7 @@ export function verifyConsentToken(token: string, userId: string, clientId: stri
 
 export type McpAccessClaims = {
   iss: string
-  sub: string // Nuphos user id
+  sub: string // Cerin user id
   aud: string // MCP resource URL
   scope: string
   client_id: string

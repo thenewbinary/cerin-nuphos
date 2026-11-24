@@ -12,7 +12,7 @@ import type { NuphosUser } from '@/lib/identity/types'
 /**
  * Device sign-in for terminals with no browser (RFC 8628). The terminal gets
  * a secret `deviceCode` it polls with and a short `userCode` it shows. A
- * person signed in on nuphos.ai types the code, sees which machine asked, and
+ * person signed in on platform.cerin.ai types the code, sees which machine asked, and
  * approves it as themselves or as a named agent. The next poll mints a CLI
  * token (`cli-tokens.ts`) and the request is gone.
  *

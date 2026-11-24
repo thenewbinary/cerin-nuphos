@@ -133,7 +133,7 @@ class ModelSettingsFixtureDeviceTest {
                 }
             }
         }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performClick().performTextInput("Synthetic draft")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performClick().performTextInput("Synthetic draft")
         compose.onNodeWithText("Alpha").assertDoesNotExist()
         capture("model-composer-before-light.png")
         compose.runOnIdle { hasSettings = true }

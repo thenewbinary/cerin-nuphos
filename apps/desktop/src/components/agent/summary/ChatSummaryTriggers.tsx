@@ -11,7 +11,7 @@ import { SummarySection } from './ChatSummaryRows'
 import type { AgentTrigger } from '../../../api/agent-trigger-types'
 
 function nextRunLabel(trigger: AgentTrigger): string {
-  // Why Nuphos paused it, when it did.
+  // Why Cerin paused it, when it did.
   if (!trigger.enabled) return trigger.executionAuthorizationError ?? t('Paused')
   if (trigger.nextRunAt)
     return t('Next: {time}', { time: new Date(trigger.nextRunAt).toLocaleString() })
@@ -74,7 +74,7 @@ export function ChatSummaryTriggers({ teamId, sessionId }: { teamId: string; ses
               ? {
                   ...row,
                   enabled: updated.enabled,
-                  // A person changed it: no reason Nuphos paused it for still applies.
+                  // A person changed it: no reason Cerin paused it for still applies.
                   executionAuthorizationError: undefined,
                   nextRunAt:
                     enabled && row.triggerType === 'cron'

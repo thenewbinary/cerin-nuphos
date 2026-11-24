@@ -1,4 +1,4 @@
-# Nuphos Android
+# Cerin Android
 
 Native Android client built with Kotlin and Jetpack Compose. This contribution
 contains the app, Gradle wrapper, JVM tests, and isolated device fixture tests.
@@ -81,10 +81,10 @@ review. To ship a reviewed language set, add the translations, remove
 
 ## Service support
 
-The app defaults to Nuphos Cloud (`api.nuphos.ai`). On the welcome screen,
+The app defaults to Cerin Cloud (`platform.cerin.ai`). On the welcome screen,
 **Server settings** accepts the HTTPS origin of a self-hosted backend, including
 an optional port. Paths, credentials, queries, fragments and cleartext HTTP are
-not accepted. Use **Use Nuphos Cloud** to return to the default server.
+not accepted. Use **Use Cerin Cloud** to return to the default server.
 
 Sign out before changing servers. Changing servers clears the previous local
 session and sign-in form; session tokens remain pinned to their issuing server.
@@ -166,7 +166,7 @@ It does not exercise a successful mutation against a real account.
 
 ### Conversation App Links
 
-The app accepts `https://nuphos.ai/teams/{teamId}/agent/{conversationId}` with
+The app accepts `https://platform.cerin.ai/teams/{teamId}/agent/{conversationId}` with
 an optional single trailing slash. Team IDs must be 24 hexadecimal characters;
 conversation IDs contain 1–128 ASCII letters, digits, `_` or `-`, starting with a
 letter or digit. Queries, fragments, explicit ports, encoded paths and other
@@ -294,7 +294,7 @@ For the full isolated backend path, debug builds accept
 `-PnuphosDebugApiBaseUrl=http://127.0.0.1:18768` and `adb reverse tcp:18768 tcp:18768`.
 The push endpoint defaults to this API origin. Release builds cannot use this override.
 Use a clean dedicated test installation and a local fixture account; do not restore a cloud
-login into this build. The browser sign-in page still targets Nuphos Cloud, so local acceptance
+login into this build. The browser sign-in page still targets Cerin Cloud, so local acceptance
 must bootstrap a local account through the isolated backend's authentication APIs.
 `LocalPushBootstrapDeviceTest` is disabled unless `localPushBootstrap=true`, requires a loopback
 debug build and an `@example.test` account, verifies `/auth/me`, and refuses a different saved
@@ -508,7 +508,7 @@ unavailable; they are never sent to another app as a fallback.
 Sharing uses a read-only FileProvider URI and Android's chooser. Only the
 `image-exports` cache directory is exposed; copies expire after 24 hours and are
 pruned on a later export, with at most 20 pending copies. Saving uses a pending
-MediaStore Images entry under Pictures/Nuphos and deletes it on write failure.
+MediaStore Images entry under Pictures/Cerin and deletes it on write failure.
 No storage permission is requested. Existing transfer Save file remains available.
 
 `ImageExportsFixtureDeviceTest` uses synthetic images to check original SHA-256, detected
@@ -523,7 +523,7 @@ validation evidence; build properties alone are not proof.
 
 ### Receive from the Android Sharesheet
 
-Share text, URLs, images or files to Nuphos, choose a workspace and a new or
+Share text, URLs, images or files to Cerin, choose a workspace and a new or
 existing agent, then review the editable draft. Sharing never sends a message.
 Existing text is preserved and shared text is appended. Binary inputs must be
 content-provider URIs; at most 20 attachments, 100 MiB per file and 500 MiB total
@@ -640,7 +640,7 @@ app's external files directory. Never install it over the Play application.
 
 ### Website conversation handoff
 
-Android accepts the website's `nuphos://open?url=<encoded HTTPS URL>&path=<encoded path>`
+Android accepts the website's `cerin://open?url=<encoded HTTPS URL>&path=<encoded path>`
 conversation handoff as well as verified HTTPS conversation links. The optional `path`
 must agree with the inner URL. Only one `url` and at most one `path` are accepted;
 unknown or duplicate fields, nested envelopes, fragments, external hosts and encoded

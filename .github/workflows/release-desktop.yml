@@ -150,7 +150,7 @@ jobs:
         run: |
           set -euo pipefail
           # Same content types electron-builder's S3 publisher sets.
-          for f in release/Nuphos-*.zip release/Nuphos-*.dmg release/Nuphos-*.blockmap; do
+          for f in release/Cerin-*.zip release/Cerin-*.dmg release/Cerin-*.blockmap; do
             case "$f" in
               *.blockmap) type=application/gzip ;;
               *.zip) type=application/zip ;;
@@ -223,7 +223,7 @@ jobs:
           # Fail closed, keeping the previous manifest live, unless it lists
           # exactly one zip and one dmg per arch for this version.
           v=$(yq '.version' latest-mac.yml)
-          want=$(for f in arm64.dmg arm64.zip x64.dmg x64.zip; do echo "Nuphos-$v-$f"; done)
+          want=$(for f in arm64.dmg arm64.zip x64.dmg x64.zip; do echo "Cerin-$v-$f"; done)
           got=$(yq '.files[].url' latest-mac.yml | LC_ALL=C sort)
           [ "$got" = "$want" ] || { echo "::error::latest-mac.yml must list exactly: $want"; exit 1; }
           aws s3 cp latest-mac.yml s3://nuphos-releases/desktop/latest-mac.yml --content-type text/yaml
@@ -245,12 +245,12 @@ jobs:
           cat > release-notes.md <<EOF
           macOS builds are signed and notarized. Windows builds are signed. Linux builds are unsigned.
 
-          - [macOS Apple Silicon]($BASE/Nuphos-$VERSION-arm64.dmg)
-          - [macOS Intel]($BASE/Nuphos-$VERSION-x64.dmg)
-          - [Windows x64]($BASE/Nuphos-$VERSION-x64.exe)
-          - [Windows arm64]($BASE/Nuphos-$VERSION-arm64.exe)
-          - [Linux x64]($BASE/Nuphos-$VERSION-x86_64.AppImage)
-          - [Linux arm64]($BASE/Nuphos-$VERSION-arm64.AppImage)
+          - [macOS Apple Silicon]($BASE/Cerin-$VERSION-arm64.dmg)
+          - [macOS Intel]($BASE/Cerin-$VERSION-x64.dmg)
+          - [Windows x64]($BASE/Cerin-$VERSION-x64.exe)
+          - [Windows arm64]($BASE/Cerin-$VERSION-arm64.exe)
+          - [Linux x64]($BASE/Cerin-$VERSION-x86_64.AppImage)
+          - [Linux arm64]($BASE/Cerin-$VERSION-arm64.AppImage)
           EOF
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --title "Desktop $TAG" --latest --generate-notes --notes-file release-notes.md

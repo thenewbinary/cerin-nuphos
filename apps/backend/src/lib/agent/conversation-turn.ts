@@ -234,7 +234,7 @@ export async function reportUndelivered(
     const senderId = message.metadata?.sourceSessionId
 
     await keepUndelivered(data, message, reason, error)
-    // Only an agent's message is answered. The answer is Nuphos's own notice,
+    // Only an agent's message is answered. The answer is Cerin's own notice,
     // never an agent's, so it is never reported back: threads cannot ping-pong.
     if (message.source !== 'agent.thread' || !senderId) continue
     const failed = (error: unknown) => {

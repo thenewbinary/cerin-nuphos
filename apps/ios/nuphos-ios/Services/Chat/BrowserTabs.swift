@@ -1,6 +1,6 @@
 import Foundation
 
-/// A browser tab in this conversation's dock, in the owner's Nuphos Desktop: opened by the agent
+/// A browser tab in this conversation's dock, in the owner's Cerin Desktop: opened by the agent
 /// or the user, open now or restored after a restart. The page itself stays on that computer:
 /// its cookies and sign-ins never reach the phone.
 struct BrowserTab: Decodable, Identifiable, Equatable, Sendable {

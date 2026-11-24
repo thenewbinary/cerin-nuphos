@@ -93,7 +93,7 @@ if (flag === '--legacy') {
 
 const page = await call('GET', '/')
 assert.equal(page.status, 200)
-assert.match(page.text, /Nuphos agent/)
+assert.match(page.text, /Cerin agent/)
 assert.equal(page.headers.get('x-frame-options'), 'DENY')
 
 let state = (await call('GET', '/_openab/console/state')).json

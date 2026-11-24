@@ -12,7 +12,7 @@ type ToolState = {
 } & PreviewToolAttribution
 
 /**
- * Tool steps for the durable transcript, keyed by ACP tool-call id. Nuphos
+ * Tool steps for the durable transcript, keyed by ACP tool-call id. Cerin
  * tools invoked through the `nuphos-tools` MCP are recorded under their
  * classic name so reloaded conversations re-render the same cards.
  */

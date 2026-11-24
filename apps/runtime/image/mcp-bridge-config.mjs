@@ -1,4 +1,4 @@
-// MCP clients fix HTTP headers when they connect, so a bearer-only Nuphos MCP
+// MCP clients fix HTTP headers when they connect, so a bearer-only Cerin MCP
 // server is run through the stdio bridge, which reads the current token from
 // OPENAB_CREDENTIALS_DIR on every request. Input and output are ACP shapes.
 export function nuphosBridgeMcpServers(servers, env = process.env, execPath = process.execPath) {

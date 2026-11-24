@@ -96,7 +96,7 @@ internal object ImageExports {
         val uri = requireNotNull(resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, image.name)
             put(MediaStore.Images.Media.MIME_TYPE, image.mime)
-            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Nuphos")
+            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Cerin")
             put(MediaStore.Images.Media.IS_PENDING, 1)
         }))
         try {

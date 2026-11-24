@@ -16,7 +16,7 @@ final class Analytics {
         #if DEBUG
         return false
         #else
-        // Self-hosted users must never be sent to Nuphos Cloud analytics.
+        // Self-hosted users must never be sent to Cerin Cloud analytics.
         return NuphosAPI.baseURL == NuphosAPI.defaultBaseURL
         #endif
     }

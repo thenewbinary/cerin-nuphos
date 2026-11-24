@@ -93,7 +93,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
   if (!thread) {
     // This handler sees every threaded reply in every channel the bot is in, so
     // silence is right for a thread between other people. Under a root the bot
-    // itself posted it is not: someone is talking to Nuphos and getting nothing
+    // itself posted it is not: someone is talking to Cerin and getting nothing
     // back, which is exactly how an unbound proactive post reads today. Tell
     // them how to reach it instead of dropping the message.
     if (runtime.botUserId && event.parent_user_id === runtime.botUserId) {
@@ -146,7 +146,7 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
     Boolean(runtime.botUserId) && (event.text ?? '').includes(`<@${runtime.botUserId}>`)
   const history = (thread.recentMessages ?? []).filter((record) => record.ts !== event.ts)
 
-  // Nuphos answers only when mentioned. Unmentioned replies stay in the
+  // Cerin answers only when mentioned. Unmentioned replies stay in the
   // thread history above and reach the agent with the next mention.
   if (!mentionsBot) {
     await markSlackEvent(eventId, 'ignored')

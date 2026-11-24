@@ -35,7 +35,7 @@ test('isBareLocalLink keeps explicitly labelled links as links', () => {
   assert.equal(isBareLocalLink('http://localhost:5173/', 'http://localhost:5173'), true)
   assert.equal(isBareLocalLink('http://localhost:5173/', 'localhost:5173'), true)
   assert.equal(isBareLocalLink('http://localhost:5173/', 'the preview'), false)
-  assert.equal(isBareLocalLink('https://nuphos.ai/', 'https://nuphos.ai/'), false)
+  assert.equal(isBareLocalLink('https://platform.cerin.ai/', 'https://platform.cerin.ai/'), false)
 })
 
 const tool = (toolName: string, output: unknown): Part => ({

@@ -103,7 +103,7 @@ export const AGENT_COMMAND = `export PATH="$HOME/.local/bin:$HOME/.npm-global/bi
 
 /** sha256 of each ~/AGENTS.md a Box image or instabox wrote; only these are emptied on update. */
 export const IMAGE_AGENTS_SHA256 = [
-  // The Nuphos Box image's notes.
+  // The Cerin Box image's notes.
   '280eb1f0d5a0830e1eb973b6da483f1f857796c9c11a4bcc87179f7804f3795b',
   // instabox's own, which it writes wherever ~/AGENTS.md is missing.
   '0553cda9f792bf91370755ed3db74481f082ba29449a0c7ec4d8af5c63311a30',
@@ -190,7 +190,7 @@ export function unavailable(what: string, error: unknown): AppError {
 /**
  * Why instabox did not make a Box, in words for whoever asked. Its own text can name the
  * account and its owner, so it stays in the server log. The deployment's account is
- * Nuphos's to fix, so only a team's own account gets the 4xx that asks the team to act.
+ * Cerin's to fix, so only a team's own account gets the 4xx that asks the team to act.
  */
 export function orderRefused(error: unknown, ownAccount: boolean): AppError {
   if (error instanceof AppError) return error

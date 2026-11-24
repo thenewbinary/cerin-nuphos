@@ -1,10 +1,10 @@
-# Nuphos Runtime
+# Cerin Runtime
 
-The container image that runs a coding agent for [Nuphos](https://nuphos.ai).
+The container image that runs a coding agent for [Cerin](https://platform.cerin.ai).
 
-A Nuphos runtime is a long-lived container with one coding agent inside it —
+A Cerin runtime is a long-lived container with one coding agent inside it —
 **Claude Code**, **Codex**, **Grok Build** or **Google Antigravity** — reachable over the
-[Agent Client Protocol](https://agentclientprotocol.com) (ACP). The Nuphos
+[Agent Client Protocol](https://agentclientprotocol.com) (ACP). The Cerin
 backend does not run the agent itself; it opens an ACP session against a
 runtime and streams the conversation through it. This repository builds the
 image those runtimes run.
@@ -71,14 +71,14 @@ Three things, in layers:
    background process therefore only holds that conversation's token and
    connector credentials, and exits 30 seconds after the conversation's agent
    stops. Profiles share the login in `~/.hermes`. Hermes's own long-term memory
-   is off; Nuphos memory is the only one.
+   is off; Cerin memory is the only one.
    DeepSeek Harness (`dsh --profile acp`) is open source and speaks ACP too, and
    runs behind the same shim. It needs Node 24, so the `dsh` image installs the
    pinned npm release at build time with its own Node 24 binary; everything else
    keeps the image's Node 22. It signs in with a DeepSeek API key or a DeepSeek
    account. DSH has no `session/load`, so the shim turns OpenAB's load into a
    `session/resume`, which restores the session without replaying it.
-3. **The Nuphos toolset layer**, built from [`image/`](image) in this
+3. **The Cerin toolset layer**, built from [`image/`](image) in this
    repository: a set of patches to the adapters, a handful of helper programs,
    and the command-line tools an agent is expected to be able to reach for.
 
@@ -99,7 +99,7 @@ until someone re-reviews the patch.
 | `/opt/nuphos-runtime/runtime-guard.sh`      | Sourced via `BASH_ENV`; refreshes per-turn credentials into the shell environment                                                                                                                                                                                                                                                                              |
 | `/opt/nuphos-runtime/panel-job.mjs`         | The `panel` job OpenAB runs for `_openab/runtime/job`: writes the panel runner, script and params into a fresh directory and runs `node runner.mjs <dir>`, passing stdout and the exit code through                                                                                                                                                            |
 | `/opt/nuphos-runtime/codex-login.mjs`       | Drives Codex's device-code login in an isolated `CODEX_HOME`                                                                                                                                                                                                                                                                                                   |
-| `/opt/acp-shim.mjs`                         | The Nuphos layer for Grok Build, Antigravity, OpenCode, Hermes Agent and DeepSeek Harness: respawns the agent with the conversation's environment and CLI home, syncs skills, applies runtime defaults, bridges MCP credentials, and hands over Nuphos's instructions (Grok's `_meta.rules`; otherwise ahead of the first prompt after each session is opened) |
+| `/opt/acp-shim.mjs`                         | The Cerin layer for Grok Build, Antigravity, OpenCode, Hermes Agent and DeepSeek Harness: respawns the agent with the conversation's environment and CLI home, syncs skills, applies runtime defaults, bridges MCP credentials, and hands over Cerin's instructions (Grok's `_meta.rules`; otherwise ahead of the first prompt after each session is opened) |
 | `/opt/nuphos-runtime/grok-login.mjs`        | Drives `grok login --device-auth` and reports the xAI device code                                                                                                                                                                                                                                                                                              |
 | `/opt/nuphos-runtime/opencode-login.mjs`    | Drives OpenCode's own server through every sign-in it offers: reports the provider, method and field choices, then an API key prompt or the provider's page, and passes back what the user picks, types or pastes                                                                                                                                              |
 | `/opt/nuphos-runtime/hermes-login.mjs`      | Drives `hermes auth add` for the provider and method the user picks: an API key on stdin, a device page and its code, or a page whose code is pasted back. Then makes that provider and its model Hermes's default                                                                                                                                             |
@@ -164,7 +164,7 @@ ahead of time.
 Tools install under `/home/node/.nuphos-runtime/tools` (override with
 `NUPHOS_TOOLS_DIR`), so they last exactly as long as the home directory does:
 
-- **Nuphos-provisioned pods** mount a persistent volume at `/home/node`, so a
+- **Cerin-provisioned pods** mount a persistent volume at `/home/node`, so a
   tool is fetched once per runtime and survives restarts and image upgrades. An
   image that pins a newer version installs it on first use and removes the old one.
 - **A self-hosted container** keeps them across restarts only with a volume at
@@ -236,7 +236,7 @@ whoever opens the page first chooses it.
 
 From then on the same page is the runtime's console. Sign in with the password to:
 
-- connect the runtime to a Nuphos team (see [Connecting it to Nuphos](#connecting-it-to-nuphos));
+- connect the runtime to a Cerin team (see [Connecting it to Cerin](#connecting-it-to-nuphos));
 - see every connected team, who connected it, when it was connected and last
   used, and revoke any of them;
 - sign the agent's provider account in;
@@ -270,7 +270,7 @@ shorter one stops the container at startup with an error.
 
 `OPENAB_RUNTIME_CONSOLE=false` restores the behaviour of 0.0.x. On first boot the
 runtime generates a password, stores it in `/home/node/.nuphos-runtime/auth-key`
-(mode `0600`) and prints it once. Every Nuphos team connects with that one password.
+(mode `0600`) and prints it once. Every Cerin team connects with that one password.
 `OPENAB_ACP_AUTH_KEY_FILE` moves the file. With the console on,
 `NUPHOS_RUNTIME_AUTOGEN_PASSWORD=true` still generates that file on first boot (the
 local compose stack uses it), and the console takes it as its password and as a
@@ -280,7 +280,7 @@ The volume also keeps the account the runtime signs in with
 (`/home/node/.claude` for Claude Code, `/home/node/.codex` for Codex) and the
 command-line tools it installs on first use across container replacement.
 
-ACP is then served at `ws://<host>:8080/acp`, and Nuphos connects to it over
+ACP is then served at `ws://<host>:8080/acp`, and Cerin connects to it over
 **`wss://`** — put TLS in front of the port. Most hosts terminate TLS for you
 (Zeabur, for one, gives every service an HTTPS domain), so this is usually
 nothing more than using the address they hand you; on a bare VPS, a reverse
@@ -317,7 +317,7 @@ container's limits. The agent command itself is not pinned there: it stays on
 
 ### What each provider needs beyond the password
 
-Each runtime owns its own login. Nuphos never stores the account and never sends
+Each runtime owns its own login. Cerin never stores the account and never sends
 one to a runtime it did not provision; it only shows what the runtime reports.
 
 | Variant       | Sign in on the host                                                                            | Credential                                     |
@@ -339,29 +339,29 @@ container yourself, for example to a token from `claude setup-token`. That token
 takes precedence over any stored login, so the runtime then turns off sign-in from
 the app and does not report a sign-in state.
 
-### Connecting it to Nuphos
+### Connecting it to Cerin
 
-In the console, press **Connect to Nuphos**. Nuphos Desktop opens, shows the
+In the console, press **Connect to Cerin**. Cerin Desktop opens, shows the
 runtime's address and asks which team to connect it to. Only teams you administer
 can be picked. Confirm, and that team gets its own key for this runtime. To add the
-runtime to another team, press **Connect to Nuphos** again.
+runtime to another team, press **Connect to Cerin** again.
 
-If Nuphos Desktop does not open, go to **Settings → Agent → Connect your own**,
+If Cerin Desktop does not open, go to **Settings → Agent → Connect your own**,
 choose the pairing code option, and enter the agent URL and pairing code the console
 shows. A code works once and expires after 10 minutes. Plain `ws://` is accepted only
 for an in-cluster `*.svc` host; anything reached over the internet has to be
 `wss://`.
 
-The URL Nuphos connects to is taken from the address you opened the console at. If
-Nuphos reaches the runtime at a different address, set it under **Agent URL Nuphos
+The URL Cerin connects to is taken from the address you opened the console at. If
+Cerin reaches the runtime at a different address, set it under **Agent URL Cerin
 connects to** in the console, or with `OPENAB_RUNTIME_PUBLIC_URL`. The local compose
 stack is one example: your browser uses `127.0.0.1`, but the backend uses
 `ws://runtime:8080/acp`.
 
-A team's connection shows as waiting until Nuphos first uses it. Revoking it in the
-console closes its sessions at once, and Nuphos then reports the connection as
+A team's connection shows as waiting until Cerin first uses it. Revoking it in the
+console closes its sessions at once, and Cerin then reports the connection as
 revoked until someone connects the runtime again. Removing the runtime from a team in
-Nuphos revokes that team's key on the runtime as well.
+Cerin revokes that team's key on the runtime as well.
 
 Each team only sees its own conversations on the runtime: its session list, stop,
 steering and approvals cover the sessions it started, and it cannot resume another
@@ -373,7 +373,7 @@ filesystem (an agent working for one team can read and change files another team
 agent wrote), one provider sign-in and account, and the same installed tools. Connect
 it only to teams that may share them.
 
-Nuphos conversations have separate CLI homes under
+Cerin conversations have separate CLI homes under
 `~/.nuphos/session-homes/<sha256-conversation-id>`. Both adapters give shell tools
 that conversation's `HOME`, XDG directories, and explicit config paths for gcloud,
 gh, AWS, Kubernetes, Azure, Docker, Git, npm and GPG. Exactly nine caches stay in
@@ -412,8 +412,8 @@ settings is possible but strongly discouraged unless the user understands the
 impact on other sessions and explicitly requests that scope. Use separate runtimes
 when a filesystem security boundary is required.
 
-Everything else a Nuphos-provisioned pod has always had is already in the image,
-so the agent reaches Nuphos' own tools as soon as it is connected — the container
+Everything else a Cerin-provisioned pod has always had is already in the image,
+so the agent reaches Cerin' own tools as soon as it is connected — the container
 only has to be able to resolve and reach the backend they are served from. The
 team's skills arrive the same way: for a runtime it did not provision, the backend
 hands each session a short-lived bundle address, and the runtime fetches the bundle
@@ -434,13 +434,13 @@ are denied instead.
 
 To rotate a team's key, revoke it in the console and connect again. A runtime
 without the console rotates its password by changing `OPENAB_ACP_AUTH_KEY` (or
-replacing the stored file and restarting) and then updating it in Nuphos.
+replacing the stored file and restarting) and then updating it in Cerin.
 
 #### Separate operator key
 
 The operator credential is derived from the password unless you set
 `OPENAB_ACP_CONTROL_KEY` yourself, in which case the runtime uses yours. Only a
-Nuphos-provisioned pod needs that: the provisioner issues both keys from its own
+Cerin-provisioned pod needs that: the provisioner issues both keys from its own
 Secret. A self-hosted runtime gains nothing from a second value — anyone holding
 the password can already run code in the container through the agent.
 
@@ -450,16 +450,16 @@ the password can already run code in the container through the agent.
 `/home/node/.nuphos-runtime/auth-key` needs no setup: that password becomes the
 console password, and every team already connected with it keeps working. The
 console lists them together as "Connected with the runtime password". To give each
-team its own key, press **Connect to Nuphos**, choose to update the existing
-connection in Nuphos, then revoke the password connection in the console. The
+team its own key, press **Connect to Cerin**, choose to update the existing
+connection in Cerin, then revoke the password connection in the console. The
 `auth-key` file is left in place and never rewritten. One-click connect needs a
-Nuphos release that supports pairing codes; the password keeps working with earlier
+Cerin release that supports pairing codes; the password keeps working with earlier
 ones.
 
 #### Upgrading from 0.0.6 or earlier
 
 Those images need more than the password. 0.0.5 and earlier carry none of the ACP
-environment, so without `OPENAB_ACP_MCP_SERVERS=true` the agent gets no Nuphos
+environment, so without `OPENAB_ACP_MCP_SERVERS=true` the agent gets no Cerin
 tools, and without `GATEWAY_ALLOWED_USERS=acp_client` the runtime accepts a session
 and then refuses its first prompt. Before 0.0.7 none of them derive the operator
 key, so a runtime connected with only its password gets no status and no Codex
@@ -468,8 +468,8 @@ no change to how the runtime is connected.
 
 #### Upgrading a Claude Code runtime from 0.0.12 or earlier
 
-Nuphos used to store a pasted Claude Code token and send it with every session. It
-no longer does. Before upgrading Nuphos, sign the runtime in with one of the options
+Cerin used to store a pasted Claude Code token and send it with every session. It
+no longer does. Before upgrading Cerin, sign the runtime in with one of the options
 above, or its sessions will fail with "sign in required".
 
 ### Signing in from the app
@@ -477,7 +477,7 @@ above, or its sessions will fail with "sign in required".
 Once a runtime is connected, press **Sign in** on its card, or use **Agent sign-in**
 in the runtime's console. Either way the provider's own sign-in runs inside the
 container, so you don't need a shell on the host. Only one sign-in runs at a time:
-starting one, in the console or from Nuphos, stops any sign-in already running.
+starting one, in the console or from Cerin, stops any sign-in already running.
 
 - **Codex:** the app shows a device code to enter on the ChatGPT page.
 - **Grok Build:** the app shows a device code to confirm on the xAI page.
@@ -522,7 +522,7 @@ and the credential path. A hand-built image has to pass them itself:
 --build-arg RUNTIME_AUTH_FILE=/home/node/.dsh/.credentials.yaml
 ```
 
-Self-hosting the rest of Nuphos is in progress and not documented here.
+Self-hosting the rest of Cerin is in progress and not documented here.
 
 ## Versions and tags
 
@@ -552,7 +552,7 @@ get distinct tags even when OpenAB is unchanged. Base revision tags name the git
 tree of `openab/`, so they change only with the gateway source. A blank `release_tag` publishes only revision tags; only
 a matching `runtime-vX.Y.Z` publishes semantic version tags.
 
-Nuphos pins runtimes by immutable digest, never by tag:
+Cerin pins runtimes by immutable digest, never by tag:
 
 ```text
 ghcr.io/nuphos/runtime@sha256:...
@@ -618,7 +618,7 @@ licences, including software that is not open source: `@anthropic-ai/claude-code
 and the Claude Agent SDK are distributed under Anthropic's commercial terms.
 [NOTICE](NOTICE) lists what is included and under what terms. The Grok Build CLI
 (xAI) and the Antigravity ACP server (Google) are not in the images; a runtime
-downloads them from their vendors on first use, under the vendors' terms. Nuphos
+downloads them from their vendors on first use, under the vendors' terms. Cerin
 and Zeabur are not affiliated with, endorsed by, or sponsored by Anthropic,
 OpenAI, xAI or Google.
 
@@ -639,7 +639,7 @@ is opened with `GITHUB_TOKEN`, which needs **Allow GitHub Actions to create and
 approve pull requests** enabled; such pull requests do not trigger CI, so the
 workflow's own checks are the gate. If publication fails after tagging, rerun the
 failed jobs, or run **Build runtime image** with that tag; do not create another
-version merely to retry. Publishing does not update Nuphos's configured runtime
+version merely to retry. Publishing does not update Cerin's configured runtime
 version or the Desktop's pinned runtime commit; those remain separate deployment
 steps.
 
@@ -663,7 +663,7 @@ with a runtime patch bump; merging it releases. No change opens nothing; major C
 changes require manual review. If both update pull requests are open, they bump
 the same version: merge one, and the next scheduled run rebases the other.
 
-Both ACP adapters remain pinned: Nuphos patches their bundles, so adapter upgrades
+Both ACP adapters remain pinned: Cerin patches their bundles, so adapter upgrades
 require a reviewed patch port and compatibility tests. CLI/SDK updates are automatic;
 ACP adapter updates are not. Deployment to existing runtimes remains separate.
 
@@ -754,13 +754,13 @@ seven-day dependency wait: 1.5.3 fixed terminal-sandbox isolation issues, and
 approval and for preserving a reloaded/resumed session’s mode; older versions
 can hang those ordinary turns or silently reset their mode. It uses `agy acp --process-per-session`; the worker
 flag is required for HTTP MCP servers. The explicit `--gemini-dir` flag keeps
-the runtime-owned CLI directory stable when a conversation changes HOME. The shim keeps Nuphos turns sequential,
+the runtime-owned CLI directory stable when a conversation changes HOME. The shim keeps Cerin turns sequential,
 forwards the advertised ACP capabilities, and uses the same load/resume, cancel
 and process-exit handling as the other native ACP providers.
 
-Sign in from Nuphos or run `agy acp --login` in the runtime. Google shows an
+Sign in from Cerin or run `agy acp --login` in the runtime. Google shows an
 authorization code (or callback URL) to paste back. The CLI writes and refreshes
-its own credentials (including its native OS keyring on desktop hosts); Nuphos neither copies OAuth tokens nor uses them in HTTP
+its own credentials (including its native OS keyring on desktop hosts); Cerin neither copies OAuth tokens nor uses them in HTTP
 requests. Existing standalone ACP-server sign-ins are not migrated: sign in once
 with the official CLI after updating this image.
 
@@ -768,13 +768,13 @@ with the official CLI after updating this image.
 `OPENAB_RUNTIME_AUTH_COMMAND` runs the status helper and accepts only a JSON
 boolean; failures report unknown, not signed out. Antigravity does not expose
 account usage through this integration. Native scheduling and autonomous wakeups
-are not guaranteed; use Nuphos triggers for durable scheduled work.
+are not guaranteed; use Cerin triggers for durable scheduled work.
 
 Desktop hosts with Antigravity CLI 1.5.0 or newer can add it using the existing
-New runtime menu. Nuphos discovers `agy` on PATH and in the standard local bin
+New runtime menu. Cerin discovers `agy` on PATH and in the standard local bin
 locations. Its native ACP adapter, login wrapper and model catalog reuse the
 existing host and device tunnel. Install and update the CLI with Google's own
-installer; Nuphos does not install or update it on a personal computer.
+installer; Cerin does not install or update it on a personal computer.
 
 Real account sign-in, inference, and OS keyring isolation across multiple local
 instances need manual verification on each supported desktop platform. The
@@ -790,5 +790,5 @@ Google identity. Desktop supports the computer's default AGY runtime, not additi
 independently signed-in AGY instances. It refuses default-runtime removal rather than
 claiming directory deletion logs out the keyring. Use the official CLI for logout; it may
 also affect other Antigravity apps. Separate containers only isolate authentication when
-operators also keep their OS keyrings, homes and mounts separate; Nuphos does not verify
+operators also keep their OS keyrings, homes and mounts separate; Cerin does not verify
 that deployment property. No real-account cross-app login/logout has been tested.

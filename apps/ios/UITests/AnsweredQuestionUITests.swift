@@ -26,7 +26,7 @@ final class AnsweredQuestionUITests: XCTestCase {
                 "Answered by: \"Jamie Doe\", this conversation's owner: it is their own answer.",
              ] + lines + ["Continue the task with this answer."]).joined(separator: "\n")]],
              "metadata": ["version": 1, "source": "agent.resource", "sentAt": "2026-11-14T01:47:00Z",
-                          "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Nuphos"]]]
+                          "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Cerin"]]]
         }
         body["messages"] = [
             card("q-8f2c1a", ["category": "approval", "question": "How should I run the sessions migration?", "body": context,
@@ -49,7 +49,7 @@ final class AnsweredQuestionUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
         app.launch()
         let lines = app.buttons.matching(identifier: "answered.line")
@@ -98,7 +98,7 @@ final class AnsweredQuestionUITests: XCTestCase {
                 "- Which hero layout should I ship? → Split, image right", "Continue the task with this answer.",
              ].joined(separator: "\n")]],
              "metadata": ["version": 1, "source": "agent.resource", "sentAt": "2026-11-16T11:09:00Z",
-                          "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Nuphos"]]],
+                          "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Cerin"]]],
         ]
         body["waitingAnswers"] = [["requestId": "q-77", "note": note]]
         conversation["body"] = body
@@ -108,7 +108,7 @@ final class AnsweredQuestionUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
         app.launch()
         XCTAssertTrue(app.buttons.matching(identifier: "answered.line").firstMatch.waitForExistence(timeout: 10))

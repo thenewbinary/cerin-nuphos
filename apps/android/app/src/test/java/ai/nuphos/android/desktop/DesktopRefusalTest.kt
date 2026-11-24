@@ -16,7 +16,7 @@ class DesktopRefusalTest {
         .body(body.toResponseBody("application/json".toMediaType())).build()
 
     @Test fun aMacWithoutAccessibilitySaysWhereToAllowIt() {
-        val reason="Accessibility is not allowed for Nuphos yet. Allow it on this Mac in System Settings > Privacy & Security > Accessibility."
+        val reason="Accessibility is not allowed for Cerin yet. Allow it on this Mac in System Settings > Privacy & Security > Accessibility."
         assertEquals(reason,desktopRefusal(refused(409,"""{"error":{"code":"agent_instance_failed","message":"$reason"}}""")))
     }
 

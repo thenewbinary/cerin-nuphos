@@ -11,7 +11,7 @@ import {
 
 // Public, unauthenticated OIDC issuer metadata. AWS STS fetches these to
 // validate web-identity tokens minted for BYOS AssumeRoleWithWebIdentity, so
-// they must stay reachable without any Nuphos auth.
+// they must stay reachable without any Cerin auth.
 export const wellKnownRoutes = new Hono()
 
 // ── MCP OAuth discovery (RFC 9728 Protected Resource Metadata + RFC 8414

@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in Nuphos does not work the way it should.
+description: Something in Cerin does not work the way it should.
 labels: ['bug']
 body:
   - type: markdown
@@ -54,7 +54,7 @@ body:
     id: version
     attributes:
       label: Version
-      description: Nuphos version (for example, the Desktop version in Settings), or the commit SHA if self-hosted.
+      description: Cerin version (for example, the Desktop version in Settings), or the commit SHA if self-hosted.
     validations:
       required: true
   - type: input

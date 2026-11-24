@@ -41,7 +41,7 @@ export type TunnelClientDeps = {
   sampleMetrics?: () => Promise<DeviceMetrics | null>
   status: () => LocalRuntimeTunnelStatus
   /**
-   * `connected` is exactly whether Nuphos holds this computer's tunnel right now; `revoked`, that
+   * `connected` is exactly whether Cerin holds this computer's tunnel right now; `revoked`, that
    * the backend disconnected this computer and it stopped dialing.
    */
   onChange?: (connected: boolean, superseded: boolean, revoked?: boolean) => void
@@ -73,7 +73,7 @@ export function connectLocalStream(
 
 /**
  * `reconnecting` is every drop the tunnel redials by itself; `superseded` waits for the other app
- * on this computer to let go; `revoked` was disconnected from Nuphos and does not dial again.
+ * on this computer to let go; `revoked` was disconnected from Cerin and does not dial again.
  */
 export type LocalConnection = 'online' | 'reconnecting' | 'superseded' | 'revoked'
 

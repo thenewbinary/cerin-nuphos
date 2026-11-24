@@ -14,7 +14,7 @@ class ConsentInterceptor : Interceptor {
         val debugPush = isDebugPushRequest(request, ai.nuphos.android.BuildConfig.DEBUG, ai.nuphos.android.BuildConfig.PUSH_BASE_URL)
         val localApi = ai.nuphos.android.BuildConfig.DEBUG && isLocalApiRequest(request, ai.nuphos.android.BuildConfig.API_BASE_URL)
         if (!debugPush && !localApi && !BackendOrigin.accepts(bearer, request.url.toString()))
-            throw IOException("Nuphos credentials cannot be sent to this address.")
+            throw IOException("Cerin credentials cannot be sent to this address.")
         if (request.url.encodedPath.startsWith("/auth/") || isPushDeviceAccountRequest(request.method, request.url.pathSegments)) return chain.proceed(request)
         val revision = AiAccess.revision
         if (!AiAccess.allows(bearer)) throw IOException("Confirm your AI sharing choice before using agents.")

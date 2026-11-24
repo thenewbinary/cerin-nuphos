@@ -22,7 +22,7 @@ struct PreviewIsolationTests {
     static func main() async {
         let route = PreviewIsolation.route
         check(route(URL(string: "https://api.preview.invalid/teams")) == .fixture, "the preview API is the fixture")
-        for url in ["https://api.nuphos.ai/agent/chat", "wss://api.nuphos.ai/x", "http://nuphos.ai/",
+        for url in ["https://platform.cerin.ai/agent/chat", "wss://platform.cerin.ai/x", "http://platform.cerin.ai/",
                     "https://lh3.googleusercontent.com/a", "https://127.0.0.1.example.com/", "https://example.com/"] {
             check(route(URL(string: url)) == .blocked, "\(url) is blocked")
         }
@@ -66,7 +66,7 @@ struct PreviewIsolationTests {
             ("default", URLSession(configuration: .default)),
             ("ephemeral", URLSession(configuration: .ephemeral)),
         ] {
-            for url in ["https://api.nuphos.ai/avatars/a.webp", "https://lh3.googleusercontent.com/a", "https://example.com/"] {
+            for url in ["https://platform.cerin.ai/avatars/a.webp", "https://lh3.googleusercontent.com/a", "https://example.com/"] {
                 let message = await failure(session, url)
                 check(message?.contains(blocked) == true, "\(name) blocks \(url), got \(message ?? "a response")")
             }

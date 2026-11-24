@@ -317,7 +317,7 @@ class IncomingShareFixtureDeviceTest {
         compose.waitUntil(10_000) {
             val root = instrumentation.uiAutomation.rootInActiveWindow
             if (root?.packageName?.toString() in setOf("android", "com.android.intentresolver"))
-                target = root?.findAccessibilityNodeInfosByText("Nuphos")?.firstOrNull()
+                target = root?.findAccessibilityNodeInfosByText("Cerin")?.firstOrNull()
             instrumentation.runOnMainSync {
                 activity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).filterIsInstance<MainActivity>().firstOrNull()
             }

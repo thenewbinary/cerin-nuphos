@@ -22,7 +22,7 @@ import type { TeamAuthVariables } from '@/middleware/auth'
 import type { AwsRoleBinding } from '@/models'
 import type { Hono } from 'hono'
 
-// Confirm the Nuphos connector can actually assume the role before we persist
+// Confirm the Cerin connector can actually assume the role before we persist
 // the binding. Without this, a role with a missing/incorrect trust policy binds
 // successfully (201) and only fails much later when something tries to use it —
 // a confusing, hard-to-trace failure. IAM trust-policy edits can take a few

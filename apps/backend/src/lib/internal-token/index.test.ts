@@ -67,7 +67,7 @@ describe('internal tokens with a local key', () => {
     expect(verifiedInternalPayload(token!)).toMatchObject({ sub: 'u' })
 
     // Another issuer's claims, even when signed with the same key.
-    const foreign = await signInternalToken({ iss: 'https://api.nuphos.ai', sub: 'u' })
+    const foreign = await signInternalToken({ iss: 'https://platform.cerin.ai', sub: 'u' })
 
     expect(verifiedInternalPayload(foreign!)).toBeNull()
 

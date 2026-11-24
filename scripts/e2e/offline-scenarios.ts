@@ -144,9 +144,9 @@ export const offlineScenarios: Scenario[] = [
     },
   },
   {
-    // #3182: a computer on a Nuphos too old to run a conversation failed without saying why.
+    // #3182: a computer on a Cerin too old to run a conversation failed without saying why.
     // Its Update opens the computer card's own confirmation where the user is, not the page.
-    name: 'a conversation on a computer whose Nuphos is out of date says so, and updates it in place',
+    name: 'a conversation on a computer whose Cerin is out of date says so, and updates it in place',
     run: async (page, stack) => {
       const goOffline = await laptopOnline(stack, {
         client: 'nuphos-desktop/0.119.0',
@@ -163,7 +163,7 @@ export const offlineScenarios: Scenario[] = [
         await page.getByText(`moved this task from E2E fixture agent to`).waitFor()
         const banner = page
           .getByRole('status')
-          .filter({ hasText: `Nuphos on ${LAPTOP} is out of date. Bots and tasks on it may fail.` })
+          .filter({ hasText: `Cerin on ${LAPTOP} is out of date. Bots and tasks on it may fail.` })
 
         await banner.waitFor()
         await page.screenshot({ path: join(artifacts, 'outdated-banner.png') })
@@ -171,7 +171,7 @@ export const offlineScenarios: Scenario[] = [
         const confirm = page.getByRole('alertdialog', { name: `Update ${LAPTOP}?` })
 
         await confirm
-          .getByText(`This restarts Nuphos on ${LAPTOP} now to install v0.131.0.`)
+          .getByText(`This restarts Cerin on ${LAPTOP} now to install v0.131.0.`)
           .waitFor()
         await confirm.getByText('A Task running on it stops where it is').waitFor()
         await confirm.getByRole('button', { name: 'Update and restart' }).waitFor()
@@ -180,7 +180,7 @@ export const offlineScenarios: Scenario[] = [
         // Still in the conversation: nothing navigated away to the computer's page.
         await confirm.waitFor({ state: 'hidden' })
         await page.getByText('ACK E2E_DELIVERY:before-outdated').waitFor()
-        if (await page.getByText('Nuphos on this computer is out of date').isVisible())
+        if (await page.getByText('Cerin on this computer is out of date').isVisible())
           throw new Error('The banner Update left the conversation for the computer page')
       } finally {
         goOffline()

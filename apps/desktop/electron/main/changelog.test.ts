@@ -15,8 +15,8 @@ const feed = {
       title: 'Test',
       summary: 'Test',
       date: '2026-11-19',
-      coverUrl: 'https://nuphos.ai/test.png',
-      url: 'https://nuphos.ai/changelog/test',
+      coverUrl: 'https://platform.cerin.ai/test.png',
+      url: 'https://platform.cerin.ai/changelog/test',
     },
   ],
 }

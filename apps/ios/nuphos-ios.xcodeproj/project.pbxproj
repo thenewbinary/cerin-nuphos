@@ -93,7 +93,7 @@
 				DEVELOPMENT_TEAM = 6T873K59LQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NuphosShare/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Nuphos;
+				INFOPLIST_KEY_CFBundleDisplayName = Cerin;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.nuphos.ios.share;
@@ -117,12 +117,12 @@
                 SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) NUPHOS_SHARE_EXTENSION $(NUPHOS_SHARE_PREVIEW_CONDITION)";
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				PROVISIONING_PROFILE_SPECIFIER = "Nuphos Share App Store";
+				PROVISIONING_PROFILE_SPECIFIER = "Cerin Share App Store";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T873K59LQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NuphosShare/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Nuphos;
+				INFOPLIST_KEY_CFBundleDisplayName = Cerin;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.nuphos.ios.share;
@@ -741,7 +741,7 @@
 				INFOPLIST_FILE = "nuphos-ios/Info.plist";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS[sdk=iphone*]" = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Nuphos;
+				INFOPLIST_KEY_CFBundleDisplayName = Cerin;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -777,7 +777,7 @@
 				"CODE_SIGN_ENTITLEMENTS[sdk=iphone*]" = "nuphos-ios/nuphos-ios.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				PROVISIONING_PROFILE_SPECIFIER = "Nuphos iOS App Store CI 2026-10";
+				PROVISIONING_PROFILE_SPECIFIER = "Cerin iOS App Store CI 2026-10";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T873K59LQ;
 				ENABLE_APP_SANDBOX = YES;
@@ -787,7 +787,7 @@
 				INFOPLIST_FILE = "nuphos-ios/Info.plist";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS[sdk=iphone*]" = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Nuphos;
+				INFOPLIST_KEY_CFBundleDisplayName = Cerin;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -824,7 +824,7 @@
 				DEVELOPMENT_TEAM = 6T873K59LQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NuphosWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Nuphos;
+				INFOPLIST_KEY_CFBundleDisplayName = Cerin;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.nuphos.ios.widgets;
@@ -844,12 +844,12 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				PROVISIONING_PROFILE_SPECIFIER = "Nuphos Widgets App Store CI 2026-10";
+				PROVISIONING_PROFILE_SPECIFIER = "Cerin Widgets App Store CI 2026-10";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T873K59LQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NuphosWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Nuphos;
+				INFOPLIST_KEY_CFBundleDisplayName = Cerin;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.nuphos.ios.widgets;
@@ -873,7 +873,7 @@
 				DEVELOPMENT_TEAM = 6T873K59LQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NuphosNotifications/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Nuphos;
+				INFOPLIST_KEY_CFBundleDisplayName = Cerin;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.nuphos.ios.notifications;
@@ -894,12 +894,12 @@
 				CODE_SIGN_ENTITLEMENTS = NuphosNotifications/NuphosNotifications.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				PROVISIONING_PROFILE_SPECIFIER = "Nuphos Notifications App Store CI 2026-10";
+				PROVISIONING_PROFILE_SPECIFIER = "Cerin Notifications App Store CI 2026-10";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T873K59LQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NuphosNotifications/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Nuphos;
+				INFOPLIST_KEY_CFBundleDisplayName = Cerin;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.nuphos.ios.notifications;

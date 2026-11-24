@@ -241,7 +241,7 @@ export type AgentMessageMetadata = {
   /** A person's answer to question card `requestId`, posted for them; `answeredIn` if in the Inbox. */
   requestId?: string
   answeredIn?: 'inbox'
-  /** A Discord author with no verified Nuphos identity; the name is theirs to choose. */
+  /** A Discord author with no verified Cerin identity; the name is theirs to choose. */
   unattested?: true
   /** Teammates it @mentions, as the server resolved them. */
   mentions?: AgentMessageMention[]

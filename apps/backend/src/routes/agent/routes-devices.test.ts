@@ -296,7 +296,7 @@ describe('agent device routes', () => {
     expect(shareTables.agent_device_share_trusts).toEqual([
       { ownerId: 'user-1', deviceId: 'live', teamId: 'team-1', actorId: 'alice' },
     ])
-    // Nuphos there registers the machine again under the id it keeps, and its
+    // Cerin there registers the machine again under the id it keeps, and its
     // owner's answers are not waiting for it when it does.
     const again = await app.request('/agent/devices', {
       method: 'PUT',

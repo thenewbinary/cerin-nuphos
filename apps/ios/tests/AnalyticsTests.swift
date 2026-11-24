@@ -3,7 +3,7 @@ import PostHog
 
 // Only the endpoint boundary is replaced; exercise the production wrapper.
 @MainActor enum NuphosAPI {
-    static let defaultBaseURL = URL(string: "https://api.nuphos.ai")!
+    static let defaultBaseURL = URL(string: "https://platform.cerin.ai")!
     static var baseURL = defaultBaseURL
 }
 

@@ -31,7 +31,7 @@ internal class RfbProtocol(
         send("RFB 003.008\n".toByteArray())
         val count = u8()
         require(count > 0) { "The desktop server refused the connection." }
-        require(read(count).contains(1.toByte())) { "Update Nuphos on this computer to open its desktop without an account password." }
+        require(read(count).contains(1.toByte())) { "Update Cerin on this computer to open its desktop without an account password." }
         send(byteArrayOf(1))
         require(i32() == 0) { "The desktop server refused the connection." }
         send(byteArrayOf(1))

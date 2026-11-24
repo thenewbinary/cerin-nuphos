@@ -1,6 +1,6 @@
 import Foundation
 
-/// The connector half of api.nuphos.ai: the aggregated inventory, the
+/// The connector half of platform.cerin.ai: the aggregated inventory, the
 /// browser-based connect flows, and the token/credential binds. Every
 /// mutating call here is `ADMINISTRATOR`-only on the backend.
 enum ConnectorsAPI {

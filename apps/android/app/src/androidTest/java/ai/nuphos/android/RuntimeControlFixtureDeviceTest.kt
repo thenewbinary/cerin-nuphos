@@ -159,12 +159,12 @@ class RuntimeControlFixtureDeviceTest {
         compose.onNodeWithContentDescription(compose.activity.getString(R.string.chat_back)).assertIsDisplayed()
     }
     private fun submit(text: String) {
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput(text)
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput(text)
         compose.onNodeWithContentDescription("Send").assertIsEnabled().performClick()
         // Send saves the draft off the main thread; wait for the accepted text to leave the field
         // so the next message is typed into an empty composer, as a person would.
         compose.waitUntil(10_000) {
-            compose.onNodeWithContentDescription("Ask Nuphos anything").fetchSemanticsNode().config
+            compose.onNodeWithContentDescription("Ask Cerin anything").fetchSemanticsNode().config
                 .getOrNull(androidx.compose.ui.semantics.SemanticsProperties.EditableText)?.text.isNullOrEmpty()
         }
     }
@@ -227,7 +227,7 @@ class RuntimeControlFixtureDeviceTest {
     private fun sendButton() = compose.onNode(hasContentDescription("Send") or hasContentDescription("Queue message"))
     @Test fun nativeStatusAndFreshnessControlTheActualComposer() {
         render(snapshot(phase = "idle", label = "Must not show idle", send = true))
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Keep runtime draft")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Keep runtime draft")
         sendButton().assertIsEnabled()
         compose.onNodeWithText("Must not show idle").assertDoesNotExist()
         compose.runOnIdle { metadata(snapshot(cancel = true)) }
@@ -267,7 +267,7 @@ class RuntimeControlFixtureDeviceTest {
         compose.onNodeWithText("Read-only task").assertIsDisplayed()
         // Read-only conversations disable drafting entirely (checkpoint behavior), so nothing can be typed or sent.
         // Nothing can be queued here, so nothing says it can.
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
         compose.onNodeWithContentDescription("Queue a message").assertDoesNotExist()
         compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
         compose.onNodeWithContentDescription("Queue message").assertDoesNotExist()
@@ -514,7 +514,7 @@ class RuntimeControlFixtureDeviceTest {
     }
     @Test fun aDraftKeepsSendBesideStop() {
         render(snapshot(cancel = true, steer = true, reply = true))
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Steer this")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Steer this")
         compose.onNodeWithContentDescription("Stop").assertIsDisplayed()
         val stop = compose.onNodeWithContentDescription("Stop").fetchSemanticsNode().boundsInRoot
         val send = compose.onNodeWithContentDescription("Send").assertIsDisplayed().fetchSemanticsNode().boundsInRoot
@@ -535,12 +535,12 @@ class RuntimeControlFixtureDeviceTest {
     }
     @Test fun aDraftComesBackAfterTheComposerIsDisabled() {
         render(snapshot(send = true))
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Keep me across read-only")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Keep me across read-only")
         compose.waitForIdle()
         compose.runOnIdle { metadata(snapshot(send = true), readOnly = true) }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
         compose.runOnIdle { metadata(snapshot(send = true), readOnly = false) }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertIsEnabled()
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsEnabled()
         compose.onNodeWithText("Keep me across read-only").assertExists()
         Assert.assertTrue(chats.isEmpty())
     }

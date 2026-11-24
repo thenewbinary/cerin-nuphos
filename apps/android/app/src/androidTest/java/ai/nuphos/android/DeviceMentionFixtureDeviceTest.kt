@@ -39,7 +39,7 @@ class DeviceMentionFixtureDeviceTest {
                    {"deviceId":"synthetic-off","label":"Fixture Offline","available":false}]
     }""")!!).allItems
     private val initial = CredentialSelection(mapOf("deviceIds" to setOf("synthetic-pc", "synthetic-off"), "awsRoleIds" to setOf("synthetic-cloud")))
-    private fun field() = compose.onNodeWithContentDescription("Ask Nuphos anything")
+    private fun field() = compose.onNodeWithContentDescription("Ask Cerin anything")
     @Before fun isolate() {
         assertNull((instrumentation.targetContext.applicationContext as NuphosApplication).tokenStore.read())
         store = AgentStore("synthetic-no-credentials", instrumentation.targetContext)

@@ -61,7 +61,7 @@ class AuthCallbackFixtureDeviceTest {
             for (state in listOf(AuthSession.State.Restoring, AuthSession.State.SignedOut(null), AuthSession.State.SigningIn, AuthSession.State.SignedIn(user))) {
                 setState(auth, state)
                 val generation = auth.generation
-                for (target in listOf("nuphos://google-callback?token=attacker-token", "nuphos://google-callback?error=denied", "nuphos://google-callback?token=%ZZ", "nuphos://google-callback?token=first&token=second")) {
+                for (target in listOf("cerin://google-callback?token=attacker-token", "cerin://google-callback?error=denied", "cerin://google-callback?token=%ZZ", "cerin://google-callback?token=first&token=second")) {
                     assertTrue(auth.handleCallback(Uri.parse(target)))
                     assertSame(state, auth.state)
                     assertEquals(generation, auth.generation)
@@ -103,7 +103,7 @@ class AuthCallbackFixtureDeviceTest {
                 assertEquals(AuthSession.State.SignedOut(null), auth.state)
                 assertNull(auth.token)
                 assertNull(store.read())
-                assertTrue(auth.handleCallback(Uri.parse("nuphos://google-callback?token=late-token")))
+                assertTrue(auth.handleCallback(Uri.parse("cerin://google-callback?token=late-token")))
                 assertEquals(AuthSession.State.SignedOut(null), auth.state)
             }
             assertEquals(listOf("/auth/native/session"), requests)

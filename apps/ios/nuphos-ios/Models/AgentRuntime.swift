@@ -84,7 +84,7 @@ struct RuntimeInstance: Codable, Identifiable, Equatable, Hashable, Sendable {
     var subtitle: String? {
         let hint: String? =
             if local?.signedIn == false { String(localized: "Signed out · sign in to \(providerName) on that computer") }
-            else if status == .disabled { tier == .myComputers ? String(localized: "Offline · open Nuphos on that computer") : String(localized: "Disabled") }
+            else if status == .disabled { tier == .myComputers ? String(localized: "Offline · open Cerin on that computer") : String(localized: "Disabled") }
             else { nil }
         guard tier == .myComputers else { return hint }
         return [providerName, hint].compactMap(\.self).joined(separator: " · ")
@@ -127,7 +127,7 @@ extension RuntimeInstance.Provider {
         case "hermes": "Hermes Agent"
         case "dsh": "DeepSeek Harness"
         case "pi": "Pi"
-        case "nuphos": "Nuphos"
+        case "nuphos": "Cerin"
         default: raw?.isEmpty == false ? String(localized: "Unknown runtime") : String(localized: "Runtime")
         }
     }

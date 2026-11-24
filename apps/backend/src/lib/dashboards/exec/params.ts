@@ -111,7 +111,7 @@ export function resolveParams(
     // staticParams first so neither the dashboard time window nor teamId can be
     // shadowed by a panel-supplied key.
     ...(panel.staticParams ?? {}),
-    // teamId is injected so scripts can build team-scoped Nuphos URLs
+    // teamId is injected so scripts can build team-scoped Cerin URLs
     // (e.g. `cerin.get('/teams/'+params.teamId+'/aws-accounts/...')`) without
     // hard-coding it.
     teamId: dashboard.teamId.toHexString(),

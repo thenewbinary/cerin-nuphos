@@ -201,7 +201,7 @@ describe('previewHistoryPreamble', () => {
     expect(previewHistoryPreamble(messages)).toContain(BACKGROUND_WORK_LOST_NOTICE)
   })
 
-  test('says only that contact was lost when that is all Nuphos knows', () => {
+  test('says only that contact was lost when that is all Cerin knows', () => {
     // Telling the agent the work is certainly dead would invite it to re-run
     // a command that may have already had its effect.
     const preamble = previewHistoryPreamble(messages, null, true)

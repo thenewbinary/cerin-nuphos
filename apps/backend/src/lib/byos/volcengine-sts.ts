@@ -2,8 +2,8 @@ import { config } from '@/config'
 import { AppError } from '@/lib/errors'
 
 import { SWEEP_READ_TIMEOUT_MS } from './aliyun'
-// OIDC web-identity federation reuses the shared Nuphos issuer (same signing
-// key, JWKS, and per-team subject as the AWS connector — one Nuphos IdP).
+// OIDC web-identity federation reuses the shared Cerin issuer (same signing
+// key, JWKS, and per-team subject as the AWS connector — one Cerin IdP).
 import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
@@ -23,8 +23,8 @@ const STS_HOST = 'sts.volcengineapi.com'
 const STS_VERSION = '2018-01-01'
 
 /**
- * Whether the Nuphos OIDC issuer is configured (shared with the AWS connector —
- * one Nuphos IdP). Without a signing key we cannot mint web-identity tokens, so
+ * Whether the Cerin OIDC issuer is configured (shared with the AWS connector —
+ * one Cerin IdP). Without a signing key we cannot mint web-identity tokens, so
  * AssumeRoleWithOIDC would have nothing to present.
  */
 export function volcengineOidcConfigured(): boolean {
@@ -32,7 +32,7 @@ export function volcengineOidcConfigured(): boolean {
 }
 
 /**
- * The values a customer needs to register Nuphos as an OIDC identity provider in
+ * The values a customer needs to register Cerin as an OIDC identity provider in
  * Volcengine IAM and pin their role's trust policy: the issuer URL, the audience
  * (client id) to configure on the provider, and this team's subject claim.
  */
@@ -57,9 +57,9 @@ function sanitizeSessionName(name: string): string {
 
 /**
  * Assume a customer role via OIDC web-identity federation, returning short-lived
- * credentials. Mirrors AWS `assumeRoleWithWebIdentityForTeam`: Nuphos mints a
+ * credentials. Mirrors AWS `assumeRoleWithWebIdentityForTeam`: Cerin mints a
  * per-team RS256 token and calls sts:AssumeRoleWithOIDC *unsigned* — the token
- * is the credential. The customer's role trust policy must trust the Nuphos OIDC
+ * is the credential. The customer's role trust policy must trust the Cerin OIDC
  * provider for this team's subject; Volcengine resolves the provider from the
  * token's issuer, so no OIDCProviderTrn is sent.
  */

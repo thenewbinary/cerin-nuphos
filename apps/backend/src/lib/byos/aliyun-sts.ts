@@ -3,7 +3,7 @@ import { AppError } from '@/lib/errors'
 
 import { aliyunErrorCode } from './aliyun-errors'
 import { SWEEP_READ_TIMEOUT_MS } from './aliyun-sweep'
-// OIDC web-identity federation reuses the shared Nuphos issuer (same signing
+// OIDC web-identity federation reuses the shared Cerin issuer (same signing
 // key, JWKS, and per-team subject as the AWS/Volcengine connectors).
 import {
   awsOidcSubjectForTeam,
@@ -16,7 +16,7 @@ import type { AliyunSite } from './types'
 
 /**
  * Short-lived Alibaba Cloud STS credentials, obtained via OIDC web-identity
- * federation (like AWS/Volcengine): Nuphos mints a per-team token and calls
+ * federation (like AWS/Volcengine): Cerin mints a per-team token and calls
  * sts:AssumeRoleWithOIDC into the customer's RAM role. The securityToken
  * accompanies the temporary AccessKeyId/Secret. `site` picks the partition
  * (China vs International) and therefore which API endpoints/regions to hit.
@@ -48,8 +48,8 @@ function aliyunStsHost(site: AliyunSite): string {
 }
 
 /**
- * Whether the Nuphos OIDC issuer is configured (shared with the AWS connector —
- * one Nuphos IdP). Without a signing key we cannot mint web-identity tokens, so
+ * Whether the Cerin OIDC issuer is configured (shared with the AWS connector —
+ * one Cerin IdP). Without a signing key we cannot mint web-identity tokens, so
  * AssumeRoleWithOIDC would have nothing to present.
  */
 export function aliyunOidcConfigured(): boolean {
@@ -57,7 +57,7 @@ export function aliyunOidcConfigured(): boolean {
 }
 
 /**
- * The values a customer needs to register Nuphos as a RAM OIDC identity provider
+ * The values a customer needs to register Cerin as a RAM OIDC identity provider
  * and pin their role's trust policy: the issuer URL, the audience (client id) to
  * configure on the provider, and this team's subject claim.
  */
@@ -82,7 +82,7 @@ function sanitizeSessionName(name: string): string {
 
 /**
  * Assume a customer RAM role via OIDC web-identity federation, returning
- * short-lived STS credentials. Mirrors the Volcengine adapter: Nuphos mints a
+ * short-lived STS credentials. Mirrors the Volcengine adapter: Cerin mints a
  * per-team RS256 token and calls sts:AssumeRoleWithOIDC *unsigned* — the token is
  * the credential. Aliyun requires BOTH the role ARN and the OIDC provider ARN
  * (unlike Volcengine, which resolves the provider from the token issuer).

@@ -253,7 +253,7 @@ test('a restart that comes back older says the update did not install, once', as
   assert.deepEqual(updater.getUpdaterState(), {
     kind: 'ready',
     version: '0.113.1',
-    installerUrl: 'https://nuphos.ai/api/desktop/download?platform=mac&arch=arm64',
+    installerUrl: 'https://platform.cerin.ai/api/desktop/download?platform=mac&arch=arm64',
   })
   assert.equal(existsSync(restartFile), false)
   await launch()

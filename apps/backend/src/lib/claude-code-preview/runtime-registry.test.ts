@@ -405,7 +405,7 @@ describe('externally registered operator credential', () => {
 })
 
 describe('a self-hosted runtime owns its login', () => {
-  test('Nuphos claims nothing about the account of a runtime', async () => {
+  test('Cerin claims nothing about the account of a runtime', async () => {
     const runtime = await registerTeamRuntime({
       teamId: 'team-1',
       userId: 'user-1',

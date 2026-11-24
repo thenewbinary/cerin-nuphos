@@ -11,7 +11,7 @@ const png = Buffer.from(
   'base64',
 )
 const groupId = '0123456789abcdef01234567'
-const marker = `https://nuphos.ai/_reply-images/${groupId}`
+const marker = `https://platform.cerin.ai/_reply-images/${groupId}`
 const env = {
   NUPHOS_TOKEN: 'test-only',
   NUPHOS_SESSION_ID: 'session',

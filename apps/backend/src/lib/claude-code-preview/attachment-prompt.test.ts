@@ -3,7 +3,7 @@ import { describe, expect, test } from 'bun:test'
 import { attachmentPrompt } from './openab-acp-lifecycle'
 
 describe('attachmentPrompt', () => {
-  test("sends the user's own text last, after everything Nuphos adds", () => {
+  test("sends the user's own text last, after everything Cerin adds", () => {
     const { prompt } = attachmentPrompt(
       's',
       '/goal tests pass',

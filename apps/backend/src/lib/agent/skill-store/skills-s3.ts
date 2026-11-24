@@ -215,7 +215,7 @@ export class SkillsS3Client {
 /**
  * Skills store backend resolution (hosted Mode 1 default).
  *
- * Today every caller gets the process-level Nuphos/self-host bucket from
+ * Today every caller gets the process-level Cerin/self-host bucket from
  * `ATLAS_SKILLS_*`. `teamId` / `scope` are accepted so a future per-team BYOS
  * provider (Mode 3) can plug in without touching routes or agent tools — same
  * shape as `getStorageProvider(teamId?)` for file transfer.

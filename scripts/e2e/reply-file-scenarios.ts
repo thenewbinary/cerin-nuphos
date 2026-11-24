@@ -42,7 +42,7 @@ function expireAndCite(stack: Stack, marker: string, refused: string, deleted: s
     const messages = db.collection('agent_messages')
     const index = await messages.countDocuments({ sessionId, userId })
     const now = new Date()
-    const text = 'Here are the screenshot and the walkthrough:\\n\\n![Screenshot](https://nuphos.ai/_reply-images/' + deleted + ')\\n\\n![Walkthrough](https://nuphos.ai/_reply-images/' + refused + ')'
+    const text = 'Here are the screenshot and the walkthrough:\\n\\n![Screenshot](https://platform.cerin.ai/_reply-images/' + deleted + ')\\n\\n![Walkthrough](https://platform.cerin.ai/_reply-images/' + refused + ')'
     await messages.insertOne({ sessionId, userId, messageId: 'reply-files', index, role: 'assistant', parts: [{ type: 'text', text }], createdAt: now, updatedAt: now })
     await db.collection('agent_conversations').updateOne({ sessionId, userId }, { $set: { messageCount: index + 1, transcriptUpdatedAt: now, lastActiveAt: now } })
     await client.close()`

@@ -23,7 +23,7 @@ final class DesktopCanvasView: UIScrollView, UIScrollViewDelegate {
     private let desktop: DesktopSession
     private let screen = UIView()
     private let cursor = CALayer()
-    /// A Mac's Nuphos host streams H.264, decoded and shown by this layer; a Box's pixels go to `screen`'s contents.
+    /// A Mac's Cerin host streams H.264, decoded and shown by this layer; a Box's pixels go to `screen`'s contents.
     private let video = AVSampleBufferDisplayLayer()
     private var cursorHotSpot = CGPoint.zero
     private var cursorSize = CGSize.zero

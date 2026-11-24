@@ -87,7 +87,7 @@ struct RuntimesPage: View {
             Button("Delete computer", role: .destructive) { Task { await delete(device) } }
             Button("Cancel", role: .cancel) {}
         } message: { _ in
-            Text("This permanently deletes the computer, its files and its runtimes' sign-ins, and stops tasks running on it. Your task history stays in Nuphos.")
+            Text("This permanently deletes the computer, its files and its runtimes' sign-ins, and stops tasks running on it. Your task history stays in Cerin.")
         }
         .alert(
             "Could not delete computer",
@@ -125,7 +125,7 @@ struct RuntimesPage: View {
     private var list: some View {
         List {
             if boxes.isEmpty {
-                ContentUnavailableView("No runtimes", image: "lucide-cpu", description: Text("Open Nuphos on your computer to connect it and add a runtime."))
+                ContentUnavailableView("No runtimes", image: "lucide-cpu", description: Text("Open Cerin on your computer to connect it and add a runtime."))
                     .listRowBackground(Color.clear)
             }
             ForEach(boxes) { box in
@@ -234,14 +234,14 @@ private struct AgentSignInInstructions: View {
         return teammate ? String(localized: "Ask its owner to sign in") : String(localized: "Sign in on \(local.deviceLabel)")
     }
 
-    /// The Runtimes page is in Nuphos on a computer, not in this app.
+    /// The Runtimes page is in Cerin on a computer, not in this app.
     private var steps: String {
         guard let local = runtime.local else {
-            return String(localized: "A workspace administrator can sign it in from the Runtimes page in Nuphos on their computer.")
+            return String(localized: "A workspace administrator can sign it in from the Runtimes page in Cerin on their computer.")
         }
         return teammate
-            ? String(localized: "\(local.deviceLabel) belongs to a teammate, so only they can sign it in. Ask them to open Nuphos on it and choose Sign in on the Runtimes page.")
-            : String(localized: "On \(local.deviceLabel), open Nuphos, go to the Runtimes page and choose Sign in for this runtime.")
+            ? String(localized: "\(local.deviceLabel) belongs to a teammate, so only they can sign it in. Ask them to open Cerin on it and choose Sign in on the Runtimes page.")
+            : String(localized: "On \(local.deviceLabel), open Cerin, go to the Runtimes page and choose Sign in for this runtime.")
     }
 }
 
@@ -271,7 +271,7 @@ private struct BoxStateRow: View {
         ) { _ in
             Button("Not now", role: .cancel) {}
         } message: { failure in
-            Text(failure.plan ? "\(failure.message)\n\n\(String(localized: "Choose a plan in Nuphos on your computer."))" : failure.message)
+            Text(failure.plan ? "\(failure.message)\n\n\(String(localized: "Choose a plan in Cerin on your computer."))" : failure.message)
         }
     }
 

@@ -36,7 +36,7 @@ await mock.module('@/config', () => ({
           ...realByos.aws,
           oidc: {
             ...realByos.aws.oidc,
-            issuer: 'https://api.nuphos.ai',
+            issuer: 'https://platform.cerin.ai',
             privateKey: oidcKey,
             privateKeyBase64: undefined,
           },
@@ -84,7 +84,7 @@ function validTrustPolicy(): string {
         },
         Condition: {
           StringEquals: {
-            'oidc:iss': ['https://api.nuphos.ai'],
+            'oidc:iss': ['https://platform.cerin.ai'],
             'oidc:aud': ['iam.myhuaweicloud.com'],
             'oidc:sub': [`nuphos:team:${TEAM_ID}`],
           },
@@ -135,7 +135,7 @@ describe('huaweiOidcInfo', () => {
   test('is the exact triple the customer registers on the identity provider', () => {
     expect(huaweiOidcInfo(TEAM_ID)).toEqual({
       configured: true,
-      issuer: 'https://api.nuphos.ai',
+      issuer: 'https://platform.cerin.ai',
       audience: 'iam.myhuaweicloud.com',
       subject: `nuphos:team:${TEAM_ID}`,
     })
@@ -183,14 +183,14 @@ describe('assumeHuaweiIdentity', () => {
     expect(body.agency_urn).toBe(`iam::${IDENTITY.domainId}:agency:${IDENTITY.agencyName}`)
     expect(body.duration_seconds).toBe(3600)
 
-    // The ID token is the credential — signed by the shared Nuphos issuer for
+    // The ID token is the credential — signed by the shared Cerin issuer for
     // this team and no other.
     const claims = JSON.parse(
       Buffer.from(body.id_token.split('.')[1] ?? '', 'base64url').toString(),
     ) as { iss: string; sub: string; aud: string }
 
     expect(claims).toMatchObject({
-      iss: 'https://api.nuphos.ai',
+      iss: 'https://platform.cerin.ai',
       sub: `nuphos:team:${TEAM_ID}`,
       aud: 'iam.myhuaweicloud.com',
     })

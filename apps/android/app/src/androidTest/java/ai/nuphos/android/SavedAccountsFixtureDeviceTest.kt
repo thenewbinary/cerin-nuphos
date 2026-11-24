@@ -50,7 +50,7 @@ class SavedAccountsFixtureDeviceTest {
         tokens.clear()
         tokens.accounts = listOf(
             SavedAccount(BackendOrigin.current, ada, "synthetic-ada-token"),
-            SavedAccount("https://nuphos.example.com", grace, null),
+            SavedAccount("https://cerin.example.com", grace, null),
         )
         inst.runOnMainSync { auth = AuthSession(app, tokens) }
     }
@@ -69,7 +69,7 @@ class SavedAccountsFixtureDeviceTest {
         compose.waitUntil(5_000) { auth.state is AuthSession.State.SignedOut }
         compose.onNodeWithText("Ada Lovelace").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Sign in again").assertIsDisplayed()
-        compose.onNodeWithText("nuphos.example.com").assertIsDisplayed()
+        compose.onNodeWithText("cerin.example.com").assertIsDisplayed()
         shot("login-after")
         compose.onNodeWithContentDescription("Account options for grace@example.invalid").performClick()
         compose.onNodeWithText("Sign out").performClick()

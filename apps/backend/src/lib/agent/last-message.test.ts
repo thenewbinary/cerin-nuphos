@@ -63,7 +63,7 @@ describe('lastMessage', () => {
     await agentMessages().insertOne({
       ...chat,
       index: 1,
-      parts: [{ type: 'text', text: 'New messages in a Nuphos channel' }],
+      parts: [{ type: 'text', text: 'New messages in a Cerin channel' }],
       metadata: {
         version: 1,
         sender: { type: 'system', id: 'channel:x' },

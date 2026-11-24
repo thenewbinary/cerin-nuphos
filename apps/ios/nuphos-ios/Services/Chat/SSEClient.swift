@@ -24,7 +24,7 @@ enum SSEClient {
 
         var errorDescription: String? {
             switch self {
-            case .badStatus(let code, let body): body.flatMap(SSEClient.errorMessage) ?? String(localized: "Nuphos returned status \(code).")
+            case .badStatus(let code, let body): body.flatMap(SSEClient.errorMessage) ?? String(localized: "Cerin returned status \(code).")
             case .notEventStream(let type): "Expected an event stream, got \(type ?? "nothing")."
             case .queued: String(localized: "Your message waits for the turn ahead.")
             case .idleTimeout: String(localized: "The connection went quiet for too long.")

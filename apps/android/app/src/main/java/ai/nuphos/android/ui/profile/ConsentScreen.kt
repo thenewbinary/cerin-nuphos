@@ -27,7 +27,7 @@ fun ConsentScreen(user: NuphosUser) {
         Text(stringResource(R.string.profile_consent_recipients_body))
         Text(stringResource(R.string.profile_consent_choice_title), style = MaterialTheme.typography.titleMedium)
         Text(stringResource(R.string.profile_consent_choice_body))
-        TextButton(onClick = { uri.openUri("https://nuphos.ai/privacy") }) { Text(stringResource(R.string.profile_consent_read_privacy_policy)) }
+        TextButton(onClick = { uri.openUri("https://platform.cerin.ai/privacy") }) { Text(stringResource(R.string.profile_consent_read_privacy_policy)) }
         auth.consentError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         if (auth.consentBusy) CircularProgressIndicator()
         Button(onClick = { auth.setAIConsent(true) }, enabled = !auth.consentBusy && auth.consentVersion == AccountApi.AI_CONSENT_VERSION,

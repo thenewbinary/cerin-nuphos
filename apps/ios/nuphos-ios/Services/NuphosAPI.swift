@@ -1,6 +1,6 @@
 import Foundation
 
-/// Thin client for api.nuphos.ai, or the self-hosted backend chosen on the
+/// Thin client for platform.cerin.ai, or the self-hosted backend chosen on the
 /// sign-in screen (`NuphosAPIBase.swift`). Every call takes the bearer token;
 /// the session owns it.
 extension NuphosAPI {

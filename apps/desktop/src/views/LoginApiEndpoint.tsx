@@ -7,7 +7,7 @@ import { t } from '../i18n'
 import { setAvatarApiOrigin } from '../lib/avatarUrl'
 
 const DEFAULT_API_URL = 'https://platform.cerin.ai'
-const EXAMPLE_URL = 'https://nuphos.example.com'
+const EXAMPLE_URL = 'https://cerin.example.com'
 
 type Props = { inputClassName: string; onChange: () => void }
 

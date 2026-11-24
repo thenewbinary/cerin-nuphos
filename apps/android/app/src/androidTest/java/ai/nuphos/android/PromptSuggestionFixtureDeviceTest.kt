@@ -85,7 +85,7 @@ class PromptSuggestionFixtureDeviceTest {
         render()
         compose.onNodeWithContentDescription("Suggested next message").assertIsDisplayed().performClick()
         compose.onNodeWithContentDescription("Suggested next message").assertDoesNotExist()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains(suggestion)
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains(suggestion)
         assertEquals(suggestion, lease.text)
         assertEquals(0, sends)
     }
@@ -93,7 +93,7 @@ class PromptSuggestionFixtureDeviceTest {
         lease.write("Keep my draft")
         render()
         compose.onNodeWithContentDescription("Suggested next message").assertDoesNotExist()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextClearance()
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextClearance()
         compose.onNodeWithContentDescription("Suggested next message").assertIsDisplayed()
         compose.runOnIdle { admission.value = false }
         compose.onNodeWithContentDescription("Suggested next message").assertDoesNotExist()
@@ -101,7 +101,7 @@ class PromptSuggestionFixtureDeviceTest {
         compose.onNodeWithContentDescription("Suggested next message").assertDoesNotExist()
         compose.runOnIdle { streaming.value = false; rejected.value = ComposerSubmission("Retained failed message") }
         compose.onNodeWithContentDescription("Suggested next message").assertDoesNotExist()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains("Retained failed message")
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains("Retained failed message")
         assertEquals(0, sends)
     }
     @Test fun pendingFilesAndScopeChangesBlockPromptApplication() {

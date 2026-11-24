@@ -255,7 +255,7 @@ class PersistentShareProcessDeviceTest {
     private val mergedText = "Existing synthetic draft\n\n$sharedText"
     private fun open(existing: Boolean = false) {
         val intent = Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if (existing) { intent.action = Intent.ACTION_VIEW; intent.data = Uri.parse("https://nuphos.ai/teams/$a/agent/fixture-chat") }
+        if (existing) { intent.action = Intent.ACTION_VIEW; intent.data = Uri.parse("https://platform.cerin.ai/teams/$a/agent/fixture-chat") }
         activity = instrumentation.startActivitySync(intent) as MainActivity
         compose.waitForIdle()
     }

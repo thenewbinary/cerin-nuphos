@@ -18,7 +18,7 @@ import type { AliyunAccountBinding } from '@/models'
 
 export const aliyunAccountsRoutes = new Hono<{ Variables: TeamAuthVariables }>()
 
-// OIDC federation details the customer needs to register Nuphos as a RAM OIDC
+// OIDC federation details the customer needs to register Cerin as a RAM OIDC
 // identity provider and pin their role's trust policy: issuer URL, audience
 // (client id), and this team's subject claim. Team-scoped; safe to expose.
 aliyunAccountsRoutes.get('/oidc-info', (c) => {

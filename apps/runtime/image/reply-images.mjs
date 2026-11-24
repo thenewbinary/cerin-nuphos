@@ -210,7 +210,7 @@ export async function nuphosUploadReplyImages(text, state) {
         state.cache.set(key, { id: group, expiresAt: Date.parse(created.expiresAt) })
       }
       // Protocol marker recognized by existing clients; no request goes to this host.
-      output += `![${match[1]}](https://nuphos.ai/_reply-images/${group})`
+      output += `![${match[1]}](https://platform.cerin.ai/_reply-images/${group})`
     } catch (error) {
       // No native errors: they can expose local paths, URLs or credentials.
       const allowed = [

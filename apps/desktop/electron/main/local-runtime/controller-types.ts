@@ -18,7 +18,7 @@ import type { LocalConnection } from './tunnel-streams.ts'
 export type LocalAgentState = {
   /** This build ships the agent for this platform. */
   available: boolean
-  /** Its owner can use it from Nuphos right now. */
+  /** Its owner can use it from Cerin right now. */
   online: boolean
   /** Why it cannot come online on its own; absent while it is on its way. */
   error?: string
@@ -31,7 +31,7 @@ export type LocalRuntimeState = {
   workspace: string | null
   /** Who this computer's agents belong to right now. */
   userId: string | null
-  /** This computer's own connection to Nuphos, while someone is signed in. */
+  /** This computer's own connection to Cerin, while someone is signed in. */
   connection?: LocalConnection
 }
 
@@ -72,7 +72,7 @@ export type LocalRuntimeControllerDeps = {
   bundle: () => LocalRuntimeBundle | null
   dataDir: () => string
   nodeExecPath: string
-  /** Where this app reaches Nuphos; the agents on this computer use the same address. */
+  /** Where this app reaches Cerin; the agents on this computer use the same address. */
   backendUrl: string
   /** `fresh` reads the shell again instead of reusing what it said when the app started. */
   userEnv: (fresh?: boolean) => Promise<NodeJS.ProcessEnv>
@@ -110,7 +110,7 @@ export type LocalRuntimeControllerDeps = {
   log?: (message: string, data?: Record<string, unknown>) => void
   /** The vendor's installer an added agent missing its CLI runs once; `installAgentCli` unless replaced. */
   installCli?: (provider: LocalAgentProvider, env: NodeJS.ProcessEnv) => Promise<void>
-  /** A Box: Nuphos owns the whole computer, so its default agents' logins are Nuphos's
+  /** A Box: Cerin owns the whole computer, so its default agents' logins are Cerin's
    *  to delete. A person's computer never removes them; their CLIs keep their logins. */
   ownsMachine?: boolean
 }
@@ -147,7 +147,7 @@ export function saveCli(
 }
 
 export const RESTART_BACKOFF_MS = [1_000, 2_000, 5_000, 15_000, 30_000]
-/** Matches the hold Nuphos keeps on a provider's answer: sampling faster would
+/** Matches the hold Cerin keeps on a provider's answer: sampling faster would
  *  spend this person's rate limit on numbers that have not moved. */
 export const USAGE_SAMPLE_MS = 600_000
 /** A sign-in is worth reading again for; mashing Check is not. */

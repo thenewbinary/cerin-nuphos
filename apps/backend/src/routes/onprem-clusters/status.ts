@@ -103,7 +103,7 @@ export function registerOnpremStatusRoutes(
   /**
    * Member-scoped kubeconfig used by the desktop's shared Kubernetes explorer.
    * The cluster credential is delivered only after the team allow-list check;
-   * the Nuphos relay URL is additionally scoped to this user and expires.
+   * the Cerin relay URL is additionally scoped to this user and expires.
    */
   onpremClustersRoutes.use('/:clusterId/kubeconfig', requireTeamRole('ADMINISTRATOR', 'EDITOR'))
   onpremClustersRoutes.get('/:clusterId/kubeconfig', async (c) => {

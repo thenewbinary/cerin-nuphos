@@ -48,7 +48,7 @@ class ReviewVisualFixtureDeviceTest {
                 }
             } } }
         }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Review this change before sending.")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Review this change before sending.")
         androidx.test.espresso.Espresso.closeSoftKeyboard()
         compose.waitForIdle()
         capture("composer")

@@ -13,7 +13,7 @@ import type { Stack } from './stack.ts'
 export const DESKTOP_DIR = resolve(import.meta.dirname, '../../apps/desktop')
 
 // It dials the backend at `apiUrl` and runs its agents from the bundle in `runtimeDir`. With
-// `stagedUpdate` it reports that update downloaded, as a Nuphos Desktop does; updating it stops
+// `stagedUpdate` it reports that update downloaded, as a Cerin Desktop does; updating it stops
 // the host, which starts again on its own without one, as the Desktop opens again once installed.
 export async function startSecondComputer(
   stack: Stack,

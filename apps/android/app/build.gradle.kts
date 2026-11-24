@@ -10,14 +10,14 @@ if (file("google-services.json").exists()) apply(plugin = "com.google.gms.google
 
 val releaseVersionCode = providers.gradleProperty("nuphosVersionCode").orElse("1").get()
 val releaseVersionName = providers.gradleProperty("nuphosVersionName").orElse("1.0").get()
-val debugApiBaseUrl = providers.gradleProperty("nuphosDebugApiBaseUrl").orElse("https://api.nuphos.ai").get()
-require(debugApiBaseUrl == "https://api.nuphos.ai" || debugApiBaseUrl.matches(Regex("http://127\\.0\\.0\\.1:[0-9]{1,5}")))
-require(debugApiBaseUrl == "https://api.nuphos.ai" || debugApiBaseUrl.substringAfterLast(':').toInt() in 1..65535)
+val debugApiBaseUrl = providers.gradleProperty("nuphosDebugApiBaseUrl").orElse("https://platform.cerin.ai").get()
+require(debugApiBaseUrl == "https://platform.cerin.ai" || debugApiBaseUrl.matches(Regex("http://127\\.0\\.0\\.1:[0-9]{1,5}")))
+require(debugApiBaseUrl == "https://platform.cerin.ai" || debugApiBaseUrl.substringAfterLast(':').toInt() in 1..65535)
 val debugPushBaseUrl = providers.gradleProperty("nuphosDebugPushBaseUrl").orElse(debugApiBaseUrl).get()
-require(debugPushBaseUrl == "https://api.nuphos.ai" || debugPushBaseUrl.matches(Regex("http://127\\.0\\.0\\.1:[0-9]{1,5}"))) {
+require(debugPushBaseUrl == "https://platform.cerin.ai" || debugPushBaseUrl.matches(Regex("http://127\\.0\\.0\\.1:[0-9]{1,5}"))) {
     "Debug push endpoint must be the production API or an adb-reversed loopback address"
 }
-require(debugPushBaseUrl == "https://api.nuphos.ai" || debugPushBaseUrl.substringAfterLast(':').toInt() in 1..65535)
+require(debugPushBaseUrl == "https://platform.cerin.ai" || debugPushBaseUrl.substringAfterLast(':').toInt() in 1..65535)
 require(releaseVersionCode.matches(Regex("[1-9][0-9]{0,9}")) &&
     (releaseVersionCode.toLongOrNull() ?: Long.MAX_VALUE) <= 2100000000L) {
     "nuphosVersionCode must be an integer from 1 to 2100000000 without leading zeros"
@@ -45,8 +45,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders["contentInputFixtureAuthority"] = "ai.nuphos.content-input-fixture"
-        buildConfigField("String", "PUSH_BASE_URL", "\"https://api.nuphos.ai\"")
-        buildConfigField("String", "API_BASE_URL", "\"https://api.nuphos.ai\"")
+        buildConfigField("String", "PUSH_BASE_URL", "\"https://platform.cerin.ai\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://platform.cerin.ai\"")
     }
 
     buildTypes {

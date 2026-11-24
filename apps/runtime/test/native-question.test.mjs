@@ -174,7 +174,7 @@ test('decision arguments stay within request_user_decision limits', () => {
   )
 })
 
-test('the Claude patch keeps AskUserQuestion and asks through Nuphos', () => {
+test('the Claude patch keeps AskUserQuestion and asks through Cerin', () => {
   const source = [
     '        const mcpServers = {};',
     '        const disallowedTools = elicitationSupport.form ? [] : ["AskUserQuestion"];',
@@ -198,7 +198,7 @@ test('the Claude patch keeps AskUserQuestion and asks through Nuphos', () => {
   assert.throws(() => patchClaudeAskUserQuestion('nothing to patch'))
 })
 
-test('AskUserQuestion stays off for a session that cannot ask through Nuphos', () => {
+test('AskUserQuestion stays off for a session that cannot ask through Cerin', () => {
   assert.equal(nuphosOffersDecisions(servers), true)
   assert.equal(nuphosOffersDecisions([servers[0]]), false)
   assert.equal(nuphosOffersDecisions(undefined), false)
@@ -269,7 +269,7 @@ test('a revoked credential file fails the question instead of using the session 
   }
 })
 
-test('the Codex patch asks through Nuphos at both server handoffs and the user input call', () => {
+test('the Codex patch asks through Cerin at both server handoffs and the user input call', () => {
   const servers = '    const requestedMcpServers = request.mcpServers ?? [];'
   const userInput = [
     '  async handleUserInput(params) {',

@@ -101,7 +101,7 @@ const controller: LocalRuntimeController = new LocalRuntimeController({
   createProcess: () => withProviderKey(new OpenabProcess(), providerKeys),
   probeModels: bundledModelProbe(findBundle, providerKeys),
   createTunnel: (runtime, runtimeStatus, onChange, agentInstances) => {
-    // Its owner updates this Nuphos from another computer (app-update-request.ts).
+    // Its owner updates this Cerin from another computer (app-update-request.ts).
     const { status, instances } = appUpdateTunnel(runtimeStatus, agentInstances, {
       version: () => app.getVersion(),
       state: getUpdaterState,

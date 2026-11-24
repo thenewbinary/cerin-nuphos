@@ -55,7 +55,7 @@ export function ChannelMessage({
   ownAgent: boolean
   viewerId: string
   teamId: string
-  /** The same link handling as a conversation's messages: Nuphos links open in the app. */
+  /** The same link handling as a conversation's messages: Cerin links open in the app. */
   links: Links
   onOpenSession: (sessionId: string) => void
   /** Right-click: the post's menu, unless text is selected to copy. */
@@ -69,7 +69,7 @@ export function ChannelMessage({
   const text = textOf(message)
   const posted = channelFiles(message)
 
-  // What Nuphos records in the chat (an answer, a new owner): a muted line, never a person's post.
+  // What Cerin records in the chat (an answer, a new owner): a muted line, never a person's post.
   if (metadata && isChannelRecord(metadata.sender) && text) return <DecisionRecord text={text} />
   // A channel shows people and agents only; any other sender is not a post.
   if (!metadata || !speaksInChannel(metadata.sender) || (!text && !posted.any)) return null

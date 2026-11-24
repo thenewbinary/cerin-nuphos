@@ -291,11 +291,11 @@ describe('sign-in', () => {
     expect(sessionsStarted).toEqual([USER_ID])
   })
 
-  test('nuphos.ai gets the challenge, and the session is recorded as the website’s', async () => {
+  test('platform.cerin.ai gets the challenge, and the session is recorded as the website’s', async () => {
     const { secret } = await enroll()
     const res = await post('/auth/google/sign-in', {
       code: 'google-code',
-      redirectUri: 'https://nuphos.ai/api/google/callback',
+      redirectUri: 'https://platform.cerin.ai/api/google/callback',
     })
     const [error] = (
       (await res.json()) as {

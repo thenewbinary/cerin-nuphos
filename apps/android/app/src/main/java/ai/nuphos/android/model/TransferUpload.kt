@@ -5,7 +5,7 @@ data class TransferUpload(val groupId: String, val names: List<String>) {
     companion object {
         private val id = Regex("[a-fA-F0-9]{24}")
         private val instruction = Regex(
-            """\[The user uploaded ([0-9]+) file\(s\) to the Nuphos file-transfer store \(transfer group ([a-fA-F0-9]{24})\): ([^\r\n]+?)\. To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull\.sh "\${'$'}TEAM" \2 \./uploads](?: Open and read the pulled image files before answering image questions\.)?""",
+            """\[The user uploaded ([0-9]+) file\(s\) to the Cerin file-transfer store \(transfer group ([a-fA-F0-9]{24})\): ([^\r\n]+?)\. To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull\.sh "\${'$'}TEAM" \2 \./uploads](?: Open and read the pulled image files before answering image questions\.)?""",
         )
 
         private fun structured(part: ChatPart): TransferUpload? {

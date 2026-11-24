@@ -7,8 +7,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class SavedAccountsTest {
-    private val cloud = "https://api.nuphos.ai"
-    private val selfHosted = "https://nuphos.example.com"
+    private val cloud = "https://platform.cerin.ai"
+    private val selfHosted = "https://cerin.example.com"
     private val ada = NuphosUser("u1", email = "ada@example.com", name = "Ada")
     private val bob = NuphosUser("u2", email = "bob@example.com", name = "Bob")
 

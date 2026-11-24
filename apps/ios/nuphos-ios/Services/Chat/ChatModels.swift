@@ -751,7 +751,7 @@ struct TransferUpload: Equatable, Sendable {
 
     /// The built-in agent pulls files itself; the bubble shows them instead.
     var instruction: String {
-        "[The user uploaded \(files.count) file(s) to the Nuphos file-transfer store (transfer group \(groupId)): \(files.map(\.fileName).joined(separator: ", ")). To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull.sh \"$TEAM\" \(groupId) ./uploads]"
+        "[The user uploaded \(files.count) file(s) to the Cerin file-transfer store (transfer group \(groupId)): \(files.map(\.fileName).joined(separator: ", ")). To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull.sh \"$TEAM\" \(groupId) ./uploads]"
     }
 
     var part: ChatPart {

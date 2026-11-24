@@ -11,7 +11,7 @@ test('copyLinkWithFeedback reports success only after the clipboard write comple
   })
 
   const copying = copyLinkWithFeedback(
-    'https://nuphos.ai/teams/team-1/monitoring/grafana/instance/alert-rule/rule-1',
+    'https://platform.cerin.ai/teams/team-1/monitoring/grafana/instance/alert-rule/rule-1',
     (value) => {
       events.push(`write:${value}`)
 
@@ -24,14 +24,14 @@ test('copyLinkWithFeedback reports success only after the clipboard write comple
   )
 
   assert.deepEqual(events, [
-    'write:https://nuphos.ai/teams/team-1/monitoring/grafana/instance/alert-rule/rule-1',
+    'write:https://platform.cerin.ai/teams/team-1/monitoring/grafana/instance/alert-rule/rule-1',
   ])
   resolveWrite()
   const copied = await copying
 
   assert.equal(copied, true)
   assert.deepEqual(events, [
-    'write:https://nuphos.ai/teams/team-1/monitoring/grafana/instance/alert-rule/rule-1',
+    'write:https://platform.cerin.ai/teams/team-1/monitoring/grafana/instance/alert-rule/rule-1',
     'success',
   ])
 })
@@ -40,7 +40,7 @@ test('copyLinkWithFeedback reports failure without a false success', async () =>
   const events: string[] = []
 
   const copied = await copyLinkWithFeedback(
-    'https://nuphos.ai/teams/team-1/monitoring/gcp/binding/alert-policy/policy-1',
+    'https://platform.cerin.ai/teams/team-1/monitoring/gcp/binding/alert-policy/policy-1',
     async () => {
       throw new Error('clipboard blocked')
     },
@@ -71,7 +71,7 @@ test('copyLinkWithFeedback does not report clipboard failure when success feedba
 
   await assert.rejects(
     copyLinkWithFeedback(
-      'https://nuphos.ai/teams/team-1/monitoring/betterstack/binding/monitor/monitor-1',
+      'https://platform.cerin.ai/teams/team-1/monitoring/betterstack/binding/monitor/monitor-1',
       async () => {
         events.push('write')
       },

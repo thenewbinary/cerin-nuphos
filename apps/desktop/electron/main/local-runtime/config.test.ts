@@ -19,7 +19,7 @@ const launch: LocalRuntimeLaunch = {
   provider: 'claude-code',
   bundle: { root: '/b', openab: '/b/openab', adapters: { 'claude-code': adapter } },
   adapter,
-  nodeExecPath: '/Applications/Nuphos.app/Contents/MacOS/Nuphos',
+  nodeExecPath: '/Applications/Cerin.app/Contents/MacOS/Cerin',
   cliPath: '/Users/me/.local/bin/claude',
   agentHome: '/data/users/u1/claude-home',
   workspace: '/data/users/u1/workspace',
@@ -29,7 +29,7 @@ const launch: LocalRuntimeLaunch = {
   env: { HOME: '/Users/me', PATH: '/usr/bin', AWS_SECRET_ACCESS_KEY: 'secret' },
 }
 
-test('Claude Code runs from a config dir of Nuphos’s own, with the platform credential store', () => {
+test('Claude Code runs from a config dir of Cerin’s own, with the platform credential store', () => {
   const env = agentEnv(launch)
 
   assert.equal(env.CLAUDE_CONFIG_DIR, '/data/users/u1/claude-home')
@@ -95,7 +95,7 @@ test('the runtime offers only its bundled attachment program as a job', () => {
     )
     // openab splits the command on whitespace, so a spaced path cannot run.
     assert.equal(
-      openabEnv({ ...bundled, nodeExecPath: '/Apps/Nuphos 2.app/Nuphos' }).OPENAB_RUNTIME_JOBS,
+      openabEnv({ ...bundled, nodeExecPath: '/Apps/Cerin 2.app/Cerin' }).OPENAB_RUNTIME_JOBS,
       undefined,
     )
   } finally {
@@ -103,7 +103,7 @@ test('the runtime offers only its bundled attachment program as a job', () => {
   }
 })
 
-test('only a machine Nuphos made also runs the panel scripts the backend sends', () => {
+test('only a machine Cerin made also runs the panel scripts the backend sends', () => {
   const root = mkdtempSync(path.join(tmpdir(), 'bundle-'))
   const bundled = { ...launch, bundle: { ...launch.bundle, root } }
   const node = `/usr/bin/env ELECTRON_RUN_AS_NODE=1 ${launch.nodeExecPath}`

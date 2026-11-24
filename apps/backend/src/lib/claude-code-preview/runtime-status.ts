@@ -41,7 +41,7 @@ export function sanitizeRuntimeUrl(url: string): string {
   }
 }
 
-// Log-only for now: this is the earliest point Nuphos can see that a session
+// Log-only for now: this is the earliest point Cerin can see that a session
 // has been silent too long, well before openab's own 600s/1800s watchdogs
 // fire. A stuck 24-minute session ("Continuing after a background task…")
 // would have shown up here within STALL_FLAG_THRESHOLD_MS of going quiet.
@@ -103,7 +103,7 @@ export type PreviewRuntimeStatus = {
    * Whether the runtime holds a provider credential of its own. Absent when it cannot
    * say — an older runtime, one that keeps no credential file, or one this process
    * could not reach. Absent is "unknown", never "signed out": a self-hosted container
-   * may carry an account Nuphos cannot see.
+   * may carry an account Cerin cannot see.
    */
   authenticated?: boolean
   /** Signed in with an API key rather than an account (a computer's own agent reports it). */

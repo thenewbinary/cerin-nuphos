@@ -19,7 +19,7 @@ class RfbProtocolTest {
     @Test fun unsupportedSecurityNeverSendsAnAccountPassword()=runBlocking {
         val bytes="RFB 003.008\n".toByteArray()+byteArrayOf(1,30); var at=0; val sent=mutableListOf<ByteArray>()
         RfbProtocol({n->bytes.copyOfRange(at,at+n).also {at+=n}},{sent+=it},{_,_->},{_,_,_->},{_,_,_,_->}).use {
-            try { it.run(); fail() } catch(e:IllegalArgumentException) { assertTrue(e.message!!.contains("Update Nuphos")) }
+            try { it.run(); fail() } catch(e:IllegalArgumentException) { assertTrue(e.message!!.contains("Update Cerin")) }
         }
         assertEquals(1,sent.size)
     }

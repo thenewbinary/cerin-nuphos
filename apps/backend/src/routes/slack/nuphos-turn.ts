@@ -17,7 +17,7 @@ import type { SlackAgentThread } from '@/lib/slack/agent-bot'
 import type { SlackMirrorPayload } from '@/routes/agent/chat-slack-bound'
 
 export type NuphosSlackTurnOutcome = {
-  /** The user pressed Stop in Nuphos before the turn finished. */
+  /** The user pressed Stop in Cerin before the turn finished. */
   stopped: boolean
   /** The run threw out of the route's pump (not just an error frame). */
   error?: unknown
@@ -36,7 +36,7 @@ export type NuphosSlackTurnDelivery = {
   finalize: (outcome: NuphosSlackTurnOutcome) => Promise<void>
 }
 
-// Pause reasons the Nuphos desktop client resumes on its own (its
+// Pause reasons the Cerin desktop client resumes on its own (its
 // RECOVERABLE_PAUSE_REASONS in apps/desktop/src/components/agent/panel/
 // model.ts) — the continuation keeps posting into this thread, so a notice
 // would be noise. Every OTHER pause waits on a human, and the thread must not
@@ -44,7 +44,7 @@ export type NuphosSlackTurnDelivery = {
 const CLIENT_AUTO_RESUMED_PAUSE_REASONS = new Set(['model-silence', 'tool-execution-timeout'])
 
 /**
- * Set up Slack delivery for a turn the conversation owner typed in the Nuphos
+ * Set up Slack delivery for a turn the conversation owner typed in the Cerin
  * app on a Slack-bound conversation: post the "@Name says:" interop message
  * into the thread (when `mirror` is set), then relay the run's frames into
  * paced thread replies via the returned frame sink, exactly like a
@@ -60,7 +60,7 @@ export async function beginNuphosSlackTurn(args: {
   thread: SlackAgentThread
   /** The conversation owner sending this turn (owner-only writability). */
   userId: string
-  /** The sender's Nuphos display name, the fallback when no Slack mapping exists. */
+  /** The sender's Cerin display name, the fallback when no Slack mapping exists. */
   userName: string
   streamId: string
   /**
@@ -96,10 +96,10 @@ export async function beginNuphosSlackTurn(args: {
   }
   const runtime = { botToken: bot.botToken, botUserId: bot.botUserId }
   // Prefer the sender's Slack identity so the thread reads like the person
-  // spoke; the Nuphos name covers unmapped users. The mapping is a local
+  // spoke; the Cerin name covers unmapped users. The mapping is a local
   // lookup, but the display name is a Slack HTTP call (10s timeout) — it must
   // NOT hold up the model request, so only the interop post and transcript
-  // record wait on it; the system prompt uses the Nuphos name. Rendered as
+  // record wait on it; the system prompt uses the Cerin name. Rendered as
   // plain bold text, never a real <@…> mention — the bot mentioning the
   // author would notify them about their own message on every turn.
   const mapping = mirror?.agentLabel
@@ -126,7 +126,7 @@ export async function beginNuphosSlackTurn(args: {
     : Promise.resolve(mirror?.agentLabel ?? args.userName)
 
   // Never rejects. The sink's poster awaits it so the "@Name says:" line is in
-  // the thread before the first mirrored reply, without delaying the Nuphos
+  // the thread before the first mirrored reply, without delaying the Cerin
   // stream's first token.
   const interopPosted = mirror
     ? displayNamePromise.then((displayName) =>
@@ -232,7 +232,7 @@ export async function beginNuphosSlackTurn(args: {
       )
     } catch (err) {
       // A Slack delivery failure past this point has nowhere better to go:
-      // the Nuphos user already has the real outcome on their own surface.
+      // the Cerin user already has the real outcome on their own surface.
       logError('slack.nuphos_turn.finalize_error', err, {
         slack_channel_id: thread.slackChannelId,
         slack_thread_ts: thread.slackThreadTs,

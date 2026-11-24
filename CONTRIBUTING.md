@@ -1,4 +1,4 @@
-# Contributing to Nuphos
+# Contributing to Cerin
 
 ## Before you write code
 
@@ -216,7 +216,7 @@ Renovate → Run workflow (choose `debug` to get a verbose log). Renovate reads 
 Dashboard only when it runs, so a ticked box waits for the next run.
 
 The workflow authenticates as a GitHub App dedicated to Renovate, never as the
-Nuphos product App, whose installations reach customer organizations. Its
+Cerin product App, whose installations reach customer organizations. Its
 private key is a secret of the `renovate` environment, so only this job can read
 it. Until a maintainer sets the App up, the job is skipped:
 
@@ -257,6 +257,6 @@ before the details are public.
 ## Licence and naming
 
 Contributions are under Apache-2.0, the same as the rest of the repository. The
-Nuphos name and logo are trademarks and are handled separately — see
+Cerin name and logo are trademarks and are handled separately — see
 [TRADEMARK.md](TRADEMARK.md). In short: fork freely, rename if you ship it as
 your own product.

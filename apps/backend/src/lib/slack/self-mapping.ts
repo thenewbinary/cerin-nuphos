@@ -44,7 +44,7 @@ const defaultDependencies: SlackSelfMappingDependencies = {
 }
 
 /**
- * Resolve the current Nuphos user to the same person in Slack. OAuth already
+ * Resolve the current Cerin user to the same person in Slack. OAuth already
  * links the installer on new installs; this email-based fallback repairs older
  * installations and lets other team members use "DM me" without copying a
  * Slack member id. A conflicting existing mapping is never overwritten.

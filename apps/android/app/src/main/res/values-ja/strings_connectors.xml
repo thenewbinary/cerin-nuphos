@@ -43,7 +43,7 @@
     <string name="connectors_field_integration_token">インテグレーショントークン</string>
     <string name="connectors_field_account_email">アカウントのメールアドレス</string>
     <string name="connectors_field_management_api_key">Management API キー</string>
-    <string name="connectors_note_aws">ロールはあらかじめ Nuphos を信頼している必要があります。保存前にサーバーがアクセスを確認します。</string>
+    <string name="connectors_note_aws">ロールはあらかじめ Cerin を信頼している必要があります。保存前にサーバーがアクセスを確認します。</string>
     <string name="connectors_note_azure">先にアプリのフェデレーション資格情報とロールの割り当てを設定してください。</string>
     <string name="connectors_category_infrastructure">インフラ</string>
     <string name="connectors_category_observability">オブザーバビリティ</string>

@@ -14,7 +14,7 @@ const inCluster = {
   podNamespace: 'nuphos',
   port: 3000,
   backendUrl: 'http://nuphos-backend.nuphos.svc.cluster.local:3000',
-  publicBackendUrl: 'https://api.nuphos.ai',
+  publicBackendUrl: 'https://platform.cerin.ai',
 }
 
 describe('runtime backend url', () => {
@@ -24,8 +24,8 @@ describe('runtime backend url', () => {
 
   test('hands an external runtime the public base, trailing slash trimmed', async () => {
     expect(
-      pickRuntimeBackendUrl(true, { ...inCluster, publicBackendUrl: 'https://api.nuphos.ai/' }),
-    ).toBe('https://api.nuphos.ai')
+      pickRuntimeBackendUrl(true, { ...inCluster, publicBackendUrl: 'https://platform.cerin.ai/' }),
+    ).toBe('https://platform.cerin.ai')
   })
 
   test('rejects a cluster-internal or loopback base as the public one', async () => {
@@ -51,16 +51,16 @@ describe('runtime backend url', () => {
       pickPublicBackendUrl({
         port: 3000,
         publicBackendUrl: 'wss://runtime.example.com/acp',
-        backendUrl: 'https://api.nuphos.ai',
+        backendUrl: 'https://platform.cerin.ai',
       }),
-    ).toBe('https://api.nuphos.ai')
+    ).toBe('https://platform.cerin.ai')
   })
 
   // The bearer that travels to this base vends the team's cloud credentials,
   // the same reason a remote runtime URL must be wss://.
   test('refuses a plaintext public base', async () => {
     expect(
-      pickPublicBackendUrl({ ...inCluster, publicBackendUrl: 'http://api.nuphos.ai' }),
+      pickPublicBackendUrl({ ...inCluster, publicBackendUrl: 'http://platform.cerin.ai' }),
     ).toBeUndefined()
     expect(
       pickPublicBackendUrl({ ...inCluster, publicBackendUrl: 'http://127.0.0.1:3000' }),

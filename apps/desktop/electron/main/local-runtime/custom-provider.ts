@@ -1,7 +1,7 @@
 // A model provider of the user's own (a gateway, a proxy, another vendor's compatible API) for
 // this computer's Claude Code and Codex, wired the way each CLI already supports one. The base
 // URL and model ids are kept in a file; the key only in the OS credential store, and it reaches
-// the agent only through process environments, never a file Nuphos writes.
+// the agent only through process environments, never a file Cerin writes.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -224,8 +224,8 @@ export function claudeProviderSettings(userDir: string) {
   }
 }
 
-const BEGIN = '# Nuphos custom provider (begin)'
-const END = '# Nuphos custom provider (end)'
+const BEGIN = '# Cerin custom provider (begin)'
+const END = '# Cerin custom provider (end)'
 const CODEX_PROVIDER_ID = 'nuphos-custom'
 
 /**

@@ -3,7 +3,7 @@
 // user's general session token: this HS256 JWT is accepted only by the
 // conversation-aware API middleware. It is accepted only when the requested
 // operation matches the (session, team) and explicit capability it was minted
-// for; it never becomes a general Nuphos session token.
+// for; it never becomes a general Cerin session token.
 //
 // With an internal-token signer configured, conversation tokens are ES256 JWTs
 // from the dedicated internal issuer (`@/lib/internal-token`) and carry `jti`

@@ -5,7 +5,7 @@ import { nuphosReplyImages, nuphosUploadReplyImages } from './reply-images.mjs'
 // the conversation's own home.
 //
 // A provisioned pod gets its skills pushed by the reconciler, which nothing can do for
-// a container Nuphos never created. The backend instead delivers a one-conversation URL
+// a container Cerin never created. The backend instead delivers a one-conversation URL
 // and token in the session's own environment, so the runtime fetches its own bundle.
 //
 // A session waits for both fetches, so its first turn already has them. Later turns

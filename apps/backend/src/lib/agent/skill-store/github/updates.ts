@@ -26,7 +26,7 @@ export type GithubSkillUpdate = {
   installedCommit: string
   latestCommit: string | null
   status: 'up_to_date' | 'update_available' | 'source_missing'
-  /** Changed in Nuphos since install; updating replaces those edits. */
+  /** Changed in Cerin since install; updating replaces those edits. */
   edited: boolean
   /** Upstream changes since install, by path inside the skill folder. */
   changes: { added: string[]; changed: string[]; removed: string[] }

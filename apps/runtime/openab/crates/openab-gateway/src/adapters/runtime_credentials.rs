@@ -23,7 +23,7 @@ use super::session_owners::SessionOwners;
 
 pub const TRANSPORT_PREFIX: &str = "nrt_";
 pub const CONTROL_PREFIX: &str = "nrc_";
-/// Must match `deriveRuntimeControlKey` in the Nuphos backend and the nuphos-runtime entrypoint.
+/// Must match `deriveRuntimeControlKey` in the Cerin backend and the nuphos-runtime entrypoint.
 const LEGACY_CONTROL_CONTEXT: &[u8] = b"nuphos-runtime-control-v1";
 const LEGACY_BINDING_ID: &str = "legacy";
 const BINDINGS_FILE: &str = "bindings.json";

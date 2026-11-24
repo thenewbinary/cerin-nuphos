@@ -248,21 +248,21 @@ describe('Box update', () => {
 
 /** Each ~/AGENTS.md that was written for agents, byte for byte (their sha256 are in IMAGE_AGENTS_SHA256). */
 const WRITTEN_AGENTS = {
-  /** The Nuphos Box image's. */
+  /** The Cerin Box image's. */
   image: `# Agent notes
 
-You are running on a Nuphos Box: a Linux VM in the cloud that runs this team's
-Nuphos agents. People talk to you through Nuphos; nobody uses this machine's
+You are running on a Cerin Box: a Linux VM in the cloud that runs this team's
+Cerin agents. People talk to you through Cerin; nobody uses this machine's
 own console. Work in /data/workspace.
 
 - Anything visual (a web page, a browser, a GUI app): use the desktop tools
   (the \`nuphos-desktop\` MCP server: get_app_state, click, type_text, ...).
   The first call starts this conversation's own desktop, and the person
-  watches it live in Nuphos. Do not start X, Xvnc or a browser on DISPLAY=:1
+  watches it live in Cerin. Do not start X, Xvnc or a browser on DISPLAY=:1
   from the shell; that display is not used for conversations.
 - ~/MACHINE.md lists the machine's size, what survives a stop, and the
   installed tools. Ignore its notes about the instabox dashboard, its
-  Computer tab and display :1; they do not apply on a Nuphos Box.
+  Computer tab and display :1; they do not apply on a Cerin Box.
 `,
   /** What instabox writes wherever ~/AGENTS.md is missing. */
   instabox: `# Agent notes

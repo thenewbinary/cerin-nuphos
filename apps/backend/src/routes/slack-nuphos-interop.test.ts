@@ -1,4 +1,4 @@
-// The "@Name says:" interop message a Nuphos-typed turn posts into its bound
+// The "@Name says:" interop message a Cerin-typed turn posts into its bound
 // Slack thread: payload shape, truncation, and the plain-mrkdwn fallback when
 // a workspace refuses the rich_text payload.
 import { beforeEach, describe, expect, test } from 'bun:test'

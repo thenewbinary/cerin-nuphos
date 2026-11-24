@@ -71,7 +71,7 @@ export function turnPromptMessages(
 
 /**
  * Splits a turn into the user's own words, prompted last where the agent reads
- * a slash command, and everything Nuphos adds ahead of them. The current
+ * a slash command, and everything Cerin adds ahead of them. The current
  * message's header ends that lead, so only attachment links separate it from
  * its words. A resume replaces the turn's messages, as it is not a new request.
  */

@@ -55,7 +55,7 @@ final class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
     /// The Live Activity was tapped outside its rows: show the conversation list.
     var pendingConversations = false
 
-    /// Shows a nuphos.ai page in-app — a link tapped in a chat or one that
+    /// Shows a platform.cerin.ai page in-app — a link tapped in a chat or one that
     /// opened the app. False when the app has no screen for it.
     @discardableResult
     func open(_ url: URL) -> Bool {

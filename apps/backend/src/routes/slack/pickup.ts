@@ -25,7 +25,7 @@ type PickupIdentity = {
 }
 
 // Both entry points authenticate the same way the DM assistant flow does: the
-// workspace installation names the team, and the Slack→Nuphos user mapping
+// workspace installation names the team, and the Slack→Cerin user mapping
 // names the caller. Null means the caller was already answered.
 async function resolvePickupIdentity(args: {
   botToken: string

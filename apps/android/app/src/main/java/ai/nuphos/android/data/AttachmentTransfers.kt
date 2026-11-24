@@ -216,7 +216,7 @@ class AttachmentTransfers(
         progress(Progress(Stage.Ready))
         pending.check()
         val names = pending.payloads.joinToString(", ") { it.name.replace('\n', ' ').replace('\r', ' ') }
-        val instruction = "[The user uploaded ${pending.payloads.size} file(s) to the Nuphos file-transfer store (transfer group ${intent.groupId}): $names. To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull.sh \"\$TEAM\" ${intent.groupId} ./uploads]" +
+        val instruction = "[The user uploaded ${pending.payloads.size} file(s) to the Cerin file-transfer store (transfer group ${intent.groupId}): $names. To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull.sh \"\$TEAM\" ${intent.groupId} ./uploads]" +
             if (pending.payloads.any { it.mime == "image/jpeg" }) " Open and read the pulled image files before answering image questions." else ""
         val part = JsonValue.obj(
             "type" to JsonValue.Str("data-attachment"),

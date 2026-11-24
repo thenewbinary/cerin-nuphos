@@ -4,8 +4,8 @@ import type { NuphosTeamRole } from '@/lib/identity'
 
 // ─── App Home (Home tab) ─────────────────────────────────────────────────────
 // The Home tab is published per user via views.publish on app_home_opened, so
-// it can show the viewer's own state: which Nuphos team this Slack workspace is
-// connected to, whether THEIR Slack account is linked to a Nuphos user, and
+// it can show the viewer's own state: which Cerin team this Slack workspace is
+// connected to, whether THEIR Slack account is linked to a Cerin user, and
 // which of the team's cloud credentials their allowlists actually grant.
 
 // Re-publishes the Home view with fresh data (block_actions in /interactions).

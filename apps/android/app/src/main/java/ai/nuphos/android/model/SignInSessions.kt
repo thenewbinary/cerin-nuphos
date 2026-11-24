@@ -7,10 +7,10 @@ import java.time.Instant
 /** How a sign-in session is labelled. Matches Desktop's signInSessionsPresentation.ts. */
 object SignInSessions {
     private val apps = mapOf(
-        "nuphos-desktop" to "Nuphos Desktop",
-        "nuphos-ios" to "Nuphos for iOS",
-        "nuphos-android" to "Nuphos for Android",
-        "nuphos-cli" to "Nuphos CLI",
+        "nuphos-desktop" to "Cerin Desktop",
+        "nuphos-ios" to "Cerin for iOS",
+        "nuphos-android" to "Cerin for Android",
+        "nuphos-cli" to "Cerin CLI",
     )
     private val webSignIn = Regex("^(node|undici)\\b", RegexOption.IGNORE_CASE)
     private val browsers = listOf(
@@ -36,7 +36,7 @@ object SignInSessions {
     fun device(session: SignInSession): String {
         apps[session.client.orEmpty().substringBefore('/')]?.let { return it }
         val ua = session.userAgent.orEmpty()
-        // The nuphos.ai web sign-in reaches the backend from the website's server.
+        // The platform.cerin.ai web sign-in reaches the backend from the website's server.
         if (session.client.isNullOrEmpty() && webSignIn.containsMatchIn(ua)) return Words(R.string.storetext_signin_web)
         val browser = browsers.firstOrNull { it.first.containsMatchIn(ua) }?.second
         val system = systems.firstOrNull { it.first.containsMatchIn(ua) }?.second

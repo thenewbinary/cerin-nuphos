@@ -14,7 +14,7 @@ final class VoicePromptUITests: XCTestCase {
         for _ in 0..<6 where !field.exists || !field.isHittable { app.swipeUp() }
         XCTAssertTrue(field.exists, "No transcription prompt in Account")
 
-        XCTAssertEqual(field.value as? String, "Nuphos, Claude Code, Codex, GitHub, Linear, Slack, Discord.")
+        XCTAssertEqual(field.value as? String, "Cerin, Claude Code, Codex, GitHub, Linear, Slack, Discord.")
         XCTAssertFalse(app.buttons["Reset prompt"].exists)
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = "default"

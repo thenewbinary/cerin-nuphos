@@ -31,7 +31,7 @@ object NuphosApi {
         }
 
         data class Http(val code: Int, val serverMessage: String?, val errorCode: String? = null) : Failure() {
-            override val message = serverMessage ?: "Nuphos returned an unexpected response ($code)."
+            override val message = serverMessage ?: "Cerin returned an unexpected response ($code)."
         }
 
         /** Two-factor authentication: the sign-in continues with this challenge and a code. */
@@ -41,7 +41,7 @@ object NuphosApi {
 
         data object InvalidResponse : Failure() {
             private fun readResolve(): Any = InvalidResponse
-            override val message = "Nuphos returned something we could not read."
+            override val message = "Cerin returned something we could not read."
         }
     }
 

@@ -1,4 +1,4 @@
-// Pure MCP (Model Context Protocol) protocol layer for the Nuphos Agent server.
+// Pure MCP (Model Context Protocol) protocol layer for the Cerin Agent server.
 //
 // This module is intentionally dependency-free (no config, no DB, no agent
 // imports) so it can be unit-tested without environment setup — `config.ts`
@@ -22,7 +22,7 @@ import { TOOL_DEFINITIONS } from './protocol-tools'
 import type { JsonRpcMessage, JsonRpcResponse, ToolHandler } from './protocol-rpc'
 
 // A tool surface: what a given MCP endpoint advertises. The default surface is
-// the Nuphos Agent server; scoped endpoints (e.g. the Claude Code runtime's
+// the Cerin Agent server; scoped endpoints (e.g. the Claude Code runtime's
 // credentials MCP) supply their own definitions and instructions.
 export type McpSurface = {
   serverName: string

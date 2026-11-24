@@ -18,7 +18,7 @@ import type { McpSurface, ToolHandler } from '@/lib/mcp/protocol'
 
 /**
  * The MCP servers attached to one conversation's Claude Code session: the
- * credentials surface and Nuphos's native tools, both on this backend. The
+ * credentials surface and Cerin's native tools, both on this backend. The
  * bearer is a short-lived token scoped to exactly this (session, team) mount —
  * never the user's general token, because the runtime endpoint it travels to
  * is team-admin-configurable. Empty when no sandbox-reachable base URL is
@@ -60,7 +60,7 @@ export function previewSessionEnv(args: {
     ...skillSyncEnv(args.teamId, args.personalSkillsOf, args.base),
     // Native skills share the classic setup scripts. Give those scripts the
     // same variable names they already understand, but with the narrowly
-    // scoped preview bearer rather than a user's general Nuphos token.
+    // scoped preview bearer rather than a user's general Cerin token.
     NUPHOS_TOKEN: args.token,
     NUPHOS_BACKEND_URL: args.base,
     NUPHOS_PUBLIC_URL: publicWebUrl(),

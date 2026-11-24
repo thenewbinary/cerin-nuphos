@@ -28,7 +28,7 @@ export type AgentTimelineEvent = {
   skipped?: { label: string; reason: string }[]
   /** message_edited / conversation_forked: the destination session. */
   forkSessionId?: string
-  /** settings_changed: who changed the settings, a person, a Task acting for one, the agent, or Nuphos. */
+  /** settings_changed: who changed the settings, a person, a Task acting for one, the agent, or Cerin. */
   by?:
     | ({ type: 'person' } & AgentTimelinePerson)
     | { type: 'task'; sessionId: string; title: string; provider?: AgentProvider }

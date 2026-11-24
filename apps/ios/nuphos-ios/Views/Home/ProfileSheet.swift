@@ -63,7 +63,7 @@ struct ProfileSheet: View {
                 } header: {
                     Text("Voice input")
                 } footer: {
-                    Text("The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Voice input is included with a Nuphos subscription; recordings are transcribed by OpenAI Whisper.", comment: "Legal text")
+                    Text("The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Voice input is included with a Cerin subscription; recordings are transcribed by OpenAI Whisper.", comment: "Legal text")
                 }
                 .listRowBackground(Theme.surface)
                 #endif
@@ -92,7 +92,7 @@ struct ProfileSheet: View {
                 .listRowBackground(Theme.surface)
 
                 Section("Privacy") {
-                    Link("Privacy policy", destination: URL(string: "https://nuphos.ai/privacy")!)
+                    Link("Privacy policy", destination: URL(string: "https://platform.cerin.ai/privacy")!)
                     if session.aiConsentAccepted {
                         Button("Withdraw AI data sharing permission") {
                             Task {
@@ -121,8 +121,8 @@ struct ProfileSheet: View {
                     VStack(spacing: 6) {
                         Image("NuphosMark").resizable().scaledToFit()
                             .frame(width: 36, height: 36)
-                            .accessibilityLabel("Nuphos logo")
-                        Text("Nuphos").font(.headline)
+                            .accessibilityLabel("Cerin logo")
+                        Text("Cerin").font(.headline)
                         Text(verbatim: versionLabel)
                             .font(.caption)
                             .accessibilityIdentifier("account.version")

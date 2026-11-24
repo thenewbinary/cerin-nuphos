@@ -49,7 +49,7 @@ class BotQuestionsTest {
         val questions = BotQuestions.under("bot-1", listing)
         assertEquals(listOf("q-docs", "q-bot", "q-canary"), questions.map { it.request.id })
         assertEquals(listOf("docs", "bot-1", "canary"), questions.map { it.sessionId })
-        assertEquals("https://nuphos.ai/teams/t1/agent/canary", questions.last().link("t1"))
+        assertEquals("https://platform.cerin.ai/teams/t1/agent/canary", questions.last().link("t1"))
     }
 
     @Test fun leavesOutOtherBotsTeammatesAndLoops() {

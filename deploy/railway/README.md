@@ -60,7 +60,7 @@ RustFS uses `RAILWAY_RUN_UID=0` to write Railway's root-owned volume; the isolat
 agent still drops to UID 1000.
 
 Wait for `https://<API_DOMAIN>/health/ready` to return 200. Services restart automatically if backend startup races Mongo initialization. Confirm
-`/health/redis` reports disabled. In Nuphos Desktop select **Self-hosted? Set API
+`/health/redis` reports disabled. In Cerin Desktop select **Self-hosted? Set API
 endpoint**, enter the backend HTTPS origin, sign in by email, and create a team.
 
 ## Deploy the runtime project
@@ -95,7 +95,7 @@ your team using the single-use code, and sign in to your own Claude account.
 Keep the home volume when redeploying: it contains credentials and workspaces.
 
 The runtime is also published as a one-click marketplace template,
-[Nuphos Agent Runtime](https://railway.com/deploy/nuphos-agent-runtime). It runs the
+[Cerin Agent Runtime](https://railway.com/deploy/nuphos-agent-runtime). It runs the
 public `ghcr.io/nuphos/runtime` image directly instead of building this directory:
 `RAILWAY_RUN_UID=0` and a start command do what `runtime/start.sh` does.
 `OPENAB_ACP_AUTH_KEY` is a generated template variable

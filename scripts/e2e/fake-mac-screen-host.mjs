@@ -100,7 +100,7 @@ const server = createServer((socket) => {
         socket.write(Buffer.from(be32(0)))
       } else if (phase === 'init') {
         phase = 'messages'
-        const name = Buffer.from('Nuphos Mac')
+        const name = Buffer.from('Cerin Mac')
 
         socket.write(
           Buffer.from([

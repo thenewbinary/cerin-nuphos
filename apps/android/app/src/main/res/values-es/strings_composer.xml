@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">Credenciales · %1$d</string>
     <string name="composer_computers_count">Computadoras · %1$d</string>
     <string name="composer_queue_a_message">Poner un mensaje en cola</string>
-    <string name="composer_ask_nuphos">Pregunta lo que quieras a Nuphos</string>
+    <string name="composer_ask_nuphos">Pregunta lo que quieras a Cerin</string>
     <string name="composer_remove_attachment_failed">No se pudo quitar este adjunto guardado. Revisa el almacenamiento e inténtalo de nuevo.</string>
     <string name="composer_photos">Fotos</string>
     <string name="composer_files">Archivos</string>
@@ -55,8 +55,8 @@
     <string name="composer_clear">Borrar</string>
     <string name="composer_retry">Reintentar</string>
     <string name="composer_loading_iam">Cargando IAM…</string>
-    <string name="composer_no_computers">No hay computadoras disponibles. Conecta una computadora en Nuphos para usarla aquí.</string>
-    <string name="composer_no_computers_or_iam">No hay computadoras ni IAM disponibles. Conecta una computadora o una cuenta en la nube en Nuphos para usarlas aquí.</string>
+    <string name="composer_no_computers">No hay computadoras disponibles. Conecta una computadora en Cerin para usarla aquí.</string>
+    <string name="composer_no_computers_or_iam">No hay computadoras ni IAM disponibles. Conecta una computadora o una cuenta en la nube en Cerin para usarlas aquí.</string>
     <string name="composer_allow_computers">Permite que este agente maneje las computadoras que selecciones.</string>
     <string name="composer_permission_mode">Modo de permisos</string>
     <string name="composer_load_runtimes_failed">No se pudieron cargar los entornos de ejecución.</string>
@@ -66,7 +66,7 @@
     <string name="composer_runtime_wait">Espera a que termine la respuesta actual o el mensaje pendiente antes de cambiar de entorno de ejecución.</string>
     <string name="composer_loading_runtimes">Cargando entornos de ejecución…</string>
     <string name="composer_no_runtimes">No hay entornos de ejecución disponibles.</string>
-    <string name="composer_no_runtimes_body">Abre Nuphos en tu computadora para añadir un Box o conectar tu propia computadora.</string>
+    <string name="composer_no_runtimes_body">Abre Cerin en tu computadora para añadir un Box o conectar tu propia computadora.</string>
     <string name="composer_manage_runtimes">Administrar computadoras y entornos de ejecución</string>
     <string name="composer_refresh_runtimes">Actualizar entornos de ejecución</string>
     <string name="composer_move_to">¿Mover a %1$s?</string>

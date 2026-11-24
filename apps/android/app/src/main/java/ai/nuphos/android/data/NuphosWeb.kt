@@ -12,7 +12,7 @@ import java.security.MessageDigest
 
 /** Browser sign-in delivers a one-time code to a private loopback listener. */
 object NuphosWeb {
-    val SITE_URL: String get() = if (BackendOrigin.isCloud()) "https://nuphos.ai" else BackendOrigin.current
+    val SITE_URL: String get() = if (BackendOrigin.isCloud()) "https://platform.cerin.ai" else BackendOrigin.current
     const val CALLBACK_SCHEME = "nuphos"
     const val CALLBACK_HOST = "google-callback"
 
@@ -38,7 +38,7 @@ object NuphosWeb {
         client.newBuilder().callTimeout(10, TimeUnit.SECONDS).build().newCall(request).execute().use { response ->
             if (response.code == 503) return emptyList()
             if (!response.isSuccessful) throw IOException("Sign-in options are unavailable.")
-            return providers(response.header("X-Nuphos-Social-Providers"))
+            return providers(response.header("X-Cerin-Social-Providers"))
         }
     }
 

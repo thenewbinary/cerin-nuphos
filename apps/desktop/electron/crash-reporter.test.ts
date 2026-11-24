@@ -22,7 +22,7 @@ let started: StartOptions | undefined
 let analytics: boolean[] = []
 let broadcasts: unknown[][] = []
 const syncHandlers = new Map<string, (event: { returnValue?: unknown }) => void>()
-const CLOUD = 'https://api.nuphos.ai'
+const CLOUD = 'https://platform.cerin.ai'
 const SELF_HOSTED = 'https://api.example.test'
 let setApiUrl: (url: string | null) => string
 const extra = new Map<string, string>()

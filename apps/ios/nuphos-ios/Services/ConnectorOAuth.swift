@@ -4,7 +4,7 @@ import Foundation
 /// The browser leg of a connector connect flow.
 ///
 /// Every provider's `/setup` callback on the backend ends on the same landing
-/// page, which redirects to `nuphos://<provider>-callback?...`. That custom
+/// page, which redirects to `cerin://<provider>-callback?...`. That custom
 /// scheme is what `ASWebAuthenticationSession` watches for, so one session
 /// serves every provider: the query carries either the result or an `error`.
 @MainActor
@@ -26,10 +26,10 @@ final class ConnectorOAuth {
     private var session: ASWebAuthenticationSession?
 
     /// Opens `url` in the authentication browser and resolves with the query
-    /// of the `nuphos://` redirect that ends it. Throws `.cancelled` when the
+    /// of the `cerin://` redirect that ends it. Throws `.cancelled` when the
     /// user dismisses the sheet, so callers can stay quiet about it.
     ///
-    /// `expectedHost` is the `nuphos://<host>` this flow is waiting for. The
+    /// `expectedHost` is the `cerin://<host>` this flow is waiting for. The
     /// scheme alone is not enough: every connector shares it, so without the
     /// host check one provider's redirect could satisfy another's flow.
     func run(url: URL, expectedHost: String) async throws -> [String: String] {

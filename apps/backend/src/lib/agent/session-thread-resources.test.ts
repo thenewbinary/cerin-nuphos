@@ -73,7 +73,7 @@ test('unlinking a thread tag deletes its routing row and nothing else', async ()
   ])
 })
 
-test('a thread Nuphos posted as a notification cannot be unlinked', async () => {
+test('a thread Cerin posted as a notification cannot be unlinked', async () => {
   notification = true
   try {
     await expect(unlinkSessionThread('s1', 'slack:C1:1.2')).rejects.toMatchObject({

@@ -155,7 +155,7 @@ final class AuthSession {
         } catch {
             guard generation == expected, token == saved else { return }
             if self.user == nil {
-                state = .signedOut(error: String(localized: "We could not reach Nuphos. Check your connection and try again."))
+                state = .signedOut(error: String(localized: "We could not reach Cerin. Check your connection and try again."))
             }
         }
     }
@@ -177,7 +177,7 @@ final class AuthSession {
             let clientState = try NuphosWeb.randomSecret()
             struct Registration: Decodable { let handle: String }
             let registration: Registration = try await AccountAPI.request("native/session", method: "POST", body: [
-                "redirectUri": "nuphos://google-callback", "codeChallenge": NuphosWeb.challenge(verifier),
+                "redirectUri": "cerin://google-callback", "codeChallenge": NuphosWeb.challenge(verifier),
                 "codeChallengeMethod": "S256", "clientState": clientState
             ])
             guard generation == expected, NuphosAPI.baseURL.absoluteString == origin else { return }
@@ -368,7 +368,7 @@ final class AuthSession {
 
     func setAIConsent(accepted: Bool) async throws {
         guard let token, let version = aiConsentVersion, version == AccountAPI.aiConsentVersion else {
-            throw NuphosAPI.Failure.http(409, message: String(localized: "Please update Nuphos to read the latest AI notice."))
+            throw NuphosAPI.Failure.http(409, message: String(localized: "Please update Cerin to read the latest AI notice."))
         }
         let expected = generation
         let result: AccountAPI.Consent = try await AccountAPI.request("ai-consent", method: "PUT", token: token, body: ["version": version, "accepted": accepted])

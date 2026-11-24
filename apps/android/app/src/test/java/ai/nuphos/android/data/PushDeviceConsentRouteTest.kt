@@ -12,7 +12,7 @@ class PushDeviceConsentRouteTest {
         assertFalse(isLocalApiRequest(request("http://127.0.0.1:18769/agent/chat"), endpoint))
         assertFalse(isLocalApiRequest(request("http://localhost:18768/agent/chat"), endpoint))
         assertFalse(isLocalApiRequest(request("https://127.0.0.1:18768/agent/chat"), endpoint))
-        assertFalse(isLocalApiRequest(request("$endpoint/agent/chat"), "https://api.nuphos.ai"))
+        assertFalse(isLocalApiRequest(request("$endpoint/agent/chat"), "https://platform.cerin.ai"))
     }
     @Test fun debugEndpointCannotLeakCredentialsToOtherPortsHostsOrRoutes() {
         val endpoint = "http://127.0.0.1:18767"

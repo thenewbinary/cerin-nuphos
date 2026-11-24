@@ -27,24 +27,24 @@ beforeEach(async () => {
     sessionId: 'bot',
     userId: 'me',
     teamId: 'team',
-    title: 'Nuphos Account Manager',
+    title: 'Cerin Account Manager',
   } as never)
 })
 
 test("an agent's messages carry the name it has now, not the one it posted under", async () => {
   const [old, person, gone] = await withCurrentAgentNames(
-    [from('agent', 'bot', 'Nuphos CSM'), from('user', 'bot', 'Ann'), from('agent', 'gone', 'Gone')],
+    [from('agent', 'bot', 'Cerin CSM'), from('user', 'bot', 'Ann'), from('agent', 'gone', 'Gone')],
     'team',
   )
 
-  expect(old?.metadata.sender.displayName).toBe('Nuphos Account Manager')
+  expect(old?.metadata.sender.displayName).toBe('Cerin Account Manager')
   // Only agents are looked up, and one that no longer exists keeps its stored name.
   expect(person?.metadata.sender.displayName).toBe('Ann')
   expect(gone?.metadata.sender.displayName).toBe('Gone')
 })
 
 test("another team's agent never lends its name", async () => {
-  const [message] = await withCurrentAgentNames([from('agent', 'bot', 'Nuphos CSM')], 'other')
+  const [message] = await withCurrentAgentNames([from('agent', 'bot', 'Cerin CSM')], 'other')
 
-  expect(message?.metadata.sender.displayName).toBe('Nuphos CSM')
+  expect(message?.metadata.sender.displayName).toBe('Cerin CSM')
 })

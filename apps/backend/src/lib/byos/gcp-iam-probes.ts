@@ -5,7 +5,7 @@ import type { SelfCapabilities, ServiceAccountCapabilities } from './gcp-iam-typ
 export const ROLE_PERMISSION_CAP = 200
 
 // Curated probe for testIamPermissions when getIamPolicy is denied. Covers the
-// resources Nuphos actually touches: GKE, Compute, IAM/service accounts,
+// resources Cerin actually touches: GKE, Compute, IAM/service accounts,
 // Resource Manager, and read-side observability. testIamPermissions accepts up
 // to 100 permissions per call, so this list is kept under that ceiling.
 export const PROBE_PERMISSIONS: string[] = [

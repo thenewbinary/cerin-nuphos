@@ -1,4 +1,4 @@
-// A computer that runs the `nuphos` CLI (a server, or a computer from Nuphos) keeps its Nuphos
+// A computer that runs the `nuphos` CLI (a server, or a computer from Cerin) keeps its Cerin
 // current itself, the way the Desktop does (auto-update.ts): when a newer CLI is out, on unless
 // whoever manages the computer turned it off, and only once no task has run on it for a while.
 // `nuphos update` installs the release and restarts the service the host runs under.
@@ -108,7 +108,7 @@ export async function checkCliUpdate(deps: CliAutoUpdateDeps): Promise<string | 
 /** A check on the timer: whatever goes wrong is logged, never thrown at the host. */
 export function tickCliUpdate(deps: CliAutoUpdateDeps): Promise<string | null> {
   return checkCliUpdate(deps).catch((error: unknown) => {
-    console.error(`Could not check for a Nuphos update: ${String(error)}`)
+    console.error(`Could not check for a Cerin update: ${String(error)}`)
 
     return null
   })

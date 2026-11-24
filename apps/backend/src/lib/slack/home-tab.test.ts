@@ -175,7 +175,7 @@ describe('buildSlackHomeViewFromModel', () => {
 describe('buildConnectedSlackHomeView', () => {
   test('renders an unlinked member as not linked even with a stale mapping', async () => {
     teamsById = [{ id: TEAM_ID, name: 'Acme' }]
-    members = [] // mapped Nuphos user no longer on the team
+    members = [] // mapped Cerin user no longer on the team
     channelMappings = [
       { slackWorkspaceId: 'T1', slackChannelId: 'C1', enabled: true },
       { slackWorkspaceId: 'T-other', slackChannelId: 'C9', enabled: true },

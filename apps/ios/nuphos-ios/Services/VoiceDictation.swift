@@ -15,7 +15,7 @@ final class VoiceDictation {
         case microphoneDenied
 
         var errorDescription: String? {
-            "Allow microphone access for Nuphos in Settings to use voice input."
+            "Allow microphone access for Cerin in Settings to use voice input."
         }
     }
 
@@ -89,14 +89,14 @@ final class VoiceDictation {
     }
 }
 
-/// Transcription by OpenAI Whisper through Nuphos, which holds the key and
+/// Transcription by OpenAI Whisper through Cerin, which holds the key and
 /// keeps voice input to teams with a subscription.
 enum Whisper {
     /// The transcription prompt, editable in Account. Whisper copies its
     /// spelling and style, so it lists names Whisper would otherwise guess at.
     /// Whisper reads only its last 224 tokens.
     static let promptKey = "whisper-prompt"
-    static let defaultPrompt = "Nuphos, Claude Code, Codex, GitHub, Linear, Slack, Discord."
+    static let defaultPrompt = "Cerin, Claude Code, Codex, GitHub, Linear, Slack, Discord."
 
     struct Failure: LocalizedError {
         let errorDescription: String?
@@ -126,7 +126,7 @@ enum Whisper {
         case 200: break
         case 401: throw NuphosAPI.Failure.unauthorized
         default:
-            throw Failure(errorDescription: json?["error"]?["message"]?.stringValue ?? "Nuphos couldn't be reached. Try again.")
+            throw Failure(errorDescription: json?["error"]?["message"]?.stringValue ?? "Cerin couldn't be reached. Try again.")
         }
         guard var text = json?["text"]?.stringValue else {
             throw Failure(errorDescription: "The recording couldn't be transcribed.")

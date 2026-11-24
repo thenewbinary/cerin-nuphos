@@ -183,7 +183,7 @@ export async function upsertSlackUserMapping(data: {
 }
 
 /**
- * Atomically claim a Slack identity for the same Nuphos user. Unlike the
+ * Atomically claim a Slack identity for the same Cerin user. Unlike the
  * administrator-facing upsert, this auto-link path never overwrites another
  * user's active claim; a duplicate-key race is reported as null.
  */

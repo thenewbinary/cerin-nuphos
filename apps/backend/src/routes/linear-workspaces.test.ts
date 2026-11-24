@@ -19,9 +19,9 @@ const BINDING_ID = new ObjectId()
 function binding(overrides: Record<string, unknown> = {}) {
   return {
     id: BINDING_ID,
-    label: 'Nuphos',
+    label: 'Cerin',
     workspaceId: 'workspace-1',
-    workspaceName: 'Nuphos',
+    workspaceName: 'Cerin',
     organizationUrlKey: 'nuphos',
     accountId: 'account-1',
     accountName: 'Yuanlin',
@@ -88,7 +88,7 @@ describe('GET /:bindingId/issues/:identifier', () => {
           updatedAt: '2026-01-02T00:00:00.000Z',
           state: { name: 'In Progress', type: 'started', color: '#000' },
           assignee: { name: 'Yuanlin', avatarUrl: 'https://example.com/a.png' },
-          team: { id: 'team-uuid', key: 'NUPS', name: 'Nuphos' },
+          team: { id: 'team-uuid', key: 'NUPS', name: 'Cerin' },
           labels: { nodes: [{ id: 'l1', name: 'bug', color: '#f00' }] },
           project: { name: 'Desktop' },
           cycle: { name: null, number: 7 },
@@ -129,7 +129,7 @@ describe('GET /:bindingId/issues/:identifier', () => {
     expect(json.team).toEqual({
       id: 'team-uuid',
       key: 'NUPS',
-      name: 'Nuphos',
+      name: 'Cerin',
       url: 'https://linear.app/nuphos/team/NUPS',
     })
     expect(json.comments).toEqual([
@@ -240,7 +240,7 @@ describe('GET /:bindingId/teams/:linearTeamId/issues', () => {
           team: {
             id: 'team-uuid',
             key: 'NUPS',
-            name: 'Nuphos',
+            name: 'Cerin',
             issues: {
               nodes: [issueRow],
               pageInfo: { hasNextPage: true, endCursor: 'cursor-2' },
@@ -263,7 +263,7 @@ describe('GET /:bindingId/teams/:linearTeamId/issues', () => {
       team: {
         id: 'team-uuid',
         key: 'NUPS',
-        name: 'Nuphos',
+        name: 'Cerin',
         url: 'https://linear.app/nuphos/team/NUPS',
       },
       issues: [issueRow],
@@ -282,7 +282,7 @@ describe('GET /:bindingId/teams/:linearTeamId/issues', () => {
           team: {
             id: 'team-uuid',
             key: 'NUPS',
-            name: 'Nuphos',
+            name: 'Cerin',
             issues: { nodes: [], pageInfo: { hasNextPage: false, endCursor: 'x' } },
           },
         },

@@ -1,19 +1,19 @@
-# Nuphos local stack (docker compose)
+# Cerin local stack (docker compose)
 
-One `docker compose up` brings up a complete, minimal Nuphos:
+One `docker compose up` brings up a complete, minimal Cerin:
 
 | Service   | Image                                   | Purpose                                                   |
 | --------- | --------------------------------------- | --------------------------------------------------------- |
 | `mongo`   | `mongo:8.0.32`                          | Single-node replica set (`rs0`), required by transactions |
 | `rustfs`  | `rustfs/rustfs:1.0.0`                   | S3-compatible storage; initializes buckets on boot        |
-| `backend` | built from `apps/backend/Dockerfile`    | Nuphos backend, one replica                               |
+| `backend` | built from `apps/backend/Dockerfile`    | Cerin backend, one replica                               |
 | `runtime` | `ghcr.io/nuphos/runtime:${RUNTIME_TAG}` | Claude Code agent runtime                                 |
 
 All data lives in local volumes and **never touches production Mongo, Redis or S3**. There is no Redis: the backend runs in single-replica in-memory mode.
 
 Mongo sits only on the internal `data` network, reachable by services on that network. The `runtime`, which executes agent code, is not on that network.
 
-The runtime is connected the same way as any self-hosted agent: from its console, which hands Nuphos a single-use pairing code. The runtime signs in to Claude itself, once; the login lives on its `runtime-home` volume.
+The runtime is connected the same way as any self-hosted agent: from its console, which hands Cerin a single-use pairing code. The runtime signs in to Claude itself, once; the login lives on its `runtime-home` volume.
 
 This page covers the full stack with no dev server. `bun run dev` at the repository root reuses the same service definitions through `docker-compose.dev.yml`: it starts only `mongo`, `rustfs` and `runtime` (compose project `nuphos-dev`, with volumes separate from this stack), publishes Mongo and the runtime on `127.0.0.1`, runs the backend on the host with hot reload, and never connects the runtime to a team: add it in Settings with the address `ws://localhost:18180/acp` and the password from `bun run dev:runtime-password`. Stop one stack before starting the other, since both bind RustFS to port 9000 (`bun run dev:stop` stops the dev one). See the root README.
 
@@ -40,7 +40,7 @@ To change the runtime version, edit `RUNTIME_TAG` in `.env` (for example `0.1.66
 
 There is no mail service locally. The backend runs with `NUPHOS_DEV_EMAIL_OTP_LOG=true`, so sign-in codes are written to its log instead of being emailed (the setting has no effect when `NODE_ENV=production`).
 
-1. On the Nuphos Desktop sign-in screen, enter any email (for example `me@example.com`) and request a code.
+1. On the Cerin Desktop sign-in screen, enter any email (for example `me@example.com`) and request a code.
 2. Read the code from the log:
 
    ```sh
@@ -77,16 +77,16 @@ It joins as the team owner's computer. On the server, run the command it prints
 (`NUPHOS_API_URL=<backend-url> nuphos agent --join -`) and paste the token; see
 [the CLI README](../../apps/cli/README.md#on-a-server) for running it under systemd.
 
-## Point Nuphos Desktop at the stack
+## Point Cerin Desktop at the stack
 
 Desktop accepts plain http on localhost, so no TLS or self-signed CA is needed.
 
-The simplest way is on the sign-in screen: click **Self-hosted? Set API endpoint**, enter `http://localhost:3000` and save; the app switches to the stack immediately and remembers it until you choose **Use Nuphos Cloud**. Alternatively, set the variable at launch:
+The simplest way is on the sign-in screen: click **Self-hosted? Set API endpoint**, enter `http://localhost:3000` and save; the app switches to the stack immediately and remembers it until you choose **Use Cerin Cloud**. Alternatively, set the variable at launch:
 
 Installed app (macOS):
 
 ```sh
-NUPHOS_API_URL=http://localhost:3000 /Applications/Nuphos.app/Contents/MacOS/Nuphos
+NUPHOS_API_URL=http://localhost:3000 /Applications/Cerin.app/Contents/MacOS/Cerin
 ```
 
 For development from source, run `bun run dev` from the repository root.
@@ -107,9 +107,9 @@ The desktop app's sign-in is stored in `~/.config/nuphos/desktop.yaml` (on macOS
 
 2. Open the runtime console and sign in with that password. Both stacks publish it at <http://127.0.0.1:18180> by default (`RUNTIME_PORT` in `.env`).
 
-3. In the console, set the public URL to `ws://runtime:8080/acp`. That is the address the backend dials from inside the compose network, not the one your browser uses. Then choose **Connect to Nuphos**.
+3. In the console, set the public URL to `ws://runtime:8080/acp`. That is the address the backend dials from inside the compose network, not the one your browser uses. Then choose **Connect to Cerin**.
 
-   Nuphos Desktop opens **Connect this agent to a team**: pick the team, then press **Connect agent**. A Desktop run from source handles `nuphos://` links only with `ATLAS_REGISTER_NUPHOS_PROTOCOL=1`. Without it, open Settings → Agent → **Add agent** → **Self-hosted Cloud Agent** and paste the address and pairing code the console shows. An image without the console connects the same way through **Use a password instead**, with the address `ws://runtime:8080/acp` and the password from step 1.
+   Cerin Desktop opens **Connect this agent to a team**: pick the team, then press **Connect agent**. A Desktop run from source handles `cerin://` links only with `ATLAS_REGISTER_NUPHOS_PROTOCOL=1`. Without it, open Settings → Agent → **Add agent** → **Self-hosted Cloud Agent** and paste the address and pairing code the console shows. An image without the console connects the same way through **Use a password instead**, with the address `ws://runtime:8080/acp` and the password from step 1.
 
    The backend exchanges the code with the runtime for a key that belongs to this team alone, and detects that the runtime runs Claude Code. This compose file sets `NUPHOS_LOCAL_STACK=true` (ignored when `NODE_ENV=production`), so the backend treats a single-label host such as `runtime` as internal: plain `ws://` is accepted, and the runtime calls the backend back at `http://backend:3000`.
 
@@ -176,7 +176,7 @@ docker compose exec runtime curl -s -o /dev/null -w '%{http_code}\n' http://nuph
 
 ## Health telemetry (optional, off by default)
 
-An instance can send Nuphos a small health report every 5 minutes, so we learn
+An instance can send Cerin a small health report every 5 minutes, so we learn
 when a self-hosted install breaks. Nothing is collected or sent unless
 `NUPHOS_TELEMETRY_KEY` is set; leave it unset and the instance never contacts
 `telemetry.nuphos.ai`.
@@ -195,7 +195,7 @@ when a self-hosted install breaks. Nothing is collected or sent unless
 prompts or error messages. The payload contains no hostnames or IP addresses,
 but like any HTTPS request, the receiver sees the source IP of the connection.
 
-**Enable:** add the key Nuphos issued for your instance to `.env` and restart
+**Enable:** add the key Cerin issued for your instance to `.env` and restart
 the backend:
 
 ```sh
@@ -216,12 +216,12 @@ docker compose exec backend nuphos-admin telemetry on    # resume
 Admins can do the same over HTTP with `GET /admin/telemetry` and
 `PUT /admin/telemetry` (`{"enabled": false}`); switching it on without
 `NUPHOS_TELEMETRY_KEY` set is refused. To stop for good, remove
-`NUPHOS_TELEMETRY_KEY`; Nuphos can also revoke a key. A report that cannot be
+`NUPHOS_TELEMETRY_KEY`; Cerin can also revoke a key. A report that cannot be
 delivered is retried twice, then dropped with one `backend.telemetry.send_failed`
 log line; it never blocks a request.
 
 The Desktop and iOS apps send usage analytics only while they are connected to
-Nuphos Cloud. Connected to your instance they send none, and Desktop crash
+Cerin Cloud. Connected to your instance they send none, and Desktop crash
 reports go to your own backend.
 
 ## Reset

@@ -169,7 +169,7 @@ export function registerSlackUserMappingRoutes(
     const slackWorkspaceId = normalizeSlackId(body.slackWorkspaceId, 'slackWorkspaceId')
     const slackUserId = normalizeSlackId(body.slackUserId, 'slackUserId')
     // Prevent claiming a Slack member ID that is already linked to a different
-    // Nuphos user: otherwise any member could overwrite someone else's mapping
+    // Cerin user: otherwise any member could overwrite someone else's mapping
     // and act in Slack as them.
     const existing = await getSlackUserMapping(slackWorkspaceId, teamId, slackUserId)
 

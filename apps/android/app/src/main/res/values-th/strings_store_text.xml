@@ -44,7 +44,7 @@
     <string name="storetext_account_delete_password_or_code">ใช้รหัสผ่านหรือรหัสทางอีเมลอย่างใดอย่างหนึ่ง</string>
     <string name="storetext_account_delete_password_length">ป้อนรหัสผ่านอย่างน้อย 12 อักขระ</string>
     <string name="storetext_account_delete_code_length">ป้อนรหัสทางอีเมล 6 ตัว</string>
-    <string name="storetext_signin_web">ลงชื่อเข้าใช้ผ่านเว็บ (nuphos.ai)</string>
+    <string name="storetext_signin_web">ลงชื่อเข้าใช้ผ่านเว็บ (platform.cerin.ai)</string>
     <string name="storetext_signin_browser_on_system">%1$s บน %2$s</string>
     <string name="storetext_signin_browser_on">เบราว์เซอร์บน %1$s</string>
     <string name="storetext_signin_unknown_device">อุปกรณ์ที่ไม่รู้จัก</string>

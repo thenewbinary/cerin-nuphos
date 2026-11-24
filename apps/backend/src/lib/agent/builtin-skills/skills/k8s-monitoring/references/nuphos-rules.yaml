@@ -1,9 +1,9 @@
-# Nuphos supplemental alert rules for kube-prometheus-stack.
+# Cerin supplemental alert rules for kube-prometheus-stack.
 #
 # The chart's default rules already cover the heavy hitters
 # (KubeDeploymentReplicasMismatch, KubePodCrashLooping, KubeNodeNotReady,
 # KubeDaemonSetRolloutStuck, KubePersistentVolumeFillingUp, …). This pack
-# adds only the gaps in the Nuphos resource-health matrix:
+# adds only the gaps in the Cerin resource-health matrix:
 #
 #   - CronJob staleness (no successful run in 24h)
 #   - PVC stuck Pending

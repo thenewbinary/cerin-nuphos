@@ -39,7 +39,7 @@ class ChannelWakeLineFixtureDeviceTest {
         val sender = MessageAttribution.parse(JsonValue.parse(
             """{"version":1,"source":"agent.resource","sentAt":"2026-11-16T05:12:00Z","sender":{"id":"channel:c-launch","type":"system","displayName":"launch-review"},
                "channelPost":{"id":"p1","text":"Staging deploy failed on the migrations step, can you look?","more":2,"sender":{"type":"user","id":"u1","displayName":"Mei Chen"}}}"""))
-        val row = ChatRow.Event("wake", ChatRow.User("wake", "wake", "New messages in a Nuphos channel (channelId c-launch).", emptyList(), sender = sender))
+        val row = ChatRow.Event("wake", ChatRow.User("wake", "wake", "New messages in a Cerin channel (channelId c-launch).", emptyList(), sender = sender))
         val opened = mutableListOf<String>()
         compose.setContent {
             NuphosTheme(darkTheme = false) {

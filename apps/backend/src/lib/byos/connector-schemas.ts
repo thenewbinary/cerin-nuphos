@@ -36,8 +36,8 @@ export const tencentConnectorSchema = z.object({
   // `international` (tencentcloud.com). Legacy clients that omit it default to
   // `china` — the original single-partition behavior.
   site: z.enum(['china', 'international']).default('china'),
-  // CAM role ARN whose trust policy allows the Nuphos OIDC provider to
-  // sts:AssumeRoleWithWebIdentity, e.g. qcs::cam::uin/123456789:roleName/Nuphos.
+  // CAM role ARN whose trust policy allows the Cerin OIDC provider to
+  // sts:AssumeRoleWithWebIdentity, e.g. qcs::cam::uin/123456789:roleName/Cerin.
   roleArn: z
     .string()
     .trim()
@@ -55,7 +55,7 @@ export const aliyunConnectorSchema = z.object({
   // `international` (alibabacloud.com). Legacy clients that omit it default to
   // `china` — the original single-partition behavior.
   site: z.enum(['china', 'international']).default('china'),
-  // RAM role ARN whose trust policy allows the Nuphos OIDC provider to
+  // RAM role ARN whose trust policy allows the Cerin OIDC provider to
   // sts:AssumeRoleWithOIDC, e.g. acs:ram::123456789:role/NuphosConnector.
   roleArn: z
     .string()
@@ -71,7 +71,7 @@ export const aliyunConnectorSchema = z.object({
 
 export const volcengineConnectorSchema = z.object({
   label: z.string().trim().min(1).max(100),
-  // Volcengine IAM role TRN whose trust policy allows the Nuphos connector to
+  // Volcengine IAM role TRN whose trust policy allows the Cerin connector to
   // sts:AssumeRole, e.g. trn:iam::2100000000:role/NuphosRole.
   roleTrn: z
     .string()
@@ -87,13 +87,13 @@ export const huaweiConnectorSchema = z.object({
     .string()
     .trim()
     .regex(/^[0-9a-f]{32}$/i, 'Invalid Huawei Cloud account (domain) id'),
-  // Name of the IAM identity provider the customer created for Nuphos — used
+  // Name of the IAM identity provider the customer created for Cerin — used
   // to build its URN, not the separate hex provider_id Huawei also assigns.
   idpId: z
     .string()
     .trim()
     .regex(/^[\w.-]{1,64}$/, 'Invalid Huawei Cloud identity provider name'),
-  // Name of the trust agency the customer assigned to Nuphos's audience on
+  // Name of the trust agency the customer assigned to Cerin's audience on
   // that identity provider.
   agencyName: z
     .string()

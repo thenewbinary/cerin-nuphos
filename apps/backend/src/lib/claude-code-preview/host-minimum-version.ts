@@ -3,7 +3,7 @@ import { runtimeVersionAtLeast, stableRuntimeVersion } from './runtime-release'
 import type { LocalRuntimePresence } from '@/lib/agent/devices/local-runtime/presence'
 
 /**
- * The oldest Nuphos a computer should run. Below it, its card and chats say it is out of date
+ * The oldest Cerin a computer should run. Below it, its card and chats say it is out of date
  * and how to update; nothing refuses its turns. Desktop 0.127.0 is the first that installs a
  * downloaded update by itself while idle, so an older one stays behind until someone restarts
  * it (#3829). CLI 0.20.0 is the first that bundles runtime 0.1.62; before it, the first message
@@ -16,7 +16,7 @@ export type OutdatedHost = keyof typeof MINIMUM_HOST_VERSION
 const APP: Record<string, OutdatedHost> = { 'nuphos-desktop': 'desktop', 'nuphos-cli': 'cli' }
 
 /**
- * Which Nuphos on a computer is older than the floor: what its host reports about itself, else
+ * Which Cerin on a computer is older than the floor: what its host reports about itself, else
  * the app it connected as (`nuphos-desktop/0.119.2`). A dev build or a host that names no
  * version is unknown, and an unknown host is never called out of date.
  */

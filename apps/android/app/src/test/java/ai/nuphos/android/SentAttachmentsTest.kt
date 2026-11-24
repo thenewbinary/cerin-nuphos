@@ -8,7 +8,7 @@ import org.junit.Test
 class SentAttachmentsTest {
     private val id = "0123456789abcdef01234567"
     private fun instruction(names: String = "photo.jpg, report.txt", count: Int = 2) =
-        "[The user uploaded $count file(s) to the Nuphos file-transfer store (transfer group $id): $names. To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull.sh \"\$TEAM\" $id ./uploads]"
+        "[The user uploaded $count file(s) to the Cerin file-transfer store (transfer group $id): $names. To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull.sh \"\$TEAM\" $id ./uploads]"
     private fun structured(wrapped: Boolean) = ChatPart.Other(JsonValue.parse(
         """{"type":"transfer-upload","groupId":"$id","status":"ready","files":[{"fileName":"photo.jpg"},{"fileName":"report.txt"}]}"""
     )!!.let { if (wrapped) JsonValue.obj("type" to JsonValue.Str("data-attachment"), "data" to it) else it })

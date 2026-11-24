@@ -39,7 +39,7 @@ function recordInstance(live = true) {
     backend: backend.port,
     vite: desktopPorts.vite,
     cdp: desktopPorts.cdp,
-    appData: electronAppData(`Nuphos Dev (${DESKTOP_SUFFIX})`),
+    appData: electronAppData(`Cerin Dev (${DESKTOP_SUFFIX})`),
     cliConfig: DEV_CLI_CONFIG,
     logDir: LOG_DIR,
     groups: live ? services.flatMap((s) => (s.proc?.pid ? [s.proc.pid] : [])) : [],

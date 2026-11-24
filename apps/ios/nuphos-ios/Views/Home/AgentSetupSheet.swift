@@ -246,7 +246,7 @@ struct AgentSetupView: View {
             } header: {
                 Text(step.message ?? "")
             } footer: {
-                if step.secret == true { Text("Nuphos encrypts it on its way to the runtime, which keeps it; Nuphos does not keep a copy.") }
+                if step.secret == true { Text("Cerin encrypts it on its way to the runtime, which keeps it; Cerin does not keep a copy.") }
             }
         } else {
             if let instructions = step.instructions, !instructions.isEmpty {

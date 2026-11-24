@@ -80,7 +80,7 @@ const MAX_INFLIGHT_ESTABLISHES: usize = 64;
 ///
 /// Timeout ordering contract (each layer strictly below the next, so the layer that owns the
 /// failure also reports it): gateway idle timeout (this) < pool `prompt_hard_timeout_secs` <
-/// client per-prompt timeout (Nuphos: 15 min).
+/// client per-prompt timeout (Cerin: 15 min).
 pub const ACP_PROMPT_IDLE_TIMEOUT_SECS: u64 = 180;
 
 /// Floor for the env override: below this a single slow chunk boundary would spuriously kill
@@ -719,7 +719,7 @@ fn refresh_session_passthrough(session: &mut AcpSession, params: Option<&Value>)
 
 const PERMISSION_POLICY_META_KEY: &str = "dev.openab/permissionPolicy";
 const PERMISSION_RELAY_TIMEOUT_SECS: u64 = 900;
-/// Covers a client noticing its lost connection and reattaching (Nuphos: up to ~10 s to detect a
+/// Covers a client noticing its lost connection and reattaching (Cerin: up to ~10 s to detect a
 /// moved device tunnel, then resume retries at 0, 1, 2, 5 and 10 s).
 const PERMISSION_REATTACH_GRACE: std::time::Duration = std::time::Duration::from_secs(30);
 

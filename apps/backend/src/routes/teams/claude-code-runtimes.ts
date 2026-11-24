@@ -88,7 +88,7 @@ async function registerExternalRuntime(
   body: z.infer<typeof registerRuntimeSchema>,
 ) {
   // A runtime outside the cluster reaches this backend over the public
-  // internet for every Nuphos tool call and for its skill bundle. Refuse
+  // internet for every Cerin tool call and for its skill bundle. Refuse
   // rather than hand it an address it cannot resolve and let the agent
   // fail tool by tool. An in-cluster `ws://*.svc` runtime needs none of it.
   if (!isInternalRuntimeUrl(body.url)) requirePublicBackendUrl()

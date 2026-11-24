@@ -101,7 +101,7 @@ if aws kms describe-key --key-id "$KMS_ALIAS" --region "$REGION" >/dev/null 2>&1
 else
   KEY_ID="$(aws kms create-key --region "$REGION" \
     --key-spec ECC_NIST_P256 --key-usage SIGN_VERIFY \
-    --description 'Nuphos audit journal segment signing' \
+    --description 'Cerin audit journal segment signing' \
     --query 'KeyMetadata.KeyId' --output text)"
   aws kms create-alias --region "$REGION" --alias-name "$KMS_ALIAS" --target-key-id "$KEY_ID"
   echo "Created KMS signing key: $KEY_ID ($KMS_ALIAS)"

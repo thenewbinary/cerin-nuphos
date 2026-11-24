@@ -1,6 +1,6 @@
 # openab
 
-The ACP gateway the Nuphos runtime image and the Desktop Local runtime run,
+The ACP gateway the Cerin runtime image and the Desktop Local runtime run,
 built as one binary with `cargo build --release --locked --features unified`.
 
 Vendored from [zeabur/openab](https://github.com/zeabur/openab) at

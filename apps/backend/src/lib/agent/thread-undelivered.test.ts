@@ -301,7 +301,7 @@ test('an archived sender is still told, and its notice turn restores it', async 
   await expect(startQueuedTurn('owner', 'target')).rejects.toThrow('Thread run failed')
   await settle()
   expect(notices()).toHaveLength(1)
-  // Nuphos's notice runs like any system notice: no trigger tools, no Full Access default.
+  // Cerin's notice runs like any system notice: no trigger tools, no Full Access default.
   expect(notices()[0]?.origin).toBe('trigger')
   expect(noticeText()).toContain('did not run: Thread run failed')
 })
@@ -357,13 +357,13 @@ test('a notice that does not run is not reported back', async () => {
     },
   })
 
-  // A failed notice is Nuphos's, not an agent's message: nobody is told about it.
+  // A failed notice is Cerin's, not an agent's message: nobody is told about it.
   const { run } = await startConversationTurn(
     { ...data, messageId: 'notice' },
     { ...base, sessionId: 'target' },
     'Your message to thread other did not run.',
     'agent.resource',
-    systemSender('nuphos', 'Nuphos'),
+    systemSender('nuphos', 'Cerin'),
   )
 
   await expect(run).rejects.toThrow('Thread run failed')
@@ -378,7 +378,7 @@ test('an answer its offline agent never gets waits for it, and the question stay
       renderedText: 'Your question (requestId q1) was answered from the Inbox.',
       source: 'agent.resource',
       actorUserId: 'owner',
-      metadata: systemSender('nuphos:decision', 'Nuphos'),
+      metadata: systemSender('nuphos:decision', 'Cerin'),
     }),
     offlineSince: new Date(Date.now() - 61_000).toISOString(),
     answers: {
@@ -393,7 +393,7 @@ test('an answer its offline agent never gets waits for it, and the question stay
   await expect(startQueuedTurn('owner', 'target')).rejects.toThrow('offline')
   expect(reopened).toHaveLength(0)
   expect(waiting).toMatchObject([{ requestId: 'q1', cause: 'offline' }])
-  // Nuphos's own notice has no sender to tell.
+  // Cerin's own notice has no sender to tell.
   await settle()
   expect(notices()).toHaveLength(0)
 })
@@ -423,7 +423,7 @@ test('an answer that can never run reopens the question with one plain line', as
     { ...base, sessionId: 'target' },
     'Your question (requestId q2) was answered from the Inbox.',
     'agent.resource',
-    systemSender('nuphos:decision', 'Nuphos'),
+    systemSender('nuphos:decision', 'Cerin'),
   )
 
   await expect(run).rejects.toThrow('something broke')

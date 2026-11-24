@@ -1,9 +1,9 @@
 // Kubeconfig bootstrap for the Claude Code runtime: the same multi-cluster
 // resolution the classic sandbox gets from sync-clusters.sh, rendered for a
-// pod that has no skills directory and no general Nuphos bearer. Short-lived
+// pod that has no skills directory and no general Cerin bearer. Short-lived
 // EKS/GKE credentials are fetched by an inline exec plugin that authorizes with
 // the conversation token of whichever turn runs kubectl, so the file itself
-// holds no Nuphos credential.
+// holds no Cerin credential.
 import { agentSessionClusterContexts } from '@/lib/byos/agent-kubeconfig'
 import { renderAgentKubeconfig } from '@/lib/byos/agent-kubeconfig'
 import { canMintCredentials } from '@/lib/byos/credential-role'

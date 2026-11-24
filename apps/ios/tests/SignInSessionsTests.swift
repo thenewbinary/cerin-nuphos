@@ -29,18 +29,18 @@ enum SignInSessionsTests {
     }
 
     private static func namesKnownApps() {
-        expect(device(client: "nuphos-desktop/0.95.0"), "Nuphos Desktop", "desktop")
-        expect(device(client: "nuphos-ios/0.14.3"), "Nuphos for iOS", "ios")
-        expect(device(client: "nuphos-android/1.4.0"), "Nuphos for Android", "android")
-        expect(device(client: "nuphos-cli/0.3.1", userAgent: "curl/8"), "Nuphos CLI", "cli")
-        expect(device(client: "nuphos-ios"), "Nuphos for iOS", "no version")
+        expect(device(client: "nuphos-desktop/0.95.0"), "Cerin Desktop", "desktop")
+        expect(device(client: "nuphos-ios/0.14.3"), "Cerin for iOS", "ios")
+        expect(device(client: "nuphos-android/1.4.0"), "Cerin for Android", "android")
+        expect(device(client: "nuphos-cli/0.3.1", userAgent: "curl/8"), "Cerin CLI", "cli")
+        expect(device(client: "nuphos-ios"), "Cerin for iOS", "no version")
     }
 
     private static func neverShowsClientOrUserAgentText() {
         // The version is the client's claim, so none of it is shown.
-        expect(device(client: "nuphos-desktop/1.verify-at.evil-phish.com"), "Nuphos Desktop", "phish version")
-        expect(device(client: "nuphos-ios/1.0\nVisit evil.example"), "Nuphos for iOS", "newline version")
-        let unknown = ["nuphos-tv/1.0", "Nuphos-ios/1.0", "nuphos-ios 1.0", "/nuphos-ios", "evil.example/nuphos-ios", ""]
+        expect(device(client: "nuphos-desktop/1.verify-at.evil-phish.com"), "Cerin Desktop", "phish version")
+        expect(device(client: "nuphos-ios/1.0\nVisit evil.example"), "Cerin for iOS", "newline version")
+        let unknown = ["nuphos-tv/1.0", "Cerin-ios/1.0", "nuphos-ios 1.0", "/nuphos-ios", "evil.example/nuphos-ios", ""]
         for client in unknown {
             expect(device(client: client), "Unknown device", "client \(client.debugDescription)")
         }
@@ -56,8 +56,8 @@ enum SignInSessionsTests {
         expect(device(userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) Version/18.0 Mobile/15E148 Safari/604.1"), "Safari on iOS", "safari ios")
         expect(device(userAgent: "Mozilla/5.0 (X11; Linux x86_64)"), "A browser on Linux", "system only")
         expect(device(userAgent: "Something Firefox/1"), "Firefox", "browser only")
-        expect(device(userAgent: "node"), "Web sign-in (nuphos.ai)", "node")
-        expect(device(userAgent: "Undici/6"), "Web sign-in (nuphos.ai)", "undici")
+        expect(device(userAgent: "node"), "Web sign-in (platform.cerin.ai)", "node")
+        expect(device(userAgent: "Undici/6"), "Web sign-in (platform.cerin.ai)", "undici")
         // A client was sent, so it is not the website's server.
         expect(device(client: "bad", userAgent: "node"), "Unknown device", "node with client")
         expect(device(userAgent: "nodejs-thing"), "Unknown device", "node prefix")

@@ -27,7 +27,7 @@ final class DesktopSession {
     /// The remote screen in pixels.
     private(set) var screenSize = CGSize.zero
     private(set) var controlling = false
-    /// The computer can show one window fitted to the canvas (a Mac's Nuphos host), not only its whole screen.
+    /// The computer can show one window fitted to the canvas (a Mac's Cerin host), not only its whole screen.
     private(set) var canFitWindow = false
     /// One window fitted to the canvas, as in Sill, rather than the whole screen; where `canFitWindow`.
     var showsWindow = true { didSet { if showsWindow != oldValue { sendFit() } } }
@@ -48,7 +48,7 @@ final class DesktopSession {
     @ObservationIgnored private(set) var lastFrame: CGImage?
     @ObservationIgnored private(set) var lastCursor: RFBCursor?
     @ObservationIgnored var onFrame: ((CGImage) -> Void)?
-    /// Decoded-on-arrival video from a Mac's Nuphos host, for the canvas's display layer.
+    /// Decoded-on-arrival video from a Mac's Cerin host, for the canvas's display layer.
     @ObservationIgnored var onVideo: ((CMSampleBuffer) -> Void)?
     @ObservationIgnored private let video = VideoState()
     @ObservationIgnored var onCursor: ((RFBCursor) -> Void)?
@@ -445,7 +445,7 @@ final class DesktopSession {
         let json = try? JSONDecoder().decode(JSONValue.self, from: data)
         if (200..<300).contains(status), let display = json?["display"]?.numberValue { return Int(display) }
         if status == 401 { throw NuphosAPI.Failure.unauthorized }
-        if status == 404 { throw OpenFailure(message: "This task's computer can't show a desktop. Update Nuphos on it, or check that it is online.") }
+        if status == 404 { throw OpenFailure(message: "This task's computer can't show a desktop. Update Cerin on it, or check that it is online.") }
         throw OpenFailure(message: json?["error"]?["message"]?.stringValue ?? "The desktop could not be opened (\(status)).")
     }
 }

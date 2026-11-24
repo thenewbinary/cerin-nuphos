@@ -18,7 +18,7 @@ struct CredentialPickerSheet: View {
             Group {
                 if let catalog {
                     if catalog.isEmpty {
-                        ContentUnavailableView(scope == .devices ? "No computers connected" : "No credentials connected", systemImage: symbol, description: Text(scope == .devices ? "Connect a computer to your team in Nuphos to use it here." : "Connect cloud accounts and integrations in Nuphos to use them here."))
+                        ContentUnavailableView(scope == .devices ? "No computers connected" : "No credentials connected", systemImage: symbol, description: Text(scope == .devices ? "Connect a computer to your team in Cerin to use it here." : "Connect cloud accounts and integrations in Cerin to use them here."))
                     } else {
                         List {
                             ForEach(catalog.sections, id: \.provider.id) { section in

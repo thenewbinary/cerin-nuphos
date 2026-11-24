@@ -74,7 +74,7 @@ export type InternalChatCtx = {
   // Architecture diagram the desktop's current tab has open (X-Atlas-Diagram-Id).
   // When present, the agent gets the arch_* editing tools scoped to this diagram.
   diagramId: string | undefined
-  // Whether this turn originated from an interactive in-app session (the Nuphos
+  // Whether this turn originated from an interactive in-app session (the Cerin
   // web/desktop UI) vs. an automated trigger or external channel (cron, Slack,
   // Discord). The plan-gating rubric keys on this instead of having the model
   // infer the origin — external turns must never emit a plan card.

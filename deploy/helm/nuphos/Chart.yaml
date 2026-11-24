@@ -1,6 +1,6 @@
 apiVersion: v2
 name: nuphos
-description: Self-hosted Nuphos backend with MongoDB, RustFS and an optional Claude Code runtime.
+description: Self-hosted Cerin backend with MongoDB, RustFS and an optional Claude Code runtime.
 type: application
 version: 0.3.41
 appVersion: '0.145.6'

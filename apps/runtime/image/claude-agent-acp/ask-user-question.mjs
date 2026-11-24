@@ -1,5 +1,5 @@
 // OpenAB renders no form elicitations, so the adapter would disable
-// AskUserQuestion. Keep the tool where the session can ask through Nuphos, and
+// AskUserQuestion. Keep the tool where the session can ask through Cerin, and
 // ask there instead; see native-question.mjs, which is inlined beside this patch.
 function replaceOnce(source, anchor, replacement) {
   if (source.split(anchor).length !== 2)

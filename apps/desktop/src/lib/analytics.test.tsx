@@ -107,7 +107,7 @@ test('usage analytics stays off a self-hosted backend, and clicks carry no text 
   assert.equal(posthog.__loaded, false)
   assert.deepEqual(requests, [])
 
-  // The backend becomes Nuphos Cloud: analytics starts.
+  // The backend becomes Cerin Cloud: analytics starts.
   usage = true
   changed(true)
   posthog.on('eventCaptured', (event: { event: string }) => events.push(event))

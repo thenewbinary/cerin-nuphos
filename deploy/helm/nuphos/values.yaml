@@ -1,7 +1,7 @@
 # Public HTTPS URLs. Desktop, iOS and the runtime reach the backend and storage
 # through them, and presigned file URLs name the storage host.
 backend:
-  url: '' # required, e.g. https://api.nuphos.example.com
+  url: '' # required, e.g. https://api.cerin.example.com
   image:
     repository: ghcr.io/nuphos/backend
     tag: '' # defaults to v{{ .Chart.AppVersion }}
@@ -22,7 +22,7 @@ backend:
 # `kubectl exec deploy/<release>-backend -- nuphos-admin sign-in-code --email <email>`.
 email:
   resendApiKey: '' # RESEND_API_KEY, or put it in secrets.existingSecret
-  from: '' # a sender on a verified domain, e.g. Nuphos <noreply@example.com>
+  from: '' # a sender on a verified domain, e.g. Cerin <noreply@example.com>
 
 # Optional. With both set, sign-in offers "Continue with Google". The Google
 # OAuth client (type Web application) must allow the redirect URI
@@ -72,7 +72,7 @@ mongo:
   affinity: {}
 
 storage:
-  url: '' # required, e.g. https://storage.nuphos.example.com
+  url: '' # required, e.g. https://storage.cerin.example.com
   accessKey: nuphos
   image:
     repository: rustfs/rustfs
@@ -93,7 +93,7 @@ runtime:
   # The runtime executes agent code. Its pod mounts no backend secret and no
   # service account token, and a NetworkPolicy keeps it away from MongoDB.
   enabled: true
-  url: '' # required when enabled, e.g. https://runtime.nuphos.example.com
+  url: '' # required when enabled, e.g. https://runtime.cerin.example.com
   image:
     repository: ghcr.io/nuphos/runtime
     tag: 0.1.66-claude-code

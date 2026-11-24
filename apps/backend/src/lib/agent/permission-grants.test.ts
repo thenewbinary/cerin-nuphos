@@ -123,7 +123,7 @@ describe('proposalDecisions', () => {
       changes: [
         {
           action: 'create-custom',
-          grantLabel: 'Nuphos uploads reader',
+          grantLabel: 'Cerin uploads reader',
           targetServiceAccountEmail: 'op@proj-1.iam.gserviceaccount.com',
           customRoleId: 'nuphos_uploads_reader',
           permissions: ['storage.objects.get', 'storage.objects.list'],
@@ -149,9 +149,9 @@ describe('proposalDecisions', () => {
       changes: [
         {
           action: 'create-custom',
-          grantLabel: 'Nuphos storage reader',
+          grantLabel: 'Cerin storage reader',
           targetClientId: 'client-1',
-          customRoleName: 'Nuphos storage reader',
+          customRoleName: 'Cerin storage reader',
           actions: ['Microsoft.Storage/storageAccounts/read'],
           dataActions: ['Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read'],
         },
@@ -161,7 +161,7 @@ describe('proposalDecisions', () => {
 
     expect(rows[0]).toEqual({
       label: 'Create role',
-      value: 'Nuphos storage reader — grant to app client-1',
+      value: 'Cerin storage reader — grant to app client-1',
     })
     expect(rows[1]).toEqual({ label: 'Actions', value: 'Microsoft.Storage/storageAccounts/read' })
     expect(rows[2]).toEqual({

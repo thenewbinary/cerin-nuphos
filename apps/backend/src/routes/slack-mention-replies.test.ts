@@ -251,7 +251,7 @@ function threadReplyEnvelope(text: string, threadTs = '100.1') {
   }
 }
 
-// Nuphos answers a thread reply only when it is mentioned. In a notification
+// Cerin answers a thread reply only when it is mentioned. In a notification
 // thread the mention arrives here as a plain message event; in a thread the
 // bot's own mention started, it arrives as app_mention (threadMentionEnvelope).
 function mentionReplyEnvelope(text: string, threadTs = '100.1') {
@@ -579,7 +579,7 @@ describe('a thread forked off a proactive post', () => {
       notificationContext: REPORT,
       // Only the seed, which carries the root's own ts: the agent has not
       // spoken in this thread yet.
-      recentMessages: [{ ts: '100.1', authorName: 'Nuphos', text: REPORT, fromBot: true }],
+      recentMessages: [{ ts: '100.1', authorName: 'Cerin', text: REPORT, fromBot: true }],
     })
 
     await handleThreadMessage(mentionReplyEnvelope('why is it half the bill?'))
@@ -595,10 +595,10 @@ describe('a thread forked off a proactive post', () => {
       sessionId: 'slack-mention-fork-session-1',
       notificationContext: REPORT,
       recentMessages: [
-        { ts: '100.1', authorName: 'Nuphos', text: REPORT, fromBot: true },
+        { ts: '100.1', authorName: 'Cerin', text: REPORT, fromBot: true },
         { ts: '100.2', authorName: 'Someone', text: 'why is it half the bill?' },
         // The agent answered: the report is in the transcript from here on.
-        { ts: '100.3', authorName: 'Nuphos', text: 'Because the bundles…', fromBot: true },
+        { ts: '100.3', authorName: 'Cerin', text: 'Because the bundles…', fromBot: true },
       ],
     })
 
@@ -617,7 +617,7 @@ describe('a mention in a thread the agent already follows', () => {
     state.thread = makeThread({
       recentMessages: [
         { ts: '100.1', authorName: 'Yuan', text: 'how many boxes are running?' },
-        { ts: '100.2', authorName: 'Nuphos', text: '8 boxes are running', fromBot: true },
+        { ts: '100.2', authorName: 'Cerin', text: '8 boxes are running', fromBot: true },
         { ts: '100.3', authorName: 'Tony', text: 'the oldest one is mine' },
         { ts: '100.4', authorName: 'Devin', text: 'mine is the 8c16g one' },
         { ts: '100.5', authorName: 'Yuan', text: 'can you see what Tony and Devin said?' },

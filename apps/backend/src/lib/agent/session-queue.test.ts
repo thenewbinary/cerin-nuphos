@@ -335,7 +335,7 @@ test("a sender who left the conversation's team is not spoken for, and the send 
   expect(await waiting()).toEqual([])
   expect(kept).toHaveLength(1)
   expect(kept[0]?.sessionId).toBe(SESSION)
-  // The reason is Nuphos's own message, never the agent's reply.
+  // The reason is Cerin's own message, never the agent's reply.
   expect(kept[0]?.messages.map((message) => message.role)).toEqual(['user', 'user'])
   expect(kept[0]?.messages[1]?.metadata).toMatchObject({
     source: 'agent.resource',

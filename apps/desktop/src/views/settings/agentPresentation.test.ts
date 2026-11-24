@@ -225,14 +225,14 @@ test("a person's own default agent is removable only while its CLI is signed out
   const computer = local('mac-codex', 'mac', false)
   const box = { ...signedIn, local: { ...signedIn.local!, box: { state: 'running' } } }
 
-  // Its computer's report lists a signed-in CLI whatever Nuphos forgets (#2846).
+  // Its computer's report lists a signed-in CLI whatever Cerin forgets (#2846).
   assert.equal(ownSignedInCli(signedIn), true)
   assert.equal(localRemovalId(signedIn), undefined)
   assert.equal(
     localRemovalId({ ...signedIn, local: { ...signedIn.local!, online: false } }),
     undefined,
   )
-  // Online or not: a signed-out default Nuphos forgets stays hidden until it signs in again.
+  // Online or not: a signed-out default Cerin forgets stays hidden until it signs in again.
   assert.equal(ownSignedInCli(computer), false)
   assert.equal(localRemovalId(computer), 'codex')
   assert.equal(

@@ -20,7 +20,7 @@ object SseClient {
     sealed class Failure : Exception() {
         /** [body] is the message to show; [rawBody] is the response, which carries the error code. */
         data class BadStatus(val code: Int, val body: String?, val rawBody: String? = null) : Failure() {
-            override val message = body ?: "Nuphos returned status $code."
+            override val message = body ?: "Cerin returned status $code."
         }
         data class NotEventStream(val type: String?) : Failure() {
             override val message = "Expected an event stream, got ${type ?: "nothing"}."
@@ -32,7 +32,7 @@ object SseClient {
         }
         data object FirstByteTimeout : Failure() {
             private fun readResolve(): Any = FirstByteTimeout
-            override val message = "Nuphos did not start responding in time."
+            override val message = "Cerin did not start responding in time."
         }
         data object IdleTimeout : Failure() {
             private fun readResolve(): Any = IdleTimeout

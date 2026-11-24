@@ -1,4 +1,4 @@
-// Opening Nuphos when the user signs in to the OS, so a computer's local
+// Opening Cerin when the user signs in to the OS, so a computer's local
 // runtime comes back after a restart without anyone opening the app by hand.
 // It opens as it would by hand, with its windows: the renderer is what reads
 // the stored sign-in, and the local runtime follows that sign-in.

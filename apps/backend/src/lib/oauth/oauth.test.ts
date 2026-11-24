@@ -163,7 +163,7 @@ describe('access token', () => {
     expect(verifyAccessToken(tampered, resource, base)).toBeNull()
   })
 
-  test('a raw Nuphos-style token is not accepted as an MCP token', async () => {
+  test('a raw Cerin-style token is not accepted as an MCP token', async () => {
     const { verifyAccessToken } = await import('./tokens')
 
     // Missing the `from: 'mcp'` claim / wrong signature → rejected.

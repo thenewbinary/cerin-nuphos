@@ -14,8 +14,8 @@ const { apiUrl, setApiUrl, deviceRegistrationAllowed, isNuphosCloud } =
   await import('./api-endpoint.ts')
 const { authSession } = await import('./auth-session.ts')
 
-test('resetting the endpoint returns to the launch-time one, not Nuphos Cloud', () => {
-  assert.equal(setApiUrl('https://nuphos.example.com/path'), 'https://nuphos.example.com')
+test('resetting the endpoint returns to the launch-time one, not Cerin Cloud', () => {
+  assert.equal(setApiUrl('https://cerin.example.com/path'), 'https://cerin.example.com')
   assert.equal(setApiUrl(null), 'http://127.0.0.1:3718')
   assert.equal(apiUrl(), 'http://127.0.0.1:3718')
   assert.equal(process.env.NUPHOS_API_URL, 'http://127.0.0.1:3718')
@@ -24,10 +24,10 @@ test('resetting the endpoint returns to the launch-time one, not Nuphos Cloud', 
 
 test('dev devices stay off Cloud, including normalized hostnames and alternate ports', () => {
   for (const url of [
-    'https://api.nuphos.ai',
-    'https://API.NUPHOS.AI/',
-    'https://api.nuphos.ai.:443/path',
-    'http://api.nuphos.ai:8080',
+    'https://platform.cerin.ai',
+    'https://PLATFORM.CERIN.AI/',
+    'https://platform.cerin.ai.:443/path',
+    'http://platform.cerin.ai:8080',
   ]) {
     setApiUrl(url)
     assert.equal(deviceRegistrationAllowed(true), false, url)
@@ -46,20 +46,20 @@ test('endpoint changes notify runtime listeners after the new endpoint takes eff
   const allowed: boolean[] = []
   const unsubscribe = authSession.subscribe(() => allowed.push(deviceRegistrationAllowed(true)))
 
-  setApiUrl('https://api.nuphos.ai')
-  setApiUrl('https://api.nuphos.ai/')
+  setApiUrl('https://platform.cerin.ai')
+  setApiUrl('https://platform.cerin.ai/')
   setApiUrl(null)
   assert.deepEqual(allowed, [false, true])
   unsubscribe()
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   assert.deepEqual(allowed, [false, true])
   setApiUrl(null)
 })
 
-test('the Cerin backend is not Nuphos Cloud, so Nuphos updates and usage data stay off', () => {
+test('the Cerin backend is not Cerin Cloud, so Cerin updates and usage data stay off', () => {
   setApiUrl('https://platform.cerin.ai')
   assert.equal(isNuphosCloud(), false)
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   assert.equal(isNuphosCloud(), true)
   setApiUrl(null)
 })

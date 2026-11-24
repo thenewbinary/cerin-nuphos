@@ -1,6 +1,6 @@
 import Foundation
 
-/// A conversation's dock, mirrored from the owner's Nuphos Desktop: every tab (a web page, a
+/// A conversation's dock, mirrored from the owner's Cerin Desktop: every tab (a web page, a
 /// terminal, Files…), the one in front, and the Mac's New Tab history.
 struct DockState: Decodable, Equatable, Sendable {
     var tabs: [DockTab]

@@ -45,7 +45,7 @@ class SessionMentionFixtureDeviceTest {
     }
     @After fun cleanup() { if (::store.isInitialized) store.disposeForConsent() }
 
-    private fun field() = compose.onNodeWithContentDescription("Ask Nuphos anything")
+    private fun field() = compose.onNodeWithContentDescription("Ask Cerin anything")
     private fun snap(name: String) {
         compose.waitForIdle()
         // Idle is the semantics tree; the window may still show the frame before it.

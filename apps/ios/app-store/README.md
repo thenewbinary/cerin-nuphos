@@ -6,7 +6,7 @@ compares their names, order and checksums before submitting the version for revi
 
 ## Approved iPhone set — October 20, 2026
 
-The approved light-appearance set uses the new Nuphos hero artwork, larger descriptions,
+The approved light-appearance set uses the new Cerin hero artwork, larger descriptions,
 no top wordmark or eyebrow label, and a complete phone frame for the agent picker.
 All four images are 1320 × 2868, opaque RGB PNGs. The existing iPad set remains unchanged.
 
@@ -38,7 +38,7 @@ the approved iPhone set ("Your team. In your pocket."), and lives under
 `https://cdn.zeabur.com/nuphos/app-store/ios/en-US/ipad-2026-11-11/`. Its layout and app content
 are unchanged.
 
-`hero.mjs` captures the background from the shader hero that nuphos.ai had in October. The site
+`hero.mjs` captures the background from the shader hero that platform.cerin.ai had in October. The site
 no longer has it, so `setup.sh` stops at that step. For the November 11 image the background
 frame came from a local run of the October website; put such a frame at
 `build/hero-ipad-<n>.png` and run the remaining `setup.sh` steps by hand.

@@ -41,7 +41,7 @@ export type BindingStatus = 'active' | 'pending' | 'revoked' | 'unknown'
 type Fetch = typeof fetch
 
 /** Accepts what a runtime console hands out (http(s) or ws(s), with or without `/acp`)
- *  and returns the ACP URL Nuphos stores and dials. */
+ *  and returns the ACP URL Cerin stores and dials. */
 export function normalizePairingRuntimeUrl(value: string): string | null {
   let url: URL
 

@@ -169,7 +169,7 @@ export function createCliAuthRoutes(quota: Quota = redisQuota) {
     }),
   )
 
-  // The owner setting one of their agent tokens' avatar (nuphos.ai/settings/tokens).
+  // The owner setting one of their agent tokens' avatar (platform.cerin.ai/settings/tokens).
   // Agent tokens are refused here by `cliTokenDenied`.
   routes.put('/cli-tokens/:id/avatar', requireAuth, avatarBodyLimit, async (c) =>
     c.json({

@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 
 class ConversationActionsTest {
     @Test fun shareEscapesSegmentsAndRejectsEmptyIdentity() {
-        assertEquals("https://nuphos.ai/teams/a%2Fb/agent/s%20%3F%23", ConversationActions.shareUrl("a/b", "s ?#"))
+        assertEquals("https://platform.cerin.ai/teams/a%2Fb/agent/s%20%3F%23", ConversationActions.shareUrl("a/b", "s ?#"))
         assertNull(ConversationActions.shareUrl("", "s"))
     }
     @Test fun titleRequiresTrimmedNonemptyBoundedValue() {

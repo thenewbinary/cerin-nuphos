@@ -97,7 +97,7 @@ export async function handleDiscordMention(
     ) {
       await recordDiscordSessionMessage(registeredThread, event, senderName)
     }
-    // Nuphos answers only when mentioned; other thread messages are kept as
+    // Cerin answers only when mentioned; other thread messages are kept as
     // session context above.
     if (!mentioned) {
       await markDiscordEvent(event.id, 'ignored')

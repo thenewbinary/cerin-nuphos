@@ -34,7 +34,7 @@ function downloadHandoffRateLimitSecret(): string | undefined {
 export function platformConfig() {
   return {
     downloadHandoff: {
-      // Shared only with the nuphos.ai server. It authenticates the landing
+      // Shared only with the platform.cerin.ai server. It authenticates the landing
       // page's requests to the cross-replica email-handoff rate limiter.
       rateLimitSecret: downloadHandoffRateLimitSecret(),
     },

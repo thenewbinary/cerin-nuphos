@@ -59,7 +59,7 @@ async function runPanel(
   }
 }
 
-describe('panel runner Nuphos client', () => {
+describe('panel runner Cerin client', () => {
   test('allows GET requests scoped to the dashboard team', async () => {
     authorizationHeaders = []
     const result = await runPanel(`

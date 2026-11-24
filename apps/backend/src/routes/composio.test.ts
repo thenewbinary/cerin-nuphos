@@ -24,7 +24,7 @@ import type { EncryptedSecret } from '@/lib/byos/secrets'
 import type { AuthVariables } from '@/middleware/auth'
 import type { Context, Next } from 'hono'
 
-// Gmail and Google Drive through Nuphos's Composio project, for teams without
+// Gmail and Google Drive through Cerin's Composio project, for teams without
 // their own Google OAuth client. Composio's API is mocked: no key is used.
 useTokenRevocation({ isTokenRevoked: async () => false, inheritRevocation: async () => false })
 

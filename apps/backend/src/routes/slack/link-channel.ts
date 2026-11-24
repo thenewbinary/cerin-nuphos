@@ -67,7 +67,7 @@ export async function handleLinkChannelInteraction(args: {
 
   // Channel mappings are team-level config: mirror the REST route's gate
   // (PUT /slack/mappings → requireTeamAdmin). A user mapping only proves the
-  // actor linked their account — require the mapped Nuphos user to still be a
+  // actor linked their account — require the mapped Cerin user to still be a
   // team ADMINISTRATOR before persisting. The install-welcome DM flow keeps
   // working: /slack-installations/start-oauth already requires ADMINISTRATOR,
   // and the installer is auto-linked to that requester.

@@ -83,7 +83,7 @@ fun ProfileSheet(user: NuphosUser, workspaceName: String? = null, onWorkspace: (
             onEdit = { edit = true },
             onDevices = { devices = true },
             onTwoFactor = { twoFactor = true },
-            onPrivacy = { uri.openUri("https://nuphos.ai/privacy") },
+            onPrivacy = { uri.openUri("https://platform.cerin.ai/privacy") },
             onWithdraw = { withdraw = true },
             onDeletion = { deletion = true },
             onSignOut = { confirm = true },

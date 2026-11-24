@@ -241,7 +241,7 @@ test('a runtime reports its sign-in without carrying the credential', () => {
 
   read(`${JSON.stringify({ type: 'authenticated' })}\n`)
   expect(frames).toEqual([{ type: 'authenticated' }])
-  // Accepting a credential here would let the runtime decide that Nuphos stores a copy.
+  // Accepting a credential here would let the runtime decide that Cerin stores a copy.
   expect(() => read(`${JSON.stringify({ type: 'authenticated', authJson: 'leaked' })}\n`)).toThrow(
     'Invalid login response',
   )

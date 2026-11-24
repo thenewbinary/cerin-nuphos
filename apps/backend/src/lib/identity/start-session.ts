@@ -8,7 +8,7 @@ import { signInSource } from '@/lib/request-origin'
 import type { NuphosUser } from '@/lib/identity/types'
 import type { Context } from 'hono'
 
-// Every sign-in starts its session here. `viaWebsite`: nuphos.ai's server made
+// Every sign-in starts its session here. `viaWebsite`: platform.cerin.ai's server made
 // the call, so the address seen is the website's, not the visitor's.
 export async function startSession(c: Context, user: NuphosUser, viaWebsite = false) {
   // With two-factor authentication on, the first factor earns only a

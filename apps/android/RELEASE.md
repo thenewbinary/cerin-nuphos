@@ -77,7 +77,7 @@ and background notification delivery/navigation.
    `android-release` Environment job. Signing uses only the immutable unsigned
    artifact ID from the same successful run. It performs no source checkout.
 5. Download `android-signed-<run_id>-<attempt>` from that run within 14 days.
-   It contains `Nuphos-Android-<version_name>-<version_code>.aab`,
+   It contains `Cerin-Android-<version_name>-<version_code>.aab`,
    `SHA256SUMS.txt` and `metadata.json`. The metadata records the source commit,
    run and attempt, actual package/versions/SDK values, unsigned and signed
    SHA-256 checksums, and upload-certificate fingerprint.

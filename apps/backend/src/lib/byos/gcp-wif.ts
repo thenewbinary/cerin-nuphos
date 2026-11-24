@@ -8,7 +8,7 @@ import { awsOidcSubjectForTeam, isAwsOidcConfigured, mintNuphosOidcToken } from 
 /**
  * GCP workload identity federation for the BYOS connector.
  *
- * Unlike the other clouds, the pool and provider live in *Nuphos's* GCP project:
+ * Unlike the other clouds, the pool and provider live in *Cerin's* GCP project:
  * an IAM policy may name a principal from any project, so the customer builds no
  * pool — they just grant Token Creator to the principal below, as they always did.
  *
@@ -17,7 +17,7 @@ import { awsOidcSubjectForTeam, isAwsOidcConfigured, mintNuphosOidcToken } from 
  * lives in IAM, as the AWS role trust policy does.
  *
  * Two hops, both owned by `IdentityPoolClient`: mint a per-team RS256 token from
- * the shared Nuphos issuer, trade it at STS, then impersonate the customer's
+ * the shared Cerin issuer, trade it at STS, then impersonate the customer's
  * account — re-minting through the supplier as tokens expire.
  */
 
@@ -27,7 +27,7 @@ const SUBJECT_TOKEN_TYPE = 'urn:ietf:params:oauth:token-type:jwt'
 export const GCP_WIF_SCOPES = ['https://www.googleapis.com/auth/cloud-platform']
 
 /**
- * Whether federation is usable: both the pool coordinates and the shared Nuphos
+ * Whether federation is usable: both the pool coordinates and the shared Cerin
  * signing key must be present, since the pool is worthless without a token to
  * present to it.
  */

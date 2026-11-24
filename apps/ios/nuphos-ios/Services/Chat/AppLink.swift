@@ -1,6 +1,6 @@
 import Foundation
 
-/// A nuphos.ai page the app shows itself. Links tapped in a chat and links
+/// A platform.cerin.ai page the app shows itself. Links tapped in a chat and links
 /// that open the app both go through here, so the two agree on what opens
 /// in-app and what leaves for Safari.
 enum AppLink: Equatable {
@@ -8,8 +8,8 @@ enum AppLink: Equatable {
     case plan(PlanLink.Target)
     case conversations
 
-    /// The page `url` points at: a nuphos.ai URL, a bare path, or the
-    /// `nuphos://open?url=<page>` hand-off nuphos.ai uses to open the app.
+    /// The page `url` points at: a platform.cerin.ai URL, a bare path, or the
+    /// `cerin://open?url=<page>` hand-off platform.cerin.ai uses to open the app.
     /// Nil for pages the app has no screen for.
     init?(_ url: URL) {
         let page = Self.unwrapped(url)
@@ -24,7 +24,7 @@ enum AppLink: Equatable {
         }
     }
 
-    /// The page inside a `nuphos://open` link; any other URL as it is. The
+    /// The page inside a `cerin://open` link; any other URL as it is. The
     /// page still has to pass the exact-origin checks of the targets above.
     private static func unwrapped(_ url: URL) -> URL {
         guard url.scheme == "nuphos", url.host() == "open",

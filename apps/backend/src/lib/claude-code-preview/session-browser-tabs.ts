@@ -1,5 +1,5 @@
 // A conversation's dock browser tabs, for its owner on another screen (the
-// iPhone app). The tabs live only in the Nuphos Desktop that opened them, so
+// iPhone app). The tabs live only in the Cerin Desktop that opened them, so
 // each request is one `local_browser` call down the owner's device tunnel,
 // resolved and audited exactly as the agent's own calls are. Only `dock` and
 // `focus` go down as calls: a phone lists the tabs and brings one forward on
@@ -122,7 +122,7 @@ async function call(
 }
 
 /**
- * The conversation's dock, in its owner's Nuphos Desktop. An older Desktop
+ * The conversation's dock, in its owner's Cerin Desktop. An older Desktop
  * answers with only its browser tabs, as a list; that reads as a dock of them.
  */
 export async function sessionDock(

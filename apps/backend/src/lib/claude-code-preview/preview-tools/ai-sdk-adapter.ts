@@ -116,7 +116,7 @@ function adaptExecute(
 }
 
 /**
- * Runs a Nuphos tool whose card is the runtime's own ACP call, the one the
+ * Runs a Cerin tool whose card is the runtime's own ACP call, the one the
  * transcript stores, so a live turn and a reload show the same single card.
  */
 export async function presentedByRuntime(

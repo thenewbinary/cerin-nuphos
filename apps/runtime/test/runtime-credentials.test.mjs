@@ -27,7 +27,7 @@ const http = (name, value) => ({
   headers: [{ name: 'Authorization', value }],
 })
 
-test('bearer-only Nuphos MCP servers are bridged only when credential files exist', () => {
+test('bearer-only Cerin MCP servers are bridged only when credential files exist', () => {
   const servers = [
     http('nuphos-tools', 'Bearer spawn'),
     http('other', 'Basic x'),

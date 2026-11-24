@@ -178,7 +178,7 @@ function createComponents(
 
         if (custom != null) return <>{custom}</>
       }
-      // Mention links above are matched on an explicit `https://nuphos.ai/`, so
+      // Mention links above are matched on an explicit `https://platform.cerin.ai/`, so
       // they are never mistaken for a GFM-synthesized one.
       if (link && isSynthesizedAutolink(link, extractText(children))) {
         return <>{children}</>

@@ -31,7 +31,7 @@ internal fun ServerSettings(origin: String, onSave: (String) -> Unit, onDismiss:
             Column {
                 Text(stringResource(R.string.shell_server_body))
                 OutlinedTextField(address, onValueChange = { address = it; error = null },
-                    label = { Text(stringResource(R.string.shell_server_address)) }, placeholder = { Text("https://nuphos.example.com") },
+                    label = { Text(stringResource(R.string.shell_server_address)) }, placeholder = { Text("https://cerin.example.com") },
                     singleLine = true, isError = error != null,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                     modifier = Modifier.fillMaxWidth())

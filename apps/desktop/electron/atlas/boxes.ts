@@ -177,7 +177,7 @@ export function deleteBox(
   return call('DELETE', box(deviceId, '', teamId), undefined, { retry: false })
 }
 
-/** Restarts the caller's other computer into the Nuphos Desktop update it downloaded. */
+/** Restarts the caller's other computer into the Cerin Desktop update it downloaded. */
 export function updateDeviceApp(deviceId: string, teamId: string): Promise<{ version: string }> {
   return call(
     'POST',

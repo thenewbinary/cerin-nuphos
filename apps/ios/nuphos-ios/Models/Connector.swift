@@ -42,11 +42,11 @@ struct Connector: Identifiable, Hashable, Sendable {
     enum Bind: Hashable, Sendable {
         /// `POST /teams/:id/<path>/start-oauth` → `{ authorizeUrl }`, finished
         /// in `ASWebAuthenticationSession` when the backend's callback page
-        /// redirects to `nuphos://<callbackHost>`. The host is checked on the
+        /// redirects to `cerin://<callbackHost>`. The host is checked on the
         /// way back, so another provider's redirect can't satisfy this flow.
         case oauth(path: String, callbackHost: String)
         /// `GET /teams/:id/github-installations/install-url` → `{ url }`, then
-        /// the same browser session, coming back on `nuphos://github-callback`.
+        /// the same browser session, coming back on `cerin://github-callback`.
         case githubApp
         /// `POST /teams/:id/<path>` with the filled fields as the body.
         case form(path: String, fields: [Field])
@@ -86,9 +86,9 @@ extension Connector {
             key: "aws", title: "AWS", logo: "logo-aws", category: .infrastructure,
             bind: .form(
                 path: "aws-accounts",
-                fields: [.init(key: "roleArn", title: "Role ARN", placeholder: "arn:aws:iam::123456789012:role/Nuphos")]
+                fields: [.init(key: "roleArn", title: "Role ARN", placeholder: "arn:aws:iam::123456789012:role/Cerin")]
             ),
-            note: "The role must already trust the Nuphos connector — Nuphos assumes it before saving the binding.",
+            note: "The role must already trust the Cerin connector — Cerin assumes it before saving the binding.",
             labelKeys: ["alias", "accountId"], detailKeys: ["roleArn"]
         ),
         .init(key: "gcp", title: "Google Cloud / Firebase", logo: "logo-gcp", category: .infrastructure, bind: .desktopOnly,

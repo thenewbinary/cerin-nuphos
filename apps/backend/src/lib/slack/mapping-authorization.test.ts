@@ -111,7 +111,7 @@ describe('channel mapping creation authorization', () => {
       assertChannelMappingCreationAllowed(input, {
         ...dependencies,
         assertBotInChannel: async () => {
-          throw new AppError(400, 'slack_not_in_channel', 'Nuphos is not in that Slack channel')
+          throw new AppError(400, 'slack_not_in_channel', 'Cerin is not in that Slack channel')
         },
       }),
     ).rejects.toMatchObject({ code: 'slack_not_in_channel' } satisfies Partial<AppError>)

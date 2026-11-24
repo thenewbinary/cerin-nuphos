@@ -22,7 +22,7 @@ export function nuphosSessionHomeEnv(sessionEnv = {}, runtimeEnv = process.env) 
   if (typeof id !== 'string' || !id.trim()) {
     if (sessionEnv.NUPHOS_TOKEN || sessionEnv.NUPHOS_TEAM_ID)
       throw new Error('Cerin sessions require NUPHOS_SESSION_ID for CLI configuration isolation')
-    return {} // Ordinary ACP clients without a Nuphos conversation keep their defaults.
+    return {} // Ordinary ACP clients without a Cerin conversation keep their defaults.
   }
   const runtimeHome = runtimeEnv.HOME || runtimeEnv.USERPROFILE || nuphosHostHome()
   const root = nuphosJoin(runtimeHome, '.nuphos', 'session-homes')

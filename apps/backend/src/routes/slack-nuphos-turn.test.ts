@@ -1,4 +1,4 @@
-// The Slack delivery for a turn typed in the Nuphos app on a Slack-bound
+// The Slack delivery for a turn typed in the Cerin app on a Slack-bound
 // conversation: interop message ordering, sender-name resolution, fail-open
 // when the workspace bot is gone, and the finalize sequence (notices, thread
 // transcript record, status clear, pause visibility).
@@ -169,7 +169,7 @@ describe('beginNuphosSlackTurn', () => {
 
     // The name fetch is an external HTTP call — the interop (which waits on
     // it) shows the Slack name, while the prompt-facing sender resolves
-    // immediately from the Nuphos name.
+    // immediately from the Cerin name.
     await delivery.frameSink.say('ack')
     expect(JSON.stringify(posted[0]!.blocks)).toContain('@patrick.slack')
     expect(delivery.slackReply.nuphosOriginated).toBe(true)

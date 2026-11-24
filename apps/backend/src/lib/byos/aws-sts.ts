@@ -78,7 +78,7 @@ async function resolveOidcTeamForRole(roleArn: string): Promise<string | null> {
 }
 
 /**
- * sts:AssumeRoleWithWebIdentity with a Nuphos-issued token for this team.
+ * sts:AssumeRoleWithWebIdentity with a Cerin-issued token for this team.
  * The call is unsigned — AWS authenticates the token against our JWKS — so
  * no client credentials are involved.
  */

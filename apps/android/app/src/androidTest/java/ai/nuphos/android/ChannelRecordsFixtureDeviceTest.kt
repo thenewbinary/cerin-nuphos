@@ -32,7 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Synthetic chat only: the records Nuphos leaves in a chat show as muted lines. Never touches a live API. */
+/** Synthetic chat only: the records Cerin leaves in a chat show as muted lines. Never touches a live API. */
 @RunWith(AndroidJUnit4::class)
 class ChannelRecordsFixtureDeviceTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
@@ -53,9 +53,9 @@ class ChannelRecordsFixtureDeviceTest {
     private val messages = listOf(
         post("p1", "user", "user-ann", "Ann", 1, "Kickoff notes are in the doc."),
         post("p2", "user", "user-bruce", "Bruce", 2, "Ship today?"),
-        post("r1", "system", "nuphos:decision", "Nuphos", 3, "Ann answered: Ship today? → Ship it"),
-        post("r2", "system", "nuphos", "Nuphos", 4, "Release Helper finished a turn."),
-        post("r3", "system", "nuphos:chat", "Nuphos", 5, "Ann left. Bruce now owns this chat."),
+        post("r1", "system", "nuphos:decision", "Cerin", 3, "Ann answered: Ship today? → Ship it"),
+        post("r2", "system", "nuphos", "Cerin", 4, "Release Helper finished a turn."),
+        post("r3", "system", "nuphos:chat", "Cerin", 5, "Ann left. Bruce now owns this chat."),
     ).joinToString(",")
 
     @Before fun before() {

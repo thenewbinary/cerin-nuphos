@@ -240,7 +240,7 @@ channelRoutes.post('/conversations/:sessionId/channel-messages', async (c) => {
     createMessageMetadata(
       userId,
       'nuphos',
-      c.req.header('X-Nuphos-Device-Id')?.trim() || undefined,
+      c.req.header('X-Cerin-Device-Id')?.trim() || undefined,
     ),
     resolveMentions(teamId, body.mentions, userId),
   ])

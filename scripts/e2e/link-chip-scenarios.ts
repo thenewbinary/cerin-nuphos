@@ -21,7 +21,7 @@ export const linkChipScenarios: Scenario[] = [
       await newTask(page)
       await send(
         page,
-        `Ask https://nuphos.ai/teams/${stack.teamId}/agent/${bot.sessionId} E2E_DELIVERY:chip`,
+        `Ask https://platform.cerin.ai/teams/${stack.teamId}/agent/${bot.sessionId} E2E_DELIVERY:chip`,
       )
       await page.getByText('ACK E2E_DELIVERY:chip').waitFor()
       const chip = page.locator('.user-message-bubble .atlas-mention').last()

@@ -34,7 +34,7 @@ export function sessionDevice(session: Pick<SignInSession, 'client' | 'userAgent
   if (Object.hasOwn(APPS, app)) return APPS[app]!
   const ua = session.userAgent ?? ''
 
-  // The nuphos.ai web sign-in reaches the backend from the website's server.
+  // The platform.cerin.ai web sign-in reaches the backend from the website's server.
   if (!session.client && /^(node|undici)\b/i.test(ua)) return t('Web sign-in (platform.cerin.ai)')
   const browser = BROWSERS.find(([re]) => re.test(ua))?.[1]
   const system = SYSTEMS.find(([re]) => re.test(ua))?.[1]

@@ -40,7 +40,7 @@ class VoiceInput(private val services: VoiceServices, private val scope: Corouti
     fun permissionResult(granted: Boolean) {
         if (phase != Phase.Permission) return
         if (!access.current()) { cancel(); return }
-        if (!granted) { cancel(); error = "Allow microphone access for Nuphos in Android Settings to use voice input."; return }
+        if (!granted) { cancel(); error = "Allow microphone access for Cerin in Android Settings to use voice input."; return }
         try {
             val recording = services.newTake()
             take = recording

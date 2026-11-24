@@ -45,7 +45,7 @@ class NativeLogin internal constructor(
         })
         val registered = result["handle"]?.jsonPrimitive?.takeIf { it.isString }?.content
             ?.takeIf { it.matches(Regex("[A-Za-z0-9_-]{43}")) }
-            ?: throw IOException("Nuphos could not start secure sign-in. Please try again.")
+            ?: throw IOException("Cerin could not start secure sign-in. Please try again.")
         checkOpen()
         handle = registered
         return NuphosWeb.loginUrl(registered, provider, origin)
@@ -79,7 +79,7 @@ class NativeLogin internal constructor(
                 checkOpen()
                 if (!claimed.compareAndSet(false, true)) throw IOException("Sign-in already completed.")
                 // Mark delivery before responding: resuming the app must not cancel redemption.
-                respond(socket, 200, "<p>Return to Nuphos to finish sign-in.</p><a href=\"nuphos://google-callback\">Return to Nuphos</a>")
+                respond(socket, 200, "<p>Return to Cerin to finish sign-in.</p><a href=\"cerin://google-callback\">Return to Cerin</a>")
                 server.close()
                 if (result is NuphosWeb.CallbackResult.Failure) throw IOException(result.message)
                 return (result as NuphosWeb.CallbackResult.Code).code
@@ -104,7 +104,7 @@ class NativeLogin internal constructor(
         })
         checkOpen()
         return redeemed["token"]?.jsonPrimitive?.takeIf { it.isString }?.content
-            ?.takeIf { it.isNotBlank() } ?: throw IOException("Nuphos could not confirm sign-in. Please try again.")
+            ?.takeIf { it.isNotBlank() } ?: throw IOException("Cerin could not confirm sign-in. Please try again.")
     }
 
     private fun post(path: String, body: JsonObject): JsonObject {

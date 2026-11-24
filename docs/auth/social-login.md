@@ -9,7 +9,7 @@ system browser, so the same provider flow works on desktop (macOS, Windows,
 Linux), iOS, Android and CLI. The native apps register
 `POST /auth/native/session` with an S256 challenge and open the chooser with the
 returned opaque `handle`. Desktop, Android and CLI retain their loopback listener;
-iOS uses the exact `nuphos://google-callback` URI with ASWebAuthenticationSession.
+iOS uses the exact `cerin://google-callback` URI with ASWebAuthenticationSession.
 Only a one-time delivery code and the original client state reach the callback.
 The process that registered the attempt redeems the code with its in-memory
 verifier. Session tokens never appear in native callback URLs.
@@ -21,7 +21,7 @@ current browser user, never the session token. This does not change the separate
 website must integrate this endpoint before its own UI can offer Apple login.
 No cross-origin redirects or arbitrary return URLs are accepted.
 
-The chooser's `X-Nuphos-Social-Providers` header lists the configured providers
+The chooser's `X-Cerin-Social-Providers` header lists the configured providers
 (for example `google,apple`). The desktop reads it before registration, shows a
 "Continue with Google" button and, only when Apple is listed, a "Continue with
 Apple" button, and opens `/auth/social/<provider>/start?handle=...` directly.

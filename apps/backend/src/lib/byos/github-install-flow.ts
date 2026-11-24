@@ -22,7 +22,7 @@ const TTL_MS = 10 * 60 * 1000
 export type InstallFlowState = {
   /** Team the installation is bound to. */
   t: string
-  /** Nuphos user who started the flow. */
+  /** Cerin user who started the flow. */
   u: string
   /** The client's own correlation state, handed back unchanged. */
   s?: string

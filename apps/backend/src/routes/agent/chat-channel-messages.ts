@@ -20,8 +20,8 @@ function nuphosLinksInSlack(teamId: string | undefined): string[] {
   ]
 }
 
-// A turn typed in the Nuphos app on a Slack-bound conversation: the answer
-// streams to the Nuphos UI natively AND is mirrored into the thread, so the
+// A turn typed in the Cerin app on a Slack-bound conversation: the answer
+// streams to the Cerin UI natively AND is mirrored into the thread, so the
 // guidance balances both audiences instead of assuming Slack-only readers.
 function buildNuphosMirroredSlackMessage(
   slackReply: SlackReplyToolContext,

@@ -29,7 +29,7 @@ const detail: NuphosDashboardDetail = {
   dashboard: {
     id: 'd1',
     teamId: 't1',
-    name: 'Nuphos',
+    name: 'Cerin',
     layout: [],
     timeRange: {
       periodStart: '2026-10-21T00:00:00.000Z',

@@ -17,7 +17,7 @@ export const CLIENT_TOOL_INSTRUCTION =
 export const DECISION_WAIT_MS = 90_000
 
 const UNANSWERED_INSTRUCTION: Record<PreviewWaitKind, string> = {
-  // A client tool is not a decision: Nuphos Desktop runs it without asking, so
+  // A client tool is not a decision: Cerin Desktop runs it without asking, so
   // "nobody decided" would describe a permission prompt that does not exist.
   'client-tool':
     'Cerin Desktop never picked this call up, so the tool did not run and ' +

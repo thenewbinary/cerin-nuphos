@@ -27,7 +27,7 @@ import type { ImageAttachmentPart, LocalFilePart, TextPart, TransferUploadPart }
 import type { ReactNode } from 'react'
 
 // Pull plan references out of message text. The composer serializes a plan
-// mention chip back to its Nuphos URL (`…/teams/T/plans/<n>`), so a sent
+// mention chip back to its Cerin URL (`…/teams/T/plans/<n>`), so a sent
 // message carries the URL as plain text; parse those out so we can render the
 // referenced plan inline. Deduped by planId, first-seen order preserved.
 const PLAN_MENTION_TRAILING_PUNCT = new Set(['.', ',', ';', ':', '!', '?', ']', ')', '>', '}'])

@@ -16,7 +16,7 @@ Optional top-level `requirements` describe dependencies only:
 [{"provider":"github","required":true,"reason":"Read repository issues"}]
 ```
 
-No authenticated connection IDs, runtime/model bindings, or extra fields are accepted. Requirements are returned in the preview manifest and recorded in the Bot's `botTemplate` attribution for later guided setup. This stage does not resolve connection eligibility or claim the Bot is ready. Package provenance, catalog origin allowlisting, connection resolution, setup cards and public-page handoff are subsequent work. An uploaded source label is attribution, not verification that the bundle came from Nuphos.
+No authenticated connection IDs, runtime/model bindings, or extra fields are accepted. Requirements are returned in the preview manifest and recorded in the Bot's `botTemplate` attribution for later guided setup. This stage does not resolve connection eligibility or claim the Bot is ready. Package provenance, catalog origin allowlisting, connection resolution, setup cards and public-page handoff are subsequent work. An uploaded source label is attribution, not verification that the bundle came from Cerin.
 
 Preview stages bytes and does not create a Bot. Apply persists template ID/version/requirements on the owned Bot and always creates template schedules disabled, even when both the apply selection and the source routine request activation. Existing authorization, destination checks and archive limits remain in force. Unsupported schedules are reported through the existing warnings.
 

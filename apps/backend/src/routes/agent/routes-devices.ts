@@ -209,7 +209,7 @@ export function createAgentDeviceRoutes(deps: AgentDeviceRouteDependencies = def
     },
   )
 
-  // Forgets a computer, online or not, credential and agents with it; opening Nuphos there again
+  // Forgets a computer, online or not, credential and agents with it; opening Cerin there again
   // registers it again. A Box has its own delete.
   routes.delete(
     '/devices/:deviceId',

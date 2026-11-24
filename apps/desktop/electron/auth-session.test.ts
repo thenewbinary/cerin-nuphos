@@ -87,6 +87,6 @@ test('the launch backend applies only before the session is used, without failin
   assert.equal(session.context().api, 'http://127.0.0.1:3718')
   assert.equal(session.context().epoch, 0)
   session.set('tok-a', 'a')
-  assert.doesNotThrow(() => session.start('https://api.nuphos.ai'))
+  assert.doesNotThrow(() => session.start('https://platform.cerin.ai'))
   assert.equal(session.context().api, 'http://127.0.0.1:3718')
 })

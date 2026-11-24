@@ -926,7 +926,7 @@ class ChatSession(
             ) {
                 parts[pi] = t.copy(
                     state = ChatPart.Tool.State.OutputAvailable,
-                    output = JsonValue.obj("ok" to JsonValue.Bool(false), "error" to JsonValue.Str("Local tools are not available in the Nuphos Android app.")),
+                    output = JsonValue.obj("ok" to JsonValue.Bool(false), "error" to JsonValue.Str("Local tools are not available in the Cerin Android app.")),
                     completedAt = Instant.now().toEpochMilli().toDouble(),
                 )
                 bounced = true

@@ -10,7 +10,7 @@ const options: AgentCredentialOptions = {
       roleId: 'role-1',
       accountId: '123456789012',
       accountAlias: 'production',
-      roleArn: 'arn:aws:iam::123456789012:role/Nuphos',
+      roleArn: 'arn:aws:iam::123456789012:role/Cerin',
     },
   ],
   gcpServiceAccounts: [],

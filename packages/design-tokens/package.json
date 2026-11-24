@@ -2,7 +2,7 @@
   "name": "@nuphos/design-tokens",
   "private": true,
   "version": "0.0.0",
-  "description": "Semantic design tokens shared by every Nuphos surface.",
+  "description": "Semantic design tokens shared by every Cerin surface.",
   "type": "module",
   "exports": {
     ".": "./src/tokens.mjs",

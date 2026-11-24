@@ -57,7 +57,7 @@ test('a channel wake names the newest post in one line that opens the channel at
           null,
           createElement(AgentEventMessage, {
             metadata,
-            text: 'New messages in a Nuphos channel (channelId ops).',
+            text: 'New messages in a Cerin channel (channelId ops).',
             teamId: 'team',
             onOpenNuphosLink: (href) => opened.push(href) > 0,
           }),

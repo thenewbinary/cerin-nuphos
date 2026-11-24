@@ -4,7 +4,7 @@
 
 <!-- reporting-channel:start -->
 
-If you believe you have found a security vulnerability in Nuphos — including the
+If you believe you have found a security vulnerability in Cerin — including the
 backend API, the desktop app, the agent sandbox, the agent runtimes, or any
 connected integration — report it through **[GitHub's private vulnerability
 reporting](https://github.com/nuphos/nuphos/security/advisories/new)**: the Security
@@ -41,7 +41,7 @@ In scope:
 
 Out of scope:
 
-- Findings against hosted Nuphos services that are not reproducible from this repository's source. Report those through the Nuphos platform security process instead.
+- Findings against hosted Cerin services that are not reproducible from this repository's source. Report those through the Cerin platform security process instead.
 - Vulnerabilities that require a pre-compromised host, a malicious package the user installed deliberately, or social-engineering of the user.
 - Missing security headers, rate limits, or other best-practice gaps without a concrete exploit path.
 

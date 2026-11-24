@@ -189,7 +189,7 @@ jobs:
           ''')
                   subprocess.run(['java', str(verifier), str(signed), fingerprint], check=True, capture_output=True, timeout=120)
                   output.mkdir(mode=0o700)
-                  filename = f'Nuphos-Android-{name}-{code}.aab'
+                  filename = f'Cerin-Android-{name}-{code}.aab'
                   shutil.copyfile(signed, output / filename)
                   metadata.update(signed=True, upload_certificate_sha256=fingerprint,
                                   signed_sha256=hashlib.sha256(signed.read_bytes()).hexdigest())
@@ -230,7 +230,7 @@ jobs:
           upload=https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/ai.nuphos.android
           play() { curl --fail-with-body -sS -H "Authorization: Bearer $TOKEN" "$@" | tee /dev/stderr; } # Log Google's response, including error details
           edit=$(play -X POST "$api/edits" | jq -r .id)
-          play -X POST -H 'Content-Type: application/octet-stream' --data-binary @"$RUNNER_TEMP/android-signed/Nuphos-Android-$VERSION_NAME-$VERSION_CODE.aab" \
+          play -X POST -H 'Content-Type: application/octet-stream' --data-binary @"$RUNNER_TEMP/android-signed/Cerin-Android-$VERSION_NAME-$VERSION_CODE.aab" \
             "$upload/edits/$edit/bundles?uploadType=media" > /dev/null
           play -X POST -H 'Content-Type: application/octet-stream' --data-binary @"$RUNNER_TEMP/android-unsigned/mapping.txt" \
             "$upload/edits/$edit/apks/$VERSION_CODE/deobfuscationFiles/proguard?uploadType=media" > /dev/null

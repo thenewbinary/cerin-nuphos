@@ -5,7 +5,7 @@ import { truncatePlain } from '@/routes/slack/shared'
 
 // Slack rejects text elements past ~3000 chars; stay under it so the quote
 // block never trips invalid_blocks on its own. The full message lives in the
-// Nuphos transcript, which the truncation note points at.
+// Cerin transcript, which the truncation note points at.
 const INTEROP_QUOTE_MAX = 2900
 
 type NuphosInteropArgs = {
@@ -14,7 +14,7 @@ type NuphosInteropArgs = {
   attachmentCount?: number
 }
 
-// The "@Name says:" line + quoted question a Nuphos-typed turn posts into the
+// The "@Name says:" line + quoted question a Cerin-typed turn posts into the
 // bound Slack thread before the agent's mirrored reply. rich_text is used
 // because rich_text_quote is Slack's native quote rendering and its text
 // elements are literal — user-typed content needs no mrkdwn escaping.
@@ -77,7 +77,7 @@ function interopFallbackText(args: NuphosInteropArgs): string {
 /**
  * Post the interop message into the bound thread. Never throws: Slack delivery
  * is best-effort by contract (see lib/slack/stream-sink.ts) — a failed mirror
- * must not fail the Nuphos turn, so failures are logged and swallowed.
+ * must not fail the Cerin turn, so failures are logged and swallowed.
  */
 export async function postNuphosInteropMessage(
   args: NuphosInteropArgs & { token: string; channel: string; threadTs: string },

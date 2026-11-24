@@ -1,6 +1,6 @@
-# Nuphos iOS
+# Cerin iOS
 
-SwiftUI client for api.nuphos.ai. Open `nuphos-ios.xcodeproj` in Xcode 26.2 or later.
+SwiftUI client for platform.cerin.ai. Open `nuphos-ios.xcodeproj` in Xcode 26.2 or later.
 
 ## Run on a simulator
 
@@ -115,7 +115,7 @@ xcodebuild -exportArchive -archivePath build/nuphos.xcarchive -exportOptionsPlis
 
 ## Product analytics
 
-Release builds using the default Nuphos Cloud endpoint send curated events to
+Release builds using the default Cerin Cloud endpoint send curated events to
 PostHog project 439957, using the same backend user ID as Desktop. Debug builds
 (including preview fixtures), signed-out sessions and self-hosted endpoints do
 not capture events. PostHog Swift is pinned to 3.89.1. Automatic screen/tap

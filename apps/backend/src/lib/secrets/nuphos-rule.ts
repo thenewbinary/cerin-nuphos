@@ -1,4 +1,4 @@
-// A secretlint rule for what the recommended preset does not cover: Nuphos
+// A secretlint rule for what the recommended preset does not cover: Cerin
 // tokens, the loose key shapes we redact even when the preset's checksum or
 // parse validation would let a fake-looking one through, and (in contextual
 // mode) assignments, auth headers, CLI flags and the high-entropy sweep.
@@ -57,7 +57,7 @@ const TOKEN_SHAPES: Shape[] = [
     kind: 'jwt',
     pattern: /(?<=-)eyJ[A-Za-z0-9_-]{8,512}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{4,}\b/dg,
   },
-  // Nuphos sign-in sessions (nus_) and CLI tokens (nup_).
+  // Cerin sign-in sessions (nus_) and CLI tokens (nup_).
   { kind: 'nuphos-token', pattern: /\bnu[ps]_[A-Za-z0-9_-]{20,}/dg },
   { kind: 'github-token', pattern: /\bgh[pousr]_[A-Za-z0-9]{20,}\b/dg },
   { kind: 'slack-token', pattern: /\bxox[baprs]-[A-Za-z0-9-]{10,}\b/dg },

@@ -176,7 +176,7 @@ internal data class DesktopTiming(val handshakeMillis: Long=10_000,val frameMill
 private class DesktopStalled : IOException()
 private fun desktopNow()=System.nanoTime()/1_000_000
 
-/** The backend's own reason, such as a Mac that has not allowed Accessibility for Nuphos. */
+/** The backend's own reason, such as a Mac that has not allowed Accessibility for Cerin. */
 internal fun desktopRefusal(response: Response): String=
     runCatching { Json.parseToJsonElement(response.peekBody(4096).string()).jsonObject["error"]?.jsonObject?.get("message")?.jsonPrimitive?.contentOrNull }.getOrNull()
         ?.takeIf { it.isNotBlank() } ?: "Desktop is not available to this account."

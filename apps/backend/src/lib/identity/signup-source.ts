@@ -7,8 +7,8 @@ import { setPersonOnce } from '@/lib/posthog'
 import type { NuphosUser } from '@/lib/identity/types'
 
 /**
- * nuphos.ai writes this cookie on `.nuphos.ai` at a browser's first visit, so
- * api.nuphos.ai sees it on any sign-in the same browser reaches. The website
+ * platform.cerin.ai writes this cookie on `.platform.cerin.ai` at a browser's first visit, so
+ * platform.cerin.ai sees it on any sign-in the same browser reaches. The website
  * repository writes it (src/lib/analytics/firstTouchCookie.ts); keep the name
  * and fields in step.
  */

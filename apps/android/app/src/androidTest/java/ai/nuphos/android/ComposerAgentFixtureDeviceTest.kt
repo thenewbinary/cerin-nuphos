@@ -49,11 +49,11 @@ class ComposerAgentFixtureDeviceTest {
     @Test fun aRuntimeTurnsDraftSendsInTheCornerWithStopOnItsLeft() {
         var stops = 0
         render { ChatComposer(isStreaming = false, onSend = { true }, onStop = { stops++ }, stopsRuntimeTurn = true) }
-        assertStopSteppedLeft("Send", "Ask Nuphos anything") { stops }
+        assertStopSteppedLeft("Send", "Ask Cerin anything") { stops }
     }
     @Test fun aRunningTurnDoesNotOfferToQueueWhileDraftingIsDisabled() {
         render { ChatComposer(isStreaming = true, onSend = { true }, draftingEnabled = false) }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
         compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
         compose.onNodeWithContentDescription("Queue a message").assertDoesNotExist()
         compose.onNodeWithContentDescription("Queue message").assertDoesNotExist()
@@ -77,7 +77,7 @@ class ComposerAgentFixtureDeviceTest {
         ))
         render { ChatComposer(isStreaming = false, onSend = { true }, showControls = true,
             agent = selection, onChooseAgent = { }) }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performClick()
+        compose.onNodeWithContentDescription("Ask Cerin anything").performClick()
         compose.waitForIdle()
         val send = compose.onNodeWithContentDescription("Send").fetchSemanticsNode().boundsInRoot
         fun assertSendStayed() = assertEquals(send, compose.onNodeWithContentDescription("Send").fetchSemanticsNode().boundsInRoot)
@@ -115,7 +115,7 @@ class ComposerAgentFixtureDeviceTest {
             compose.onNodeWithContentDescription("Send").assertIsDisplayed()
             val chip = compose.onNodeWithText(label).fetchSemanticsNode().boundsInRoot
             val send = compose.onNodeWithContentDescription("Send").fetchSemanticsNode().boundsInRoot
-            val input = compose.onNodeWithContentDescription("Ask Nuphos anything").fetchSemanticsNode().boundsInRoot
+            val input = compose.onNodeWithContentDescription("Ask Cerin anything").fetchSemanticsNode().boundsInRoot
             assertTrue("Runtime control belongs above the input", chip.bottom <= input.top)
             assertTrue("Send remains below the runtime control", send.top >= chip.bottom)
         }
@@ -123,17 +123,17 @@ class ComposerAgentFixtureDeviceTest {
         compose.onNodeWithContentDescription("Photos").assertDoesNotExist()
         compose.onNodeWithContentDescription("Send").assertIsDisplayed()
         compose.onNodeWithContentDescription("Voice input").assertIsDisplayed()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performClick()
+        compose.onNodeWithContentDescription("Ask Cerin anything").performClick()
         compose.onNodeWithContentDescription("Photos").assertIsDisplayed()
         compose.onNodeWithContentDescription("Files").assertIsDisplayed()
         compose.onNodeWithContentDescription("Paste").assertIsDisplayed()
         checkRow()
         val send = compose.onNodeWithContentDescription("Send").fetchSemanticsNode().boundsInRoot
-        val composer = compose.onNodeWithContentDescription("Ask Nuphos anything").fetchSemanticsNode().boundsInRoot
+        val composer = compose.onNodeWithContentDescription("Ask Cerin anything").fetchSemanticsNode().boundsInRoot
         assertTrue("Send must remain at the right edge", send.right >= composer.right - 12f)
         compose.onNodeWithText(label).performClick()
         assertEquals(1, choices)
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("line one\nline two")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("line one\nline two")
         compose.waitForIdle()
         checkRow()
         compose.onAllNodesWithText(label).assertCountEquals(1)
@@ -144,7 +144,7 @@ class ComposerAgentFixtureDeviceTest {
         val quota = mutableStateOf<RuntimeQuota?>(RuntimeQuota("fixture-agent", true,
             windows = listOf(RuntimeQuota.Window("5h", 43.0, "2030-01-01T00:00:00Z"))))
         render { ChatComposer(isStreaming = false, onSend = { true }, showControls = true, agentLabel = "Existing Agent", agentQuota = quota.value) }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performClick()
+        compose.onNodeWithContentDescription("Ask Cerin anything").performClick()
         compose.onNodeWithText("Existing Agent").performClick()
         compose.onNodeWithText("5h: 57% left", substring = true).assertIsDisplayed()
         compose.onNodeWithText("Done").performClick()
@@ -152,7 +152,7 @@ class ComposerAgentFixtureDeviceTest {
         compose.onNodeWithText("Existing Agent").performClick()
         compose.onNodeWithText("Usage unavailable").assertIsDisplayed()
         compose.onNodeWithText("Done").performClick()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("still can send")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("still can send")
         compose.onNodeWithContentDescription("Send").assertIsEnabled()
     }
     @Test fun streamingKeepsQueueAndStopAsSeparateActions() {

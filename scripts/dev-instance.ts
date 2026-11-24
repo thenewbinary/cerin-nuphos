@@ -98,7 +98,7 @@ export async function acquireDevInstance(key: string): Promise<() => void> {
   }
 }
 
-/** Where Electron keeps the profile of `Nuphos Dev (<suffix>)`. */
+/** Where Electron keeps the profile of `Cerin Dev (<suffix>)`. */
 export function electronAppData(name: string): string {
   const base =
     process.platform === 'darwin'

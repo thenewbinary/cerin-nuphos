@@ -29,7 +29,7 @@ export type BotSelf = {
  * written by the agent itself through `update_self`, not configured by a
  * person, so they never borrow the authority of team or personal instructions.
  */
-/** Agent-written text cannot open or close a Nuphos block: `<nuphos_…` loses its `<`. */
+/** Agent-written text cannot open or close a Cerin block: `<nuphos_…` loses its `<`. */
 function inert(text: string): string {
   return text.replace(/<(\/?\s*nuphos_)/giu, '&lt;$1')
 }

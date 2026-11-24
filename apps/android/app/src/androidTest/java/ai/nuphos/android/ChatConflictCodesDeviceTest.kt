@@ -110,7 +110,7 @@ class ChatConflictCodesDeviceTest {
     @Test fun aStreamConflictRefusesAndKeepsTheDraft() =
         refusedKeepsTheDraft("stream_conflict", "Stream id belongs to another conversation", "That stream belongs to another task.")
     @Test fun anOfflineRuntimeSaysSoInTheAppsWordsAndKeepsTheDraft() {
-        refusedKeepsTheDraft("runtime_offline", "The Box is offline", "The computer running this runtime is offline. Open Nuphos on it, or switch to another runtime.")
+        refusedKeepsTheDraft("runtime_offline", "The Box is offline", "The computer running this runtime is offline. Open Cerin on it, or switch to another runtime.")
     }
     @Test fun everyBlockedRuntimeOffersSwitchRuntime() {
         for (code in listOf("runtime_login_required", "runtime_disabled", "runtime_not_found", "runtime_offline")) {

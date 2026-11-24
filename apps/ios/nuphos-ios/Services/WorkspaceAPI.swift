@@ -90,7 +90,7 @@ enum WorkspaceAPI {
             request.httpMethod = "PUT"
             request.timeoutInterval = 180
             request.setValue(files[index].type, forHTTPHeaderField: "Content-Type")
-            // Presigned storage requests never receive the Nuphos bearer token.
+            // Presigned storage requests never receive the Cerin bearer token.
             let response: URLResponse
             let tracker = UploadProgress(parent: progress, units: Int64(files[index].size))
             switch attachments[index].kind {

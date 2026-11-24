@@ -204,10 +204,10 @@ internal fun EmailLoginContent(
         Text(buildAnnotatedString {
             agreement.forEach { c ->
                 when (c) {
-                    '\u0000' -> withLink(LinkAnnotation.Clickable("terms") { uri.openUri("https://nuphos.ai/terms") }) {
+                    '\u0000' -> withLink(LinkAnnotation.Clickable("terms") { uri.openUri("https://platform.cerin.ai/terms") }) {
                         withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) { append(terms) }
                     }
-                    '\u0001' -> withLink(LinkAnnotation.Clickable("privacy") { uri.openUri("https://nuphos.ai/privacy") }) {
+                    '\u0001' -> withLink(LinkAnnotation.Clickable("privacy") { uri.openUri("https://platform.cerin.ai/privacy") }) {
                         withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) { append(privacy) }
                     }
                     else -> append(c)

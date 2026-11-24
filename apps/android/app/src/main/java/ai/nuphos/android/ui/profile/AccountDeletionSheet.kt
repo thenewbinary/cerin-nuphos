@@ -72,7 +72,7 @@ fun AccountDeletionSheet(onDismiss: () -> Unit) {
             Text(stringResource(R.string.profile_deletion_title), style = MaterialTheme.typography.headlineSmall)
             Text(stringResource(R.string.profile_deletion_body))
             Text(stringResource(R.string.profile_deletion_request_note))
-            TextButton(onClick = { uri.openUri("https://nuphos.ai/privacy") }) { Text(stringResource(R.string.profile_privacy_policy)) }
+            TextButton(onClick = { uri.openUri("https://platform.cerin.ai/privacy") }) { Text(stringResource(R.string.profile_privacy_policy)) }
             if (status != null) {
                 Text(stringResource(R.string.profile_deletion_received), style = MaterialTheme.typography.titleMedium)
                 Text(stringResource(R.string.profile_deletion_status, when (status) { "requested" -> stringResource(R.string.profile_deletion_status_requested); "in_progress" -> stringResource(R.string.profile_deletion_status_in_progress); "completed" -> stringResource(R.string.profile_deletion_status_completed); else -> stringResource(R.string.profile_deletion_status_unknown, status.orEmpty()) }))

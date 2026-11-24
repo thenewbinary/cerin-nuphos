@@ -41,7 +41,7 @@ class TwoFactorApiTest {
     @Test fun theChallengeAndACodeStartTheSession() = runTest {
         replies += 200 to """{"token":"session","user":{"id":"u1"}}"""
         assertEquals("session", AccountApi("", client()).verifyMfa("challenge", " 123456 "))
-        assertEquals("https://api.nuphos.ai/auth/mfa/verify", requests.single().url.toString())
+        assertEquals("https://platform.cerin.ai/auth/mfa/verify", requests.single().url.toString())
         assertNull(requests.single().header("Authorization"))
     }
 
@@ -65,7 +65,7 @@ class TwoFactorApiTest {
         StepUp.hosted = false
         replies += 403 to reauth
         val response = client(StepUpInterceptor()).newCall(
-            Request.Builder().url("https://api.nuphos.ai/teams/t/members/m").header("Authorization", "Bearer x").get().build(),
+            Request.Builder().url("https://platform.cerin.ai/teams/t/members/m").header("Authorization", "Bearer x").get().build(),
         ).execute()
         assertEquals(403, response.code)
         assertEquals(1, requests.size)
@@ -82,7 +82,7 @@ class TwoFactorApiTest {
             StepUp.finish(true)
         }
         val response = client(StepUpInterceptor()).newCall(
-            Request.Builder().url("https://api.nuphos.ai/teams/t/members/m").header("Authorization", "Bearer x").get().build(),
+            Request.Builder().url("https://platform.cerin.ai/teams/t/members/m").header("Authorization", "Bearer x").get().build(),
         ).execute()
         answerer.join()
         assertEquals(200, response.code)

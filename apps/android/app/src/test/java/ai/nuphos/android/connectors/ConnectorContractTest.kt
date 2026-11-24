@@ -25,10 +25,10 @@ class ConnectorContractTest {
         assertEquals(setOf("slack", "lark"), rows.map { it.provider }.toSet())
     }
     @Test fun inventoryUsesProviderDisplayFieldsWithoutRetainingCredentials() {
-        val json = JsonValue.parse("""{"aws":[{"id":"aws-id","alias":"Production","accountId":"123456789012","roleArn":"arn:aws:iam::123456789012:role/Nuphos","token":"do-not-retain"}],"gcp":[{"id":"gcp-id","label":"Old label","projectId":"synthetic-project","serviceAccountEmail":"connector@example.invalid","privateKey":"do-not-retain"}],"azure":[{"id":"azure-id","label":"Synthetic Azure","subscriptionId":"subscription"}],"github":[{"id":"github-id","label":"Old label","accountLogin":"synthetic-org","accountType":"Organization"}]}""")!!
+        val json = JsonValue.parse("""{"aws":[{"id":"aws-id","alias":"Production","accountId":"123456789012","roleArn":"arn:aws:iam::123456789012:role/Cerin","token":"do-not-retain"}],"gcp":[{"id":"gcp-id","label":"Old label","projectId":"synthetic-project","serviceAccountEmail":"connector@example.invalid","privateKey":"do-not-retain"}],"azure":[{"id":"azure-id","label":"Synthetic Azure","subscriptionId":"subscription"}],"github":[{"id":"github-id","label":"Old label","accountLogin":"synthetic-org","accountType":"Organization"}]}""")!!
         val rows = ConnectorInventory.decode(json).rows.associateBy { it.provider }
         assertEquals("Production", rows.getValue("aws").label)
-        assertEquals("arn:aws:iam::123456789012:role/Nuphos", rows.getValue("aws").detail)
+        assertEquals("arn:aws:iam::123456789012:role/Cerin", rows.getValue("aws").detail)
         assertEquals("synthetic-project", rows.getValue("gcp").label)
         assertEquals("connector@example.invalid", rows.getValue("gcp").detail)
         assertEquals("subscription", rows.getValue("azure").detail)
@@ -61,18 +61,18 @@ class ConnectorContractTest {
     }
     @Test fun callbackRequiresExactStateTeamHostExpiryAndSingleQueries() {
         val pending = ConnectorPending("team", "linear", "abc", 1000)
-        assertTrue(ConnectorCallback.validate("nuphos://linear-callback?state=abc&team_id=team&binding_id=b", pending, 999) is ConnectorReturn.OAuth)
-        listOf("https://linear-callback?state=abc", "nuphos://jira-callback?state=abc", "nuphos://linear-callback?state=abc&state=abc&team_id=team&binding_id=b", "nuphos://linear-callback?state=abc&team_id=other&binding_id=b", "nuphos://linear-callback?state=abc&team_id=team", "nuphos://linear-callback?state=abc&error=denied").forEach {
+        assertTrue(ConnectorCallback.validate("cerin://linear-callback?state=abc&team_id=team&binding_id=b", pending, 999) is ConnectorReturn.OAuth)
+        listOf("https://linear-callback?state=abc", "cerin://jira-callback?state=abc", "cerin://linear-callback?state=abc&state=abc&team_id=team&binding_id=b", "cerin://linear-callback?state=abc&team_id=other&binding_id=b", "cerin://linear-callback?state=abc&team_id=team", "cerin://linear-callback?state=abc&error=denied").forEach {
             assertTrue(it, ConnectorCallback.validate(it, pending, 999) is ConnectorReturn.Invalid)
         }
-        assertTrue(ConnectorCallback.validate("nuphos://linear-callback?state=abc&team_id=team&binding_id=b", pending, 1000) is ConnectorReturn.Invalid)
+        assertTrue(ConnectorCallback.validate("cerin://linear-callback?state=abc&team_id=team&binding_id=b", pending, 1000) is ConnectorReturn.Invalid)
     }
     @Test fun githubRejectsUnicodeNonpositiveAndUnexpectedActions() {
         val pending = ConnectorPending("team", "github", "abc", 1000)
-        assertEquals(42L, (ConnectorCallback.validate("nuphos://github-callback?state=abc&installation_id=42&setup_action=update", pending, 0) as ConnectorReturn.Github).installationId)
+        assertEquals(42L, (ConnectorCallback.validate("cerin://github-callback?state=abc&installation_id=42&setup_action=update", pending, 0) as ConnectorReturn.Github).installationId)
         listOf("0", "-1", "４２", "9007199254740992").forEach { id ->
-            assertTrue(ConnectorCallback.validate("nuphos://github-callback?state=abc&installation_id=$id", pending, 0) is ConnectorReturn.Invalid)
+            assertTrue(ConnectorCallback.validate("cerin://github-callback?state=abc&installation_id=$id", pending, 0) is ConnectorReturn.Invalid)
         }
-        assertTrue(ConnectorCallback.validate("nuphos://github-callback?state=abc&installation_id=42&setup_action=delete", pending, 0) is ConnectorReturn.Invalid)
+        assertTrue(ConnectorCallback.validate("cerin://github-callback?state=abc&installation_id=42&setup_action=delete", pending, 0) is ConnectorReturn.Invalid)
     }
 }

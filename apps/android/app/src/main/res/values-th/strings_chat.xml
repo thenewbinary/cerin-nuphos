@@ -43,7 +43,7 @@
     <string name="chat_triggers_refresh">รีเฟรช</string>
     <string name="chat_image_preparing">กำลังเตรียมรูปภาพ…</string>
     <string name="chat_image_share">แชร์รูปภาพ</string>
-    <string name="chat_image_saved">บันทึกไปที่ Pictures/Nuphos แล้ว</string>
+    <string name="chat_image_saved">บันทึกไปที่ Pictures/Cerin แล้ว</string>
     <string name="chat_image_export_failed">ไม่สามารถส่งออกรูปภาพได้ รูปภาพอาจหมดอายุแล้ว โปรดลองอีกครั้ง</string>
     <string name="chat_image_save">บันทึกรูปภาพ</string>
     <string name="chat_plan_loading">กำลังโหลดแผน…</string>

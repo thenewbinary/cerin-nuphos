@@ -29,7 +29,7 @@ export type SkillSnapshot = LocalSkillSnapshot & {
 /**
  * The skills of `folders`, each name once: from the first folder that has it.
  * A later folder's copy is not synced, and is reported rather than dropped
- * unseen, so the member knows which copy is in Nuphos.
+ * unseen, so the member knows which copy is in Cerin.
  */
 export async function skillsOfFolders(folders: readonly string[]) {
   const listed = await Promise.all(folders.map((folder) => listSkillsIn(folder, 'folder')))

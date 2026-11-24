@@ -97,7 +97,7 @@ test('automatic messages keep routing and control instructions in model metadata
   for (const value of [
     {
       ...metadata,
-      sender: { type: 'agent', id: 'source', displayName: 'Nuphos agent' },
+      sender: { type: 'agent', id: 'source', displayName: 'Cerin agent' },
       source: 'agent.thread',
       sourceSessionId: 'source',
     },
@@ -129,7 +129,7 @@ test('history restores automatic metadata and body from the server, never the cl
   const trusted = {
     ...metadata,
     source: 'agent.thread',
-    sender: { type: 'agent', id: 'source', displayName: 'Nuphos agent' },
+    sender: { type: 'agent', id: 'source', displayName: 'Cerin agent' },
     sourceSessionId: 'source',
   }
   const messages = [
@@ -245,8 +245,8 @@ test("a Trigger fire reads as its owner's instruction, not a GitHub event", () =
   expect(instructions).not.toContain('GitHub')
 })
 
-test('a Nuphos notice with no resource keeps its attribution and is not a GitHub event', () => {
-  const parsed = parseMessageMetadata(systemSender('nuphos:plans', 'Nuphos'))
+test('a Cerin notice with no resource keeps its attribution and is not a GitHub event', () => {
+  const parsed = parseMessageMetadata(systemSender('nuphos:plans', 'Cerin'))
   const json = renderAttributedMessage('wake', 'Plan #3 was approved.', parsed).split('\n')[1]!
   const envelope = JSON.parse(json) as { sender: { type: string }; instructions: string }
 

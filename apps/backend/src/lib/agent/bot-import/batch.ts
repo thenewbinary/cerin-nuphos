@@ -133,7 +133,7 @@ export type ImportOperations = {
   ): Promise<string[]>
 }
 
-/** Only orchestration lives here; adapters call the existing Nuphos services. */
+/** Only orchestration lives here; adapters call the existing Cerin services. */
 export async function applyImportBatch(
   batch: ImportBatch,
   owner: ImportOwner,

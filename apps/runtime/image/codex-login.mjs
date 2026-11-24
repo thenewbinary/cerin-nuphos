@@ -4,7 +4,7 @@
 //
 // With `--install` the credential is written into this container's real `CODEX_HOME`
 // and the final frame carries no credential at all. That is the right shape for a
-// runtime Nuphos did not provision: the credential is minted inside the container and
+// runtime Cerin did not provision: the credential is minted inside the container and
 // nothing outside it needs a copy. Without the flag the credential rides the frame,
 // which is what the Kubernetes exec path still needs in order to store it in a Secret.
 import { spawn } from 'node:child_process'

@@ -25,7 +25,7 @@
     <string name="convtext_delivery_unconfirmed">メッセージが届いたか確認できません。元の接続を再開してください。</string>
     <string name="convtext_task_reloaded">このタスクは別の場所で変更され、再読み込みされました。メッセージを再送信してください。</string>
     <string name="convtext_connection_quiet">接続の応答が途絶え続けました。もう一度お試しください。</string>
-    <string name="convtext_connection_lost">Nuphos との接続が切れました。</string>
+    <string name="convtext_connection_lost">Cerin との接続が切れました。</string>
     <string name="convtext_agent_error">エージェントでエラーが発生しました。</string>
     <string name="convtext_phase_waiting_runtime">ランタイムの準備を待っています…</string>
     <string name="convtext_phase_reconnecting">再接続中…</string>
@@ -55,14 +55,14 @@
     <string name="convtext_conflict_not_resumable">前の応答は再開できなくなりました。</string>
     <string name="convtext_conflict_stream">そのストリームは別のタスクのものです。</string>
     <string name="convtext_conflict_busy">このタスクは別の応答を処理中です。</string>
-    <string name="convtext_runtime_signed_out">このランタイムはサインアウトしています。実行しているコンピューターの Nuphos からサインインするか、別のランタイムに切り替えてください。</string>
+    <string name="convtext_runtime_signed_out">このランタイムはサインアウトしています。実行しているコンピューターの Cerin からサインインするか、別のランタイムに切り替えてください。</string>
     <string name="convtext_runtime_disabled">このタスクのランタイムは無効になっています。続けるには別のランタイムに切り替えてください。</string>
     <string name="convtext_runtime_not_found">このランタイムはこのワークスペースで利用できなくなりました。続けるには別のランタイムに切り替えてください。</string>
-    <string name="convtext_runtime_offline">このランタイムを実行しているコンピューターはオフラインです。そのコンピューターで Nuphos を開くか、別のランタイムに切り替えてください。</string>
+    <string name="convtext_runtime_offline">このランタイムを実行しているコンピューターはオフラインです。そのコンピューターで Cerin を開くか、別のランタイムに切り替えてください。</string>
     <string name="convtext_runtime_paused">%1$s は一時停止中です。送信すると再開します。</string>
     <string name="convtext_ask_owner">所有者に依頼</string>
     <string name="convtext_ask_admin">管理者に依頼</string>
-    <string name="convtext_server_status">Nuphos からステータス %1$d が返されました。</string>
+    <string name="convtext_server_status">Cerin からステータス %1$d が返されました。</string>
     <string name="convtext_attachments_count">添付ファイルは 1〜%1$d 個選択してください。</string>
     <string name="convtext_attachment_name_length">添付ファイル名は 1〜512 文字にしてください。</string>
     <string name="convtext_attachment_size">%1$s は 1〜%2$d バイトである必要があります。</string>

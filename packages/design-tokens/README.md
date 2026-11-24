@@ -1,6 +1,6 @@
 # @nuphos/design-tokens
 
-Semantic design tokens for every Nuphos surface. Tokens are named for what they
+Semantic design tokens for every Cerin surface. Tokens are named for what they
 do (`surface.sheet`, `status.attention`), never for how they look, so a palette
 change never means renaming code.
 

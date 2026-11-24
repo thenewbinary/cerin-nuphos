@@ -1,6 +1,6 @@
 //! Pairing: an application trades a short-lived, single-use code for its own binding.
 //!
-//! The runtime console mints a code; the application (the Nuphos backend) presents it to
+//! The runtime console mints a code; the application (the Cerin backend) presents it to
 //! `POST /_openab/pairing/exchange` and receives a pending binding's transport and control
 //! keys. `GET /_openab/bindings/self` and `POST /_openab/bindings/self/revoke` let the
 //! holder of a binding's keys check or end it.
@@ -162,7 +162,7 @@ pub fn client_ip(headers: &HeaderMap) -> String {
         .unwrap_or_else(|| "direct".into())
 }
 
-/// The agent this runtime runs, as Nuphos names it, from the image's adapter stamp.
+/// The agent this runtime runs, as Cerin names it, from the image's adapter stamp.
 pub fn provider() -> Option<&'static str> {
     let stamp = std::env::var("OPENAB_ADAPTER_VERSION").ok()?;
     if stamp.starts_with("claude-agent-acp") {
@@ -229,7 +229,7 @@ fn binding_label(client: &BindingClient) -> String {
         .team_name
         .clone()
         .or(host)
-        .unwrap_or_else(|| "Nuphos".into())
+        .unwrap_or_else(|| "Cerin".into())
 }
 
 async fn exchange(
@@ -349,13 +349,13 @@ mod tests {
             binding_label(&origin("api.nuphos.example:8443/x")),
             "api.nuphos.example:8443"
         );
-        assert_eq!(binding_label(&origin("")), "Nuphos");
+        assert_eq!(binding_label(&origin("")), "Cerin");
         let named = BindingClient {
             team_name: Some("Acme".into()),
             ..origin("https://api.nuphos.example")
         };
         assert_eq!(binding_label(&named), "Acme");
-        assert_eq!(binding_label(&BindingClient::default()), "Nuphos");
+        assert_eq!(binding_label(&BindingClient::default()), "Cerin");
     }
 
     #[test]

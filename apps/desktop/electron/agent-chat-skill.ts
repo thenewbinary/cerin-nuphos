@@ -21,7 +21,7 @@ export type * from './agent-chat-skill/types.ts'
 const LEGACY_SKILL_NAME = 'nuphos-agent-chat'
 // Removed skills Desktop may have installed earlier. get-short-lived-creds-from-nuphos
 // read the full session token, which now lives in the OS credential store, so it could
-// no longer work; agents that need credentials run in a Nuphos runtime instead (#1039).
+// no longer work; agents that need credentials run in a Cerin runtime instead (#1039).
 const RETIRED_SKILL_IDS = ['get-short-lived-creds-from-nuphos']
 const TARGET_LABELS: Record<AgentChatSkillTarget, string> = {
   claude: 'Claude Code',

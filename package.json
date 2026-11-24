@@ -2,7 +2,7 @@
   "name": "nuphos",
   "private": true,
   "version": "0.0.0",
-  "description": "Nuphos monorepo — `bun run dev` boots backend + desktop with a live dashboard.",
+  "description": "Cerin monorepo — `bun run dev` boots backend + desktop with a live dashboard.",
   "scripts": {
     "dev": "bun scripts/dev.ts",
     "e2e": "bun scripts/e2e/run.ts",

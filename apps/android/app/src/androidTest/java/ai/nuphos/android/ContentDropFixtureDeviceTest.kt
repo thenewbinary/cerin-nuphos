@@ -61,8 +61,8 @@ class ContentDropFixtureDeviceTest {
                 }
             } }
         }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performClick()
-        val field = compose.onNodeWithContentDescription("Ask Nuphos anything").fetchSemanticsNode().boundsInRoot
+        compose.onNodeWithContentDescription("Ask Cerin anything").performClick()
+        val field = compose.onNodeWithContentDescription("Ask Cerin anything").fetchSemanticsNode().boundsInRoot
         val start = IntArray(2)
         val root = IntArray(2)
         var width = 0

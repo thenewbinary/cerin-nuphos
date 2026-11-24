@@ -87,7 +87,7 @@ function kindOf(message: { ruleId: string }): string {
 
 // secretlint drops duplicate messages by comparing every pair, so one lint of
 // a large input full of findings is quadratic and blocks the event loop. The
-// Nuphos rule, whose matches have no length bound, therefore scans the whole
+// Cerin rule, whose matches have no length bound, therefore scans the whole
 // text in one linear pass outside lintSource. The preset matches bounded token
 // shapes, so for it large inputs are linted in chunks of about 32 KB, cut at a newline when one
 // is near and mid-line otherwise (compact JSON has none); a PEM block is never
@@ -225,7 +225,7 @@ export async function redactSecrets(text: string): Promise<RedactionResult> {
 
 /**
  * `redactSecrets` without the secretlint preset, for a caller that cannot
- * await: every structured log line. The Nuphos rule is one linear pass and
+ * await: every structured log line. The Cerin rule is one linear pass and
  * already covers the key shapes, assignments, auth headers and entropy sweep.
  */
 export function redactSecretsSync(text: string): string {

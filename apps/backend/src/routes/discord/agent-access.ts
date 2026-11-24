@@ -4,7 +4,7 @@ import { AppError } from '@/lib/errors'
 
 import type { DiscordChannel } from '@/lib/discord/api'
 
-// An agent reaches only the channels an administrator enabled for Nuphos and
+// An agent reaches only the channels an administrator enabled for Cerin and
 // the threads under them.
 const SNOWFLAKE = /^\d{5,20}$/u
 // Announcement and public threads. A private thread (12) is invite-only in

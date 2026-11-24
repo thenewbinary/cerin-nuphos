@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs git as one Nuphos participant, with that participant's author and
+# Runs git as one Cerin participant, with that participant's author and
 # signing key:
 #
 #   git-as <sender-id> <git args...>

@@ -8,7 +8,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Nuphos records your voice only while you dictate a message, then sends it to OpenAI to transcribe."
+            "value" : "Cerin records your voice only while you dictate a message, then sends it to OpenAI to transcribe."
           }
         }
       },
@@ -21,7 +21,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Nuphos saves the images and videos you choose to share from an agent to your photo library."
+            "value" : "Cerin saves the images and videos you choose to share from an agent to your photo library."
           }
         }
       },

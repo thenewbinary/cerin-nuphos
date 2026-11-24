@@ -66,7 +66,7 @@
     <string name="profile_two_factor_remove">Quitar</string>
     <string name="profile_two_factor_add_passkey">Añadir una llave de acceso</string>
     <string name="profile_two_factor_turn_on">Activar</string>
-    <string name="profile_two_factor_setup_step_add">1. Añade Nuphos a tu app de autenticación</string>
+    <string name="profile_two_factor_setup_step_add">1. Añade Cerin a tu app de autenticación</string>
     <string name="profile_two_factor_open_authenticator">Abrir en la app de autenticación</string>
     <string name="profile_two_factor_enter_key">O introduce esta clave:</string>
     <string name="profile_two_factor_setup_step_code">2. Introduce el código de 6 dígitos que muestra</string>

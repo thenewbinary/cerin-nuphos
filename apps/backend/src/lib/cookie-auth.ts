@@ -1,4 +1,4 @@
-// Best-effort extraction of a Nuphos session token from a browser Cookie
+// Best-effort extraction of a Cerin session token from a browser Cookie
 // header. The web app and admin surfaces have set the token under a few
 // different names (and occasionally wrapped in JSON), so we probe a bounded
 // list of candidates rather than one canonical cookie.

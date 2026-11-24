@@ -96,7 +96,7 @@ test('Codex keeps an existing plugin default and still disables the Browser plug
   })
 })
 
-test('a Nuphos session gives the skills catalog the whole budget Codex allows', () => {
+test('a Cerin session gives the skills catalog the whole budget Codex allows', () => {
   const result = nuphosCodexSessionConfig(
     { skills: { include_instructions: false } },
     {
@@ -111,7 +111,7 @@ test('a Nuphos session gives the skills catalog the whole budget Codex allows', 
   // descriptions to fit it. 10,000 tokens is the ceiling it documents for a configured
   // budget, which holds a team's catalog whole; anything else set there is kept.
   assert.deepEqual(result.skills, { include_instructions: false, max_context_tokens: 10_000 })
-  // A client that is not a Nuphos session keeps Codex's own default.
+  // A client that is not a Cerin session keeps Codex's own default.
   assert.equal(nuphosCodexSessionConfig({}, {}, runtimeEnv).skills, undefined)
 })
 

@@ -297,7 +297,7 @@ test('a dismissal of a question that is gone is refused and wakes no one', async
   expect(turns).toEqual([])
 })
 
-test('a conversation the question is about is told the answer as Nuphos; a linked resource is not', async () => {
+test('a conversation the question is about is told the answer as Cerin; a linked resource is not', async () => {
   await answerDecision({
     conversation: ask({ about: ['res-1', 'reviewer'] }, { linkedResources: [{ id: 'res-1' }] }),
     requestId: 'q1',

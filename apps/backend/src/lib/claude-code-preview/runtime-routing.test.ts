@@ -171,14 +171,14 @@ test('Codex ACP metadata carries session context without Claude-specific fields'
   const { sessionMeta } = await import('./openab-acp-session')
 
   expect(
-    sessionMeta('Nuphos context', { provider: 'codex', env: { NUPHOS_TOKEN: 'actor-token' } }),
+    sessionMeta('Cerin context', { provider: 'codex', env: { NUPHOS_TOKEN: 'actor-token' } }),
   ).toEqual({
     _meta: {
       'ai.nuphos/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
       'dev.openab/credentials': { NUPHOS_TOKEN: 'actor-token' },
       'ai.nuphos/codex': {
-        developerInstructions: 'Nuphos context',
+        developerInstructions: 'Cerin context',
         env: { NUPHOS_TOKEN: 'actor-token' },
       },
     },
@@ -295,14 +295,14 @@ test('Agents behind the ACP shim get one shim-facing shape with the instructions
 
   for (const provider of ['grok', 'antigravity', 'opencode'] as const)
     expect(
-      sessionMeta('Nuphos context', { provider, env: { NUPHOS_TOKEN: 'actor-token' } }),
+      sessionMeta('Cerin context', { provider, env: { NUPHOS_TOKEN: 'actor-token' } }),
     ).toEqual({
       _meta: {
         'ai.nuphos/runtimeAuthority': 2,
         'dev.openab/permissionPolicy': 'relay',
         'dev.openab/credentials': { NUPHOS_TOKEN: 'actor-token' },
         'ai.nuphos/session': {
-          systemPrompt: 'Nuphos context',
+          systemPrompt: 'Cerin context',
           env: { NUPHOS_TOKEN: 'actor-token' },
         },
       },

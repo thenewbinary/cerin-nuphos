@@ -56,7 +56,7 @@ private struct RuntimePicker: View {
                 } else if !store.runtimesLoaded {
                     ProgressView("Loading runtimes…").tint(Theme.muted)
                 } else if choices.isEmpty {
-                    ContentUnavailableView("No runtimes", image: "lucide-cpu", description: Text("Open Nuphos on your computer to add a Box or connect your own computer."))
+                    ContentUnavailableView("No runtimes", image: "lucide-cpu", description: Text("Open Cerin on your computer to add a Box or connect your own computer."))
                 } else { boxList }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -251,7 +251,7 @@ struct SelectorAgentRow: View {
         if runtime.status != .active {
             Text("Disabled").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
         } else if runtime.local?.online == false {
-            Text("Offline · open Nuphos on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
+            Text("Offline · open Cerin on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
         } else if runtime.local?.signedIn == false || quota?.needsSignIn == true {
             Text("Signed out · sign in on that computer").font(.system(size: detailSize)).foregroundStyle(Theme.muted)
         }

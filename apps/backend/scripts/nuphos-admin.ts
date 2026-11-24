@@ -48,7 +48,7 @@ function need(name: string): string {
 
 async function signInCode(email: string): Promise<string> {
   return `Sign-in code for ${email} (valid 10 minutes): ${await issueEmailOtpCode(email)}
-In Nuphos Desktop choose "Continue with email", enter ${email}, then this code.`
+In Cerin Desktop choose "Continue with email", enter ${email}, then this code.`
 }
 
 async function bootstrap(): Promise<string> {

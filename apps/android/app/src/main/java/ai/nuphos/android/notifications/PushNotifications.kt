@@ -171,7 +171,7 @@ class PushNotifications(private val app: NuphosApplication) : Application.Activi
             }
             // Tap routing re-checks current account, team and consent as well.
             LocalNotifications(app, { account }, { prefs.getBoolean("consent_granted", false) }).post(
-                target, "Nuphos", data["body"]?.take(200) ?: app.getString(ai.nuphos.android.R.string.shell_notification_open_update), badge,
+                target, "Cerin", data["body"]?.take(200) ?: app.getString(ai.nuphos.android.R.string.shell_notification_open_update), badge,
                 sender?.let { s -> face?.let { NotificationFace(s.name, it) } })
         }
     }

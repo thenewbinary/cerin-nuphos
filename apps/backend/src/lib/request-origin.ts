@@ -1,7 +1,7 @@
 import { isIP } from 'node:net'
 
 /**
- * Cloudflare sets CF-Connecting-IP to the real client. Hosted Nuphos (api.nuphos.ai) enforces
+ * Cloudflare sets CF-Connecting-IP to the real client. Hosted Cerin (platform.cerin.ai) enforces
  * Cloudflare Authenticated Origin Pulls, so there the header is trusted. Self-hosted, the
  * backend may be reachable directly and a caller bypassing Cloudflare can forge it, so it is
  * only advisory; without Cloudflare, fall back to the right-most X-Forwarded-For hop.
@@ -49,7 +49,7 @@ export function requestOrigin(
 export type SignInSource = Partial<RequestOrigin> & { client?: string; userAgent?: string }
 
 /**
- * The IP and place come only from Cloudflare: behind it (hosted Nuphos only
+ * The IP and place come only from Cloudflare: behind it (hosted Cerin only
  * accepts Cloudflare, via Authenticated Origin Pulls) CF-Connecting-IP is the
  * real client. X-Forwarded-For is whatever the caller sends, and the new
  * sign-in alert trusts this IP, so without Cloudflare the IP is unknown.

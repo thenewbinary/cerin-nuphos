@@ -1,6 +1,6 @@
 # Helm chart
 
-[`nuphos/`](nuphos) deploys Nuphos onto any Kubernetes cluster: authenticated single-node MongoDB, RustFS, the
+[`nuphos/`](nuphos) deploys Cerin onto any Kubernetes cluster: authenticated single-node MongoDB, RustFS, the
 released backend, and an optional Claude Code runtime. There is no Redis, so
 the backend runs as one replica in in-memory mode.
 
@@ -19,11 +19,11 @@ the backend runs as one replica in in-memory mode.
 ```sh
 cat > values.local.yaml <<'EOF'
 backend:
-  url: https://api.nuphos.example.com
+  url: https://api.cerin.example.com
 storage:
-  url: https://storage.nuphos.example.com
+  url: https://storage.cerin.example.com
 runtime:
-  url: https://runtime.nuphos.example.com
+  url: https://runtime.cerin.example.com
 ingress:
   className: nginx
   annotations:
@@ -33,9 +33,9 @@ ingress:
   tls:
     - secretName: nuphos-tls
       hosts:
-        - api.nuphos.example.com
-        - storage.nuphos.example.com
-        - runtime.nuphos.example.com
+        - api.cerin.example.com
+        - storage.cerin.example.com
+        - runtime.cerin.example.com
 EOF
 helm install nuphos deploy/helm/nuphos -n nuphos --create-namespace -f values.local.yaml
 ```

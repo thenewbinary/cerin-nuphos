@@ -8,7 +8,7 @@ import UIKit
 struct AppIconPicker: View {
     private static let characters = ["Napoleon", "Pearl Earring", "Van Gogh", "The Scream", "Son of Man"]
     private static let layouts = ["Classic", "Bleed", "Peek"]
-    static let icons: [(id: String, name: String)] = [("A", "Nuphos")]
+    static let icons: [(id: String, name: String)] = [("A", "Cerin")]
         + zip("BCDEF", characters).flatMap { letter, character in
             layouts.enumerated().map { ("\(letter)\($0.offset + 1)", "\(character), \($0.element)") }
         }

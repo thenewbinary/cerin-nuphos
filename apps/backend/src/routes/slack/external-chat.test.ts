@@ -31,7 +31,7 @@ const slackUsers: Record<string, { team_id: string; email: string; name: string 
   ULINKED: { team_id: 'T1', email: 'someone-else@example.com', name: 'Linked' },
   UMEI: { team_id: 'T1', email: 'mei@example.com', name: 'Mei in Slack' },
 }
-// Slack accounts linked to Nuphos members, by Slack user id.
+// Slack accounts linked to Cerin members, by Slack user id.
 const links: Record<string, { nuphosUserId: string; createdBy: string }> = {
   ULINKED: { nuphosUserId: 'owner', createdBy: 'owner' },
   // An email auto-link written by the old mention path for an outsider.
@@ -231,7 +231,7 @@ describe('a Slack channel that is an external chat', () => {
     expect(woken).toEqual([])
   })
 
-  test('a post on the record, even naming a teammate, notifies no one in Nuphos', async () => {
+  test('a post on the record, even naming a teammate, notifies no one in Cerin', async () => {
     await routeSlackToExternalChat(envelope({ user: 'UNEW', text: 'Ping @Mei' }))
     await postAsAgent((await chat()).sessionId, { sessionId: 'bot', title: 'Bot' }, 'Ask @Mei.')
 
@@ -239,7 +239,7 @@ describe('a Slack channel that is an external chat', () => {
     expect((await chat()).mentions ?? {}).toEqual({})
   })
 
-  test('a mapping that names an ordinary Nuphos chat posts nothing there', async () => {
+  test('a mapping that names an ordinary Cerin chat posts nothing there', async () => {
     await agentConversations().updateOne({ sessionId: 'chat' }, { $unset: { external: '' } })
     await routeSlackToExternalChat(envelope({ user: 'UOWNER' }))
 

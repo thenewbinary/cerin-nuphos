@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /** Backend selection and credential destinations are independent of UI lifetime. */
 object BackendOrigin {
-    const val DEFAULT = "https://api.nuphos.ai"
+    const val DEFAULT = "https://platform.cerin.ai"
     @Volatile var current: String = ai.nuphos.android.BuildConfig.API_BASE_URL
         private set
     private val tokenOrigins = ConcurrentHashMap<String, String>()

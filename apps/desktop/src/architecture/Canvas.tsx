@@ -27,7 +27,7 @@ type Props = {
   // (which owns back-navigation) keeps its label in sync. Navigation itself is
   // handled by the breadcrumb — this view has no back button.
   onRename?: (name: string) => void
-  // Open a node's `url`. The handler owns the policy: nuphos.ai pages open
+  // Open a node's `url`. The handler owns the policy: platform.cerin.ai pages open
   // in-app, everything else opens in the external browser.
   onOpenUrl?: (url: string) => void
 }
@@ -82,8 +82,8 @@ export function DiagramCanvas({ teamId, initial, onRename, onOpenUrl }: Props) {
     diagram.views.find((v) => v.id === viewId) ?? diagram.views[0]
   const selectedNode = editing ? (diagram.nodes.find((n) => n.id === selectedNodeId) ?? null) : null
 
-  // Open a node's `url`. onOpenUrl owns the routing policy (nuphos.ai → in-app,
-  // else → external browser); a nuphos.ai link must NEVER bounce through the
+  // Open a node's `url`. onOpenUrl owns the routing policy (platform.cerin.ai → in-app,
+  // else → external browser); a platform.cerin.ai link must NEVER bounce through the
   // browser, so this no longer falls back to appOpenExternal itself.
   const openNodeUrl = useCallback(
     (nodeId: string) => {

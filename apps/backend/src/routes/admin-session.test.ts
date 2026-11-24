@@ -18,7 +18,7 @@ const ADMIN = {
 const NON_ADMIN = { ...ADMIN, id: '507f191e810c19729de860ea', email: 'user@example.com' }
 const TEAM = {
   id: '64b5f1c2e4b0a1d2c3e4f5a6',
-  name: 'Nuphos Admins',
+  name: 'Cerin Admins',
   avatarUrl: '',
   ownerID: ADMIN.id,
   contactEmails: [ADMIN.email],

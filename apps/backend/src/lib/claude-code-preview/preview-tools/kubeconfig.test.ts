@@ -64,7 +64,7 @@ describe('get_kubeconfig', () => {
     expect(lastFresh).toBe(true)
   })
 
-  test('rewrites exec contexts to a plugin that carries no Nuphos credential', async () => {
+  test('rewrites exec contexts to a plugin that carries no Cerin credential', async () => {
     contexts = [
       {
         contextName: 'aws/123456789012/prod',

@@ -13,7 +13,7 @@ import type { Scenario } from './ui.ts'
 
 export const browserDownloadScenarios: Scenario[] = [
   {
-    name: "an agent's browser tab downloads a file into Downloads/Nuphos without a dialog",
+    name: "an agent's browser tab downloads a file into Downloads/Cerin without a dialog",
     run: async (page, stack) => {
       const content = `downloaded by the agent ${randomUUID()}`
       const name = `e2e-${randomUUID().slice(0, 8)}.txt`
@@ -83,7 +83,7 @@ export const browserDownloadScenarios: Scenario[] = [
         const [, path = '', bytes] = saved!
 
         await page.screenshot({ path: join(artifacts, 'agent-download.png') })
-        if (basename(path) !== name || basename(dirname(path)) !== 'Nuphos')
+        if (basename(path) !== name || basename(dirname(path)) !== 'Cerin')
           throw new Error(`The file was saved to ${path}`)
         if (!existsSync(path) || readFileSync(path, 'utf8') !== content)
           throw new Error(`${path} does not hold the served file`)

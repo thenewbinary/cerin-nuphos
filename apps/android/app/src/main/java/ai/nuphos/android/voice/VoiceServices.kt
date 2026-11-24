@@ -7,7 +7,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import java.io.File
 
-const val DEFAULT_WHISPER_PROMPT = "Nuphos, Claude Code, Codex, GitHub, Linear, Slack, Discord."
+const val DEFAULT_WHISPER_PROMPT = "Cerin, Claude Code, Codex, GitHub, Linear, Slack, Discord."
 
 interface VoiceSettings {
     var prompt: String

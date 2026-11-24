@@ -18,7 +18,7 @@ function invalid(reason: string): never {
   throw new Error(`Cannot import bundle: ${reason}`)
 }
 
-// Known key shapes (secretlint's preset plus the Nuphos token rule) refuse an export
+// Known key shapes (secretlint's preset plus the Cerin token rule) refuse an export
 // anywhere. Its keyword and entropy rules match ordinary prose, code, links and
 // compressed bytes, so text instead refuses a secret keyword followed by a
 // key-shaped value (20+ characters, letters and digits).

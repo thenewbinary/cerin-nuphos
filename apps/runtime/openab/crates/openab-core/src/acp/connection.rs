@@ -265,7 +265,7 @@ pub fn with_recent_stderr(mut msg: JsonRpcMessage, activity: &SessionActivity) -
     msg
 }
 
-/// Stderr line prefix the Nuphos adapter patches (apps/runtime/image/process-death.mjs)
+/// Stderr line prefix the Cerin adapter patches (apps/runtime/image/process-death.mjs)
 /// write once, right before exiting, with the reason their CLI died.
 const PROCESS_DEATH_PREFIX: &str = "nuphos-process-death: ";
 

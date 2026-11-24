@@ -24,7 +24,7 @@ export async function resumeApprovedPlanTurn(args: {
   thread: SlackAgentThread
   planId: string
   planTitle: string
-  /** Null when the plan was approved in Nuphos by someone with no Slack
+  /** Null when the plan was approved in Cerin by someone with no Slack
    *  identity in this workspace — the thread is then told what happened
    *  without naming anyone rather than rendering a broken mention. */
   approverSlackUserId: string | null
@@ -82,7 +82,7 @@ export async function resumeApprovedPlanTurn(args: {
     }
   }
   try {
-    // Transcript text is human-facing in Nuphos too, so name the approver by
+    // Transcript text is human-facing in Cerin too, so name the approver by
     // display name rather than raw mention syntax.
     const approverName = args.approverSlackUserId
       ? await fetchSlackUserName(

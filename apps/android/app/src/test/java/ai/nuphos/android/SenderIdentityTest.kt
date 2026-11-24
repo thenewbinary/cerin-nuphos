@@ -5,14 +5,14 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SenderIdentityTest {
-    private val base = "https://api.nuphos.ai"
+    private val base = "https://platform.cerin.ai"
     private val path = "/avatars/" + "a".repeat(24) + "/" + "b".repeat(64) + ".webp"
     private val me = MessageAttribution("me", "Maya 林 / A very long name", "user", "nuphos")
 
     @Test fun imagesOnlyLoadFromExplicitTrustedSources() {
         assertEquals(base + path, SenderAvatar.trusted(base + path, base))
         assertEquals("https://lh3.googleusercontent.com/photo?s=40", SenderAvatar.trusted("https://lh3.googleusercontent.com/photo?s=40", base))
-        for (url in listOf("http://api.nuphos.ai$path", "https://api.nuphos.ai.evil.test$path",
+        for (url in listOf("http://platform.cerin.ai$path", "https://platform.cerin.ai.evil.test$path",
             "https://user@api.nuphos.ai$path", "$base$path?token=1", "$base$path#x",
             "$base:443$path", "$base/avatars/other/photo.webp", "https://lh3.googleusercontent.com:444/x",
             "https://lh3.googleusercontent.com.evil.test/x", "https://evil.test/x", "$base/avatars/%61/photo.webp"))

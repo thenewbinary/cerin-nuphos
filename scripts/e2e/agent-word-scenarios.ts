@@ -98,7 +98,7 @@ export const agentWordScenarios: Scenario[] = [
     },
   },
   {
-    // Batch 4 of #3250: the Connectors list describes Nuphos, Bots and tasks.
+    // Batch 4 of #3250: the Connectors list describes Cerin, Bots and tasks.
     name: 'the Connectors list never says agent',
     run: async (page) => {
       await page.getByRole('button', { name: 'Connectors', exact: true }).click()

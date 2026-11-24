@@ -182,7 +182,7 @@ export type HomeGithubCard =
   | { id: string; kind: 'pulls'; repos: HomeRepo[]; statuses: HomePullStatus[] }
   | { id: string; kind: 'ci'; repos: HomeRepo[]; statuses: HomeRunStatus[] }
 
-/** A Nuphos Dashboards panel pinned to the home page. */
+/** A Cerin Dashboards panel pinned to the home page. */
 export type HomePanel = { dashboardId: string; panelId: string }
 
 /**

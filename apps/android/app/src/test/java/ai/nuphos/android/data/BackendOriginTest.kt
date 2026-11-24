@@ -67,7 +67,7 @@ class BackendOriginTest {
         fun request(url: String) = okhttp3.Request.Builder().url(url).header("Authorization", "Bearer guard-fixture").build()
         client.newCall(request("https://guard.example:9443/auth/me")).execute().close()
         assertThrows(java.io.IOException::class.java) { client.newCall(request("https://guard.example:9443/teams")).execute() }
-        assertThrows(java.io.IOException::class.java) { client.newCall(request("https://api.nuphos.ai/auth/me")).execute() }
+        assertThrows(java.io.IOException::class.java) { client.newCall(request("https://platform.cerin.ai/auth/me")).execute() }
         assertEquals(1, calls)
         assertFalse(Http.client.followRedirects)
         assertFalse(Http.client.followSslRedirects)
@@ -89,9 +89,9 @@ class BackendOriginTest {
         val own = "https://links.example:8443/teams/$team/agent/session"
         assertEquals(own, ConversationActions.shareUrl(team, "session"))
         assertNotNull(ai.nuphos.android.session.ConversationLink.parse(own))
-        assertNull(ai.nuphos.android.session.ConversationLink.parse("https://nuphos.ai/teams/$team/agent/session"))
+        assertNull(ai.nuphos.android.session.ConversationLink.parse("https://platform.cerin.ai/teams/$team/agent/session"))
         assertNotNull(ai.nuphos.android.model.PlanLink.target("https://links.example:8443/teams/$team/plans/plan"))
-        assertNull(ai.nuphos.android.model.PlanLink.target("https://nuphos.ai/teams/$team/plans/plan"))
+        assertNull(ai.nuphos.android.model.PlanLink.target("https://platform.cerin.ai/teams/$team/plans/plan"))
         val avatar = "https://links.example:8443/avatars/${"a".repeat(24)}/${"b".repeat(64)}.webp"
         assertEquals(avatar, ai.nuphos.android.model.SenderAvatar.trusted(avatar))
         assertFalse(BackendOrigin.supportsCloudPush())

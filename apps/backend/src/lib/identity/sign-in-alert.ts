@@ -14,7 +14,7 @@ const NEW_ACCOUNT_MS = 60 * 60 * 1000
  * 30 days, the longest a session lives) before the new one exists:
  *
  *   - an earlier session used this exact IP: no email (an unknown IP, off
- *     Cloudflare or via the nuphos.ai website, never matches);
+ *     Cloudflare or via the platform.cerin.ai website, never matches);
  *   - the account was created within the hour and has no other session: its
  *     first sign-in, no email;
  *   - otherwise: email.

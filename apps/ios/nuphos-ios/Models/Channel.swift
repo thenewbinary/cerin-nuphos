@@ -41,7 +41,7 @@ struct ChannelPost: Equatable, Identifiable, Sendable {
     let replyTo: ChannelReply?
     /// Shown at once, before the chat returns it.
     var sending = false
-    /// The record an answer to an agent's question leaves here: a line from Nuphos, not a post.
+    /// The record an answer to an agent's question leaves here: a line from Cerin, not a post.
     var isRecord = false
     /// The question card this post answers, when its answer was given in the Inbox (#3548).
     var inboxRequest: String?
@@ -65,7 +65,7 @@ struct ChannelPost: Equatable, Identifiable, Sendable {
 
     /// Nil for a message without a sender, with nothing to show, or not posted
     /// by a person or an agent: a chat shows only their posts, and the records
-    /// Nuphos leaves (answers to questions, a new owner).
+    /// Cerin leaves (answers to questions, a new owner).
     init?(_ message: ChatMessage) {
         let metadata = message.metadata
         guard let sender = metadata?["sender"], let type = sender["type"]?.stringValue,
@@ -88,14 +88,14 @@ struct ChannelPost: Equatable, Identifiable, Sendable {
         let replyTo = reply?["authorName"]?.stringValue.flatMap { name in
             reply?["text"]?.stringValue.map { ChannelReply(id: reply?["id"]?.stringValue, authorName: name, text: $0) }
         }
-        self.init(id: message.id, senderId: senderId, isAgent: type == "agent", name: attributed?.name ?? "Nuphos",
+        self.init(id: message.id, senderId: senderId, isAgent: type == "agent", name: attributed?.name ?? "Cerin",
                   avatar: attributed?.avatar, runtime: sender["agentRuntime"]?.stringValue,
                   text: text, uploads: uploads, downloads: downloads, sentAt: sentAt, replyTo: replyTo)
         isRecord = type == "system"
         inboxRequest = metadata?["answeredIn"]?.stringValue == "inbox" ? metadata?["requestId"]?.stringValue : nil
     }
 
-    /// The senders of the records Nuphos leaves in a chat: an answer to a
+    /// The senders of the records Cerin leaves in a chat: an answer to a
     /// question, and a change of owner when the owner leaves.
     static let records: Set<String> = ["nuphos:decision", "nuphos:chat"]
 

@@ -25,7 +25,7 @@ function saved(overrides: Partial<SavedWindow> = {}): SavedWindow {
     bounds: { x: 100, y: 100, width: 1200, height: 800 },
     maximized: false,
     fullScreen: false,
-    account: 'https://api.nuphos.ai#user-1',
+    account: 'https://platform.cerin.ai#user-1',
     surface: {
       layout: { direction: 'row', children: [{ id: 'primary' }, { id: 'pane-2' }] },
       activeId: 'pane-2',
@@ -72,16 +72,16 @@ test('a window larger than its display shrinks to fit it', () => {
 test('only the account that saved a surface gets it back', () => {
   const window = saved()
 
-  assert.deepEqual(restorableSurface(window, 'https://api.nuphos.ai#user-1'), window.surface)
-  assert.equal(restorableSurface(window, 'https://api.nuphos.ai#user-2'), null)
+  assert.deepEqual(restorableSurface(window, 'https://platform.cerin.ai#user-1'), window.surface)
+  assert.equal(restorableSurface(window, 'https://platform.cerin.ai#user-2'), null)
   assert.equal(restorableSurface(window, 'https://self-hosted.example#user-1'), null)
   assert.equal(restorableSurface(window, null), null)
   assert.equal(restorableSurface({ ...window, account: null }, null), null)
 })
 
 test('the account key needs a signed-in user', () => {
-  assert.equal(accountKeyOf('https://api.nuphos.ai', null), null)
-  assert.equal(accountKeyOf('https://api.nuphos.ai', 'u'), 'https://api.nuphos.ai#u')
+  assert.equal(accountKeyOf('https://platform.cerin.ai', null), null)
+  assert.equal(accountKeyOf('https://platform.cerin.ai', 'u'), 'https://platform.cerin.ai#u')
 })
 
 test('a damaged or foreign file restores nothing instead of failing', () => {
@@ -168,7 +168,7 @@ test('a session written to disk reads back the same', () => {
   }
 })
 
-const API = 'https://api.nuphos.ai'
+const API = 'https://platform.cerin.ai'
 
 function sourceOf(settled: boolean, userId: string | null = null): AccountSource {
   return { settled: () => settled, context: () => ({ api: API, userId }) }

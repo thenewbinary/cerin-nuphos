@@ -24,7 +24,7 @@ export type PersonalCredential = {
   login: string
   /** Linear only: the organization this grant belongs to. */
   workspaceId?: string
-  /** Linear: the organization's name. Gmail / Google Drive: the Nuphos team's name. */
+  /** Linear: the organization's name. Gmail / Google Drive: the Cerin team's name. */
   workspaceName?: string
   /** Gmail / Google Drive only: the team whose OAuth client (or Composio) issued this grant. */
   teamId?: string

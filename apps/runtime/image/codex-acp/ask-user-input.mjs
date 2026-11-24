@@ -1,5 +1,5 @@
 // OpenAB renders no form elicitations, so the adapter answers request_user_input
-// with no answers. Ask through Nuphos instead; see native-question.mjs, which is
+// with no answers. Ask through Cerin instead; see native-question.mjs, which is
 // inlined beside this patch.
 const SERVERS = '    const requestedMcpServers = request.mcpServers ?? [];\n'
 const USER_INPUT =

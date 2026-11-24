@@ -176,8 +176,8 @@ describe('independent Bot bundle admission', () => {
 
   test('accepts ordinary prose, code and links that only resemble secrets', async () => {
     for (const text of [
-      'GitHub token: reconnect in Nuphos.',
-      'Credentials: reconnect in Nuphos settings.',
+      'GitHub token: reconnect in Cerin.',
+      'Credentials: reconnect in Cerin settings.',
       'Use the type `password: string` in the form model.',
       'See https://docs.google.com/document/d/1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789/edit',
     ]) {

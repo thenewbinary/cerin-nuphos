@@ -140,7 +140,7 @@ export function patchAdapter(source, helper) {
     )
   // App Server warns in chat once per process when a batch of its own
   // diagnostic logs fails to reach SQLite. The turn is unaffected and the advice
-  // (/feedback, codex doctor) does not apply in Nuphos, so keep it out of chat.
+  // (/feedback, codex doctor) does not apply in Cerin, so keep it out of chat.
   const warning = '  createWarningEvent(event) {\n'
   if (withDeath.split(warning).length !== 2)
     throw new Error('Expected one Codex warning event handler')
@@ -149,7 +149,7 @@ export function patchAdapter(source, helper) {
     warning +
       '    if (event.message.startsWith("Codex couldn\'t save diagnostic logs")) return null;\n',
   )
-  // request_user_input asks through Nuphos; see native-question.mjs.
+  // request_user_input asks through Cerin; see native-question.mjs.
   const asking = patchCodexTurnUsage(patchCodexUltrafast(patchCodexUserInput(quiet)))
   const nativeQuestion = readFileSync(
     new URL('../native-question.mjs', import.meta.url),

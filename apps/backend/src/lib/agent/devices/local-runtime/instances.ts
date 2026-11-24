@@ -175,7 +175,7 @@ export async function setLocalAutoInstall(
   return { enabled: answer.enabled }
 }
 
-/** Has the computer's Nuphos Desktop restart into the update it staged; it refuses while busy. */
+/** Has the computer's Cerin Desktop restart into the update it staged; it refuses while busy. */
 export async function updateLocalApp(target: Target, options: Options = {}): Promise<void> {
   await requestInstances(target, { method: 'update' }, options)
 }

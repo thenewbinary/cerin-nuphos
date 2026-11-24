@@ -11,21 +11,21 @@ class SignInSessionsTest {
     private fun device(client: String?, userAgent: String?) = SignInSessions.device(SignInSession("s", client = client, userAgent = userAgent))
 
     @Test fun anAppThatNamesItselfIsShownByNameOnly() {
-        assertEquals("Nuphos Desktop", device("nuphos-desktop/1.2.0", "node"))
-        assertEquals("Nuphos for Android", device("nuphos-android/1.4.0", null))
-        assertEquals("Nuphos for iOS", device("nuphos-ios/2.1.0", null))
-        assertEquals("Nuphos CLI", device("nuphos-cli/0.9.0-beta.1", null))
+        assertEquals("Cerin Desktop", device("nuphos-desktop/1.2.0", "node"))
+        assertEquals("Cerin for Android", device("nuphos-android/1.4.0", null))
+        assertEquals("Cerin for iOS", device("nuphos-ios/2.1.0", null))
+        assertEquals("Cerin CLI", device("nuphos-cli/0.9.0-beta.1", null))
         // The version is whatever the client claims, so it is never shown.
-        assertEquals("Nuphos Desktop", device("nuphos-desktop/1.verify-at.evil-phish.com", null))
+        assertEquals("Cerin Desktop", device("nuphos-desktop/1.verify-at.evil-phish.com", null))
         // Anything else the client sent is never echoed.
-        assertEquals("Unknown device", device("Nuphos Security: reply with this code", null))
+        assertEquals("Unknown device", device("Cerin Security: reply with this code", null))
         assertEquals("Unknown device", device("nuphos-web/1.0", null))
         assertEquals("Unknown device", device("evil-phish.com/nuphos-desktop", null))
     }
 
     @Test fun withoutAnAppNameTheUserAgentGivesARoughGuess() {
-        assertEquals("Web sign-in (nuphos.ai)", device(null, "node"))
-        assertEquals("Web sign-in (nuphos.ai)", device(null, "undici/6.0"))
+        assertEquals("Web sign-in (platform.cerin.ai)", device(null, "node"))
+        assertEquals("Web sign-in (platform.cerin.ai)", device(null, "undici/6.0"))
         assertEquals("Chrome on macOS", device(null, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/130.0 Safari/537.36"))
         assertEquals("Edge on Windows", device(null, "Mozilla/5.0 (Windows NT 10.0) Chrome/130.0 Safari/537.36 Edg/130.0"))
         assertEquals("Safari on iOS", device(null, "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) Version/18.0 Safari/604.1"))

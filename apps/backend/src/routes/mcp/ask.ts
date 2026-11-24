@@ -25,7 +25,7 @@ import type { ToolResult } from '@/lib/mcp/protocol'
 import type { McpCallContext } from '@/routes/mcp/types'
 import type { UIMessage } from 'ai'
 
-// Token TTL for the minted per-call Nuphos identity. Mirrors executeTrigger's
+// Token TTL for the minted per-call Cerin identity. Mirrors executeTrigger's
 // 8h window — long enough to outlive a slow run, short enough to stay bounded.
 const NUPHOS_TOKEN_TTL_SECONDS = 60 * 60 * 8
 

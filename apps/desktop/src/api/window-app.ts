@@ -46,7 +46,7 @@ import type {
 } from '../types/team.ts'
 import type { SocialOption } from '../types/app-misc.ts'
 
-/** Whether the OS opens Nuphos at login (macOS and Windows releases only). */
+/** Whether the OS opens Cerin at login (macOS and Windows releases only). */
 export type LoginItemState = { supported: boolean; openAtLogin: boolean }
 
 export type WindowAppApi = {

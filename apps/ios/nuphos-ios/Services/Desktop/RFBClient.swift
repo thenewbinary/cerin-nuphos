@@ -33,7 +33,7 @@ nonisolated final class RFBByteStream {
 }
 
 /// An RFB 3.8 viewer: the handshake, then framebuffer updates applied to a
-/// local copy of the screen, or Open H.264 video from a Mac's Nuphos host. It
+/// local copy of the screen, or Open H.264 video from a Mac's Cerin host. It
 /// speaks only what the backend's relay lets through: security None and the
 /// ordinary client messages.
 nonisolated final class RFBClient {
@@ -47,7 +47,7 @@ nonisolated final class RFBClient {
             switch self {
             case .notVNC: String(localized: "The computer did not answer as a VNC server.")
             case .refused(let reason): reason
-            case .needsSignIn: String(localized: "This computer asks for an account to show its screen. Update Nuphos on it to open its desktop without one.")
+            case .needsSignIn: String(localized: "This computer asks for an account to show its screen. Update Cerin on it to open its desktop without one.")
             case .unexpected(let what): String(localized: "The desktop stream broke off (\(what)).")
             }
         }
@@ -69,14 +69,14 @@ nonisolated final class RFBClient {
         var update: (@Sendable (_ bytes: Int, _ waited: Double, _ took: Double, _ consumed: Int) -> Void)? = nil
         /// An Open H.264 rectangle: Annex B data for the whole screen, and the reset flags.
         var video: (@Sendable (_ data: [UInt8], _ flags: Int) -> Void)? = nil
-        /// The desktop's name, from the handshake: a Mac's Nuphos host can fit a window (`fitsWindows`).
+        /// The desktop's name, from the handshake: a Mac's Cerin host can fit a window (`fitsWindows`).
         var named: (@Sendable (String) -> Void)? = nil
         /// The screen changed size (DesktopSize), as a fitted window does.
         var resized: (@Sendable (_ width: Int, _ height: Int) -> Void)? = nil
     }
 
-    /// A Mac's Nuphos host names itself so: it shows one window fitted to a size it is sent (`setDesktopSize`).
-    static func fitsWindows(_ name: String) -> Bool { name == "Nuphos Mac" }
+    /// A Mac's Cerin host names itself so: it shows one window fitted to a size it is sent (`setDesktopSize`).
+    static func fitsWindows(_ name: String) -> Bool { name == "Cerin Mac" }
 
     /// The largest screen and pointer shape accepted, and the longest text or
     /// compressed rectangle: the server chooses these sizes, and anything
@@ -86,7 +86,7 @@ nonisolated final class RFBClient {
     static let maxLength = 64 << 20
 
     /// ZRLE, CopyRect, Raw, then the pseudo-encodings Cursor, PointerPos, DesktopSize and LastRect.
-    /// Open H.264 first, which a Mac's Nuphos host sends; a Box's Xvnc has no H.264 and sends ZRLE.
+    /// Open H.264 first, which a Mac's Cerin host sends; a Box's Xvnc has no H.264 and sends ZRLE.
     static let encodings: [Int32] = [50, 16, 1, 0, -239, -232, -223, -224]
 
     private let send: @Sendable ([UInt8]) -> Void
@@ -134,7 +134,7 @@ nonisolated final class RFBClient {
         if count == 0 { throw Failure.refused(try await reason(input)) }
         let types = try await input.read(count).map(Int.init)
         // Only None: the relay already admits only the conversation's owner. A
-        // computer that asks for more, like Screen Sharing on an older Nuphos, is refused.
+        // computer that asks for more, like Screen Sharing on an older Cerin, is refused.
         guard types.contains(1) else { throw Failure.needsSignIn }
         send([1])
         if try await input.u32() != 0 { throw Failure.refused(try await reason(input)) }
@@ -235,7 +235,7 @@ nonisolated final class RFBClient {
         [3, incremental ? 1 : 0] + be16(0) + be16(0) + be16(width) + be16(height)
     }
 
-    /// SetDesktopSize with one screen: a Mac's Nuphos host fits its frontmost window to
+    /// SetDesktopSize with one screen: a Mac's Cerin host fits its frontmost window to
     /// `width`×`height` points for screen 1 (`window`), and shows the whole display for 0.
     static func setDesktopSize(width: Int, height: Int, window: Bool) -> [UInt8] {
         [251, 0] + be16(width) + be16(height) + [1, 0] + be32(window ? 1 : 0) + be16(0) + be16(0) + be16(width) + be16(height) + be32(0)

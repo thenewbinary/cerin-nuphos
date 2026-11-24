@@ -10,7 +10,7 @@ import { boxConnection } from './box-instabox-account'
 import { startBox } from './box-instabox-start'
 
 // A Box on a team's own instabox account uses that account's key, and is not
-// held to the deployment's vCPU limit, which only Nuphos's own account bills.
+// held to the deployment's vCPU limit, which only Cerin's own account bills.
 const teamId = '65f000000000000000000001'
 const accountId = new ObjectId()
 const savedInstabox = config.box.instabox

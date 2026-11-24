@@ -23,7 +23,7 @@ test('an app that names itself is shown by name, without the version it claims',
   assert.equal(sessionDevice({ client: '__proto__/1', userAgent: null }), 'Unknown device')
   // Anything else the client sent is never echoed.
   assert.equal(
-    sessionDevice({ client: 'Nuphos Security: reply with this code', userAgent: null }),
+    sessionDevice({ client: 'Cerin Security: reply with this code', userAgent: null }),
     'Unknown device',
   )
 })

@@ -6,7 +6,7 @@ import { postSenderNotice, postThreadMessage } from '@/routes/slack/shared'
 import type { SlackAgentThread } from '@/lib/slack/agent-bot'
 import type { SlackRuntime } from '@/routes/slack/types'
 
-// May this reply keep driving the thread's Nuphos team? Returns false after
+// May this reply keep driving the thread's Cerin team? Returns false after
 // telling the thread and completing the event.
 export async function verifyThreadTeamAccess(args: {
   runtime: SlackRuntime

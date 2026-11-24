@@ -27,7 +27,7 @@ class SessionMentionTest {
 
     @Test fun insertionPreservesPrefixAndAddsExactlyOneSpace() {
         val link = SessionMention.link("team", "session")
-        assertEquals("https://nuphos.ai/teams/team/agent/session", link)
+        assertEquals("https://platform.cerin.ai/teams/team/agent/session", link)
         assertEquals("first line\ncontext $link ", SessionMention.insert("first line\ncontext @abc", link))
         assertEquals("name@example.com", SessionMention.insert("name@example.com", link))
     }
@@ -52,8 +52,8 @@ class SessionMentionTest {
     }
 
     @Test fun picksAreSentAsTheirLinks() {
-        val links = mapOf("@Notes" to "https://nuphos.ai/teams/t/agent/s1", "@Notes v2" to "https://nuphos.ai/teams/t/agent/s2")
-        assertEquals("ask https://nuphos.ai/teams/t/agent/s1 and https://nuphos.ai/teams/t/agent/s2 ",
+        val links = mapOf("@Notes" to "https://platform.cerin.ai/teams/t/agent/s1", "@Notes v2" to "https://platform.cerin.ai/teams/t/agent/s2")
+        assertEquals("ask https://platform.cerin.ai/teams/t/agent/s1 and https://platform.cerin.ai/teams/t/agent/s2 ",
             SessionMention.expand("ask @Notes and @Notes v2 ", links))
         assertEquals("no picks", SessionMention.expand("no picks", emptyMap()))
     }

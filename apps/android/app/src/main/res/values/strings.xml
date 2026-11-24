@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name" translatable="false">Nuphos</string>
-    <string name="welcome_title">Welcome to Nuphos</string>
+    <string name="app_name" translatable="false">Cerin</string>
+    <string name="welcome_title">Welcome to Cerin</string>
     <string name="welcome_body">Sign in or create an account.</string>
     <string name="sign_in">Sign in</string>
     <string name="signing_in">Signing in…</string>
     <string name="sign_out">Sign out</string>
-    <string name="sign_out_confirm">Sign out of Nuphos?</string>
+    <string name="sign_out_confirm">Sign out of Cerin?</string>
     <string name="account">Account</string>
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
@@ -17,11 +17,11 @@
     <string name="my_chats">My tasks</string>
     <string name="team_chats">Team tasks</string>
     <string name="show_dismissed">Show dismissed</string>
-    <string name="ask_nuphos">Ask Nuphos anything…</string>
+    <string name="ask_nuphos">Ask Cerin anything…</string>
     <string name="queue_message">Queue a message…</string>
     <string name="send">Send</string>
     <string name="stop">Stop</string>
-    <string name="coming_soon">Coming soon to the Nuphos app.</string>
+    <string name="coming_soon">Coming soon to the Cerin app.</string>
     <string name="no_chats">No tasks yet</string>
     <string name="no_chats_body">Start a task from the bar below.</string>
     <string name="no_matches">No matches</string>

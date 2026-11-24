@@ -13,10 +13,10 @@ computer's OS account: through their own tools they can read the files and run
 the commands that account can. Share a dedicated team machine rather than a
 personal environment containing unrelated private data.
 
-`manage` also permits Nuphos's own device tools (local exec, file upload and
+`manage` also permits Cerin's own device tools (local exec, file upload and
 browser/computer control), opening a terminal, signing the computer's agents in
 or out, computer management, and changing who may use it. The owner of a computer
-from Nuphos can let teammates who only use it open a terminal too. The owner retains
+from Cerin can let teammates who only use it open a terminal too. The owner retains
 ownership actions. Team membership or team-administrator status does not by
 itself grant access to another member's personal computer.
 
@@ -43,7 +43,7 @@ Selecting another runtime or moving a conversation can send its context to the
 destination host; it does not make that content private from the host.
 
 Computer access does not automatically grant permission to open someone else's
-full conversation in Nuphos. This application permission does not protect local
+full conversation in Cerin. This application permission does not protect local
 artifacts from the host administrator or other same-account processes. Local
 runtime conversations currently allow only their conversation owner to send
 messages, even when the computer is shared.
@@ -61,7 +61,7 @@ are bounded and obvious secret patterns are masked on a best-effort basis. This
 is not a guarantee that arbitrary secrets are removed. Full file contents and
 tool outputs are not collected by this device-operation audit by default.
 
-Coverage is incomplete. Native coding-agent tools, activity outside Nuphos and
+Coverage is incomplete. Native coding-agent tools, activity outside Cerin and
 all operating-system access are not comprehensively observed. Audit persistence
 is best effort; a write failure does not necessarily stop the operation. An
 unfinished record has an unknown outcome, not proof of success or failure.

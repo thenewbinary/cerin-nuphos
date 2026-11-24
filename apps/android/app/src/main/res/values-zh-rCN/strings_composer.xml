@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">凭据 · %1$d</string>
     <string name="composer_computers_count">电脑 · %1$d</string>
     <string name="composer_queue_a_message">排入一条消息</string>
-    <string name="composer_ask_nuphos">问 Nuphos 任何问题</string>
+    <string name="composer_ask_nuphos">问 Cerin 任何问题</string>
     <string name="composer_remove_attachment_failed">无法移除此已保存的附件。请检查存储空间后重试。</string>
     <string name="composer_photos">照片</string>
     <string name="composer_files">文件</string>
@@ -55,8 +55,8 @@
     <string name="composer_clear">清除</string>
     <string name="composer_retry">重试</string>
     <string name="composer_loading_iam">正在加载 IAM…</string>
-    <string name="composer_no_computers">没有可用的电脑。请在 Nuphos 中连接电脑，即可在此使用。</string>
-    <string name="composer_no_computers_or_iam">没有可用的电脑或 IAM。请在 Nuphos 中连接电脑或云账号，即可在此使用。</string>
+    <string name="composer_no_computers">没有可用的电脑。请在 Cerin 中连接电脑，即可在此使用。</string>
+    <string name="composer_no_computers_or_iam">没有可用的电脑或 IAM。请在 Cerin 中连接电脑或云账号，即可在此使用。</string>
     <string name="composer_allow_computers">允许此 Agent 操作你选择的电脑。</string>
     <string name="composer_permission_mode">权限模式</string>
     <string name="composer_load_runtimes_failed">无法加载运行环境。</string>
@@ -66,7 +66,7 @@
     <string name="composer_runtime_wait">请等待当前回复或待处理消息完成后再切换运行环境。</string>
     <string name="composer_loading_runtimes">正在加载运行环境…</string>
     <string name="composer_no_runtimes">没有可用的运行环境。</string>
-    <string name="composer_no_runtimes_body">在你的电脑上打开 Nuphos，即可添加 Box 或连接你自己的电脑。</string>
+    <string name="composer_no_runtimes_body">在你的电脑上打开 Cerin，即可添加 Box 或连接你自己的电脑。</string>
     <string name="composer_manage_runtimes">管理电脑和运行环境</string>
     <string name="composer_refresh_runtimes">刷新运行环境</string>
     <string name="composer_move_to">移至 %1$s？</string>

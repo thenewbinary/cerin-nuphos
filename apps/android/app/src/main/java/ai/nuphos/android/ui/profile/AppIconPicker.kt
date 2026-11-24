@@ -51,7 +51,7 @@ private val LAYOUTS = listOf(R.string.profile_app_icon_layout_classic, R.string.
 
 @Composable
 private fun iconName(id: String) =
-    if (id == "A") "Nuphos" else "${stringResource(NAMES["BCDEF".indexOf(id[0])])}, ${stringResource(LAYOUTS[id[1].digitToInt() - 1])}"
+    if (id == "A") "Cerin" else "${stringResource(NAMES["BCDEF".indexOf(id[0])])}, ${stringResource(LAYOUTS[id[1].digitToInt() - 1])}"
 
 private fun alias(context: Context, id: String) = ComponentName(context, "ai.nuphos.android.Icon$id")
 

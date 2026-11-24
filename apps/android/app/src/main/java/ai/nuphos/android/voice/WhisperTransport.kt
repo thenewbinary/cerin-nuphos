@@ -26,7 +26,7 @@ data class Transcript(val text: String, val language: String?)
 /** Messages are fixed client copy: never display a response body or echo credentials. */
 class VoiceFailure(val status: Int, val code: String? = null) : IOException(when (status) {
     401 -> "Your sign-in has expired. Sign in again to use voice input."
-    402 -> "Voice input is included with a Nuphos subscription. Choose a subscribed workspace to continue."
+    402 -> "Voice input is included with a Cerin subscription. Choose a subscribed workspace to continue."
     403 -> if (code == "ai_consent_required") "Confirm your AI sharing choice before using voice input."
         else "Your account does not have access to voice input in this workspace."
     413 -> "The recording is too long to transcribe. Record a shorter message."
@@ -36,7 +36,7 @@ class VoiceFailure(val status: Int, val code: String? = null) : IOException(when
     else -> "Voice input failed. Check your connection and try again."
 })
 
-/** Nuphos owns the provider key; consent and account authentication stay on the normal client. */
+/** Cerin owns the provider key; consent and account authentication stay on the normal client. */
 class NuphosWhisperTransport(
     private val calls: Call.Factory = Http.client.newBuilder()
         .followRedirects(false).followSslRedirects(false).retryOnConnectionFailure(false)

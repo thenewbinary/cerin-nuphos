@@ -107,7 +107,7 @@ function tencentBinding(label: string): TencentAccountBinding {
   return {
     id: new ObjectId(),
     label,
-    roleArn: 'qcs::cam::uin/123456789:roleName/Nuphos',
+    roleArn: 'qcs::cam::uin/123456789:roleName/Cerin',
     providerId: 'nuphos',
     createdAt: new Date(),
   }

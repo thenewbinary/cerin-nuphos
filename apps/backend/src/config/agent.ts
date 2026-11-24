@@ -26,7 +26,7 @@ export function agentConfig() {
     }),
     backendUrl: optional('NUPHOS_BACKEND_URL') ?? optional('ATLAS_BACKEND_URL'),
     // Reachable from outside the cluster. Self-hosted runtimes fetch skills
-    // and call Nuphos tools here; managed pods keep using the Service.
+    // and call Cerin tools here; managed pods keep using the Service.
     publicBackendUrl: optional('NUPHOS_PUBLIC_BACKEND_URL'),
     triggers: {
       // A team member keeps the historical personal ceiling while the team

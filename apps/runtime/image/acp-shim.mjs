@@ -1,16 +1,16 @@
 #!/usr/bin/env node
-// The Nuphos layer for agents that ship their own ACP server (Grok Build, Google
+// The Cerin layer for agents that ship their own ACP server (Grok Build, Google
 // Antigravity, OpenCode, Hermes Agent, DeepSeek Harness), and for Pi behind the pi-acp
 // adapter. Claude Code and Codex get this layer by patching their Node adapters;
 // a native binary cannot be patched, so this process sits in front of it instead and
-// passes every frame through, except where a Nuphos session needs something:
+// passes every frame through, except where a Cerin session needs something:
 //
 // - The conversation's environment. OpenAB starts one agent process per session, so
 //   the agent is respawned once with the session's env and CLI home before its first
 //   session/new, load or resume. The agent's own login stays in the runtime home.
 // - The team's skills, the runtime defaults and the MCP credential bridge, exactly as
 //   the patched adapters apply them.
-// - Nuphos's instructions, in whatever form the agent accepts them.
+// - Cerin's instructions, in whatever form the agent accepts them.
 import { spawn } from 'node:child_process'
 import { lstatSync, mkdirSync, symlinkSync } from 'node:fs'
 import { homedir } from 'node:os'
@@ -71,7 +71,7 @@ export const PROVIDERS = {
     home: (runtimeHome) => ({ NUPHOS_AGENT_HOME: runtimeHome }),
     // Reuse the existing first-prompt instruction path.
     instruct: null,
-    // Keep separate Nuphos turns separate: native ACP treats overlapping prompts as steering.
+    // Keep separate Cerin turns separate: native ACP treats overlapping prompts as steering.
     serialPrompts: true,
   },
   opencode: {

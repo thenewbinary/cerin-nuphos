@@ -7,7 +7,7 @@ export type ComputerNotice =
   { kind: 'outdated'; label: string } | { kind: 'disk'; label: string; percent: number }
 
 /**
- * What is wrong with the selected agent's computer that will fail a turn on it: a Nuphos too
+ * What is wrong with the selected agent's computer that will fail a turn on it: a Cerin too
  * old to be supported, which fails for certain, before a disk that is almost full. The disk
  * is said only to those who can free space on it; everyone else sees it in the runtime picker.
  */

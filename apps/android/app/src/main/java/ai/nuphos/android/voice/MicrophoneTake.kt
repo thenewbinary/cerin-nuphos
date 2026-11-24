@@ -13,7 +13,7 @@ class MicrophoneTake(private val context: Context) : VoiceTake {
     override fun start() {
         check(recorder == null)
         if (androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.RECORD_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            throw IOException("Allow microphone access for Nuphos in Android Settings to use voice input.")
+            throw IOException("Allow microphone access for Cerin in Android Settings to use voice input.")
         }
         val audio = File.createTempFile("dictation-", ".m4a", context.cacheDir)
         file = audio

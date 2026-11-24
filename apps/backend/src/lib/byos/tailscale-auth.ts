@@ -9,8 +9,8 @@ export type TailscaleOAuthHandle = {
 
 /**
  * A binding that authenticates by workload identity federation: the customer
- * registers `https://nuphos.ai` as a trusted OIDC issuer on their tailnet, and
- * Nuphos proves who it is with a freshly signed JWT. Nothing long-lived is
+ * registers `https://platform.cerin.ai` as a trusted OIDC issuer on their tailnet, and
+ * Cerin proves who it is with a freshly signed JWT. Nothing long-lived is
  * stored on our side, which is the same posture the AWS/GCP/Azure connectors
  * already have.
  */

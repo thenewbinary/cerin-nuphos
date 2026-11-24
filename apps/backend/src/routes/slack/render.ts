@@ -6,7 +6,7 @@ import type { SlackAgentThread, SlackThreadMessageRecord } from '@/lib/slack/age
 import type { SlackMessageEvent } from '@/routes/slack/types'
 
 // The rendered text is persisted in the conversation transcript and read by
-// humans in the Nuphos UI, so people and channels appear by display name —
+// humans in the Cerin UI, so people and channels appear by display name —
 // raw <@U…>/<#C…> ids only render as names inside Slack itself. The mention
 // syntax is kept only as a fallback when a name lookup failed; the agent gets
 // the sender's id for @-mentions via the system prompt instead.

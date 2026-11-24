@@ -57,7 +57,7 @@ class LocalNotificationFixtureDeviceTest {
             }
             val row = manager.activeNotifications.single { it.tag == LocalNotifications.TAG }
             assertEquals(target.hashCode(), row.id)
-            assertEquals("Nuphos", row.notification.extras.getCharSequence(Notification.EXTRA_TITLE)?.toString())
+            assertEquals("Cerin", row.notification.extras.getCharSequence(Notification.EXTRA_TITLE)?.toString())
             assertEquals("Open task history", row.notification.extras.getCharSequence(Notification.EXTRA_TEXT)?.toString())
             assertEquals(Notification.VISIBILITY_PRIVATE, row.notification.visibility)
             assertEquals(LocalNotifications.CHANNEL, row.notification.channelId)

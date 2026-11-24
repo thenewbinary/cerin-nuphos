@@ -85,7 +85,7 @@ describe('Discord channel management command admission', () => {
     expect(canManageDiscordChannel()).toBe(false)
   })
 
-  test('does not mutate access for an unlinked or non-admin Nuphos user', async () => {
+  test('does not mutate access for an unlinked or non-admin Cerin user', async () => {
     const unlinked = dependencies({ findUserMapping: async () => null })
     const member = dependencies({ findMembership: async () => ({ role: 'MEMBER' }) })
 

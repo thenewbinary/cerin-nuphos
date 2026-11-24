@@ -10,7 +10,7 @@ describe('Discord mention admission shape', () => {
       id: '123456789012345678',
       guild_id: '223456789012345678',
       channel_id: '323456789012345678',
-      content: '@Nuphos investigate',
+      content: '@Cerin investigate',
       author: { id: '423456789012345678' },
       mentions: [],
     }

@@ -163,7 +163,7 @@ teamScoped.post('/mcp', async (c) => {
   return serveMcp(c, credentialsMcpTools(agent, teamId, vend), CREDENTIALS_MCP_SURFACE)
 })
 
-// Nuphos's native tools (memory, dashboards, diagrams, triggers, …) as a second MCP
+// Cerin's native tools (memory, dashboards, diagrams, triggers, …) as a second MCP
 // server; their results render as cards through the run-frame bridge.
 teamScoped.post('/mcp-tools', async (c) => {
   const agent = c.get('agent')

@@ -151,7 +151,7 @@ function openabMeta({ env, workingDirectory: dir }: OpenAbSessionRuntime = {}) {
 
 // claude-agent-acp reads `_meta.systemPrompt` on session/new and session/load:
 // the object form is merged onto the `claude_code` preset, so `append` adds
-// Nuphos's context without replacing Claude Code's own system prompt.
+// Cerin's context without replacing Claude Code's own system prompt.
 function claudeCodeOptions(runtime: OpenAbSessionRuntime | undefined): {
   claudeCode?: { options: Record<string, unknown> }
 } {

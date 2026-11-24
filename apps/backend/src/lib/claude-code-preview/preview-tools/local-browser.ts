@@ -1,4 +1,4 @@
-// `local_browser` drives the browser tabs inside the owner's Nuphos Desktop
+// `local_browser` drives the browser tabs inside the owner's Cerin Desktop
 // workspace. It rides the same device tunnel and checks as `local_cua`; Desktop
 // runs each action on the tab's own webContents, so no debugging port is opened
 // and nothing outside those tabs is reachable.

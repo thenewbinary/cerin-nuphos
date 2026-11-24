@@ -1,4 +1,4 @@
-# Codex client capabilities in Nuphos
+# Codex client capabilities in Cerin
 
 Audit baseline: Codex CLI 0.153.4 and codex-acp 1.1.4. The desktop's installed
 Codex version can differ. An app-server RPC is not automatically a model tool:
@@ -7,7 +7,7 @@ events. Do not import a desktop user's entire MCP configuration to fill gaps.
 
 ## Thread delegation
 
-`nuphos-tools.create_thread` and `send_message_to_thread` operate on **Nuphos
+`nuphos-tools.create_thread` and `send_message_to_thread` operate on **Cerin
 conversation IDs**, not internal Codex thread IDs. They work through the existing
 MCP surface for either agent runtime, without patching another upstream bundle.
 
@@ -75,8 +75,8 @@ not cloned. The new conversation uses its inherited runtime's defaults.
 | Model, effort, fast mode      | Session config persists and restores ACP settings; a pick made before the session exists is applied when it starts.                                                             | Existing integration; delegated chats start on the agent's own defaults, not a copied runtime attachment.                                               |
 | Background activity           | `openab-acp-updates.ts` and `codex-async-task-wakeup.ts` track async task updates.                                                                                              | Activity tracking is not a durable condition monitor. Thread delegation adds a separate running conversation, not restart-proof CI polling.             |
 | Thread fork/history branching | Upstream TUI has `fork_thread`; this bridge creates a fresh task instead.                                                                                                       | A true fork must handle transcript provenance and credentials; do not advertise create as fork.                                                         |
-| In-chat timed continuation    | Codex App's scheduled tasks are client-owned; Nuphos has its own trigger scheduler.                                                                                             | A dedicated timed wakeup into an existing conversation needs explicit delivery/cancellation semantics; no `automation_update` alias is introduced here. |
-| Background terminal list/stop | App-server has terminal control APIs; they are not registered as Nuphos agent tools by the ACP adapter.                                                                         | If added, scope controls to the current conversation and preserve OpenAB ownership checks.                                                              |
+| In-chat timed continuation    | Codex App's scheduled tasks are client-owned; Cerin has its own trigger scheduler.                                                                                             | A dedicated timed wakeup into an existing conversation needs explicit delivery/cancellation semantics; no `automation_update` alias is introduced here. |
+| Background terminal list/stop | App-server has terminal control APIs; they are not registered as Cerin agent tools by the ACP adapter.                                                                         | If added, scope controls to the current conversation and preserve OpenAB ownership checks.                                                              |
 
 Upstream references for the exact baseline:
 

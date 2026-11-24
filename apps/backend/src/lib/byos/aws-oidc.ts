@@ -5,7 +5,7 @@ import { config } from '@/config'
 import type { KeyObject } from 'node:crypto'
 
 /**
- * Nuphos as an OIDC identity provider for AWS web-identity federation.
+ * Cerin as an OIDC identity provider for AWS web-identity federation.
  *
  * Customers register `https://<issuer>` as an IAM OIDC identity provider and
  * trust it in their role's policy with `sts:AssumeRoleWithWebIdentity`,
@@ -117,8 +117,8 @@ export function awsOidcSubjectForTeam(teamId: string): string {
 
 /**
  * Mint a short-lived RS256 ID token for this team against an arbitrary
- * audience, signed by the shared Nuphos issuer key. AWS web-identity and
- * Volcengine OIDC are the same Nuphos IdP (same issuer, JWKS, `sub`); only the
+ * audience, signed by the shared Cerin issuer key. AWS web-identity and
+ * Volcengine OIDC are the same Cerin IdP (same issuer, JWKS, `sub`); only the
  * `aud` — the client id the customer registers on their OIDC provider —
  * differs. Exported so non-AWS consumers (e.g. Volcengine STS) can reuse it.
  */

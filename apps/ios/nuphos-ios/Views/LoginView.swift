@@ -82,7 +82,7 @@ struct LoginView: View {
                         Image("NuphosMark").resizable().scaledToFit().frame(width: 48, height: 48)
                             .accessibilityHidden(true)
                         VStack(spacing: 8) {
-                            Text("Welcome to Nuphos").font(.title.bold())
+                            Text("Welcome to Cerin").font(.title.bold())
                                 .multilineTextAlignment(.center)
                             Text("Sign in or create an account.")
                                 .font(.subheadline).foregroundStyle(Theme.body)
@@ -143,7 +143,7 @@ struct LoginView: View {
                         }
                         loginOptions
                     }.disabled(signingIn)
-                    Text("By continuing, you agree to our [Terms of Service](https://nuphos.ai/terms) and [Privacy Policy](https://nuphos.ai/privacy).", comment: "Legal text")
+                    Text("By continuing, you agree to our [Terms of Service](https://platform.cerin.ai/terms) and [Privacy Policy](https://platform.cerin.ai/privacy).", comment: "Legal text")
                         .font(.footnote).foregroundStyle(Theme.body).multilineTextAlignment(.center)
                 }
                 .padding(24)
@@ -499,7 +499,7 @@ private struct LoginServerSettings: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("https://nuphos.example.com", text: $draft)
+                    TextField("https://cerin.example.com", text: $draft)
                         .autocorrectionDisabled()
                         #if os(iOS)
                         .textContentType(.URL).keyboardType(.URL).textInputAutocapitalization(.never)
@@ -507,12 +507,12 @@ private struct LoginServerSettings: View {
                 } header: {
                     Text("Server address")
                 } footer: {
-                    Text("Leave this unchanged to use Nuphos Cloud. Enter your server address to use a self-hosted instance.")
+                    Text("Leave this unchanged to use Cerin Cloud. Enter your server address to use a self-hosted instance.")
                 }
                 if let error { Section { Text(error).foregroundStyle(.red) } }
                 if !savedURL.isEmpty {
                     Section {
-                        Button("Use Nuphos Cloud") { savedURL = ""; dismiss() }
+                        Button("Use Cerin Cloud") { savedURL = ""; dismiss() }
                     }
                 }
             }
@@ -531,7 +531,7 @@ private struct LoginServerSettings: View {
         guard let url = URL(string: draft.trimmingCharacters(in: .whitespaces)),
               let scheme = url.scheme?.lowercased(), scheme == "https" || scheme == "http",
               let host = url.host(), !host.isEmpty
-        else { error = String(localized: "Enter a full URL, e.g. https://nuphos.example.com"); return }
+        else { error = String(localized: "Enter a full URL, e.g. https://cerin.example.com"); return }
         var origin = URLComponents()
         origin.scheme = scheme; origin.host = host; origin.port = url.port
         savedURL = origin.url?.absoluteString ?? ""

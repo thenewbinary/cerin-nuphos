@@ -30,7 +30,7 @@ class VoiceInputTest {
     }
     /** The same list as iOS's `Whisper.defaultPrompt`. */
     @Test fun defaultPromptListsTheNamesToSpell() =
-        assertEquals("Nuphos, Claude Code, Codex, GitHub, Linear, Slack, Discord.", DEFAULT_WHISPER_PROMPT)
+        assertEquals("Cerin, Claude Code, Codex, GitHub, Linear, Slack, Discord.", DEFAULT_WHISPER_PROMPT)
 
     @Test fun duplicateFinishUploadsOnceAndOnlyAppendsText() = runTest {
         val take = Take(); val transport = Transport(); var draft = "Existing"

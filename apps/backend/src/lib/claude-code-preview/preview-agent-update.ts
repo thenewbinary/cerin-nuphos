@@ -102,7 +102,7 @@ function toolTitle(updatePayload: Record<string, unknown>): string {
 
   if (raw.startsWith('mcp__') && input && typeof input === 'object') {
     const fields = input as Record<string, unknown>
-    // Credentials tools carry `description`; the adapted Nuphos tools keep
+    // Credentials tools carry `description`; the adapted Cerin tools keep
     // the classic `label` field. Either is the user-facing step title.
     const intent = fields.description ?? fields.label
 
@@ -119,7 +119,7 @@ export function isToolSearchTitle(title: string): boolean {
 
 const NUPHOS_TOOLS_PREFIX = 'mcp__nuphos-tools__'
 
-/** The classic Nuphos tool name behind a `nuphos-tools` MCP call, else null. */
+/** The classic Cerin tool name behind a `nuphos-tools` MCP call, else null. */
 export function nuphosToolName(mcpToolId: string | undefined): string | null {
   return mcpToolId?.startsWith(NUPHOS_TOOLS_PREFIX)
     ? mcpToolId.slice(NUPHOS_TOOLS_PREFIX.length)

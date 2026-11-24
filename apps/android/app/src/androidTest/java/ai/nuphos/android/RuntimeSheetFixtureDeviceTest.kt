@@ -250,7 +250,7 @@ class RuntimeSheetFixtureDeviceTest {
         catalogBody = catalogBody.replace("\"online\":true", "\"online\":false")
         gate.countDown()
         render(snapshot(phase="completed",send=true), native=false, owner=true)
-        val offline = "The computer running this runtime is offline. Open Nuphos on it, or switch to another runtime."
+        val offline = "The computer running this runtime is offline. Open Cerin on it, or switch to another runtime."
         compose.waitUntil(10_000) { compose.onAllNodesWithText(offline).fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("Switch runtime").assertIsDisplayed()
         compose.waitForIdle()
@@ -270,7 +270,7 @@ class RuntimeSheetFixtureDeviceTest {
         render(snapshot(phase="completed",send=true), native=false, owner=true)
         compose.waitUntil(10_000) { compose.onAllNodesWithText("Synthetic Box is paused. It resumes when you send.").fetchSemanticsNodes().isNotEmpty() }
         compose.waitForIdle()
-        compose.onNodeWithText("The computer running this runtime is offline. Open Nuphos on it, or switch to another runtime.").assertDoesNotExist()
+        compose.onNodeWithText("The computer running this runtime is offline. Open Cerin on it, or switch to another runtime.").assertDoesNotExist()
         compose.onNodeWithText("Switch runtime").assertDoesNotExist()
         InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")?.let { dir ->
             java.io.File(dir, "runtime-paused-3296-android.png").outputStream().use {

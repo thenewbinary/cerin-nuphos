@@ -52,7 +52,7 @@ const mirrorDependencies = {
 }
 
 /**
- * A turn started from the Nuphos app in a session bound to a Discord thread:
+ * A turn started from the Cerin app in a session bound to a Discord thread:
  * the question and the reply are posted to the thread too, so the thread
  * mirrors the session. Returns null when the session has no connected thread;
  * otherwise the sink to attach to the run, and `finish` to call once it ends.

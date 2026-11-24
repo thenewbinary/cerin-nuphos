@@ -77,7 +77,7 @@ function buildPlanApprovalBlocks(args: {
   // predates the Agents & AI Apps block types).
   steps?: PlanStep[]
   // False when the plan is missing required sections and can only be reviewed
-  // in Nuphos; the card then carries no Approve button.
+  // in Cerin; the card then carries no Approve button.
   approvable: boolean
 }): unknown[] {
   const url = slackPlanUrl(args.teamId, args.planId)

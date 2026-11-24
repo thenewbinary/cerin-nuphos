@@ -465,7 +465,7 @@ class AccountParityFixtureDeviceTest {
         // Sending needs the draft's team to be the selected one.
         runBlocking(Dispatchers.Main) { agent.loadTeams() }
         compose.waitUntil(8_000) { agent.selectedTeam?.id == "aaaaaaaaaaaaaaaaaaaaaaaa" }
-        fun input() = compose.onNodeWithContentDescription("Ask Nuphos anything")
+        fun input() = compose.onNodeWithContentDescription("Ask Cerin anything")
         input().performTextReplacement("  unsent\n ")
         compose.onNodeWithContentDescription("Send").performClick()
         input().assertTextEquals("  unsent\n ")
@@ -665,7 +665,7 @@ class AccountParityFixtureDeviceTest {
         compose.waitUntil(8_000) { compose.onAllNodesWithText("Edit profile").fetchSemanticsNodes().isEmpty() }
         consentReadMode = "unsupported"
         tap("Retry loading consent")
-        awaitText("This privacy notice has changed. Please update Nuphos before using AI.")
+        awaitText("This privacy notice has changed. Please update Cerin before using AI.")
         compose.onNodeWithText("Agree and continue").assertDoesNotExist()
         assertFalse("Unsupported version granted AI access", app.authSession.aiAllowed)
         consentReadMode = "valid"
@@ -704,7 +704,7 @@ class AccountParityFixtureDeviceTest {
             transported = true
             error("AI transport must remain blocked")
         }.build()
-        assertTrue(runCatching { deniedClient.newCall(okhttp3.Request.Builder().url("https://api.nuphos.ai/teams").header("Authorization", "Bearer $token").build()).execute() }.exceptionOrNull() is java.io.IOException)
+        assertTrue(runCatching { deniedClient.newCall(okhttp3.Request.Builder().url("https://platform.cerin.ai/teams").header("Authorization", "Bearer $token").build()).execute() }.exceptionOrNull() is java.io.IOException)
         assertFalse(transported)
         heldPath = null
         compose.runOnIdle { app.authSession.loadAIConsent() }

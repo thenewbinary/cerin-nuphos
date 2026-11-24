@@ -20,11 +20,11 @@ test('persisted reply image references survive Markdown sanitizing and reach the
     const result = renderToString(
       React.createElement(MessageResponse, {
         teamId: 'test',
-        children: '![screen](https://nuphos.ai/_reply-images/0123456789abcdef01234567)',
+        children: '![screen](https://platform.cerin.ai/_reply-images/0123456789abcdef01234567)',
       }),
     )
     assert.ok(result.replaceAll('<!-- -->', '').includes('Loading screen'))
-    assert.ok(!result.includes('src="https://nuphos.ai/_reply-images/'))
+    assert.ok(!result.includes('src="https://platform.cerin.ai/_reply-images/'))
   } finally {
     await server.close()
   }

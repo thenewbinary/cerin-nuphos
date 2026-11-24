@@ -39,7 +39,7 @@ export type DeviceExecAuditPage = {
   nextCursor: string | null
 }
 
-/** The agents this app signs in itself, through their own CLI login; the rest sign in from Nuphos. */
+/** The agents this app signs in itself, through their own CLI login; the rest sign in from Cerin. */
 export type CliLoginProvider = 'claude-code' | 'codex'
 
 /** One more agent of a provider on a device. `runtimeId` is the catalog's RuntimeInstance.id. */
@@ -111,7 +111,7 @@ export type LocalRuntimeState = {
   instances?: LocalAgentInstance[]
   workspace: string | null
   userId: string | null
-  /** This computer's own connection to Nuphos, while someone is signed in. */
+  /** This computer's own connection to Cerin, while someone is signed in. */
   connection?: 'online' | 'reconnecting' | 'superseded' | 'revoked'
   customProviders?: Partial<Record<CliLoginProvider, { baseUrl: string; models: string[] }>>
   deviceId?: string
@@ -219,8 +219,8 @@ export type AgentDevice = {
   /** A Box's displays of the viewer's own conversations, besides its own :1. */
   desktops?: { display: number; sessionId: string; title: string }[]
   desktopRuntimeId?: string // The viewer's own computer: the runtime id that opens its screen.
-  app?: { version: string; update?: { version: string; ready: boolean } } // The viewer's other computer's Nuphos Desktop.
-  outdated?: 'desktop' | 'cli' // Which Nuphos on it is older than the backend supports.
+  app?: { version: string; update?: { version: string; ready: boolean } } // The viewer's other computer's Cerin Desktop.
+  outdated?: 'desktop' | 'cli' // Which Cerin on it is older than the backend supports.
   autoInstall?: boolean // Whether it updates itself when idle; absent while it is offline or older.
 }
 

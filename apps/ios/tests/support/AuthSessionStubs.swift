@@ -15,7 +15,7 @@ enum NuphosAPI {
     @discardableResult static func rememberOrigin(_ origin: String, token: String) -> Bool { true }
     static func baseURL(for token: String?) -> URL { baseURL }
     static let baseURLKey = "test-api-base-url"
-    static let baseURL = URL(string: "https://api.nuphos.ai")!
+    static let baseURL = URL(string: "https://platform.cerin.ai")!
 
     nonisolated(unsafe) static var sharedSessionBaseURL: URL?
     enum Failure: LocalizedError {

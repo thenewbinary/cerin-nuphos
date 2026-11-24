@@ -320,7 +320,7 @@ test('sessions get the long-lived token until it lapses, and an explicit one win
       .CLAUDE_CODE_OAUTH_TOKEN,
     undefined,
   )
-  // A spawn with no Nuphos session (the model probe) gets the token too.
+  // A spawn with no Cerin session (the model probe) gets the token too.
   assert.equal(
     nuphosClaudeSessionEnv({ PATH: 'x' }, {}, host, now).CLAUDE_CODE_OAUTH_TOKEN,
     'sk-ant-oat01-fixture',

@@ -1049,12 +1049,12 @@ mod tests {
         let expires = DateTime::<Utc>::from_timestamp(1_800_000_000, 0).unwrap();
         assert_eq!(
             deep_link(
-                "nuphos://connect-runtime?url={url}&code={code}&exp={exp}",
+                "cerin://connect-runtime?url={url}&code={code}&exp={exp}",
                 "wss://h.example/acp",
                 "ABC",
                 expires
             ),
-            "nuphos://connect-runtime?url=wss%3A%2F%2Fh.example%2Facp&code=ABC&exp=1800000000"
+            "cerin://connect-runtime?url=wss%3A%2F%2Fh.example%2Facp&code=ABC&exp=1800000000"
         );
     }
 

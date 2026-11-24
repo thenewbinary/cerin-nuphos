@@ -268,7 +268,7 @@ struct DockPanel: View {
         case .terminal: openTerminal()
         case .runtimes, .connectors: openScreen(destination)
         case .chat(let id):
-            if let link = URL(string: "https://nuphos.ai/teams/\(session.teamId)/agent/\(id)") { openURL(link) }
+            if let link = URL(string: "https://platform.cerin.ai/teams/\(session.teamId)/agent/\(id)") { openURL(link) }
         case .onMac(let page, let href):
             Task { await openOnMac(page: page, href: href, tab: tab, title: title) }
         }

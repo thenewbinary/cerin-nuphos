@@ -23,7 +23,7 @@ struct ChatComposerBar<Controls: View>: View {
     /// Content received by another entry point, imported once without submitting.
     var initialAttachments: [ComposerAttachment] = []
     var temporaryDirectory: URL = FileManager.default.temporaryDirectory
-    /// Who a message goes to, such as a chat's `#name`; nil asks Nuphos.
+    /// Who a message goes to, such as a chat's `#name`; nil asks Cerin.
     var recipient: String? = nil
     /// Each change raises the keyboard, as choosing to reply does.
     var focusRequest = 0
@@ -56,7 +56,7 @@ struct ChatComposerBar<Controls: View>: View {
     private var prompt: LocalizedStringKey {
         if isStreaming { return sendsDuringTurn ? "Send a message…" : "Queue a message…" }
         if let recipient { return "Message \(recipient)" }
-        return "Ask Nuphos anything…"
+        return "Ask Cerin anything…"
     }
 
     private var hasText: Bool { !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }

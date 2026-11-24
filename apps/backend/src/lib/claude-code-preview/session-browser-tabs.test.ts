@@ -187,11 +187,11 @@ describe('session browser tabs', () => {
   })
 
   test("a device's error reaches the caller as its text", async () => {
-    const fake = device({ isError: true, content: [{ type: 'text', text: 'Update Nuphos' }] })
+    const fake = device({ isError: true, content: [{ type: 'text', text: 'Update Cerin' }] })
 
     await expect(sessionDock('t1', 'owner', 's1', fake.deps)).rejects.toMatchObject({
       status: 409,
-      message: 'Update Nuphos',
+      message: 'Update Cerin',
     })
   })
 })

@@ -1,6 +1,6 @@
 // GCP Cloud Monitoring (Monitoring v3) — metric descriptors + time series for
 // the desktop's native Metrics Explorer. Query parameters (filter, alignment,
-// reducer) are passed through to the API natively; Nuphos stores nothing and
+// reducer) are passed through to the API natively; Cerin stores nothing and
 // defines no query language of its own.
 
 import { impersonateSa } from '@/lib/byos/gcp'

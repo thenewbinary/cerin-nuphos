@@ -43,7 +43,7 @@
     <string name="connectors_field_integration_token">集成令牌</string>
     <string name="connectors_field_account_email">账号邮箱</string>
     <string name="connectors_field_management_api_key">Management API 密钥</string>
-    <string name="connectors_note_aws">该角色必须已信任 Nuphos。服务器会在保存前检查访问权限。</string>
+    <string name="connectors_note_aws">该角色必须已信任 Cerin。服务器会在保存前检查访问权限。</string>
     <string name="connectors_note_azure">请先设置应用的联合凭据和角色分配。</string>
     <string name="connectors_category_infrastructure">基础设施</string>
     <string name="connectors_category_observability">可观测性</string>

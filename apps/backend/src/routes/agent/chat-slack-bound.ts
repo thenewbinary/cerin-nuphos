@@ -1,7 +1,7 @@
 import { getConversationWithMessages } from '@/lib/agent/db'
 import { assertSingleNewUserMessage } from '@/lib/agent/message-input'
 import { parseMessageMetadata, senderLabel } from '@/lib/agent/message-metadata'
-// A Slack-bound conversation continued from the Nuphos app: the owner's turn
+// A Slack-bound conversation continued from the Cerin app: the owner's turn
 // runs through the normal /agent/chat pipeline (native SSE streaming,
 // attachments, local tools), while a Slack mirror posts the question and the
 // reply into the bound thread. A send takes the session queue like any other,

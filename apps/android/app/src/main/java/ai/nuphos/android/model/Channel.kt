@@ -43,7 +43,7 @@ data class ChannelPost(
     /** The post this one replies to. */
     val replyTo: ChannelReply? = null,
     val runtime: String? = null,
-    /** A record Nuphos left in the chat (an answer to a question, a new owner): a muted line, not a post. */
+    /** A record Cerin left in the chat (an answer to a question, a new owner): a muted line, not a post. */
     val isRecord: Boolean = false,
 ) {
     fun isMine(viewerId: String?): Boolean = !isAgent && viewerId != null && senderId == viewerId
@@ -53,7 +53,7 @@ data class ChannelPost(
     val groups: List<String> get() = uploads.map { it.groupId } + downloads
 
     companion object {
-        /** The senders of the records Nuphos leaves in a chat, as on Desktop and iOS. */
+        /** The senders of the records Cerin leaves in a chat, as on Desktop and iOS. */
         private val RECORDS = setOf("nuphos:decision", "nuphos:chat")
 
         /** Null for a message without a sender, with nothing to show, or a system notice that is not a record. */
@@ -138,7 +138,7 @@ sealed class ChannelItem {
     data class Time(override val key: String, val at: Instant) : ChannelItem()
     /** A line from the chat itself: its loop guard paused agents. */
     data class Paused(override val key: String, val text: String) : ChannelItem()
-    /** A record Nuphos left in the chat: an answer to a question, or a new owner. */
+    /** A record Cerin left in the chat: an answer to a question, or a new owner. */
     data class Record(override val key: String, val text: String) : ChannelItem()
     /** An agent could not reply: why, and, on the newest line, the fix. */
     data class ReplyFailed(override val key: String, val event: AgentConversationDetail.TimelineEvent, val actionable: Boolean) : ChannelItem()

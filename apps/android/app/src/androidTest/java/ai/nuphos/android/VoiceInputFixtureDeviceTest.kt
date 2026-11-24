@@ -116,13 +116,13 @@ class VoiceInputFixtureDeviceTest {
     }
     @Test fun waveformCancelAndTranscriptionPreserveDraftWithoutSending() {
         render()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Existing draft")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Existing draft")
         compose.onNodeWithContentDescription("Voice input").performClick()
         compose.onNodeWithContentDescription("Transcribe and edit").assertIsEnabled()
         capture("01-recording-fixture")
         compose.onNodeWithContentDescription("Cancel voice input").performClick()
-        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Nuphos anything").fetchSemanticsNodes().size == 1 }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains("Existing draft")
+        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Cerin anything").fetchSemanticsNodes().size == 1 }
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains("Existing draft")
         assertFalse(takeFile!!.exists()); assertEquals(0, transport.uploads)
         compose.onNodeWithContentDescription("Voice input").performClick()
         compose.onNodeWithContentDescription("Transcribe and edit").performClick()
@@ -130,8 +130,8 @@ class VoiceInputFixtureDeviceTest {
         compose.onNodeWithContentDescription("Transcribe and edit").assertIsNotEnabled()
         capture("02-transcribing-fixture")
         compose.runOnIdle { transport.reply.complete(Transcript("语音输入测试", "chinese")) }
-        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Nuphos anything").fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains("Existing draft 語音輸入測試")
+        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Cerin anything").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains("Existing draft 語音輸入測試")
         assertEquals(1, transport.uploads); assertEquals(0, sends); assertFalse(takeFile!!.exists())
         capture("03-draft-result-fixture")
     }
@@ -141,38 +141,38 @@ class VoiceInputFixtureDeviceTest {
         compose.onNodeWithContentDescription("Transcribe and edit").performClick()
         compose.onNodeWithText("Transcribing…").assertIsDisplayed()
         compose.onNodeWithContentDescription("Cancel voice input").performClick()
-        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Nuphos anything").fetchSemanticsNodes().size == 1 }
+        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Cerin anything").fetchSemanticsNodes().size == 1 }
         compose.runOnIdle { transport.reply.complete(Transcript("must not appear", "english")) }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains("")
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains("")
         compose.onNodeWithText("must not appear").assertDoesNotExist()
         assertEquals(0, sends); assertFalse(takeFile!!.exists())
     }
     @Test fun workspaceChangeCancelsUploadAndDoesNotAppendLateWords() {
         render()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Keep")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Keep")
         compose.onNodeWithContentDescription("Voice input").performClick()
         compose.onNodeWithContentDescription("Transcribe and edit").performClick()
         compose.onNodeWithText("Transcribing…").assertIsDisplayed()
         compose.runOnIdle { state(requireNotNull(fixtureStore), "selectedTeam", Team("other-fixture-team", "Other workspace")) }
         compose.runOnIdle { transport.reply.complete(Transcript("private late result", "english")) }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains("Keep")
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains("Keep")
         compose.onNodeWithText("private late result").assertDoesNotExist()
         assertEquals(0, sends); assertFalse(takeFile!!.exists())
     }
     @Test fun subscriptionRequiredPreservesDraftWithoutSending() {
         render()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Keep this draft")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Keep this draft")
         compose.onNodeWithContentDescription("Voice input").performClick()
         compose.onNodeWithContentDescription("Transcribe and edit").performClick()
         compose.runOnIdle { transport.reply.completeExceptionally(VoiceFailure(402)) }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains("Keep this draft")
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains("Keep this draft")
         compose.onNodeWithText("subscription", substring = true).assertIsDisplayed()
         assertEquals(0, sends)
         capture("04-subscription-required")
     }
     @Test fun explicitVoiceSendUsesNormalComposerSubmissionOnce() {
         render()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Existing draft")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Existing draft")
         compose.onNodeWithContentDescription("Voice input").performClick()
         compose.onNodeWithContentDescription("Transcribe and send").performClick()
         compose.onNodeWithText("Transcribing…").assertIsDisplayed()
@@ -185,13 +185,13 @@ class VoiceInputFixtureDeviceTest {
     }
     @Test fun admissionLostDuringTranscriptionKeepsEditableText() {
         render()
-        compose.onNodeWithContentDescription("Ask Nuphos anything").performTextInput("Keep")
+        compose.onNodeWithContentDescription("Ask Cerin anything").performTextInput("Keep")
         compose.onNodeWithContentDescription("Voice input").performClick()
         compose.onNodeWithContentDescription("Transcribe and send").performClick()
         compose.runOnIdle { admission.value = false }
         compose.runOnIdle { transport.reply.complete(Transcript("spoken words", "english")) }
-        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Nuphos anything").fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains("Keep spoken words")
+        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Cerin anything").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains("Keep spoken words")
         assertEquals(0, sends); assertEquals(1, transport.uploads)
         capture("07-admission-keeps-draft")
     }
@@ -204,8 +204,8 @@ class VoiceInputFixtureDeviceTest {
         capture("08-edit-only")
         compose.onNodeWithContentDescription("Transcribe and edit").performClick()
         compose.runOnIdle { transport.reply.complete(Transcript("editable words", "english")) }
-        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Nuphos anything").fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains("editable words")
+        compose.waitUntil(5_000) { compose.onAllNodesWithContentDescription("Ask Cerin anything").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains("editable words")
         assertEquals(0, sends)
     }
     @Test fun rejectedTranscriptWriteNeverSendsExistingDraftOrAttachments() {
@@ -236,7 +236,7 @@ class VoiceInputFixtureDeviceTest {
             assertEquals(original, boundDraft!!.text)
             assertEquals(listOf("keep.txt"), app.incomingShares.attachments(key).map { it.name })
             compose.onNodeWithText("Discard transcript").performClick()
-            compose.onNodeWithContentDescription("Ask Nuphos anything").assertTextContains(original)
+            compose.onNodeWithContentDescription("Ask Cerin anything").assertTextContains(original)
             compose.onNodeWithText("TXT").assertExists()
         } finally { kotlinx.coroutines.runBlocking { app.incomingShares.drop(key) } }
     }
@@ -251,7 +251,7 @@ class VoiceInputFixtureDeviceTest {
                 }
             } }
         }
-        compose.onNodeWithText("Voice input is included with a Nuphos subscription.").assertIsDisplayed()
+        compose.onNodeWithText("Voice input is included with a Cerin subscription.").assertIsDisplayed()
         compose.onNodeWithText("OpenAI API key").assertDoesNotExist()
         capture("05-account-settings-fixture")
         compose.onNodeWithText("Transcription prompt").performTextReplacement("Fixture vocabulary")

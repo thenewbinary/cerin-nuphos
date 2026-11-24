@@ -111,7 +111,7 @@ export async function handleLarkMessage(
 
         if (pending) {
           // Redeeming a code rebinds this openId. If it was already linked to a
-          // *different* Nuphos user, that user silently loses the mapping — leave
+          // *different* Cerin user, that user silently loses the mapping — leave
           // an audit trail rather than overwriting without a trace.
           const prior = await getLarkUserMapping(appId, teamId, openId)
 
@@ -184,7 +184,7 @@ export async function handleLarkMessage(
       lastLarkEventId: eventId,
     })
 
-    // A thread's session is bound to its creator's Nuphos identity; never let a
+    // A thread's session is bound to its creator's Cerin identity; never let a
     // different participant drive it (they would act as the creator).
     if (thread.createdByLarkOpenId !== openId) {
       await replyNotice(

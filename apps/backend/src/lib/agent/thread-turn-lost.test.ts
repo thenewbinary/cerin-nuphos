@@ -131,7 +131,7 @@ test('a lost notice is not reported back', async () => {
       { ...conversation, sessionId: 'child' },
       'Your message to thread other was cut off.',
       'agent.resource',
-      systemSender('nuphos', 'Nuphos'),
+      systemSender('nuphos', 'Cerin'),
     )
   ).run
   await settle()

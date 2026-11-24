@@ -25,7 +25,7 @@ type SlackAgentTurnArgs = {
   sessionId: string
   // The original owner is used only for the durable conversation/session.
   agentUserId: string
-  // The Nuphos user who sent this turn. Shared channel replies execute with
+  // The Cerin user who sent this turn. Shared channel replies execute with
   // this user's credentials and permissions, never the conversation owner's.
   actorUserId?: string
   teamId: string
@@ -58,7 +58,7 @@ type SlackAgentTurnArgs = {
  * thread actually shows: the answer, then the card asking for approval.
  * Without the card line the addressing judge sees a bare "approve" with
  * nothing to attach it to and reads it as chatter. Deterministic ts, so a
- * re-posted card records once. Shared with the Nuphos-typed mirror turn
+ * re-posted card records once. Shared with the Cerin-typed mirror turn
  * (routes/slack/nuphos-turn.ts).
  */
 export async function recordSlackTurnTranscript(

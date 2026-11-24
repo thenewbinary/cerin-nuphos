@@ -27,7 +27,7 @@ function nuphosToolsServer(servers) {
     : undefined
 }
 
-/** Whether a session can ask through Nuphos at all. */
+/** Whether a session can ask through Cerin at all. */
 export function nuphosOffersDecisions(servers) {
   return Boolean(nuphosToolsServer(servers))
 }
@@ -88,7 +88,7 @@ async function nuphosAuthorization(server, env) {
   }
 }
 
-/** Registers the questions as a pending decision; true once Nuphos accepted it. */
+/** Registers the questions as a pending decision; true once Cerin accepted it. */
 export async function nuphosAskInNuphos(
   questions,
   env = process.env,

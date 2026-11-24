@@ -37,12 +37,12 @@ describe('buildInvitationEmail', () => {
       to: 'x@example.com',
       teamName: 'Acme',
       inviterName: 'Alice',
-      appUrl: 'https://nuphos.ai',
+      appUrl: 'https://platform.cerin.ai',
     })
 
-    expect(withUrl.html).toContain('href="https://nuphos.ai"')
+    expect(withUrl.html).toContain('href="https://platform.cerin.ai"')
     expect(withUrl.html).toContain('Accept invitation</a>')
-    expect(withUrl.text).toContain('https://nuphos.ai')
+    expect(withUrl.text).toContain('https://platform.cerin.ai')
 
     const withoutUrl = buildInvitationEmail({
       to: 'x@example.com',
@@ -83,7 +83,7 @@ describe('buildInvitationEmail', () => {
       to: 'x@example.com',
       teamName: 'Acme',
       inviterName: 'Alice',
-      appUrl: 'https://nuphos.ai/"><img src=x>',
+      appUrl: 'https://platform.cerin.ai/"><img src=x>',
     })
 
     expect(html).not.toContain('"><img src=x>')

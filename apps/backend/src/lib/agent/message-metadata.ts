@@ -27,10 +27,10 @@ export type MessageMetadata = {
    * `id` is the original's in the same chat, for a channel reply.
    */
   replyTo?: { id?: string; authorName: string; text: string }
-  /** Nuphos's record of a person's answer to card `requestId`; `answeredIn` if in the Inbox. */
+  /** Cerin's record of a person's answer to card `requestId`; `answeredIn` if in the Inbox. */
   requestId?: string
   answeredIn?: 'inbox'
-  /** A Discord or Slack author with no verified Nuphos identity: the body is fenced for the model. */
+  /** A Discord or Slack author with no verified Cerin identity: the body is fenced for the model. */
   unattested?: true
   /** The stored CLI or agent token that sent it, for audit. */
   cliTokenId?: string
@@ -57,7 +57,7 @@ export type ChannelPostPreview = {
 
 export type MessageMention = { id: string; displayName: string }
 
-/** Who a turn no person typed is from: a Trigger, a channel, GitHub, or Nuphos itself. */
+/** Who a turn no person typed is from: a Trigger, a channel, GitHub, or Cerin itself. */
 export function systemSender(
   id: string,
   displayName: string,

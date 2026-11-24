@@ -137,7 +137,7 @@ class FixtureDeviceTest {
     @Test fun readOnlyComposerPreventsSubmission() {
         render(listOf(ChatPart.Text(text = "Read-only fixture")), readOnly = true)
         // Read-only conversations disable drafting entirely, so nothing can be typed.
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
         compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
     }
     @Test fun readOnlySessionRejectsDirectMutations() {
@@ -159,7 +159,7 @@ class FixtureDeviceTest {
     @Test fun loadErrorDisablesDraftingAndSend() {
         status = 404
         render(emptyList())
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
         compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
         Assert.assertFalse(store.session("fixture", "").send("No request"))
     }
@@ -173,7 +173,7 @@ class FixtureDeviceTest {
         compose.waitForIdle()
         Assert.assertFalse(session.canSubmit)
         Assert.assertFalse(session.canManage)
-        compose.onNodeWithContentDescription("Ask Nuphos anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
         compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
     }
     @Test fun writableTeammateHasSendWithoutOwnerActions() {

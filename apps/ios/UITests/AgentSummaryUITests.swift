@@ -69,7 +69,7 @@ final class AgentSummaryUITests: XCTestCase {
         let file = FileManager.default.temporaryDirectory.appending(path: "summary-\(UUID().uuidString).json")
         try! JSONSerialization.data(withJSONObject: responses).write(to: file)
         let app = XCUIApplication()
-        app.launchArguments = ["-preview-home", "-preview-no-push", "-open-links", "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/dock-a", "-AppleInterfaceStyle", "Light"]
+        app.launchArguments = ["-preview-home", "-preview-no-push", "-open-links", "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/dock-a", "-AppleInterfaceStyle", "Light"]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": file.path]
         app.launch()
         return app

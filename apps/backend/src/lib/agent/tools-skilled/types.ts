@@ -71,7 +71,7 @@ export type DecisionQuestion = { question: string; options?: string[]; multiSele
 // cards automatically (see lib/slack/stream-sink.ts). This context carries the
 // remaining Slack-specific hooks.
 export type SlackReplyToolContext = {
-  // Set when the turn was typed in the Nuphos app on a Slack-bound
+  // Set when the turn was typed in the Cerin app on a Slack-bound
   // conversation and is being mirrored into the thread, rather than received
   // from Slack itself. Switches the system-prompt Slack block to the
   // dual-surface variant (routes/agent/chat-channel-messages.ts).

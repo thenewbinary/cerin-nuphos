@@ -8,7 +8,7 @@ import AppKit
 /// Palette that follows the system appearance. Every color here has a light
 /// and a dark value; views never force a color scheme.
 enum Theme {
-    // Nuphos Design System v0.6, November 2026.
+    // Cerin Design System v0.6, November 2026.
     static let canvas = adaptive(light: 0xF5F4F2, dark: 0x141312)
     static let surface = adaptive(light: 0xFCFBF9, dark: 0x1A1917)
     static let sunken = adaptive(light: 0xEEECE8, dark: 0x272624)

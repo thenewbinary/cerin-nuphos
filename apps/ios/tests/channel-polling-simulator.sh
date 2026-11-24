@@ -15,8 +15,8 @@ set -euo pipefail
 device=${1:-booted}
 team=64b5f1c2e4b0a1d2c3e4f5a6
 fixture="$(cd "$(dirname "$0")" && pwd)/fixtures/channel-responses.json"
-chat_a="https://nuphos.ai/teams/$team/agent/chat-release"
-chat_b="https://nuphos.ai/teams/$team/agent/chat-design"
+chat_a="https://platform.cerin.ai/teams/$team/agent/chat-release"
+chat_b="https://platform.cerin.ai/teams/$team/agent/chat-design"
 
 launch() {
   local out
@@ -40,7 +40,7 @@ launch
 sleep 5
 
 # Links open two seconds apart; a chat polls every four seconds.
-launch -open-links "$chat_a" "$chat_b" "https://nuphos.ai/agent"
+launch -open-links "$chat_a" "$chat_b" "https://platform.cerin.ai/agent"
 sleep 20
 [[ $(requests 30s chat-design) -gt 0 ]] || fail "chat B never loaded, so this run proves nothing"
 for chat in chat-release chat-design; do

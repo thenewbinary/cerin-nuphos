@@ -6,7 +6,7 @@ import UIKit
 
 /// Passkeys as a second factor (#1054): the platform ceremony around the
 /// backend's options, turned into the WebAuthn JSON the backend verifies. The
-/// passkey belongs to the backend's RP ID (nuphos.ai), which this app may use
+/// passkey belongs to the backend's RP ID (platform.cerin.ai), which this app may use
 /// through the `webcredentials` associated domain.
 enum Passkeys {
     struct Credential: Decodable { let id: String }
@@ -23,7 +23,7 @@ enum Passkeys {
         let user: User
     }
 
-    static let defaultRP = "nuphos.ai"
+    static let defaultRP = "platform.cerin.ai"
 
     /// A passkey's answer to `options`, as `AuthenticationResponseJSON`.
     @MainActor
@@ -74,7 +74,7 @@ enum Passkeys {
         var errorDescription: String? {
             switch self {
             case .cancelled: String(localized: "The passkey request was cancelled.")
-            case .malformed: String(localized: "Nuphos sent passkey options this app could not read.")
+            case .malformed: String(localized: "Cerin sent passkey options this app could not read.")
             }
         }
     }

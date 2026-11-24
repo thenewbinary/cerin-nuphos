@@ -246,7 +246,7 @@ ENV OPENAB_ACP_ENABLED=true \
     GATEWAY_ALLOWED_USERS=acp_client \
     OPENAB_RUNTIME_CONSOLE=true \
     OPENAB_RUNTIME_STATE_DIR=/home/node/.nuphos-runtime \
-    OPENAB_RUNTIME_CONNECT_URL_TEMPLATE="nuphos://connect-runtime?url={url}&code={code}&exp={exp}"
+    OPENAB_RUNTIME_CONNECT_URL_TEMPLATE="cerin://connect-runtime?url={url}&code={code}&exp={exp}"
 
 # What `_openab/runtime/login` runs, and where the credential it produces lands. Empty
 # unless the build supplies them, which makes the runtime report "cannot tell" rather

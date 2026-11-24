@@ -60,7 +60,7 @@ final class ChannelReplyStyleUITests: XCTestCase {
         let app = try launch([
             // An answer recorded before answers were posts keeps its line.
             ["id": "record", "role": "user", "parts": [["type": "text", "text": "Diana Prince answered: Rotate the key? → Yes"]],
-             "metadata": ["version": 1, "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Nuphos"],
+             "metadata": ["version": 1, "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Cerin"],
                           "sentAt": "2026-11-03T09:00:00.000Z"],
              "createdAt": "2026-11-03T09:00:00.000Z"],
             // Answered on the card in the chat: an answer post without the Inbox's line.
@@ -128,7 +128,7 @@ final class ChannelReplyStyleUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: live)
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release"]
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release"]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
         app.launch()
         return app

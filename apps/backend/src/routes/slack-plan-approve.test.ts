@@ -1,5 +1,5 @@
 // The Approve button on Slack plan cards must work in channel-mapped channels
-// whose Nuphos team differs from the workspace's OAuth binding, and every
+// whose Cerin team differs from the workspace's OAuth binding, and every
 // rejection must be logged (cross-team clicks died on ephemeral replies with
 // zero telemetry for two days — plans #88/#89 never executed).
 import { beforeEach, describe, expect, mock, test } from 'bun:test'
@@ -34,7 +34,7 @@ const state: {
   planStatus: 'proposed' | 'executing'
   /** Another approval moved the plan on before this vote landed. */
   raceLost: boolean
-  /** Whether the in-Nuphos approver has a Slack identity in this workspace. */
+  /** Whether the in-Cerin approver has a Slack identity in this workspace. */
   approverHasSlackMapping: boolean
   /** A turn is mid-flight for the plan's session. */
   turnAlreadyRunning: boolean

@@ -95,7 +95,7 @@ describe('redactSecrets', () => {
     expect(matches.some((m) => m.kind === 'jwt')).toBe(true)
   })
 
-  test('Nuphos session and CLI tokens anywhere in the text', async () => {
+  test('Cerin session and CLI tokens anywhere in the text', async () => {
     const session = 'nus_Q2hhbmdlTWVQbGVhc2VJdElzTm90QVJlYWxUb2tlbjAx'
     const cli = 'nup_Q2hhbmdlTWVQbGVhc2VJdElzTm90QVJlYWxUb2tlbjAy'
     const { redacted } = await redactSecrets(`NUPHOS_TOKEN=${session} other=${cli}`)
@@ -442,7 +442,7 @@ describe('redactSecretsSync', () => {
     for (const text of benign) expect(redactSecretsSync(text)).toBe(text)
   })
 
-  test('matches the async scanner on the shapes the Nuphos rule owns', async () => {
+  test('matches the async scanner on the shapes the Cerin rule owns', async () => {
     const input = `Bearer ${FAKE_KEY}0000 and ghp_${'a1'.repeat(18)}`
 
     expect(redactSecretsSync(input)).toBe((await redactSecrets(input)).redacted)

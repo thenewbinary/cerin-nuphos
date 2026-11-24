@@ -66,7 +66,7 @@ class ChannelTest {
 
     @Test fun answersAndANewOwnerAreRecordsAndOtherNoticesStayHidden() {
         fun system(id: String, text: String) = message(
-            """{"id":"$id","role":"user","metadata":{"sender":{"type":"system","id":"$id","displayName":"Nuphos"},"sentAt":"2026-11-03T09:20:00Z"},"parts":[{"type":"text","text":"$text"}]}""")
+            """{"id":"$id","role":"user","metadata":{"sender":{"type":"system","id":"$id","displayName":"Cerin"},"sentAt":"2026-11-03T09:20:00Z"},"parts":[{"type":"text","text":"$text"}]}""")
         val answer = ChannelPost.from(system("nuphos:decision", "Ann answered: Ship? → Ship it"))!!
         val owner = ChannelPost.from(system("nuphos:chat", "Ann left. Bruce now owns this chat."))!!
         assertTrue(answer.isRecord); assertTrue(owner.isRecord)

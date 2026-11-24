@@ -48,7 +48,7 @@ export function registerOauthAuthorizeRoutes(oauthRoutes: Hono) {
 
     const client = await getClient(validation.params.clientId)
 
-    // A browser that already carries a valid Nuphos session skips the OTP and
+    // A browser that already carries a valid Cerin session skips the OTP and
     // gets a one-click Authorize button. `prompt=login` forces the login form.
     if (c.req.query('prompt') !== 'login') {
       const cookieUser = await authenticateUserFromCookies(c.req.header('Cookie'))

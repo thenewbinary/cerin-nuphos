@@ -10,7 +10,7 @@ class AnsweredQuestionTest {
     private val by = """Answered by: "Sam \"S\" Rivera", this conversation's owner: it is their own answer."""
     private fun notice(vararg lines: String, sender: String = "nuphos:decision") = ChatMessage(
         id = "notice", role = ChatMessage.Role.User, parts = listOf(ChatPart.Text(text = lines.joinToString("\n"))),
-        metadata = JsonValue.parse("""{"version":1,"source":"agent.resource","sentAt":"2026-11-14T01:47:00Z","sender":{"id":"$sender","type":"system","displayName":"Nuphos"}}"""),
+        metadata = JsonValue.parse("""{"version":1,"source":"agent.resource","sentAt":"2026-11-14T01:47:00Z","sender":{"id":"$sender","type":"system","displayName":"Cerin"}}"""),
     )
     private val lines = arrayOf(
         "Your question (requestId q1) was answered from the Inbox.", by,

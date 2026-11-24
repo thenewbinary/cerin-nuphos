@@ -1,10 +1,10 @@
 <resources>
-    <string name="welcome_title">Te damos la bienvenida a Nuphos</string>
+    <string name="welcome_title">Te damos la bienvenida a Cerin</string>
     <string name="welcome_body">Inicia sesión o crea una cuenta.</string>
     <string name="sign_in">Iniciar sesión</string>
     <string name="signing_in">Iniciando sesión…</string>
     <string name="sign_out">Cerrar sesión</string>
-    <string name="sign_out_confirm">¿Cerrar sesión en Nuphos?</string>
+    <string name="sign_out_confirm">¿Cerrar sesión en Cerin?</string>
     <string name="account">Cuenta</string>
     <string name="done">Listo</string>
     <string name="cancel">Cancelar</string>
@@ -16,11 +16,11 @@
     <string name="my_chats">Mis tareas</string>
     <string name="team_chats">Tareas del equipo</string>
     <string name="show_dismissed">Mostrar descartados</string>
-    <string name="ask_nuphos">Pregunta lo que quieras a Nuphos…</string>
+    <string name="ask_nuphos">Pregunta lo que quieras a Cerin…</string>
     <string name="queue_message">Poner un mensaje en cola…</string>
     <string name="send">Enviar</string>
     <string name="stop">Detener</string>
-    <string name="coming_soon">Próximamente en la app de Nuphos.</string>
+    <string name="coming_soon">Próximamente en la app de Cerin.</string>
     <string name="no_chats">Todavía no hay tareas</string>
     <string name="no_chats_body">Empieza una tarea desde la barra de abajo.</string>
     <string name="no_matches">Sin coincidencias</string>

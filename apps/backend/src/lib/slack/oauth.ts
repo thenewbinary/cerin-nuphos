@@ -20,7 +20,7 @@ export const SLACK_BOT_SCOPES = [
   // Attaching agent-produced files (transfer-store downloads) to the thread
   // via files.getUploadURLExternal / files.completeUploadExternal. Adding it
   // requires every workspace to re-install; until then attachments degrade to
-  // a "download it in Nuphos" message (lib/slack/files.ts).
+  // a "download it in Cerin" message (lib/slack/files.ts).
   'files:write',
   // Reading attachments the user posts (url_private downloads), so a screenshot
   // dropped into a thread reaches the agent instead of being dropped along with

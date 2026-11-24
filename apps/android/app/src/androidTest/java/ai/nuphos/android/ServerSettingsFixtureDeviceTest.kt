@@ -61,7 +61,7 @@ class ServerSettingsFixtureDeviceTest {
             compose.onNodeWithText("Save").performClick()
             compose.onNodeWithText("Use an HTTPS address", substring = true).assertExists()
             assertEquals("https://self.example:8443", BackendOrigin.current)
-            compose.onNodeWithText("Use Nuphos Cloud").performClick()
+            compose.onNodeWithText("Use Cerin Cloud").performClick()
             compose.waitForIdle()
             assertEquals(BackendOrigin.DEFAULT, auth.serverOrigin)
             assertNull(tokens.read())

@@ -11,7 +11,7 @@ BINARY=${1:?Usage: sign-macos.sh path/to/cerin}
 : "${APPLE_API_ISSUER:?}"
 IDENTITY=$(jq -er '
   [.[] | select(.name | startswith("Developer ID Application:") and endswith("(6T873K59LQ)"))]
-  | if length == 1 then .[0].hash else error("Expected one Nuphos Developer ID identity") end
+  | if length == 1 then .[0].hash else error("Expected one Cerin Developer ID identity") end
 ' <<< "$SIGNING_IDENTITIES")
 
 # The import-codesign-certs action owns the temporary signing keychain.

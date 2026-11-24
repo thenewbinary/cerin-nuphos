@@ -19,7 +19,7 @@ struct BotQuestion: Identifiable, Equatable, Sendable {
     var id: String { "\(sessionId):\(request.id)" }
 
     /// Answered in words, "Other…": never a plan, approved or rejected, nor a credential or connection.
-    /// An integration question naming nothing to select, e.g. a service Nuphos cannot connect, takes words.
+    /// An integration question naming nothing to select, e.g. a service Cerin cannot connect, takes words.
     var typed: Bool {
         request.category != "credential" && !connectable && request.planId == nil
     }
@@ -188,9 +188,9 @@ extension BotQuestion {
         return iso.date(from: raw) ?? ISO8601DateFormatter().date(from: raw)
     }
 
-    /// The conversation that asked, opened in the app like any Nuphos link.
+    /// The conversation that asked, opened in the app like any Cerin link.
     func link(team: String) -> URL {
-        URL(string: "https://nuphos.ai/teams/\(team)/agent/\(sessionId)")!
+        URL(string: "https://platform.cerin.ai/teams/\(team)/agent/\(sessionId)")!
     }
 }
 

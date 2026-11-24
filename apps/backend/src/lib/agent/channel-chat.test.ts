@@ -122,7 +122,7 @@ const person: MessageMetadata = {
   sentAt: new Date().toISOString(),
 }
 
-// What Nuphos records when a person answers a question card: theirs, but not news to anyone.
+// What Cerin records when a person answers a question card: theirs, but not news to anyone.
 const cardAnswer: MessageMetadata = {
   ...person,
   replyTo: { authorName: 'Scribe', text: 'Which regions?' },

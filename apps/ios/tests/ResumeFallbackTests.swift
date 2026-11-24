@@ -51,7 +51,7 @@ enum ResumeFallbackTests {
         precondition(!fallback.sendsFresh(status: 404, body: #"{"error":{"code":"runtime_not_found"}}"#, resumed: true, framesReceived: 0, explicit: false, nativeRuntime: false))
     }
 
-    /// A gone stream starts over on the Nuphos runtime only: a Claude Code /
+    /// A gone stream starts over on the Cerin runtime only: a Claude Code /
     /// Codex runtime may already hold the message.
     private static func leavesANativeStreamGoneAlone() {
         var nuphos = ResumeFallback()

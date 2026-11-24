@@ -1,31 +1,31 @@
-![Nuphos, the open source Grok Bot alternative](assets/nuphos-banner.jpg)
+![Cerin, the open source Grok Bot alternative](assets/nuphos-banner.jpg)
 
-# Nuphos
+# Cerin
 
 **The open source Grok Bot alternative for teams.**
 
-<a href="https://nuphos.ai/download"><img alt="Download for macOS" src="assets/download-macos.svg" height="44"></a> <a href="https://apps.apple.com/app/nuphos/id6812533633"><img alt="Download on the App Store" src="assets/download-app-store.svg" height="44"></a> <a href="https://play.google.com/store/apps/details?id=ai.nuphos.android"><img alt="Get it on Google Play" src="assets/get-it-on-google-play.png" height="44"></a> <a href="https://x.com/NuphosAI"><img alt="Follow on X" src="assets/follow-x.svg" height="44"></a> <a href="https://nuphos.ai/dc"><img alt="Join Discord" src="assets/join-discord.svg" height="44"></a>
+<a href="https://platform.cerin.ai/download"><img alt="Download for macOS" src="assets/download-macos.svg" height="44"></a> <a href="https://apps.apple.com/app/nuphos/id6812533633"><img alt="Download on the App Store" src="assets/download-app-store.svg" height="44"></a> <a href="https://play.google.com/store/apps/details?id=ai.nuphos.android"><img alt="Get it on Google Play" src="assets/get-it-on-google-play.png" height="44"></a> <a href="https://x.com/NuphosAI"><img alt="Follow on X" src="assets/follow-x.svg" height="44"></a> <a href="https://platform.cerin.ai/dc"><img alt="Join Discord" src="assets/join-discord.svg" height="44"></a>
 
-Nuphos is an open source (Apache-2.0) alternative to xAI's Grok Bot. It gives
+Cerin is an open source (Apache-2.0) alternative to xAI's Grok Bot. It gives
 you always-on Bots that run on the Claude Code or Codex subscription you
-already pay for, on a computer Nuphos runs for you or a machine you own, in
+already pay for, on a computer Cerin runs for you or a machine you own, in
 chats your whole team can join.
 
-What sets Nuphos apart is the team. Your teammates work with a Bot in the same
-live session, see the same tool calls, and steer it together. Nuphos is not
+What sets Cerin apart is the team. Your teammates work with a Bot in the same
+live session, see the same tool calls, and steer it together. Cerin is not
 affiliated with xAI.
 
 ## Features
 
 - **Bots that keep working.** Give a Bot a name and a face and chat with it
-  one-on-one. On a computer from Nuphos or a server you keep running, its turn
+  one-on-one. On a computer from Cerin or a server you keep running, its turn
   continues after you close your laptop, and you can pick it up from the iOS
   app.
 - **Use the subscription you already pay for.** Claude Code and Codex each run
   behind an [ACP](https://agentclientprotocol.com) adapter and sign in with
   your own Claude or ChatGPT account, so there is no extra model charge on
   top. OpenCode, Grok Build and Antigravity runtimes are available too.
-- **Run it where you want.** A runtime can be a computer Nuphos runs for you,
+- **Run it where you want.** A runtime can be a computer Cerin runs for you,
   a remote machine you own, or your laptop. Move a conversation between them
   and it keeps going.
 - **A session is a room with your teammates.** Invite someone into a running
@@ -62,10 +62,10 @@ affiliated with xAI.
 | `apps/desktop` | Electron/Vite/React client — the workspace itself                       |
 | `apps/runtime` | Claude Code / Codex container images, adapters and independent releases |
 | `apps/ios`     | SwiftUI client: pick a session back up away from your desk              |
-| `apps/android` | Jetpack Compose client for Nuphos Cloud or a self-hosted backend        |
+| `apps/android` | Jetpack Compose client for Cerin Cloud or a self-hosted backend        |
 
 See [`apps/android/README.md`](apps/android/README.md) for Android build and test
-instructions. The Android client defaults to Nuphos Cloud, and **Server
+instructions. The Android client defaults to Cerin Cloud, and **Server
 settings** on its welcome screen takes the HTTPS address of a self-hosted
 backend. A self-hosted session gets no push notifications, only local ones.
 
@@ -92,7 +92,7 @@ produce Patch or Minor versions — a Major needs an explicit manual `X.0.0`.
 Railway currently uses the CLI deployment guide rather than a published
 one-click template.
 
-`deploy/compose` brings up a complete, minimal Nuphos with one
+`deploy/compose` brings up a complete, minimal Cerin with one
 `docker compose up` — MongoDB, S3-compatible storage, the backend, and one agent
 runtime. Start at [`deploy/compose/README.md`](deploy/compose/README.md).
 
@@ -105,7 +105,7 @@ What to know before you plan around it:
   skills, memory, integrations — but the hosted product is where multiple teams
   in one instance live.
 - **The runtime signs in to Claude itself**, once, from its own console. You
-  supply your own account; there is no key to configure in Nuphos.
+  supply your own account; there is no key to configure in Cerin.
 - **Point the clients at your backend from the sign-in screen.** Desktop and
   iOS both have a "Self-hosted? Set API endpoint" link there, Android has
   **Server settings** on its welcome screen, and email sign-in works against
@@ -114,8 +114,8 @@ What to know before you plan around it:
   team and prints sign-in codes and server join tokens (see the
   [Helm README](deploy/helm/README.md#first-user-and-team)). A launch-time `NUPHOS_API_URL` (as
   `bun run dev` sets) is Desktop's starting endpoint and can still be changed.
-  Google sign-in goes through the `nuphos.ai` web page, so it only works
-  against Nuphos Cloud.
+  Google sign-in goes through the `platform.cerin.ai` web page, so it only works
+  against Cerin Cloud.
 
 Not available self-hosted: managed runtime provisioning, managed backups, and
 the operational tooling that comes with running this as a service.
@@ -126,7 +126,7 @@ The GUI panes are not screenshots — the agent operates the accounts behind
 them. Cloud providers are the sharpest case: AWS access is a cross-account
 assume-role and GCP is service-account impersonation, so _your_ deployment's
 identity has to be the trusted principal on the other side. A self-hosted
-instance binds accounts to itself, not to nuphos.ai.
+instance binds accounts to itself, not to platform.cerin.ai.
 
 ## Contributing
 
@@ -141,7 +141,7 @@ change touches.
 - Docker (Docker Desktop, or Docker Engine with Compose v2.24+) and `openssl` for the local stack `bun run dev` runs on.
 - Rust, installed with [rustup](https://rustup.rs), for the Local runtime's `openab` binary, which
   `bun run dev` builds from `apps/runtime/openab`. The build installs the pinned toolchain itself.
-- Google OAuth credentials and `NUPHOS_JWT_SECRET` for Nuphos auth flows.
+- Google OAuth credentials and `NUPHOS_JWT_SECRET` for Cerin auth flows.
 
 ## Formatting and Linting
 
@@ -220,7 +220,7 @@ into the file, or wipe the stack with `bun run dev:reset`. Everything else deriv
 name, which is the checkout's directory name or `NUPHOS_DEV_INSTANCE`:
 
 - the backend, Vite and DevTools (CDP) ports, each claimed free at start;
-- the Desktop profile, `Nuphos Dev (<name> local)`;
+- the Desktop profile, `Cerin Dev (<name> local)`;
 - the Desktop sign-in, `~/.config/nuphos/cli.dev.<name>.yaml`;
 - the logs, `$TMPDIR/nuphos-dev-logs/<name>/`.
 

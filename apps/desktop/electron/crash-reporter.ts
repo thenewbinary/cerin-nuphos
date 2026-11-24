@@ -7,8 +7,8 @@
 // One setting, "Send crash reports and usage data" (default on, saved on this
 // computer), gates crash reports and both PostHog clients. Usage data stops at
 // once, including Crashpad uploads. Re-enabling uploads requires a restart.
-// Usage data goes to Nuphos's own analytics, so it is only sent while the
-// backend is Nuphos Cloud. Crash reports go to the backend itself.
+// Usage data goes to Cerin's own analytics, so it is only sent while the
+// backend is Cerin Cloud. Crash reports go to the backend itself.
 // Electron itself adds ver, _version, platform and
 // process_type; we add arch, a hashed device id (rate limiting only) and the
 // heap / uptime numbers that tell a slow leak from a sudden spike.

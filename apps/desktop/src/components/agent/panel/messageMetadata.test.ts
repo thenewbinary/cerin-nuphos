@@ -5,7 +5,7 @@ import { parseMessageMetadata, senderLabel } from './messageMetadata.ts'
 import { parseSteeringPart } from './steering.ts'
 
 for (const [source, type, displayName] of [
-  ['agent.thread', 'agent', 'Nuphos agent'],
+  ['agent.thread', 'agent', 'Cerin agent'],
   ['agent.resource', 'system', 'GitHub'],
   ['nuphos', 'user', 'Yuanlin'],
 ]) {
@@ -79,7 +79,7 @@ test('a Discord reply keeps the quoted message as metadata', () => {
   )
 })
 
-test('an answer given in the Inbox keeps its marker and card, only from Nuphos', () => {
+test('an answer given in the Inbox keeps its marker and card, only from Cerin', () => {
   const metadata = {
     version: 1,
     sender: { type: 'user', id: 'u1', displayName: 'Mei' },

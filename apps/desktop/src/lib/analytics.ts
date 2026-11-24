@@ -131,7 +131,7 @@ export function initAnalytics(): void {
   if (!subscribed && window.api?.onSendUsageDataChanged) {
     subscribed = true
     // The setting or the backend changed (main owns both): usage data is sent
-    // only with the setting on and Nuphos Cloud as the backend. Opting out is
+    // only with the setting on and Cerin Cloud as the backend. Opting out is
     // not enough, because identify and reset still ask the host for flags.
     window.api.onSendUsageDataChanged((send) => {
       sending = send && posthog.__loaded

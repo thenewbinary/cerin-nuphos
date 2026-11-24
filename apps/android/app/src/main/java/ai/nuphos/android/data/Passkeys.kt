@@ -14,8 +14,8 @@ import kotlinx.serialization.json.JsonObject
  * Passkeys as a second factor (#1054), through Credential Manager. The backend's
  * options are WebAuthn JSON, which Credential Manager takes as is, and its
  * answer is the JSON the backend verifies. The passkey belongs to the backend's
- * RP ID (nuphos.ai), which lets this app in through `get_login_creds` in
- * nuphos.ai/.well-known/assetlinks.json.
+ * RP ID (platform.cerin.ai), which lets this app in through `get_login_creds` in
+ * platform.cerin.ai/.well-known/assetlinks.json.
  */
 object Passkeys {
     /** A passkey's answer to `options`, as `AuthenticationResponseJSON`. */

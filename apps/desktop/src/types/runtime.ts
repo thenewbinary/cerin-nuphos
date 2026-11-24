@@ -84,7 +84,7 @@ export type RuntimeInstance = {
   createdAt: string
 }
 
-/** A runtime the operator runs themselves: Nuphos only learns where it is and
+/** A runtime the operator runs themselves: Cerin only learns where it is and
  *  the password its container was started with. The backend detects the
  *  provider when it is omitted and names the runtime after its host. */
 export type RegisterExternalRuntimeInput = {

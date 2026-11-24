@@ -402,8 +402,8 @@ class BotsPageFixtureDeviceTest {
 
     // MARK: No runtime yet: the first-runtime prompt, as on iOS.
     private val prompt = "Connect your first runtime"
-    private val adminWords = "Open Nuphos on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one."
-    private val memberWords = "Open Nuphos on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one."
+    private val adminWords = "Open Cerin on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one."
+    private val memberWords = "Open Cerin on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one."
     private fun asAdministrator() = InstrumentationRegistry.getInstrumentation().runOnMainSync {
         store.acceptMemberships(listOf(teamA.copy(role = "ADMINISTRATOR"), teamB), teamA.id)
     }

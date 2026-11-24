@@ -457,7 +457,7 @@ private fun PausedLine(text: String) {
     }
 }
 
-/** A record Nuphos left in the chat, muted, as Desktop and iOS show it. */
+/** A record Cerin left in the chat, muted, as Desktop and iOS show it. */
 @Composable
 private fun RecordLine(text: String) {
     Text(text, Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp).testTag("channel-record"),

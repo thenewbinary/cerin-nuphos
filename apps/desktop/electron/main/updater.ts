@@ -143,7 +143,7 @@ function readFailedRestart(): string | null {
   }
 }
 
-/** Whether release `a` is older than `b`; Nuphos ships plain major.minor.patch. */
+/** Whether release `a` is older than `b`; Cerin ships plain major.minor.patch. */
 function isOlder(a: string, b: string): boolean {
   const [x, y] = [a, b].map((v) => v.split('.').map(Number))
 
@@ -154,12 +154,12 @@ function isOlder(a: string, b: string): boolean {
   return false
 }
 
-/** The installer for this platform and architecture, from the Nuphos download page. */
+/** The installer for this platform and architecture, from the Cerin download page. */
 function installerUrl(): string {
   const platform = { darwin: 'mac', win32: 'windows' }[process.platform as string] ?? 'linux'
   const arch = process.arch === 'arm64' ? 'arm64' : 'x64'
 
-  return `https://nuphos.ai/api/desktop/download?platform=${platform}&arch=${arch}`
+  return `https://platform.cerin.ai/api/desktop/download?platform=${platform}&arch=${arch}`
 }
 
 export function startUpdatePolling() {

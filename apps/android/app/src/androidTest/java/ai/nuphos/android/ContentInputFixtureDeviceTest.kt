@@ -51,10 +51,10 @@ class ContentInputFixtureDeviceTest {
     private var sendCount = 0
     private var sent: ComposerSubmission? = null
     private var stoppable = false
-    private var inputDescription = "Ask Nuphos anything"
+    private var inputDescription = "Ask Cerin anything"
 
     private fun render(streaming: Boolean = false, controlledPicker: Boolean = false) {
-        inputDescription = if (streaming) "Queue a message" else "Ask Nuphos anything"
+        inputDescription = if (streaming) "Queue a message" else "Ask Cerin anything"
         lease.value?.key?.accountId?.let { account ->
             kotlinx.coroutines.runBlocking { (context.applicationContext as NuphosApplication).incomingShares.bindAccount(account) }
         }

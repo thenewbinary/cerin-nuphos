@@ -3,7 +3,7 @@ export const BROWSER_HOME_URL = 'https://www.google.com'
 /**
  * The URL a typed address points at, or `null` when the text reads as a search
  * instead. Accepts http(s) URLs, localhost and IP addresses (served over HTTP),
- * and bare domains such as `nuphos.ai` (HTTPS).
+ * and bare domains such as `platform.cerin.ai` (HTTPS).
  */
 export function browserAddressUrl(input: string): string | null {
   const text = input.trim()

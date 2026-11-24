@@ -48,10 +48,10 @@ socialAuth.get('/login', async (c) => {
 
   if (!links.length)
     throw new AppError(503, 'provider_unavailable', 'Social sign-in is not configured')
-  c.header('X-Nuphos-Social-Login', '1')
+  c.header('X-Cerin-Social-Login', '1')
   // Lets apps show one button per provider and skip this page.
-  c.header('X-Nuphos-Social-Providers', providers.join(','))
-  if (providers.includes('oidc')) c.header('X-Nuphos-Social-Oidc-Name', config.auth.oidc.name)
+  c.header('X-Cerin-Social-Providers', providers.join(','))
+  if (providers.includes('oidc')) c.header('X-Cerin-Social-Oidc-Name', config.auth.oidc.name)
 
   return c.html(
     `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Sign in to Cerin</title><style>body{font:18px system-ui;max-width:360px;margin:15vh auto;padding:24px}a{display:block;padding:16px;margin:16px 0;border:1px solid;border-radius:8px;color:inherit;text-decoration:none}</style><h1>Sign in to Cerin</h1>${links.join('')}<p>Use the same provider as your existing account.</p></html>`,

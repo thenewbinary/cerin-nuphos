@@ -44,7 +44,7 @@ export function larkAppContext(binding: LarkAppBinding): LarkAppContext {
   }
 }
 
-// Resolves an inbound event's app_id (from the request URL) to the Nuphos team
+// Resolves an inbound event's app_id (from the request URL) to the Cerin team
 // that registered the app, with its decrypted credentials + Encrypt Key.
 export async function resolveLarkApp(appId: string): Promise<ResolvedLarkApp | null> {
   const installed = await getLarkBindingByAppId(appId)

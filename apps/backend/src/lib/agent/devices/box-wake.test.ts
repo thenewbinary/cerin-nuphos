@@ -106,7 +106,7 @@ test('a Box on a team account that paused when idle is resumed, host and all, wh
   const [sandboxId, options] = connect.mock.calls[0] ?? []
 
   connect.mockRestore()
-  // A team's own account has no Nuphos vCPU limit: no check, just the resume.
+  // A team's own account has no Cerin vCPU limit: no check, just the resume.
   expect(checked).toEqual([])
   expect(sandboxId).toBe('m_idle')
   expect(options).toMatchObject({ resume: true })

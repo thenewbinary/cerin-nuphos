@@ -39,14 +39,14 @@ class WhisperTransportTest {
         val calls = SyntheticCalls(); val transport = NuphosWhisperTransport(calls)
         val file = File.createTempFile("synthetic", ".m4a").apply { writeText("synthetic audio bytes") }
         try {
-            assertEquals(Transcript("hello", "english"), transport.transcribe(file, "fixture-nuphos-token", "team-A", "Nuphos"))
+            assertEquals(Transcript("hello", "english"), transport.transcribe(file, "fixture-nuphos-token", "team-A", "Cerin"))
             val request = calls.requests.single()
             assertEquals("/teams/team-A/voice-transcriptions", request.url.encodedPath)
             assertEquals("Bearer fixture-nuphos-token", request.header("Authorization"))
             assertNotNull(request.header("x-atlas-client")); assertNull(request.header("Cookie"))
             assertEquals("POST", request.method)
             val body = Buffer().also { request.body!!.writeTo(it) }.readUtf8()
-            for (part in listOf("Nuphos", "dictation.m4a", "audio/m4a", "synthetic audio bytes")) assertTrue(part, part in body)
+            for (part in listOf("Cerin", "dictation.m4a", "audio/m4a", "synthetic audio bytes")) assertTrue(part, part in body)
             assertFalse(body.contains("whisper-1")); assertFalse(request.url.host.contains("openai"))
         } finally { file.delete() }
     }

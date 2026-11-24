@@ -65,7 +65,7 @@ export type TeamSession = {
   endpoint: TeamRuntimeEndpoint
   /** Latest MCP declaration; re-presented on session/load after a reconnect. */
   mcpServers: AcpHttpMcpServer[]
-  /** Nuphos context appended to Claude Code's system prompt; re-presented on load. */
+  /** Cerin context appended to Claude Code's system prompt; re-presented on load. */
   systemPrompt?: string
   /** Session-scoped environment and native skill files passed through ACP. */
   runtime?: OpenAbSessionRuntime

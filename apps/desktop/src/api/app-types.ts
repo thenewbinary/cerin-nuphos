@@ -75,7 +75,7 @@ export type LocalAgentSessionInfo = {
   updatedAt: string
 }
 
-/** Outcome of importing a local Claude Code / Codex session as a Nuphos
+/** Outcome of importing a local Claude Code / Codex session as a Cerin
  *  conversation on a team agent. */
 export type LocalSessionImportResult = {
   sessionId: string

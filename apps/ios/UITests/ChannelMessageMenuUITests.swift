@@ -22,7 +22,7 @@ final class ChannelMessageMenuUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: live)
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release"]
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release"]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
         app.launch()
         let cell = app.collectionViews["chat.transcript"].cells.element(boundBy: 2)

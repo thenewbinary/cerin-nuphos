@@ -11,7 +11,7 @@ final class SecretFormUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = [
             "-preview-home", "-preview-no-push",
-            "-open-links", "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/form-details",
+            "-open-links", "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/form-details",
         ]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
         app.launch()

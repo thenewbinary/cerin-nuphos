@@ -11,7 +11,7 @@ import type { TransferGroupView } from '@/lib/file-transfer/service'
 // upload flow: files.getUploadURLExternal → POST the bytes →
 // files.completeUploadExternal (which shares into the thread). Requires the
 // files:write bot scope; workspaces installed before that scope was added get
-// a plain-message fallback pointing at the Nuphos desktop download card.
+// a plain-message fallback pointing at the Cerin desktop download card.
 
 // Whole files are buffered through this process on their way to Slack, so cap
 // what we attach. Slack's own ceiling is 1 GB; the transfer store's default

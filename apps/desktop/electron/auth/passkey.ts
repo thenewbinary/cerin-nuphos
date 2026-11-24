@@ -9,8 +9,8 @@ import { listenOnLoopback, LOGIN_TIMEOUT_MS, onCallback } from './callback-serve
 import { PASSKEY_DONE_HTML } from './pages.ts'
 
 /**
- * Runs a passkey ceremony in the system browser. Passkeys belong to nuphos.ai,
- * which this app cannot claim as its relying party, so nuphos.ai/passkey runs
+ * Runs a passkey ceremony in the system browser. Passkeys belong to platform.cerin.ai,
+ * which this app cannot claim as its relying party, so platform.cerin.ai/passkey runs
  * `navigator.credentials` with the backend's options and sends the answer back
  * to a loopback listener here. The answer is only good for the challenge in
  * `options`, on this app's own request to the backend.

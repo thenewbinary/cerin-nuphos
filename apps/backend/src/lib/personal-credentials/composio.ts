@@ -1,6 +1,6 @@
 // Gmail, Google Drive and Google Calendar through Composio-managed auth, for
 // teams that have not added their own Google OAuth client. Composio holds the Google grant;
-// Nuphos keeps only the connected account id and runs tools through it with
+// Cerin keeps only the connected account id and runs tools through it with
 // its own server-side API key. https://docs.composio.dev/docs/authenticating-users
 import { composioAuthConfigId, composioRequest as call } from '@/lib/composio'
 import { AppError } from '@/lib/errors'
@@ -73,7 +73,7 @@ export function composioToolProvider(tool: string): GoogleProvider | null {
   return null
 }
 
-/** Connected accounts are per Nuphos team and member, like the team-client grants. */
+/** Connected accounts are per Cerin team and member, like the team-client grants. */
 export const composioUserId = (teamId: string, userId: string) => `${teamId}:${userId}`
 
 /** A Connect Link for the member; Composio returns to callbackUrl when they finish. */

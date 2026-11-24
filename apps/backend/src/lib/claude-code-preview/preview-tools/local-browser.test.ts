@@ -124,7 +124,7 @@ describe('local_browser', () => {
     expect(fake.opened).toHaveLength(0)
   })
 
-  test("opens on the user's own screen when a Nuphos computer is also selected", async () => {
+  test("opens on the user's own screen when a Cerin computer is also selected", async () => {
     const targets: string[] = []
     const fake = device(null)
     const connect: DeviceToolDeps['connect'] = (c, deviceId, owner, purpose) => {

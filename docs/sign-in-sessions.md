@@ -50,7 +50,7 @@ and emails the user.
 
 Once two-factor authentication is on, passkeys (WebAuthn) can be added as more
 ways to answer; only their public keys are stored. They belong to the RP ID in
-`WEBAUTHN_RP_ID` (default `nuphos.ai`), and a ceremony may run only on an origin
+`WEBAUTHN_RP_ID` (default `platform.cerin.ai`), and a ceremony may run only on an origin
 in `WEBAUTHN_ORIGINS` (the website, and `android:apk-key-hash:…` for Android).
 
 - `POST /auth/mfa/passkeys/options`, then `POST /auth/mfa/passkeys` with
@@ -106,19 +106,19 @@ and reset the password. Sending is best effort and never blocks the sign-in.
 The device name in any email is never the request's header text: `x-atlas-client`
 and `User-Agent` are whatever the caller sends, and the sign-in code endpoint is
 public. Emails show a known app name without its version (`nuphos-desktop/1.2.0` →
-"Nuphos Desktop"), a browser and system from a fixed list, or "Unknown device". The raw
+"Cerin Desktop"), a browser and system from a fixed list, or "Unknown device". The raw
 values stay on the session record.
 
 The sign-in code email also says where the code was requested from.
 
 The IP, city and country come only from Cloudflare (`CF-Connecting-IP`,
-`CF-IPCity`, `CF-IPCountry`). Hosted Nuphos only accepts traffic from Cloudflare
+`CF-IPCity`, `CF-IPCountry`). Hosted Cerin only accepts traffic from Cloudflare
 (Authenticated Origin Pulls), so these are trustworthy there. `X-Forwarded-For`
 is never used for a sign-in: any caller can set it, and the alert trusts the IP.
 Off Cloudflare the IP is unknown. An unknown IP never counts as familiar, so the
 sign-in is reported with "IP address: Unknown"; a deployment without Cloudflare
 gets an alert for every sign-in except a new account's first. A browser Google sign-in on
-nuphos.ai is made server-to-server by the website, without authentication, so
+platform.cerin.ai is made server-to-server by the website, without authentication, so
 the address the backend sees is the website's. That sign-in is recorded with an
 unknown IP (and so always reported) until the website can pass the visitor's
 address on in a way the backend can verify (NUPS-1388).

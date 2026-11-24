@@ -17,12 +17,12 @@ data class BotQuestion(
     val sourceTitle: String get() = sourceBot?.displayTitle ?: title
     val id: String get() = "$sessionId:${request.id}"
 
-    /** The conversation that asked, opened in the app like any Nuphos link. */
+    /** The conversation that asked, opened in the app like any Cerin link. */
     fun link(teamId: String): String = "${ai.nuphos.android.data.NuphosWeb.SITE_URL}/teams/$teamId/agent/$sessionId"
 
     /**
      * Answered in words, "Other…": never a plan, approved or rejected, nor a credential or connection.
-     * An integration question naming nothing to select, e.g. a service Nuphos cannot connect, takes words.
+     * An integration question naming nothing to select, e.g. a service Cerin cannot connect, takes words.
      */
     val typed: Boolean get() = request.category != "credential" && !connectable && request.planId == null
 

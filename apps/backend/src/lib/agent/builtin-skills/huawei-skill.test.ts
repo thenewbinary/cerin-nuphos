@@ -101,7 +101,7 @@ describe('huawei skill guidance', () => {
     },
   )
 
-  test('the first documented call is the one Nuphos makes at bind time', () => {
+  test('the first documented call is the one Cerin makes at bind time', () => {
     const bindCheck = readFileSync(
       path.join(import.meta.dir, '../../byos/huawei-trust-policy.ts'),
       'utf-8',

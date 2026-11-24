@@ -18,7 +18,7 @@ import type { VolcengineAccountBinding } from '@/models'
 
 export const volcengineAccountsRoutes = new Hono<{ Variables: TeamAuthVariables }>()
 
-// OIDC federation details the customer needs to register Nuphos as an IAM OIDC
+// OIDC federation details the customer needs to register Cerin as an IAM OIDC
 // identity provider and pin their role's trust policy: issuer URL, audience
 // (client id), and this team's subject claim. Team-scoped; safe to expose (all
 // values are meant to be shared with the customer).

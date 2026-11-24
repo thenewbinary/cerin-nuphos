@@ -23,7 +23,7 @@ const BOTS: [BotAvatarFile, string][] = [
 const noop = () => {}
 
 /**
- * A quiet, non-interactive piece of the Nuphos window for the "name your team"
+ * A quiet, non-interactive piece of the Cerin window for the "name your team"
  * screens, built from the real sidebar parts: the team switcher row carries
  * the name as it is typed, so people see where the name will live before they
  * commit to it. It runs off the right of its column like the app peeking in.

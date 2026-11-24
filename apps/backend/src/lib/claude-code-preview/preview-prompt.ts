@@ -1,4 +1,4 @@
-// Nuphos context for a Claude Code session, composed from the classic turn's
+// Cerin context for a Claude Code session, composed from the classic turn's
 // prompt builders and appended to Claude Code's own system prompt via ACP
 // `_meta.systemPrompt`. Sandbox-only sections (bash/skill tools, setup
 // scripts) are adapted to the native runtime equivalents it actually has.

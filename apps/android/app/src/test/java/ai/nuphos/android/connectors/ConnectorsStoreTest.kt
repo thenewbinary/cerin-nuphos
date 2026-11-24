@@ -60,7 +60,7 @@ class ConnectorsStoreTest {
         store.start(ConnectorCatalog.named("linear")!!)
         store.cancel()
         val count = requests.size
-        store.handleCallback("nuphos://linear-callback?state=abc&team_id=team&binding_id=b")
+        store.handleCallback("cerin://linear-callback?state=abc&team_id=team&binding_id=b")
         assertTrue(requests.contains("DELETE:team:linear-workspaces/start-oauth/abc"))
         assertEquals(count, requests.size)
         assertNull(store.pending)
@@ -81,10 +81,10 @@ class ConnectorsStoreTest {
         store.start(ConnectorCatalog.named("linear")!!)
         val next = store.pending
         val count = requests.size
-        store.handleCallback("nuphos://linear-callback?state=unrelated&team_id=team&binding_id=unknown")
+        store.handleCallback("cerin://linear-callback?state=unrelated&team_id=team&binding_id=unknown")
         assertEquals(next, store.pending)
         assertEquals(count, requests.size)
-        store.handleCallback("nuphos://linear-callback?state=abc1&team_id=team&binding_id=old")
+        store.handleCallback("cerin://linear-callback?state=abc1&team_id=team&binding_id=old")
         assertEquals(next, store.pending)
         assertEquals(count, requests.size)
     }
@@ -130,11 +130,11 @@ class ConnectorsStoreTest {
         var calls = 0
         val store = ConnectorsStore(ConnectorTransport { _, _, _, _, _ -> calls++; JsonValue.parse("""{"linear":[{"id":"b"}]}""")!! }, storage, now = { 0 })
         store.select(admin)
-        store.handleCallback("nuphos://linear-callback?state=abc&team_id=team&binding_id=b")
+        store.handleCallback("cerin://linear-callback?state=abc&team_id=team&binding_id=b")
         assertEquals("Connector saved and verified.", store.notice)
         assertNull(saved)
         val count = calls
-        store.handleCallback("nuphos://linear-callback?state=abc&team_id=team&binding_id=b")
+        store.handleCallback("cerin://linear-callback?state=abc&team_id=team&binding_id=b")
         assertEquals(count, calls)
     }
     @Test fun deferredCallbackCompletesWithItsCodeAndVerifiesTheBinding() = runTest {
@@ -149,7 +149,7 @@ class ConnectorsStoreTest {
             if (method == "POST") JsonValue.parse("""{"binding_id":"b","team_id":"team"}""")!! else JsonValue.parse("""{"linear":[{"id":"b"}]}""")!!
         }, storage, now = { 0 })
         store.select(admin)
-        store.handleCallback("nuphos://linear-callback?state=abc&deferred=1&code=one-time")
+        store.handleCallback("cerin://linear-callback?state=abc&deferred=1&code=one-time")
         assertTrue(requests.contains("POST:connector-oauth/abc/complete:one-time"))
         assertEquals("Connector saved and verified.", store.notice)
         assertNull(saved)
@@ -162,7 +162,7 @@ class ConnectorsStoreTest {
         val requests = mutableListOf<String>()
         val store = ConnectorsStore(ConnectorTransport { method, _, path, _, _ -> requests.add("$method:$path"); JsonValue.obj() }, storage, now = { 0 })
         store.select(admin)
-        store.handleCallback("nuphos://linear-callback?state=abc&deferred=1")
+        store.handleCallback("cerin://linear-callback?state=abc&deferred=1")
         assertFalse(requests.any { it.startsWith("POST:") })
         assertTrue(requests.contains("DELETE:linear-workspaces/start-oauth/abc"))
         assertNotEquals("Connector saved and verified.", store.notice)
@@ -175,12 +175,12 @@ class ConnectorsStoreTest {
         val requests = mutableListOf<String>()
         val store = ConnectorsStore(ConnectorTransport { method, team, path, _, _ -> requests.add("$method:$team:$path"); JsonValue.obj() }, storage, now = { 0 })
         store.select(admin)
-        store.handleCallback("nuphos://linear-callback?state=abc&team_id=team&binding_id=missing")
+        store.handleCallback("cerin://linear-callback?state=abc&team_id=team&binding_id=missing")
         assertNull(store.notice)
         assertNotNull(store.actionError)
         val wrong = ConnectorsStore(ConnectorTransport { method, team, path, _, _ -> requests.add("$method:$team:$path"); JsonValue.obj() }, storage, now = { 0 })
         wrong.select(admin)
-        wrong.handleCallback("nuphos://linear-callback?state=abc&team_id=other&binding_id=b")
+        wrong.handleCallback("cerin://linear-callback?state=abc&team_id=other&binding_id=b")
         assertTrue(requests.contains("DELETE:team:linear-workspaces/start-oauth/abc"))
         assertFalse(requests.any { it.startsWith("POST:") })
     }
@@ -196,7 +196,7 @@ class ConnectorsStoreTest {
             else JsonValue.parse("""{"github":[{"id":"binding","installationId":42}]}""")!!
         }, storage, now = { 0 })
         store.select(admin)
-        val uri = "nuphos://github-callback?state=abc&installation_id=42"
+        val uri = "cerin://github-callback?state=abc&installation_id=42"
         store.handleCallback(uri)
         store.handleCallback(uri)
         assertEquals("Connector saved and verified.", store.notice)
@@ -218,7 +218,7 @@ class ConnectorsStoreTest {
         assertTrue(requests.contains("DELETE:team:linear-workspaces/start-oauth/abc"))
         val other = ConnectorsStore(ConnectorTransport { method, team, path, _, _ -> requests.add("$method:$team:$path"); JsonValue.obj() }, storage, now = { 0 })
         other.select(Team("other", role = "ADMINISTRATOR"))
-        other.handleCallback("nuphos://linear-callback?state=abc&team_id=team&binding_id=b")
+        other.handleCallback("cerin://linear-callback?state=abc&team_id=team&binding_id=b")
         assertEquals("other", other.team?.id)
         assertNull(other.pending)
         assertFalse(requests.any { it.startsWith("POST:") })
