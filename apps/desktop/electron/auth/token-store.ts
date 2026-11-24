@@ -64,6 +64,11 @@ function directKeychainFor(service: string): TokenStore {
   }
 }
 
+/**
+ * Reads fall back to the pre-rename item and copy it forward. The old item stays: the
+ * previous app and CLI 0.28.1 and older read only it. A copy the store refuses (an
+ * unsigned build, a locked keychain) still returns the old token. Signing out removes both.
+ */
 export function withLegacyKeychain(current: TokenStore, legacy: TokenStore): TokenStore {
   return {
     ...current,
@@ -74,10 +79,15 @@ export function withLegacyKeychain(current: TokenStore, legacy: TokenStore): Tok
       const legacyToken = await legacy.get(account)
 
       if (legacyToken === null) return null
-      await current.set(account, legacyToken)
-      await legacy.delete(account)
+      await current.set(account, legacyToken).catch(() => undefined)
 
       return legacyToken
+    },
+    delete: async (account) => {
+      const results = await Promise.allSettled([current.delete(account), legacy.delete(account)])
+      const failed = results.find((result) => result.status === 'rejected')
+
+      if (failed) throw failed.reason
     },
   }
 }
