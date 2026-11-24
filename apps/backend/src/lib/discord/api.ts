@@ -74,8 +74,6 @@ export const NUPHOS_DISCORD_COMMAND = {
   ],
 } as const
 
-const LEGACY_DISCORD_COMMAND = { ...NUPHOS_DISCORD_COMMAND, name: 'nuphos' } as const
-
 export const getDiscordChannel = (channelId: string) =>
   discordApi<DiscordChannel>(`/channels/${encodeURIComponent(channelId)}`)
 export const getDiscordGuild = (guildId: string) =>
@@ -88,13 +86,9 @@ export async function registerDiscordCommands(): Promise<void> {
   const clientId = config.discord.clientId
 
   if (!clientId) throw new Error('DISCORD_CLIENT_ID is not configured')
-  const commands = [NUPHOS_DISCORD_COMMAND, LEGACY_DISCORD_COMMAND].filter(
-    (command, index, all) => all.findIndex((entry) => entry.name === command.name) === index,
-  )
-
   await discordApi(`/applications/${encodeURIComponent(clientId)}/commands`, {
     method: 'PUT',
-    body: JSON.stringify(commands),
+    body: JSON.stringify([NUPHOS_DISCORD_COMMAND]),
   })
 }
 

@@ -11,11 +11,11 @@ import { useAdminName } from './useAdminName'
 
 import type { AtlasTeam } from '../../types'
 
-export const GOOGLE_CLIENT_GUIDE_URL = 'https://docs.platform.cerin.ai/connectors/google-workspace'
+export const GOOGLE_CLIENT_GUIDE_URL = 'https://docs.nuphos.ai/connectors/google-workspace'
 
 // The team's own Google OAuth client, which members' Gmail and Google Drive
 // Personal Credentials connect through. The secret is write-only. Where the
-// deployment offers Composio (Cerin Cloud), members can connect without one,
+// deployment offers Composio (Nuphos Cloud), members can connect without one,
 // so the client is optional until the team saves it.
 export function GoogleOAuthClientCard({ team }: { team: AtlasTeam }) {
   const isAdmin = team.role === 'ADMINISTRATOR'
