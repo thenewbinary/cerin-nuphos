@@ -110,7 +110,7 @@ async function request(path) {
     // client won't forward the bearer token to an arbitrary host. The `+ '/'`
     // boundary rejects look-alikes like `<backend>.evil.com`.
     if (path !== backendUrl && !path.startsWith(`${backendUrl}/`)) {
-      throw new Error('nuphos client may only call the Cerin backend origin')
+      throw new Error('nuphos client may only call the Nuphos backend origin')
     }
     url = path
   } else {
@@ -139,7 +139,7 @@ async function request(path) {
   return parsed
 }
 
-const nuphos = {
+const cerin = {
   get: (path) => request(path),
 }
 
@@ -154,7 +154,9 @@ async function main() {
   }
 
   globalThis.params = params
-  globalThis.nuphos = nuphos
+  globalThis.cerin = cerin
+  // Scripts written before the rename still use `nuphos`.
+  globalThis.nuphos = cerin
   globalThis.emit = emit
 
   const scriptUrl = pathToFileURL(resolve(runDir, 'script.mjs')).href

@@ -1,3 +1,4 @@
+import { config } from '@/config'
 import { logEvent } from '@/lib/observability'
 
 import { IMAGE_PROVIDERS } from './runtime-provider'
@@ -151,22 +152,25 @@ let cliCached: { expires: number; result: Promise<RuntimeRelease | null> } | und
 
 /** The newest stable CLI release, which is what a Box host runs; null when the feed cannot be read. */
 export function latestCliRelease(): Promise<RuntimeRelease | null> {
-  if (!cliCached || cliCached.expires <= Date.now())
+  if (!cliCached || cliCached.expires <= Date.now()) {
+    const repo = config.cli.releasesRepo
+
     cliCached = {
       expires: Date.now() + 10 * 60_000,
-      result: fetch('https://api.github.com/repos/nuphos/nuphos/releases?per_page=50', {
+      result: fetch(`https://api.github.com/repos/${repo}/releases?per_page=50`, {
         headers: { Accept: 'application/vnd.github+json' },
         signal: AbortSignal.timeout(5_000),
       })
         .then(async (response) =>
           response.ok
             ? (((await response.json()) as GitHubRelease[])
-                .map((release) => parseRelease(release, 'cli-v', RUNTIME_RELEASES_URL))
+                .map((release) => parseRelease(release, 'cli-v', `https://github.com/${repo}/releases`))
                 .find((release) => release !== null) ?? null)
             : null,
         )
         .catch(() => null),
     }
+  }
   const entry = cliCached
 
   // A failed read is retried after a minute rather than served for ten:
