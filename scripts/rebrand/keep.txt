@@ -6,7 +6,7 @@
 # map.json check_patterns are checked.
 apps/backend/src/lib/native-auth.ts nuphos://   # legacy Google sign-in return for installed apps
 apps/backend/src/lib/native-auth.test.ts nuphos://   # tests the legacy return
-deploy/compose/README.md telemetry\.nuphos\.ai   # upstream Nuphos telemetry host; Cerin runs none and NUPHOS_TELEMETRY_URL has no default
+* telemetry\.nuphos\.ai   # upstream Nuphos telemetry host; Cerin runs none and NUPHOS_TELEMETRY_URL has no default
 apps/ios/Shared/SessionLink.swift nuphos\.ai   # exact legacy web origin accepted alongside the canonical origin
 apps/ios/tests/AppLinkTests.swift nuphos\.ai   # tests legacy web and mixed legacy hand-off links
 apps/ios/tests/SessionLinkTests.swift nuphos\.ai   # tests exact legacy host acceptance and lookalike/scheme/port rejection

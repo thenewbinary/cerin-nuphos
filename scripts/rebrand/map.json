@@ -107,7 +107,10 @@
       "why": "The image installs both admin command names; visible instructions prefer Cerin.",
       "pattern": "nuphos-admin",
       "replace": "cerin-admin",
-      "exclude_paths": ["apps/backend/Dockerfile", "apps/backend/bin/nuphos-admin"]
+      "exclude_paths": [
+        "apps/backend/Dockerfile",
+        "apps/backend/bin/nuphos-admin"
+      ]
     },
     {
       "name": "box-agent-inline-code",
@@ -147,7 +150,7 @@
     },
     {
       "name": "current-repository",
-      "why": "Links, workflow guards and release feeds for this repository use its current owner and name. Generic GitHub fixtures and Android's external WIF policy stay unchanged.",
+      "why": "Links, workflow guards and release feeds for this repository use its current owner and name. Generic GitHub fixtures and Android's external WIF policy stay unchanged. Not in the backend runtime-release lookup: it reads runtime-v* releases, which only upstream publishes.",
       "pattern": "nuphos/nuphos",
       "replace": "thenewbinary/cerin-nuphos",
       "exclude_paths": [
@@ -165,7 +168,10 @@
         "apps/desktop/src/components/session-search/matchedResource.test.ts",
         "apps/ios/nuphos-ios/Views/Chat/TranscriptList.swift",
         "apps/ios/tests/BareURLTests.swift",
-        "apps/ios/tests/SessionLinkTests.swift"
+        "apps/ios/tests/SessionLinkTests.swift",
+        "apps/backend/src/lib/claude-code-preview/runtime-release.ts",
+        "apps/backend/src/lib/claude-code-preview/runtime-release.test.ts",
+        "apps/backend/src/lib/claude-code-preview/runtime-release-testing.ts"
       ]
     },
     {
@@ -203,7 +209,9 @@
       "why": "Desktop and CLI releases use The New Binary's Apple team; installed iOS signing metadata is unchanged.",
       "pattern": "6T873K59LQ",
       "replace": "MT4V6HEGSU",
-      "exclude_paths": ["apps/ios/**"]
+      "exclude_paths": [
+        "apps/ios/**"
+      ]
     },
     {
       "name": "mongo-example-database",
