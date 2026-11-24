@@ -29,7 +29,7 @@ test('an app that names itself is shown by name, without the version it claims',
 })
 
 test('without an app name, the user agent gives a rough guess', () => {
-  assert.equal(sessionDevice({ client: null, userAgent: 'node' }), 'Web sign-in (nuphos.ai)')
+  assert.equal(sessionDevice({ client: null, userAgent: 'node' }), 'Web sign-in (platform.cerin.ai)')
   assert.equal(
     sessionDevice({
       client: null,

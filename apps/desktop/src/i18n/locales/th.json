@@ -5219,7 +5219,7 @@
   "Watching the runtime’s desktop.": "กำลังดูเดสก์ท็อปของรันไทม์",
   "We couldn't run an authoritative check (e.g. AWS iam:SimulatePrincipalPolicy was denied) and fell back to inferring from the policy documents.": "ไม่สามารถตรวจสอบอย่างเป็นทางการได้ (เช่น AWS iam:SimulatePrincipalPolicy ถูกปฏิเสธ) จึงเปลี่ยนไปอนุมานจากเอกสารนโยบายแทน",
   "We found the {name} CLI on this computer. Cerin can walk through setup with you, right in a new task.": "เราพบ {name} CLI บนคอมพิวเตอร์เครื่องนี้ Cerin สามารถพาคุณตั้งค่าได้โดยตรงในงานใหม่",
-  "Web sign-in (nuphos.ai)": "ลงชื่อเข้าใช้ผ่านเว็บ (nuphos.ai)",
+  "Web sign-in (platform.cerin.ai)": "ลงชื่อเข้าใช้ผ่านเว็บ (platform.cerin.ai)",
   "Webhook": "Webhook",
   "Webhook & events": "Webhook และอีเวนต์",
   "Wed": "พ.",

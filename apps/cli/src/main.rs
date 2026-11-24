@@ -539,7 +539,7 @@ async fn tui(start: app::Start, team: Option<String>) -> Result<i32> {
     };
     let app = app::App::new(Api::new(api_url, token), config::read_prefs());
     if let Some((team_id, session_id)) = app.run(start, team).await? {
-        let web = std::env::var("NUPHOS_WEB_URL").unwrap_or_else(|_| "https://nuphos.ai".into());
+        let web = std::env::var("NUPHOS_WEB_URL").unwrap_or_else(|_| "https://platform.cerin.ai".into());
         let path = render::clean(&format!("/teams/{team_id}/agent/{session_id}"));
         println!("Task: {}{path}", web.trim_end_matches('/'));
         println!("Continue with: cerin resume {}", render::clean(&session_id));
