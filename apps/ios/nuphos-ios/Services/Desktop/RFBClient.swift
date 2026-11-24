@@ -76,7 +76,7 @@ nonisolated final class RFBClient {
     }
 
     /// A Mac's Cerin host names itself so: it shows one window fitted to a size it is sent (`setDesktopSize`).
-    static func fitsWindows(_ name: String) -> Bool { name == "Cerin Mac" }
+    static func fitsWindows(_ name: String) -> Bool { name == "Cerin Mac" || name == "Nuphos Mac" } // rebrand:keep: older Mac hosts send "Nuphos Mac"
 
     /// The largest screen and pointer shape accepted, and the longest text or
     /// compressed rectangle: the server chooses these sizes, and anything

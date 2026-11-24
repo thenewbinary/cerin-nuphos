@@ -215,13 +215,14 @@ struct DesktopTests {
         let client = RFBClient(send: { recorder.sent += $0 }, handlers: handlers)
         let payload: [UInt8] = [0, 0, 0, 1, 0x65, 1]
         var server = Array("RFB 003.008\n".utf8) + [1, 1] + be32(0)
-        server += be16(16) + be16(8) + [UInt8](repeating: 0, count: 16) + be32(10) + Array("Cerin Mac".utf8)
+        server += be16(16) + be16(8) + [UInt8](repeating: 0, count: 16) + be32(9) + Array("Cerin Mac".utf8)
         server += [0, 0] + be16(2) + rect(0, 0, 32, 20, -223) + rect(0, 0, 32, 20, 50) + be32(payload.count) + be32(1) + payload
         do {
             try await run(client, against: server)
         } catch is RFBByteStream.Closed {}
         precondition(recorder.name.map(RFBClient.fitsWindows) == true, "The Mac host's name says it fits windows")
         precondition(recorder.resized.map { $0 == (32, 20) } == true && recorder.video.count == 1, "The frame fits the new size")
+        precondition(RFBClient.fitsWindows("Nuphos Mac"), "an older Mac host still fits windows") // rebrand:keep
         precondition(!RFBClient.fitsWindows("Box"))
         let fit = RFBClient.setDesktopSize(width: 600, height: 400, window: true)
         precondition(fit == [251, 0] + be16(600) + be16(400) + [1, 0] + be32(1) + be16(0) + be16(0) + be16(600) + be16(400) + be32(0))

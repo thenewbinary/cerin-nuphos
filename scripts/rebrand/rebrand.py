@@ -10,6 +10,7 @@
 import fnmatch, json, os, re, subprocess, sys
 from collections import Counter
 
+MARKER = 'rebrand:keep'
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = subprocess.check_output(['git', 'rev-parse', '--show-toplevel'], cwd=HERE).decode().strip()
 
@@ -51,17 +52,28 @@ def main():
     for f, text in files():
         if match(f, m['exclude_paths']):
             continue
-        new = text
-        for r in m['rules']:
-            if match(f, r.get('exclude_paths', [])):
+        # A line carrying the marker `rebrand:keep` is never rewritten (a legacy
+        # alias next to its Cerin name, for instance).
+        lines = text.splitlines(keepends=True) if MARKER in text else [text]
+        out = []
+        for line in lines:
+            if MARKER in line and len(lines) > 1:
+                out.append(line)
                 continue
-            new, n = r['re'].subn(r['replace'], new)
-            stats[r['name']] += n
+            for r in m['rules']:
+                if match(f, r.get('exclude_paths', [])):
+                    continue
+                line, n = r['re'].subn(r['replace'], line)
+                stats[r['name']] += n
+            out.append(line)
+        new = ''.join(out)
         if new != text:
             changed.append(f)
             if not check:
                 open(os.path.join(ROOT, f), 'w', encoding='utf-8').write(new)
         for no, line in enumerate(new.splitlines(), 1):
+            if MARKER in line:
+                continue
             if any(c.search(line) for c in checks) and not any(
                 fnmatch.fnmatch(f, g) and rx.search(line) for g, rx in keep
             ):

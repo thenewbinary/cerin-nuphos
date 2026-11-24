@@ -35,8 +35,9 @@ need no `keep.txt` entry.
 
 ## When a check fails
 
-Run `rebrand.py` and commit the result. If the line really must keep the old
-form, add `<path glob> <regex>   # reason` to `keep.txt`. If the rename needs a
+Run `rebrand.py` and commit the result. If a line must keep the old form next to the new one (a legacy alias),
+end it with a `rebrand:keep` comment and neither the script nor the check
+touches it. If a whole file must keep it, add `<path glob> <regex>   # reason` to `keep.txt`. If the rename needs a
 new kind of replacement, add a rule to `map.json` rather than editing by hand,
 so the next upstream merge gets it too.
 
