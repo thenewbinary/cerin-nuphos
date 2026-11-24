@@ -145,6 +145,22 @@ test('Codex gets its own provider entry at the top of config.toml, replaced in p
   assert.equal(codexProviderConfig(once, undefined), base)
 })
 
+test('a block written before the rename is replaced, not kept beside the new one', () => {
+  const base = 'notify = ["x"]\n'
+  const old = [
+    '# Nuphos custom provider (begin)', // rebrand:keep
+    'model_provider = "nuphos-custom"',
+    'model_providers.nuphos-custom = { name = "Custom provider", base_url = "https://old.example.com", env_key = "NUPHOS_CODEX_PROVIDER_KEY" }',
+    '# Nuphos custom provider (end)', // rebrand:keep
+    base,
+  ].join('\n')
+  const updated = codexProviderConfig(old, gateway)
+
+  assert.equal(updated, codexProviderConfig(base, gateway))
+  assert.equal(updated.match(/^model_provider = /gmu)?.length, 1)
+  assert.equal(codexProviderConfig(old, undefined), base)
+})
+
 test('openab passes the key on by name, so its config file never holds it', () => {
   const adapter = { entry: '/b/a.js', bridge: '/b/bridge.mjs', version: 'v' }
   const launch: LocalRuntimeLaunch = {

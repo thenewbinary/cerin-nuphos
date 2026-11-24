@@ -227,6 +227,8 @@ export function claudeProviderSettings(userDir: string) {
 
 const BEGIN = '# Cerin custom provider (begin)'
 const END = '# Cerin custom provider (end)'
+// Blocks written before the rename; stripped too, so the provider is never written twice.
+const LEGACY_MARKERS = [['# Nuphos custom provider (begin)', '# Nuphos custom provider (end)']] // rebrand:keep
 const CODEX_PROVIDER_ID = 'nuphos-custom'
 
 /**
@@ -234,12 +236,7 @@ const CODEX_PROVIDER_ID = 'nuphos-custom'
  * table needs no table header, so the block is one span that is easy to replace.
  */
 export function codexProviderConfig(contents: string, provider: CustomProvider | undefined) {
-  const begin = contents.indexOf(BEGIN)
-  const end = contents.indexOf(END)
-  const rest =
-    begin === -1 || end < begin
-      ? contents
-      : contents.slice(0, begin) + contents.slice(end + END.length).replace(/^\n/u, '')
+  const rest = [[BEGIN, END], ...LEGACY_MARKERS].reduce(withoutBlock, contents)
 
   if (!provider) return rest
   const table = [
@@ -256,6 +253,15 @@ export function codexProviderConfig(contents: string, provider: CustomProvider |
     END,
     rest,
   ].join('\n')
+}
+
+function withoutBlock(contents: string, [open, close]: string[]) {
+  const begin = contents.indexOf(open)
+  const end = contents.indexOf(close)
+
+  return begin === -1 || end < begin
+    ? contents
+    : contents.slice(0, begin) + contents.slice(end + close.length).replace(/^\n/u, '')
 }
 
 /** Brings a Codex home's config.toml in line with the provider saved beside it, or the one given. */
