@@ -173,7 +173,6 @@ const deps: ConstructorParameters<typeof LocalRuntimeController>[0] = {
         const fresh = deviceCredential?.credential ?? currentToken()
 
         if (!fresh || (!deviceCredential && fresh !== signedIn)) throw new Error('Signed out')
-
         const headers = {
           authorization: `Bearer ${fresh}`,
           [CLIENT_VERSION_HEADER]: CLIENT_VERSION_VALUE,
@@ -250,7 +249,6 @@ function report(): void {
   const lines = LOCAL_AGENT_PROVIDERS.map((provider) => {
     const agent = agents[provider]
     let detail = 'starting…'
-
     if (agent.online && agent.cli?.installed && !agent.cli.loggedIn)
       detail = 'not signed in; run `cerin agent` in a terminal to sign in'
     else if (agent.online) detail = 'online'
@@ -260,7 +258,6 @@ function report(): void {
     return `  ${NAMES[provider]}: ${detail}`
   })
   const summary = lines.join('\n')
-
   if (summary === lastSummary) return
   lastSummary = summary
   console.log(`${new Date().toLocaleTimeString()} ${device.label}\n${summary}`)

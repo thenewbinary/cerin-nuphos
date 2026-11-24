@@ -68,9 +68,7 @@ export async function chooseBotImport(
   stillCurrent(account)
   if (!response.ok) {
     if (response.status === 404)
-      throw new Error(
-        'This Cerin server does not support Bot imports. Update it before importing.',
-      )
+      throw new Error('This Cerin server does not support Bot imports. Update it before importing.')
     const failure = (await response.json().catch(() => null)) as {
       error?: { message?: string }
     } | null
