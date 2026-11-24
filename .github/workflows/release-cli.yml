@@ -9,9 +9,14 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: cli-vX.Y.Z tag to publish (on a merge-queue commit of main)
+        description: cli-vX.Y.Z tag to publish (on a commit of main)
         type: string
         required: true
+      platforms:
+        description: all, or linux alone (macOS needs the Developer ID signing secrets)
+        type: choice
+        options: [linux, all]
+        default: linux
 
 concurrency:
   group: release-cli
@@ -35,6 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      build_matrix: ${{ steps.matrix.outputs.build }}
+      agent_matrix: ${{ steps.matrix.outputs.agent }}
     permissions:
       contents: write
     steps:
@@ -53,6 +60,34 @@ jobs:
           [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || { echo '::error::Expected a stable SemVer version'; exit 1; }
           [[ "$RELEASE_TAG" == "cli-v$VERSION" ]] || { echo '::error::Tag must match apps/cli/Cargo.toml'; exit 1; }
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      # macOS builds are signed with Desktop's identity; `linux` ships without them.
+      - name: Pick platforms
+        id: matrix
+        env:
+          PLATFORMS: ${{ inputs.platforms }}
+        run: |
+          set -euo pipefail
+          build='[
+            {"target":"aarch64-apple-darwin","runner":"macos-15"},
+            {"target":"x86_64-apple-darwin","runner":"macos-15"},
+            {"target":"x86_64-unknown-linux-musl","runner":"ubuntu-24.04"},
+            {"target":"aarch64-unknown-linux-musl","runner":"ubuntu-24.04-arm"}
+          ]'
+          agent='[
+            {"runner":"macos-26","targets":"darwin-arm64,darwin-x64"},
+            {"runner":"ubuntu-22.04","targets":"linux-x64"},
+            {"runner":"ubuntu-22.04-arm","targets":"linux-arm64"}
+          ]'
+          case "$PLATFORMS" in
+            all) ;;
+            linux)
+              build=$(jq -c 'map(select(.target | contains("apple-darwin") | not))' <<< "$build")
+              agent=$(jq -c 'map(select(.runner | startswith("macos") | not))' <<< "$agent")
+              ;;
+            *) echo "::error::platforms must be all or linux"; exit 1 ;;
+          esac
+          echo "build=$(jq -c '{include: .}' <<< "$build")" >> "$GITHUB_OUTPUT"
+          echo "agent=$(jq -c '{include: .}' <<< "$agent")" >> "$GITHUB_OUTPUT"
       # A draft until every binary is attached, so the installer never sees a
       # release with missing assets.
       - name: Create draft release
@@ -73,17 +108,8 @@ jobs:
     environment: ${{ contains(matrix.target, 'apple-darwin') && 'desktop-release' || '' }}
     strategy:
       fail-fast: true
-      matrix:
-        include:
-          - target: aarch64-apple-darwin
-            runner: macos-15
-          - target: x86_64-apple-darwin
-            runner: macos-15
-          # musl: one static binary for any Linux distribution.
-          - target: x86_64-unknown-linux-musl
-            runner: ubuntu-24.04
-          - target: aarch64-unknown-linux-musl
-            runner: ubuntu-24.04-arm
+      # musl on Linux: one static binary for any distribution.
+      matrix: ${{ fromJSON(needs.validate.outputs.build_matrix) }}
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: write
@@ -142,16 +168,9 @@ jobs:
     environment: ${{ startsWith(matrix.runner, 'macos') && 'desktop-release' || '' }}
     strategy:
       fail-fast: true
-      matrix:
-        include:
-          - runner: macos-26
-            targets: darwin-arm64,darwin-x64
-          # 22.04: the glibc openab links against is the oldest it can run
-          # on, and 22.04 (2.35) covers Debian 12 as well.
-          - runner: ubuntu-22.04
-            targets: linux-x64
-          - runner: ubuntu-22.04-arm
-            targets: linux-arm64
+      # Linux on 22.04: the glibc openab links against is the oldest it can
+      # run on, and 22.04 (2.35) covers Debian 12 as well.
+      matrix: ${{ fromJSON(needs.validate.outputs.agent_matrix) }}
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: write
