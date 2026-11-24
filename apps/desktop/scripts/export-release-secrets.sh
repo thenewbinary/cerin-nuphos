@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-CERT_NAME="Developer ID Application: ZEABUR PTE. LTD. (6T873K59LQ)"
+CERT_NAME="Developer ID Application: The New Binary (MT4V6HEGSU)"
 P12_PATH="$(mktemp -d)/cert.p12"
 P12_PASS="$(openssl rand -base64 24 | tr -d '/+=' | head -c 24)"
 
@@ -22,15 +22,15 @@ cat <<EOF
 
 ==> Pipe through gh:
 
-gh secret set MAC_CERTS --repo zeabur/nuphos --body "$CERT_B64"
-gh secret set MAC_CERTS_PASSWORD --repo zeabur/nuphos --body "$P12_PASS"
-gh secret set APPLE_API_KEY_BASE64 --repo zeabur/nuphos --body "$KEY_B64"
-gh secret set APPLE_API_KEY_ID --repo zeabur/nuphos --body "66Q44L35XP"
-gh secret set APPLE_API_ISSUER --repo zeabur/nuphos --body "acc0b783-e12f-41e3-b181-f79a462630d8"
+gh secret set MAC_CERTS --repo thenewbinary/cerin-nuphos --body "$CERT_B64"
+gh secret set MAC_CERTS_PASSWORD --repo thenewbinary/cerin-nuphos --body "$P12_PASS"
+gh secret set APPLE_API_KEY_BASE64 --repo thenewbinary/cerin-nuphos --body "$KEY_B64"
+gh secret set APPLE_API_KEY_ID --repo thenewbinary/cerin-nuphos --body "66Q44L35XP"
+gh secret set APPLE_API_ISSUER --repo thenewbinary/cerin-nuphos --body "acc0b783-e12f-41e3-b181-f79a462630d8"
 
 # AWS — set with byos-connector creds:
-# gh secret set AWS_ACCESS_KEY_ID --repo zeabur/nuphos --body "AKIA..."
-# gh secret set AWS_SECRET_ACCESS_KEY --repo zeabur/nuphos --body "..."
+# gh secret set AWS_ACCESS_KEY_ID --repo thenewbinary/cerin-nuphos --body "AKIA..."
+# gh secret set AWS_SECRET_ACCESS_KEY --repo thenewbinary/cerin-nuphos --body "..."
 
 EOF
 

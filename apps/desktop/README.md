@@ -5,7 +5,7 @@ Electron desktop app for Cerin — multi-cloud BYOS infra control plane.
 ## Releases
 
 Release notes and version history are published on
-[GitHub Releases](https://github.com/zeabur/nuphos/releases).
+[GitHub Releases](https://github.com/thenewbinary/cerin-nuphos/releases).
 
 ## Develop
 
