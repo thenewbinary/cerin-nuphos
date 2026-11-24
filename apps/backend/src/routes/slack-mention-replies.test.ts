@@ -288,7 +288,7 @@ describe('bare mention', () => {
     expect(threadUpserts).toHaveLength(1)
     expect(agentRuns).toHaveLength(0)
     expect(posted).toHaveLength(1)
-    expect(posted[0]!.text).toContain('What would you like Nuphos to look into?')
+    expect(posted[0]!.text).toContain('What would you like Cerin to look into?')
     expect(eventMarks).toEqual([{ eventId: 'Ev-mention', status: 'completed' }])
 
     // The next mention in the hint thread runs a turn in the same conversation.
@@ -305,7 +305,7 @@ describe('bare mention', () => {
 
     expect(threadUpserts).toHaveLength(0)
     expect(posted).toHaveLength(1)
-    expect(posted[0]!.text).toContain("isn't linked to Nuphos yet")
+    expect(posted[0]!.text).toContain("isn't linked to Cerin yet")
     expect(eventMarks).toEqual([{ eventId: 'Ev-mention', status: 'completed' }])
   })
 
@@ -322,7 +322,7 @@ describe('bare mention', () => {
         user: SLACK_USER,
         // A top-level mention: the notice sits beside it, not in a new thread.
         threadTs: undefined,
-        text: expect.stringContaining("doesn't match any Nuphos user"),
+        text: expect.stringContaining("doesn't match any Cerin user"),
       }),
     ])
     expect(eventMarks).toEqual([{ eventId: 'Ev-mention', status: 'completed' }])
@@ -389,7 +389,7 @@ describe('thread replies never fail silently', () => {
 
     expect(agentRuns).toHaveLength(0)
     expect(posted).toHaveLength(1)
-    expect(posted[0]!.text).toContain('no longer linked to Nuphos')
+    expect(posted[0]!.text).toContain('no longer linked to Cerin')
     expect(eventMarks).toEqual([{ eventId: 'Ev-reply', status: 'completed' }])
   })
 
@@ -401,7 +401,7 @@ describe('thread replies never fail silently', () => {
 
     expect(agentRuns).toHaveLength(0)
     expect(posted).toHaveLength(1)
-    expect(posted[0]!.text).toContain('linked to a different Nuphos team')
+    expect(posted[0]!.text).toContain('linked to a different Cerin team')
     expect(eventMarks).toEqual([{ eventId: 'Ev-reply', status: 'completed' }])
   })
 
@@ -484,7 +484,7 @@ describe('only a mention gets an answer', () => {
       expect.objectContaining({
         user: SLACK_USER,
         threadTs: '100.1',
-        text: expect.stringContaining('not linked to Nuphos yet'),
+        text: expect.stringContaining('not linked to Cerin yet'),
       }),
     ])
     expect(eventMarks).toEqual([{ eventId: 'Ev-reply', status: 'completed' }])
@@ -501,7 +501,7 @@ describe('only a mention gets an answer', () => {
     expect(ephemerals).toEqual([
       expect.objectContaining({
         user: SLACK_USER,
-        text: expect.stringContaining('no longer a member of this Nuphos team'),
+        text: expect.stringContaining('no longer a member of this Cerin team'),
       }),
     ])
   })
@@ -548,7 +548,7 @@ describe('an unbound thread under a message the bot posted', () => {
     state.thread = null
     state.threadReplies = [
       {
-        text: "I posted this, but it is not attached to a Nuphos conversation, so replies here don't reach me.",
+        text: "I posted this, but it is not attached to a Cerin conversation, so replies here don't reach me.",
       },
     ]
 

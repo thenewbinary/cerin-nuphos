@@ -192,7 +192,7 @@ describe('finalize', () => {
 
     const botLine = transcript.find((m) => m.fromBot)
 
-    expect(botLine).toMatchObject({ ts: 'bot:nuphos:stream-1', authorName: 'Nuphos' })
+    expect(botLine).toMatchObject({ ts: 'bot:nuphos:stream-1', authorName: 'Cerin' })
     expect(botLine!.text).toContain('OOMKilled')
     expect(statusUpdates.at(-1)).toBe('')
   })
@@ -201,7 +201,7 @@ describe('finalize', () => {
     const delivery = (await beginNuphosSlackTurn(beginArgs()))!
 
     await delivery.finalize({ stopped: true })
-    expect(posted.some((m) => m.text.includes('Stopped from Nuphos'))).toBe(true)
+    expect(posted.some((m) => m.text.includes('Stopped from Cerin'))).toBe(true)
   })
 
   test('a thrown turn posts an error notice into the thread', async () => {

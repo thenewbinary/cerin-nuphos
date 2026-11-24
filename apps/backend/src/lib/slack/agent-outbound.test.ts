@@ -539,7 +539,7 @@ describe('a report that opens its own reply thread', () => {
         key: { slackWorkspaceId: 'T1', slackChannelId: 'C1', slackThreadTs: '123.456' },
         message: expect.objectContaining({
           ts: '123.789',
-          authorName: 'Nuphos',
+          authorName: 'Cerin',
           fromBot: true,
           text: postedMessages[1]?.text,
         }),
