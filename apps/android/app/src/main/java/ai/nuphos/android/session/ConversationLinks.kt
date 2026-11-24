@@ -17,7 +17,7 @@ data class ConversationLink(val teamId: String, val conversationId: String) {
             parse(value)?.let { return it }
             if (value.length > 4096) return null
             val envelope = URI(value)
-            if (envelope.scheme != "nuphos" || envelope.rawAuthority != "open" ||
+            if (envelope.scheme !in setOf("cerin", "nuphos") || envelope.rawAuthority != "open" ||
                 !envelope.rawPath.isNullOrEmpty() || envelope.rawFragment != null) return null
             val fields = (envelope.rawQuery ?: return null).split('&')
             if (fields.size !in 1..2) return null
@@ -38,8 +38,10 @@ data class ConversationLink(val teamId: String, val conversationId: String) {
 
         fun parse(value: String): ConversationLink? = runCatching {
             val uri = URI(value)
-            if (uri.scheme != "https" || uri.rawAuthority != URI(ai.nuphos.android.data.NuphosWeb.SITE_URL).rawAuthority ||
-                uri.rawQuery != null || uri.rawFragment != null) return null
+            val ownAuthority = URI(ai.nuphos.android.data.NuphosWeb.SITE_URL).rawAuthority
+            val acceptedAuthority = uri.rawAuthority == ownAuthority ||
+                (ai.nuphos.android.data.BackendOrigin.isCloud() && uri.rawAuthority?.lowercase() == "nuphos.ai")
+            if (uri.scheme != "https" || !acceptedAuthority || uri.rawQuery != null || uri.rawFragment != null) return null
             val match = path.matchEntire(uri.rawPath ?: return null) ?: return null
             ConversationLink(match.groupValues[1], match.groupValues[2])
         }.getOrNull()

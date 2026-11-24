@@ -13,7 +13,8 @@ import java.security.MessageDigest
 /** Browser sign-in delivers a one-time code to a private loopback listener. */
 object NuphosWeb {
     val SITE_URL: String get() = if (BackendOrigin.isCloud()) "https://platform.cerin.ai" else BackendOrigin.current
-    const val CALLBACK_SCHEME = "nuphos"
+    const val CALLBACK_SCHEME = "cerin"
+    const val LEGACY_CALLBACK_SCHEME = "nuphos"
     const val CALLBACK_HOST = "google-callback"
 
     sealed class CallbackResult {
@@ -50,7 +51,7 @@ object NuphosWeb {
 
     /** Old token intents can only return focus to the app; they carry no authority. */
     fun isReturnIntent(uri: Uri): Boolean =
-        uri.scheme == CALLBACK_SCHEME && uri.host == CALLBACK_HOST
+        (uri.scheme == CALLBACK_SCHEME || uri.scheme == LEGACY_CALLBACK_SCHEME) && uri.host == CALLBACK_HOST
 
     fun parseDelivery(target: String, expectedState: String): CallbackResult? = runCatching {
         val uri = URI(target)

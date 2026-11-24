@@ -62,6 +62,8 @@ class SessionMentionTest {
         val link = SessionMention.link("0123456789abcdef01234567", "bot-a")
         val titles = mapOf("bot-a" to "Sign-in [beta]")
         assertEquals("Ask [@Sign-in \\[beta\\]]($link) now", SessionMention.named("Ask $link now", titles::get))
+        val legacy = link.replace("platform.cerin.ai", "nuphos.ai")
+        assertEquals("Ask [@Sign-in \\[beta\\]]($legacy) now", SessionMention.named("Ask $legacy now", titles::get))
         // Unknown conversations and links already written as markdown keep their text.
         val other = SessionMention.link("0123456789abcdef01234567", "other")
         assertEquals("see $other", SessionMention.named("see $other", titles::get))

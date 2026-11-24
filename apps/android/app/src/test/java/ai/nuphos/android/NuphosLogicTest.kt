@@ -98,6 +98,14 @@ class NuphosLogicTest {
         val target = PlanLink.target("https://platform.cerin.ai/teams/teamA/plans/planB")
         assertEquals("teamA", target?.teamId)
         assertEquals("planB", target?.planId)
+        val legacy = "https://nuphos.ai/teams/teamA/plans/planB"
+        assertEquals(target, PlanLink.target(legacy))
+        listOf(
+            legacy.replace("https:", "http:"),
+            legacy.replace("nuphos.ai", "www.nuphos.ai"),
+            legacy.replace("nuphos.ai", "nuphos.ai:443"),
+            legacy.replace("nuphos.ai", "user@nuphos.ai"),
+        ).forEach { assertNull(it, PlanLink.target(it)) }
     }
 
     @Test

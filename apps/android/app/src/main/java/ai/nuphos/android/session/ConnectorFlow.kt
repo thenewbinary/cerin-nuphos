@@ -17,7 +17,7 @@ sealed interface ConnectorReturn {
 }
 object ConnectorCallback {
     val hosts = setOf("linear-callback", "jira-callback", "asana-callback", "trello-callback", "plaud-callback", "sentry-callback", "github-callback")
-    fun isConnectorUri(value: String): Boolean = runCatching { URI(value).let { it.scheme == "nuphos" && it.host in hosts } }.getOrDefault(false)
+    fun isConnectorUri(value: String): Boolean = runCatching { URI(value).let { it.scheme in setOf("cerin", "nuphos") && it.host in hosts } }.getOrDefault(false)
     fun state(value: String): String? = runCatching {
         URI(value).rawQuery.orEmpty().split('&').map { it.split('=', limit = 2) }
             .filter { URLDecoder.decode(it[0], StandardCharsets.UTF_8) == "state" }
@@ -27,7 +27,7 @@ object ConnectorCallback {
         fun invalid() = ConnectorReturn.Invalid("Authorization return is invalid or expired. Refresh connections and try again.")
         val uri = runCatching { URI(value) }.getOrNull() ?: return invalid()
         val provider = ConnectorCatalog.named(pending.provider) ?: return invalid()
-        if (uri.scheme != "nuphos" || uri.host != provider.callbackHost || uri.userInfo != null || uri.port != -1 || !uri.path.isNullOrEmpty() || uri.fragment != null || now >= pending.expiresAt) return invalid()
+        if (uri.scheme !in setOf("cerin", "nuphos") || uri.host != provider.callbackHost || uri.userInfo != null || uri.port != -1 || !uri.path.isNullOrEmpty() || uri.fragment != null || now >= pending.expiresAt) return invalid()
         val query = runCatching {
             uri.rawQuery.orEmpty().split('&').filter(String::isNotEmpty).map { part ->
                 val pair = part.split('=', limit = 2)

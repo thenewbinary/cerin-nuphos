@@ -61,7 +61,8 @@ class AuthCallbackFixtureDeviceTest {
             for (state in listOf(AuthSession.State.Restoring, AuthSession.State.SignedOut(null), AuthSession.State.SigningIn, AuthSession.State.SignedIn(user))) {
                 setState(auth, state)
                 val generation = auth.generation
-                for (target in listOf("cerin://google-callback?token=attacker-token", "cerin://google-callback?error=denied", "cerin://google-callback?token=%ZZ", "cerin://google-callback?token=first&token=second")) {
+                val callbacks = listOf("cerin://google-callback?token=attacker-token", "cerin://google-callback?error=denied", "cerin://google-callback?token=%ZZ", "cerin://google-callback?token=first&token=second")
+                for (target in callbacks.flatMap { listOf(it, it.replace("cerin:", "nuphos:")) }) {
                     assertTrue(auth.handleCallback(Uri.parse(target)))
                     assertSame(state, auth.state)
                     assertEquals(generation, auth.generation)

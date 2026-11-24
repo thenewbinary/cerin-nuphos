@@ -30,8 +30,23 @@ class ConversationLinksTest {
         ).forEach { assertNull(it, ConversationLink.parse(it)) }
     }
 
+    @Test fun legacyWebLinksAndEnvelopesResolveWithoutAcceptingLookalikes() {
+        val expected = ConversationLink.parse(url)
+        val legacy = url.replace("platform.cerin.ai", "nuphos.ai")
+        assertEquals(expected, ConversationLink.parseIncoming(legacy))
+        assertEquals(expected, ConversationLink.parseIncoming(envelope(legacy, "nuphos")))
+        assertNull(ConversationLink.parseIncoming(envelope(scheme = "nuphos")))
+        listOf(
+            legacy.replace("https:", "http:"),
+            legacy.replace("nuphos.ai", "www.nuphos.ai"),
+            legacy.replace("nuphos.ai", "nuphos.ai:443"),
+            legacy.replace("nuphos.ai", "user@nuphos.ai"),
+            legacy.replace("nuphos.ai", "nuphos.ai.evil.example"),
+        ).forEach { assertNull(it, ConversationLink.parseIncoming(it)) }
+    }
+
     private fun encoded(value: String) = java.net.URLEncoder.encode(value, "UTF-8")
-    private fun envelope(value: String = url) = "cerin://open?url=${encoded(value)}"
+    private fun envelope(value: String = url, scheme: String = "cerin") = "$scheme://open?url=${encoded(value)}"
 
     @Test fun websiteEnvelopeResolvesToTheSameAuthorizedDestination() {
         val expected = ConversationLink.parse(url)

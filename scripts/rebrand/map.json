@@ -36,7 +36,14 @@
         "apps/ios/Shared/SessionLink.swift",
         "apps/ios/tests/AppLinkTests.swift",
         "apps/ios/tests/SessionLinkTests.swift",
-        "apps/ios/tests/SessionMentionTests.swift"
+        "apps/ios/tests/SessionMentionTests.swift",
+        "apps/android/app/src/main/AndroidManifest.xml",
+        "apps/android/app/src/main/java/ai/nuphos/android/session/ConversationLinks.kt",
+        "apps/android/app/src/main/java/ai/nuphos/android/model/ConversationModels.kt",
+        "apps/android/app/src/main/java/ai/nuphos/android/ui/chat/SessionMention.kt",
+        "apps/android/app/src/test/java/ai/nuphos/android/session/ConversationLinksTest.kt",
+        "apps/android/app/src/test/java/ai/nuphos/android/NuphosLogicTest.kt",
+        "apps/android/app/src/test/java/ai/nuphos/android/SessionMentionTest.kt"
       ]
     },
     {

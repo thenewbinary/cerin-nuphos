@@ -345,7 +345,8 @@ object PlanLink {
             val own = java.net.URI(ai.nuphos.android.data.NuphosWeb.SITE_URL)
             if (selfHosted) {
                 if (uri.scheme != own.scheme || uri.rawAuthority != own.rawAuthority) return null
-            } else if (host != "platform.cerin.ai" && !host.endsWith(".platform.cerin.ai")) return null
+            } else if (host != "platform.cerin.ai" && !host.endsWith(".platform.cerin.ai") &&
+                uri.rawAuthority?.lowercase() != "nuphos.ai") return null
         } else if (uri.scheme != null) {
             return null
         }

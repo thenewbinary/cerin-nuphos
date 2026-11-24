@@ -61,7 +61,11 @@ class ConnectorContractTest {
     }
     @Test fun callbackRequiresExactStateTeamHostExpiryAndSingleQueries() {
         val pending = ConnectorPending("team", "linear", "abc", 1000)
-        assertTrue(ConnectorCallback.validate("cerin://linear-callback?state=abc&team_id=team&binding_id=b", pending, 999) is ConnectorReturn.OAuth)
+        val callback = "cerin://linear-callback?state=abc&team_id=team&binding_id=b"
+        for (target in listOf(callback, callback.replace("cerin:", "nuphos:"))) {
+            assertTrue(ConnectorCallback.isConnectorUri(target))
+            assertTrue(ConnectorCallback.validate(target, pending, 999) is ConnectorReturn.OAuth)
+        }
         listOf("https://linear-callback?state=abc", "cerin://jira-callback?state=abc", "cerin://linear-callback?state=abc&state=abc&team_id=team&binding_id=b", "cerin://linear-callback?state=abc&team_id=other&binding_id=b", "cerin://linear-callback?state=abc&team_id=team", "cerin://linear-callback?state=abc&error=denied").forEach {
             assertTrue(it, ConnectorCallback.validate(it, pending, 999) is ConnectorReturn.Invalid)
         }
