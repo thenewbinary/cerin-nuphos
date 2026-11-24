@@ -46,7 +46,7 @@ let nativeSupported = true
 /** How the backend answers the provider chooser probe. */
 let chooserProbe: () => Response = () =>
   new Response('provider chooser', {
-    headers: { 'X-Cerin-Social-Login': '1', 'X-Cerin-Social-Providers': 'google,apple' },
+    headers: { 'X-Nuphos-Social-Login': '1', 'X-Nuphos-Social-Providers': 'google,apple' },
   })
 let redeemQueue: (() => Response)[] = []
 let redeemCalls = 0
@@ -201,7 +201,7 @@ beforeEach(() => {
   nativeSupported = true
   chooserProbe = () =>
     new Response('provider chooser', {
-      headers: { 'X-Cerin-Social-Login': '1', 'X-Cerin-Social-Providers': 'google,apple' },
+      headers: { 'X-Nuphos-Social-Login': '1', 'X-Nuphos-Social-Providers': 'google,apple' },
     })
   redeemQueue = [readySession]
   redeemCalls = 0
@@ -290,15 +290,15 @@ test('socialProviders reports what the backend offers, and nothing from older se
   chooserProbe = () =>
     new Response('provider chooser', {
       headers: {
-        'X-Cerin-Social-Login': '1',
-        'X-Cerin-Social-Providers': 'oidc,unknown',
-        'X-Cerin-Social-Oidc-Name': 'Logto',
+        'X-Nuphos-Social-Login': '1',
+        'X-Nuphos-Social-Providers': 'oidc,unknown',
+        'X-Nuphos-Social-Oidc-Name': 'Logto',
       },
     })
   assert.deepEqual(await auth.socialProviders(), [{ provider: 'oidc', name: 'Logto' }])
 
   chooserProbe = () =>
-    new Response('provider chooser', { headers: { 'X-Cerin-Social-Login': '1' } })
+    new Response('provider chooser', { headers: { 'X-Nuphos-Social-Login': '1' } })
   assert.deepEqual(await auth.socialProviders(), [])
 
   chooserProbe = () => new Response('Not found', { status: 404 })
@@ -322,7 +322,7 @@ test('socialProviders fails when the backend cannot be asked, so the screen can 
 test('Apple fails without opening a browser when the backend does not offer it', async () => {
   chooserProbe = () =>
     new Response('provider chooser', {
-      headers: { 'X-Cerin-Social-Login': '1', 'X-Cerin-Social-Providers': 'google' },
+      headers: { 'X-Nuphos-Social-Login': '1', 'X-Nuphos-Social-Providers': 'google' },
     })
 
   await assert.rejects(auth.login('apple'), /does not offer Apple/)
@@ -665,7 +665,7 @@ test('native: a callback with the wrong state is ignored', async () => {
 test('Google fails without opening a browser when the backend does not offer it', async () => {
   // A self-hosted server without Google must not send anyone to another server's sign-in.
   chooserProbe = () =>
-    new Response('provider chooser', { headers: { 'X-Cerin-Social-Login': '1' } })
+    new Response('provider chooser', { headers: { 'X-Nuphos-Social-Login': '1' } })
 
   await assert.rejects(auth.login('google'), /does not offer Google/)
   assert.equal(openedUrls.length, 0)

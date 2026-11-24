@@ -13,9 +13,13 @@
   "rules": [
     {
       "name": "product-name",
-      "why": "The product name, wherever a person can read it (UI, copy, docs, comments).",
-      "pattern": "(?<![A-Za-z0-9_])Nuphos(?![A-Za-z0-9_])",
-      "replace": "Cerin"
+      "why": "The product name, wherever a person can read it (UI, copy, docs, comments). Not X-Nuphos-* HTTP header names: installed apps and the live server read them across versions.",
+      "pattern": "(?<![A-Za-z0-9_])(?<!X-)Nuphos(?![A-Za-z0-9_])",
+      "replace": "Cerin",
+      "exclude_paths": [
+        "apps/backend/src/lib/claude-code-preview/box-update.test.ts",
+        "apps/backend/src/routes/rebind-private-identity.test.ts"
+      ]
     },
     {
       "name": "url-scheme",
@@ -228,7 +232,7 @@
     }
   ],
   "check_patterns": [
-    "(?<![A-Za-z0-9_])Nuphos(?![A-Za-z0-9_])",
+    "(?<![A-Za-z0-9_])(?<!X-)Nuphos(?![A-Za-z0-9_])",
     "nuphos://",
     "nuphos\\.ai",
     "(?i)nuphos\\.example\\.com"

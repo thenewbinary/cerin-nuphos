@@ -57,7 +57,7 @@ agent.post('/chat', async (c) => {
     runOwnerUserId,
     conversationForResume,
     userId,
-    c.req.header('X-Cerin-Device-Id')?.trim() || undefined,
+    c.req.header('X-Nuphos-Device-Id')?.trim() || undefined,
     c.get('cliToken'),
     teamId,
   )

@@ -42,8 +42,8 @@ enum NuphosWeb {
         if response.statusCode == 503 { return SocialOptions(providers: []) }
         guard (200..<300).contains(response.statusCode) else { throw URLError(.badServerResponse) }
         return options(
-            providers: response.value(forHTTPHeaderField: "X-Cerin-Social-Providers"),
-            oidcName: response.value(forHTTPHeaderField: "X-Cerin-Social-Oidc-Name"))
+            providers: response.value(forHTTPHeaderField: "X-Nuphos-Social-Providers"),
+            oidcName: response.value(forHTTPHeaderField: "X-Nuphos-Social-Oidc-Name"))
     }
 
     static func options(providers header: String?, oidcName: String?) -> SocialOptions {

@@ -28,3 +28,5 @@ apps/desktop/src/app/workspace/useWorkspaceLinkOpeners.test.tsx nuphos\.ai   # t
 apps/desktop/local-runtime/reply-images-render.test.mjs nuphos\.ai   # tests rendering attachments from the exact legacy host
 apps/desktop/src/components/agent/MessageResponse.tsx nuphos\[.\]ai   # regex recognizes attachments from the exact legacy host
 apps/desktop/src/components/agent/panel/UserMessage.tsx nuphos\[.\]ai   # regex recognizes plan mentions from the exact legacy host
+apps/backend/src/lib/claude-code-preview/box-update.test.ts Nuphos   # byte-for-byte copy of the AGENTS.md old Boxes have; its sha256 is how the update recognises it
+apps/backend/src/routes/rebind-private-identity.test.ts Nuphos   # fixture pairs a role name with its case variant (NUPHOS)

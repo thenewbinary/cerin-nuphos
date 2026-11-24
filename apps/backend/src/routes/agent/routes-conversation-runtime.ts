@@ -107,7 +107,7 @@ agent.post('/conversations/:sessionId/steer', async (c) => {
       groupId,
       userId,
       // Attributed like a chat message: an agent token's steer is that agent's.
-      deviceId: c.req.header('X-Cerin-Device-Id')?.trim() || undefined,
+      deviceId: c.req.header('X-Nuphos-Device-Id')?.trim() || undefined,
       cliToken: c.get('cliToken'),
     },
     messageId,
