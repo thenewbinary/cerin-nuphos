@@ -40,7 +40,7 @@ It opens in the team used last (the first team the first time) and shows
 which one; `/team` in the TUI, `cerin team NAME` or `--team` switch it.
 
 Over SSH, or on Linux without a display, `cerin login` shows a code
-instead of opening a browser: enter it at nuphos.ai/device on any device and
+instead of opening a browser: enter it at https://platform.cerin.ai/auth/social/device on any device and
 approve it as yourself, or as an agent with its own name in one team. An
 agent's messages show as that agent, via you, and it cannot change your
 account, tokens, team membership or billing. `cerin login --device` picks
