@@ -64,8 +64,11 @@ test('copy and external open use the absolute URL for a relative app path', () =
   actions.copyLink('/teams/team1/agent')
   actions.openExternal('/teams/team1/agent')
   actions.copyLink('https://example.com/a')
-  assert.deepEqual(calls.copied, ['https://nuphos.ai/teams/team1/agent', 'https://example.com/a'])
-  assert.deepEqual(calls.external, ['https://nuphos.ai/teams/team1/agent'])
+  assert.deepEqual(calls.copied, [
+    'https://platform.cerin.ai/teams/team1/agent',
+    'https://example.com/a',
+  ])
+  assert.deepEqual(calls.external, ['https://platform.cerin.ai/teams/team1/agent'])
 })
 
 test('the menu only applies to web pages and in-app paths', () => {

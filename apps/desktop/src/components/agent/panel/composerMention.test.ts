@@ -53,7 +53,7 @@ test('members match by name or email, case-insensitively, skipping removed ones'
 })
 
 test("a session mention is the session's canonical link", () => {
-  assert.equal(sessionMentionUrl('t1', 's/1'), 'https://nuphos.ai/teams/t1/agent/s%2F1')
+  assert.equal(sessionMentionUrl('t1', 's/1'), 'https://platform.cerin.ai/teams/t1/agent/s%2F1')
 })
 
 test('devices match by label, case-insensitively', () => {
