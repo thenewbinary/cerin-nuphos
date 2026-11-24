@@ -164,7 +164,9 @@ export function latestCliRelease(): Promise<RuntimeRelease | null> {
         .then(async (response) =>
           response.ok
             ? (((await response.json()) as GitHubRelease[])
-                .map((release) => parseRelease(release, 'cli-v', `https://github.com/${repo}/releases`))
+                .map((release) =>
+                  parseRelease(release, 'cli-v', `https://github.com/${repo}/releases`),
+                )
                 .find((release) => release !== null) ?? null)
             : null,
         )

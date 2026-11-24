@@ -116,9 +116,7 @@ function AppIconPicker() {
           </button>
         ))}
       </div>
-      <p className="mt-1.5 text-[12px] text-tertiary">
-        {t('Shown in the Dock while Cerin runs.')}
-      </p>
+      <p className="mt-1.5 text-[12px] text-tertiary">{t('Shown in the Dock while Cerin runs.')}</p>
     </fieldset>
   )
 }
