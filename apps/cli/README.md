@@ -40,16 +40,12 @@ It opens in the team used last (the first team the first time) and shows
 which one; `/team` in the TUI, `cerin team NAME` or `--team` switch it.
 
 Over SSH, or on Linux without a display, `cerin login` shows a code
-instead of opening a browser: enter it at https://platform.cerin.ai/auth/social/device on any device and
-approve it as yourself, or as an agent with its own name in one team. An
-agent's messages show as that agent, via you, and it cannot change your
-account, tokens, team membership or billing. `cerin login --device` picks
-this flow anywhere; `cerin login --token -` takes an agent token minted on
-nuphos.ai, and `NUPHOS_CLI_TOKEN` uses one without saving it. Each device
-sign-in and agent token is listed by `cerin token list` and on nuphos.ai,
-and can be revoked on its own. An agent signed in with its own token can
-change the name and avatar its messages show, and nothing else, with
-`cerin agent-profile --name NAME --avatar FILE|URL`.
+instead of opening a browser. Open https://platform.cerin.ai/auth/social/device
+on any device, sign in, enter the code, choose Continue, then choose Approve.
+This signs the terminal in as you. Approve only a code you started
+yourself. `cerin login --device` uses the code even when a browser is
+available. `cerin token list` lists each CLI sign-in, and
+`cerin token revoke ID` signs one out.
 
 The first run
 signs in through the browser and, if you are not in a team yet, asks for a
@@ -86,8 +82,7 @@ cerin model [VALUE] [--effort E] --session ID
 cerin stop --session ID
 cerin login | logout
 cerin login --device                         # sign in with a code approved on another device
-cerin login --token -                        # an agent token from nuphos.ai/settings/tokens, on stdin
-cerin token list | revoke ID                 # your device sign-ins and agent tokens
+cerin token list | revoke ID                 # list your CLI sign-ins / sign one out
 cerin agent                                  # run this computer's runtimes
 cerin agent --join -                         # join with a one-time token from stdin, then run them
 ```

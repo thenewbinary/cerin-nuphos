@@ -133,20 +133,22 @@ enum Command {
     /// Sign in, from Cerin Desktop's sign-in when there is one, else through the browser,
     /// or with a code approved on another device when there is no browser here.
     Login {
-        /// Sign in with a code approved on another device, even if this one has a browser.
+        /// Show a code to approve at platform.cerin.ai/auth/social/device, even if this computer has a browser.
         #[arg(long, conflicts_with = "token")]
         device: bool,
-        /// Use an agent token from nuphos.ai/settings/tokens. Pass `-` and pipe it to stdin,
-        /// so it stays out of the shell history. `NUPHOS_CLI_TOKEN` works without saving it.
-        #[arg(long, value_name = "TOKEN")]
+        /// Automation only, so hidden from help: an agent token minted through the API. Pass `-`
+        /// and pipe it to stdin. `NUPHOS_CLI_TOKEN` works without saving it.
+        #[arg(long, value_name = "TOKEN", hide = true)]
         token: Option<String>,
     },
-    /// List the CLI and agent tokens you have signed in with, or revoke one.
+    /// List the CLI sign-ins on your account, or revoke one.
     Token {
         #[command(subcommand)]
         command: TokenCommand,
     },
-    /// Change the name or avatar this agent token's messages show (agent tokens only).
+    /// Change the name or avatar this agent token's messages show (agent tokens only, so hidden
+    /// from help).
+    #[command(hide = true)]
     AgentProfile {
         /// The name its messages show.
         #[arg(long, required_unless_present = "avatar")]
@@ -174,7 +176,7 @@ enum TriggersCommand {
 
 #[derive(Subcommand)]
 enum TokenCommand {
-    /// Device sign-ins and agent tokens, newest first.
+    /// List CLI sign-ins, newest first.
     List,
     /// Revoke the token with this id; whatever uses it is signed out.
     Revoke { id: String },

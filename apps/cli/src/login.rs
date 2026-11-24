@@ -60,8 +60,9 @@ fn hostname() -> String {
         .unwrap_or_else(|| "Cerin CLI".into())
 }
 
-/// Device sign-in (RFC 8628): show a code, wait while someone approves it on
-/// nuphos.ai, as themselves or as an agent, then keep the token it yields.
+/// Device sign-in (RFC 8628): show a code, wait while the user approves it on
+/// platform.cerin.ai/auth/social/device, which signs the terminal in as them,
+/// then keep the token it yields. Agent tokens are approved only through the API.
 async fn device_code(api_url: &str) -> Result<Session> {
     let http = reqwest::Client::new();
     let started: Value = http
@@ -131,7 +132,8 @@ fn save_device_session(body: &Value, api_url: &str) -> Result<Session> {
     Ok(session)
 }
 
-/// `cerin login --token`: a token minted on nuphos.ai, checked with
+/// `cerin login --token` (hidden, for automation): an agent token minted through
+/// the API, checked with
 /// `/auth/me` before it is saved.
 /// Signs this computer out. A device sign-in is a token of its own, so it is
 /// revoked on the server as well. An agent token, Desktop's sign-in and

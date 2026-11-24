@@ -338,6 +338,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "cerin-cli"
+version = "0.28.0"
+dependencies = [
+ "anyhow",
+ "base64 0.22.1",
+ "clap",
+ "crossterm",
+ "futures-util",
+ "keyring-core",
+ "open",
+ "rand 0.8.8",
+ "ratatui",
+ "reqwest",
+ "security-framework",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "sha2 0.10.9",
+ "tokio",
+ "unicode-width 0.2.0",
+ "url",
+ "uuid",
+ "windows-native-keyring-store",
+ "zbus-secret-service-keyring-store",
+]
+
+[[package]]
 name = "cfg-if"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1353,33 +1380,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841"
 dependencies = [
  "autocfg",
-]
-
-[[package]]
-name = "cerin-cli"
-version = "0.28.0"
-dependencies = [
- "anyhow",
- "base64 0.22.1",
- "clap",
- "crossterm",
- "futures-util",
- "keyring-core",
- "open",
- "rand 0.8.8",
- "ratatui",
- "reqwest",
- "security-framework",
- "serde",
- "serde_json",
- "serde_yaml",
- "sha2 0.10.9",
- "tokio",
- "unicode-width 0.2.0",
- "url",
- "uuid",
- "windows-native-keyring-store",
- "zbus-secret-service-keyring-store",
 ]
 
 [[package]]
