@@ -139,7 +139,7 @@ async function request(path) {
   return parsed
 }
 
-const nuphos = {
+const cerin = {
   get: (path) => request(path),
 }
 
@@ -154,7 +154,9 @@ async function main() {
   }
 
   globalThis.params = params
-  globalThis.nuphos = nuphos
+  globalThis.cerin = cerin
+  // Scripts written before the rename still use `nuphos`.
+  globalThis.nuphos = cerin
   globalThis.emit = emit
 
   const scriptUrl = pathToFileURL(resolve(runDir, 'script.mjs')).href

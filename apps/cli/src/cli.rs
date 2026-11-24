@@ -47,7 +47,7 @@ pub(crate) fn row(current: bool, columns: &[&str]) {
     println!("{} {}", if current { "*" } else { " " }, columns.iter().map(|c| clean(c)).collect::<Vec<_>>().join("  "));
 }
 
-/// `nuphos team [NAME]`: list teams, or make NAME the default.
+/// `cerin team [NAME]`: list teams, or make NAME the default.
 pub async fn team(ctx: &mut Ctx, name: Option<String>) -> Result<()> {
     let teams = ctx.api.teams().await?;
     if let Some(name) = name {
@@ -70,7 +70,7 @@ pub async fn team(ctx: &mut Ctx, name: Option<String>) -> Result<()> {
     Ok(())
 }
 
-/// `nuphos agents [NAME --session ID | NAME --default]`: list the team's
+/// `cerin agents [NAME --session ID | NAME --default]`: list the team's
 /// runtimes, move a conversation to NAME, or pick NAME for new conversations.
 pub async fn runtime(ctx: &mut Ctx, name: Option<String>, session: Option<String>, make_default: bool) -> Result<()> {
     let runtimes = ctx.runtimes().await?;
@@ -118,7 +118,7 @@ pub async fn runtime(ctx: &mut Ctx, name: Option<String>, session: Option<String
     Ok(())
 }
 
-/// `nuphos agents NAME --login`: signs a Cloud agent in to its provider
+/// `cerin agents NAME --login`: signs a Cloud agent in to its provider
 /// account, again or for the first time.
 pub async fn login_runtime(ctx: &Ctx, name: &str) -> Result<()> {
     let runtime = shared::find(&ctx.api.runtimes(&ctx.team_id()).await?, name, "runtime")?;
@@ -126,11 +126,11 @@ pub async fn login_runtime(ctx: &Ctx, name: &str) -> Result<()> {
 }
 
 /// The browser shows either a code to paste back here or a device code to
-/// confirm there; the agent keeps the sign-in, Nuphos does not.
+/// confirm there; the agent keeps the sign-in, Cerin does not.
 async fn sign_in_runtime(ctx: &Ctx, runtime: &Value) -> Result<()> {
     let team = ctx.team_id();
     let id = runtime["id"].as_str().unwrap_or_default();
-    let retry = format!("Try again with `nuphos agents '{}' --login`.", label(runtime));
+    let retry = format!("Try again with `cerin agents '{}' --login`.", label(runtime));
     let deadline = Instant::now() + SIGN_IN_TIMEOUT;
     let wait = |what: &str| -> Result<()> {
         if Instant::now() > deadline {
@@ -196,7 +196,7 @@ fn open_https(url: &str) {
     }
 }
 
-/// `nuphos model [VALUE] [--effort E] [--session ID]`. With a session it is
+/// `cerin model [VALUE] [--effort E] [--session ID]`. With a session it is
 /// that conversation's setting; without one it lists the agent's models.
 pub async fn model(
     ctx: &mut Ctx,
@@ -263,7 +263,7 @@ fn print_options(config: &Value) {
     }
 }
 
-/// `nuphos conversations [QUERY]`: recent conversations, newest first, or
+/// `cerin conversations [QUERY]`: recent conversations, newest first, or
 /// those whose title or first message contains QUERY.
 pub async fn conversations(ctx: &Ctx, query: Option<&str>) -> Result<()> {
     let list = ctx.api.conversations(&ctx.team_id(), "mine", query).await?;
@@ -284,7 +284,7 @@ pub async fn conversations(ctx: &Ctx, query: Option<&str>) -> Result<()> {
     Ok(())
 }
 
-/// `nuphos stop --session ID`: stops the reply in progress.
+/// `cerin stop --session ID`: stops the reply in progress.
 pub async fn stop(ctx: &Ctx, session: &str) -> Result<()> {
     ctx.api.cancel_runtime(&ctx.team_id(), session).await?;
     if !ctx.json {
@@ -293,7 +293,7 @@ pub async fn stop(ctx: &Ctx, session: &str) -> Result<()> {
     Ok(())
 }
 
-/// `nuphos exec PROMPT`: sends one message and prints the reply. The reply
+/// `cerin exec PROMPT`: sends one message and prints the reply. The reply
 /// text goes to stdout and tool activity to stderr; `--json` prints every
 /// stream event instead. New conversations use the mode last picked in
 /// /full-access (Full Access by default); Full Access never asks for approval.
@@ -334,7 +334,7 @@ pub async fn exec(
             body["agentRuntime"] = r["provider"].clone();
         }
     } else if runtime.is_some() {
-        bail!("--agent picks the runtime for a new task; use `nuphos agents NAME --session ID` to move one.");
+        bail!("--agent picks the runtime for a new task; use `cerin agents NAME --session ID` to move one.");
     }
 
     let (sender, mut rx) = unbounded_channel();
@@ -437,7 +437,7 @@ pub async fn exec(
         eprintln!("task {session_id}");
     }
     if let Some(error) = error {
-        eprintln!("nuphos: {}", clean(&error));
+        eprintln!("cerin: {}", clean(&error));
         return Ok(1);
     }
     Ok(if denied { 2 } else { 0 })

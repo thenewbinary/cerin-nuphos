@@ -267,7 +267,7 @@ test('isAccountGone matches a request that outlived its account, and nothing els
     ),
     true,
   )
-  assert.equal(isAccountGone(new Error('Not signed in; run `nuphos login`')), false)
+  assert.equal(isAccountGone(new Error('Not signed in; run `cerin login`')), false)
   assert.equal(isAccountGone(new Error('Conversation not found')), false)
 })
 

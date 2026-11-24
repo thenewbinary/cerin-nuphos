@@ -1,4 +1,4 @@
-//! The accounts signed in to Nuphos Desktop, for `nuphos auth list/switch` and
+//! The accounts signed in to Cerin Desktop, for `cerin auth list/switch` and
 //! `--account`. The desktop keeps the active one at the top of `desktop.yaml`
 //! and the others in its `accounts` list, each with the backend that issued
 //! its token (`apps/desktop/electron/auth/accounts.ts`).
@@ -34,12 +34,12 @@ impl DesktopAccount {
                 None => None,
             },
         };
-        let token = token.ok_or_else(|| anyhow!("{} has to sign in again in Nuphos Desktop", self.who))?;
+        let token = token.ok_or_else(|| anyhow!("{} has to sign in again in Cerin Desktop", self.who))?;
         Ok(Session { token: Some(token), keychain_account: None, api: Some(self.api.clone()), ..self.session.clone() })
     }
 }
 
-/// Every account signed in to Nuphos Desktop, the active one first.
+/// Every account signed in to Cerin Desktop, the active one first.
 pub fn desktop_accounts() -> Vec<DesktopAccount> {
     fs::read_to_string(config::desktop_session_path())
         .map(|text| desktop_accounts_in(&text, &config::shared_api_url()))
@@ -85,9 +85,9 @@ pub fn find(accounts: Vec<DesktopAccount>, selector: &str) -> Result<DesktopAcco
     let mut matches: Vec<DesktopAccount> =
         accounts.into_iter().filter(|a| a.key == selector || a.who.eq_ignore_ascii_case(selector)).collect();
     match matches.len() {
-        0 => bail!("no account `{selector}` is signed in to Nuphos Desktop; `nuphos auth list` shows them"),
+        0 => bail!("no account `{selector}` is signed in to Cerin Desktop; `cerin auth list` shows them"),
         1 => Ok(matches.remove(0)),
-        _ => bail!("`{selector}` is signed in on more than one backend; name it by its key (`nuphos auth list`)"),
+        _ => bail!("`{selector}` is signed in on more than one backend; name it by its key (`cerin auth list`)"),
     }
 }
 
@@ -97,7 +97,7 @@ pub fn override_conflicts(env_api: Option<&str>, account_api: &str) -> bool {
     env_api.is_some_and(|env| !config::same_backend(env, account_api))
 }
 
-/// The CLI's own sign-in as a desktop key, to mark it in `nuphos auth list`.
+/// The CLI's own sign-in as a desktop key, to mark it in `cerin auth list`.
 /// Read from the file alone: a keychain item that cannot be opened right now
 /// (say, over SSH with no session bus) still names a signed-in account.
 pub fn key_of(session: &Session) -> Option<String> {

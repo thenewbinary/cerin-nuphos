@@ -1,4 +1,4 @@
-//! `nuphos agent` runs the host as a service, so it keeps running after the terminal
+//! `cerin agent` runs the host as a service, so it keeps running after the terminal
 //! closes and starts again after a crash or a reboot: the systemd user service
 //! `nuphos-agent` on Linux, the LaunchAgent `ai.nuphos.agent` on macOS. Run by a
 //! service manager, or on Linux without one, the host runs in the foreground.
@@ -21,7 +21,7 @@ const LABEL: &str = "ai.nuphos.agent";
 /// account's own home. PATH finds node, claude and codex.
 const FORWARD: [&str; 5] = ["HOME", "PATH", "NUPHOS_API_URL", "NUPHOS_DOWNLOAD_URL", "NUPHOS_AGENT_HOME"];
 
-/// The agents' own model provider, set where `nuphos agent` is run: the variables Claude Code
+/// The agents' own model provider, set where `cerin agent` is run: the variables Claude Code
 /// and Codex read, which the host passes on to them. The same list as host-provider.ts in the
 /// desktop app; the service's files are 0600, as they may hold these keys.
 const PROVIDER: [&str; 24] = [
@@ -109,7 +109,7 @@ pub fn install(join: Option<&str>) -> Result<i32> {
             // restart may still need it.
             write(&env_path, &env_file(&forwarded, None))?;
         } else {
-            eprintln!("The agent did not join Nuphos. Its log: journalctl --user -u nuphos-agent");
+            eprintln!("The agent did not join Cerin. Its log: journalctl --user -u nuphos-agent");
             let _ = Command::new("journalctl").args(["--user", "-u", UNIT, "-n", "20", "--no-pager"]).status();
             return Ok(1);
         }
@@ -125,7 +125,7 @@ pub fn install(join: Option<&str>) -> Result<i32> {
     Ok(0)
 }
 
-/// Restarts the service on the newest CLI after `nuphos update`, when it runs.
+/// Restarts the service on the newest CLI after `cerin update`, when it runs.
 pub fn restart_if_active() {
     if cfg!(target_os = "macos") {
         let job = format!("{}/{LABEL}", gui_domain());
@@ -162,7 +162,7 @@ fn install_launch_agent(join: Option<&str>) -> Result<i32> {
     }
     if join.is_some() {
         if !wait_for_credential() {
-            eprintln!("The agent did not join Nuphos. Its log: {}", log.display());
+            eprintln!("The agent did not join Cerin. Its log: {}", log.display());
             return Ok(1);
         }
         // The token works once; the credential it left replaces it from the next start.
@@ -298,7 +298,7 @@ fn unit(exe: &Path, env: &Path) -> String {
     let path = |path: &Path| path.display().to_string().replace('%', "%%");
     let exe = path(exe).replace('$', "$$");
     format!(
-        "[Unit]\nDescription=Nuphos local runtimes\n\n[Service]\nExecStart=\"{}\" agent\nEnvironmentFile=-{}\n\
+        "[Unit]\nDescription=Cerin local runtimes\n\n[Service]\nExecStart=\"{}\" agent\nEnvironmentFile=-{}\n\
          Restart=always\nRestartSec=10\nRestartPreventExitStatus=78\n\n[Install]\nWantedBy=default.target\n",
         exe,
         path(env),
@@ -316,8 +316,8 @@ mod tests {
 
     #[test]
     fn unit_restarts_until_the_computer_is_revoked() {
-        let text = unit(Path::new("/home/a b/.local/bin/nuphos"), Path::new("/home/a b/.config/nuphos/agent.env"));
-        assert!(text.contains("ExecStart=\"/home/a b/.local/bin/nuphos\" agent\n"));
+        let text = unit(Path::new("/home/a b/.local/bin/cerin"), Path::new("/home/a b/.config/nuphos/agent.env"));
+        assert!(text.contains("ExecStart=\"/home/a b/.local/bin/cerin\" agent\n"));
         assert!(text.contains("EnvironmentFile=-/home/a b/.config/nuphos/agent.env\n"));
         assert!(text.contains("Restart=always\n"));
         assert!(text.contains("RestartPreventExitStatus=78\n"));

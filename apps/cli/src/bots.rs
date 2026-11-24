@@ -1,4 +1,4 @@
-//! `nuphos bots`: list your Bots in the team, or create one.
+//! `cerin bots`: list your Bots in the team, or create one.
 
 use anyhow::{anyhow, bail, Result};
 use serde_json::{json, Value};
@@ -22,7 +22,7 @@ fn plan(name: Option<String>, create: bool) -> Result<Action> {
         (None, _) => Ok(Action::List),
         (Some(name), true) => Ok(Action::Create(name)),
         (Some(name), false) => bail!(
-            "`nuphos bots` only lists Bots; to create one named '{}' run `nuphos bots '{}' --create`.",
+            "`cerin bots` only lists Bots; to create one named '{}' run `cerin bots '{}' --create`.",
             clean(&name),
             clean(&name)
         ),
@@ -63,7 +63,7 @@ fn create_body(title: &str, avatar: Option<&str>, runtime: Option<&Value>) -> Re
     Ok(body)
 }
 
-/// `nuphos bots [NAME --create] [--avatar A] [--agent RUNTIME]`.
+/// `cerin bots [NAME --create] [--avatar A] [--agent RUNTIME]`.
 pub async fn bots(
     ctx: &Ctx,
     name: Option<String>,
@@ -96,7 +96,7 @@ async fn list(ctx: &Ctx, team: &str) -> Result<()> {
         }
     }
     if more {
-        eprintln!("nuphos: showing the first {} Bots; there are more.", bots.len());
+        eprintln!("cerin: showing the first {} Bots; there are more.", bots.len());
     }
     Ok(())
 }
@@ -126,7 +126,7 @@ async fn create_bot(ctx: &Ctx, team: &str, name: &str, avatar: Option<&str>, run
         clean(bot["title"].as_str().unwrap_or(name)),
         clean(id)
     );
-    println!("Talk to it with: nuphos exec --session {} \"...\"", clean(id));
+    println!("Talk to it with: cerin exec --session {} \"...\"", clean(id));
     Ok(())
 }
 
@@ -138,7 +138,7 @@ mod tests {
     use crate::{Args, Command};
 
     fn parse(args: &[&str]) -> Command {
-        let mut argv = vec!["nuphos"];
+        let mut argv = vec!["cerin"];
         argv.extend(args);
         Args::try_parse_from(argv).unwrap().command.unwrap()
     }
@@ -158,8 +158,8 @@ mod tests {
 
     #[test]
     fn options_for_a_new_bot_need_create() {
-        assert!(Args::try_parse_from(["nuphos", "bots", "Scout", "--avatar", "07-ada"]).is_err());
-        assert!(Args::try_parse_from(["nuphos", "bots", "--create"]).is_err());
+        assert!(Args::try_parse_from(["cerin", "bots", "Scout", "--avatar", "07-ada"]).is_err());
+        assert!(Args::try_parse_from(["cerin", "bots", "--create"]).is_err());
     }
 
     #[test]
@@ -167,7 +167,7 @@ mod tests {
         assert_eq!(plan(None, false).unwrap(), Action::List);
         assert_eq!(plan(Some("Scout".into()), true).unwrap(), Action::Create("Scout".into()));
         let error = plan(Some("Scout".into()), false).unwrap_err().to_string();
-        assert!(error.contains("nuphos bots 'Scout' --create"), "{error}");
+        assert!(error.contains("cerin bots 'Scout' --create"), "{error}");
     }
 
     #[test]

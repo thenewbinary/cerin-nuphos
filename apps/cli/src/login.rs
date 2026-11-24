@@ -57,7 +57,7 @@ fn hostname() -> String {
         .or_else(|| std::process::Command::new("hostname").output().ok().and_then(|o| String::from_utf8(o.stdout).ok()))
         .map(|h| h.trim().to_string())
         .filter(|h| !h.is_empty())
-        .unwrap_or_else(|| "Nuphos CLI".into())
+        .unwrap_or_else(|| "Cerin CLI".into())
 }
 
 /// Device sign-in (RFC 8628): show a code, wait while someone approves it on
@@ -69,9 +69,9 @@ async fn device_code(api_url: &str) -> Result<Session> {
         .json(&json!({ "clientName": hostname() }))
         .send()
         .await
-        .context("Could not reach Nuphos")?
+        .context("Could not reach Cerin")?
         .error_for_status()
-        .context("This Nuphos server does not support sign-in with a code")?
+        .context("This Cerin server does not support sign-in with a code")?
         .json()
         .await?;
     let field =
@@ -104,11 +104,11 @@ async fn device_code(api_url: &str) -> Result<Session> {
             Some("authorization_pending") => {}
             Some("slow_down") => interval += Duration::from_secs(5),
             Some("access_denied") => bail!("The sign-in was denied."),
-            Some("expired_token") => bail!("The code expired; run `nuphos login` again."),
+            Some("expired_token") => bail!("The code expired; run `cerin login` again."),
             _ => bail!("Sign-in failed with status {status}"),
         }
     }
-    bail!("The code expired; run `nuphos login` again.")
+    bail!("The code expired; run `cerin login` again.")
 }
 
 /// Saved as the backend the code was redeemed with, not whatever the shared
@@ -131,7 +131,7 @@ fn save_device_session(body: &Value, api_url: &str) -> Result<Session> {
     Ok(session)
 }
 
-/// `nuphos login --token`: a token minted on nuphos.ai, checked with
+/// `cerin login --token`: a token minted on nuphos.ai, checked with
 /// `/auth/me` before it is saved.
 /// Signs this computer out. A device sign-in is a token of its own, so it is
 /// revoked on the server as well. An agent token, Desktop's sign-in and
@@ -139,7 +139,7 @@ fn save_device_session(body: &Value, api_url: &str) -> Result<Session> {
 pub async fn logout() -> Result<()> {
     // A run as a desktop account (`--account`) never touches the saved sign-in.
     if config::running_as_account() {
-        bail!("this run uses a desktop account (--account); run `nuphos logout` without it to sign the CLI out");
+        bail!("this run uses a desktop account (--account); run `cerin logout` without it to sign the CLI out");
     }
     let session = config::read_session();
     if let (Some(token), Some(id)) = (session.token.as_deref(), own_device_token(&session)) {
@@ -163,8 +163,8 @@ pub async fn with_token(api_url: &str, token: &str) -> Result<Session> {
     save_checked_token(api_url, token, true).await
 }
 
-/// A Nuphos Desktop account's token, as the CLI's sign-in. It stays the
-/// desktop's: saved without its token record, so `nuphos logout` never revokes
+/// A Cerin Desktop account's token, as the CLI's sign-in. It stays the
+/// desktop's: saved without its token record, so `cerin logout` never revokes
 /// it and signs the desktop out too (as `from_desktop`).
 pub async fn with_desktop_token(api_url: &str, token: &str) -> Result<Session> {
     save_checked_token(api_url, token, false).await
@@ -192,7 +192,7 @@ async fn save_checked_token(api_url: &str, token: &str, owned: bool) -> Result<S
 /// stale desktop session falls back to the browser.
 async fn from_desktop(api_url: &str) -> Option<Session> {
     let who = config::desktop_signed_in(api_url)?;
-    eprintln!("Signing in as {} from Nuphos Desktop; macOS may ask once to allow it.", clean(&who));
+    eprintln!("Signing in as {} from Cerin Desktop; macOS may ask once to allow it.", clean(&who));
     let Some(token) = config::read_desktop_session(api_url).and_then(|s| s.token) else {
         eprintln!("Could not read the desktop sign-in; continuing in the browser.");
         return None;
@@ -240,16 +240,16 @@ async fn browser(api_url: &str) -> Result<Session> {
         }))
         .send()
         .await
-        .context("Could not reach Nuphos")?
+        .context("Could not reach Cerin")?
         .error_for_status()
-        .context("This Nuphos server does not support terminal sign-in")?
+        .context("This Cerin server does not support terminal sign-in")?
         .json()
         .await?;
     let handle = registered["handle"].as_str().ok_or_else(|| anyhow!("Malformed sign-in response"))?;
 
     let mut start = url::Url::parse(&config::login_url(api_url))?;
     start.query_pairs_mut().append_pair("handle", handle);
-    println!("Opening your browser to sign in to Nuphos…\nIf it does not open, visit:\n\n  {start}\n");
+    println!("Opening your browser to sign in to Cerin…\nIf it does not open, visit:\n\n  {start}\n");
     let _ = open::that(start.as_str());
 
     let deadline = Instant::now() + LOGIN_TIMEOUT;
@@ -318,7 +318,7 @@ async fn browser(api_url: &str) -> Result<Session> {
             ..Session::default()
         };
         config::write_session(&session)?;
-        respond(&mut browser, 200, "Signed in to Nuphos. You can close this tab and return to the terminal.").await;
+        respond(&mut browser, 200, "Signed in to Cerin. You can close this tab and return to the terminal.").await;
         return Ok(session);
     }
     bail!("Sign-in timed out")
@@ -334,7 +334,7 @@ fn mfa_challenge(body: &Value) -> Option<String> {
 /// on: asks for an authenticator or recovery code, a few tries at most.
 async fn verify_mfa(http: &reqwest::Client, api_url: &str, challenge: &str) -> Result<Value> {
     if !std::io::stdin().is_terminal() {
-        bail!("This account uses two-factor authentication. Sign in from a terminal, or use `nuphos login --token`.");
+        bail!("This account uses two-factor authentication. Sign in from a terminal, or use `cerin login --token`.");
     }
     for _ in 0..3 {
         eprint!("Code from your authenticator app (or a recovery code): ");
@@ -346,7 +346,7 @@ async fn verify_mfa(http: &reqwest::Client, api_url: &str, challenge: &str) -> R
             .timeout(Duration::from_secs(15))
             .send()
             .await
-            .context("Could not reach Nuphos")?;
+            .context("Could not reach Cerin")?;
         let ok = response.status().is_success();
         let body: Value = response.json().await.unwrap_or(Value::Null);
         if ok {
@@ -358,7 +358,7 @@ async fn verify_mfa(http: &reqwest::Client, api_url: &str, challenge: &str) -> R
         }
         eprintln!("{}", clean(message));
     }
-    bail!("Too many wrong codes. Run `nuphos login` to try again.")
+    bail!("Too many wrong codes. Run `cerin login` to try again.")
 }
 
 /// The query of a `GET /callback?…` request, or `None` for anything else.
@@ -380,7 +380,7 @@ fn param(params: &[(String, String)], key: &str) -> Option<String> {
 
 async fn respond(stream: &mut TcpStream, status: u16, message: &str) {
     let body = format!(
-        "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>Nuphos</title></head>\
+        "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>Cerin</title></head>\
          <body style=\"font-family:system-ui;padding:3rem\"><p>{message}</p></body></html>"
     );
     let reason = match status {

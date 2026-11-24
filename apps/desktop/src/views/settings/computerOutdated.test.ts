@@ -42,7 +42,7 @@ test('the way to update is the one this viewer has for this computer', () => {
     'Update it from its ⋯ menu.',
   )
   assert.equal(hint({ app: { version: '0.119.0' } }), 'Open Cerin on it and restart to update.')
-  assert.equal(hint({ outdated: 'cli' }), 'Run “nuphos update” on it.')
+  assert.equal(hint({ outdated: 'cli' }), 'Run “cerin update” on it.')
   // A teammate's computer is its owner's to update.
   assert.equal(hint({ access: 'use' }), 'Ask its owner to update Cerin on it.')
   assert.equal(hint({ access: 'manage', outdated: 'cli' }), 'Ask its owner to update Cerin on it.')

@@ -1,4 +1,4 @@
-//! New releases: the TUI checks for one on start, and `nuphos update`
+//! New releases: the TUI checks for one on start, and `cerin update`
 //! installs it by running the install script from that release's tag, so
 //! what runs is what shipped with it rather than whatever is on main.
 
@@ -49,21 +49,21 @@ pub fn check_enabled() -> bool {
     std::env::var_os("NUPHOS_NO_UPDATE_CHECK").is_none()
 }
 
-/// `nuphos update`: installs the newest release over this binary.
+/// `cerin update`: installs the newest release over this binary.
 pub async fn update() -> Result<i32> {
     let current = env!("CARGO_PKG_VERSION");
     let latest = latest().await.ok_or_else(|| anyhow!("could not look up the newest release at {}", latest_url()))?;
     if !is_newer(&latest) {
-        println!("nuphos {current} is up to date.");
+        println!("cerin {current} is up to date.");
         return Ok(0);
     }
     let exe = std::env::current_exe()?.canonicalize()?;
-    let Some(dir) = exe.parent() else { bail!("cannot tell where nuphos is installed") };
-    println!("Updating nuphos {current} → {latest}");
+    let Some(dir) = exe.parent() else { bail!("cannot tell where cerin is installed") };
+    println!("Updating cerin {current} → {latest}");
     let status = std::process::Command::new("sh")
         .arg("-c")
         .arg(format!(
-            "curl -fsSL https://raw.githubusercontent.com/nuphos/nuphos/cli-v{latest}/apps/cli/install.sh | sh"
+            "curl -fsSL https://raw.githubusercontent.com/thenewbinary/cerin-nuphos/cli-v{latest}/apps/cli/install.sh | sh"
         ))
         .env("NUPHOS_INSTALL_DIR", dir)
         .env("NUPHOS_VERSION", &latest)

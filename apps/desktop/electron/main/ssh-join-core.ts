@@ -144,7 +144,7 @@ const SAFE = /^[\w.:/-]+$/
  * command line. The agent keeps running after ssh ends and logs to ~/.cerin-agent.log.
  */
 export function sshJoinScript({ token, apiUrl }: { token: string; apiUrl: string | null }): string {
-  const api = apiUrl && apiUrl !== 'https://api.nuphos.ai' ? apiUrl : null
+  const api = apiUrl && apiUrl !== 'https://platform.cerin.ai' ? apiUrl : null
 
   if (!SAFE.test(token) || (api && !SAFE.test(api))) throw new Error('Unexpected join token')
   const env = [api && `NUPHOS_API_URL='${api}'`, `NUPHOS_JOIN_TOKEN='${token}'`]
@@ -154,9 +154,9 @@ export function sshJoinScript({ token, apiUrl }: { token: string; apiUrl: string
   return [
     'set -e',
     // The CLI is run by its full path, so the installer has no PATH advice to give.
-    'curl -fsSL https://nuphos.ai/install | PATH="$HOME/.local/bin:$PATH" sh',
-    'test -x "$HOME/.local/bin/nuphos" || { echo "The Cerin CLI did not install." >&2; exit 1; }',
-    `${env} nohup "$HOME/.local/bin/nuphos" agent >"$HOME/.cerin-agent.log" 2>&1 </dev/null &`,
+    'curl -fsSL https://cerin.ai/install | PATH="$HOME/.local/bin:$PATH" sh',
+    'test -x "$HOME/.local/bin/cerin" || { echo "The Cerin CLI did not install." >&2; exit 1; }',
+    `${env} nohup "$HOME/.local/bin/cerin" agent >"$HOME/.cerin-agent.log" 2>&1 </dev/null &`,
     'agent=$!',
     'cred="$HOME/.local/share/nuphos/agent/device-credential.json"',
     // An agent that cannot start (no Node.js, a refused token) exits at once: say why now.

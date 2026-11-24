@@ -10,7 +10,7 @@ function updateHint(device: AgentDevice, thisComputer: boolean): string {
   if (thisComputer) return t('Restart Cerin from the Help menu to update it.')
   // Cerin on a person's computer is theirs to update, whoever else manages the computer.
   if (device.access !== 'owner') return t('Ask its owner to update Cerin on it.')
-  if (device.outdated === 'cli') return t('Run “nuphos update” on it.')
+  if (device.outdated === 'cli') return t('Run “cerin update” on it.')
 
   return device.app?.update?.ready
     ? t('Update it from its ⋯ menu.')

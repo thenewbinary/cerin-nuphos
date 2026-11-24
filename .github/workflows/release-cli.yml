@@ -1,8 +1,8 @@
 name: Release CLI
 
 # Dispatch from main with a `cli-vX.Y.Z` tag, matching apps/cli/Cargo.toml, to publish
-# the `nuphos` binaries as a GitHub Release. apps/cli/install.sh and
-# `nuphos update` install from the newest of these releases.
+# the `cerin` binaries as a GitHub Release. apps/cli/install.sh and
+# `cerin update` install from the newest of these releases.
 
 on:
   # Dispatch from main after creating the tag; see release-provenance.yml.
@@ -62,7 +62,7 @@ jobs:
         run: |
           set -euo pipefail
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            printf 'Install or update:\n\n```sh\ncurl -fsSL https://nuphos.ai/install | sh\n```\n' > notes.md
+            printf 'Install or update:\n\n```sh\ncurl -fsSL https://cerin.ai/install | sh\n```\n' > notes.md
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --draft --latest=false \
               --title "CLI ${TAG#cli-}" --generate-notes --notes-file notes.md
           fi
@@ -121,7 +121,7 @@ jobs:
           APPLE_API_KEY_BASE64: ${{ secrets.APPLE_API_KEY_BASE64 }}
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
-        run: bash scripts/sign-macos.sh "target/$TARGET/release/nuphos"
+        run: bash scripts/sign-macos.sh "target/$TARGET/release/cerin"
       - name: Upload to the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -129,12 +129,12 @@ jobs:
           TARGET: ${{ matrix.target }}
         run: |
           set -euo pipefail
-          ASSET="nuphos-$TARGET.tar.gz"
-          tar -czf "$ASSET" -C "target/$TARGET/release" nuphos
+          ASSET="cerin-$TARGET.tar.gz"
+          tar -czf "$ASSET" -C "target/$TARGET/release" cerin
           if command -v sha256sum >/dev/null; then sha256sum "$ASSET" > "$ASSET.sha256"; else shasum -a 256 "$ASSET" > "$ASSET.sha256"; fi
           gh release upload "$TAG" "$ASSET" "$ASSET.sha256" --repo "$GITHUB_REPOSITORY" --clobber
 
-  # The runtime `nuphos agent` fetches on first use: the desktop's staged
+  # The runtime `cerin agent` fetches on first use: the desktop's staged
   # local runtime (openab and the ACP adapters) plus its host for plain Node.
   agent:
     needs: [provenance, validate]

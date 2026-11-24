@@ -82,13 +82,16 @@ test('the script starts the agent in the background with the token from stdin', 
 
   assert.match(
     script,
-    /curl -fsSL https:\/\/nuphos.ai\/install \| PATH="\$HOME\/.local\/bin:\$PATH" sh/,
+    /curl -fsSL https:\/\/cerin.ai\/install \| PATH="\$HOME\/.local\/bin:\$PATH" sh/,
   )
   assert.match(
     script,
-    /NUPHOS_API_URL='https:\/\/api.dev' NUPHOS_JOIN_TOKEN='nj_1' nohup "\$HOME\/.local\/bin\/nuphos" agent .*&\n/,
+    /NUPHOS_API_URL='https:\/\/api.dev' NUPHOS_JOIN_TOKEN='nj_1' nohup "\$HOME\/.local\/bin\/cerin" agent .*&\n/,
   )
-  assert.doesNotMatch(sshJoinScript({ token: 'nj_1', apiUrl: 'https://api.nuphos.ai' }), /API_URL/)
+  assert.doesNotMatch(
+    sshJoinScript({ token: 'nj_1', apiUrl: 'https://platform.cerin.ai' }),
+    /API_URL/,
+  )
   // An agent that exits without joining fails the run with its log, instead of a silent wait;
   // one that installed the systemd service exits once it joined.
   assert.match(
@@ -117,7 +120,7 @@ test('the system ssh, wherever OpenSSH puts it', () => {
 
 test('the joined computer is the id the script printed', () => {
   assert.equal(
-    sshJoinDevice('Installed nuphos\nStarted.\nDevice: b6b2bd58-fd01-4414\n'),
+    sshJoinDevice('Installed cerin\nStarted.\nDevice: b6b2bd58-fd01-4414\n'),
     'b6b2bd58-fd01-4414',
   )
   assert.equal(sshJoinDevice('Started.\n'), null)

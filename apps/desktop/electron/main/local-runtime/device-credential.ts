@@ -99,7 +99,7 @@ export async function credentialRevoked(
 /** Exits for good: the saved credential stays, so a restart fails the same way. */
 export function exitRevoked(): never {
   console.error(
-    'This computer was disconnected from Cerin. Join it again with a new token: `nuphos agent --join -`.',
+    'This computer was disconnected from Cerin. Join it again with a new token: `cerin agent --join -`.',
   )
   process.exit(EXIT_REVOKED)
 }
