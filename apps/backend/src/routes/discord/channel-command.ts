@@ -1,3 +1,4 @@
+import { config } from '@/config'
 import { mongo } from '@/lib/db'
 import { DiscordApiError, getDiscordChannel } from '@/lib/discord/api'
 import {
@@ -63,7 +64,8 @@ const ADMINISTRATOR = 1n << 3n
 export function parseDiscordChannelCommand(
   interaction: DiscordCommandInteraction,
 ): DiscordChannelCommand | null {
-  if (interaction.data?.name !== 'nuphos') return null
+  if (interaction.data?.name !== config.discord.commandName && interaction.data?.name !== 'nuphos')
+    return null
   const option = interaction.data.options?.find((entry) => entry.type === 1)
 
   return option?.name === 'enable' || option?.name === 'disable' ? option.name : null
@@ -186,7 +188,7 @@ export async function handleDiscordChannelCommand(
       discord_error_code: error instanceof DiscordApiError ? error.code : undefined,
     })
     if (error instanceof DiscordApiError && error.status === 403) {
-      return 'Cerin cannot access this channel. In Discord, open Edit Channel → Permissions, add the Cerin bot, and allow View Channel, Send Messages, Read Message History, Create Public Threads, and Send Messages in Threads. For a private thread, also invite Cerin to the thread. Then retry this command. /nuphos enable does not change Discord permissions.'
+      return `Cerin cannot access this channel. In Discord, open Edit Channel → Permissions, add the Cerin bot, and allow View Channel, Send Messages, Read Message History, Create Public Threads, and Send Messages in Threads. For a private thread, also invite Cerin to the thread. Then retry this command. /${config.discord.commandName} enable does not change Discord permissions.`
     }
     if (error instanceof DiscordApiError && error.status === 404) {
       return 'Discord could not find this channel. Open an existing server channel and retry the command.'

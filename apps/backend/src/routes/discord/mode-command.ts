@@ -1,3 +1,4 @@
+import { config } from '@/config'
 import { setSessionBypass } from '@/lib/agent/auto-mode/store'
 import {
   discordAgentThreads,
@@ -36,7 +37,11 @@ export async function handleDiscordModeCommand(
   } = dependencies
   const command = interaction.data?.options?.find((option) => option.type === 1)?.name
 
-  if (interaction.data?.name !== 'nuphos' || (command !== 'full-access' && command !== 'auto'))
+  if (
+    (interaction.data?.name !== config.discord.commandName &&
+      interaction.data?.name !== 'nuphos') ||
+    (command !== 'full-access' && command !== 'auto')
+  )
     return null
   const guildId = interaction.guild_id
   const channelId = interaction.channel_id

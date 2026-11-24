@@ -39,6 +39,7 @@ import { linearAppRoutes } from '@/routes/linear-app'
 import { meetingsRoutes } from '@/routes/meetings'
 import { mcp } from '@/routes/mcp'
 import { oauthRoutes } from '@/routes/oauth'
+import { passkeyPageRoutes } from '@/routes/passkey-page'
 import { personalCredentialRoutes } from '@/routes/personal-credentials'
 import { plaudAppRoutes } from '@/routes/plaud-app'
 import { posthogAppRoutes } from '@/routes/posthog-app'
@@ -121,6 +122,7 @@ app.route('/mcp', mcp)
 // OAuth 2.1 authorization server backing the MCP flow (DCR + PKCE authorize +
 // token). Unauthenticated by design — this IS the auth surface. See routes/oauth.ts.
 app.route('/oauth', oauthRoutes)
+app.route('/passkey', passkeyPageRoutes)
 // Team-invitation email landing page (deep-links into the app, download
 // fallback). Unauthenticated by design — reached from an email click.
 app.route('/invite', inviteLandingRoutes)

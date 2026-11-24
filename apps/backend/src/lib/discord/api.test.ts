@@ -1,8 +1,78 @@
-import { describe, expect, test } from 'bun:test'
+import { describe, expect, spyOn, test } from 'bun:test'
 
-import { NUPHOS_DISCORD_COMMAND, splitDiscordText } from './api'
+import { config } from '@/config'
+import { messagingConfig } from '@/config/messaging'
 
-describe('Nuphos Discord command', () => {
+import {
+  NUPHOS_DISCORD_COMMAND,
+  registerDiscordCommands,
+  sendDiscordApproval,
+  splitDiscordText,
+} from './api'
+
+describe('Cerin Discord command', () => {
+  test('defaults to cerin and supports an explicit command name', () => {
+    const original = process.env.DISCORD_COMMAND_NAME
+
+    try {
+      delete process.env.DISCORD_COMMAND_NAME
+      expect(messagingConfig().discord.commandName).toBe('cerin')
+      process.env.DISCORD_COMMAND_NAME = 'assistant'
+      expect(messagingConfig().discord.commandName).toBe('assistant')
+    } finally {
+      if (original === undefined) delete process.env.DISCORD_COMMAND_NAME
+      else process.env.DISCORD_COMMAND_NAME = original
+    }
+  })
+
+  test('bulk overwrites global commands with only our configured command', async () => {
+    const saved = { ...config.discord }
+    const fetchSpy = spyOn(globalThis, 'fetch').mockResolvedValue(Response.json([]))
+
+    try {
+      Object.assign(config.discord, { botToken: 'test-token', clientId: 'test-app' })
+      await registerDiscordCommands()
+      expect(fetchSpy.mock.calls).toHaveLength(1)
+      const request = fetchSpy.mock.calls.at(0)
+
+      if (!request) throw new Error('Expected a Discord API request')
+      const [url, init] = request
+
+      expect(url).toBe('https://discord.com/api/v10/applications/test-app/commands')
+      expect(init?.method).toBe('PUT')
+      if (typeof init?.body !== 'string') throw new Error('Expected a JSON request body')
+      expect(JSON.parse(init.body)).toEqual([NUPHOS_DISCORD_COMMAND])
+      expect(NUPHOS_DISCORD_COMMAND.name).toBe(config.discord.commandName)
+    } finally {
+      fetchSpy.mockRestore()
+      Object.assign(config.discord, saved)
+    }
+  })
+
+  test('emits Cerin approval and rejection button IDs', async () => {
+    const saved = config.discord.botToken
+    const fetchSpy = spyOn(globalThis, 'fetch').mockResolvedValue(Response.json({}))
+
+    try {
+      config.discord.botToken = 'test-token'
+      await sendDiscordApproval({ channelId: 'channel', content: 'Approve?', decisionId: 'id' })
+      const init = fetchSpy.mock.calls.at(0)?.[1]
+
+      if (typeof init?.body !== 'string') throw new Error('Expected a JSON request body')
+      const body = JSON.parse(init.body) as {
+        components: { components: { custom_id: string }[] }[]
+      }
+
+      expect(body.components[0]?.components.map((button) => button.custom_id)).toEqual([
+        'cerin:tool:approve:id',
+        'cerin:tool:reject:id',
+      ])
+    } finally {
+      fetchSpy.mockRestore()
+      config.discord.botToken = saved
+    }
+  })
+
   test('allows members to use mode commands while handlers guard channel administration', () => {
     expect(NUPHOS_DISCORD_COMMAND.default_member_permissions).toBeNull()
     expect(NUPHOS_DISCORD_COMMAND.dm_permission).toBe(false)
