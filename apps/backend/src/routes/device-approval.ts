@@ -104,7 +104,7 @@ export function createDeviceApproval(quota: Quota = redisQuota) {
 
     return c.html(
       page(
-        `<p><b>${escapeHtml(pending.clientName)}</b>${from} wants to sign in to Nuphos as <b>${showEmail(user.email)}</b>.</p><p>Code <code>${escapeHtml(code.toUpperCase())}</code></p><p class="muted">This signs the terminal in as you; agent tokens are not offered here. Approve only a code you started yourself.</p><form method="post"><input type="hidden" name="code" value="${escapeHtml(code)}"><button name="decision" value="approve">Approve</button><button name="decision" value="deny">Deny</button></form>${switchLinks}`,
+        `<p><b>${escapeHtml(pending.clientName)}</b>${from} wants to sign in to Cerin as <b>${showEmail(user.email)}</b>.</p><p>Code <code>${escapeHtml(code.toUpperCase())}</code></p><p class="muted">This signs the terminal in as you; agent tokens are not offered here. Approve only a code you started yourself.</p><form method="post"><input type="hidden" name="code" value="${escapeHtml(code)}"><button name="decision" value="approve">Approve</button><button name="decision" value="deny">Deny</button></form>${switchLinks}`,
       ),
     )
   })

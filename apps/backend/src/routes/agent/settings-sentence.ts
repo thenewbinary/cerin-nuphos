@@ -37,7 +37,7 @@ function actorName(actor: LineActor) {
   if (actor.type === 'person') return actor.name
   if (actor.type === 'task') return `${short(actor.title)} (a Task)`
 
-  return actor.type === 'runtime' ? actor.label : 'Nuphos'
+  return actor.type === 'runtime' ? actor.label : 'Cerin'
 }
 
 const fastTurned = (to?: Choice) =>

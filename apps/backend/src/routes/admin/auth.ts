@@ -30,9 +30,9 @@ export const requireAdmin: MiddlewareHandler<{ Variables: AdminVars }> = async (
     return
   }
   if (cookieAuth.status === 'not-admin') {
-    throw new AppError(403, 'forbidden', `Nuphos user ${cookieAuth.user.id} is not an Nuphos admin`)
+    throw new AppError(403, 'forbidden', `Cerin user ${cookieAuth.user.id} is not an Cerin admin`)
   }
-  throw new AppError(401, 'unauthorized', 'Missing Nuphos token')
+  throw new AppError(401, 'unauthorized', 'Missing Cerin token')
 }
 
 type CookieAdminAuthResult =

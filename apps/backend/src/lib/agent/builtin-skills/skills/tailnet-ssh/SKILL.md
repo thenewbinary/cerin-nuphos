@@ -27,18 +27,18 @@ session ends.
 Three independent gates, all on the customer's side or the user's:
 
 1. An administrator enabled **private network access** on the Tailscale binding
-   in Nuphos, and chose the tag the sandbox advertises.
+   in Cerin, and chose the tag the sandbox advertises.
 2. The binding is selected in **this session's credential selector**.
 3. The customer's **tailnet ACL** grants that tag access to the target, and an
    `ssh` rule permits the login user.
 
-Gate 3 is the real boundary and Nuphos cannot influence it. If a host is
+Gate 3 is the real boundary and Cerin cannot influence it. If a host is
 unreachable, the ACL is the first thing to suspect — not the connection.
 
 The sandbox connects as a **tagged node**, not as a person. Tailscale's
 interactive `check` approval does not apply to tagged sources, so there is no
 per-connection browser prompt on the customer's side. Where a human gate is
-required it comes from Nuphos's own approval flow, and the customer's
+required it comes from Cerin's own approval flow, and the customer's
 enforceable control is session recording.
 
 ## Connect

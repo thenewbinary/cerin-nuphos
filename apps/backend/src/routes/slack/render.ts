@@ -34,7 +34,7 @@ export function renderSlackUserMessage(
         : null
     const viewing = viewingChannel ? ` (currently viewing ${viewingChannel} in Slack)` : ''
 
-    return `${user} messaged Nuphos in a Slack DM${viewing}:\n\n${text}`
+    return `${user} messaged Cerin in a Slack DM${viewing}:\n\n${text}`
   }
   const channel = opts.channelName
     ? `#${opts.channelName}`

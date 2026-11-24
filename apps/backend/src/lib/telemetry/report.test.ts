@@ -1,12 +1,21 @@
-import { afterEach, describe, expect, mock, test } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, mock, test } from 'bun:test'
+
+import { config } from '@/config'
 
 import TELEMETRY_EVENTS from './events.json'
 import { REPORT_FIELDS, buildHealthReport, sendHealthReport, setTelemetryEnabled } from './report'
 
 const realFetch = globalThis.fetch
+const originalTelemetry = { ...config.telemetry }
+
+beforeEach(() => {
+  config.telemetry.key = undefined
+  config.telemetry.url = undefined
+})
 
 afterEach(() => {
   globalThis.fetch = realFetch
+  Object.assign(config.telemetry, originalTelemetry)
 })
 
 type Fields = { readonly [key: string]: string | Fields }
@@ -50,8 +59,10 @@ describe('health report', () => {
     expect(report.instanceIdPersisted).toBe(0)
   })
 
-  test('cannot be switched on without a key', async () => {
+  test('cannot be switched on without a key and an explicit URL', async () => {
     await expect(setTelemetryEnabled(true)).rejects.toThrow('NUPHOS_TELEMETRY_KEY is not set')
+    config.telemetry.key = 'test-key'
+    await expect(setTelemetryEnabled(true)).rejects.toThrow('NUPHOS_TELEMETRY_URL is not set')
   })
 
   test('the allowlist rejects a field it does not name', () => {
@@ -62,6 +73,8 @@ describe('health report', () => {
   })
 
   test('retries a server error a bounded number of times, then gives up quietly', async () => {
+    config.telemetry.key = 'test-key'
+    config.telemetry.url = 'https://telemetry.example.test/v1/reports'
     const fetchMock = mock(() => Promise.resolve(new Response('', { status: 503 })))
     const waits: number[] = []
 
@@ -79,6 +92,8 @@ describe('health report', () => {
   })
 
   test('does not retry a rejected key, and survives a network error', async () => {
+    config.telemetry.key = 'test-key'
+    config.telemetry.url = 'https://telemetry.example.test/v1/reports'
     const rejected = mock(() => Promise.resolve(new Response('', { status: 401 })))
 
     globalThis.fetch = rejected as unknown as typeof fetch
@@ -90,10 +105,18 @@ describe('health report', () => {
   })
 
   test('reports delivery', async () => {
+    config.telemetry.key = 'test-key'
     globalThis.fetch = mock(() =>
       Promise.resolve(new Response('', { status: 202 })),
     ) as unknown as typeof fetch
 
+    expect(await sendHealthReport('{}')).toBe(false)
+    expect(globalThis.fetch).not.toHaveBeenCalled()
+    config.telemetry.url = 'https://telemetry.example.test/v1/reports'
     expect(await sendHealthReport('{}')).toBe(true)
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'https://telemetry.example.test/v1/reports',
+      expect.any(Object),
+    )
   })
 })

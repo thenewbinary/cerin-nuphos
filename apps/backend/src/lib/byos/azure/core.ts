@@ -94,7 +94,7 @@ export async function assumeAzureViaOidc(
     throw new AppError(
       503,
       'azure_connector_unavailable',
-      'The Nuphos OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Azure tokens cannot be minted.',
+      'The Cerin OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Azure tokens cannot be minted.',
     )
   }
   const assertion = mintNuphosOidcToken(teamId, config.byos.azure.oidc.audience)
@@ -210,7 +210,7 @@ export async function verifyAzureBinding(identity: AzureIdentity, teamId: string
     throw new AppError(
       400,
       'azure_binding_not_assumable',
-      `Nuphos cannot obtain an Azure token for app ${identity.clientId}. Check the app registration's federated credential: it must trust the Nuphos issuer (${getAwsOidcIssuer()}) with subject ${awsOidcSubjectForTeam(teamId)} and audience ${config.byos.azure.oidc.audience}. (${(e as Error).message})`,
+      `Cerin cannot obtain an Azure token for app ${identity.clientId}. Check the app registration's federated credential: it must trust the Cerin issuer (${getAwsOidcIssuer()}) with subject ${awsOidcSubjectForTeam(teamId)} and audience ${config.byos.azure.oidc.audience}. (${(e as Error).message})`,
       { clientId: identity.clientId },
     )
   }

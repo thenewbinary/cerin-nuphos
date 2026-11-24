@@ -107,13 +107,13 @@ export function turnPrompt(args: {
 
 const RESUME_MESSAGE: Record<ResumeReason, string> = {
   'permission-decision':
-    'The permission proposal you were waiting on has been decided in Nuphos. Read the ' +
+    'The permission proposal you were waiting on has been decided in Cerin. Read the ' +
     'decision from the proposal and carry on with the original task from there.',
   'approval-decision':
-    'The command authorization you were waiting on has been decided in Nuphos. Carry ' +
+    'The command authorization you were waiting on has been decided in Cerin. Carry ' +
     'on with the original task from that outcome.',
   'client-tool':
-    'Nuphos Desktop has reported the local tool result. Carry on with the original task ' +
+    'Cerin Desktop has reported the local tool result. Carry on with the original task ' +
     'from there.',
 }
 

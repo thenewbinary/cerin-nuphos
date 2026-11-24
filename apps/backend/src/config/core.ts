@@ -3,6 +3,14 @@ import { bool, boundedInt, optional, optionalList, required } from './env'
 // Process identity, datastore, admin access, sign-in and the dev TLS pair —
 // the settings the process cannot boot without.
 export function coreConfig() {
+  const publicBaseUrl = (
+    optional('NUPHOS_AUTH_BASE_URL') ??
+    optional('NUPHOS_PUBLIC_URL') ??
+    `http://localhost:${String(process.env.PORT ?? 3000)}`
+  ).replace(/\/$/, '')
+  const publicWebUrl = optional('NUPHOS_PUBLIC_URL')?.replace(/\/$/, '')
+  const webOrigin = new URL(publicWebUrl ?? publicBaseUrl)
+
   return {
     port: Number(process.env.PORT ?? 3000),
     // Node runtime environment. Used to gate dev-only middleware; strict equality
@@ -27,11 +35,9 @@ export function coreConfig() {
     },
     auth: {
       jwtSecret: optional('NUPHOS_JWT_SECRET') ?? optional('JWT_SECRET_KEY'),
-      publicBaseUrl: (
-        optional('NUPHOS_AUTH_BASE_URL') ??
-        optional('NUPHOS_PUBLIC_URL') ??
-        `http://localhost:${String(process.env.PORT ?? 3000)}`
-      ).replace(/\/$/, ''),
+      publicBaseUrl,
+      // Browser-facing links use NUPHOS_PUBLIC_URL, or the API base when unset.
+      publicWebUrl,
       // Browser-facing OAuth authorize base (e.g. https://nuphos.ai, which
       // proxies /oauth/authorize* to the API). Empty = same as publicBaseUrl.
       oauthAuthorizeBaseUrl: optional('NUPHOS_OAUTH_AUTHORIZE_BASE_URL')?.replace(/\/$/, ''),
@@ -75,8 +81,8 @@ export function coreConfig() {
     // domain passkeys belong to; the origins are where a ceremony may run: the
     // website, plus `android:apk-key-hash:…` for the Android app.
     webauthn: {
-      rpId: optional('WEBAUTHN_RP_ID') ?? 'nuphos.ai',
-      origins: (optional('WEBAUTHN_ORIGINS') ?? 'https://nuphos.ai')
+      rpId: optional('WEBAUTHN_RP_ID') ?? webOrigin.hostname,
+      origins: (optional('WEBAUTHN_ORIGINS') ?? webOrigin.origin)
         .split(',')
         .map((origin) => origin.trim())
         .filter(Boolean),

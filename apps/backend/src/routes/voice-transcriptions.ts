@@ -36,7 +36,7 @@ voiceTranscriptionsRoutes.post(
       throw new AppError(
         402,
         'subscription_required',
-        'Voice input is included with a Nuphos subscription.',
+        'Voice input is included with a Cerin subscription.',
       )
     }
 

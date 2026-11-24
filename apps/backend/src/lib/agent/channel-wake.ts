@@ -30,7 +30,7 @@ import type { ReplyFailedCause } from './db/timeline-events'
 
 /** A channel's wake notice as queued: fixed per channel, so the queue keeps one. */
 export const channelNotice = (channelId: string) =>
-  `New messages in a Nuphos channel (channelId ${channelId}).`
+  `New messages in a Cerin channel (channelId ${channelId}).`
 
 /** Who a channel's wake notice is from: the channel, never a person. */
 export const channelNoticeSender = (
@@ -285,7 +285,7 @@ export async function noteReplyFailed(channelId: string, agentId: string, error:
           at: new Date(),
           actorId: 'system',
           agentId,
-          agentName: agent?.title || 'Nuphos agent',
+          agentName: agent?.title || 'Cerin agent',
           cause,
           ...(reason ? { reason } : {}),
           ...(resetsAt ? { resetsAt } : {}),

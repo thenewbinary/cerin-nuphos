@@ -93,7 +93,7 @@ export function appendGrafanaInstanceLines(
   teamId: string,
 ) {
   if (grafanaInstances.length === 0) return
-  lines.push('', 'Grafana instances (proxied through Nuphos — no setup script):')
+  lines.push('', 'Grafana instances (proxied through Cerin — no setup script):')
   for (const instance of grafanaInstances) {
     const name = safePromptField(instance.name)
     const grafanaUrl = safePromptField(instance.grafanaUrl)
@@ -110,7 +110,7 @@ export function appendSonarqubeIntegrationLines(
   teamId: string,
 ) {
   if (sonarqubeIntegrations.length === 0) return
-  lines.push('', 'SonarQube integrations (proxied through Nuphos — no setup script):')
+  lines.push('', 'SonarQube integrations (proxied through Cerin — no setup script):')
   for (const integration of sonarqubeIntegrations) {
     const label = safePromptField(integration.label)
     const baseUrl = safePromptField(integration.baseUrl)

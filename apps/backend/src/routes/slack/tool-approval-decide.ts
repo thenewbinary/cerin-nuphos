@@ -52,7 +52,7 @@ export async function handleToolApprovalInteraction(args: {
   const botContext = await resolveSlackBotForWorkspace(args.slackWorkspaceId)
 
   if (!botContext) {
-    await repliers.reject('workspace_not_installed', 'Nuphos is not fully installed here.')
+    await repliers.reject('workspace_not_installed', 'Cerin is not fully installed here.')
 
     return
   }
@@ -87,7 +87,7 @@ export async function handleToolApprovalInteraction(args: {
   if (!mapping) {
     await repliers.reject(
       'user_not_linked',
-      'Link this Slack account to Nuphos before deciding tool requests.',
+      'Link this Slack account to Cerin before deciding tool requests.',
     )
 
     return
@@ -102,7 +102,7 @@ export async function handleToolApprovalInteraction(args: {
     return
   }
   if (!(await getTeamMembership(mapping.nuphosUserId, thread.teamId))) {
-    await repliers.reject('not_team_member', 'You are no longer a member of this Nuphos team.')
+    await repliers.reject('not_team_member', 'You are no longer a member of this Cerin team.')
 
     return
   }

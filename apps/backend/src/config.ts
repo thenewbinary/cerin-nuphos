@@ -10,6 +10,7 @@ import { boxConfig } from './config/box'
 import { byosCloudConfig } from './config/byos-cloud'
 import { byosIntegrationsConfig } from './config/byos-integrations'
 import { claudeCodePreviewConfig } from './config/claude-code-preview'
+import { cliConfig } from './config/cli'
 import { coreConfig } from './config/core'
 import { dashboardsConfig } from './config/dashboards'
 import { meetingsConfig } from './config/meetings'
@@ -33,6 +34,7 @@ export const config = {
   ...storageConfig(),
   agent: agentConfig(),
   claudeCodePreview: claudeCodePreviewConfig(),
+  cli: cliConfig(),
   dashboards: dashboardsConfig(),
   box: boxConfig(),
   voice: voiceConfig(),

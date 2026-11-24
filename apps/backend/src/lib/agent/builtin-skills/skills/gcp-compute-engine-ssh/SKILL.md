@@ -11,7 +11,7 @@ The command channel is **`gcloud compute ssh <vm> --zone <zone> --command "…"`
 
 ## When to skip this skill
 
-- **Data Nuphos already exposes** (list instances, firewall rules) → call the backend route or the `gcloud` skill's read commands. Don't SSH just to read metadata.
+- **Data Cerin already exposes** (list instances, firewall rules) → call the backend route or the `gcloud` skill's read commands. Don't SSH just to read metadata.
 - **Fleet log collection** → use the `loki` skill; it wraps this channel with the collector playbook.
 - **Interactive shell for a human** → that's the desktop terminal (Instances → SSH), not the agent.
 

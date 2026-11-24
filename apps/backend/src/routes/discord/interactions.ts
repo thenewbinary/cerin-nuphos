@@ -125,7 +125,7 @@ async function completeDiscordInteraction(
   } catch (err) {
     logError('discord.interaction.error', err, { interaction_id: interaction.id })
     await dependencies.editResponse(interaction.application_id, interaction.token, {
-      content: 'Nuphos could not complete this interaction. Please try again.',
+      content: 'Cerin could not complete this interaction. Please try again.',
     })
   }
 }
@@ -165,7 +165,7 @@ export async function processDiscordInteraction(
 
     return ephemeral(modeResult ?? (await handleDiscordChannelCommand(interaction)))
   }
-  const match = interaction.data?.custom_id?.match(/^nuphos:tool:(approve|reject):(.+)$/)
+  const match = interaction.data?.custom_id?.match(/^(?:cerin|nuphos):tool:(approve|reject):(.+)$/)
 
   if (interaction.type !== 3 || !match) return ephemeral('This interaction is not supported.')
   const discordUserId = interaction.member?.user?.id ?? interaction.user?.id

@@ -264,6 +264,7 @@
   "GET /mcp": "user",
   "GET /oauth/authorize": "public",
   "GET /openapi.json": "public",
+  "GET /passkey": "public",
   "GET /personal-credentials": "user",
   "GET /personal-credentials/:provider/callback": "public",
   "GET /plaud-app/callback": "public",

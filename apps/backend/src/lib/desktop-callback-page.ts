@@ -3,6 +3,8 @@
 // authorize page (and its submit spinner) would stay on screen forever. This
 // page commits, then fires the same deep link from script.
 
+import { publicWebUrl } from '@/lib/public-urls'
+
 import type { Context } from 'hono'
 
 function escapeHtml(value: string): string {
@@ -30,13 +32,13 @@ export function desktopCallbackPage(deepLink: string): string {
 
   return `<!doctype html>
 <html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Nuphos</title>
-<link rel="icon" href="https://nuphos.ai/favicon.svg" type="image/svg+xml" />
+<title>Cerin</title>
+<link rel="icon" href="${escapeHtml(publicWebUrl())}/favicon.svg" type="image/svg+xml" />
 ${PAGE_STYLE}</head>
 <body><div class="card">
-  <h1>Returning to Nuphos&hellip;</h1>
+  <h1>Returning to Cerin&hellip;</h1>
   <p class="sub">You can close this window. If the app didn't open, use the button below.</p>
-  <a class="btn" href="${href}">Open Nuphos</a>
+  <a class="btn" href="${href}">Open Cerin</a>
 </div>
 <script>location.href = ${js}</script>
 </body></html>`
@@ -66,12 +68,12 @@ export function githubInstallConfirmPage(args: {
 }): string {
   return `<!doctype html>
 <html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Nuphos</title>
-<link rel="icon" href="https://nuphos.ai/favicon.svg" type="image/svg+xml" />
+<title>Cerin</title>
+<link rel="icon" href="${escapeHtml(publicWebUrl())}/favicon.svg" type="image/svg+xml" />
 ${PAGE_STYLE}</head>
 <body><div class="card">
-  <h1>Connect GitHub to Nuphos</h1>
-  <p class="sub">Give the Nuphos team <strong>${escapeHtml(args.teamName)}</strong> access to the GitHub App installation on <strong>${escapeHtml(args.accountLogin)}</strong>? Only continue if you started this from that team.</p>
+  <h1>Connect GitHub to Cerin</h1>
+  <p class="sub">Give the Cerin team <strong>${escapeHtml(args.teamName)}</strong> access to the GitHub App installation on <strong>${escapeHtml(args.accountLogin)}</strong>? Only continue if you started this from that team.</p>
   <form method="post" action="${escapeHtml(args.action)}">
     <input type="hidden" name="state" value="${escapeHtml(args.state)}" />
     <button class="btn" type="submit">Connect</button>

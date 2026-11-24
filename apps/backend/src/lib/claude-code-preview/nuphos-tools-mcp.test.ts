@@ -44,7 +44,7 @@ describe('nuphos-tools surface', () => {
   })
 
   test('routes domain resources away from the host-control MCP surface', () => {
-    expect(NUPHOS_TOOLS_INSTRUCTIONS).toContain('canonical Nuphos REST API')
+    expect(NUPHOS_TOOLS_INSTRUCTIONS).toContain('canonical Cerin REST API')
     expect(NUPHOS_TOOLS_INSTRUCTIONS).not.toContain('cost dashboards and panels')
     expect(NUPHOS_TOOLS_INSTRUCTIONS).not.toContain('read-only database access')
   })

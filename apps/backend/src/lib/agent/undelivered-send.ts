@@ -36,7 +36,7 @@ export async function keepUndeliveredSend(
         id: `${message.id}-undelivered`,
         role: 'user',
         parts: [{ type: 'text', text: notice }],
-        metadata: systemSender('nuphos', 'Nuphos'),
+        metadata: systemSender('nuphos', 'Cerin'),
       },
     ],
   }).catch((error: unknown) => {
@@ -114,7 +114,7 @@ export async function noteLostTurn(data: {
           id: randomUUID(),
           role: 'user',
           parts: [{ type: 'text', text: `This message ${LOST_TURN}` }],
-          metadata: systemSender('nuphos', 'Nuphos'),
+          metadata: systemSender('nuphos', 'Cerin'),
         },
       ],
     })

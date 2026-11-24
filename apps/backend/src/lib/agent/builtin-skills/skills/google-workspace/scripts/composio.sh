@@ -12,11 +12,11 @@ if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
   exit 2
 fi
 if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set; this only works inside a Nuphos agent conversation" >&2
+  echo "NUPHOS_TOKEN is not set; this only works inside a Cerin agent conversation" >&2
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.nuphos.ai}}"
+base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.cerin.ai}}"
 team_enc="$(python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=""))' "$1")"
 body="$(python3 -c 'import json, sys; print(json.dumps({"tool": sys.argv[1], "arguments": json.loads(sys.argv[2])}))' "$2" "${3:-{\}}")"
 

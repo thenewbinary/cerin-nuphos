@@ -1,6 +1,6 @@
 ---
 name: kubectl
-description: Inspect and operate the team's Kubernetes clusters (EKS / GKE / TKE / ACK / LKE / VKE / AKS, plus on-prem clusters reached through the Nuphos relay) with kubectl. One `get_kubeconfig` call writes a context for every reachable cluster; credentials renew themselves.
+description: Inspect and operate the team's Kubernetes clusters (EKS / GKE / TKE / ACK / LKE / VKE / AKS, plus on-prem clusters reached through the Cerin relay) with kubectl. One `get_kubeconfig` call writes a context for every reachable cluster; credentials renew themselves.
 ---
 
 # kubectl
@@ -11,7 +11,7 @@ Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_S
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
-Use this skill whenever the user asks you to look at or change resources on one of their Nuphos-managed Kubernetes clusters.
+Use this skill whenever the user asks you to look at or change resources on one of their Cerin-managed Kubernetes clusters.
 
 ## Target a cluster
 
@@ -66,7 +66,7 @@ hangs is never the first sign of trouble. Close tunnels when done.
 
 Only clusters the sandbox can actually reach are included. A missing context usually means one of:
 
-- **The cluster has no public API server endpoint and is not enrolled as an on-prem cluster.** Nothing to fix from here — it is unreachable from the sandbox regardless of credentials. Tell the user, and mention that a private cluster can be enrolled by running the Nuphos relay agent in it.
+- **The cluster has no public API server endpoint and is not enrolled as an on-prem cluster.** Nothing to fix from here — it is unreachable from the sandbox regardless of credentials. Tell the user, and mention that a private cluster can be enrolled by running the Cerin relay agent in it.
 - **An `onprem/…` context exists but every command fails to connect.** Those clusters are reached through a pod the customer runs in their own cluster; if it is scaled to zero, evicted, or blocked by their egress rules, nothing here can route to them. Reconnects and brief restart windows are absorbed before you ever see an error, so a connection failure here means the pod is genuinely absent, not flapping. Say exactly that instead of retrying — it is theirs to fix.
 - **The account isn't enabled for this session**, or your member account isn't on its Access allow list. Ask the user or a team admin.
 - **The AKS cluster uses Entra ID (AAD) integration.** Those need the `kubelogin` binary, which the sandbox doesn't ship, so they are deliberately left out. AKS clusters with a local admin account do appear.
@@ -77,7 +77,7 @@ Ask before guessing at a target — running kubectl against the wrong cluster is
 
 If a credential fetch reports HTTP 403 on kubectl's stderr, your member account does not have Access to the backing credential, or that credential was not selected for this agent session. Do not retry and do not try to request temporary access from inside the sandbox. Ask the user or a team admin to add the member account to the integration's Access allow list, or switch to another integration already enabled for this session.
 
-A 403 *from the Kubernetes API itself* (`... is forbidden: User ... cannot list resource ...`) is different: that is the cluster's own RBAC, not Nuphos access. Tell the user which subject needs which role. One special case — on Volcengine VKE, RBAC is bound when the credential is issued, so a grant made afterwards never applies to the existing one. After the user grants it, call `get_kubeconfig` once with `fresh: true` and rewrite `~/.kube/config`.
+A 403 *from the Kubernetes API itself* (`... is forbidden: User ... cannot list resource ...`) is different: that is the cluster's own RBAC, not Cerin access. Tell the user which subject needs which role. One special case — on Volcengine VKE, RBAC is bound when the credential is issued, so a grant made afterwards never applies to the existing one. After the user grants it, call `get_kubeconfig` once with `fresh: true` and rewrite `~/.kube/config`.
 
 ## Common operations
 

@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from 'node:crypto'
 
 import { publicBackendUrl } from '@/lib/claude-code-preview/runtime-backend-url'
+import { publicWebUrl } from '@/lib/public-urls'
 
 import { POSTHOG_REGION_HOSTS, posthogFetchJson } from './posthog-request'
 import { encodeScopeSet } from './posthog-scopes'
@@ -43,9 +44,9 @@ export function posthogOAuthClient(scopes: readonly string[]): PosthogOAuthClien
 export function posthogClientMetadata(client: PosthogOAuthClient, scopes: readonly string[]) {
   return {
     client_id: client.clientId,
-    client_name: 'Nuphos',
-    client_uri: 'https://nuphos.ai',
-    logo_uri: 'https://nuphos.ai/favicon.svg',
+    client_name: 'Cerin',
+    client_uri: publicWebUrl(),
+    logo_uri: `${publicWebUrl()}/favicon.svg`,
     redirect_uris: [client.redirectUri],
     grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],

@@ -34,7 +34,7 @@ function normalizePlanCommand(command: string): string {
   if (command.length <= PLAN_LIMITS.command) return command
 
   return [
-    'echo "Nuphos generated an oversized command for this plan. Ask the agent to split it into smaller commands before running." >&2',
+    'echo "Cerin generated an oversized command for this plan. Ask the agent to split it into smaller commands before running." >&2',
     'exit 1',
   ].join('\n')
 }

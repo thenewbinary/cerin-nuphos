@@ -163,7 +163,7 @@ export async function assertSlackWorkspaceAvailable(
     throw new AppError(
       409,
       'slack_workspace_taken',
-      'This Slack workspace is already connected to another Nuphos team',
+      'This Slack workspace is already connected to another Cerin team',
     )
   }
 }

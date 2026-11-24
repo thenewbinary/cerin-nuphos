@@ -23,7 +23,7 @@ export const planListOperation = {
     toolName: 'plan_list',
     readOnly: true,
     description:
-      'List recent plans visible in the current Nuphos team context. Use this when the user asks for plan list, recent plans, or plan status without naming a plan id.',
+      'List recent plans visible in the current Cerin team context. Use this when the user asks for plan list, recent plans, or plan status without naming a plan id.',
     inputSchema: listPlansAgentInputSchema,
   },
 } satisfies ApiOperation

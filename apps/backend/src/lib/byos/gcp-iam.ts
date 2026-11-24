@@ -51,7 +51,7 @@ export async function getGcpIamPermissions(handle: GcpHandle): Promise<GcpIamPer
       projectId: handle.projectId,
       serviceAccountEmail: handle.serviceAccountEmail,
       warnings: [
-        `Failed to impersonate service account — Nuphos may lack iam.serviceAccounts.getAccessToken on this SA: ${msg}`,
+        `Failed to impersonate service account — Cerin may lack iam.serviceAccounts.getAccessToken on this SA: ${msg}`,
       ],
       bindings: [],
       roles: [],

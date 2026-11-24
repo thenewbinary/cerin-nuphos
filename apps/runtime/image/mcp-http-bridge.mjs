@@ -79,7 +79,7 @@ export async function relay(line, { url, env, post = postJson, write }) {
       JSON.stringify(message),
     )
   } catch (error) {
-    fail(`Nuphos MCP request failed: ${error?.code ?? error?.message ?? 'network error'}`)
+    fail(`Cerin MCP request failed: ${error?.code ?? error?.message ?? 'network error'}`)
     return
   }
   const text = response.text.trim()
@@ -89,7 +89,7 @@ export async function relay(line, { url, env, post = postJson, write }) {
     return
   }
   if (response.status >= 300 || text) {
-    fail(`Nuphos MCP HTTP ${String(response.status)}${text ? `: ${text.slice(0, 500)}` : ''}`)
+    fail(`Cerin MCP HTTP ${String(response.status)}${text ? `: ${text.slice(0, 500)}` : ''}`)
   }
 }
 

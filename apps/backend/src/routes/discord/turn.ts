@@ -76,7 +76,7 @@ export async function mirrorAppTurnToDiscord(
     if (!(await deps.isDiscordThreadConnected(thread))) return
     await deps.sendDiscordMessage(
       thread.threadChannelId,
-      fromBot ? text : `**${authorName}** (from Nuphos):\n${text}`,
+      fromBot ? text : `**${authorName}** (from Cerin):\n${text}`,
     )
   }
   const text = args.message?.parts
@@ -88,7 +88,7 @@ export async function mirrorAppTurnToDiscord(
 
     await post(sender ? senderLabel(sender) : 'Someone', text, false)
   }
-  const frameSink = new SlackAgentRunSink((reply) => post('Nuphos', reply, true))
+  const frameSink = new SlackAgentRunSink((reply) => post('Cerin', reply, true))
 
   return {
     frameSink,
@@ -167,7 +167,7 @@ export async function executeDiscordTurn(args: {
           : 'This turn stopped before finishing. Mention me in this thread to resume.',
       )
     } else if (sink.terminal() === 'error') {
-      await sink.say('Nuphos hit an error while handling this request.')
+      await sink.say('Cerin hit an error while handling this request.')
     }
     await markDiscordEvent(args.eventId, 'completed')
   } catch (err) {
@@ -177,7 +177,7 @@ export async function executeDiscordTurn(args: {
       discord_thread_id: args.threadChannelId,
     })
     await markDiscordEvent(args.eventId, 'failed', err instanceof Error ? err.message : String(err))
-    await sink.say('Nuphos hit an error while handling this request.').catch(() => {})
+    await sink.say('Cerin hit an error while handling this request.').catch(() => {})
   } finally {
     stopTyping()
     // Detached: uploads can take minutes and must not hold the caller's run claim.

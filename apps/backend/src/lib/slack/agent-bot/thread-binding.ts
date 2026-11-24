@@ -42,13 +42,13 @@ export async function bindSlackAgentThread(data: {
     ) {
       return existingRoot
     }
-    throw new Error('That Slack thread is already bound to another Nuphos conversation')
+    throw new Error('That Slack thread is already bound to another Cerin conversation')
   }
 
   const existingSession = await slackAgentThreads().findOne({ sessionId: data.sessionId })
 
   if (existingSession) {
-    throw new Error('This Nuphos conversation is already bound to a Slack thread')
+    throw new Error('This Cerin conversation is already bound to a Slack thread')
   }
 
   const now = new Date()
@@ -64,7 +64,7 @@ export async function bindSlackAgentThread(data: {
           recentMessages: [
             {
               ts: data.slackThreadTs,
-              authorName: 'Nuphos',
+              authorName: 'Cerin',
               text: clipTranscriptText(data.rootText, { fromBot: true }),
               fromBot: true,
             },

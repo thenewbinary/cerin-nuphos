@@ -5,7 +5,7 @@ description: Read Trello boards, lists and cards; create, update, move and comme
 
 # Trello
 
-Use only a binding listed in this conversation's selected credentials. Nuphos
+Use only a binding listed in this conversation's selected credentials. Cerin
 checks team membership, binding ACL, active execution actor, session selection
 and connected-account ownership before each call. Composio holds the Trello grant;
 no provider credential or Composio API key is handed to the agent.
@@ -38,7 +38,7 @@ claim a partial result is exhaustive. Trello limits requests per API key/token;
 Composio may impose additional limits. Stop on 429 and wait; do not automatically
 retry writes, including after a timeout when the outcome is unknown.
 
-Disconnect removes the Nuphos binding and deletes its Composio connection. This
+Disconnect removes the Cerin binding and deletes its Composio connection. This
 is distinct from revoking the provider grant in Trello. Do not claim that an
 upstream grant was revoked unless that separate operation was verified.
 

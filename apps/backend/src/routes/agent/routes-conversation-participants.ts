@@ -257,7 +257,7 @@ async function leaveChannelAsOwner(
             text: `${name(owner)} left. ${name(handed.userId)} now owns this chat.`,
           },
         ],
-        metadata: systemSender('nuphos:chat', 'Nuphos'),
+        metadata: systemSender('nuphos:chat', 'Cerin'),
       },
     ],
   })

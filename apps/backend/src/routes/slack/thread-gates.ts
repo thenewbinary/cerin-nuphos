@@ -36,7 +36,7 @@ export async function verifyThreadTeamAccess(args: {
           runtime,
           channelId,
           threadTs,
-          "This thread's Nuphos team no longer has Slack access here, so I can't act on replies in it.",
+          "This thread's Cerin team no longer has Slack access here, so I can't act on replies in it.",
         )
         await markSlackEvent(eventId, 'completed')
 
@@ -54,8 +54,8 @@ export async function verifyThreadTeamAccess(args: {
       channelId,
       threadTs,
       !mapping
-        ? "This channel is no longer linked to Nuphos, so I can't act on replies in this thread. A team administrator can re-link it from my DM."
-        : "This channel is now linked to a different Nuphos team, so I can't continue this conversation. Mention me in a new message to start fresh.",
+        ? "This channel is no longer linked to Cerin, so I can't act on replies in this thread. A team administrator can re-link it from my DM."
+        : "This channel is now linked to a different Cerin team, so I can't continue this conversation. Mention me in a new message to start fresh.",
     )
     await markSlackEvent(eventId, 'completed')
 
@@ -93,8 +93,8 @@ export async function checkNotificationReplyAccess(args: {
       args.threadTs,
       args.senderSlackUserId,
       access.reason === 'dm_recipient_only'
-        ? 'This incident DM can only be continued by its intended Nuphos recipient.'
-        : "Your Slack identity is no longer a member of this Nuphos team, so I can't act on your reply.",
+        ? 'This incident DM can only be continued by its intended Cerin recipient.'
+        : "Your Slack identity is no longer a member of this Cerin team, so I can't act on your reply.",
     )
     await markSlackEvent(args.eventId, 'completed')
 

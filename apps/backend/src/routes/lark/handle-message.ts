@@ -139,7 +139,7 @@ export async function handleLarkMessage(
           await replyNotice(
             ctx,
             chatId,
-            "✅ You're linked — your Lark account is now connected to Nuphos. Message me here anytime, or @mention me in a group.",
+            "✅ You're linked — your Lark account is now connected to Cerin. Message me here anytime, or @mention me in a group.",
           )
         } else if (!(await getLarkUserMapping(appId, teamId, openId))) {
           // Code not found AND the sender isn't linked → a genuinely bad/expired
@@ -150,7 +150,7 @@ export async function handleLarkMessage(
           await replyNotice(
             ctx,
             chatId,
-            'That pairing code is invalid or expired. Open the Nuphos desktop app → Connectors → Lark, generate a fresh code, and DM it to me.',
+            'That pairing code is invalid or expired. Open the Cerin desktop app → Connectors → Lark, generate a fresh code, and DM it to me.',
           )
         }
         await markLarkEvent(eventId, 'completed')
@@ -165,7 +165,7 @@ export async function handleLarkMessage(
       await replyNotice(
         ctx,
         chatId,
-        "I couldn't match your Lark account to a Nuphos user yet. Open the Nuphos desktop app → Connectors → Lark, generate a pairing code, and DM it to me to link your account.",
+        "I couldn't match your Lark account to a Cerin user yet. Open the Cerin desktop app → Connectors → Lark, generate a pairing code, and DM it to me to link your account.",
       )
       await markLarkEvent(eventId, 'completed')
 

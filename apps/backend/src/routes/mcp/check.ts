@@ -85,7 +85,7 @@ export async function nuphosCheck(
     return toolResult({
       status: 'running',
       ...details,
-      progress: { message: 'The Nuphos Agent is still working on this request.' },
+      progress: { message: 'The Cerin Agent is still working on this request.' },
     })
   }
   // Stopped on a question: nothing more happens until it is answered.

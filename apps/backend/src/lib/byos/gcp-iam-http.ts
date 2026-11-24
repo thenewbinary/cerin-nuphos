@@ -80,7 +80,7 @@ export async function verifyGcpWifImpersonation(
   throw new AppError(
     400,
     'gcp_service_account_not_impersonable',
-    `Nuphos cannot impersonate ${serviceAccountEmail}. Grant the Service Account Token Creator role to ${gcpWifPrincipalForTeam(teamId)}, then bind again. A grant made just now can take up to a minute to take effect. (${message})`,
+    `Cerin cannot impersonate ${serviceAccountEmail}. Grant the Service Account Token Creator role to ${gcpWifPrincipalForTeam(teamId)}, then bind again. A grant made just now can take up to a minute to take effect. (${message})`,
     { serviceAccountEmail },
   )
 }

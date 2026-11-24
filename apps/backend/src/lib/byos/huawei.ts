@@ -186,7 +186,7 @@ export async function assumeHuaweiIdentity(
     throw new AppError(
       503,
       'huawei_connector_unavailable',
-      'The Nuphos OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Huawei Cloud accounts cannot be reached.',
+      'The Cerin OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Huawei Cloud accounts cannot be reached.',
     )
   }
 
@@ -217,7 +217,7 @@ export async function verifyHuaweiIdentity(
     throw new AppError(
       400,
       'huawei_identity_not_usable',
-      `Nuphos cannot federate into Huawei Cloud account ${identity.domainId}. Check the IAM identity provider "${identity.idpId}": protocol OIDC, identity provider URL ${getAwsOidcIssuer()}, audience ${config.byos.huawei.oidc.audience}, and that a trust agency named "${identity.agencyName}" is assigned to that audience. (${(e as Error).message})`,
+      `Cerin cannot federate into Huawei Cloud account ${identity.domainId}. Check the IAM identity provider "${identity.idpId}": protocol OIDC, identity provider URL ${getAwsOidcIssuer()}, audience ${config.byos.huawei.oidc.audience}, and that a trust agency named "${identity.agencyName}" is assigned to that audience. (${(e as Error).message})`,
       { domainId: identity.domainId, idpId: identity.idpId, agencyName: identity.agencyName },
     )
   }

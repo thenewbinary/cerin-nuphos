@@ -25,6 +25,7 @@ export function messagingConfig() {
       },
     },
     discord: {
+      commandName: optional('DISCORD_COMMAND_NAME') ?? 'cerin',
       botToken: optional('DISCORD_BOT_TOKEN'),
       clientId: optional('DISCORD_CLIENT_ID'),
       clientSecret: optional('DISCORD_CLIENT_SECRET'),

@@ -1,6 +1,6 @@
 ---
 name: zeabur
-description: Inspect or manage Zeabur (PaaS) resources for a Nuphos-bound Zeabur provider — projects, services, deployments, runtime/build logs, and environment variables — via the Zeabur GraphQL API (and the zeabur CLI when present). Includes a setup script that loads the selected provider's API token into the sandbox.
+description: Inspect or manage Zeabur (PaaS) resources for a Cerin-bound Zeabur provider — projects, services, deployments, runtime/build logs, and environment variables — via the Zeabur GraphQL API (and the zeabur CLI when present). Includes a setup script that loads the selected provider's API token into the sandbox.
 ---
 
 # Zeabur
@@ -13,7 +13,7 @@ Changing runtime-global settings is possible, but strongly discouraged unless th
 
 Use this skill when the user wants to inspect or operate a Zeabur deployment, service, project, or its logs/environment variables — for example when they paste a `zeabur.com` deployment URL and ask what is happening with it.
 
-Zeabur is just one of several Nuphos-bound providers (peer to AWS, GCP, Cloudflare). Everything here is bounded by the user's Zeabur API token; there is no special internal access.
+Zeabur is just one of several Cerin-bound providers (peer to AWS, GCP, Cloudflare). Everything here is bounded by the user's Zeabur API token; there is no special internal access.
 
 The Zeabur GraphQL API at `https://api.zeabur.com/graphql` is the dependable backbone — it is always reachable from the sandbox via `curl`. The `zeabur` CLI may or may not be pre-installed; prefer GraphQL and fall back to the CLI only when it is present.
 
@@ -28,10 +28,10 @@ source ~/.zeabur/nuphos.env   # exports ZEABUR_TOKEN, ZEABUR_ID, ZEABUR_KIND, ZE
 
 Editors and administrators may use a selected connector; only administrators may manage its binding. The runtime receives the connector’s long-lived token with its full upstream authority, not a read-only grant. Viewer access remains denied.
 
-The script fetches the token through the ordinary Nuphos team API. A conversation bearer is authorized against this conversation's selected providers automatically. The script writes `~/.zeabur/nuphos.env` and runs `zeabur auth login --token` if the CLI exists. `<zeaburId>` is the `zeaburId` shown in this session's enabled-credentials list.
+The script fetches the token through the ordinary Cerin team API. A conversation bearer is authorized against this conversation's selected providers automatically. The script writes `~/.zeabur/nuphos.env` and runs `zeabur auth login --token` if the CLI exists. `<zeaburId>` is the `zeaburId` shown in this session's enabled-credentials list.
 
 In Claude Code, `skills` is a compatibility link to the native `.claude/skills` tree and the
-runtime supplies the session-scoped Nuphos variables automatically. Do not search the filesystem
+runtime supplies the session-scoped Cerin variables automatically. Do not search the filesystem
 or inspect environment variables before running the documented script.
 
 When the user already gave a project ID, inspect that project directly in one call; do not list

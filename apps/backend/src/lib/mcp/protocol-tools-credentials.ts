@@ -13,7 +13,7 @@ export const CREDENTIAL_TOOLS = [
       properties: {
         team_id: {
           type: 'string',
-          description: 'The Nuphos team whose credentials to list. See nuphos_list_teams.',
+          description: 'The Cerin team whose credentials to list. See nuphos_list_teams.',
         },
         session_id: {
           type: 'string',

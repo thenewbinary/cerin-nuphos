@@ -147,7 +147,7 @@ export async function executeLarkAgentTurn(args: {
       await replyNotice(
         args.ctx,
         args.chatId,
-        'Nuphos hit an error handling this request — diagnostic info was captured for the team to look into.',
+        'Cerin hit an error handling this request — diagnostic info was captured for the team to look into.',
       )
     } catch {
       // The failure notice itself failed; the turn error is already logged.

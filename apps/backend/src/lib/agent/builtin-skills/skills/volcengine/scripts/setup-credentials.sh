@@ -9,22 +9,22 @@ usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <accountId> [region]
 
-Fetches the team's Volcengine IAM credentials from the Nuphos backend (using
-the user's NUPHOS_TOKEN) for a Nuphos-bound Volcengine account, then writes a
+Fetches the team's Volcengine IAM credentials from the Cerin backend (using
+the user's NUPHOS_TOKEN) for a Cerin-bound Volcengine account, then writes a
 sourceable env file at ~/.volc/credentials.env, exporting both naming schemes:
 VOLC_ACCESSKEY / VOLC_SECRETKEY / VOLC_SESSION_TOKEN / VOLC_REGION for the SDKs,
 and VOLCENGINE_ACCESS_KEY / VOLCENGINE_SECRET_KEY / VOLCENGINE_SESSION_TOKEN /
 VOLCENGINE_REGION for the ve CLI.
 
 Arguments:
-  teamId     Nuphos team id (24-char hex)
-  accountId  Nuphos Volcengine account binding id (24-char hex)
+  teamId     Cerin team id (24-char hex)
+  accountId  Cerin Volcengine account binding id (24-char hex)
   region     Optional default region. If omitted, the backend's defaultRegion
              is used (cn-beijing).
 
 After running:  source ~/.volc/credentials.env
 
-Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.nuphos.ai).
+Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
 EOF
   exit 1
 }
@@ -46,7 +46,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 # Conversation tokens are accepted by the ordinary team API; its auth
 # middleware applies the conversation's credential selection automatically.
@@ -80,7 +80,7 @@ for attempt in 1 2 3; do
 done
 
 if [ "$http_code" != "200" ]; then
-  echo "Nuphos backend returned HTTP ${http_code} for ${url}:" >&2
+  echo "Cerin backend returned HTTP ${http_code} for ${url}:" >&2
   cat "$tmp" >&2
   echo >&2
   exit 1

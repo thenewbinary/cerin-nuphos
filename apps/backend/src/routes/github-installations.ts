@@ -99,7 +99,7 @@ githubInstallationsRoutes.post(
       throw new AppError(
         403,
         'github_installation_not_verified',
-        'GitHub did not confirm that you can access this installation. Install or configure the GitHub App from Nuphos again.',
+        'GitHub did not confirm that you can access this installation. Install or configure the GitHub App from Cerin again.',
       )
     }
 

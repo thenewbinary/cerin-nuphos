@@ -276,7 +276,7 @@ function deriveCloudflareSelfCapabilities({
     inferred: false,
     readReason,
     writeReason: canWrite
-      ? `Token includes the "${writeGroup!.name}" permission group, so you can rotate or edit this Nuphos token from within itself.`
+      ? `Token includes the "${writeGroup!.name}" permission group, so you can rotate or edit this Cerin token from within itself.`
       : "No token-management permission group is granted — you'll need to manage this token from the Cloudflare dashboard.",
   }
 }

@@ -1,4 +1,4 @@
-"""Bounded Firebase Management reads using the selected Nuphos GCP binding."""
+"""Bounded Firebase Management reads using the selected Cerin GCP binding."""
 import argparse
 import json
 import os
@@ -33,11 +33,11 @@ def main():
     if credential_dir:
         token = (Path(credential_dir) / "NUPHOS_TOKEN").read_text().strip()
     if not token:
-        raise ValueError("Nuphos session credential is unavailable")
-    base = os.environ.get("NUPHOS_BACKEND_URL", "https://api.nuphos.ai").rstrip("/")
+        raise ValueError("Cerin session credential is unavailable")
+    base = os.environ.get("NUPHOS_BACKEND_URL", "https://api.cerin.ai").rstrip("/")
     parts = urlsplit(base)
     if parts.scheme not in ("http", "https") or parts.username or parts.password:
-        raise ValueError("Invalid Nuphos backend URL")
+        raise ValueError("Invalid Cerin backend URL")
     path = "/teams/{}/gcp-projects/{}/credentials".format(
         quote(args.team_id, safe=""), quote(args.project_id, safe=""))
     credentials = get_json(base + path + "?" + urlencode({

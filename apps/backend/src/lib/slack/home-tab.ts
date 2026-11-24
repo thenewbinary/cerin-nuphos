@@ -116,7 +116,7 @@ export function buildDisconnectedSlackHomeView(): Record<string, unknown> {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: "*This Slack workspace isn't connected to a Nuphos team yet.*\nConnect it from the Nuphos desktop app: *Settings → Slack → Connect workspace*. Once connected, this page shows your team, linked channels, and the cloud credentials available to you.",
+          text: "*This Slack workspace isn't connected to a Cerin team yet.*\nConnect it from the Cerin desktop app: *Settings → Slack → Connect workspace*. Once connected, this page shows your team, linked channels, and the cloud credentials available to you.",
         },
       },
       HOME_FOOTER_BLOCK,

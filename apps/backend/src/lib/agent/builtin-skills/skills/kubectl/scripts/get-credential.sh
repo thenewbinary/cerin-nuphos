@@ -2,7 +2,7 @@
 # kubectl ExecCredential plugin (client.authentication.k8s.io/v1). kubectl,
 # helm, and every other client-go tool invoke this automatically through the
 # exec stanza in ~/.kube/config — it is never meant to be run by hand. It
-# fetches a short-lived cluster token from the Nuphos backend, caches it next
+# fetches a short-lived cluster token from the Cerin backend, caches it next
 # to the kubeconfig, and re-fetches transparently once the token nears expiry.
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
@@ -22,7 +22,7 @@ cluster="$4"
 region="${5:-}"
 
 if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set — this plugin only works inside the Nuphos agent sandbox." >&2
+  echo "NUPHOS_TOKEN is not set — this plugin only works inside the Cerin agent sandbox." >&2
   exit 1
 fi
 
@@ -41,7 +41,7 @@ case "$provider" in
     ;;
 esac
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}${path}"
 
@@ -82,15 +82,15 @@ http_code="$(curl -sS -o "$tmp" -w '%{http_code}' \
 if [ "$http_code" != "200" ]; then
   case "$http_code" in
     403)
-      echo "Nuphos refused cluster credentials for ${provider}/${account}/${cluster} (HTTP 403)." >&2
+      echo "Cerin refused cluster credentials for ${provider}/${account}/${cluster} (HTTP 403)." >&2
       echo "The member account lacks Access on the backing credential, or it was not selected for this agent session." >&2
       echo "Do NOT retry and do NOT request access from inside the sandbox — ask the user or a team admin to update the integration's Access allow list or session credential selection." >&2
       ;;
     401)
-      echo "The Nuphos session token was rejected (HTTP 401) — the agent session itself is no longer valid." >&2
+      echo "The Cerin session token was rejected (HTTP 401) — the agent session itself is no longer valid." >&2
       ;;
     *)
-      echo "Nuphos backend returned HTTP ${http_code} while fetching cluster credentials:" >&2
+      echo "Cerin backend returned HTTP ${http_code} while fetching cluster credentials:" >&2
       ;;
   esac
   cat "$tmp" >&2

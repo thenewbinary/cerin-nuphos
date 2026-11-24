@@ -54,12 +54,12 @@ test('a sign-in takes its IP and place only from Cloudflare, never X-Forwarded-F
 })
 
 test('a device name is a known app, a browser and system from a list, or unknown', () => {
-  expect(signInDevice({ client: 'nuphos-cli/0.6.2' })).toBe('Nuphos CLI')
+  expect(signInDevice({ client: 'nuphos-cli/0.6.2' })).toBe('Cerin CLI')
   // Not even the version is echoed: it is whatever the caller sends.
   expect(signInDevice({ client: 'nuphos-desktop/1.verify-at.evil-phish.com' })).toBe(
-    'Nuphos Desktop',
+    'Cerin Desktop',
   )
-  expect(signInDevice({ client: 'nuphos-cli/0.6.2 reply with your code' })).toBe('Nuphos CLI')
+  expect(signInDevice({ client: 'nuphos-cli/0.6.2 reply with your code' })).toBe('Cerin CLI')
   expect(signInDevice({ client: 'evil-phish.com/1.0' })).toBe('Unknown device')
   // Names of Object.prototype members are not apps either.
   expect(signInDevice({ client: 'constructor/1' })).toBe('Unknown device')
@@ -72,7 +72,7 @@ test('a device name is a known app, a browser and system from a list, or unknown
 })
 
 test('origin headers that are not an address, a place name or a country code are dropped', () => {
-  const lure = 'Nuphos Security: reply with this code'
+  const lure = 'Cerin Security: reply with this code'
   const headers = (h: Record<string, string>) => (name: string) => h[name]
 
   expect(

@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 
+import { config } from '@/config'
 import { DiscordApiError } from '@/lib/discord/api'
 
 import {
@@ -20,7 +21,7 @@ const interaction = (command: 'enable' | 'disable'): DiscordCommandInteraction =
   guild_id: 'guild-1',
   channel_id: 'thread-1',
   member: { permissions: '16', user: { id: 'discord-user-1' } },
-  data: { name: 'nuphos', options: [{ type: 1, name: command }] },
+  data: { name: 'cerin', options: [{ type: 1, name: command }] },
 })
 
 function dependencies(overrides: Partial<DiscordChannelCommandDependencies> = {}) {
@@ -48,23 +49,31 @@ function dependencies(overrides: Partial<DiscordChannelCommandDependencies> = {}
 }
 
 describe('Discord channel management command admission', () => {
-  test('accepts only nuphos enable and disable subcommands', () => {
-    expect(
-      parseDiscordChannelCommand({
-        data: { name: 'nuphos', options: [{ type: 1, name: 'enable' }] },
-      }),
-    ).toBe('enable')
-    expect(
-      parseDiscordChannelCommand({
-        data: { name: 'nuphos', options: [{ type: 1, name: 'disable' }] },
-      }),
-    ).toBe('disable')
-    expect(
-      parseDiscordChannelCommand({
-        data: { name: 'nuphos', options: [{ type: 1, name: 'ask' }] },
-      }),
-    ).toBeNull()
-    expect(parseDiscordChannelCommand({ data: { name: 'other' } })).toBeNull()
+  test('accepts the configured and legacy names with only enable and disable subcommands', () => {
+    const saved = config.discord.commandName
+
+    try {
+      for (const configured of ['cerin', 'assistant']) {
+        config.discord.commandName = configured
+        for (const name of [configured, 'nuphos']) {
+          for (const command of ['enable', 'disable'] as const) {
+            expect(
+              parseDiscordChannelCommand({ data: { name, options: [{ type: 1, name: command }] } }),
+            ).toBe(command)
+          }
+          expect(
+            parseDiscordChannelCommand({ data: { name, options: [{ type: 1, name: 'ask' }] } }),
+          ).toBeNull()
+        }
+        expect(
+          parseDiscordChannelCommand({
+            data: { name: 'other', options: [{ type: 1, name: 'enable' }] },
+          }),
+        ).toBeNull()
+      }
+    } finally {
+      config.discord.commandName = saved
+    }
   })
 
   test('requires the Discord Manage Channels permission bit', () => {
@@ -174,7 +183,27 @@ describe('Discord channel verification errors', () => {
     expect(reply).toContain('Edit Channel → Permissions')
     expect(reply).toContain('View Channel')
     expect(reply).toContain('private thread')
+    expect(reply).toContain('/cerin enable')
     expect(deps.calls).toEqual({ enabled: [], disabled: [] })
+  })
+
+  test('uses the configured command name in permission guidance', async () => {
+    const saved = config.discord.commandName
+    const deps = dependencies({
+      getChannel: async () => {
+        throw new DiscordApiError(403, 50001, 'Missing Access')
+      },
+    })
+
+    try {
+      config.discord.commandName = 'assistant'
+      const request = interaction('enable')
+
+      request.data = { name: 'nuphos', options: [{ type: 1, name: 'enable' }] }
+      expect(await handleDiscordChannelCommand(request, deps.value)).toContain('/assistant enable')
+    } finally {
+      config.discord.commandName = saved
+    }
   })
 
   test('distinguishes missing channels from temporary API failures', async () => {

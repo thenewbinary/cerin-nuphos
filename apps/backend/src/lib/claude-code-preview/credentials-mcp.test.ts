@@ -1,3 +1,4 @@
+import { config } from '@/config'
 import { describe, expect, setSystemTime, test } from 'bun:test'
 
 import { useCredentialListing } from '@/lib/test/doubles/claude-code-credential-listing'
@@ -72,6 +73,7 @@ describe('credentialsMcpTools', () => {
       NUPHOS_RUNTIME_SKILLS_TOKEN: expect.any(String),
       NUPHOS_TOKEN: 'scoped',
       NUPHOS_BACKEND_URL: 'https://backend.example',
+      NUPHOS_PUBLIC_URL: config.auth.publicWebUrl ?? config.auth.publicBaseUrl,
       NUPHOS_SESSION_ID: 'conv-1',
       TEAM: 'team-1',
       NUPHOS_TEAM_ID: 'team-1',
@@ -141,7 +143,7 @@ describe('credentialsMcpTools', () => {
 
   // The runtime routes a server through mcp-http-bridge.mjs, which reads the
   // renewed token on every call, only when its sole header is a bearer token.
-  test('Nuphos MCP servers declare a bearer Authorization as their only header', async () => {
+  test('Cerin MCP servers declare a bearer Authorization as their only header', async () => {
     const { mcpServers } = await previewSessionAccess('conv-1', 'team-1', 'owner', 'owner', {
       backendUrl: 'https://backend.example',
     })

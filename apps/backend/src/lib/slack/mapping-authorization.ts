@@ -74,7 +74,7 @@ export async function assertChannelMappingCreationAllowed(
     throw new AppError(
       400,
       'slack_workspace_not_installed',
-      'That Slack workspace has no Nuphos installation, so its channels cannot be linked',
+      'That Slack workspace has no Cerin installation, so its channels cannot be linked',
     )
   }
   if (installationTeamId === input.teamId) return
@@ -89,7 +89,7 @@ export async function assertChannelMappingCreationAllowed(
     throw new AppError(
       400,
       'slack_workspace_not_installed',
-      'That Slack workspace has no Nuphos installation, so its channels cannot be linked',
+      'That Slack workspace has no Cerin installation, so its channels cannot be linked',
     )
   }
   await dependencies.assertBotInChannel(bot.botToken, input.slackChannelId)

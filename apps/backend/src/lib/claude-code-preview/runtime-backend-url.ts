@@ -114,8 +114,8 @@ export function requirePublicBackendUrl(): string {
   throw new AppError(
     503,
     'public_backend_url_unconfigured',
-    'This Nuphos deployment has no publicly reachable backend URL, so a ' +
-      'self-hosted agent could reach neither Nuphos tools nor the skill ' +
+    'This Cerin deployment has no publicly reachable backend URL, so a ' +
+      'self-hosted agent could reach neither Cerin tools nor the skill ' +
       'bundle. Set NUPHOS_PUBLIC_BACKEND_URL on the backend, then register ' +
       'the agent again.',
   )

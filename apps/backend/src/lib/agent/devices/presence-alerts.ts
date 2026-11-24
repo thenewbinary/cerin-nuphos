@@ -52,7 +52,7 @@ async function announce(device: AgentDevice, online: boolean, deps: PresenceAler
     title: online ? `${device.label} is back online` : `${device.label} is offline`,
     body: online
       ? 'Agents can run on it again.'
-      : "Agents can't run on it until it reconnects to Nuphos.",
+      : "Agents can't run on it until it reconnects to Cerin.",
   })
 }
 

@@ -116,7 +116,7 @@ export async function shareTransferGroupsToLarkChat(args: {
       messageId: args.rootMessageId,
       msgType: 'text',
       content: JSON.stringify({
-        text: `📎 This run produced files I couldn't attach here: ${names.join(', ')}. Download them from this conversation in the Nuphos desktop app.`,
+        text: `📎 This run produced files I couldn't attach here: ${names.join(', ')}. Download them from this conversation in the Cerin desktop app.`,
       }),
       replyInThread: args.replyInThread,
     })

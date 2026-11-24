@@ -1,9 +1,9 @@
 ---
 name: instructions
-description: List, add, edit, disable, or delete the user's personal and the team's shared Nuphos Instructions (standing markdown guidance injected into every conversation, like CLAUDE.md) through the canonical team REST API.
+description: List, add, edit, disable, or delete the user's personal and the team's shared Cerin Instructions (standing markdown guidance injected into every conversation, like CLAUDE.md) through the canonical team REST API.
 ---
 
-# Nuphos Instructions
+# Cerin Instructions
 
 Instructions are the snippets configured in Settings > Instructions. Enabled
 snippets are injected at the start of every new conversation: team snippets

@@ -146,7 +146,7 @@ export function createDeviceAgentRoutes(
       throw new AppError(
         409,
         'agent_instances_unavailable',
-        'Update Nuphos on this computer and connect it before adding another agent.',
+        'Update Cerin on this computer and connect it before adding another agent.',
       )
 
     return {

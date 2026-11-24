@@ -402,7 +402,7 @@ test('nuphos login uses its configured approval page with or without OIDC', asyn
     config.auth.oidc.issuer = undefined
     for (const base of ['https://api.nuphos.ai', 'https://nuphos.ai']) {
       config.auth.publicBaseUrl = base
-      expect(await verificationUri()).toBe('https://nuphos.ai/device')
+      expect(await verificationUri()).toBe(`${base}/auth/social/device`)
     }
     config.auth.publicBaseUrl = 'https://api.nuphos.ai.example.test'
     expect(await verificationUri()).toBe(`${config.auth.publicBaseUrl}/auth/social/device`)

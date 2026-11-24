@@ -79,7 +79,7 @@ export async function passkeyRegistrationOptions(userId: string) {
     throw new AppError(409, 'too_many_passkeys', 'Remove a passkey before adding another')
   }
   const options = await generateRegistrationOptions({
-    rpName: 'Nuphos',
+    rpName: 'Cerin',
     rpID: rp().rpID,
     userName: email,
     userID: new TextEncoder().encode(userId),

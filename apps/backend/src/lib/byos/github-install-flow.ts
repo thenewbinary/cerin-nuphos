@@ -160,7 +160,7 @@ export function invalidFlow(): never {
   throw new AppError(
     400,
     'invalid_github_install_state',
-    'This GitHub installation link is invalid or has expired. Start again from Nuphos.',
+    'This GitHub installation link is invalid or has expired. Start again from Cerin.',
   )
 }
 

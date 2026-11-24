@@ -2,6 +2,9 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { config } from '@/config'
+import { publicWebUrl } from '@/lib/public-urls'
+
 import { safeJoinUnder } from './safe-path'
 
 type InjectableSandbox = {
@@ -60,9 +63,23 @@ export async function collectSkillFiles(
     if (entry.isDirectory()) {
       await collectSkillFiles(dir, relPath, out)
     } else if (entry.isFile()) {
+      const content = await fs.readFile(absPath)
+
       out.push({
         relPath: relPath.split(path.sep).join(path.posix.sep),
-        content: await fs.readFile(absPath),
+        content: relPath.endsWith('.md')
+          ? Buffer.from(
+              content
+                .toString('utf8')
+                .replaceAll('{{PUBLIC_WEB_URL}}', publicWebUrl())
+                .replaceAll(
+                  '{{GOOGLE_WORKSPACE_GUIDE}}',
+                  config.publicLinks.docsBaseUrl
+                    ? `(guide: ${config.publicLinks.docsBaseUrl}/connectors/google-workspace)`
+                    : '',
+                ),
+            )
+          : content,
       })
     }
   }

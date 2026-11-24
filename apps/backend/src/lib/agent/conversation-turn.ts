@@ -269,7 +269,7 @@ export async function reportUndelivered(
         sender,
         notice,
         'agent.resource',
-        systemSender('nuphos', 'Nuphos', `/teams/${sender.teamId}/agent/${data.targetSessionId}`),
+        systemSender('nuphos', 'Cerin', `/teams/${sender.teamId}/agent/${data.targetSessionId}`),
       )
 
       run.catch(failed)

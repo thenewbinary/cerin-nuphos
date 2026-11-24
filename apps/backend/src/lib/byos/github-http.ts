@@ -1,5 +1,5 @@
 export const GITHUB_API = 'https://api.github.com'
-export const USER_AGENT = 'nuphos-backend'
+export const USER_AGENT = 'cerin-backend'
 const GITHUB_FETCH_TIMEOUT_MS = 30_000
 
 export class GithubApiError extends Error {

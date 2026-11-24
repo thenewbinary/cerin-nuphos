@@ -99,7 +99,7 @@ export async function mintPreviewMcpToken(args: {
     own: args.conversationOwnerUserId ?? args.userId,
     sid: args.sessionId,
     tid: args.teamId,
-    ori: (args.apiOrigin ?? 'https://api.nuphos.ai').replace(/\/$/u, ''),
+    ori: (args.apiOrigin ?? config.auth.publicBaseUrl).replace(/\/$/u, ''),
     ...(args.humanTurn ? { hum: true as const } : {}),
     jti: randomUUID(),
     ...(actor ? { act: actor } : {}),

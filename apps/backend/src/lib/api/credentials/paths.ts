@@ -4,7 +4,7 @@ export const objectIdStringSchema = z.string().regex(/^[a-f0-9]{24}$/i)
 export const zeaburIdStringSchema = z.string().trim().min(1).max(120)
 
 export const teamPathSchema = z.object({
-  teamId: objectIdStringSchema.describe('Nuphos team id.'),
+  teamId: objectIdStringSchema.describe('Cerin team id.'),
 })
 
 export const agentSessionPathSchema = z.object({
@@ -50,19 +50,19 @@ export const agentSessionCloudflareAccountPathSchema = agentSessionTeamPathSchem
 })
 
 export const linodeAccountPathSchema = teamPathSchema.extend({
-  accountId: objectIdStringSchema.describe('Nuphos Linode account binding id.'),
+  accountId: objectIdStringSchema.describe('Cerin Linode account binding id.'),
 })
 
 export const hetznerAccountPathSchema = teamPathSchema.extend({
-  accountId: objectIdStringSchema.describe('Nuphos Hetzner account binding id.'),
+  accountId: objectIdStringSchema.describe('Cerin Hetzner account binding id.'),
 })
 
 export const tailscaleClientPathSchema = teamPathSchema.extend({
-  clientId: objectIdStringSchema.describe('Nuphos Tailscale OAuth client binding id.'),
+  clientId: objectIdStringSchema.describe('Cerin Tailscale OAuth client binding id.'),
 })
 
 export const agentSessionTailscaleClientPathSchema = agentSessionTeamPathSchema.extend({
-  clientId: objectIdStringSchema.describe('Nuphos Tailscale OAuth client binding id.'),
+  clientId: objectIdStringSchema.describe('Cerin Tailscale OAuth client binding id.'),
 })
 
 export const gcpCloudRunServicePathSchema = z.object({

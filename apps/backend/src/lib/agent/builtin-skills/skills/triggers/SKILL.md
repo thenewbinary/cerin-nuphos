@@ -1,9 +1,9 @@
 ---
 name: triggers
-description: Manage Nuphos cron and webhook triggers through the canonical team REST API. Use for recurring agent work, webhooks from monitoring providers or other senders, listing/updating/removing triggers, or testing delivery.
+description: Manage Cerin cron and webhook triggers through the canonical team REST API. Use for recurring agent work, webhooks from monitoring providers or other senders, listing/updating/removing triggers, or testing delivery.
 ---
 
-# Nuphos Triggers API
+# Cerin Triggers API
 
 Every trigger belongs to one existing conversation (`targetSessionId`), and
 each cron or webhook fire is delivered into it. There is no team-wide trigger
@@ -74,7 +74,7 @@ old one.
 
 A webhook trigger is a plain URL plus secret. Whatever calls it (a Grafana
 contact point, an SNS subscription, a CI job) is configured and owned in that
-provider; Nuphos does not track it, and deleting the trigger leaves it in
+provider; Cerin does not track it, and deleting the trigger leaves it in
 place. Point the sender at `webhookUrl` with the secret in the
 `X-Webhook-Secret` header, or as `?secret=` on the URL when the sender cannot
 set headers. AWS SNS subscriptions to that URL are confirmed automatically and
@@ -91,7 +91,7 @@ CloudWatch alarm notifications arrive normalized. For monitoring alerts, load
 - A conversation fired by a trigger must not create another trigger.
 - Confirm before DELETE; prefer PATCH `{ "enabled": false }` when reversible.
   When removing a webhook trigger, also remove or detach its sender in the
-  provider if the user wants that; Nuphos does not do it.
+  provider if the user wants that; Cerin does not do it.
 - `test-fire` only proves the message was queued for the bound conversation,
   not that the run completed successfully.
 - Only the owner of the trigger's Task can update, delete or test-fire it.

@@ -1,8 +1,60 @@
 import { expect, test } from 'bun:test'
 
+import { config } from '@/config'
+import { cliConfig } from '@/config/cli'
+
 import { newerRuntimeVersion, runtimeVersionAtLeast, stableRuntimeVersion } from './runtime-release'
 
 type FetchInput = string | URL | Request
+
+test.each([
+  { env: undefined, repo: 'thenewbinary/cerin-nuphos' },
+  { env: '', repo: 'thenewbinary/cerin-nuphos' },
+  { env: 'example/cerin-releases', repo: 'example/cerin-releases' },
+])('CLI discovery uses repo $repo with env $env', async ({ env, repo }) => {
+  const { latestCliRelease, resetRuntimeReleaseCache } = await import('./runtime-release')
+  const originalEnv = process.env.CERIN_CLI_RELEASES_REPO
+  const originalConfig = config.cli
+  const originalFetch = globalThis.fetch
+  const requests: string[] = []
+
+  resetRuntimeReleaseCache()
+  try {
+    if (env === undefined) delete process.env.CERIN_CLI_RELEASES_REPO
+    else process.env.CERIN_CLI_RELEASES_REPO = env
+    config.cli = cliConfig()
+    globalThis.fetch = (async (input: FetchInput) => {
+      requests.push(input instanceof Request ? input.url : String(input))
+
+      return Response.json([
+        { tag_name: 'runtime-v99.0.0' },
+        { tag_name: 'desktop-v99.0.0' },
+        { tag_name: 'v99.0.0' },
+        { tag_name: 'cli-v9.0.0', draft: true },
+        { tag_name: 'cli-v8.0.0', prerelease: true },
+        { tag_name: 'cli-v7.0.0-beta.1' },
+        { tag_name: 'cli-v0.5.4', body: 'CLI release notes' },
+        { tag_name: 'cli-v0.5.3' },
+      ])
+    }) as typeof fetch
+
+    const expected = {
+      version: '0.5.4',
+      url: `https://github.com/${repo}/releases/tag/cli-v0.5.4`,
+      body: 'CLI release notes',
+    }
+
+    expect(await latestCliRelease()).toEqual(expected)
+    expect(await latestCliRelease()).toEqual(expected)
+    expect(requests).toEqual([`https://api.github.com/repos/${repo}/releases?per_page=50`])
+  } finally {
+    if (originalEnv === undefined) delete process.env.CERIN_CLI_RELEASES_REPO
+    else process.env.CERIN_CLI_RELEASES_REPO = originalEnv
+    config.cli = originalConfig
+    globalThis.fetch = originalFetch
+    resetRuntimeReleaseCache()
+  }
+})
 
 test('release comparisons use numeric semver and never offer downgrades or prereleases', () => {
   expect(newerRuntimeVersion('0.1.10', '0.1.9')).toBe(true)

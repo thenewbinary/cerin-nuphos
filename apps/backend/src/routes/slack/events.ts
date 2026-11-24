@@ -143,7 +143,7 @@ export function registerSlackEventRoutes(slackRoutes: Hono<{ Variables: AuthVari
               runtime,
               event.channel,
               threadTs,
-              'Nuphos hit an error while handling this request. The team has enough trace metadata to investigate.',
+              'Cerin hit an error while handling this request. The team has enough trace metadata to investigate.',
             )
           }
         } catch (postErr) {

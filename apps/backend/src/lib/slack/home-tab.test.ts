@@ -120,7 +120,7 @@ describe('buildSlackHomeViewFromModel', () => {
     const text = viewText(view)
 
     expect(text).toContain('Not linked')
-    expect(text).toContain('Link your Nuphos account to see which credentials')
+    expect(text).toContain('Link your Cerin account to see which credentials')
     // Channel linking is admin-only; an unlinked viewer gets no picker.
     expect(text).not.toContain('nuphos_link_channel')
     expect(text).toContain('nuphos_home_refresh')
@@ -202,7 +202,7 @@ describe('buildDisconnectedSlackHomeView', () => {
   test('explains how to connect the workspace', () => {
     const text = viewText(buildDisconnectedSlackHomeView())
 
-    expect(text).toContain("isn't connected to a Nuphos team yet")
+    expect(text).toContain("isn't connected to a Cerin team yet")
     expect(text).toContain('Settings → Slack')
   })
 })

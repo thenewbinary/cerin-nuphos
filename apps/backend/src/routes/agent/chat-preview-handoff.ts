@@ -9,7 +9,7 @@ import type { UIMessage } from 'ai'
 
 export const HANDED_OFF = Symbol('handed-off')
 export const HANDED_OFF_TOOL_ERROR =
-  'Nuphos restarted before this tool reported back. The agent kept running; its reply continues below.'
+  'Cerin restarted before this tool reported back. The agent kept running; its reply continues below.'
 export const CONNECTION_LOST_TOOL_ERROR =
   'The connection to the agent dropped before this tool reported back. The agent kept running; its reply continues below once it reconnects.'
 

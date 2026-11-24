@@ -49,7 +49,7 @@ export function connectorToolModule(
     {
       create_connector: tool({
         description:
-          'Finish connecting a cloud account to the current Nuphos team after setting up its ' +
+          'Finish connecting a cloud account to the current Cerin team after setting up its ' +
           'role, service account, or federated app, for example through local_exec. ' +
           'Supports AWS, GCP, Azure, Tencent Cloud, Alibaba Cloud, Volcengine, and Huawei Cloud. ' +
           'Pass the non-secret identifiers from setup; never pass CLI credentials or tokens. ' +

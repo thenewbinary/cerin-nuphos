@@ -176,7 +176,7 @@ export async function shareTransferGroupsToSlackThread(args: {
     entry.reason === 'too_large' ? `\`${entry.fileName}\` (too large)` : `\`${entry.fileName}\``,
   )
   const scopeHint = missingScope
-    ? ' Attaching files in Slack requires re-installing the Nuphos Slack app (files permission).'
+    ? ' Attaching files in Slack requires re-installing the Cerin Slack app (files permission).'
     : ''
 
   try {
@@ -184,7 +184,7 @@ export async function shareTransferGroupsToSlackThread(args: {
       token: args.token,
       channel: args.channel,
       threadTs: args.threadTs,
-      text: `📎 This run produced files I couldn't attach here: ${names.join(', ')}. Download them from this conversation in the Nuphos desktop app.${scopeHint}`,
+      text: `📎 This run produced files I couldn't attach here: ${names.join(', ')}. Download them from this conversation in the Cerin desktop app.${scopeHint}`,
     })
   } catch (err) {
     logError('slack.files.fallback_error', err, {

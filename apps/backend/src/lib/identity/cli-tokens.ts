@@ -6,6 +6,7 @@ import { getNuphosUserForCredential } from '@/lib/identity'
 import { deleteUserAvatars, pruneAvatars, storeAvatar } from '@/lib/identity/avatar-upload'
 import { generateOpaqueToken, hashToken } from '@/lib/oauth/tokens'
 import { logEvent } from '@/lib/observability'
+import { publicWebUrl } from '@/lib/public-urls'
 
 import type { NuphosUser } from '@/lib/identity/types'
 
@@ -288,7 +289,8 @@ export function cliTokenDenied(
 ): string | null {
   const hit = (rules: [RegExp, RegExp][]) => rules.some(([m, p]) => m.test(method) && p.test(path))
 
-  if (hit(SESSION_ONLY)) return 'Sign in on nuphos.ai to do this; a CLI token or agent run cannot.'
+  if (hit(SESSION_ONLY))
+    return `Sign in on ${new URL(publicWebUrl()).host} to do this; a CLI token or agent run cannot.`
   if (cliToken.kind !== 'personal' && hit(AGENT_DENIED)) {
     return 'A bot or task cannot manage the account, its tokens, computers, agents, team membership or billing.'
   }

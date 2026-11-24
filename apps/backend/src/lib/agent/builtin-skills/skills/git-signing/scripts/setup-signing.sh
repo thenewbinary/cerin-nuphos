@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Creates an SSH signing identity for one Nuphos participant:
+# Creates an SSH signing identity for one Cerin participant:
 #
 #   setup-signing.sh <sender-id> --name "<name>" --email "<email>"
 #

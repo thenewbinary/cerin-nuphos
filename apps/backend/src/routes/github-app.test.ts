@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import { ObjectId } from 'mongodb'
 
 import { config } from '@/config'
+import { buildInstallUrl } from '@/lib/byos/github-app-auth'
 import { signInstallFlowState, verifyInstallFlowState } from '@/lib/byos/github-install-flow'
 import { AppError } from '@/lib/errors'
 import { useByosGithub } from '@/lib/test/doubles/byos-github'
@@ -68,13 +69,13 @@ const saved = {
 }
 
 Object.assign(config.byos.github, {
-  appSlug: 'nuphos',
+  appSlug: 'cerin',
   clientId: 'Iv1.client',
   clientSecret: 'gh-secret',
-  setupRedirect: 'https://app.nuphos.test/github-callback',
+  setupRedirect: 'https://app.cerin.test/github-callback',
 })
 Object.assign(config.auth, { jwtSecret: 'test-secret' })
-Object.assign(config.agent, { publicBackendUrl: 'https://api.nuphos.test' })
+Object.assign(config.agent, { publicBackendUrl: 'https://platform.cerin.ai' })
 afterAll(() => {
   Object.assign(config.byos.github, saved.github)
   Object.assign(config.auth, { jwtSecret: saved.jwtSecret })
@@ -137,15 +138,32 @@ function confirm(page: string, cookie: string) {
 }
 
 describe('GitHub installation flow', () => {
+  test('uses the configured app slug without substituting another app', () => {
+    const saved = config.byos.github.appSlug
+
+    try {
+      for (const slug of ['cerin', 'zeabur-atlas']) {
+        config.byos.github.appSlug = slug
+        expect(buildInstallUrl('state')).toBe(
+          `https://github.com/apps/${slug}/installations/new?state=state`,
+        )
+      }
+      config.byos.github.appSlug = undefined
+      expect(buildInstallUrl('state')).toBeNull()
+    } finally {
+      config.byos.github.appSlug = saved
+    }
+  })
+
   test('binds after the GitHub user proves access and confirms the team', async () => {
     const { install, opener, authorize, done } = await runFlow(OWN_INSTALLATION)
 
     expect(install.headers.get('location')).toStartWith(
-      'https://github.com/apps/nuphos/installations/new?state=',
+      'https://github.com/apps/cerin/installations/new?state=',
     )
     expect(authorize.origin + authorize.pathname).toBe('https://github.com/login/oauth/authorize')
     expect(authorize.searchParams.get('redirect_uri')).toBe(
-      'https://api.nuphos.test/github-app/setup',
+      'https://platform.cerin.ai/github-app/setup',
     )
 
     const page = await done.text()
@@ -158,7 +176,7 @@ describe('GitHub installation flow', () => {
     const confirmed = await confirm(page, opener)
     const back = new URL(confirmed.headers.get('location') ?? '')
 
-    expect(back.origin + back.pathname).toBe('https://app.nuphos.test/github-callback')
+    expect(back.origin + back.pathname).toBe('https://app.cerin.test/github-callback')
     expect(back.searchParams.get('installation_id')).toBe(String(OWN_INSTALLATION))
     expect(back.searchParams.get('state')).toBe('client-nonce')
     expect(bindings?.githubInstallations?.map((b) => b.installationId)).toEqual([OWN_INSTALLATION])
@@ -284,7 +302,7 @@ describe('POST /teams/:teamId/github-installations', () => {
     )
     const url = new URL(((await res.json()) as { url: string }).url)
 
-    expect(url.origin + url.pathname).toBe('https://api.nuphos.test/github-app/install')
+    expect(url.origin + url.pathname).toBe('https://platform.cerin.ai/github-app/install')
     expect(verifyInstallFlowState(url.searchParams.get('ticket') ?? '')).toMatchObject({
       t: TEAM.toHexString(),
       u: ADMIN,

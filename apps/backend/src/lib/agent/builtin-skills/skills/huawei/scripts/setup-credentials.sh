@@ -9,8 +9,8 @@ usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <accountId> [region]
 
-Fetches short-lived Huawei Cloud credentials from the Nuphos backend (using the
-user's NUPHOS_TOKEN) for a Nuphos-bound Huawei Cloud account, then writes a
+Fetches short-lived Huawei Cloud credentials from the Cerin backend (using the
+user's NUPHOS_TOKEN) for a Cerin-bound Huawei Cloud account, then writes a
 sourceable env file at ~/.huawei/credentials.env, exporting both naming schemes:
 HUAWEICLOUD_SDK_AK / HUAWEICLOUD_SDK_SK / HUAWEICLOUD_SDK_SECURITY_TOKEN /
 HUAWEICLOUD_SDK_REGION for hw-api.py and Huawei's SDKs, and HW_ACCESS_KEY /
@@ -19,14 +19,14 @@ HW_SECRET_KEY / HW_SECURITY_TOKEN / HW_REGION_NAME for Terraform. The account
 carry no IAM user.
 
 Arguments:
-  teamId     Nuphos team id (24-char hex)
-  accountId  Nuphos Huawei Cloud account binding id (24-char hex)
+  teamId     Cerin team id (24-char hex)
+  accountId  Cerin Huawei Cloud account binding id (24-char hex)
   region     Optional default region. If omitted, the backend's defaultRegion
              is used (cn-north-4).
 
 After running:  source ~/.huawei/credentials.env
 
-Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.nuphos.ai).
+Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
 EOF
   exit 1
 }
@@ -48,7 +48,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 # Conversation tokens are accepted by the ordinary team API; its auth
 # middleware applies the conversation's credential selection automatically.
@@ -82,7 +82,7 @@ for attempt in 1 2 3; do
 done
 
 if [ "$http_code" != "200" ]; then
-  echo "Nuphos backend returned HTTP ${http_code} for ${url}:" >&2
+  echo "Cerin backend returned HTTP ${http_code} for ${url}:" >&2
   cat "$tmp" >&2
   echo >&2
   exit 1

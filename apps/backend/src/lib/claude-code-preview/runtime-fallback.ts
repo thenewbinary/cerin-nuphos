@@ -263,7 +263,7 @@ function continueOn(conversation: Conversation, moved: AgentConversation): void 
     moved,
     'The agent this conversation ran on stopped before finishing, so it moved to you. Check what was already done, then continue the task from where it stopped.',
     'agent.resource',
-    systemSender('nuphos', 'Nuphos'),
+    systemSender('nuphos', 'Cerin'),
   )
     .then(({ run }) => run)
     .catch((error: unknown) => {

@@ -97,7 +97,7 @@ export async function assumeRoleWithOidc(
     throw new AppError(
       503,
       'aliyun_connector_unavailable',
-      'The Nuphos OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Alibaba Cloud roles cannot be assumed.',
+      'The Cerin OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Alibaba Cloud roles cannot be assumed.',
     )
   }
   const site = opts.site ?? 'china'
@@ -186,7 +186,7 @@ export async function verifyAliyunRole(
     throw new AppError(
       400,
       'aliyun_role_not_assumable',
-      `Nuphos cannot assume ${roleArn}. Check the RAM role's trust policy and OIDC provider: the role must trust the Nuphos OIDC provider (${getAwsOidcIssuer()}) for this team's subject, and the Site (China vs International) must match the account. (${(e as Error).message})`,
+      `Cerin cannot assume ${roleArn}. Check the RAM role's trust policy and OIDC provider: the role must trust the Cerin OIDC provider (${getAwsOidcIssuer()}) for this team's subject, and the Site (China vs International) must match the account. (${(e as Error).message})`,
       { roleArn, upstreamCode: aliyunErrorCode(e) },
     )
   }

@@ -56,7 +56,7 @@ export async function localAttachments(
     throw new AppError(
       409,
       'runtime_outdated',
-      `The computer running this agent needs Nuphos Desktop ${INLINE_SECRET_MIN_DESKTOP} or later to save a secret. Update Nuphos Desktop on that computer, then try again.`,
+      `The computer running this agent needs Cerin Desktop ${INLINE_SECRET_MIN_DESKTOP} or later to save a secret. Update Cerin Desktop on that computer, then try again.`,
     )
   const socket = new DeviceRuntimeSocket({ ...ref, actorId, teamId, purpose: 'attachments' }, deps)
 
