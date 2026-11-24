@@ -200,7 +200,7 @@ test('a home that has run before warns that the new password must be re-entered'
 
   const { stdout } = start({ OPENAB_RUNTIME_AUTH_FILE: authFile }, home)
 
-  assert.match(stdout, /^WARNING: .*update it in every Nuphos workspace/u)
+  assert.match(stdout, /^WARNING: .*update it in every Cerin workspace/u)
 })
 
 test('a settings file counts as a sign-in left behind only when it holds the listed key', () => {
