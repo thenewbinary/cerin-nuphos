@@ -3,19 +3,9 @@
   "theme": {
     "background": "#0E0E10",
     "ink": "#F7F7F8",
-    "bloom": [
-      "#3157FF",
-      "#9EAEFF",
-      "#F4EFFF",
-      "#2347E9",
-      "#626773"
-    ],
+    "bloom": ["#3157FF", "#9EAEFF", "#F4EFFF", "#2347E9", "#626773"],
     "bloomOpacity": 0.35,
-    "shimmer": [
-      "#3157FF",
-      "#9EAEFF",
-      "#F4EFFF"
-    ]
+    "shimmer": ["#3157FF", "#9EAEFF", "#F4EFFF"]
   },
   "viewBox": [0, 0, 800, 270],
   "mark": {

@@ -10,7 +10,8 @@ process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.dev.test.yaml')
 process.env.NUPHOS_API_URL = 'http://127.0.0.1:3718'
 delete process.env.ATLAS_API_URL
 
-const { apiUrl, setApiUrl, deviceRegistrationAllowed, isNuphosCloud } = await import('./api-endpoint.ts')
+const { apiUrl, setApiUrl, deviceRegistrationAllowed, isNuphosCloud } =
+  await import('./api-endpoint.ts')
 const { authSession } = await import('./auth-session.ts')
 
 test('resetting the endpoint returns to the launch-time one, not Nuphos Cloud', () => {
