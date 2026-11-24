@@ -9,17 +9,17 @@ usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <accountId> [region] [roleId]
 
-Fetches short-lived AWS STS credentials from Nuphos backend (using the user's
-NUPHOS_TOKEN) for an Nuphos-bound account, then writes them to ~/.aws/credentials
+Fetches short-lived AWS STS credentials from Cerin backend (using the user's
+NUPHOS_TOKEN) for an Cerin-bound account, then writes them to ~/.aws/credentials
 + ~/.aws/config so plain \`aws\` commands work for the next ~1 hour.
 
 Arguments:
-  teamId     Nuphos team id (24-char hex)
+  teamId     Cerin team id (24-char hex)
   accountId  AWS account id (12 digits) bound to the team
   region     Optional default region (defaults to us-east-1)
-  roleId     Optional Nuphos AWS role binding id when the account has multiple roles
+  roleId     Optional Cerin AWS role binding id when the account has multiple roles
 
-Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.nuphos.ai).
+Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
 EOF
   exit 1
 }
@@ -40,7 +40,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 # The ordinary team API recognizes a conversation token and applies the
 # session's role selection, IAM policy, and permission-admin prohibition.
@@ -77,7 +77,7 @@ for attempt in 1 2 3; do
 done
 
 if [ "$http_code" != "200" ]; then
-  echo "Nuphos backend returned HTTP ${http_code} for ${url}:" >&2
+  echo "Cerin backend returned HTTP ${http_code} for ${url}:" >&2
   cat "$tmp" >&2
   echo >&2
   exit 1

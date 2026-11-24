@@ -67,7 +67,7 @@ async function capturedAuthorization(script: string[], stdin = '', revoked = fal
 
 describe('skill scripts prefer the per-turn credential file over the spawn-time env', () => {
   const cases: [string, string[], string?][] = [
-    ['Nuphos API helper', [join(skills, '_runtime/scripts/nuphos-api.sh'), 'GET', '/teams']],
+    ['Cerin API helper', [join(skills, '_runtime/scripts/nuphos-api.sh'), 'GET', '/teams']],
     [
       'file transfer',
       [join(skills, 'file-transfer/scripts/transfer-pull.sh'), 'team', 'group', 'out'],
@@ -146,7 +146,7 @@ async function authorizationWithEnv(script: string, env: Record<string, string>)
   return { captured: readFileSync(capture, 'utf8'), stderr, code }
 }
 
-describe('builtin setup scripts share one Nuphos token lookup', () => {
+describe('builtin setup scripts share one Cerin token lookup', () => {
   for (const script of tokenLookupScripts) {
     const name = script.slice(skills.length + 1)
 
@@ -168,7 +168,7 @@ describe('builtin setup scripts share one Nuphos token lookup', () => {
 
       expect(code).toBe(1)
       expect(captured).toBe('')
-      expect(stderr).toContain('Nuphos authorization is unavailable')
+      expect(stderr).toContain('Cerin authorization is unavailable')
     })
   }
 })

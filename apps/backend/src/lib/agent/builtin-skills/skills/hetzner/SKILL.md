@@ -1,6 +1,6 @@
 ---
 name: hetzner
-description: Run hcloud CLI commands from the sandbox to inspect or change Hetzner Cloud resources — servers, volumes, networks, firewalls, load balancers, floating IPs, and images. Includes a setup script for selected Nuphos-bound Hetzner accounts.
+description: Run hcloud CLI commands from the sandbox to inspect or change Hetzner Cloud resources — servers, volumes, networks, firewalls, load balancers, floating IPs, and images. Includes a setup script for selected Cerin-bound Hetzner accounts.
 ---
 
 # Hetzner Cloud CLI
@@ -25,11 +25,11 @@ the first call downloads the pinned, checksum-verified release and can take a
 while, so let it finish rather than interrupt it. `nuphos-tools list` shows the
 tool and its state. If the command is missing entirely, or that install keeps
 failing, report the runtime mismatch instead of installing another build during
-the task; do not conclude that Nuphos lacks Hetzner credentials.
+the task; do not conclude that Cerin lacks Hetzner credentials.
 
-## Prefer Nuphos API for first-party reads
+## Prefer Cerin API for first-party reads
 
-For read-only data Nuphos already exposes, call the Nuphos API first. This list
+For read-only data Cerin already exposes, call the Cerin API first. This list
 route wraps its result in an object, so extract the array before piping to a
 `jq` filter (e.g. `.servers[]`, not `.[]`):
 

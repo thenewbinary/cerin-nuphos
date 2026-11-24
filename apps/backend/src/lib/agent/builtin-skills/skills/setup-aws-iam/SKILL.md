@@ -1,16 +1,16 @@
 ---
 name: setup-aws-iam
-description: Connect a new AWS account to Nuphos using the user's LOCAL aws cli. Walks through listing roles, granting the Nuphos connector trust, and binding the role via the create_connector MCP tool. Use when a user wants to onboard / bind an AWS account and has aws cli configured on their own machine.
+description: Connect a new AWS account to Cerin using the user's LOCAL aws cli. Walks through listing roles, granting the Cerin connector trust, and binding the role via the create_connector MCP tool. Use when a user wants to onboard / bind an AWS account and has aws cli configured on their own machine.
 ---
 
 # Setup AWS IAM (local aws cli)
 
-Use this skill to onboard a fresh AWS account into Nuphos end-to-end, driven by
+Use this skill to onboard a fresh AWS account into Cerin end-to-end, driven by
 the **user's own `aws` cli** on their local machine. The end state is an AWS
-role that the Nuphos connector can assume, registered as a team binding.
+role that the Cerin connector can assume, registered as a team binding.
 
-This is the bootstrap path for an account Nuphos is **not yet connected to**.
-Once a role is bound, use the `aws` skill (sandbox, Nuphos-minted creds) for
+This is the bootstrap path for an account Cerin is **not yet connected to**.
+Once a role is bound, use the `aws` skill (sandbox, Cerin-minted creds) for
 day-to-day operations instead.
 
 ## CRITICAL — two execution environments
@@ -26,15 +26,15 @@ Do **not** try to run the IAM setup commands through the sandbox `bash` tool —
 the sandbox has no access to the user's local AWS credentials. Run every
 step-1-to-3 command via the `local_exec` tool.
 
-## How the Nuphos connector authenticates
+## How the Cerin connector authenticates
 
-Nuphos uses OIDC web-identity federation. It pins the role to the user's team
-cryptographically (AWS verifies the `sub` claim in a Nuphos-signed token), so no
-other team can assume the role through Nuphos and no long-lived AWS credentials
+Cerin uses OIDC web-identity federation. It pins the role to the user's team
+cryptographically (AWS verifies the `sub` claim in a Cerin-signed token), so no
+other team can assume the role through Cerin and no long-lived AWS credentials
 exist anywhere in the chain.
 
 Discover the issuer first: `GET /.well-known/openid-configuration` on the
-Nuphos API base URL returns `{ "issuer": "https://<issuer-host>", ... }`. A
+Cerin API base URL returns `{ "issuer": "https://<issuer-host>", ... }`. A
 404 with `oidc_not_configured` means AWS account binding is unavailable on that
 server until its OIDC signing key is configured. You also need the user's
 **team id** (the hex id from `/teams`).
@@ -87,7 +87,7 @@ aws iam get-role --role-name <name> \
   --query 'Role.AssumeRolePolicyDocument'
 ```
 
-### 3. Grant the Nuphos connector trust (`local_exec`)
+### 3. Grant the Cerin connector trust (`local_exec`)
 
 **Prefer a dedicated role.** Widening an existing high-privilege role's trust to
 an external principal is risky — recommend creating a purpose-built role unless
@@ -96,7 +96,7 @@ the user insists on an existing one.
 **Create a dedicated role with OIDC trust:**
 
 ```bash
-# One-time per AWS account — register the Nuphos OIDC provider. If it already
+# One-time per AWS account — register the Cerin OIDC provider. If it already
 # exists (EntityAlreadyExists), reuse it.
 aws iam create-open-id-connect-provider \
   --url https://<issuer-host> \
@@ -126,9 +126,9 @@ JSON
 aws iam create-role \
   --role-name nuphos-connector \
   --assume-role-policy-document file:///tmp/nuphos-trust.json \
-  --description "Assumed by the Nuphos BYOS connector (OIDC web identity)"
+  --description "Assumed by the Cerin BYOS connector (OIDC web identity)"
 
-# Attach whatever permissions Nuphos should have. Scope to least privilege;
+# Attach whatever permissions Cerin should have. Scope to least privilege;
 # confirm the policy set with the user before attaching. Example (read-only):
 aws iam attach-role-policy --role-name nuphos-connector \
   --policy-arn arn:aws:iam::aws:policy/ReadOnlyAccess
@@ -138,7 +138,7 @@ aws iam attach-role-policy --role-name nuphos-connector \
 
 `update-assume-role-policy` **replaces** the whole trust document. Never clobber
 existing trusted principals — fetch the current policy with `get-role` (step 2),
-merge the Nuphos principal in, then write the merged document back. Warn the user
+merge the Cerin principal in, then write the merged document back. Warn the user
 that this widens who can assume that role.
 
 After either option, capture the role ARN:
@@ -166,7 +166,7 @@ their request to connect the account includes this final registration step.
 Never submit access keys, tokens, or a different team ID to the tool.
 
 The backend **verifies it can actually assume the role before it persists the
-binding** using OIDC web identity — the only way Nuphos assumes an AWS role.
+binding** using OIDC web identity — the only way Cerin assumes an AWS role.
 It retries briefly for IAM propagation. If it returns `400 role_not_assumable`, the trust
 policy from step 3 hasn't propagated or is wrong — wait a few seconds and retry,
 or re-check the trust document; the `sub` must be exactly
@@ -190,6 +190,6 @@ ac /teams/$TEAM/aws-accounts | python3 -m json.tool
   mutations** — they happen on the user's real account via their own creds.
   Treat them like any other confirmed write.
 - **Least privilege.** Don't default to `AdministratorAccess`. Propose the
-  narrowest managed/custom policy that satisfies what the user wants Nuphos to do.
+  narrowest managed/custom policy that satisfies what the user wants Cerin to do.
 - **Don't echo secrets.** If any command surfaces keys or tokens, summarize
   rather than printing them.

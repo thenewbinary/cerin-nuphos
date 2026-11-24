@@ -98,7 +98,7 @@ beforeAll(async () => {
         if (body.query.includes('IssueContextTeams')) {
           return Response.json({ data: { teams: page(teams) } })
         }
-        return Response.json({ data: { viewer: { id: 'viewer-1', name: 'Nuphos' } } })
+        return Response.json({ data: { viewer: { id: 'viewer-1', name: 'Cerin' } } })
       }
       if (body.query?.includes('mutation CreateAttachment')) {
         return Response.json({
@@ -107,7 +107,7 @@ beforeAll(async () => {
               success: true,
               attachment: {
                 id: 'attachment-1',
-                title: 'Nuphos session',
+                title: 'Cerin session',
                 subtitle: 'Source context',
                 url: body.variables?.input?.url,
               },
@@ -380,8 +380,8 @@ describe('linear skill stateless helpers', () => {
       expect(JSON.parse(stdout)).toMatchObject({
         identifier: 'EX-1',
         sourceLink: {
-          title: 'Nuphos session',
-          url: 'https://nuphos.ai/teams/nuphos-team/agent/session-123',
+          title: 'Cerin session',
+          url: 'https://api.cerin.ai/teams/nuphos-team/agent/session-123',
         },
       })
       expect(requests).toHaveLength(2)
@@ -404,9 +404,9 @@ describe('linear skill stateless helpers', () => {
         variables: {
           input: {
             issueId: 'issue-1',
-            title: 'Nuphos session',
+            title: 'Cerin session',
             subtitle: 'Source context',
-            url: 'https://nuphos.ai/teams/nuphos-team/agent/session-123',
+            url: 'https://api.cerin.ai/teams/nuphos-team/agent/session-123',
             metadata: { nuphosSessionId: 'session-123' },
           },
         },
@@ -420,7 +420,7 @@ describe('linear skill stateless helpers', () => {
     const home = await testHome()
     requests = []
     try {
-      const sessionUrl = 'https://nuphos.ai/teams/nuphos-team/agent/session-123'
+      const sessionUrl = 'https://api.cerin.ai/teams/nuphos-team/agent/session-123'
       const process = Bun.spawn(
         [
           'bash',

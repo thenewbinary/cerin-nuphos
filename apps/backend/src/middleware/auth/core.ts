@@ -40,7 +40,7 @@ export const requireAuth: MiddlewareHandler<{ Variables: AuthVariables }> = asyn
   }
 
   if (!ObjectId.isValid(user.id)) {
-    throw new AppError(500, 'invalid_user_id', 'Nuphos returned a non-ObjectId user id')
+    throw new AppError(500, 'invalid_user_id', 'Cerin returned a non-ObjectId user id')
   }
 
   const consentVersion = c.req.header('x-nuphos-ai-consent-version')

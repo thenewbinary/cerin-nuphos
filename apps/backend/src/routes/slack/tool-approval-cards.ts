@@ -30,7 +30,7 @@ export function buildToolApprovalBlocks(args: {
         title: { type: 'plain_text', text: 'Allow this tool once?' },
         text: {
           type: 'mrkdwn',
-          text: `Nuphos will run *${escapeSlackMrkdwn(truncatePlain(args.title, 160))}* once using your selected credentials.`,
+          text: `Cerin will run *${escapeSlackMrkdwn(truncatePlain(args.title, 160))}* once using your selected credentials.`,
         },
         confirm: { type: 'plain_text', text: 'Allow once' },
         deny: { type: 'plain_text', text: 'Cancel' },

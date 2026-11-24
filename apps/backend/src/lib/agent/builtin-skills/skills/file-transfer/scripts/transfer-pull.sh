@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Pull a Nuphos upload transfer group into the sandbox.
+# Pull a Cerin upload transfer group into the sandbox.
 # Usage: transfer-pull.sh <teamId> <groupId> <dest-dir> [--extract]
 #
 # Pass --extract when the upload is a folder archive (a single .zip the desktop
@@ -30,7 +30,7 @@ if [ "$#" -eq 4 ]; then
   fi
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 token="${NUPHOS_TOKEN:-}"
 session="${NUPHOS_SESSION_ID:-}"

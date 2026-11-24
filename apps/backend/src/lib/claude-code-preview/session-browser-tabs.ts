@@ -81,7 +81,7 @@ const dockTool: DeviceTool = {
   },
   errorReason: 'browser_error',
   noDevice: 'No computer of yours is online for this conversation.',
-  unsupported: 'The computer went offline, or its Nuphos Desktop needs an update.',
+  unsupported: 'The computer went offline, or its Cerin Desktop needs an update.',
 }
 
 export const quietDeps: DeviceToolDeps = {

@@ -1,6 +1,6 @@
 ---
 name: linear
-description: Operate on Linear issues — read, create, comment, and close — through a Linear workspace the user's team has bound to Nuphos via OAuth. Use whenever the user asks to open/track/close a Linear issue, file a ticket for an incident, comment on an issue, or check issue status. Nuphos backend hands the agent a workspace access token; the included stateless helpers call api.linear.app/graphql directly.
+description: Operate on Linear issues — read, create, comment, and close — through a Linear workspace the user's team has bound to Cerin via OAuth. Use whenever the user asks to open/track/close a Linear issue, file a ticket for an incident, comment on an issue, or check issue status. Cerin backend hands the agent a workspace access token; the included stateless helpers call api.linear.app/graphql directly.
 ---
 
 # linear
@@ -12,7 +12,7 @@ Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_S
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
 Use this skill to read or change Linear issues through a workspace already bound
-to the user's Nuphos team.
+to the user's Cerin team.
 
 ## Important execution model
 
@@ -71,7 +71,7 @@ priority.
 Create the issue in one shell call. Put the description directly on stdin; do
 not stage a markdown file just to draft it. After creating the issue,
 `issue-create.sh` automatically creates an idempotent Linear attachment titled
-`Nuphos session`. This puts the current session URL in Linear's native **Links**
+`Cerin session`. This puts the current session URL in Linear's native **Links**
 field, not in the description. Do not manually add that URL to the description.
 
 ```bash
@@ -159,7 +159,7 @@ After creating or adopting a PR or issue for the current task, use
 verified resource link in the session sidebar. For GitHub pass `provider: github`,
 the selected `installationId`, `repository` (`owner/repo`) and PR `number`.
 For Linear pass `provider: linear`, the selected binding's `workspaceId` and
-`issueId` (UUID or identifier). This is separate from Linear's Nuphos session
+`issueId` (UUID or identifier). This is separate from Linear's Cerin session
 attachment; retain that attachment too. Do not bind unrelated search results.
 
 Bound GitHub PR events durably wake this conversation with its existing permissions.

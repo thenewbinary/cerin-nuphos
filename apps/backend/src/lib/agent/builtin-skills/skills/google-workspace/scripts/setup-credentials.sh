@@ -12,11 +12,11 @@ fi
 
 team_id="$1"
 provider="$2"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.nuphos.ai}}"
+base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.cerin.ai}}"
 base="${base%/}"
 
 if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set; this handout only works inside a Nuphos agent conversation" >&2
+  echo "NUPHOS_TOKEN is not set; this handout only works inside a Cerin agent conversation" >&2
   exit 1
 fi
 

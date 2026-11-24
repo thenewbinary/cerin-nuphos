@@ -9,12 +9,12 @@ usage() {
   cat >&2 <<EOF
 Usage: setup-credentials.sh <teamId> <projectId> [serviceAccountId]
 
-Fetches a short-lived GCP access token from Nuphos backend (using the user's
+Fetches a short-lived GCP access token from Cerin backend (using the user's
 NUPHOS_TOKEN) and configures gcloud to use it for the bound project. The token
 is saved under CLOUDSDK_CONFIG (default: ~/.config/gcloud) and gcloud's
 auth/access_token_file is pointed at it. Token lifetime is ~1h.
 
-Required env: NUPHOS_TOKEN. Optional env: CLOUDSDK_CONFIG, NUPHOS_BACKEND_URL (defaults to https://api.nuphos.ai).
+Required env: NUPHOS_TOKEN. Optional env: CLOUDSDK_CONFIG, NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
 EOF
   exit 1
 }
@@ -34,7 +34,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 # The ordinary team API recognizes a conversation token and applies the
 # session's service-account selection and permission-admin prohibition.
@@ -46,7 +46,7 @@ fi
 tmp="$(mktemp)"
 trap 'rm -f "$tmp"' EXIT
 
-echo "Fetching Nuphos-managed GCP access token" >&2
+echo "Fetching Cerin-managed GCP access token" >&2
 http_code=""
 curl_status=0
 for attempt in 1 2 3; do
@@ -72,7 +72,7 @@ for attempt in 1 2 3; do
 done
 
 if [ "$http_code" != "200" ]; then
-  echo "Nuphos backend returned HTTP ${http_code} for ${url}:" >&2
+  echo "Cerin backend returned HTTP ${http_code} for ${url}:" >&2
   cat "$tmp" >&2
   echo >&2
   exit 1
@@ -120,7 +120,7 @@ project = $projectId
 EOF
 
 echo "Wrote gcloud access-token config" >&2
-echo "Configured gcloud with Nuphos-managed token"
+echo "Configured gcloud with Cerin-managed token"
 echo "  project:         ${projectId}"
 echo "  service account: ${serviceAccountEmail}"
 echo "  expires at:      ${expiresAt}"

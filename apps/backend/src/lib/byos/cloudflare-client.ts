@@ -51,10 +51,10 @@ function errorMessage(
     const pathWithoutQuery = path.split('?')[0] ?? path
 
     if (/^\/accounts\/[^/]+$/.test(pathWithoutQuery)) {
-      return `${message}. Missing Cloudflare API token permission: Account > Account Settings > Read for this account. Nuphos needs this during bind to verify the account ID.`
+      return `${message}. Missing Cloudflare API token permission: Account > Account Settings > Read for this account. Cerin needs this during bind to verify the account ID.`
     }
     if (pathWithoutQuery === '/zones') {
-      return `${message}. Missing Cloudflare API token permission: Zone > Zone > Read for the zones in this account. Nuphos needs this to list domains.`
+      return `${message}. Missing Cloudflare API token permission: Zone > Zone > Read for the zones in this account. Cerin needs this to list domains.`
     }
     if (pathWithoutQuery.includes('/dns_records')) {
       const permission = method === 'GET' ? 'Zone > DNS > Read' : 'Zone > DNS > Edit'

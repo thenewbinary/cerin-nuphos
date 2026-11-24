@@ -1,4 +1,4 @@
-# Sourced, not executed: the one place builtin skill scripts get their Nuphos
+# Sourced, not executed: the one place builtin skill scripts get their Cerin
 # token from.
 #
 #   script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
@@ -25,7 +25,7 @@ nuphos_token() {
   fi
 
   if [[ -z "$token" ]]; then
-    echo "Nuphos authorization is unavailable: run this from a Nuphos agent conversation, which provides a short-lived NUPHOS_TOKEN." >&2
+    echo "Cerin authorization is unavailable: run this from a Cerin agent conversation, which provides a short-lived NUPHOS_TOKEN." >&2
     return 1
   fi
 

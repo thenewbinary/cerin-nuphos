@@ -9,7 +9,7 @@ if [ "$#" -lt 2 ]; then
   cat >&2 <<'USAGE'
 Usage: setup-credentials.sh <teamId> <clientId>
 
-Fetches a short-lived Tailscale OAuth access token from Nuphos backend and
+Fetches a short-lived Tailscale OAuth access token from Cerin backend and
 writes ~/.tailscale/nuphos.env for later Tailscale API calls.
 USAGE
   exit 2
@@ -28,7 +28,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}/teams/${team_id}/tailscale-clients/${client_id}/credentials"
 

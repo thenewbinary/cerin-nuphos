@@ -10,14 +10,14 @@ import { config } from '@/config'
  * that app's files, so the text lives here too and
  * relay-install-manifest.test.ts fails if the two drift apart.
  */
-const INSTALL_MANIFEST_TEMPLATE = `# Nuphos relay agent — the whole install.
+const INSTALL_MANIFEST_TEMPLATE = `# Cerin relay agent — the whole install.
 #
-# What this creates: one namespace, one Secret holding the token Nuphos issued
+# What this creates: one namespace, one Secret holding the token Cerin issued
 # you, and one Deployment of two small pods. No Service, no Ingress, no
 # NodePort, no privileges, no host mounts, no inbound port of any kind — the
-# pods only make outbound TLS connections to the Nuphos relay.
+# pods only make outbound TLS connections to the Cerin relay.
 #
-# Enrolling a cluster in Nuphos hands you this file with the three values below
+# Enrolling a cluster in Cerin hands you this file with the three values below
 # already filled in. Installing by hand instead? Replace each of the three
 # PLACEHOLDER values with the relay endpoint, enrolment token (treat it as a
 # secret) and image digest shown on the cluster's page.
@@ -64,7 +64,7 @@ spec:
         app.kubernetes.io/name: nuphos-relay-agent
     spec:
       # The tunnel needs no Kubernetes API access of its own. The credential the
-      # Nuphos agent uses is the one in the kubeconfig you handed over, and its
+      # Cerin agent uses is the one in the kubeconfig you handed over, and its
       # permissions are that ServiceAccount's RBAC — not this pod's.
       automountServiceAccountToken: false
       # In-flight work (a kubectl exec, a long watch) is allowed to drain; the

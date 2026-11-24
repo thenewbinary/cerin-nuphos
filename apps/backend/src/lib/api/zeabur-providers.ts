@@ -6,7 +6,7 @@ const objectIdStringSchema = z.string().regex(/^[a-f0-9]{24}$/i)
 const zeaburIdStringSchema = z.string().trim().min(1).max(120)
 
 const teamPathSchema = z.object({
-  teamId: objectIdStringSchema.describe('Nuphos team id.'),
+  teamId: objectIdStringSchema.describe('Cerin team id.'),
 })
 
 const zeaburProviderPathSchema = teamPathSchema.extend({
@@ -71,7 +71,7 @@ export const zeaburProviderApiOperations = [
     tags: ['Zeabur providers'],
     summary: 'List bound Zeabur providers',
     description:
-      'List Zeabur user and team identities connected to a Nuphos team without returning raw provider credentials.',
+      'List Zeabur user and team identities connected to a Cerin team without returning raw provider credentials.',
     auth: 'bearer',
     pathSchema: teamPathSchema,
     responseSchema: zeaburProvidersResponseSchema,

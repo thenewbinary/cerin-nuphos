@@ -21,9 +21,9 @@ kube-state-metrics → Prometheus → Alertmanager ──→ Better Stack Promet
                                            died" is also covered)
 ```
 
-Zero Nuphos-owned components run in the cluster — everything is CNCF
+Zero Cerin-owned components run in the cluster — everything is CNCF
 standard. Incidents land in the team's Better Stack, so alert channels
-(Slack / SMS / phone) are configured once there, and Nuphos's Monitoring
+(Slack / SMS / phone) are configured once there, and Cerin's Monitoring
 page aggregates them automatically.
 
 ## Step 0: figure out what already exists
@@ -50,7 +50,7 @@ VMAgent scrapes, VMAlert evaluates, Alertmanager routes):
   receiver + Watchdog route to THAT Alertmanager's config (usually a
   `VMAlertmanagerConfig` or the alertmanager secret, depending on how the
   stack was installed).
-- The Nuphos rules pack (step 4) applies as-is: the VictoriaMetrics
+- The Cerin rules pack (step 4) applies as-is: the VictoriaMetrics
   operator auto-converts `PrometheusRule` CRs to `VMRule` when
   `--controller.useCustomConfigReloader` conversion is enabled (it is by
   default in victoria-metrics-k8s-stack). Verify after applying:
@@ -113,7 +113,7 @@ helm install kube-prometheus prometheus-community/kube-prometheus-stack \
 ```
 
 `grafana.enabled=false` because the team views state through Better Stack
-and Nuphos; skip it unless the user asks. Everything else (KSM,
+and Cerin; skip it unless the user asks. Everything else (KSM,
 node-exporter, default rules, Alertmanager) ships enabled.
 
 Confirm with the user before installing — state the namespace, the chart,
@@ -151,11 +151,11 @@ alertmanager:
 `send_resolved: true` on the incident receiver lets Better Stack
 auto-resolve incidents when the alert clears.
 
-## Step 4: the Nuphos rules pack
+## Step 4: the Cerin rules pack
 
 kube-prometheus-stack's defaults already cover most of what matters
 (KubeDeploymentReplicasMismatch, KubePodCrashLooping, KubeNodeNotReady,
-KubePersistentVolumeFillingUp, …). Apply the Nuphos supplement for the
+KubePersistentVolumeFillingUp, …). Apply the Cerin supplement for the
 gaps (CronJob staleness, cert-manager expiry, endpoint-less Services):
 
 ```bash

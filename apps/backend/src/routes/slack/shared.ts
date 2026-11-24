@@ -92,7 +92,7 @@ export async function addReactionSafe(
 
 export function normalizeNuphosUserId(value: unknown, field = 'nuphosUserId'): string {
   if (typeof value !== 'string' || !/^[a-f0-9]{24}$/i.test(value.trim())) {
-    throw new AppError(400, 'invalid_request', `${field} must be a Nuphos user id`)
+    throw new AppError(400, 'invalid_request', `${field} must be a Cerin user id`)
   }
 
   return value.trim()
@@ -162,7 +162,7 @@ export async function postSenderNotice(
 // Said once per thread, not once per reply: two people comparing notes under a
 // report must not each be answered with the same notice. The marker is matched
 // in the thread's own replies, which is the only place the notice can exist.
-const UNBOUND_THREAD_MARKER = 'not attached to a Nuphos conversation'
+const UNBOUND_THREAD_MARKER = 'not attached to a Cerin conversation'
 
 export async function explainUnboundNuphosThread(
   runtime: SlackRuntime,

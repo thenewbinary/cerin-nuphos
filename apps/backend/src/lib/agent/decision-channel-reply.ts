@@ -74,7 +74,7 @@ export async function recordInChannel(
         sender,
         source: 'nuphos',
         sentAt,
-        replyTo: { authorName: asker.title || 'Nuphos agent', text: entry.question },
+        replyTo: { authorName: asker.title || 'Cerin agent', text: entry.question },
         requestId: request.id,
         ...(answer.answeredIn ? { answeredIn: answer.answeredIn } : {}),
       } satisfies MessageMetadata,

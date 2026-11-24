@@ -1,6 +1,6 @@
 ---
 name: betterstack
-description: Use Better Stack API credentials bound in Nuphos to inspect or manage Uptime monitors and Telemetry resources.
+description: Use Better Stack API credentials bound in Cerin to inspect or manage Uptime monitors and Telemetry resources.
 ---
 
 # Better Stack
@@ -11,7 +11,7 @@ Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_S
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
-Use this skill when the user asks to inspect or change Better Stack Uptime monitors, incidents, telemetry sources, collectors, metrics, or related settings through a Nuphos-bound Better Stack integration.
+Use this skill when the user asks to inspect or change Better Stack Uptime monitors, incidents, telemetry sources, collectors, metrics, or related settings through a Cerin-bound Better Stack integration.
 
 Authenticate before calling Better Stack APIs:
 
@@ -39,13 +39,13 @@ Useful endpoints:
 - Telemetry collectors: `https://telemetry.betterstack.com/api/v1/collectors`
 - Source metrics: `https://telemetry.betterstack.com/api/v2/sources/:source_id/metrics`
 
-## Wiring a Better Stack incident to a Nuphos agent trigger
+## Wiring a Better Stack incident to a Cerin agent trigger
 
-Use this when the user says "watch this monitor / when it goes down, do Y" (post to Slack, investigate…). The pattern: Better Stack keeps the condition (the monitor), Nuphos receives the incident notification (a webhook trigger), and the conversation the trigger is bound to performs Y. Every incident event lands in that same conversation.
+Use this when the user says "watch this monitor / when it goes down, do Y" (post to Slack, investigate…). The pattern: Better Stack keeps the condition (the monitor), Cerin receives the incident notification (a webhook trigger), and the conversation the trigger is bound to performs Y. Every incident event lands in that same conversation.
 
-**Completion contract:** creating the Nuphos trigger is only step 1. The Watch is not live until the Better Stack outgoing webhook is created with the narrowest scope the API supports, read back, and drill-tested. A generated Watch prompt explicitly authorizes additive wiring for the exact selected monitor, so do not ask for a second confirmation or hand UI setup steps to the user while the API can perform them.
+**Completion contract:** creating the Cerin trigger is only step 1. The Watch is not live until the Better Stack outgoing webhook is created with the narrowest scope the API supports, read back, and drill-tested. A generated Watch prompt explicitly authorizes additive wiring for the exact selected monitor, so do not ask for a second confirmation or hand UI setup steps to the user while the API can perform them.
 
-If the requested destination is Slack, call `slack_list_destinations` before creating the trigger. Use only the user's explicit DM/channel choice and name its stable ID/DM in the messageTemplate. If the user chose Nuphos, do not add Slack delivery.
+If the requested destination is Slack, call `slack_list_destinations` before creating the trigger. Use only the user's explicit DM/channel choice and name its stable ID/DM in the messageTemplate. If the user chose Cerin, do not add Slack delivery.
 
 1. **Create the webhook trigger** through the `triggers` skill (`triggerType: "webhook"`, `targetSessionId` this conversation unless the user names another of theirs; first list the triggers bound to it and reuse one that already receives this monitor). Write the messageTemplate as the ACTION, branching on the incident payload — Better Stack posts incident events whose `data.attributes` include the incident `status`/`cause`/`started_at`/`resolved_at` and the monitored URL:
 
@@ -56,14 +56,14 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    FIRST compare payload.data.relationships.monitor.data.id and payload.data.attributes.url with that exact target. If the available identifier does not match, STOP immediately without investigating or notifying. Never infer a match from the incident name.
    If the payload contains "test": true or "drill": true, reply "test delivery received" and STOP — no investigation.
    For Slack, first check the earlier firings in this conversation to see whether this alert has already been reported. Investigate, then call slack_post once when this firing is worth telling people about — a new problem, a material change, or its recovery; an unchanged repeat needs no post. Post to the exact destination the user approved, as written in the messageTemplate, including slackWorkspaceId when it is known: {"type":"channel","channelId":"<the selected stable ID>","slackWorkspaceId":"<its workspace>"} for a channel, or {"type":"dm_self"} for a DM. Keep bindConversation on unless this conversation is already bound to a Slack thread, in which case pass bindConversation=false.
-   For Nuphos-only delivery, keep the findings here and do not call slack_post.
+   For Cerin-only delivery, keep the findings here and do not call slack_post.
    ```
 
    The exact target guard is mandatory even when provider-side scoping is available, and especially when the user explicitly accepts account-wide delivery as a fallback. Replace both placeholders with values read from the selected monitor; do not leave generic text in the stored template.
 
    Always include the drill line — delivery tests then cost one short reply instead of a full investigation session. Sanity check the create response: `webhookUrl` must be an absolute `https://` URL; if it is a bare path, STOP and tell the user the backend has no public base URL configured. NEVER substitute a different host for the returned webhookUrl (and never bypass sandbox checks to do so); if the URL looks temporary (e.g. *.trycloudflare.com) and the user has not already accepted temporary local-debug wiring, call `request_user_decision` with category `risk_tradeoff`, offer to use the temporary URL or wait for a permanent one, ask that single question, and STOP.
 
-   Each Slack post is one message from this conversation; replies in the thread under the first, bound post continue this conversation. Tell the user they can reply there to continue with Nuphos.
+   Each Slack post is one message from this conversation; replies in the thread under the first, bound post continue this conversation. Tell the user they can reply there to continue with Cerin.
 
    The result gives you `webhookUrl` and `webhookSecret` (returned only once).
 
@@ -92,7 +92,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
 
 4. **Verify before saying live**: read the outgoing webhook back and verify its exact URL, `X-Webhook-Secret` custom header configuration, and resource scope; never print the secret while doing so. Then `POST /{triggerId}/test-fire` (see the `triggers` skill) with a representative `{"test": true, ...}` payload to check the cheap action branch. Use Better Stack's non-mutating test facility when available. Pausing a real monitor to force an incident is a separate risky action and still requires explicit approval.
 
-5. **Report what you created**: the outgoing-webhook ID, the selected monitor ID, and the verified scope (`monitor` or explicitly approved `account`). Nuphos does not record them, and removing the trigger leaves the outgoing webhook in Better Stack.
+5. **Report what you created**: the outgoing-webhook ID, the selected monitor ID, and the verified scope (`monitor` or explicitly approved `account`). Cerin does not record them, and removing the trigger leaves the outgoing webhook in Better Stack.
 
 If webhook creation, scoping, read-back, or the drill fails, delete the newly created outgoing webhook and newly created trigger when safe. Report the exact blocker; do not leave an enabled half-configured workflow.
 

@@ -54,7 +54,7 @@ socialAuth.get('/login', async (c) => {
   if (providers.includes('oidc')) c.header('X-Nuphos-Social-Oidc-Name', config.auth.oidc.name)
 
   return c.html(
-    `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Sign in to Nuphos</title><style>body{font:18px system-ui;max-width:360px;margin:15vh auto;padding:24px}a{display:block;padding:16px;margin:16px 0;border:1px solid;border-radius:8px;color:inherit;text-decoration:none}</style><h1>Sign in to Nuphos</h1>${links.join('')}<p>Use the same provider as your existing account.</p></html>`,
+    `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Sign in to Cerin</title><style>body{font:18px system-ui;max-width:360px;margin:15vh auto;padding:24px}a{display:block;padding:16px;margin:16px 0;border:1px solid;border-radius:8px;color:inherit;text-decoration:none}</style><h1>Sign in to Cerin</h1>${links.join('')}<p>Use the same provider as your existing account.</p></html>`,
   )
 })
 
@@ -168,7 +168,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
     if (attempt.next) return c.redirect(attempt.next)
 
     return c.html(
-      '<!doctype html><html lang="en"><meta charset="utf-8"><title>Signed in</title><h1>Signed in to Nuphos</h1><p>You can return to your workspace.</p></html>',
+      '<!doctype html><html lang="en"><meta charset="utf-8"><title>Signed in</title><h1>Signed in to Cerin</h1><p>You can return to your workspace.</p></html>',
     )
   } catch {
     if (attempt.handle) await abandonNativeSession(attempt.handle)

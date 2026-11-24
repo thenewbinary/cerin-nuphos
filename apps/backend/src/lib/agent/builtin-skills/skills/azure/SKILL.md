@@ -1,6 +1,6 @@
 ---
 name: azure
-description: Inspect or change Microsoft Azure resources from the sandbox via the Azure Resource Manager (ARM) REST API or the az CLI. Includes a script to load a short-lived ARM access token for an Nuphos-bound Azure subscription.
+description: Inspect or change Microsoft Azure resources from the sandbox via the Azure Resource Manager (ARM) REST API or the az CLI. Includes a script to load a short-lived ARM access token for an Cerin-bound Azure subscription.
 ---
 
 # Microsoft Azure (ARM)
@@ -11,27 +11,27 @@ Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_S
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
-Use this skill when the user wants to inspect or change Azure resources. Authenticate before any ARM/`az` call with the short-lived token Nuphos mints for a bound subscription.
+Use this skill when the user wants to inspect or change Azure resources. Authenticate before any ARM/`az` call with the short-lived token Cerin mints for a bound subscription.
 
 ## When to skip this skill
 
-For anything Nuphos already exposes via its own API — listing AKS clusters, fetching kubeconfigs — call the Nuphos backend route directly instead of hitting ARM yourself. Same data, no setup, smaller blast radius:
+For anything Cerin already exposes via its own API — listing AKS clusters, fetching kubeconfigs — call the Cerin backend route directly instead of hitting ARM yourself. Same data, no setup, smaller blast radius:
 
 - List AKS clusters in a bound subscription → `GET /teams/:teamId/azure-accounts/:accountId/clusters`
 - Run kubectl against an AKS cluster → its context is `azure/<account>/<cluster>` in the kubeconfig the kubectl skill sets up. Entra-ID (AAD) integrated clusters are the one exception — they need `kubelogin`, which the sandbox doesn't ship, so they are not included.
 
-Use this skill when the user asks for something Nuphos does not expose (e.g. resource groups, storage accounts, VMs, networking, role assignments).
+Use this skill when the user asks for something Cerin does not expose (e.g. resource groups, storage accounts, VMs, networking, role assignments).
 
 ## Setup
 
 ```bash
-# Load a short-lived ARM access token for an Nuphos-bound subscription, then
+# Load a short-lived ARM access token for an Cerin-bound subscription, then
 # source it so $AZURE_ACCESS_TOKEN + $AZURE_SUBSCRIPTION_ID are available.
 # The token expires (workload-identity federation) — re-run to refresh.
 source <(bash skills/azure/scripts/setup-credentials.sh <teamId> <accountId>)
 ```
 
-Nuphos uses OIDC workload identity federation here (like AWS/Tencent): the customer creates an Entra ID app registration with a federated credential trusting the Nuphos issuer and grants it an RBAC role on a subscription. Nuphos exchanges a per-team token for a short-lived ARM access token — no client secret is stored. `setup-credentials.sh` calls `GET /teams/:teamId/azure-accounts/:accountId/credentials` on the Nuphos backend with the user's `NUPHOS_TOKEN` and prints `export` lines for the token + subscription id. The token carries exactly the app's RBAC permissions and expires (~1h), so re-run to refresh.
+Cerin uses OIDC workload identity federation here (like AWS/Tencent): the customer creates an Entra ID app registration with a federated credential trusting the Cerin issuer and grants it an RBAC role on a subscription. Cerin exchanges a per-team token for a short-lived ARM access token — no client secret is stored. `setup-credentials.sh` calls `GET /teams/:teamId/azure-accounts/:accountId/credentials` on the Cerin backend with the user's `NUPHOS_TOKEN` and prints `export` lines for the token + subscription id. The token carries exactly the app's RBAC permissions and expires (~1h), so re-run to refresh.
 
 ## Calling ARM
 
@@ -48,7 +48,7 @@ curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$AZURE_ACCESS_TOKEN") \
 curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$AZURE_ACCESS_TOKEN") \
   "https://management.azure.com/subscriptions/$AZURE_SUBSCRIPTION_ID/resourcegroups?api-version=2021-04-01"
 
-# List AKS clusters (prefer the Nuphos route above unless you need raw ARM)
+# List AKS clusters (prefer the Cerin route above unless you need raw ARM)
 curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$AZURE_ACCESS_TOKEN") \
   "https://management.azure.com/subscriptions/$AZURE_SUBSCRIPTION_ID/providers/Microsoft.ContainerService/managedClusters?api-version=2024-05-01"
 ```

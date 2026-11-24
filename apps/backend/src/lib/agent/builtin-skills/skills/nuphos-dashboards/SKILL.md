@@ -1,11 +1,11 @@
 ---
 name: nuphos-dashboards
-description: Build and update a Nuphos Dashboard (the Dashboards page; not Grafana) — a blank canvas of panels, each backed by a JavaScript script that re-runs on one of the team's agent runtimes, pulls any Nuphos API or connected-provider data, and emits a chart, number, or table. Use it for cloud spend, AI usage, infrastructure inventory, reliability, or any other metric the team wants charted.
+description: Build and update a Cerin Dashboard (the Dashboards page; not Grafana) — a blank canvas of panels, each backed by a JavaScript script that re-runs on one of the team's agent runtimes, pulls any Cerin API or connected-provider data, and emits a chart, number, or table. Use it for cloud spend, AI usage, infrastructure inventory, reliability, or any other metric the team wants charted.
 ---
 
-# Nuphos Dashboards
+# Cerin Dashboards
 
-A Nuphos Dashboard is a **Grafana-style blank canvas**, but it is not Grafana: its panels are scripts, not Grafana queries, and it lives on the Dashboards page. Cloud spend is one common use; a panel can chart any data a script can read through the Nuphos API or a selected connected account. A dashboard has **no privileged "total" header** — every number, including total spend, is just a panel. Each panel's data source is a stored JavaScript script that runs when the panel is created or explicitly refreshed, producing an immutable **snapshot**. Each panel can have its own **Alert**.
+A Cerin Dashboard is a **Grafana-style blank canvas**, but it is not Grafana: its panels are scripts, not Grafana queries, and it lives on the Dashboards page. Cloud spend is one common use; a panel can chart any data a script can read through the Cerin API or a selected connected account. A dashboard has **no privileged "total" header** — every number, including total spend, is just a panel. Each panel's data source is a stored JavaScript script that runs when the panel is created or explicitly refreshed, producing an immutable **snapshot**. Each panel can have its own **Alert**.
 
 Given a supported read-only data source, build a useful dashboard (or add/adjust panels) by writing panel scripts against the contract below and calling the dashboard API. Never invent an endpoint or substitute sample data when the source does not expose the requested data.
 
@@ -26,7 +26,7 @@ A panel script runs as an ES module on one of the team's agent runtimes (any onl
 Globals available to every script:
 
 - `params` — the resolved run params: `{ periodStart, periodEnd, granularity, ...staticParams }`. `periodStart`/`periodEnd` are ISO strings and **come from the requested view range, or the dashboard's saved default for scheduled runs** (a panel never sets its own window). `granularity` is `"day" | "week" | "month"`. Anything you put in a panel's `staticParams` (e.g. `provider`, `accountId`, filters) is merged in here.
-- `nuphos` — a read-only HTTP client authenticated with a short-lived panel token for the current script's author: `nuphos.get(path)`. It only calls the Nuphos backend, and the token only allows GET requests for the credentials selected in the panel's settings, connector metadata, `/usage`, and dashboards.
+- `nuphos` — a read-only HTTP client authenticated with a short-lived panel token for the current script's author: `nuphos.get(path)`. It only calls the Cerin backend, and the token only allows GET requests for the credentials selected in the panel's settings, connector metadata, `/usage`, and dashboards.
 - `emit(payload)` — record the panel output. Last call wins. Alternatively `export default` the payload (or a function returning it).
 
 The payload MUST be one of these three shapes (`kind` is the discriminator, and must match the panel's declared `kind`):
@@ -55,7 +55,7 @@ The payload MUST be one of these three shapes (`kind` is the discriminator, and 
 
 Limits: ≤12 series, ≤1000 rows, output ≤512 KB, script wall-clock ≤5 min. Print nothing else to stdout that matters — only the emitted payload is read.
 
-### Supported example: Nuphos AI usage
+### Supported example: Cerin AI usage
 
 The implemented `GET /teams/{teamId}/usage` endpoint returns roughly
 the last 31 days of AI usage as
@@ -76,7 +76,7 @@ const data = usage.days
 emit({
   kind: 'chart',
   type: 'area',
-  title: 'Nuphos AI spend',
+  title: 'Cerin AI spend',
   xKey: 'date',
   series: [{ key: 'usd', label: 'USD' }],
   data,
@@ -85,11 +85,11 @@ emit({
 
 ## Fetching connected-account data inside a panel
 
-Prefer an implemented Nuphos **read endpoint** when it already returns the data
-the panel needs. Build Nuphos paths with `params.teamId`; never hard-code a team
+Prefer an implemented Cerin **read endpoint** when it already returns the data
+the panel needs. Build Cerin paths with `params.teamId`; never hard-code a team
 id.
 
-When Nuphos has no suitable read endpoint, the panel may use `nuphos.get(...)`
+When Cerin has no suitable read endpoint, the panel may use `nuphos.get(...)`
 to retrieve the selected connected account's team-scoped `/credentials`, then
 call the provider API directly with `fetch`. A panel can vend only the
 credentials selected in its settings (`credentialAccess` on the panel; absent

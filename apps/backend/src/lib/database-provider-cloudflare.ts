@@ -161,7 +161,7 @@ export async function materializeCloudflareD1Connection(input: {
     }
   }
 
-  throw new Error('Could not allocate a unique Nuphos name for the Cloudflare D1 database')
+  throw new Error('Could not allocate a unique Cerin name for the Cloudflare D1 database')
 }
 
 export async function probeCloudflareD1Connection(

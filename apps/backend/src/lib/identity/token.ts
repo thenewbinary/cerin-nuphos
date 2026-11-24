@@ -34,10 +34,10 @@ export function signNuphosToken(userId: ObjectId | string, ttlSec: number): stri
   const sub = typeof userId === 'string' ? userId : userId.toHexString()
 
   if (!MongoObjectId.isValid(sub)) {
-    throw new Error(`Cannot sign Nuphos token: invalid user id ${sub}`)
+    throw new Error(`Cannot sign Cerin token: invalid user id ${sub}`)
   }
   if (!(ttlSec > 0 && ttlSec <= MAX_RUN_TOKEN_TTL_SEC)) {
-    throw new Error(`Cannot sign Nuphos token: ttl ${String(ttlSec)}s is out of range`)
+    throw new Error(`Cannot sign Cerin token: ttl ${String(ttlSec)}s is out of range`)
   }
   const now = Math.floor(Date.now() / 1000)
   const claims: NuphosRunClaims = {
@@ -93,7 +93,7 @@ export function verifyNuphosToken(token: string): NuphosRunClaims | null {
 
 function requireJwtSecret(): string {
   if (!config.auth.jwtSecret) {
-    throw new Error('NUPHOS_JWT_SECRET or JWT_SECRET_KEY is required for Nuphos auth')
+    throw new Error('NUPHOS_JWT_SECRET or JWT_SECRET_KEY is required for Cerin auth')
   }
 
   return config.auth.jwtSecret

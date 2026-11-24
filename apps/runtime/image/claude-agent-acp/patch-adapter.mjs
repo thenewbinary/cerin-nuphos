@@ -28,7 +28,7 @@ if (
   createHash('sha256').update(source).digest('hex') !==
   '0eeabe7242f82b2a27bd9a98c9812ff7fb29c4a67c1d289947b88bcacceb8548'
 )
-  throw new Error('Claude ACP bundle changed; review the Nuphos adapter patches.')
+  throw new Error('Claude ACP bundle changed; review the Cerin adapter patches.')
 const mcpAnchor = '            for (const server of params.mcpServers) {'
 if (source.split(mcpAnchor).length !== 2) throw new Error('Expected one Claude MCP server handoff.')
 let patched = patchClaudeAskUserQuestion(

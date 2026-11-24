@@ -7,7 +7,7 @@ description: Onboard customer VMs (GCP GCE, Tencent CVM, Aliyun ECS/SWAS, Volcen
 
 Use this skill when the user wants machine or cluster logs collected into Loki so you can query them precisely instead of SSH-ing around with `cat`, or when they ask you to search logs by time range / keyword. The playbook is provider-agnostic — only the ACCESS layer (credentials, inventory, command channel) differs per provider; everything below the access layer is identical everywhere.
 
-**Architecture (fixed — do not improvise):** the data plane stays entirely inside the customer's project/VPC (Alloy on each target → Loki → its storage). Nuphos only touches the query plane, through a bound Grafana's authenticated proxy (`grafana` skill). Never route log data through Nuphos, and never build a Nuphos-side log store.
+**Architecture (fixed — do not improvise):** the data plane stays entirely inside the customer's project/VPC (Alloy on each target → Loki → its storage). Cerin only touches the query plane, through a bound Grafana's authenticated proxy (`grafana` skill). Never route log data through Cerin, and never build a Cerin-side log store.
 
 **Label convention (fixed):** every collector ships `{env, instance, service}` external labels. `instance` = hostname (node name on clusters), `env` = stage/prod/…, `service` = what runs there. This convention is the substrate for precise retrieval — keep it identical across the fleet, whatever the provider.
 
@@ -18,13 +18,13 @@ Use this skill when the user wants machine or cluster logs collected into Loki s
 Defaults (state them in the plan; the user overrides by replying, not by being interrogated):
 - `env` label: `stage` · `service` label: derived from what the VM runs (discovery) · extra log paths: derived from discovery
 - Loki/Grafana placement: a k8s already running on/for those VMs (incl. k3s) > docker on the VM > plain binaries — pick automatically
-- Grafana exposure for the Nuphos bind: HTTPS + generated strong password, preferring existing ingress/LB infrastructure over new public ports (switch to a private-access option like GCP IAP only if the user raises private-only requirements)
+- Grafana exposure for the Cerin bind: HTTPS + generated strong password, preferring existing ingress/LB infrastructure over new public ports (switch to a private-access option like GCP IAP only if the user raises private-only requirements)
 
 ### 0. Preflight — provider access layer
 
 Credentials come from the MATCHING provider skill (each must be enabled in this session's credential selector): `gcloud` for GCP, `tencent` for Tencent Cloud, `aliyun` for Alibaba Cloud, `volcengine` for Volcengine. For machines outside any bound provider (bare metal, other clouds), plain `ssh` with access the user supplies works the same.
 
-- Inventory via the provider's CLI — e.g. `gcloud compute instances list`, `tccli cvm DescribeInstances`, `aliyun ecs DescribeInstances` (or `aliyun swas-open ListInstances`), `volcengine ecs DescribeInstances`; for cluster targets, list clusters via the provider skill and get the kubeconfig through Nuphos as usual. If the user gave an IP or partial name, resolve it yourself; only ask when genuinely ambiguous.
+- Inventory via the provider's CLI — e.g. `gcloud compute instances list`, `tccli cvm DescribeInstances`, `aliyun ecs DescribeInstances` (or `aliyun swas-open ListInstances`), `volcengine ecs DescribeInstances`; for cluster targets, list clusters via the provider skill and get the kubeconfig through Cerin as usual. If the user gave an IP or partial name, resolve it yourself; only ask when genuinely ambiguous.
 - Command channel to a VM, in order of preference:
   1. **SSH-style** (supports piping a script over stdin): `gcloud compute ssh <vm> --command "… bash -s" < script`, or plain `ssh user@host "… bash -s" < script` anywhere SSH access exists.
   2. **RunCommand-style** (no stdin): Tencent **TAT** (`tccli tat RunCommand`, base64 content), Aliyun **Cloud Assistant** (`aliyun ecs RunCommand`), Volcengine **ECS Assistant** — embed the rendered script base64 in the command payload. Use these when SSH isn't available.
@@ -52,23 +52,23 @@ Always PIN the image to a specific release tag (e.g. `grafana/loki:3.5.0`; check
 
 Record the in-VPC Loki URL (e.g. `http://<loki-svc-or-vm-ip>:3100`) — the collectors push to it, so it must be reachable from the target machines (same VPC, or a security-group/firewall rule allowing tcp:3100 from their subnets — add one via the provider CLI after confirming).
 
-### 2. Ensure Grafana + bind it to Nuphos
+### 2. Ensure Grafana + bind it to Cerin
 
 Retrieval goes through a bound Grafana (`grafana-instances`). **Query-side decision is environment-driven:**
 
-1. **The customer already has a Grafana** (bound to Nuphos, or discovered in their environment): ASK the user whether to attach the new Loki as a datasource there — it's their observability home and they may want everything in one place. Reachability for a REMOTE Grafana: prefer a route that already exists (same cluster/VPC, a tailnet the team operates); otherwise expose the new Loki's **query API only** (`/loki/api/v1/query*`, labels/series endpoints) over HTTPS with basic auth, reusing existing ingress infrastructure where the host already has it — the push endpoint stays internal (local collectors push via localhost/ClusterIP). Get the direction right: the remote Grafana needs QUERY, the local collector does NOT need public push. NEVER introduce tailscale/VPN/subnet-routers just to wire logs.
+1. **The customer already has a Grafana** (bound to Cerin, or discovered in their environment): ASK the user whether to attach the new Loki as a datasource there — it's their observability home and they may want everything in one place. Reachability for a REMOTE Grafana: prefer a route that already exists (same cluster/VPC, a tailnet the team operates); otherwise expose the new Loki's **query API only** (`/loki/api/v1/query*`, labels/series endpoints) over HTTPS with basic auth, reusing existing ingress infrastructure where the host already has it — the push endpoint stays internal (local collectors push via localhost/ClusterIP). Get the direction right: the remote Grafana needs QUERY, the local collector does NOT need public push. NEVER introduce tailscale/VPN/subnet-routers just to wire logs.
 2. **No Grafana anywhere**: deploy one NEXT TO the new Loki (same VM/k3s/cluster — they talk over localhost/ClusterIP), expose only Grafana (public IP + generated strong password, or IAP), bind it. Works everywhere, zero networking assumptions.
 
 Fold this choice into the single plan confirmation — when an existing Grafana is viable, the plan presents both options with your recommendation, and the user's reply decides.
 
 Then:
 
-- **Grafana exists already**: ask the user to add Loki as a datasource if missing (or do it via their Grafana API if you have access), then guide them through Nuphos's bind dialog — the service-account token stays in their custody.
+- **Grafana exists already**: ask the user to add Loki as a datasource if missing (or do it via their Grafana API if you have access), then guide them through Cerin's bind dialog — the service-account token stays in their custody.
 - **No Grafana**: deploy one next to Loki (a k8s Deployment + Service, or docker on the VM), then:
   1. add the Loki datasource via `POST /api/datasources` (`{"name":"loki","type":"loki","url":"http://<loki>:3100","access":"proxy"}`),
   2. create a service account (Viewer is enough for querying) + token via `POST /api/serviceaccounts` and `POST /api/serviceaccounts/<id>/tokens`,
-  3. bind it yourself: `POST {NUPHOS_BACKEND_URL}/teams/$TEAM/grafana-instances` with `{"name":"<label>","grafanaUrl":"https://<reachable-url>","saToken":"<token>"}` using the caller's Nuphos token (requires team ADMINISTRATOR — confirm with the user before binding). Never print the saToken into chat.
-- **Reachability**: the bound `grafanaUrl` must be reachable by the Nuphos backend (the bind API rejects private/blocked hosts). Options, in order of preference: an ALREADY-EXISTING ingress/HTTPS load balancer on the host (reuse its domain + TLS rather than opening a raw NodePort/port with plaintext HTTP); a new HTTPS LB with strong auth; or a provider private-access option (e.g. **GCP IAP**, authorizing the Nuphos connector identity) for private-only requirements. When Grafana sits next to Loki, Loki itself needs no exposure at all; only the remote-Grafana path above exposes Loki's query API (auth'd, query-only).
+  3. bind it yourself: `POST {NUPHOS_BACKEND_URL}/teams/$TEAM/grafana-instances` with `{"name":"<label>","grafanaUrl":"https://<reachable-url>","saToken":"<token>"}` using the caller's Cerin token (requires team ADMINISTRATOR — confirm with the user before binding). Never print the saToken into chat.
+- **Reachability**: the bound `grafanaUrl` must be reachable by the Cerin backend (the bind API rejects private/blocked hosts). Options, in order of preference: an ALREADY-EXISTING ingress/HTTPS load balancer on the host (reuse its domain + TLS rather than opening a raw NodePort/port with plaintext HTTP); a new HTTPS LB with strong auth; or a provider private-access option (e.g. **GCP IAP**, authorizing the Cerin connector identity) for private-only requirements. When Grafana sits next to Loki, Loki itself needs no exposure at all; only the remote-Grafana path above exposes Loki's query API (auth'd, query-only).
 
 ### 3. Install the collector on each VM
 
@@ -100,7 +100,7 @@ When the target is a k8s cluster rather than a VM, do NOT SSH its nodes. Deploy 
 
 ### 3.5 Confirmation model
 
-The single plan-confirmation from the UX contract covers every step it lists (installs over SSH/RunCommand, deployments, one firewall/security-group rule, the Nuphos bind). Re-ask ONLY when reality diverges from the plan — e.g. the port is taken, the VM has no k8s after all, or you need to touch something the plan didn't mention.
+The single plan-confirmation from the UX contract covers every step it lists (installs over SSH/RunCommand, deployments, one firewall/security-group rule, the Cerin bind). Re-ask ONLY when reality diverges from the plan — e.g. the port is taken, the VM has no k8s after all, or you need to touch something the plan didn't mention.
 
 ### 4. Verify end-to-end (always do this)
 
@@ -127,11 +127,11 @@ Mechanics live in the `grafana` skill (`ac` helper, `POST /api/ds/query`, dataso
 
 ## Wiring alerts to auto-investigation
 
-Once logs flow, alert rules on the Loki datasource (or Loki ruler) can feed the trigger pipeline: create a Grafana alert rule on a LogQL expression, then follow the `grafana` skill's "Wiring a Grafana alert to a Nuphos trigger" recipe — a firing alert then starts an agent session that queries the relevant time window and summarizes.
+Once logs flow, alert rules on the Loki datasource (or Loki ruler) can feed the trigger pipeline: create a Grafana alert rule on a LogQL expression, then follow the `grafana` skill's "Wiring a Grafana alert to a Cerin trigger" recipe — a firing alert then starts an agent session that queries the relevant time window and summarizes.
 
 ## Safety
 
-- Confirm before every mutating step: commands executed on customer machines (SSH or RunCommand), deployments, firewall/security-group rules, template changes, and the Nuphos bind call.
-- Everything deploys into the customer's project; never route log data through Nuphos.
+- Confirm before every mutating step: commands executed on customer machines (SSH or RunCommand), deployments, firewall/security-group rules, template changes, and the Cerin bind call.
+- Everything deploys into the customer's project; never route log data through Cerin.
 - Never print Grafana SA tokens or admin passwords into chat; pass them directly between APIs.
 - The installer is idempotent — re-running on an already-onboarded VM is safe and is the standard repair action.

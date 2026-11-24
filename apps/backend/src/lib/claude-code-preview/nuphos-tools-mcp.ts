@@ -12,9 +12,9 @@ import type { McpSurface, ToolHandler } from '@/lib/mcp/protocol'
 export { toolModuleFromAiSdkTools } from './preview-tools/ai-sdk-adapter'
 
 export const NUPHOS_TOOLS_INSTRUCTIONS =
-  "Nuphos's native tools for this conversation: memory (save_memory / " +
+  "Cerin's native tools for this conversation: memory (save_memory / " +
   'memory_get), charts, artifacts, team-skill authoring, decisions, local Desktop actions, ' +
-  'connector setup (create_connector), computers from Nuphos on team instabox accounts (list_boxes / create_box / update_box), Nuphos sub-agents (create_thread / send_message_to_thread / update_thread / list_agent_runtimes / set_thread_parent / archive_thread / stop_thread), Nuphos channels (channel_read / channel_post / channel_create), meetings (meeting_join / meeting_chat / meeting_leave, when set up), and channel delivery. ' +
+  'connector setup (create_connector), computers from Cerin on team instabox accounts (list_boxes / create_box / update_box), Cerin sub-agents (create_thread / send_message_to_thread / update_thread / list_agent_runtimes / set_thread_parent / archive_thread / stop_thread), Cerin channels (channel_read / channel_post / channel_create), meetings (meeting_join / meeting_chat / meeting_leave, when set up), and channel delivery. ' +
   'When the user asks for a sub-agent (in any language), use create_thread, not your ' +
   "runtime's built-in subagent tool, unless they explicitly ask for the built-in one. " +
   'List yours with list_recent_conversations children:true. ' +
@@ -25,7 +25,7 @@ export const NUPHOS_TOOLS_INSTRUCTIONS =
   'When the user asks for an artifact, a document, or to see HTML, an SVG or a full file ' +
   'rendered, show it with render_artifact; it opens beside the chat. ' +
   'Domain resources use native skills backed by the ' +
-  'canonical Nuphos REST API. Every call renders its own card in the Nuphos chat UI — ' +
+  'canonical Cerin REST API. Every call renders its own card in the Cerin chat UI — ' +
   'do not re-describe the output in prose beyond what the user needs. Every ' +
   "tool takes a `label`: a 5-12 word summary of this call in the user's " +
   'language, shown as the step title. For save_memory, always pass `scope` ' +

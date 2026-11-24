@@ -44,8 +44,8 @@ export async function handleUnmappedChannelMention(args: {
         channelId,
         slackThreadTs,
         otherBotInChannel
-          ? `This channel is already linked to Nuphos through another workspace — mention <@${other.botUserId}> instead.`
-          : `This channel is already linked to Nuphos through another workspace, but its bot isn't here yet — run \`/invite <@${other.botUserId}>\` first, then mention it.`,
+          ? `This channel is already linked to Cerin through another workspace — mention <@${other.botUserId}> instead.`
+          : `This channel is already linked to Cerin through another workspace, but its bot isn't here yet — run \`/invite <@${other.botUserId}>\` first, then mention it.`,
       )
       await markSlackEvent(eventId, 'completed')
 
@@ -71,7 +71,7 @@ export async function handleUnmappedChannelMention(args: {
     token: runtime.botToken,
     channel: channelId,
     threadTs: slackThreadTs,
-    text: "This channel isn't linked to Nuphos yet. A team administrator can link it with the button below, or pick channels from my DM.",
+    text: "This channel isn't linked to Cerin yet. A team administrator can link it with the button below, or pick channels from my DM.",
     blocks: linkChannelPromptBlocks({ channelId, isExtShared }),
   })
   await markSlackEvent(eventId, 'completed')

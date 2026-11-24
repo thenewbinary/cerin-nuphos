@@ -76,13 +76,13 @@ export function conversationDenialMessage(method: string, suffix: string | null)
     collection && shownMethod
       ? `${shownMethod} on /${collection}`
       : 'the requested team API operation'
-  const opening = `Agent conversations may call only an allow-listed part of the Nuphos team API, and ${operation} is not in it.`
+  const opening = `Agent conversations may call only an allow-listed part of the Cerin team API, and ${operation} is not in it.`
 
   if (collection === null || !CONNECTOR_COLLECTIONS.has(collection)) {
-    return `${opening} ${BOUNDARY} Do the work through a capability the conversation already has, or tell the user which step to take in the Nuphos app.`
+    return `${opening} ${BOUNDARY} Do the work through a capability the conversation already has, or tell the user which step to take in the Cerin app.`
   }
   if (MUTATIONS.has(normalizedMethod)) {
-    return `${opening} ${BOUNDARY} Creating, editing, or removing a ${collection} binding is deliberately reserved for a person: ask the user to do it in the Nuphos app under Settings -> Integrations, and say exactly which values they need to enter.`
+    return `${opening} ${BOUNDARY} Creating, editing, or removing a ${collection} binding is deliberately reserved for a person: ask the user to do it in the Cerin app under Settings -> Integrations, and say exactly which values they need to enter.`
   }
 
   return `${opening} ${BOUNDARY} The binding itself may well be fine, so do not send the user off to rebind it: reach this data through the connector's own skill and the credentials selected for this conversation.`

@@ -10,7 +10,7 @@ function onboardingBlocks(): unknown[] {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: '*Welcome to Nuphos Agent!*\nPick a Slack channel where your team can @mention me. I will reply in threads and act on behalf of whoever mentions me.',
+        text: '*Welcome to Cerin Agent!*\nPick a Slack channel where your team can @mention me. I will reply in threads and act on behalf of whoever mentions me.',
       },
     },
     {
@@ -30,7 +30,7 @@ function onboardingBlocks(): unknown[] {
       elements: [
         {
           type: 'mrkdwn',
-          text: 'Private channels only work after you `/invite @Nuphos` there first.',
+          text: 'Private channels only work after you `/invite @Cerin` there first.',
         },
       ],
     },
@@ -46,7 +46,7 @@ function announcementNote(channelId: string, outcome: ChannelAnnouncement): stri
     case 'not_in_channel':
       // The bot holds no channels:join scope, so it cannot add itself; an
       // invite is the only way in, for public channels as much as private.
-      return `Invite me with \`/invite @Nuphos\` in <#${channelId}> so I can see and answer mentions there.`
+      return `Invite me with \`/invite @Cerin\` in <#${channelId}> so I can see and answer mentions there.`
     case 'failed':
       return `@mention me in <#${channelId}> to start. (I couldn't post an intro there just now.)`
   }
@@ -109,7 +109,7 @@ export async function sendSlackInstallWelcomeDm(args: {
   await postSlackMessage({
     token: args.botToken,
     channel: dmChannelId,
-    text: `Nuphos is connected to ${args.slackTeamName}. Pick a channel below to get started.`,
+    text: `Cerin is connected to ${args.slackTeamName}. Pick a channel below to get started.`,
     blocks: onboardingBlocks(),
   })
 }
@@ -126,7 +126,7 @@ export function linkChannelPromptBlocks(args: {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `This channel isn't linked to Nuphos yet. A team administrator can link <#${args.channelId}> with the button below — then mention me again.`,
+        text: `This channel isn't linked to Cerin yet. A team administrator can link <#${args.channelId}> with the button below — then mention me again.`,
       },
     },
     ...(args.isExtShared
@@ -221,7 +221,7 @@ export async function announceChannelLink(args: {
     await postSlackMessage({
       token: args.botToken,
       channel: args.channelId,
-      text: "👋 Nuphos is now linked to this channel. @mention me and I'll pick it up in a thread — I act on behalf of whoever mentions me.",
+      text: "👋 Cerin is now linked to this channel. @mention me and I'll pick it up in a thread — I act on behalf of whoever mentions me.",
     })
 
     return 'posted'

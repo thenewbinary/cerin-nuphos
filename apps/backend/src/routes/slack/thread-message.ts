@@ -170,8 +170,8 @@ export async function handleThreadMessage(envelope: SlackEventEnvelope): Promise
       event.thread_ts,
       event.user,
       email
-        ? "Your Slack email doesn't match any Nuphos user on this team, so I can't act on your reply. Link your account in Nuphos → Settings → Slack first."
-        : "Your Slack account is not linked to Nuphos yet, so I can't act on your reply. Link it in Nuphos → Settings → Slack first.",
+        ? "Your Slack email doesn't match any Cerin user on this team, so I can't act on your reply. Link your account in Cerin → Settings → Slack first."
+        : "Your Slack account is not linked to Cerin yet, so I can't act on your reply. Link it in Cerin → Settings → Slack first.",
     )
     await markSlackEvent(eventId, 'completed')
 

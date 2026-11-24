@@ -36,7 +36,7 @@ describe('buildPreviewSystemPrompt', () => {
     expect(prompt).not.toContain('nuphos-plan')
     expect(prompt).toContain('native `architecture-diagram` skill FIRST')
     expect(prompt).toContain('native `nuphos-dashboards` skill FIRST')
-    expect(prompt).toContain('canonical Nuphos REST APIs')
+    expect(prompt).toContain('canonical Cerin REST APIs')
     expect(prompt).toContain('through its API script')
     expect(prompt).not.toContain('bound cost_dashboard_')
     expect(prompt).not.toContain('call the skill tool with "architecture-diagram"')
@@ -130,7 +130,7 @@ describe.each(['claude-code', 'codex'] as const)('%s tooling description', (prov
     expect(prompt).not.toContain('injected into KUBECONFIG')
     expect(prompt).not.toContain('pre-authenticated')
     expect(prompt).not.toContain('Skill registry (authoritative)')
-    expect(prompt).not.toContain('classic Nuphos sandbox')
+    expect(prompt).not.toContain('classic Cerin sandbox')
     expect(prompt).not.toContain('bash access')
   })
 
@@ -143,7 +143,7 @@ describe.each(['claude-code', 'codex'] as const)('%s tooling description', (prov
 })
 
 for (const provider of ['claude-code', 'codex'] as const) {
-  test(`${provider} distinguishes provider login from Nuphos participants`, async () => {
+  test(`${provider} distinguishes provider login from Cerin participants`, async () => {
     const prompt = await buildPreviewSystemPrompt({
       provider,
       userId: 'user-1',
@@ -153,8 +153,8 @@ for (const provider of ['claude-code', 'codex'] as const) {
     })
 
     expect(prompt).toContain('Provider-supplied userEmail')
-    expect(prompt).toContain('NOT the Nuphos participant')
-    expect(prompt).toContain('sender.email, when present, is the sender’s Nuphos account email')
+    expect(prompt).toContain('NOT the Cerin participant')
+    expect(prompt).toContain('sender.email, when present, is the sender’s Cerin account email')
   })
 }
 
@@ -173,7 +173,7 @@ test('a computer’s own agent is told it runs there, not in the team sandbox', 
   expect(box).toContain('running as Codex on Box 1, the computer this conversation runs on')
   expect(box).toContain('the `nuphos-desktop` tools for this conversation’s own desktop')
   expect(box).toContain(
-    'a page or website the user asks to open, or "a browser", goes to local_browser, the Nuphos browser, shown to them with its show action',
+    'a page or website the user asks to open, or "a browser", goes to local_browser, the Cerin browser, shown to them with its show action',
   )
   expect(box).toContain(
     'use this desktop’s Web Browser launcher, with get_app_state and click and not the shell, only when they ask for this desktop',

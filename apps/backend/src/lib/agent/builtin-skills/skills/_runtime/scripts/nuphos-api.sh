@@ -17,23 +17,23 @@ body=${3-}
 case "$method" in
   GET | POST | PUT | PATCH | DELETE) ;;
   *)
-    printf 'Unsupported Nuphos API method: %s\n' "$method" >&2
+    printf 'Unsupported Cerin API method: %s\n' "$method" >&2
     exit 2
     ;;
 esac
 
 if [[ "$path" != /* ]]; then
-  printf 'Nuphos API path must start with /\n' >&2
+  printf 'Cerin API path must start with /\n' >&2
   exit 2
 fi
 if [[ "$path" =~ [[:cntrl:]] ]]; then
-  printf 'Nuphos API path must not contain control characters\n' >&2
+  printf 'Cerin API path must not contain control characters\n' >&2
   exit 2
 fi
 
-: "${NUPHOS_TOKEN:?Nuphos API authorization is unavailable}"
+: "${NUPHOS_TOKEN:?Cerin API authorization is unavailable}"
 if [[ ! "$NUPHOS_TOKEN" =~ ^[A-Za-z0-9._-]+$ ]]; then
-  printf 'Nuphos API authorization has an invalid format\n' >&2
+  printf 'Cerin API authorization has an invalid format\n' >&2
   exit 2
 fi
 
@@ -65,7 +65,7 @@ try:
         raise ValueError("invalid origin")
     print(origin.rstrip("/"))
 except Exception:
-    print("Nuphos conversation token has no valid API origin binding", file=sys.stderr)
+    print("Cerin conversation token has no valid API origin binding", file=sys.stderr)
     raise SystemExit(2)
 PY
 )
@@ -110,7 +110,7 @@ fi
 
 status=$(curl "${curl_args[@]}")
 if [[ ! "$status" =~ ^2 ]]; then
-  printf 'Nuphos API failed (HTTP %s): ' "$status" >&2
+  printf 'Cerin API failed (HTTP %s): ' "$status" >&2
   python3 - "$response" <<'PY' >&2
 import json, pathlib, sys
 p = pathlib.Path(sys.argv[1])

@@ -1,6 +1,6 @@
 ---
 name: resend
-description: Send transactional email through a Resend account the user's team has bound to Nuphos — send a message, check what happened to one that was already sent, and (with a full-access key) inspect verified sending domains, audiences and contacts. Use whenever the user asks to email someone, mail a report/summary/alert, or check whether an email was delivered. Nuphos backend hands the agent a Resend API key; the agent calls api.resend.com directly with curl.
+description: Send transactional email through a Resend account the user's team has bound to Cerin — send a message, check what happened to one that was already sent, and (with a full-access key) inspect verified sending domains, audiences and contacts. Use whenever the user asks to email someone, mail a report/summary/alert, or check whether an email was delivered. Cerin backend hands the agent a Resend API key; the agent calls api.resend.com directly with curl.
 ---
 
 # resend
@@ -13,7 +13,7 @@ Changing runtime-global settings is possible, but strongly discouraged unless th
 
 Use this skill when the user wants you to **send email on their behalf**, or to
 check on mail already sent, through the **Resend account** their team has bound
-to Nuphos. It closes the loop with the other skills: investigate a problem
+to Cerin. It closes the loop with the other skills: investigate a problem
 (monitoring/cloud) → write up what you found → mail it to the people who need it.
 
 ## Sending is irreversible — read this first
@@ -95,7 +95,7 @@ send. With a full-access key, `GET /domains` shows which domains are verified.
 
 ```bash
 resend POST /emails -d '{
-  "from": "Nuphos <alerts@yourdomain.com>",
+  "from": "Cerin <alerts@yourdomain.com>",
   "to": ["someone@example.com"],
   "subject": "Deploy failed on production",
   "text": "Plain-text body.",

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Push sandbox files out to the Nuphos transfer store as a download group so
+# Push sandbox files out to the Cerin transfer store as a download group so
 # the user can download them.
 # Usage: transfer-push.sh <teamId> <path> [<path>...]
 #   <path> may be a file or a directory (directories are walked, preserving
@@ -16,7 +16,7 @@ if [ "$#" -lt 2 ]; then
 fi
 
 team_id="$1"; shift
-base="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 token="${NUPHOS_TOKEN:-}"
 session="${NUPHOS_SESSION_ID:-}"

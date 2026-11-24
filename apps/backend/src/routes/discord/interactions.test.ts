@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 
+import { config } from '@/config'
+
 import { dispatchDiscordInteraction, processDiscordInteraction } from './interactions'
 import { handleDiscordModeCommand } from './mode-command'
 
@@ -18,7 +20,7 @@ const interaction: DiscordInteraction = {
   guild_id: 'guild',
   channel_id: 'thread',
   member: { user: { id: 'discord-user' } },
-  data: { custom_id: 'nuphos:tool:approve:decision' },
+  data: { custom_id: 'cerin:tool:approve:decision' },
   message: { id: 'card' },
 }
 
@@ -79,10 +81,34 @@ describe('Discord approvals', () => {
     const { calls, dependencies } = approvalDependencies()
 
     await processDiscordInteraction(
-      { ...interaction, data: { custom_id: 'nuphos:tool:reject:decision' } },
+      { ...interaction, data: { custom_id: 'cerin:tool:reject:decision' } },
       dependencies,
     )
     expect(calls.resolved[0]).toMatchObject({ payload: { decision: 'rejected' } })
+  })
+  test('accepts legacy approval and rejection buttons and rejects unknown prefixes', async () => {
+    for (const [action, decision] of [
+      ['approve', 'approved'],
+      ['reject', 'rejected'],
+    ] as const) {
+      const { calls, dependencies } = approvalDependencies()
+
+      await processDiscordInteraction(
+        { ...interaction, data: { custom_id: `nuphos:tool:${action}:decision` } },
+        dependencies,
+      )
+      expect(calls.resolved[0]).toMatchObject({ payload: { decision } })
+    }
+    const { calls, dependencies } = approvalDependencies()
+
+    expect(
+      await processDiscordInteraction(
+        { ...interaction, data: { custom_id: 'other:tool:approve:decision' } },
+        dependencies,
+      ),
+    ).toMatchObject({ type: 4, data: { content: 'This interaction is not supported.' } })
+    expect(calls.claims).toBe(0)
+    expect(calls.resolved).toEqual([])
   })
   test('wrong actor, revoked channel, and expired waits cannot approve', async () => {
     for (const options of [{ linked: false }, { enabled: false }, { active: false }]) {
@@ -164,15 +190,35 @@ describe('Discord thread mode commands', () => {
       },
     } as unknown as DiscordModeDependencies
 
-    for (const command of ['full-access', 'auto']) {
-      await handleDiscordModeCommand(
-        { ...interaction, data: { name: 'nuphos', options: [{ type: 1, name: command }] } },
-        dependencies,
-      )
+    const saved = config.discord.commandName
+
+    try {
+      for (const configured of ['cerin', 'assistant']) {
+        config.discord.commandName = configured
+        for (const name of [configured, 'nuphos']) {
+          for (const [command, bypass] of [
+            ['full-access', true],
+            ['auto', false],
+          ] as const) {
+            changes.length = 0
+            await handleDiscordModeCommand(
+              { ...interaction, data: { name, options: [{ type: 1, name: command }] } },
+              dependencies,
+            )
+            expect(changes).toEqual([['session', 'actor', bypass]])
+          }
+        }
+      }
+      changes.length = 0
+      expect(
+        await handleDiscordModeCommand(
+          { ...interaction, data: { name: 'other', options: [{ type: 1, name: 'auto' }] } },
+          dependencies,
+        ),
+      ).toBeNull()
+      expect(changes).toEqual([])
+    } finally {
+      config.discord.commandName = saved
     }
-    expect(changes).toEqual([
-      ['session', 'actor', true],
-      ['session', 'actor', false],
-    ])
   })
 })

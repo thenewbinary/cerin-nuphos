@@ -83,7 +83,7 @@ async function answerQuestion(
     status: 'running',
     session_id: conversation.sessionId,
     progress: {
-      message: 'The answer was delivered and the Nuphos Agent carries on. Poll nuphos_check.',
+      message: 'The answer was delivered and the Cerin Agent carries on. Poll nuphos_check.',
     },
   })
 }
@@ -188,7 +188,7 @@ export async function nuphosAsk(
       error: {
         code: 'prompt_not_queued',
         message:
-          'The Nuphos Agent is busy with this session and the prompt could not be queued. Retry once the current turn completes.',
+          'The Cerin Agent is busy with this session and the prompt could not be queued. Retry once the current turn completes.',
       },
     })
   }
@@ -198,7 +198,7 @@ export async function nuphosAsk(
       session_id: sessionId,
       progress: {
         message:
-          'The Nuphos Agent is already working on this session; your prompt was handed ' +
+          'The Cerin Agent is already working on this session; your prompt was handed ' +
           'to the run in progress. Poll nuphos_check for the answer.',
       },
     })
@@ -270,7 +270,7 @@ export async function nuphosAsk(
     return toolResult({
       status: 'running',
       session_id: sessionId,
-      progress: { message: 'The Nuphos Agent started on this request. Poll nuphos_check.' },
+      progress: { message: 'The Cerin Agent started on this request. Poll nuphos_check.' },
     })
   }
 

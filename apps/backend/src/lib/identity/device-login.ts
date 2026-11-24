@@ -83,7 +83,7 @@ export async function startDeviceLogin(input: { clientName?: unknown; requesterI
   const clientName =
     (typeof input.clientName === 'string' ? input.clientName.replace(CLIENT_NAME_RE, '') : '')
       .trim()
-      .slice(0, 64) || 'Nuphos CLI'
+      .slice(0, 64) || 'Cerin CLI'
   const deviceCode = generateOpaqueToken()
   const now = new Date()
 

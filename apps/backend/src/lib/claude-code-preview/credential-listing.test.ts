@@ -298,7 +298,7 @@ describe('flattenSelectedCredentials', () => {
         id: 'dev-2',
         label: 'Asleep (darwin)',
         usage:
-          'Selected, but offline or with local exec turned off; local_exec cannot reach it until Nuphos Desktop is open on it with local exec allowed.',
+          'Selected, but offline or with local exec turned off; local_exec cannot reach it until Cerin Desktop is open on it with local exec allowed.',
       },
     ])
   })
@@ -374,7 +374,7 @@ describe('flattenSelectedCredentials', () => {
       { accountId: 'tencent-1', label: 'Tencent prod', roleArn: 'qcs::cam::uin/1:roleName/a' },
     ]
     options.linearWorkspaces = [
-      { workspaceId: 'linear-1', label: 'Linear prod', workspaceName: 'Nuphos' },
+      { workspaceId: 'linear-1', label: 'Linear prod', workspaceName: 'Cerin' },
     ]
     options.resendIntegrations = [
       { integrationId: 'resend-1', label: 'Mail', permission: 'sending_access' },

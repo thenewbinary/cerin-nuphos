@@ -5,6 +5,7 @@
 // is the gate.
 import { waitPastSessionCutoffs } from '@/lib/internal-token/revocation'
 import { toolError, toolResult } from '@/lib/mcp/protocol'
+import { publicWebUrl } from '@/lib/public-urls'
 
 import { listSelectedCredentials, listSessionCredentials } from './credential-listing'
 import { mintPreviewMcpToken } from './mcp-token'
@@ -62,6 +63,7 @@ export function previewSessionEnv(args: {
     // scoped preview bearer rather than a user's general Nuphos token.
     NUPHOS_TOKEN: args.token,
     NUPHOS_BACKEND_URL: args.base,
+    NUPHOS_PUBLIC_URL: publicWebUrl(),
     NUPHOS_SESSION_ID: args.conversationId,
     ...(args.sessionActor ? { NUPHOS_SESSION_ACTOR: args.sessionActor } : {}),
     // Skills address team-scoped routes as /teams/$TEAM/...
@@ -189,7 +191,7 @@ const DESCRIPTION_PROPERTY = {
 export const CREDENTIALS_MCP_SURFACE: McpSurface = {
   serverName: 'nuphos-credentials',
   instructions:
-    'Cloud credentials the user selected for this Nuphos conversation. Call ' +
+    'Cloud credentials the user selected for this Cerin conversation. Call ' +
     'list_credentials to see what is available, then get_credential with a ' +
     '(provider, id) pair from that list. Values are short-lived; fetch them ' +
     'right before use instead of storing them. Credential selection is per ' +

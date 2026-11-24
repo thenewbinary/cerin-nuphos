@@ -1,6 +1,6 @@
 ---
 name: sentry
-description: Investigate Sentry errors — list unresolved issues, read stack traces and event details, check release health — through a Sentry account the user's team has bound to Nuphos via OAuth. Use whenever the user asks why something is erroring, what's failing in production, to look up a Sentry issue, or to correlate an incident with a deploy. Nuphos backend hands the agent a short-lived read-only Sentry access token; the agent calls sentry.io/api/0 directly with curl.
+description: Investigate Sentry errors — list unresolved issues, read stack traces and event details, check release health — through a Sentry account the user's team has bound to Cerin via OAuth. Use whenever the user asks why something is erroring, what's failing in production, to look up a Sentry issue, or to correlate an incident with a deploy. Cerin backend hands the agent a short-lived read-only Sentry access token; the agent calls sentry.io/api/0 directly with curl.
 ---
 
 # sentry
@@ -14,7 +14,7 @@ Changing runtime-global settings is possible, but strongly discouraged unless th
 Use this skill when the user wants you to investigate errors captured by
 **Sentry** — "why is checkout throwing", "what's the top error since the deploy",
 "show me the stack trace for SENTRY-123" — using the Sentry account their team
-has already bound to Nuphos. It pairs with the cloud/monitoring skills: an alert
+has already bound to Cerin. It pairs with the cloud/monitoring skills: an alert
 fires → find the Sentry issue → read the stack trace → identify the offending
 release/commit.
 
@@ -34,7 +34,7 @@ set -o pipefail   # so a failed curl piped into python3 fails the step, not sile
 # 1. Discover the Sentry accounts the team has bound. --fail-with-body makes a
 # 401/403/5xx exit non-zero (still printing the error body) so a bad listing
 # doesn't look successful.
-ac() { curl -sS --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 ac /teams/$TEAM/sentry-accounts | python3 -m json.tool
 # → { "accounts": [ { "id": "<bindingId>", "userName": "Jane Doe",
 #       "userEmail": "jane@acme.com", "userId": "<id>", ... } ] }

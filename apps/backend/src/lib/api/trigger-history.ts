@@ -31,7 +31,7 @@ const triggerChangeSchema = z.object({
     .object({
       type: z
         .enum(['user', 'agent', 'system'])
-        .describe('`agent`: an agent session acting for `userId`. `system`: Nuphos itself.'),
+        .describe('`agent`: an agent session acting for `userId`. `system`: Cerin itself.'),
       userId: z.string().optional(),
       agentSessionId: z.string().optional(),
     })
@@ -39,12 +39,12 @@ const triggerChangeSchema = z.object({
   via: z
     .enum(['request', 'bot_import', 'rollback', 'expiry', 'authorization', 'failed_runs'])
     .describe(
-      '`request`: an API call, from an app, an agent or a script. `rollback`: Nuphos undid a ' +
-        'write the scheduler could not follow. `expiry`, `authorization`, `failed_runs`: Nuphos ' +
+      '`request`: an API call, from an app, an agent or a script. `rollback`: Cerin undid a ' +
+        'write the scheduler could not follow. `expiry`, `authorization`, `failed_runs`: Cerin ' +
         'paused it because it expired, could no longer run as its owner, or kept failing.',
     ),
   client: z.string().optional().describe('The app that sent the request, when it said.'),
-  reason: z.string().optional().describe('Why Nuphos changed it.'),
+  reason: z.string().optional().describe('Why Cerin changed it.'),
   before: configSchema.optional().describe('Absent when it was created.'),
   after: configSchema.optional().describe('Absent when it was deleted.'),
 })

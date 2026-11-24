@@ -64,7 +64,7 @@ export function renderInstructionsBlock(
   const configured = sections.length
     ? [
         '<nuphos_instructions>',
-        'The user and their team configured these standing instructions in Nuphos. Follow them in this conversation the way you would follow CLAUDE.md or AGENTS.md. When a personal instruction conflicts with a team instruction, the personal one wins unless the team instruction is a hard policy.',
+        'The user and their team configured these standing instructions in Cerin. Follow them in this conversation the way you would follow CLAUDE.md or AGENTS.md. When a personal instruction conflicts with a team instruction, the personal one wins unless the team instruction is a hard policy.',
         '',
         sections.join('\n\n'),
         '</nuphos_instructions>',

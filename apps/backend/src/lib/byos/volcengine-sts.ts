@@ -72,7 +72,7 @@ export async function assumeRoleWithOidc(
     throw new AppError(
       503,
       'volcengine_connector_unavailable',
-      'The Nuphos OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Volcengine roles cannot be assumed.',
+      'The Cerin OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Volcengine roles cannot be assumed.',
     )
   }
   const body = new URLSearchParams({
@@ -133,7 +133,7 @@ export async function verifyVolcengineRole(roleTrn: string, teamId: string): Pro
     throw new AppError(
       400,
       'volcengine_role_not_assumable',
-      `Nuphos cannot assume ${roleTrn}. Check the role's trust policy: it must trust the Nuphos OIDC provider (${getAwsOidcIssuer()}) for this team's subject. (${(e as Error).message})`,
+      `Cerin cannot assume ${roleTrn}. Check the role's trust policy: it must trust the Cerin OIDC provider (${getAwsOidcIssuer()}) for this team's subject. (${(e as Error).message})`,
       { roleTrn, upstreamCode: volcErrorCode(e) },
     )
   }

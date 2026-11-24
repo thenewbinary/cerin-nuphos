@@ -18,7 +18,7 @@ export function patchAdapter(source, helper) {
   const digest = createHash('sha256').update(source).digest('hex')
   if (digest !== '7534a0ad3cc4c9affd0b2da5007fa53ea0f1d6fcd71b2c5ef202e2056a976a97')
     throw new Error(
-      'Codex ACP bundle changed; review the Nuphos session config patch before upgrading.',
+      'Codex ACP bundle changed; review the Cerin session config patch before upgrading.',
     )
   const pattern =
     /config: await this\.createSessionConfig\(request\.cwd, additionalDirectories, request\.mcpServers( \?\? \[\])?\),/g

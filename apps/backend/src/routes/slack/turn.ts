@@ -69,14 +69,14 @@ export async function recordSlackTurnTranscript(
 ): Promise<void> {
   await appendSlackThreadMessage(transcriptThreadKey, {
     ts: botTs,
-    authorName: 'Nuphos',
+    authorName: 'Cerin',
     text: sink.replyTail() || '(no visible reply)',
     fromBot: true,
   }).catch(() => {})
   for (const card of postedPlanCards) {
     await appendSlackThreadMessage(transcriptThreadKey, {
       ts: `bot:plan-card:${card.planId}`,
-      authorName: 'Nuphos',
+      authorName: 'Cerin',
       text: `Posted the plan "${card.title}" for review and is waiting for it to be approved.`,
       fromBot: true,
     }).catch(() => {})
@@ -218,7 +218,7 @@ export async function executeSlackAgentTurn(args: SlackAgentTurnArgs): Promise<v
       // (the pump reports stream errors as frames); tell the thread instead of
       // going silent.
       await sink.say(
-        'Nuphos hit an error while handling this request. The team has enough trace metadata to investigate.',
+        'Cerin hit an error while handling this request. The team has enough trace metadata to investigate.',
       )
     }
     postedPlanCards = await postPlanApprovalCards({

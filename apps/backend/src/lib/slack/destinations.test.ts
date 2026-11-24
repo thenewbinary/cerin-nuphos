@@ -109,7 +109,7 @@ describe('Slack notification destinations', () => {
   test('rejects a visible channel the bot has not joined', async () => {
     responses = [{ ok: true, channel: { id: 'C2', name: 'ops', is_member: false } }]
     await expect(getJoinedSlackChannel('token', 'C2', apiGet)).rejects.toThrow(
-      /Invite the Nuphos bot/,
+      /Invite the Cerin bot/,
     )
   })
 })

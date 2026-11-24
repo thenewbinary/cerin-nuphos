@@ -28,7 +28,7 @@ const METHODS = [
   { value: 'api-key', label: 'DeepSeek API key' },
 ]
 // The `acp` profile starts every session on the API-key route; an account needs its own.
-const ACCOUNT_PROFILE_PATCH = `# Written by Nuphos after a DeepSeek account sign-in.
+const ACCOUNT_PROFILE_PATCH = `# Written by Cerin after a DeepSeek account sign-in.
 - id: acp
   config:
     provider: deepseek-account

@@ -179,7 +179,7 @@ export async function probeGcpSelfCapabilities({
       ? 'SA has resourcemanager.projects.getIamPolicy on this project.'
       : 'SA lacks resourcemanager.projects.getIamPolicy — it cannot see its own bindings.',
     writeReason: canWrite
-      ? "SA has resourcemanager.projects.setIamPolicy on this project — you can adjust Nuphos's bindings from this SA without re-binding the project."
-      : "SA lacks resourcemanager.projects.setIamPolicy — to change Nuphos's roles you'll need a project IAM admin.",
+      ? "SA has resourcemanager.projects.setIamPolicy on this project — you can adjust Cerin's bindings from this SA without re-binding the project."
+      : "SA lacks resourcemanager.projects.setIamPolicy — to change Cerin's roles you'll need a project IAM admin.",
   }
 }

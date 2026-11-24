@@ -23,7 +23,7 @@ const EXEC_SCRIPT = [
   'p="$1"; t="$2"; a="$3"; c="$4"; r="${5:-}"',
   'k="${NUPHOS_TOKEN:-}"',
   'if [ -n "${OPENAB_CREDENTIALS_DIR:-}" ] && [ -r "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" ]; then IFS= read -r k <"$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" || true; fi',
-  '[ -n "$k" ] || { echo "no Nuphos conversation token in this environment" >&2; exit 1; }',
+  '[ -n "$k" ] || { echo "no Cerin conversation token in this environment" >&2; exit 1; }',
   '[ -n "${NUPHOS_BACKEND_URL:-}" ] && [ -n "${NUPHOS_SESSION_ID:-}" ] || { echo "NUPHOS_BACKEND_URL and NUPHOS_SESSION_ID are required" >&2; exit 1; }',
   'case "$p" in',
   '  aws) path="aws-accounts/$a/clusters/$c/exec-credential${r:+?region=$r}" ;;',

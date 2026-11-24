@@ -202,7 +202,7 @@ export async function startThreadTurn(data: ThreadTurn) {
     sender: {
       type: 'agent',
       id: data.sessionId,
-      displayName: source.title || 'Nuphos agent',
+      displayName: source.title || 'Cerin agent',
       ...(source.agentRuntime ? { agentRuntime: source.agentRuntime } : {}),
     },
     source: 'agent.thread',

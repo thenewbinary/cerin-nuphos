@@ -142,7 +142,7 @@ export async function unlinkSessionThread(sessionId: string, id: string) {
     throw new AppError(
       409,
       'notification_thread',
-      'Nuphos posted this Slack thread as a notification and keeps sending updates to it, so it cannot be unlinked.',
+      'Cerin posted this Slack thread as a notification and keeps sending updates to it, so it cannot be unlinked.',
     )
 }
 

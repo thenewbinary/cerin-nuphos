@@ -48,7 +48,7 @@ export async function resumeApprovedPlanTurn(args: {
     // retrying the claim for a bounded window and start as soon as it frees.
     const approvalNotice = args.approverSlackUserId
       ? `<@${args.approverSlackUserId}> approved the plan`
-      : 'The plan was approved in Nuphos'
+      : 'The plan was approved in Cerin'
 
     await postSlackMessage({
       token: runtime.botToken,
@@ -94,7 +94,7 @@ export async function resumeApprovedPlanTurn(args: {
     const approverLabel = approverName ?? `<@${String(args.approverSlackUserId)}>`
     const approvalSentence = args.approverSlackUserId
       ? `${approverLabel} approved the plan "${args.planTitle}" (planId ${args.planId}) from Slack`
-      : `The plan "${args.planTitle}" (planId ${args.planId}) was approved in Nuphos, not in this thread`
+      : `The plan "${args.planTitle}" (planId ${args.planId}) was approved in Cerin, not in this thread`
     const renderedText = [
       `${approvalSentence}; its status is now approved.`,
       "Begin executing the approved plan now. Load the `plan` skill if you have not already loaded it this conversation, keep the plan's command statuses in sync via the plan REST API as you work, and keep this Slack thread posted.",

@@ -1,12 +1,12 @@
 ---
 name: monitoring-workflow
-description: Wire a monitoring alert from any provider to a Nuphos webhook trigger bound to one conversation, with optional first-party Slack updates. Use for creating or wiring alerts, including providers without a dedicated Nuphos skill; discover their authenticated API or CLI dynamically instead of substituting provider-native Slack integrations.
+description: Wire a monitoring alert from any provider to a Cerin webhook trigger bound to one conversation, with optional first-party Slack updates. Use for creating or wiring alerts, including providers without a dedicated Cerin skill; discover their authenticated API or CLI dynamically instead of substituting provider-native Slack integrations.
 ---
 
 # Generic monitoring workflow
 
 Use this skill whenever the user asks to create, watch, or connect a monitoring
-condition and notify or investigate through Nuphos. This is the workflow owner.
+condition and notify or investigate through Cerin. This is the workflow owner.
 A provider-specific skill is optional supporting material, not a prerequisite.
 
 The target architecture is always:
@@ -14,7 +14,7 @@ The target architecture is always:
 ```text
 provider-native condition
   -> provider webhook / notification destination
-  -> Nuphos webhook trigger, bound to one existing conversation
+  -> Cerin webhook trigger, bound to one existing conversation
   -> that conversation investigates every firing
   -> optional first-party slack_post updates
 ```
@@ -22,16 +22,16 @@ provider-native condition
 Every Trigger needs `targetSessionId`. Use the current conversation
 (`$NUPHOS_SESSION_ID`) unless the user names another of theirs.
 
-The provider-side sender is the provider's resource, not Nuphos's: Nuphos does
+The provider-side sender is the provider's resource, not Cerin's: Cerin does
 not record, verify, or clean it up. Deleting the trigger leaves it in place.
 
-Load the `triggers` skill and use its `trigger-api.sh` wrapper for every Nuphos
+Load the `triggers` skill and use its `trigger-api.sh` wrapper for every Cerin
 Trigger operation below. Trigger bound tools are not available
 in the native runtime; the canonical REST API is the source of truth.
 
 Do not use Slack Incoming Webhooks, AWS Chatbot / Amazon Q Developer, or another
 provider-native Slack integration unless the user explicitly asks for that
-architecture. Slack delivery belongs to Nuphos.
+architecture. Slack delivery belongs to Cerin.
 
 ## 1. Discover capabilities, do not enumerate vendors
 
@@ -49,7 +49,7 @@ architecture. Slack delivery belongs to Nuphos.
    - add a webhook/notification destination without replacing existing ones;
    - send a stable event identity and distinguish firing from recovery;
    - authenticate delivery with `X-Webhook-Secret`, a `?secret=` query value,
-     or a protocol Nuphos explicitly supports.
+     or a protocol Cerin explicitly supports.
 
 The absence of a named provider skill is not a blocker. Missing credentials,
 API permissions, a usable webhook/polling surface, or an unsupported mandatory
@@ -71,12 +71,12 @@ the trigger:
 
 - If connected, use the exact DM or channel the user selected and write it
   into the message template.
-- If it returns `slack_not_connected`, ask the user to connect the Nuphos Slack
+- If it returns `slack_not_connected`, ask the user to connect the Cerin Slack
   App and stop. Preserve the requested provider, condition, and destination in
   the explanation so the workflow can resume without redesign.
-- Never interpret `slack_not_connected` as “Nuphos has no Slack API”.
+- Never interpret `slack_not_connected` as “Cerin has no Slack API”.
 
-## 3. Create the Nuphos receiver
+## 3. Create the Cerin receiver
 
 First `GET` the existing triggers bound to this conversation and reuse one that
 already receives this alert instead of creating a duplicate. Otherwise create
@@ -128,7 +128,7 @@ must not post every poll.
 
 If any provider write, read-back, event mapping, or drill fails:
 
-1. Disable/delete the new Nuphos trigger.
+1. Disable/delete the new Cerin trigger.
 2. Use the same provider API/CLI to undo resources created in this attempt.
 3. Restore modified routing from the snapshot.
 4. Report the exact blocker.

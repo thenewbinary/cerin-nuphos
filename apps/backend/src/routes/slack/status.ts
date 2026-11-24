@@ -30,7 +30,7 @@ export const ASSISTANT_LOADING_MESSAGES = [
 // user starts a fresh conversation, not on every tab visit, so this can greet
 // without spamming).
 export const ASSISTANT_GREETING =
-  "👋 I'm Nuphos, your team's agent. Ask me to review code, triage issues, debug a service, or dig into an alert — or pick a prompt below."
+  "👋 I'm Cerin, your team's agent. Ask me to review code, triage issues, debug a service, or dig into an alert — or pick a prompt below."
 
 // When we know which channel the user is looking at, lead with a prompt about
 // it (backed by the slack_search tool); otherwise show the static set.

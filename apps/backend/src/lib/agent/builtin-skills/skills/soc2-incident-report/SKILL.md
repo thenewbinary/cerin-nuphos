@@ -1,6 +1,6 @@
 ---
 name: soc2-incident-report
-description: Generate an incident report that satisfies common SOC 2 Type II audit requirements (with optional ISO 22301 mapping). Trigger whenever the user asks to write, compile, or output an incident report — Incident Report, post-incident review, PIR, post-mortem, outage/failure report — in any language. Especially suited to service outages, security incidents, production failures, and customer-impacting events, and to the "Nuphos just finished investigating, now wrap it up into a report" flow. Output is Markdown (convertible to .docx or PDF) written in the user's preferred language.
+description: Generate an incident report that satisfies common SOC 2 Type II audit requirements (with optional ISO 22301 mapping). Trigger whenever the user asks to write, compile, or output an incident report — Incident Report, post-incident review, PIR, post-mortem, outage/failure report — in any language. Especially suited to service outages, security incidents, production failures, and customer-impacting events, and to the "Cerin just finished investigating, now wrap it up into a report" flow. Output is Markdown (convertible to .docx or PDF) written in the user's preferred language.
 ---
 
 # SOC 2 incident report
@@ -8,7 +8,7 @@ description: Generate an incident report that satisfies common SOC 2 Type II aud
 Use this skill to produce an incident report that satisfies common SOC 2 Type II
 audit requirements, with optional mapping to ISO 22301:2019 BCMS clauses.
 
-The most common trigger is **Nuphos has just finished investigating an
+The most common trigger is **Cerin has just finished investigating an
 incident**: you already located the root cause through the monitoring / cloud /
 database skills and applied a fix, and the user then says "write it up into an
 incident report." In that case, collapse the whole investigation into the fixed
@@ -24,9 +24,9 @@ technical terms in their original English (memory leak, ingress controller,
 on-call, connection pool) even in a non-English report. This skill file is in
 English for maintainability — do not mirror that choice onto the output.
 
-## Producing a report from a Nuphos investigation
+## Producing a report from a Cerin investigation
 
-When the report continues from Nuphos's own investigation, follow these three
+When the report continues from Cerin's own investigation, follow these three
 rules:
 
 1. **Fold the investigation path into the timeline (simplified).** Condense the
@@ -78,7 +78,7 @@ Present the following fields as a table (use N/A when unknown):
 - List key events in chronological order.
 - Format: `YYYY/MM/DD HH:mm TZ: event description`
 - Cover: detection, notification, engagement, investigation, recovery, follow-up confirmation.
-- If this report continues a Nuphos investigation, include the simplified
+- If this report continues a Cerin investigation, include the simplified
   investigation path (metrics checked, directions ruled out, how the root cause
   was located).
 
@@ -200,8 +200,8 @@ If the user provides an existing incident record (Slack thread, meeting notes,
 an engineer's memo), reorganize it into the section structure and fill missing
 fields (use N/A or mark "to be completed").
 
-### Mode C: continue a Nuphos investigation (most common)
-Nuphos has just investigated an incident with the other skills and the user asks
+### Mode C: continue a Cerin investigation (most common)
+Cerin has just investigated an incident with the other skills and the user asks
 to wrap it up. You already hold most of the material — timings, symptoms,
 investigation path, root cause, and actions are in the conversation. Map them to
 the sections above, fold the simplified investigation path into the timeline,

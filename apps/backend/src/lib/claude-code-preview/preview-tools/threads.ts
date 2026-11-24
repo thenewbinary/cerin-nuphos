@@ -115,7 +115,7 @@ export function threadToolModule(
       {
         name: 'create_thread',
         description:
-          'Start a Nuphos sub-agent: a separate Nuphos conversation. Use it only when asked for a sub-agent or to delegate/background work. ' +
+          'Start a Cerin sub-agent: a separate Cerin conversation. Use it only when asked for a sub-agent or to delegate/background work. ' +
           'It does not inherit your transcript. It always runs in the permission mode of the ' +
           'conversation at the top of yours. It runs on your agent, or on the ' +
           "one runtimeId names from list_agent_runtimes (never someone's computer). " +
@@ -126,26 +126,26 @@ export function threadToolModule(
           'list_agent_runtimes shows for its agent: a lighter, cheaper model for simple or mechanical ' +
           'work, a stronger one for hard reasoning or risky changes. Say why in modelReason. ' +
           'The current chat stays available. Specify a completion condition and ask the worker to use ' +
-          'report_task to report results or blockers. Supply requestId and reuse it with the same prompt on retries to avoid duplicate Tasks. Returns a Nuphos threadId (not a Codex internal ID). ' +
+          'report_task to report results or blockers. Supply requestId and reuse it with the same prompt on retries to avoid duplicate Tasks. Returns a Cerin threadId (not a Codex internal ID). ' +
           'Only available for conversations owned by the current actor.',
         inputSchema: toolInputJsonSchema(create),
       },
       {
         name: 'send_message_to_thread',
         description:
-          'Send work or a completion report to another Nuphos thread you own in this team. ' +
+          'Send work or a completion report to another Cerin thread you own in this team. ' +
           'The target keeps its own runtime. status is "started" when an ' +
           'idle thread started a turn now, "queued" when a busy thread will run it as its own turn ' +
           'after the turns ahead of it; neither means the task is done. ' +
           'An archived target is restored when the message runs. ' +
-          'Use the Nuphos threadId from create_thread or session_id from list_recent_conversations. ' +
+          'Use the Cerin threadId from create_thread or session_id from list_recent_conversations. ' +
           'Do not send acknowledgement loops.',
         inputSchema: toolInputJsonSchema(send),
       },
       {
         name: 'archive_thread',
         description:
-          'Archive a Nuphos conversation you own in this team, or restore it with archived=false. ' +
+          'Archive a Cerin conversation you own in this team, or restore it with archived=false. ' +
           'Use when its work is done or the user asks; the current conversation counts too. ' +
           'Archiving hides it but does not stop a running turn. ' +
           'Its sub-agent threads, recursively, are archived and restored with it. ' +
@@ -158,7 +158,7 @@ export function threadToolModule(
       {
         name: 'stop_thread',
         description:
-          'Stop the running turn of another Nuphos conversation you own in this team, the same ' +
+          'Stop the running turn of another Cerin conversation you own in this team, the same ' +
           'as the Stop button in that conversation. Messages that agents queued for it with ' +
           'send_message_to_thread are dropped so they do not start another turn; messages people ' +
           'sent stay and run next. Its history stays. Use threadId from create_thread or ' +
@@ -178,7 +178,7 @@ export function threadToolModule(
       {
         name: 'update_thread',
         description:
-          'Change another Nuphos thread or Bot you own in this team. fullAccess switches a ' +
+          'Change another Cerin thread or Bot you own in this team. fullAccess switches a ' +
           'conversation with no parent between Full Access (true) and Auto Mode (false); Full ' +
           'Access is allowed only while this conversation itself has Full Access, Auto Mode ' +
           "always. A thread under a parent always runs in its top conversation's mode, so " +
@@ -195,7 +195,7 @@ export function threadToolModule(
       {
         name: 'set_thread_parent',
         description:
-          'Nest an existing Nuphos thread under another conversation in the sidebar, e.g. your own ' +
+          'Nest an existing Cerin thread under another conversation in the sidebar, e.g. your own ' +
           'session_id to group threads you manage, or pass parentThreadId null to stop nesting it. ' +
           'Both must be conversations you own in this team, and the parent must not already be nested ' +
           'below the thread. Changes the grouping and, with it, whose credentials and computers the ' +

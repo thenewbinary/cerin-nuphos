@@ -9,7 +9,7 @@ usage() {
   cat <<'EOF'
 Usage: openapi.sh [--summary] [--path TEXT] [--operation OPERATION_ID] [--raw] [--no-refresh]
 
-Fetch the current Nuphos OpenAPI document and print a compact view.
+Fetch the current Cerin OpenAPI document and print a compact view.
 
 Options:
   --summary                List method, path, operationId, and summary. Default.
@@ -20,7 +20,7 @@ Options:
   --help                   Show this help.
 
 Environment:
-  NUPHOS_BACKEND_URL       Defaults to https://api.nuphos.ai
+  NUPHOS_BACKEND_URL       Defaults to https://api.cerin.ai
   NUPHOS_TOKEN             Sent as bearer auth when set.
   NUPHOS_OPENAPI_CACHE     Defaults to /tmp/nuphos-openapi.json
 EOF
@@ -75,7 +75,7 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-base_url="${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}"
+base_url="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base_url="${base_url%/}"
 cache_path="${NUPHOS_OPENAPI_CACHE:-/tmp/nuphos-openapi.json}"
 
@@ -134,7 +134,7 @@ for api_path, methods in sorted(doc.get("paths", {}).items()):
         })
 
 def print_summary(items):
-    print(f"OpenAPI: {doc.get('info', {}).get('title', 'Nuphos API')} {doc.get('info', {}).get('version', '')}".rstrip())
+    print(f"OpenAPI: {doc.get('info', {}).get('title', 'Cerin API')} {doc.get('info', {}).get('version', '')}".rstrip())
     print(f"Cached: {path}")
     print("")
     for item in items:

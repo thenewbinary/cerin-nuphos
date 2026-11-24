@@ -53,8 +53,8 @@ export type DiscordChannel = {
 export type DiscordGuild = { id: string; name: string }
 
 export const NUPHOS_DISCORD_COMMAND = {
-  name: 'nuphos',
-  description: 'Manage Nuphos in this Discord channel',
+  name: config.discord.commandName,
+  description: 'Manage Cerin in this Discord channel',
   // Channel administration is enforced in the handler; members may change their own mode.
   default_member_permissions: null,
   dm_permission: false,
@@ -64,12 +64,12 @@ export const NUPHOS_DISCORD_COMMAND = {
     {
       type: 1,
       name: 'enable',
-      description: 'Allow linked workspace members to mention Nuphos in this channel',
+      description: 'Allow linked workspace members to mention Cerin in this channel',
     },
     {
       type: 1,
       name: 'disable',
-      description: 'Stop Nuphos from accepting mentions in this channel',
+      description: 'Stop Cerin from accepting mentions in this channel',
     },
   ],
 } as const
@@ -87,8 +87,8 @@ export async function registerDiscordCommands(): Promise<void> {
 
   if (!clientId) throw new Error('DISCORD_CLIENT_ID is not configured')
   await discordApi(`/applications/${encodeURIComponent(clientId)}/commands`, {
-    method: 'POST',
-    body: JSON.stringify(NUPHOS_DISCORD_COMMAND),
+    method: 'PUT',
+    body: JSON.stringify([NUPHOS_DISCORD_COMMAND]),
   })
 }
 
@@ -132,13 +132,13 @@ export async function sendDiscordApproval(args: {
               type: 2,
               style: 3,
               label: 'Allow once',
-              custom_id: `nuphos:tool:approve:${args.decisionId}`,
+              custom_id: `cerin:tool:approve:${args.decisionId}`,
             },
             {
               type: 2,
               style: 4,
               label: 'Reject',
-              custom_id: `nuphos:tool:reject:${args.decisionId}`,
+              custom_id: `cerin:tool:reject:${args.decisionId}`,
             },
           ],
         },

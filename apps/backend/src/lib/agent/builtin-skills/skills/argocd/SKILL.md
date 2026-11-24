@@ -14,7 +14,7 @@ bundle `argocd`; do not spend the turn installing it.
 
 ## Setup
 
-Argo CD credentials are not minted by Nuphos today. Use one of these contexts:
+Argo CD credentials are not minted by Cerin today. Use one of these contexts:
 
 - The user provides an Argo CD server and token.
 - A kubeconfig is loaded with the `kubectl` skill and Argo CD is configured for

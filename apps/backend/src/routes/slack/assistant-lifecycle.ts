@@ -50,7 +50,7 @@ export async function handleAssistantThreadStarted(envelope: SlackEventEnvelope)
         token,
         channel: channelId,
         threadTs,
-        text: 'Nuphos is not fully installed for this Slack workspace yet. Ask an admin to complete the installation.',
+        text: 'Cerin is not fully installed for this Slack workspace yet. Ask an admin to complete the installation.',
       })
     } catch (err) {
       logEvent('warn', 'slack.assistant.install_error_msg_failed', {

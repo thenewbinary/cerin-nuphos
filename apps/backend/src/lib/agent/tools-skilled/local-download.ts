@@ -17,7 +17,7 @@ export function createLocalDownloadTool(devices: LocalExecDevice[], turn: LocalE
         'Save one file onto a conversation-selected computer, when the person asks for a file on their computer. ' +
         'First run bash skills/file-transfer/scripts/transfer-push.sh <TEAM> <file> in your workspace and pass the groupId it prints; pass fileName when the group holds several files. ' +
         'Pass an absolute target path (or ~/path) and optionally a device ID, as for local_exec. No shell expansion is performed. ' +
-        'The computer fetches the file itself and returns {path, size} once it is written. If it answers file_exists, ask the person before calling again with overwrite: true. If it answers update_required, tell them to update Nuphos on that computer. ' +
+        'The computer fetches the file itself and returns {path, size} once it is written. If it answers file_exists, ask the person before calling again with overwrite: true. If it answers update_required, tell them to update Cerin on that computer. ' +
         'Signed URLs and credentials stay internal. Do not use local_exec with signed URLs or third-party staging for this transfer. ' +
         'Requires an online computer with local exec allowed. The existing file-transfer limits apply.',
       execute: ({ device, ...request }: LocalDownloadRequest & { device?: string }) =>

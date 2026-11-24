@@ -87,8 +87,8 @@ export function renderTailnetAclSnippet(options: TailnetAclSnippetOptions): stri
       "enforceRecorder": true`
     : ''
 
-  return `// Nuphos private network access — review before applying.
-// Nuphos owns nothing outside these three blocks; delete them to revoke instantly.
+  return `// Cerin private network access — review before applying.
+// Cerin owns nothing outside these three blocks; delete them to revoke instantly.
 {
   "tagOwners": {
     // Replace group:sre with whoever should be able to grant this.

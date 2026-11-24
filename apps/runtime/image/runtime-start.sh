@@ -35,9 +35,9 @@ memory_watch() {
 }
 memory_watch &
 
-# A container handed a join token runs as a device, the way a Box does: the Nuphos CLI
+# A container handed a join token runs as a device, the way a Box does: the Cerin CLI
 # host joins with the token once, keeps the credential it gets on the home volume, dials
-# out to Nuphos and runs the agent itself, so nothing below applies. A saved credential
+# out to Cerin and runs the agent itself, so nothing below applies. A saved credential
 # wins over the token on every later start. Without a token the runtime starts as before.
 agent_home=${NUPHOS_AGENT_HOME:-${HOME:-}/.local/share/nuphos/agent}
 if [ -n "${NUPHOS_JOIN_TOKEN:-}" ]; then
@@ -99,9 +99,9 @@ generate_password() {
     || { rm -f "$tmp"; fail "cannot write the runtime password to $key_file."; }
 
   if [ -n "$had_identity" ]; then
-    printf 'WARNING: no runtime password was found at %s, but this home has run a runtime before. A new password was generated: update it in every Nuphos workspace this runtime is connected to.\n' "$key_file"
+    printf 'WARNING: no runtime password was found at %s, but this home has run a runtime before. A new password was generated: update it in every Cerin workspace this runtime is connected to.\n' "$key_file"
   fi
-  printf 'Generated runtime password (stored in %s): %s — enter it in Nuphos when connecting this runtime. Unless %s is on a persistent volume, the password changes on every restart.\n' \
+  printf 'Generated runtime password (stored in %s): %s — enter it in Cerin when connecting this runtime. Unless %s is on a persistent volume, the password changes on every restart.\n' \
     "$key_file" "$OPENAB_ACP_AUTH_KEY" "$key_file"
 }
 
@@ -148,7 +148,7 @@ if enabled "${OPENAB_ACP_ENABLED:-}"; then
 fi
 
 # Derive the operator key from the password unless one was set. Must match
-# `deriveRuntimeControlKey` in the Nuphos backend. A value equal to the password is
+# `deriveRuntimeControlKey` in the Cerin backend. A value equal to the password is
 # replaced too, because openab discards an operator key equal to the transport key.
 if [ -n "${OPENAB_ACP_AUTH_KEY:-}" ]; then
   if [ -z "${OPENAB_ACP_CONTROL_KEY:-}" ] || [ "$OPENAB_ACP_CONTROL_KEY" = "$OPENAB_ACP_AUTH_KEY" ]; then

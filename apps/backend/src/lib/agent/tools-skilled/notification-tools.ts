@@ -21,16 +21,16 @@ export function createNotificationTools(deps: NotificationToolDeps): {
     ok: false as const,
     errorCode: 'slack_not_connected' as const,
     error:
-      'Slack is not connected to this Nuphos team. Ask the user to connect the Nuphos Slack App, then continue this same managed workflow. Do not request or recommend a Slack Incoming Webhook, AWS Chatbot, or another provider-native Slack integration unless the user explicitly asked for that architecture.',
-    requiredNextAction: 'Connect the Nuphos Slack App to this team.',
+      'Slack is not connected to this Cerin team. Ask the user to connect the Cerin Slack App, then continue this same managed workflow. Do not request or recommend a Slack Incoming Webhook, AWS Chatbot, or another provider-native Slack integration unless the user explicitly asked for that architecture.',
+    requiredNextAction: 'Connect the Cerin Slack App to this team.',
   })
   const slackNotificationTools: Record<string, unknown> = {
     slack_list_destinations: tool({
       description:
-        'List the Slack destinations this Nuphos team can actually use for proactive notifications. This capability is always present so an unconnected team returns the structured slack_not_connected blocker instead of looking unsupported. ' +
+        'List the Slack destinations this Cerin team can actually use for proactive notifications. This capability is always present so an unconnected team returns the structured slack_not_connected blocker instead of looking unsupported. ' +
         'Channels are limited to channels the installed bot has joined, plus channels in other workspaces explicitly linked to this team; every entry carries its slackWorkspaceId/slackWorkspaceName. dmSelfAvailable says whether the current user linked their Slack identity (DMs need the team’s own installation). ' +
         'Use this before creating a trigger that names Slack, and whenever the user asks to send to Slack without providing a stable channel ID. ' +
-        'If it returns slack_not_connected, ask the user to connect the Nuphos Slack App and preserve the intended provider → Nuphos Trigger → Slack plan. Do not fall back to Slack Incoming Webhooks or provider-native Slack integrations unless the user explicitly requests them. ' +
+        'If it returns slack_not_connected, ask the user to connect the Cerin Slack App and preserve the intended provider → Cerin Trigger → Slack plan. Do not fall back to Slack Incoming Webhooks or provider-native Slack integrations unless the user explicitly requests them. ' +
         'Present the real choices to the user and never guess a channel.',
       inputSchema: z.object({ label: labelField }),
       execute: async () => {
@@ -44,9 +44,9 @@ export function createNotificationTools(deps: NotificationToolDeps): {
     }),
     slack_post: tool({
       description:
-        'Send a message to Slack through the first-party Nuphos Slack App, to an explicitly user-approved destination. This capability stays visible when Slack is unconnected and then returns slack_not_connected; never replace it with a Slack Incoming Webhook or a provider-native Slack integration unless the user explicitly asks. ' +
+        'Send a message to Slack through the first-party Cerin Slack App, to an explicitly user-approved destination. This capability stays visible when Slack is unconnected and then returns slack_not_connected; never replace it with a Slack Incoming Webhook or a provider-native Slack integration unless the user explicitly asks. ' +
         'For a channel, use only a channelId returned by slack_list_destinations. Never choose a channel yourself. ' +
-        'Set bindConversation=true for trigger/desktop notifications so replies continue this exact Nuphos conversation. ' +
+        'Set bindConversation=true for trigger/desktop notifications so replies continue this exact Cerin conversation. ' +
         'For a report or summary nobody is waiting on — a scheduled digest, a cost breakdown — pass replyThread instead: the root stays scannable, the detail goes in the thread, and follow-ups there are answered in a conversation of their own. Without it a reply in that thread reaches nobody. ' +
         'This is an external side effect. If a post fails, report the error and do not retry it unchanged in the same turn.',
       inputSchema: z.object({
@@ -79,7 +79,7 @@ export function createNotificationTools(deps: NotificationToolDeps): {
         bindConversation: z
           .boolean()
           .default(true)
-          .describe('Bind replies on this Slack root to the current Nuphos conversation.'),
+          .describe('Bind replies on this Slack root to the current Cerin conversation.'),
         replyThread: z
           .object({
             text: z
@@ -93,7 +93,7 @@ export function createNotificationTools(deps: NotificationToolDeps): {
           })
           .optional()
           .describe(
-            'Opens a replyable thread under the new root and gives it its own Nuphos conversation, so anyone in the channel can ask a follow-up about this message and be answered with it in hand. Use it for a report or summary nobody is waiting on in a live conversation.',
+            'Opens a replyable thread under the new root and gives it its own Cerin conversation, so anyone in the channel can ask a follow-up about this message and be answered with it in hand. Use it for a report or summary nobody is waiting on in a live conversation.',
           ),
       }),
       execute: async (input) => {
@@ -114,13 +114,13 @@ export function createNotificationTools(deps: NotificationToolDeps): {
     ok: false as const,
     errorCode: 'lark_not_connected' as const,
     error:
-      'Lark (Feishu) is not connected to this Nuphos team. Ask the user to connect their Lark custom app in the desktop app (Connectors → Lark), then continue this same workflow.',
+      'Lark (Feishu) is not connected to this Cerin team. Ask the user to connect their Lark custom app in the desktop app (Connectors → Lark), then continue this same workflow.',
     requiredNextAction: 'Connect a Lark custom app to this team.',
   })
   const larkNotificationTools: Record<string, unknown> = {
     lark_list_destinations: tool({
       description:
-        'List the Lark (Feishu) groups this Nuphos team can post to. Groups are limited to the ones the connected bot is actually a member of. ' +
+        'List the Lark (Feishu) groups this Cerin team can post to. Groups are limited to the ones the connected bot is actually a member of. ' +
         'Call this before lark_post whenever the user asks to send something to a Lark/Feishu group, so you can present the real choices and get a stable chatId. ' +
         'If it returns lark_not_connected, ask the user to connect their Lark custom app in Connectors → Lark. Never guess a chatId.',
       inputSchema: z.object({ label: labelField }),

@@ -1,6 +1,6 @@
 ---
 name: asana
-description: Operate on Asana tasks — read, create, comment, and complete — through an Asana account the user's team has bound to Nuphos via OAuth. Use whenever the user asks to open/track/close an Asana task, file a to-do for an incident, comment on a task, or check task status. Nuphos backend hands the agent a short-lived Asana access token; the agent calls app.asana.com/api/1.0 directly with curl.
+description: Operate on Asana tasks — read, create, comment, and complete — through an Asana account the user's team has bound to Cerin via OAuth. Use whenever the user asks to open/track/close an Asana task, file a to-do for an incident, comment on a task, or check task status. Cerin backend hands the agent a short-lived Asana access token; the agent calls app.asana.com/api/1.0 directly with curl.
 ---
 
 # asana
@@ -14,7 +14,7 @@ Changing runtime-global settings is possible, but strongly discouraged unless th
 Use this skill when the user wants you to read or change Asana tasks on their
 behalf — file a task for an incident, create/comment/complete a task, or look up
 task status — using the **Asana account** their team has already bound to
-Nuphos. This closes the loop: detect a problem (via the monitoring/cloud skills)
+Cerin. This closes the loop: detect a problem (via the monitoring/cloud skills)
 → open an Asana task with the root cause → comment progress → mark it complete
 when the fix is verified.
 
@@ -29,7 +29,7 @@ set -o pipefail   # so a failed curl piped into python3 fails the step, not sile
 # 1. Discover the Asana accounts the team has bound. --fail-with-body makes a
 # 401/403/5xx exit non-zero (still printing the error body) so a bad listing
 # doesn't look successful.
-ac() { curl -sS --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.nuphos.ai}$1" "${@:2}"; }
+ac() { curl -sS --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 ac /teams/$TEAM/asana-accounts | python3 -m json.tool
 # → { "accounts": [ { "id": "<bindingId>", "accountName": "Jane Doe",
 #       "accountEmail": "jane@acme.com", "accountGid": "<gid>", ... } ] }

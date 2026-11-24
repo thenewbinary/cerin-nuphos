@@ -185,7 +185,7 @@ export async function askInChannel(
     notifyNudge([requestOwner(ctx)], {
       sessionId: asked.channelId,
       teamId: ctx.teamId,
-      title: bot?.title || 'Nuphos agent',
+      title: bot?.title || 'Cerin agent',
       subtitle: 'Has a question for you',
       body: truncate(plainText(question)),
       ...botFace(bot),

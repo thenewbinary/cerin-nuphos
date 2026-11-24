@@ -6,6 +6,7 @@ import { InstaboxAuthError, InstaboxError, InstaboxQuotaError } from '@insforge/
 import { config } from '@/config'
 import { AppError } from '@/lib/errors'
 import { logError } from '@/lib/observability'
+import { publicWebUrl } from '@/lib/public-urls'
 
 import { killMachine, listMachines } from './instabox-machines'
 
@@ -61,7 +62,7 @@ export const BOX_INSTALL_COMMAND = [
     PATHS,
     `( ${AGENTS.join('\n')}\n) & agents=$!`,
     // Always the newest CLI, so the same step installs a Box and updates one.
-    'curl -fsSL https://nuphos.ai/install | sh',
+    `curl -fsSL '${publicWebUrl().replaceAll("'", "'\\''")}/install' | sh`,
     // So `nuphos` also works in the Box\'s own terminal, not only in the commands run here.
     'grep -q .local/bin "$HOME/.profile" 2>/dev/null || echo \'export PATH="$HOME/.local/bin:$PATH"\' >> "$HOME/.profile"',
     'wait $agents',
@@ -137,7 +138,7 @@ export function connection(timeoutMs: number) {
   const box = config.box.instabox
 
   if (!box)
-    throw new AppError(503, 'box_unavailable', 'Computers from Nuphos are off on this deployment')
+    throw new AppError(503, 'box_unavailable', 'Computers from Cerin are off on this deployment')
 
   // One stalled poll must not hold a whole operation: each request gets its own short budget.
   return {
@@ -166,7 +167,7 @@ export function requireBackendUrl(): string {
     throw new AppError(
       503,
       'box_unavailable',
-      'This deployment has no public URL for a computer from Nuphos to reach',
+      'This deployment has no public URL for a computer from Cerin to reach',
     )
 
   return url

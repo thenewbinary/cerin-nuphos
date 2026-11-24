@@ -62,7 +62,7 @@ tailscaleScoped.post('/tailnet-sessions', async (c) => {
     tailscaleAuthHandle(c.get('tailscaleBindingAuth'), teamId),
     {
       tag,
-      description: `Nuphos agent sandbox ${hostname}`,
+      description: `Cerin agent sandbox ${hostname}`,
       expirySeconds: TAILNET_AUTH_KEY_TTL_SECONDS,
     },
   ).catch((err: unknown) => {

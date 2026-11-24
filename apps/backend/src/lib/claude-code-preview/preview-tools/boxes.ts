@@ -91,7 +91,7 @@ export function boxToolModule(
     {
       list_boxes: tool({
         description:
-          "List the team's instabox accounts and the Boxes (computers from Nuphos) on them that you may use, " +
+          "List the team's instabox accounts and the Boxes (computers from Cerin) on them that you may use, " +
           'with each one’s state. Use an account id with create_box and a deviceId with update_box, ' +
           'local_exec, local_cua or update_thread.',
         inputSchema: z.object({ label }).strict(),
@@ -113,7 +113,7 @@ export function boxToolModule(
       create_box: tool({
         description:
           "Create a Box, a Linux computer with a desktop, on one of the team's instabox accounts; " +
-          'instabox bills that account. It joins the team as a Nuphos computer and is selected for ' +
+          'instabox bills that account. It joins the team as a Cerin computer and is selected for ' +
           'this conversation and its sub-agents: use it with local_exec and local_cua, or move a ' +
           'sub-agent onto its agent with update_thread runtimeId (from list_agent_runtimes). ' +
           'Waits until it has joined, usually under a minute. Needs a team administrator. ' +
@@ -177,7 +177,7 @@ export function boxToolModule(
         description:
           'Stop, start or delete a Box on one of the team’s instabox accounts. stop pauses the machine ' +
           '(its disk stays; a later local_exec or start wakes it); delete removes the machine, its ' +
-          'disk and the computer from Nuphos, and cannot be undone. Delete needs the Box’s owner.',
+          'disk and the computer from Cerin, and cannot be undone. Delete needs the Box’s owner.',
         inputSchema: z
           .object({
             label,

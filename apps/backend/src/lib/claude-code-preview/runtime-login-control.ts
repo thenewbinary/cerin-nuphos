@@ -218,7 +218,7 @@ export async function localAgentNotInstalled(
     'runtime_not_installed',
     ref.provider === 'antigravity'
       ? `${name} isn't installed on this runtime's computer. Install the ${name} app there from https://antigravity.google, then try again.`
-      : `${name} isn't installed on this runtime's computer. Update Nuphos there so it can install ${name}, then try again.`,
+      : `${name} isn't installed on this runtime's computer. Update Cerin there so it can install ${name}, then try again.`,
   )
 }
 

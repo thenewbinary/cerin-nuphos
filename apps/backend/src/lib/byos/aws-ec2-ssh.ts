@@ -134,7 +134,7 @@ export async function getEc2InstanceSshAccess(
     throw new AppError(
       400,
       'ec2_no_public_ip',
-      `EC2 instance ${instanceId} has no public IP; SSH from Nuphos requires a reachable address`,
+      `EC2 instance ${instanceId} has no public IP; SSH from Cerin requires a reachable address`,
     )
   }
 

@@ -21,7 +21,7 @@ export const BACKGROUND_WORK_LOST_NOTICE =
  * effect, rather than to re-run on the assumption of death.
  */
 export const BACKGROUND_WORK_UNCERTAIN_NOTICE =
-  'Nuphos lost contact with the runtime that ran those earlier turns and could not get back ' +
+  'Cerin lost contact with the runtime that ran those earlier turns and could not get back ' +
   'on. Anything it left running — background tasks, monitors, watchers, open shells, any wait ' +
   'you armed — may have died with it and may never report back. Before re-running anything ' +
   'that has side effects, check whether it already happened. If you told the user you were ' +

@@ -20,9 +20,9 @@ const UNANSWERED_INSTRUCTION: Record<PreviewWaitKind, string> = {
   // A client tool is not a decision: Nuphos Desktop runs it without asking, so
   // "nobody decided" would describe a permission prompt that does not exist.
   'client-tool':
-    'Nuphos Desktop never picked this call up, so the tool did not run and ' +
+    'Cerin Desktop never picked this call up, so the tool did not run and ' +
     'nothing happened on the user machine. Never say an approval or permission ' +
-    'prompt is pending. Tell the user Nuphos Desktop did not run it, and ask ' +
+    'prompt is pending. Tell the user Cerin Desktop did not run it, and ask ' +
     'them to retry or to run it themselves.',
   'permission-grant':
     'This historical permission proposal can no longer be applied. End your turn and ' +
@@ -45,7 +45,7 @@ export function unansweredCardText(kind: PreviewWaitKind, waitedMs: number): str
   const seconds = String(Math.round(waitedMs / 1000))
 
   return kind === 'client-tool'
-    ? `Nuphos Desktop did not run this tool (no result after ${seconds}s).`
+    ? `Cerin Desktop did not run this tool (no result after ${seconds}s).`
     : `Still waiting for an answer after ${seconds}s — the agent stopped holding the turn.`
 }
 
@@ -53,7 +53,7 @@ export function unansweredCardText(kind: PreviewWaitKind, waitedMs: number): str
 // reachable, so the call fails now rather than parking the turn on an answer
 // that cannot arrive.
 export const CLIENT_TOOL_UNREACHABLE_INSTRUCTION =
-  'This conversation is not attached to a Nuphos Desktop session, so tools that ' +
+  'This conversation is not attached to a Cerin Desktop session, so tools that ' +
   'run on the user machine are unavailable here and nothing was executed. Do not ' +
   'retry and do not wait: tell the user that running commands on their machine ' +
-  'needs Nuphos Desktop, and continue with what you can do on the runtime itself.'
+  'needs Cerin Desktop, and continue with what you can do on the runtime itself.'

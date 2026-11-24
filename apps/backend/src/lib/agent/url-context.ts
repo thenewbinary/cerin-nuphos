@@ -167,12 +167,12 @@ export async function generateContextPrompt(urlContext: UrlContext): Promise<str
   const lines = entries.map(([key, value]) => `- ${key}: ${String(value)}`)
 
   return [
-    '## Current Nuphos page context',
+    '## Current Cerin page context',
     '',
-    'The user opened this agent chat from a Nuphos desktop page. Treat these fields as the default scope for read-only inspection, API calls, cloud credentials, Kubernetes context, and Nuphos GUI links unless the user explicitly redirects you.',
+    'The user opened this agent chat from a Cerin desktop page. Treat these fields as the default scope for read-only inspection, API calls, cloud credentials, Kubernetes context, and Cerin GUI links unless the user explicitly redirects you.',
     '',
     ...lines,
     '',
-    'For Nuphos GUI markdown links, do not guess route templates. Search `skills/nuphos-api/references/gui-routes.md` with `rg -i "<resource keyword>"` and use the matching row only when all required ids are available. The context above can supply defaults such as teamId, accountId/projectId, provider, clusterName, region, namespace, and view.',
+    'For Cerin GUI markdown links, do not guess route templates. Search `skills/nuphos-api/references/gui-routes.md` with `rg -i "<resource keyword>"` and use the matching row only when all required ids are available. The context above can supply defaults such as teamId, accountId/projectId, provider, clusterName, region, namespace, and view.',
   ].join('\n')
 }

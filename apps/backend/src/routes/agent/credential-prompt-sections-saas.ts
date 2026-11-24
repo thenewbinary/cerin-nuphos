@@ -126,7 +126,7 @@ export function appendVantaIntegrationLines(
   )
   for (const integration of vantaIntegrations) {
     lines.push(
-      `- integrationId=${integration.integrationId}; label=${integration.label}; authType=${integration.authType}; testsEndpoint="/teams/${teamId}/vanta-integrations/${integration.integrationId}/tests"; tip="GET testsEndpoint returns { tests }; default lists NEEDS_ATTENTION (the compliance issues to fix). Append ?infraOnly=true for infrastructure-facing categories, or ?status=<STATUS> to change the filter. Each test carries failureDescription and remediationDescription. The token is held server-side — read via this Nuphos endpoint, do not paste Vanta tokens into chat."`,
+      `- integrationId=${integration.integrationId}; label=${integration.label}; authType=${integration.authType}; testsEndpoint="/teams/${teamId}/vanta-integrations/${integration.integrationId}/tests"; tip="GET testsEndpoint returns { tests }; default lists NEEDS_ATTENTION (the compliance issues to fix). Append ?infraOnly=true for infrastructure-facing categories, or ?status=<STATUS> to change the filter. Each test carries failureDescription and remediationDescription. The token is held server-side — read via this Cerin endpoint, do not paste Vanta tokens into chat."`,
     )
   }
 }
@@ -143,7 +143,7 @@ export function appendSecureframeIntegrationLines(
   )
   for (const integration of secureframeIntegrations) {
     lines.push(
-      `- integrationId=${integration.integrationId}; label=${integration.label}; region=${integration.region}; testsEndpoint="/teams/${teamId}/secureframe-integrations/${integration.integrationId}/tests"; tip="GET testsEndpoint returns { tests }; default lists failing tests (health_status:fail — the compliance issues to fix). Append ?failingOnly=false for all tests, or ?q=<lucene> for a custom filter (e.g. q=health_status:fail AND frameworks:soc2_alpha). Each test carries description, healthStatus, enabled. The API secret is held server-side — read via this Nuphos endpoint, do not paste Secureframe credentials into chat."`,
+      `- integrationId=${integration.integrationId}; label=${integration.label}; region=${integration.region}; testsEndpoint="/teams/${teamId}/secureframe-integrations/${integration.integrationId}/tests"; tip="GET testsEndpoint returns { tests }; default lists failing tests (health_status:fail — the compliance issues to fix). Append ?failingOnly=false for all tests, or ?q=<lucene> for a custom filter (e.g. q=health_status:fail AND frameworks:soc2_alpha). Each test carries description, healthStatus, enabled. The API secret is held server-side — read via this Cerin endpoint, do not paste Secureframe credentials into chat."`,
     )
   }
 }

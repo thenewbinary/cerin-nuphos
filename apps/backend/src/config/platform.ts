@@ -98,10 +98,13 @@ export function platformConfig() {
       natMap: optionalList('ATLAS_REDIS_NAT_MAP'),
     },
     telemetry: {
-      // Opt-in health reports to Nuphos (lib/telemetry), issued per instance and
-      // revocable. Unset = nothing is collected or sent.
+      // Both the key and an explicit destination are required to collect or send.
       key: optional('NUPHOS_TELEMETRY_KEY'),
-      url: 'https://telemetry.nuphos.ai/v1/reports',
+      url: optional('NUPHOS_TELEMETRY_URL')?.trim() || undefined,
+    },
+    publicLinks: {
+      // Optional documentation host. Empty disables the bundled setup guide link.
+      docsBaseUrl: optional('NUPHOS_DOCS_URL')?.trim().replace(/\/$/, ''),
     },
   }
 }

@@ -1,11 +1,11 @@
 ---
 name: discord
-description: Read and act in the team's Discord server through the Nuphos API — find the channel and thread a conversation came from, read recent messages, pins and threads, search messages, look up members, post a message, and add a reaction. Use for anything that involves Discord: every turn that arrives from Discord, and whenever the user asks about, quotes, or wants something posted to a Discord channel.
+description: Read and act in the team's Discord server through the Cerin API — find the channel and thread a conversation came from, read recent messages, pins and threads, search messages, look up members, post a message, and add a reaction. Use for anything that involves Discord: every turn that arrives from Discord, and whenever the user asks about, quotes, or wants something posted to a Discord channel.
 ---
 
 # Discord
 
-The team's Discord server is reached through Nuphos. The bot token stays
+The team's Discord server is reached through Cerin. The bot token stays
 server-side: never ask for one and never call discord.com yourself.
 
 ```bash
@@ -31,7 +31,7 @@ on non-2xx responses. Put request bodies in files.
 ```
 
 - `channels` are the only channels you can reach: the ones an administrator
-  enabled for Nuphos, plus the public threads under them. Anything else,
+  enabled for Cerin, plus the public threads under them. Anything else,
   private threads included, answers
   `403 discord_channel_not_enabled`; that is a boundary, not an error to work
   around. An administrator enables a channel with `/nuphos enable` there.
@@ -89,7 +89,7 @@ Notes:
   before answering a question about it.
 - To send the user a file or image, push it with the `file-transfer` skill. It
   is attached to this conversation's Discord thread when the turn ends (up to
-  10 MB per file; larger ones stay downloadable in the Nuphos app).
+  10 MB per file; larger ones stay downloadable in the Cerin app).
 - `search` without `channelId` covers every reachable channel. While Discord is
   still indexing the server it answers `{ "indexing": true, "retryAfter": n }`;
   wait that many seconds and retry once, then fall back to reading messages.

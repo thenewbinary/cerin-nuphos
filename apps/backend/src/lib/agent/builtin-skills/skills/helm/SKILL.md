@@ -1,11 +1,11 @@
 ---
 name: helm
-description: Install applications onto an Nuphos-managed Kubernetes cluster using the helm CLI from inside the sandbox. Use this for chart-based deploys ("install Inngest", "deploy ingress-nginx", "set up cert-manager"). Includes an install script for the helm binary.
+description: Install applications onto an Cerin-managed Kubernetes cluster using the helm CLI from inside the sandbox. Use this for chart-based deploys ("install Inngest", "deploy ingress-nginx", "set up cert-manager"). Includes an install script for the helm binary.
 ---
 
 # helm
 
-Use this skill when the user wants to **install or upgrade** something packaged as a Helm chart on one of their Nuphos clusters — e.g. "幫我部署 Inngest", "install ingress-nginx", "set up cert-manager". For inspection (`get pods`, `logs`, etc.) keep using `kubectl` — `helm` is for chart-driven deploys.
+Use this skill when the user wants to **install or upgrade** something packaged as a Helm chart on one of their Cerin clusters — e.g. "幫我部署 Inngest", "install ingress-nginx", "set up cert-manager". For inspection (`get pods`, `logs`, etc.) keep using `kubectl` — `helm` is for chart-driven deploys.
 
 Helm reuses the same kubeconfig the `kubectl` skill writes to `~/.kube/config`, so the typical workflow is:
 

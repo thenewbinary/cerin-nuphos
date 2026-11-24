@@ -156,7 +156,7 @@ export async function getJoinedSlackChannel(
     throw new AppError(
       400,
       'slack_not_in_channel',
-      'Nuphos is not in that Slack channel. Invite the Nuphos bot there first.',
+      'Cerin is not in that Slack channel. Invite the Cerin bot there first.',
     )
   }
   if (!channel.id) {

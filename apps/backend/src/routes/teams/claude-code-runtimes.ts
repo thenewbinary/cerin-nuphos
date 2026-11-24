@@ -127,7 +127,7 @@ export function registerExternalRuntimeRoute(teamScoped: Hono<{ Variables: TeamA
         throw new AppError(
           422,
           'runtime_provider_undetected',
-          'Nuphos could not reach this agent or tell whether it runs Claude Code or Codex. Check the address and admin password, and that the agent image is up to date.',
+          'Cerin could not reach this agent or tell whether it runs Claude Code or Codex. Check the address and admin password, and that the agent image is up to date.',
         )
 
       return registerExternalRuntime(c, provider, body)

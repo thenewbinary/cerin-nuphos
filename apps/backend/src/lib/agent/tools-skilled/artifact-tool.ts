@@ -22,7 +22,7 @@ export function createArtifactTool() {
       'each call adds a version. Do not paste the content into your reply as well. After the call, say ' +
       'in one or two sentences what it is or what changed. ' +
       'html: one complete document with inline <style> and <script>. It runs in a sandbox with no ' +
-      "access to Nuphos, the user's session, cookies or storage, so it cannot call Nuphos APIs. It may " +
+      "access to Cerin, the user's session, cookies or storage, so it cannot call Cerin APIs. It may " +
       "load libraries from public https CDNs, and its links open in the user's browser. " +
       'markdown: a document. svg: a single <svg> element with a viewBox. code: one file; set language. ' +
       'People open artifacts in a narrow side panel, on phones, tablets and foldables, so write HTML ' +

@@ -72,6 +72,19 @@ describe('panel runner Nuphos client', () => {
     expect(authorizationHeaders).toEqual(['Bearer test-token'])
   })
 
+  test('exposes the same client as cerin', async () => {
+    authorizationHeaders = []
+    const result = await runPanel(`
+      if (cerin !== nuphos) throw new Error('cerin and nuphos differ')
+      const response = await cerin.get('/teams/${TEAM_ID}/usage')
+      emit({ kind: 'scalar', title: 'Cost', value: response.value, unit: 'usd' })
+    `)
+
+    expect(result.exitCode).toBe(0)
+    expect(result.stdout).toContain('__PANEL_OUTPUT__')
+    expect(authorizationHeaders).toEqual(['Bearer test-token'])
+  })
+
   test('rejects routes for another team before sending the token', async () => {
     authorizationHeaders = []
     const result = await runPanel(`
