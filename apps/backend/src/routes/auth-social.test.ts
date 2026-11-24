@@ -402,7 +402,10 @@ test('nuphos login uses its configured approval page with or without OIDC', asyn
     })
     expect(await verificationUri()).toBe(`${config.auth.publicBaseUrl}/auth/social/device`)
     config.auth.oidc.issuer = undefined
-    for (const base of ['https://platform.cerin.ai', 'https://platform.cerin.ai']) {
+    for (const base of [
+      'https://platform.cerin.ai',
+      'https://nuphos.ai', // rebrand:keep: the legacy host
+    ]) {
       config.auth.publicBaseUrl = base
       expect(await verificationUri()).toBe(`${base}/auth/social/device`)
     }
