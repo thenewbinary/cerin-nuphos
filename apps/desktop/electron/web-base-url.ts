@@ -11,6 +11,7 @@
 // own copy in.
 
 const DEFAULT_WEB_BASE_URL = 'https://platform.cerin.ai'
+
 export const LEGACY_WEB_BASE_URL = 'https://nuphos.ai'
 
 function normalize(raw: string | undefined): string {

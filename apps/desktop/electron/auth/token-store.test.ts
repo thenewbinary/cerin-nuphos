@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { KEYCHAIN_SERVICE, LEGACY_KEYCHAIN_SERVICE, withLegacyKeychain } from './token-store.ts'
 import {
   LEGACY_PROVIDER_KEYCHAIN_SERVICE,
   PROVIDER_KEYCHAIN_SERVICE,
 } from '../main/local-runtime/custom-provider.ts'
+
+import { KEYCHAIN_SERVICE, LEGACY_KEYCHAIN_SERVICE, withLegacyKeychain } from './token-store.ts'
 
 import type { TokenStore } from './token-store.ts'
 
@@ -22,6 +23,7 @@ test('a legacy credential is copied to the new service and removed from the old 
   const store = (name: string): TokenStore => ({
     get: async (account) => {
       calls.push(`${name}:get`)
+
       return items.get(`${name}:${account}`) ?? null
     },
     set: async (account, token) => {
@@ -50,6 +52,7 @@ test('an existing new credential does not read or remove the legacy entry', asyn
   const store = (name: string): TokenStore => ({
     get: async (account) => {
       if (name === 'legacy') legacyReads += 1
+
       return items.get(`${name}:${account}`) ?? null
     },
     set: async (account, token) => {

@@ -6,6 +6,7 @@
 // The fallback matters: unit tests and any non-Electron render have no bridge.
 
 const DEFAULT_WEB_BASE_URL = 'https://platform.cerin.ai'
+
 export const LEGACY_WEB_BASE_URL = 'https://nuphos.ai'
 
 function resolve(): string {
