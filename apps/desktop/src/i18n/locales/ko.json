@@ -198,7 +198,7 @@
   "Account GID": "계정 GID",
   "Account ID": "계정 ID",
   "Account email": "계정 이메일",
-  "Act as yourself on GitHub — commits, PRs and comments are authored by you instead of nuphos[bot]. Tasks scoped to one repository keep using nuphos[bot].": "GitHub에서 본인으로 활동합니다. 커밋, PR, 댓글이 nuphos[bot] 대신 본인 이름으로 작성됩니다. 하나의 저장소로 범위가 지정된 작업은 계속 nuphos[bot]을 사용합니다.",
+  "Act as yourself on GitHub — commits, PRs and comments are authored by you instead of cerin[bot]. Tasks scoped to one repository keep using cerin[bot].": "GitHub에서 본인으로 활동합니다. 커밋, PR, 댓글이 cerin[bot] 대신 본인 이름으로 작성됩니다. 하나의 저장소로 범위가 지정된 작업은 계속 cerin[bot]을 사용합니다.",
   "Acting as {login} through your GitHub CLI": "GitHub CLI를 통해 {login}(으)로 활동 중",
   "Acting for {name}": "{name} 님을 대신해",
   "Actions": "작업",

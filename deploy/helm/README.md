@@ -31,13 +31,13 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
     nginx.ingress.kubernetes.io/proxy-body-size: 100m
   tls:
-    - secretName: nuphos-tls
+    - secretName: cerin-tls
       hosts:
         - api.cerin.example.com
         - storage.cerin.example.com
         - runtime.cerin.example.com
 EOF
-helm install nuphos deploy/helm/nuphos -n nuphos --create-namespace -f values.local.yaml
+helm install cerin deploy/helm/nuphos -n cerin --create-namespace -f values.local.yaml
 ```
 
 The install notes print the next steps: sign in from Desktop with
@@ -50,7 +50,7 @@ your team and sign in to Claude from the console.
 `cerin-admin` in the backend image creates them, with no email involved:
 
 ```sh
-kubectl -n nuphos exec deploy/nuphos-backend -- \
+kubectl -n cerin exec deploy/cerin-nuphos-backend -- \
   cerin-admin bootstrap --email you@example.com --team Ops
 ```
 
@@ -154,7 +154,7 @@ credentials.
 
 ```sh
 helm lint deploy/helm/nuphos -f deploy/helm/ci-values.yaml --strict
-helm template nuphos deploy/helm/nuphos -f deploy/helm/ci-values.yaml | kubeconform -strict -summary
+helm template cerin deploy/helm/nuphos -f deploy/helm/ci-values.yaml | kubeconform -strict -summary
 ```
 
 CI runs both. It does not install the chart on a cluster.

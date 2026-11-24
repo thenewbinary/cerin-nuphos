@@ -6,6 +6,11 @@
                                                # anything, or a person-visible
                                                # Nuphos form is left that
                                                # keep.txt does not allow
+
+Two kinds of leftover are checked: `check_patterns` on every line, and
+`visible_text.pattern` (any case) on text people read: docs and translation
+files whole, and in code only sentence-like string literals outside comments.
+Each match must sit inside a keep.txt match on the same line.
 """
 import fnmatch, json, os, re, subprocess, sys
 from collections import Counter
@@ -25,7 +30,34 @@ def load():
         if line:
             glob, _, rx = line.partition(' ')
             keep.append((glob, re.compile(rx.strip() or '.*')))
+    v = m['visible_text']
+    v['re'] = re.compile(v['pattern'])
     return m, keep
+
+
+# A quoted literal with whitespace in it: a sentence, label or shell command.
+SENTENCE = re.compile(r"""(['"`])((?:(?!\1).)*?\s(?:(?!\1).)*?)\1""")
+COMMENT = ('//', '/*', '*', '#', '<!--', '--')
+
+
+def visible_spans(f, line, v):
+    """Spans of the visible-text pattern a reader of `f` can see on `line`."""
+    if match(f, v['exclude_paths']):
+        return []
+    hits = [h.span() for h in v['re'].finditer(line)]
+    if not hits or match(f, v['text_paths']):
+        return hits
+    if not match(f, v['code_paths']) or line.lstrip().startswith(COMMENT):
+        return []
+    lits = [s.span(2) for s in SENTENCE.finditer(line)]
+    return [h for h in hits if any(a <= h[0] and h[1] <= b for a, b in lits)]
+
+
+def kept(f, line, span, keep):
+    return any(
+        fnmatch.fnmatch(f, g) and any(k.start() <= span[0] and span[1] <= k.end() for k in rx.finditer(line))
+        for g, rx in keep
+    )
 
 
 def match(path, globs):
@@ -76,9 +108,9 @@ def main():
         for no, line in enumerate(new.splitlines(), 1):
             if MARKER in line:
                 continue
-            if any(c.search(line) for c in checks) and not any(
-                fnmatch.fnmatch(f, g) and rx.search(line) for g, rx in keep
-            ):
+            spans = [h.span() for c in checks for h in c.finditer(line)]
+            spans += visible_spans(f, line, m['visible_text'])
+            if any(not kept(f, line, s, keep) for s in spans):
                 leftovers.append(f'{f}:{no}: {line.strip()[:160]}')
     print('rules:', dict(stats), '| files changed:', len(changed))
     if check:

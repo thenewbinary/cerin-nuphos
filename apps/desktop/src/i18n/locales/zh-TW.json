@@ -198,7 +198,7 @@
   "Account GID": "帳號 GID",
   "Account ID": "帳號 ID",
   "Account email": "帳號電子郵件",
-  "Act as yourself on GitHub — commits, PRs and comments are authored by you instead of nuphos[bot]. Tasks scoped to one repository keep using nuphos[bot].": "在 GitHub 上以你本人的身分操作：Commit、PR 與留言的作者會是你，而不是 nuphos[bot]。限定於單一儲存庫的任務仍會使用 nuphos[bot]。",
+  "Act as yourself on GitHub — commits, PRs and comments are authored by you instead of cerin[bot]. Tasks scoped to one repository keep using cerin[bot].": "在 GitHub 上以你本人的身分操作：Commit、PR 與留言的作者會是你，而不是 cerin[bot]。限定於單一儲存庫的任務仍會使用 cerin[bot]。",
   "Acting as {login} through your GitHub CLI": "透過你的 GitHub CLI 以 {login} 身分操作",
   "Acting for {name}": "代表 {name}",
   "Actions": "動作",

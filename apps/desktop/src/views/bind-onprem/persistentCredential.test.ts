@@ -17,8 +17,8 @@ test('prints a persistent ServiceAccount kubeconfig instead of a temporary Token
 test('grants the credential complete Kubernetes access for Cerin features', () => {
   const command = persistentCredentialCommand('acme-dc1')
 
-  assert.match(command, /clusterrolebinding nuphos-cluster-admin/)
+  assert.match(command, /clusterrolebinding cerin-cluster-admin/)
   assert.match(command, /--clusterrole=cluster-admin/)
-  assert.match(command, /--serviceaccount=nuphos-relay:nuphos/)
+  assert.match(command, /--serviceaccount=nuphos-relay:cerin/)
   assert.doesNotMatch(command, /--clusterrole=view/)
 })

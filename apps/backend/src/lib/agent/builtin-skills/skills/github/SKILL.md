@@ -59,7 +59,7 @@ have exactly one) and run its `setupCommand` verbatim:
 bash skills/github/scripts/setup-credentials.sh <teamId> <installationId>
 ```
 
-Identity: when the turn's member connected a Personal Credential, `gh` acts as their own GitHub account. That member is the sender of a member's message, or the session owner for automated turns (triggers, agent threads, resource events). Otherwise it acts as the team's GitHub App (`nuphos[bot]`). Add `--team` to use the App identity on purpose, for example for bot-owned automation. The JSON response's `actor.kind` (`personal` or `team`) says which one you got.
+Identity: when the turn's member connected a Personal Credential, `gh` acts as their own GitHub account. That member is the sender of a member's message, or the session owner for automated turns (triggers, agent threads, resource events). Otherwise it acts as the team's GitHub App (`cerin[bot]`). Add `--team` to use the App identity on purpose, for example for bot-owned automation. The JSON response's `actor.kind` (`personal` or `team`) says which one you got.
 
 Permissions: acting as a member and the member's own `personal` / `github` credential use the same token, issued by the Cerin GitHub App on the member's behalf. It can do only what both the member and the App installation allow, so a member who owns an org still cannot do through Cerin what the App was not granted there. The setup script prints each installation's permissions and its settings page. Read them before planning work beyond code, issues and pull requests (org Projects, for example, need `organization_projects`). For a 403 or `Resource not accessible by integration`, follow [Errors](#errors).
 

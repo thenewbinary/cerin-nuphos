@@ -236,7 +236,7 @@ whoever opens the page first chooses it.
 
 From then on the same page is the runtime's console. Sign in with the password to:
 
-- connect the runtime to a Cerin team (see [Connecting it to Cerin](#connecting-it-to-nuphos));
+- connect the runtime to a Cerin team (see [Connecting it to Cerin](#connecting-it-to-cerin));
 - see every connected team, who connected it, when it was connected and last
   used, and revoke any of them;
 - sign the agent's provider account in;

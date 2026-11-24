@@ -198,7 +198,7 @@
   "Account GID": "GID ของบัญชี",
   "Account ID": "ID บัญชี",
   "Account email": "อีเมลบัญชี",
-  "Act as yourself on GitHub — commits, PRs and comments are authored by you instead of nuphos[bot]. Tasks scoped to one repository keep using nuphos[bot].": "ทำงานในนามของคุณบน GitHub — commit, PR และความคิดเห็นจะเป็นชื่อคุณแทน nuphos[bot] งานที่จำกัดขอบเขตไว้ที่รีโพซิทอรีเดียวจะยังใช้ nuphos[bot]",
+  "Act as yourself on GitHub — commits, PRs and comments are authored by you instead of cerin[bot]. Tasks scoped to one repository keep using cerin[bot].": "ทำงานในนามของคุณบน GitHub — commit, PR และความคิดเห็นจะเป็นชื่อคุณแทน cerin[bot] งานที่จำกัดขอบเขตไว้ที่รีโพซิทอรีเดียวจะยังใช้ cerin[bot]",
   "Acting as {login} through your GitHub CLI": "ดำเนินการในฐานะ {login} ผ่าน GitHub CLI ของคุณ",
   "Acting for {name}": "ทำแทน {name}",
   "Actions": "การดำเนินการ",

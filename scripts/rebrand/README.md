@@ -8,7 +8,7 @@ merged and renamed without hand work.
 | File         | What it is                                                                                                                                             |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `map.json`   | The rename rules (regex, replacement, reason), the paths never touched (LICENSE, NOTICE, TRADEMARK.md, bun.lock) and the patterns the check looks for. |
-| `keep.txt`   | Lines allowed to keep a checked Nuphos form, each with a reason (legacy `nuphos://` sign-in return, upstream telemetry host).                          |
+| `keep.txt`   | Nuphos forms allowed to stay, each with a reason: legacy identifiers everywhere, and one-off lines such as the legacy `nuphos://` sign-in return.      |
 | `rebrand.py` | Applies `map.json` to every tracked text file. Idempotent: a second run changes nothing.                                                               |
 | `check.sh`   | Exits 1 if a rule would still change a file, or a checked form is left that `keep.txt` does not allow. Prints each offending file or line.             |
 
@@ -27,19 +27,36 @@ subdomains keep their prefix).
 
 Kept on purpose, because saved data, installed apps or deployments depend on
 them: bundle and package ids (`ai.nuphos.*`), `NUPHOS_*` environment
-variables, `nuphos.*` storage keys, `Nuphos*` type names, database names,
+variables, `nuphos.*` storage keys, `Nuphos*` type names, MCP tool and server
+names (`nuphos_*`, `nuphos-tools`), paths on disk (`~/.config/nuphos`),
+`X-Nuphos-*` headers, the `nuphos-agent` service the CLI installs, the
+`nuphos-relay` namespace in customer clusters, the Helm chart name,
 `ghcr.io/nuphos` and `zeabur/*` images, and the upstream repo name. Inbound
 link handlers still accept `nuphos://` and `https://nuphos.ai` links from
-older installs. The check only looks at the person-visible forms, so these
-need no `keep.txt` entry.
+older installs.
+
+## What the check looks at
+
+- `check_patterns` in `map.json` (the product name, `nuphos://`, `nuphos.ai`)
+  on every line of every tracked text file.
+- `visible_text`: `nuphos` in any case, but only in text people read. Docs,
+  translation files and Android string resources count whole. In code, only
+  string literals with a space in them (sentences, labels, shell commands)
+  outside comment lines count. Tests and fixtures are skipped.
+
+Each match must sit inside a `keep.txt` match on the same line, so a keep
+entry for `NUPHOS_TOKEN` does not hide a stray `nuphos` next to it. The
+global entries at the bottom of `keep.txt` describe the identifier forms
+above; file entries cover one-off cases.
 
 ## When a check fails
 
 Run `rebrand.py` and commit the result. If a line must keep the old form next to the new one (a legacy alias),
 end it with a `rebrand:keep` comment and neither the script nor the check
-touches it. If a whole file must keep it, add `<path glob> <regex>   # reason` to `keep.txt`. If the rename needs a
-new kind of replacement, add a rule to `map.json` rather than editing by hand,
-so the next upstream merge gets it too.
+touches it. If a file must keep it, add `<path glob> <regex>   # reason` to `keep.txt`.
+If the rename needs a new kind of replacement, add a rule to `map.json`
+rather than editing by hand, so the next upstream merge gets it too. A rule
+can be limited with `paths` (only these globs) or `exclude_paths`.
 
 ## Calling them from CI
 

@@ -119,7 +119,7 @@ ingress:
   # Agent turns stream over WebSockets, so raise proxy timeouts here,
   # e.g. nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'.
   annotations: {}
-  # e.g. [{ secretName: nuphos-tls, hosts: [api.example.com, storage.example.com] }]
+  # e.g. [{ secretName: cerin-tls, hosts: [api.example.com, storage.example.com] }]
   tls: []
 
 networkPolicy:

@@ -34,7 +34,7 @@ const PROVIDERS: { provider: PersonalCredentialProvider; name: string; descripti
     provider: 'github',
     name: 'GitHub',
     description: t(
-      'Act as yourself on GitHub — commits, PRs and comments are authored by you instead of nuphos[bot]. Tasks scoped to one repository keep using nuphos[bot].',
+      'Act as yourself on GitHub — commits, PRs and comments are authored by you instead of cerin[bot]. Tasks scoped to one repository keep using cerin[bot].',
     ),
   },
   {

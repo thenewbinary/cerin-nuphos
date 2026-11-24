@@ -1,12 +1,10 @@
 # Lines that may keep a person-visible Nuphos form. One per line:
 #   <path glob> <regex the line must match>    # reason
-# The rename leaves internal identifiers (ai.nuphos.* packages and bundle ids,
-# NUPHOS_* env vars, nuphos.* storage keys, Nuphos* type names, ghcr.io and
-# zeabur/* artifacts) alone, so they need no entry here; only the forms in
-# map.json check_patterns are checked.
+# A match is allowed only where a keep regex match on the same line covers it.
+# File entries come first; the legacy identifier forms that may stay anywhere
+# are at the bottom.
 apps/backend/src/lib/native-auth.ts nuphos://   # legacy Google sign-in return for installed apps
 apps/backend/src/lib/native-auth.test.ts nuphos://   # tests the legacy return
-* telemetry\.nuphos\.ai   # upstream Nuphos telemetry host; Cerin runs none and NUPHOS_TELEMETRY_URL has no default
 apps/ios/Shared/SessionLink.swift nuphos\.ai   # exact legacy web origin accepted alongside the canonical origin
 apps/ios/tests/AppLinkTests.swift nuphos\.ai   # tests legacy web and mixed legacy hand-off links
 apps/ios/tests/SessionLinkTests.swift nuphos\.ai   # tests exact legacy host acceptance and lookalike/scheme/port rejection
@@ -30,3 +28,46 @@ apps/desktop/src/components/agent/MessageResponse.tsx nuphos\[.\]ai   # regex re
 apps/desktop/src/components/agent/panel/UserMessage.tsx nuphos\[.\]ai   # regex recognizes plan mentions from the exact legacy host
 apps/backend/src/lib/claude-code-preview/box-update.test.ts Nuphos   # byte-for-byte copy of the AGENTS.md old Boxes have; its sha256 is how the update recognises it
 apps/backend/src/routes/rebind-private-identity.test.ts Nuphos   # fixture pairs a role name with its case variant (NUPHOS)
+
+# Legacy identifiers the rename leaves alone on purpose. visible_text checks any
+# case, and each of these covers only its own token on a line.
+* [A-Za-z0-9_.]*[a-z0-9]Nuphos[A-Za-z0-9_]*   # camelCase code identifiers
+* [A-Za-z0-9_.]*\b[Nn]uphos[A-Z][A-Za-z0-9_]*   # code identifiers and type names
+* \bnuphos_[a-z0-9_]+   # MCP tool names installed agents and saved prompts call
+* \bai\.nuphos[A-Za-z0-9_.:/-]*   # bundle ids, package names, LaunchAgent label, keychain service
+* [A-Za-z0-9_.~$/{}-]*/\.?nuphos[A-Za-z0-9_.@/:-]*   # paths on disk and in the repo (~/.config/nuphos, /opt/nuphos-runtime, skills/nuphos-api)
+* \.?nuphos[A-Za-z0-9_.-]*/[A-Za-z0-9_.@/:${}-]*   # paths that start with a nuphos directory
+* \.nuphos[A-Za-z0-9_-]*   # dot directories and files (~/.nuphos, .nuphos-runtime)
+* \bnuphos\.(env|xcarchive|[a-z][A-Za-z0-9]*(\.[A-Za-z0-9]+)*\.?)   # storage keys (nuphos.workspace.*), Helm template names, credential files
+* \bnuphos:[a-z][A-Za-z0-9_:-]*:?   # protocol keys and prefixes (nuphos:decision, nuphos:team:)
+* \bnuphos-(tools|api|database|dashboards|runtime|ios|android|desktop|cli|custom|connector|credentials|skills|team|bot-bundle|tailnet-ssh|process-death|runtime-start|runtime-home|node-shell|secret|watch|template|signing|onboarding|file-transfers|openab-base|sonarqube-isolated-fixture|dev|s3-uploads-read|project-number|q1|landingpage|icon-mono-white|banner|android-release|console-smoke|iosUITests)\b[A-Za-z0-9_.:/-]*   # names of MCP servers, skills, images, Xcode targets and cloud resources that clients and deployments use
+* \bcerin-nuphos\b   # this repository's name
+* \bnuphos/nuphos\b   # the upstream repository
+* __Host-nuphos-[a-z]+   # session cookie name; renaming signs everyone out
+* \[nuphos-dev\]   # dev log prefix grepped by scripts
+* nuphos\.iam\.gserviceaccount\.com   # existing GCP service account
+* [A-Za-z0-9_.-]*[Nn]uphos[A-Z][A-Za-z0-9_]*   # Gradle properties and other camelCase names (-PnuphosVersionCode)
+* \b[a-z]+_nuphos\b   # Android string resource names (ask_nuphos)
+* \bnuphos_\$\{   # generated MCP method names
+* (source=|"source":\s*")nuphos\b   # message source value stored with messages
+* \bis-nuphos\b   # CSS class
+* \bnuphos-relay(-agent)?\b   # namespace and deployment of the relay agent already installed in customer clusters
+* \bnuphos-agent(\.service|\.log)?\b   # systemd user service and log the CLI installs; renaming it needs a migration of installed services
+apps/backend/src/lib/agent/devices/box-instabox-client.ts \bnuphos agent\b   # the legacy CLI link existing Boxes have
+apps/backend/src/lib/agent/devices/box-instabox-create.ts nuphos-\$\{   # sandbox name prefix of existing Boxes
+apps/android/RELEASE.md `nuphos`   # existing GCP project id and GitHub environment name
+*/SKILL.md nuphos-<trigger name>   # alert name prefix; agents find alerts they made earlier by it
+apps/backend/src/lib/agent/builtin-skills/skills/k8s-monitoring/SKILL.md grep nuphos   # matches the nuphos-rules VMRule names already applied
+deploy/helm/README.md \[`nuphos/`\]\(nuphos\)   # the chart directory
+deploy/helm/README.md cerin-nuphos-backend   # the chart keeps the name nuphos: it is in every installed release's selector labels
+
+* telemetry\.nuphos\.ai   # upstream Nuphos telemetry host; Cerin runs none and NUPHOS_TELEMETRY_URL has no default
+* cdn\.zeabur\.com/nuphos/[A-Za-z0-9_./-]*   # App Store screenshots already uploaded under this CDN path
+
+# PENDING: Backend's stacked PR renames these (env vars in backend and runtime,
+# X-Nuphos-* headers on both sides, the database name read from config, and the
+# published images) and deletes this section. Nothing else belongs here.
+* \$?\{?[A-Z0-9_]*NUPHOS_[A-Z0-9_]*   # NUPHOS_* environment variables; deployments and installed apps set them (NUPHOS_PUBLIC_BACKEND_URL among them)
+* [A-Z0-9_]+_NUPHOS[A-Z0-9_]*   # environment variables with NUPHOS inside the name
+* (ghcr\.io/|zeabur/)[A-Za-z0-9_./-]*nuphos[A-Za-z0-9_.:/-]*   # published images
+* X-Nuphos-[A-Za-z-]+   # HTTP headers older clients and servers send and read

@@ -265,6 +265,71 @@
       "why": "Test fixtures.",
       "pattern": "(?<![A-Za-z0-9\\-])nuphos\\.example\\.com",
       "replace": "cerin.example.com"
+    },
+    {
+      "name": "github-bot-login-copy",
+      "pattern": "nuphos\\[bot\\]",
+      "replace": "cerin[bot]",
+      "paths": [
+        "apps/desktop/src/views/settings/PersonalCredentialsSection.tsx",
+        "apps/desktop/src/i18n/locales/*.json",
+        "apps/backend/src/lib/agent/builtin-skills/skills/github/SKILL.md"
+      ],
+      "comment": "Copy naming the GitHub App bot; the Cerin GitHub App's slug is cerin. Webhook code matching the bot's login is not in these paths."
+    },
+    {
+      "name": "dev-launcher-title",
+      "pattern": "\\bnuphos dev\\b",
+      "replace": "cerin dev",
+      "paths": ["scripts/dev.ts", "scripts/dev-dashboard.ts"]
+    },
+    {
+      "name": "runtime-readme-anchor",
+      "pattern": "#connecting-it-to-nuphos\\b",
+      "replace": "#connecting-it-to-cerin",
+      "paths": ["apps/runtime/README.md"],
+      "comment": "The heading was renamed by product-name, so its anchor moved."
+    },
+    {
+      "name": "onprem-service-account",
+      "pattern": "(?<![\\w-])nuphos(?![\\w-])|\\bnuphos(?=-(?:cluster-admin|console-token)\\b)",
+      "replace": "cerin",
+      "paths": [
+        "apps/desktop/src/views/bind-onprem/persistentCredential.ts",
+        "apps/desktop/src/views/bind-onprem/persistentCredential.test.ts"
+      ],
+      "comment": "Service account, binding, token Secret and kubeconfig user the on-prem snippet creates. The namespace stays nuphos-relay: the installed relay agent lives there."
+    },
+    {
+      "name": "helm-release-name",
+      "pattern": "\\b(helm (?:install|template)) nuphos (deploy/helm/nuphos)\\b",
+      "replace": "\\1 cerin \\2",
+      "paths": ["deploy/helm/README.md"],
+      "comment": "Release and namespace in the install steps. The chart keeps the name nuphos (it is in every installed release's selector labels), so resources are named cerin-nuphos-*."
+    },
+    {
+      "name": "helm-release-namespace",
+      "pattern": "(helm install cerin deploy/helm/nuphos -n) nuphos\\b",
+      "replace": "\\1 cerin",
+      "paths": ["deploy/helm/README.md"]
+    },
+    {
+      "name": "helm-release-backend",
+      "pattern": "(kubectl -n) nuphos (exec deploy/)nuphos-backend\\b",
+      "replace": "\\1 cerin \\2cerin-nuphos-backend",
+      "paths": ["deploy/helm/README.md"]
+    },
+    {
+      "name": "example-tls-secret",
+      "pattern": "\\bnuphos-tls\\b",
+      "replace": "cerin-tls",
+      "paths": ["deploy/helm/README.md", "deploy/helm/nuphos/values.yaml"]
+    },
+    {
+      "name": "prompt-example-bucket",
+      "pattern": "\\bnuphos-agent-skills-prod\\b",
+      "replace": "cerin-agent-skills-prod",
+      "paths": ["apps/backend/src/lib/agent/prompts/atlas-agent-system.md"]
     }
   ],
   "check_patterns": [
@@ -272,5 +337,46 @@
     "nuphos://",
     "nuphos\\.ai",
     "(?i)nuphos\\.example\\.com"
-  ]
+  ],
+  "visible_text": {
+    "comment": "Lowercase and mixed-case Nuphos in text people read. Every match needs a keep.txt entry covering it; keep.txt lists the legacy identifier forms (env vars, packages, paths, tool names) that stay.",
+    "pattern": "(?i)nuphos",
+    "text_paths": [
+      "*.md",
+      "*.mdx",
+      "*.txt",
+      "*/i18n/locales/*.json",
+      "*.xcstrings",
+      "*.strings",
+      "*/res/values*/strings.xml"
+    ],
+    "code_paths": [
+      "*.ts",
+      "*.tsx",
+      "*.js",
+      "*.mjs",
+      "*.cjs",
+      "*.swift",
+      "*.kt",
+      "*.rs",
+      "*.py",
+      "*.go",
+      "*.sh"
+    ],
+    "exclude_paths": [
+      "*.test.*",
+      "*.spec.*",
+      "*/test/*",
+      "*/tests/*",
+      "*/__tests__/*",
+      "*Test.kt",
+      "*Tests.swift",
+      "*Tests/*",
+      "*UITests/*",
+      "scripts/e2e/*",
+      "*/fixtures/*",
+      "CHANGELOG.md",
+      "*/CHANGELOG.md"
+    ]
+  }
 }
