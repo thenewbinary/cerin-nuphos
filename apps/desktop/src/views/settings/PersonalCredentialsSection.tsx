@@ -190,17 +190,19 @@ export function PersonalCredentialsSection({
                               },
                             )
                           : t('Needs a Google OAuth client in Team settings.')}{' '}
-                        <button
-                          type="button"
-                          className={INLINE_LINK}
-                          onClick={() => void api.appOpenExternal(GOOGLE_CLIENT_GUIDE_URL)}
-                        >
-                          {t('Setup guide')}
-                        </button>
+                        {GOOGLE_CLIENT_GUIDE_URL && (
+                          <button
+                            type="button"
+                            className={INLINE_LINK}
+                            onClick={() => void api.appOpenExternal(GOOGLE_CLIENT_GUIDE_URL)}
+                          >
+                            {t('Setup guide')}
+                          </button>
+                        )}
                         {/* Only admins can add the client; everyone else is told whom to ask. */}
                         {team?.role === 'ADMINISTRATOR' && onOpenSection && (
                           <>
-                            {' · '}
+                            {GOOGLE_CLIENT_GUIDE_URL && ' · '}
                             <button
                               type="button"
                               className={INLINE_LINK}

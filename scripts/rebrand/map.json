@@ -32,6 +32,16 @@
       ]
     },
     {
+      "name": "docs-links-hidden",
+      "why": "docs.nuphos.ai is upstream's docs site and Cerin has none yet (docs.platform.cerin.ai does not resolve). In-app guide links become empty, and the UI hides a link whose URL is empty.",
+      "pattern": "'https://docs\\.nuphos\\.ai/[^']*'",
+      "replace": "''",
+      "paths": [
+        "apps/desktop/src/views/settings/GoogleOAuthClientCard.tsx",
+        "apps/desktop/src/views/AddIntegrationModal.tsx"
+      ]
+    },
+    {
       "name": "hosts",
       "why": "nuphos.ai and api.nuphos.ai -> platform.cerin.ai (desktop already uses it for both API and web); other subdomains keep their prefix, including in user@host and mailto test fixtures. telemetry.nuphos.ai is upstream's own endpoint and stays (keep.txt).",
       "pattern": "(?<![A-Za-z0-9.\\-])(\\.?)(?!telemetry\\.)((?:[a-z0-9\\-]+\\.)*?)(?:api\\.)?nuphos\\.ai(?![A-Za-z0-9\\-])",

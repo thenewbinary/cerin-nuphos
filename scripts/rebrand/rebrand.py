@@ -61,7 +61,9 @@ def main():
                 out.append(line)
                 continue
             for r in m['rules']:
-                if match(f, r.get('exclude_paths', [])):
+                if match(f, r.get('exclude_paths', [])) or (
+                    'paths' in r and not match(f, r['paths'])
+                ):
                     continue
                 line, n = r['re'].subn(r['replace'], line)
                 stats[r['name']] += n
