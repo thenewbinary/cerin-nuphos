@@ -29,6 +29,10 @@ enum SignInSessionsTests {
     }
 
     private static func namesKnownApps() {
+        expect(device(client: "cerin-desktop/0.95.0"), "Cerin Desktop", "new desktop")
+        expect(device(client: "cerin-ios/0.14.3"), "Cerin for iOS", "new ios")
+        expect(device(client: "cerin-android/1.4.0"), "Cerin for Android", "new android")
+        expect(device(client: "cerin-cli/0.3.1"), "Cerin CLI", "new cli")
         expect(device(client: "nuphos-desktop/0.95.0"), "Cerin Desktop", "desktop")
         expect(device(client: "nuphos-ios/0.14.3"), "Cerin for iOS", "ios")
         expect(device(client: "nuphos-android/1.4.0"), "Cerin for Android", "android")

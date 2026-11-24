@@ -7,6 +7,10 @@ import java.time.Instant
 /** How a sign-in session is labelled. Matches Desktop's signInSessionsPresentation.ts. */
 object SignInSessions {
     private val apps = mapOf(
+        "cerin-desktop" to "Cerin Desktop",
+        "cerin-ios" to "Cerin for iOS",
+        "cerin-android" to "Cerin for Android",
+        "cerin-cli" to "Cerin CLI",
         "nuphos-desktop" to "Cerin Desktop",
         "nuphos-ios" to "Cerin for iOS",
         "nuphos-android" to "Cerin for Android",

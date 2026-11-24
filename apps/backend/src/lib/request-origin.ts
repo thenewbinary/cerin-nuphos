@@ -67,6 +67,10 @@ export function signInSource(header: (name: string) => string | undefined): Sign
 
 // A Map, so a client like `constructor/1` cannot reach Object.prototype.
 const APPS = new Map([
+  ['cerin-desktop', 'Cerin Desktop'],
+  ['cerin-ios', 'Cerin for iOS'],
+  ['cerin-android', 'Cerin for Android'],
+  ['cerin-cli', 'Cerin CLI'],
   ['nuphos-desktop', 'Cerin Desktop'],
   ['nuphos-ios', 'Cerin for iOS'],
   ['nuphos-android', 'Cerin for Android'],
@@ -110,6 +114,10 @@ export function signInPlace(source: SignInSource): string | undefined {
 }
 
 const CLIENTS = new Map([
+  ['cerin-desktop', 'desktop'],
+  ['cerin-ios', 'ios'],
+  ['cerin-android', 'android'],
+  ['cerin-cli', 'cli'],
   ['nuphos-desktop', 'desktop'],
   ['nuphos-ios', 'ios'],
   ['nuphos-android', 'android'],

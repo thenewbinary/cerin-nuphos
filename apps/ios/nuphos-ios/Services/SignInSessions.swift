@@ -9,7 +9,7 @@ struct SignInSession: Decodable, Identifiable, Equatable {
     let ip: String?
     let city: String?
     let country: String?
-    /// The app's own name and version, e.g. `nuphos-ios/0.14.3`.
+    /// The app's own name and version, e.g. `cerin-ios/0.14.3`.
     let client: String?
     let userAgent: String?
 
@@ -19,6 +19,10 @@ struct SignInSession: Decodable, Identifiable, Equatable {
 /// The labels Desktop's `signInSessionsPresentation.ts` shows.
 enum SignInSessions {
     private static let apps = [
+        "cerin-desktop": "Cerin Desktop",
+        "cerin-ios": "Cerin for iOS",
+        "cerin-android": "Cerin for Android",
+        "cerin-cli": "Cerin CLI",
         "nuphos-desktop": "Cerin Desktop",
         "nuphos-ios": "Cerin for iOS",
         "nuphos-android": "Cerin for Android",

@@ -33,7 +33,7 @@ object Http {
         .callTimeout(60, TimeUnit.MINUTES)
         .build()
 
-    fun clientHeader(): String = "nuphos-android/${BuildConfig.VERSION_NAME}"
+    fun clientHeader(): String = "cerin-android/${BuildConfig.VERSION_NAME}"
 
     fun authorizedGet(url: String, token: String, timeoutSeconds: Long = 20): Request =
         Request.Builder()

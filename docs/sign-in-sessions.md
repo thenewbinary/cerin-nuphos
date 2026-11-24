@@ -105,7 +105,7 @@ and reset the password. Sending is best effort and never blocks the sign-in.
 
 The device name in any email is never the request's header text: `x-atlas-client`
 and `User-Agent` are whatever the caller sends, and the sign-in code endpoint is
-public. Emails show a known app name without its version (`nuphos-desktop/1.2.0` →
+public. Emails show a known app name without its version (`cerin-desktop/1.2.0` →
 "Cerin Desktop"), a browser and system from a fixed list, or "Unknown device". The raw
 values stay on the session record.
 

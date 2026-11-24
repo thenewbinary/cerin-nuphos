@@ -108,7 +108,7 @@ enum Whisper {
         request.httpMethod = "POST"
         request.timeoutInterval = 90
         request.setValue("Bearer \(token)", forHTTPHeaderField: "authorization")
-        request.setValue("nuphos-ios/\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")", forHTTPHeaderField: "x-atlas-client")
+        request.setValue("cerin-ios/\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")", forHTTPHeaderField: "x-atlas-client")
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "content-type")
 
         var body = Data()

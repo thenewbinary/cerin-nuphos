@@ -17,12 +17,14 @@ import type { DeviceRuntimeSocketDeps } from '@/lib/agent/devices/local-runtime/
  */
 export const INLINE_SECRET_MIN_DESKTOP = '0.95.0'
 
-/** `nuphos-desktop/0.94.0` → `0.94.0`. A CLI host, a dev build or an unparseable
+/** `cerin-desktop/0.94.0` → `0.94.0`. A CLI host, a dev build or an unparseable
  *  value is unknown, and an unknown host keeps the behaviour it had before. */
 function desktopVersion(client: string | undefined): string | undefined {
   const [app, version] = client?.split('/') ?? []
 
-  return app === 'nuphos-desktop' && stableRuntimeVersion(version) ? version : undefined
+  return (app === 'cerin-desktop' || app === 'nuphos-desktop') && stableRuntimeVersion(version)
+    ? version
+    : undefined
 }
 
 /** A Desktop too old to take a secret inline; nothing else is affected. */

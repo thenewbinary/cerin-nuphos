@@ -55,35 +55,37 @@ async function desktopTunnel(
 }
 
 test('a Desktop that cannot take a value inline is refused as outdated, not as a failure', async () => {
-  const desktop = await desktopTunnel('nuphos-desktop/0.94.0')
-  const files = [
-    {
-      name: 'API_KEY',
-      url: `data:application/octet-stream;base64,${Buffer.from('sk-live').toString('base64')}`,
-      size: 7,
-    },
-  ]
+  for (const client of ['nuphos-desktop/0.94.0', 'cerin-desktop/0.94.0']) {
+    const desktop = await desktopTunnel(client)
+    const files = [
+      {
+        name: 'API_KEY',
+        url: `data:application/octet-stream;base64,${Buffer.from('sk-live').toString('base64')}`,
+        size: 7,
+      },
+    ]
 
-  try {
-    const failed = localAttachments('team', 'owner', 'local_owner_device', files, {
-      bus: desktop.bus,
-      presence: desktop.presence,
-    })
+    try {
+      const failed = localAttachments('team', 'owner', 'local_owner_device', files, {
+        bus: desktop.bus,
+        presence: desktop.presence,
+      })
 
-    await expect(failed).rejects.toMatchObject({
-      status: 409,
-      code: 'runtime_outdated',
-      message: expect.stringContaining('Cerin Desktop 0.95.0 or later'),
-    })
-    // Refused before anything crosses: the old Desktop never sees the value.
-    expect(desktop.opened()).toBe(false)
-  } finally {
-    desktop.tunnel.closed()
+      await expect(failed).rejects.toMatchObject({
+        status: 409,
+        code: 'runtime_outdated',
+        message: expect.stringContaining('Cerin Desktop 0.95.0 or later'),
+      })
+      // Refused before anything crosses: the old Desktop never sees the value.
+      expect(desktop.opened()).toBe(false)
+    } finally {
+      desktop.tunnel.closed()
+    }
   }
 })
 
 test('the first Desktop that takes an inline value saves it, and later ones still work', async () => {
-  for (const client of ['nuphos-desktop/0.95.0', 'nuphos-desktop/0.99.0']) {
+  for (const client of ['nuphos-desktop/0.95.0', 'nuphos-desktop/0.99.0', 'cerin-desktop/0.95.0']) {
     const desktop = await desktopTunnel(client)
     const files = [
       {

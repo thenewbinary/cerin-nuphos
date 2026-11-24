@@ -34,7 +34,7 @@ export type SignInSession = {
   ip: string | null
   city: string | null
   country: string | null
-  /** The app's own name and version, e.g. `nuphos-desktop/1.2.0`. */
+  /** The app's own name and version, e.g. `cerin-desktop/1.2.0`. */
   client: string | null
   userAgent: string | null
 }

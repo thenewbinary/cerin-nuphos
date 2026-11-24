@@ -46,6 +46,30 @@
       "replace": "PLATFORM.CERIN.AI"
     },
     {
+      "name": "client-id-interpolated",
+      "why": "Versioned app client ids. Static legacy ids stay accepted by every parser.",
+      "pattern": "nuphos-(desktop|cli|ios|android)(?=/[$\\\\])",
+      "replace": "cerin-\\1"
+    },
+    {
+      "name": "client-id-rust-cli",
+      "why": "The two Rust compile-time client ids.",
+      "pattern": "nuphos-cli/(?=\", env!)",
+      "replace": "cerin-cli/"
+    },
+    {
+      "name": "client-id-ios-analytics",
+      "why": "The iOS analytics client property.",
+      "pattern": "client\": \"nuphos-ios",
+      "replace": "client\": \"cerin-ios"
+    },
+    {
+      "name": "client-id-ios-analytics-doc",
+      "why": "The documented iOS analytics client property.",
+      "pattern": "client=nuphos-ios",
+      "replace": "client=cerin-ios"
+    },
+    {
       "name": "example-host",
       "why": "Test fixtures.",
       "pattern": "(?<![A-Za-z0-9\\-])nuphos\\.example\\.com",

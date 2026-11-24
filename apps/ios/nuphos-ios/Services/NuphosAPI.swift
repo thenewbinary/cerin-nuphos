@@ -161,7 +161,7 @@ extension NuphosAPI {
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("nuphos-ios/\(appVersion)", forHTTPHeaderField: "x-atlas-client")
+        request.setValue("cerin-ios/\(appVersion)", forHTTPHeaderField: "x-atlas-client")
         request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-nuphos-ai-consent-version")
         request.timeoutInterval = timeout
 

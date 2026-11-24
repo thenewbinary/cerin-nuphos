@@ -14,7 +14,7 @@ fn latest_url() -> String {
 pub async fn latest() -> Option<String> {
     let text = reqwest::Client::new()
         .get(latest_url())
-        .header("user-agent", concat!("nuphos-cli/", env!("CARGO_PKG_VERSION")))
+        .header("user-agent", concat!("cerin-cli/", env!("CARGO_PKG_VERSION")))
         .timeout(Duration::from_secs(5))
         .send()
         .await

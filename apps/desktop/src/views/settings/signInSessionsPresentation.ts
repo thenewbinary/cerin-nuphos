@@ -3,6 +3,10 @@ import { t } from '../../i18n/index.ts'
 import type { SignInSession } from '../../types'
 
 const APPS: Record<string, string> = {
+  'cerin-desktop': 'Cerin Desktop',
+  'cerin-ios': t('Cerin for iOS'),
+  'cerin-android': t('Cerin for Android'),
+  'cerin-cli': 'Cerin CLI',
   'nuphos-desktop': 'Cerin Desktop',
   'nuphos-ios': t('Cerin for iOS'),
   'nuphos-android': t('Cerin for Android'),

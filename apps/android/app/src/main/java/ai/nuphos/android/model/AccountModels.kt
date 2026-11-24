@@ -38,7 +38,7 @@ data class SignInSession(
     val ip: String? = null,
     val city: String? = null,
     val country: String? = null,
-    /** The app's own name and version, e.g. `nuphos-android/1.4.0`. */
+    /** The app's own name and version, e.g. `cerin-android/1.4.0`. */
     val client: String? = null,
     val userAgent: String? = null,
 )

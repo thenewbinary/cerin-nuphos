@@ -65,7 +65,7 @@ import PostHog
         }
         analytics.track("agent_plan_approved", teamID: "team-a", properties: ["plan_id": "plan-1"])
         precondition(sdk.events.last?.properties["team_id"] as? String == "team-a", "Delayed operations retain their own team")
-        precondition(sdk.events.last?.properties["client"] as? String == "nuphos-ios")
+        precondition(sdk.events.last?.properties["client"] as? String == "cerin-ios")
         precondition(sdk.events.allSatisfy { $0.properties["email"] == nil && $0.properties["name"] == nil })
         analytics.reset()
         let signedOutCount = sdk.events.count

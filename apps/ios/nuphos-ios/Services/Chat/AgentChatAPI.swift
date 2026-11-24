@@ -487,7 +487,7 @@ enum AgentChatAPI {
     static let encoder = ChatMessage.wireEncoder
 
     static var clientVersion: String {
-        "nuphos-ios/\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
+        "cerin-ios/\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0")"
     }
 
     @discardableResult

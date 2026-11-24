@@ -11,6 +11,10 @@ class SignInSessionsTest {
     private fun device(client: String?, userAgent: String?) = SignInSessions.device(SignInSession("s", client = client, userAgent = userAgent))
 
     @Test fun anAppThatNamesItselfIsShownByNameOnly() {
+        assertEquals("Cerin Desktop", device("cerin-desktop/1.2.0", "node"))
+        assertEquals("Cerin for iOS", device("cerin-ios/2.1.0", null))
+        assertEquals("Cerin for Android", device("cerin-android/1.4.0", null))
+        assertEquals("Cerin CLI", device("cerin-cli/0.9.0", null))
         assertEquals("Cerin Desktop", device("nuphos-desktop/1.2.0", "node"))
         assertEquals("Cerin for Android", device("nuphos-android/1.4.0", null))
         assertEquals("Cerin for iOS", device("nuphos-ios/2.1.0", null))

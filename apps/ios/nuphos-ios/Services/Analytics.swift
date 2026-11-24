@@ -53,7 +53,7 @@ final class Analytics {
         #else
         let platform = "visionos"
         #endif
-        PostHogSDK.shared.register(["platform": platform, "client": "nuphos-ios"])
+        PostHogSDK.shared.register(["platform": platform, "client": "cerin-ios"])
         PostHogSDK.shared.identify(user.id)
         if active { foreground() }
     }

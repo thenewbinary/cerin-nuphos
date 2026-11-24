@@ -13,11 +13,16 @@ export const MINIMUM_HOST_VERSION = { desktop: '0.127.0', cli: '0.20.0' } as con
 
 export type OutdatedHost = keyof typeof MINIMUM_HOST_VERSION
 
-const APP: Record<string, OutdatedHost> = { 'nuphos-desktop': 'desktop', 'nuphos-cli': 'cli' }
+const APP: Record<string, OutdatedHost> = {
+  'cerin-desktop': 'desktop',
+  'cerin-cli': 'cli',
+  'nuphos-desktop': 'desktop',
+  'nuphos-cli': 'cli',
+}
 
 /**
  * Which Cerin on a computer is older than the floor: what its host reports about itself, else
- * the app it connected as (`nuphos-desktop/0.119.2`). A dev build or a host that names no
+ * the app it connected as (`cerin-desktop/0.119.2`). A dev build or a host that names no
  * version is unknown, and an unknown host is never called out of date.
  */
 export function hostOutdated(

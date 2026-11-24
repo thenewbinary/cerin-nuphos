@@ -22,12 +22,16 @@ describe('the oldest Cerin a computer may run', () => {
     expect(hostOutdated({ client: 'nuphos-desktop/0.126.0' })).toBe('desktop')
     expect(hostOutdated({ client: 'nuphos-desktop/0.127.0' })).toBeUndefined()
     expect(hostOutdated({ client: 'nuphos-desktop/0.130.1' })).toBeUndefined()
+    expect(hostOutdated({ client: 'cerin-desktop/0.119.2' })).toBe('desktop')
+    expect(hostOutdated({ client: 'cerin-desktop/0.127.0' })).toBeUndefined()
   })
 
   test('a CLI host is held to the CLI’s own floor', () => {
     expect(MINIMUM_HOST_VERSION.cli).toBe('0.20.0')
     expect(hostOutdated({ client: 'nuphos-cli/0.19.4' })).toBe('cli')
     expect(hostOutdated({ client: 'nuphos-cli/0.20.0' })).toBeUndefined()
+    expect(hostOutdated({ client: 'cerin-cli/0.19.4' })).toBe('cli')
+    expect(hostOutdated({ client: 'cerin-cli/0.20.0' })).toBeUndefined()
     // A Box's host names its CLI in its status; an older one sends no client header.
     expect(hostOutdated({ status: { agents, cliVersion: '0.4.0' } })).toBe('cli')
     expect(hostOutdated({ status: { agents, cliVersion: '0.21.0' } })).toBeUndefined()

@@ -29,7 +29,7 @@ export function requestLog(log: typeof logEvent = logEvent): MiddlewareHandler {
         status: c.res.status,
         error_code: c.res.status >= 400 ? responseErrorCode(c) : undefined,
         duration_ms: Date.now() - startedAt,
-        // e.g. "nuphos-desktop/0.15.0" — without it, "is this user's client too
+        // e.g. "cerin-desktop/0.15.0" — without it, "is this user's client too
         // old?" is unanswerable from logs (3c2e03db post-mortem blind spot).
         client_version: c.req.header('X-Atlas-Client') ?? undefined,
       })

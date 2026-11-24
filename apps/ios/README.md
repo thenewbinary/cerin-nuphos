@@ -131,7 +131,7 @@ text, attachment names/content, access tokens or backend URLs are recorded.
 - `team_switched`, `agent_message_sent`, `agent_message_queued`,
   `agent_chat_started`, `agent_plan_approved`, `agent_plan_rejected`.
 
-All events carry `platform` (`ios` on iPhone/iPad) and `client=nuphos-ios`;
+All events carry `platform` (`ios` on iPhone/iPad) and `client=cerin-ios`;
 the SDK supplies app version/build and OS properties. Team-specific events
 carry explicit `team_id`. A send event means dispatch intent, not a completed
 agent response. A steering send is recorded only after the server accepts it.
