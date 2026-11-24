@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { getCookie } from 'hono/cookie'
+import { z } from 'zod'
 
 import { config } from '@/config'
 import { AppError } from '@/lib/errors'
@@ -7,6 +8,7 @@ import { authenticateToken } from '@/lib/identity/auth'
 import { decideDeviceLogin, findPendingDeviceLogin } from '@/lib/identity/device-login'
 import { deviceGuessQuota, redisQuota } from '@/lib/identity/device-login-quota'
 import { providerSettings, SOCIAL_PROVIDERS } from '@/lib/identity/social'
+import { getMyTeams } from '@/lib/identity/teams'
 
 import type { Quota } from '@/lib/identity/device-login-quota'
 import type { SocialProvider } from '@/lib/identity/social'
@@ -16,7 +18,7 @@ import type { Context } from 'hono'
 export const DEVICE_PAGE_PATH = '/auth/social/device'
 
 const STYLE =
-  'body{font:17px system-ui;max-width:400px;margin:12vh auto;padding:24px}a,button,input{display:block;box-sizing:border-box;width:100%;padding:14px;margin:12px 0;border:1px solid;border-radius:8px;font:inherit;color:inherit;background:none;text-decoration:none;text-align:center}code{font-size:20px;letter-spacing:2px}.muted{opacity:.7;font-size:15px}'
+  'body{font:17px system-ui;max-width:400px;margin:12vh auto;padding:24px}a,button,input,select{display:block;box-sizing:border-box;width:100%;padding:14px;margin:12px 0;border:1px solid;border-radius:8px;font:inherit;color:inherit;background:none;text-decoration:none;text-align:center}code{font-size:20px;letter-spacing:2px}.muted{opacity:.7;font-size:15px}'
 
 export function escapeHtml(text: string) {
   return text.replace(/[&<>"']/g, (ch) => `&#${String(ch.charCodeAt(0))};`)
@@ -58,6 +60,16 @@ async function signInLinks(next: string, switching = false) {
     .join('')
 }
 
+/** The agent-token choice: one of the user's teams and a name, sent with `decision=agent`. */
+function agentForm(teams: { id: string; name: string }[], code: string) {
+  if (!teams.length) return ''
+  const options = teams
+    .map((t) => `<option value="${escapeHtml(t.id)}">${escapeHtml(t.name)}</option>`)
+    .join('')
+
+  return `<h2>Or approve as an agent</h2><p class="muted">The terminal gets its own agent token on one team, not your account.</p><form method="post"><input type="hidden" name="code" value="${escapeHtml(code)}"><select name="teamId" required>${options}</select><input name="name" placeholder="Agent name" maxlength="64" autocomplete="off" required><button name="decision" value="agent">Approve as agent</button></form>`
+}
+
 /** Only a return to this page survives sign-in, so the parameter cannot redirect anywhere else. */
 export function safeNext(raw: unknown): string | undefined {
   if (typeof raw !== 'string' || raw.length > 200) return undefined
@@ -71,8 +83,16 @@ export function safeNext(raw: unknown): string | undefined {
 // Cloudflare's Email Obfuscation would swap the address for a script this page's CSP blocks.
 const showEmail = (email: string) => `<!--email_off-->${escapeHtml(email)}<!--/email_off-->`
 
-/** Approves personal sign-ins only; agent tokens are approved through `/auth/device/approve`. */
-export function createDeviceApproval(quota: Quota = redisQuota) {
+const agentChoice = z.object({
+  name: z.string().trim().min(1).max(64),
+  teamId: z.string().regex(/^[a-f\d]{24}$/),
+})
+
+/** Approves a sign-in as the user, or as an agent token on one of their teams. */
+export function createDeviceApproval(
+  quota: Quota = redisQuota,
+  listTeams: (userId: string) => Promise<{ id: string; name: string }[]> = getMyTeams,
+) {
   const routes = new Hono()
 
   routes.get('/', async (c) => {
@@ -104,7 +124,7 @@ export function createDeviceApproval(quota: Quota = redisQuota) {
 
     return c.html(
       page(
-        `<p><b>${escapeHtml(pending.clientName)}</b>${from} wants to sign in to Cerin as <b>${showEmail(user.email)}</b>.</p><p>Code <code>${escapeHtml(code.toUpperCase())}</code></p><p class="muted">This signs the terminal in as you; agent tokens are not offered here. Approve only a code you started yourself.</p><form method="post"><input type="hidden" name="code" value="${escapeHtml(code)}"><button name="decision" value="approve">Approve</button><button name="decision" value="deny">Deny</button></form>${switchLinks}`,
+        `<p><b>${escapeHtml(pending.clientName)}</b>${from} wants to sign in to Cerin as <b>${showEmail(user.email)}</b>.</p><p>Code <code>${escapeHtml(code.toUpperCase())}</code></p><p class="muted">Approve signs the terminal in as you. Approve only a code you started yourself.</p><form method="post"><input type="hidden" name="code" value="${escapeHtml(code)}"><button name="decision" value="approve">Approve</button><button name="decision" value="deny">Deny</button></form>${agentForm(await listTeams(user.id), code)}${switchLinks}`,
       ),
     )
   })
@@ -124,6 +144,15 @@ export function createDeviceApproval(quota: Quota = redisQuota) {
     const form = await c.req.parseBody()
     const deny = form.decision === 'deny'
 
+    if (form.decision === 'agent') {
+      const agent = agentChoice.safeParse(form)
+
+      if (!agent.success)
+        throw new AppError(400, 'invalid_agent', 'Pick a team and give the agent a name')
+      await decideDeviceLogin(form.code, user, { decision: 'agent', ...agent.data })
+
+      return c.html(page('<p>Approved as an agent. Return to your terminal.</p>'))
+    }
     await decideDeviceLogin(form.code, user, { decision: deny ? 'deny' : 'personal' })
 
     return c.html(
