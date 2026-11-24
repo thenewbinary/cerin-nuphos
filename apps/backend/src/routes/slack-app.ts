@@ -23,7 +23,7 @@ import type { Context } from 'hono'
 
 export const slackAppRoutes = new Hono()
 
-const DESKTOP_CALLBACK = 'nuphos://slack-callback'
+const DESKTOP_CALLBACK = 'cerin://slack-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)

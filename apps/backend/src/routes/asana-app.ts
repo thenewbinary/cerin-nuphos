@@ -20,7 +20,7 @@ export const asanaAppRoutes = new Hono()
 
 // The Electron deep-link target. Matches jira-callback — same scheme,
 // different hostname so the desktop can route by it.
-const DESKTOP_CALLBACK = 'nuphos://asana-callback'
+const DESKTOP_CALLBACK = 'cerin://asana-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)

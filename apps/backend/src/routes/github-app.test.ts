@@ -191,6 +191,28 @@ describe('GitHub installation flow', () => {
     expect(bindings.githubInstallations?.map((b) => b.installationId)).toEqual([OWN_INSTALLATION])
   })
 
+  test.each(['nuphos:', 'zeabur-atlas:', 'cerin:'])(
+    'returns to cerin://github-callback when the setup redirect uses %s',
+    async (scheme) => {
+      const saved = config.byos.github.setupRedirect
+
+      try {
+        config.byos.github.setupRedirect = `${scheme}//github-callback?existing=kept`
+        const { opener, done } = await runFlow(OWN_INSTALLATION)
+        const confirmed = await confirm(await done.text(), opener)
+        const html = await confirmed.text()
+        const deepLink =
+          'cerin://github-callback?existing=kept&installation_id=42&setup_action=install&state=client-nonce'
+
+        expect(confirmed.status).toBe(200)
+        expect(html).toContain(`href="${deepLink.replaceAll('&', '&amp;')}"`)
+        expect(html).toContain(`location.href = ${JSON.stringify(deepLink)}`)
+      } finally {
+        config.byos.github.setupRedirect = saved
+      }
+    },
+  )
+
   test("does not bind an installation the GitHub user can't access", async () => {
     const { done } = await runFlow(OTHER_INSTALLATION)
 

@@ -231,7 +231,7 @@ for (const native of [true, false]) {
     async () => {
       const verifier = 'v'.repeat(43)
       const registration = await registerNativeSession({
-        redirectUri: 'nuphos://google-callback',
+        redirectUri: 'cerin://google-callback',
         codeChallenge: createHash('sha256').update(verifier).digest('base64url'),
         codeChallengeMethod: 'S256',
         clientState: 'ios-state',
@@ -290,6 +290,8 @@ for (const native of [true, false]) {
       expect(response.status).toBe(302)
       const callback = new URL(response.headers.get('location')!)
 
+      expect(callback.protocol).toBe('cerin:')
+      expect(callback.hostname).toBe('google-callback')
       expect(callback.searchParams.get('state')).toBe('ios-state')
       expect(callback.searchParams.has('token')).toBe(false)
       const code = callback.searchParams.get('code')!

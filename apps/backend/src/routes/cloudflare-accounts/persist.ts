@@ -111,7 +111,7 @@ export async function persistCloudflareBinding(
   invalidateCloudflareAccessToken(teamId, bindingId)
 
   // Record the result keyed by `state` so the desktop can finish the bind by
-  // polling even if the nuphos:// deep link below is captured by another app.
+  // polling even if the cerin:// deep link below is captured by another app.
   await cloudflareOAuthResult().replaceOne(
     { _id: state },
     {

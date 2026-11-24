@@ -14,7 +14,7 @@ export const trelloAppRoutes = new Hono()
 trelloAppRoutes.get('/setup', async (c) => {
   const state = c.req.query('state') ?? ''
   const back = (params: Record<string, string>) =>
-    desktopCallbackResponse(c, 'nuphos://trello-callback', { state, ...params })
+    desktopCallbackResponse(c, 'cerin://trello-callback', { state, ...params })
 
   if (!/^[a-f0-9]{48}$/iu.test(state)) return back({ error: 'invalid_state' })
   const pending = await trelloPendingOAuth().findOneAndDelete({ _id: state })

@@ -333,6 +333,21 @@ describe('the delivery code binds the session to the machine that received the r
 })
 
 describe('the delivery target is constrained at registration', () => {
+  test.each(['cerin://google-callback', 'nuphos://google-callback'])(
+    'accepts the native Google callback %s',
+    async (redirectUri) => {
+      const { handle } = await register({ redirectUri })
+
+      expect(await findPendingNativeSession(handle)).toEqual({
+        redirectUri,
+        clientState: 'corr123',
+      })
+      const deliveryCode = await complete(handle)
+
+      expect(await redeemNativeSession(handle, VERIFIER, deliveryCode)).toEqual(USER)
+    },
+  )
+
   test('only loopback /callback URLs with an explicit high port are accepted', async () => {
     for (const redirectUri of [
       'https://evil.example.com/callback',
@@ -343,6 +358,9 @@ describe('the delivery target is constrained at registration', () => {
       'http://127.0.0.1:51000/callback?token=x', // pre-seeded query
       'http://127.0.0.1:51000/callback#x',
       'nuphos://callback',
+      'cerin://callback',
+      'cerin://google-callback?token=x',
+      'cerin://google-callback#x',
       'not a url',
     ]) {
       await expect(register({ redirectUri })).rejects.toThrow(/loopback/)

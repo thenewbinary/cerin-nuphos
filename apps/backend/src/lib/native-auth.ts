@@ -115,7 +115,9 @@ export async function registerNativeSession(input: {
 
   if (
     typeof redirectUri !== 'string' ||
-    (!isLoopbackRedirectUri(redirectUri) && redirectUri !== 'nuphos://google-callback')
+    (!isLoopbackRedirectUri(redirectUri) &&
+      redirectUri !== 'cerin://google-callback' &&
+      redirectUri !== 'nuphos://google-callback')
   ) {
     throw new AppError(
       400,

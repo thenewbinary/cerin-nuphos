@@ -262,6 +262,8 @@ describe('connecting through Composio', () => {
       `state=${state}&status=success&connected_account_id=ca_someone_else`,
     )
 
+    expect(link.protocol).toBe('cerin:')
+    expect(link.hostname).toBe('personal-credential')
     expect(requests.map((r) => `${r.method} ${r.path}`)).toContain('GET /connected_accounts/ca_new')
     expect(requests.some((r) => r.path.includes('ca_someone_else'))).toBe(false)
     const code = link.searchParams.get('code') ?? ''

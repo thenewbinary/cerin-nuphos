@@ -40,7 +40,7 @@ import type { PersonalCredentialProvider } from '@/models'
 export const personalCredentialRoutes = new Hono<{ Variables: AuthVariables }>()
 
 // The approver's app claims the staged grant with its signed-in session.
-const DESKTOP_RETURN = 'nuphos://personal-credential'
+const DESKTOP_RETURN = 'cerin://personal-credential'
 
 function providerParam(value: string | undefined): PersonalCredentialProvider {
   if (!PERSONAL_CREDENTIAL_PROVIDERS.includes(value as PersonalCredentialProvider)) {

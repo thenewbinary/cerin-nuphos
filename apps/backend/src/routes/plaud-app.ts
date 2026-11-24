@@ -18,7 +18,7 @@ import type { Context } from 'hono'
 
 export const plaudAppRoutes = new Hono()
 
-const DESKTOP_CALLBACK = 'nuphos://plaud-callback'
+const DESKTOP_CALLBACK = 'cerin://plaud-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)

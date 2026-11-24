@@ -15,7 +15,7 @@ function scriptLiteral(html: string): string {
 }
 
 function hrefValue(html: string): string {
-  const m = /href="(nuphos:[^"]*)"/.exec(html)
+  const m = /href="(cerin:[^"]*)"/.exec(html)
 
   if (!m?.[1]) throw new Error('href not found')
 
@@ -24,7 +24,7 @@ function hrefValue(html: string): string {
 
 describe('desktopCallbackPage', () => {
   test('commits a document and fires the deep link from script', () => {
-    const html = desktopCallbackPage('nuphos://slack-callback?state=abc')
+    const html = desktopCallbackPage('cerin://slack-callback?state=abc')
 
     expect(html.startsWith('<!doctype html>')).toBe(true)
     expect(html).toContain('location.href = ')
@@ -33,7 +33,7 @@ describe('desktopCallbackPage', () => {
   test('href is HTML-escaped and round-trips to the exact link', () => {
     // A URL always encodes < > " ' but keeps & between query params raw, so
     // the href attribute must escape at least the ampersand.
-    const link = 'nuphos://cf-callback?state=a&binding_id=b&account_name=x'
+    const link = 'cerin://cf-callback?state=a&binding_id=b&account_name=x'
     const href = hrefValue(desktopCallbackPage(link))
 
     expect(href).not.toMatch(/&(?!amp;)/) // no unescaped ampersand
@@ -41,7 +41,7 @@ describe('desktopCallbackPage', () => {
   })
 
   test('script literal is valid JSON that decodes to the exact link', () => {
-    const u = new URL('nuphos://slack-callback')
+    const u = new URL('cerin://slack-callback')
 
     u.searchParams.set('error_description', 'User said <no> & "left" \' now')
     const link = u.toString()
@@ -53,7 +53,7 @@ describe('desktopCallbackPage', () => {
   test('a </script> in the deep link cannot break out of the inline script', () => {
     // Not reachable via URLSearchParams (it encodes '<'), but the escaping must
     // hold even if a raw value is ever passed through.
-    const html = desktopCallbackPage('nuphos://x?e=</script><script>alert(1)')
+    const html = desktopCallbackPage('cerin://x?e=</script><script>alert(1)')
     const beforeClose = html.slice(0, html.indexOf('</script>'))
 
     expect(beforeClose).toContain('location.href = ')
@@ -62,7 +62,7 @@ describe('desktopCallbackPage', () => {
   })
 
   test('quotes and backslashes in the link stay contained in the JS string', () => {
-    const link = 'nuphos://x?e=a"b\\c'
+    const link = 'cerin://x?e=a"b\\c'
     const lit = scriptLiteral(desktopCallbackPage(link))
 
     expect(JSON.parse(lit.replaceAll('\\u003c', '<'))).toBe(link)

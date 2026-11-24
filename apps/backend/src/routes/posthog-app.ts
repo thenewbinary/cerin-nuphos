@@ -27,7 +27,7 @@ import type { Context } from 'hono'
 
 export const posthogAppRoutes = new Hono()
 
-const DESKTOP_CALLBACK = 'nuphos://posthog-callback'
+const DESKTOP_CALLBACK = 'cerin://posthog-callback'
 
 const desktopCallback = (c: Context, params: Record<string, string>) =>
   desktopCallbackResponse(c, DESKTOP_CALLBACK, params)
