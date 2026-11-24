@@ -15,7 +15,7 @@ import { buildPendingUserMessage, enqueuePendingUserMessage } from './pending-me
 import { listPendingUserMessages } from './pending-queue'
 import { startQueuedTurn } from './queued-turn'
 import { installQueuedTurnStarter } from './session-released'
-import { installTurnRunner } from './turn-runner'
+import { useTurnRunner } from './turn-runner-testing'
 
 import type { AgentConversation } from './db'
 import type { AcpSocket } from '@/lib/claude-code-preview/openab-acp-session'
@@ -122,7 +122,7 @@ afterAll(() => {
 let runs = 0
 
 installQueuedTurnStarter(startQueuedTurn)
-installTurnRunner({
+useTurnRunner({
   hasActiveAgentRunForSession: async () => false,
   claimAgentRunForSession: async () => () => {},
   // The trigger run's prompt step; its failures reach runTurn unchanged.

@@ -58,10 +58,10 @@ describe('buildNuphosInteropBlocks', () => {
     expect(quote.elements).toEqual([{ type: 'text', text: 'Why is *this* pod <crashing>?' }])
     const context = blockOfType(blocks, 'context')!
 
-    expect(JSON.stringify(context)).toContain('Sent from the Nuphos app')
+    expect(JSON.stringify(context)).toContain('Sent from the Cerin app')
   })
 
-  test('truncates long questions and points at the full message in Nuphos', () => {
+  test('truncates long questions and points at the full message in Cerin', () => {
     const blocks = buildNuphosInteropBlocks({ displayName: 'P', question: 'x'.repeat(5000) })
     const richText = blockOfType(blocks, 'rich_text')!
     const quote = (richText.elements as Record<string, unknown>[]).find(
@@ -70,7 +70,7 @@ describe('buildNuphosInteropBlocks', () => {
     const quoteText = (quote.elements as { text: string }[])[0]!.text
 
     expect(quoteText.length).toBeLessThanOrEqual(2900)
-    expect(JSON.stringify(blockOfType(blocks, 'context'))).toContain('Full message in Nuphos')
+    expect(JSON.stringify(blockOfType(blocks, 'context'))).toContain('Full message in Cerin')
   })
 
   test('notes attachments and skips the quote for an attachment-only message', () => {
@@ -80,7 +80,7 @@ describe('buildNuphosInteropBlocks', () => {
     expect(
       (richText.elements as Record<string, unknown>[]).some((e) => e.type === 'rich_text_quote'),
     ).toBe(false)
-    expect(JSON.stringify(blockOfType(blocks, 'context'))).toContain('2 attachments sent in Nuphos')
+    expect(JSON.stringify(blockOfType(blocks, 'context'))).toContain('2 attachments sent in Cerin')
   })
 })
 
