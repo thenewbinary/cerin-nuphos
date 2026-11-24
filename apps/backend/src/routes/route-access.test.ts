@@ -4,6 +4,7 @@ import { describe, expect, test } from 'bun:test'
 
 import { useDb } from '@/lib/test/doubles/db'
 import { useIdentity } from '@/lib/test/doubles/identity'
+import { useRedis } from '@/lib/test/doubles/redis'
 
 import declared from './route-access.json'
 
@@ -26,17 +27,23 @@ const ID = '64b5f1c2e4b0a1d2c3e4f501'
 
 // The outsider has no two-factor authentication, so sensitive routes (step-up.ts)
 // go straight on to the team check.
-useDb({
+const installDb = useDb({
   db: (() => ({
     collection: () => ({ findOne: async () => null }),
   })) as unknown as typeof dbActual.db,
 })
+
 useIdentity({
   authenticateToken: async (token: string) =>
     token === 'outsider'
       ? ({ user: { id: OUTSIDER, email: 'outsider@example.com', name: 'Outsider' } } as never)
       : null,
   getTeamMembership: async () => null,
+})
+useRedis({
+  redisClientEnded: () => false,
+  redisEnabled: () => false,
+  withRedis: () => Promise.resolve(null),
 })
 
 // Route modules capture their middleware when they load. Load every test
@@ -81,6 +88,35 @@ function enforcedTeamLevel(method: string, path: string): Access {
 const split = (key: string) => key.split(' ') as [string, string]
 const teamRoutes = endpoints.filter((key) => split(key)[1].startsWith('/teams/:teamId'))
 const signedIn = endpoints.filter((key) => table[key] && table[key] !== 'public')
+
+describe('root redirects in the full app', () => {
+  test('keeps the health route reachable', async () => {
+    const response = await app.request('/health')
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('Location')).toBeNull()
+    expect(await response.json()).toMatchObject({ status: 'ok' })
+  })
+
+  test('keeps POST /auth/device starting device sign-in', async () => {
+    installDb({
+      db: () => ({ collection: () => ({ insertOne: () => Promise.resolve({ acknowledged: true }) }) }),
+    })
+    const response = await app.request('/auth/device', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientName: 'Redirect regression test' }),
+    })
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('Location')).toBeNull()
+    expect(await response.json()).toMatchObject({
+      deviceCode: expect.any(String),
+      userCode: expect.stringMatching(/^[A-Z]{4}-[A-Z]{4}$/),
+      verificationUri: expect.stringContaining('/auth/social/device'),
+    })
+  })
+})
 
 describe('route access table', () => {
   test('declares every route the app serves, and nothing else', () => {
