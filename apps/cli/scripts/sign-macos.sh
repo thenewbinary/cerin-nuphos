@@ -10,7 +10,7 @@ BINARY=${1:?Usage: sign-macos.sh path/to/cerin}
 : "${APPLE_API_KEY_ID:?}"
 : "${APPLE_API_ISSUER:?}"
 IDENTITY=$(jq -er '
-  [.[] | select(.name | startswith("Developer ID Application:") and endswith("(6T873K59LQ)"))]
+  [.[] | select(.name | startswith("Developer ID Application:") and endswith("(MT4V6HEGSU)"))]
   | if length == 1 then .[0].hash else error("Expected one Cerin Developer ID identity") end
 ' <<< "$SIGNING_IDENTITIES")
 
@@ -24,7 +24,7 @@ printf '%s' "$APPLE_API_KEY_BASE64" | base64 --decode > "$SIGNING_DIR/AuthKey.p8
 # trust subsequent versions, rather than pinning an ad-hoc binary's cdhash.
 codesign --force --sign "$IDENTITY" \
   --identifier ai.nuphos.cli --options runtime --timestamp "$BINARY"
-REQUIREMENT='identifier "ai.nuphos.cli" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists and certificate leaf[subject.OU] = "6T873K59LQ"'
+REQUIREMENT='identifier "ai.nuphos.cli" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists and certificate leaf[subject.OU] = "MT4V6HEGSU"'
 codesign --verify --strict --verbose=2 -R "=$REQUIREMENT" "$BINARY"
 codesign --display --requirements - "$BINARY"
 

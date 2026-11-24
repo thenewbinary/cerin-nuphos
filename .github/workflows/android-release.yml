@@ -22,7 +22,7 @@ concurrency:
 jobs:
   build:
     name: Check and build unsigned AAB
-    if: github.event_name == 'workflow_dispatch' && github.repository == 'nuphos/nuphos' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && github.repository == 'thenewbinary/cerin-nuphos' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -90,7 +90,7 @@ jobs:
   sign:
     name: Sign approved upload bundle
     needs: build
-    if: github.event_name == 'workflow_dispatch' && github.repository == 'nuphos/nuphos' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && github.repository == 'thenewbinary/cerin-nuphos' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: android-release
@@ -246,7 +246,7 @@ jobs:
   release:
     name: Publish the GitHub release
     needs: sign
-    if: github.event_name == 'workflow_dispatch' && github.repository == 'nuphos/nuphos' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && github.repository == 'thenewbinary/cerin-nuphos' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

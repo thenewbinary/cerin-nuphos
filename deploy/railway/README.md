@@ -83,7 +83,7 @@ railway config apply --file .railway/runtime.ts
 ```
 
 Verify that the CLI names the **runtime project**, not the data project, before
-applying. The Dockerfile source defaults to `nuphos/nuphos` on `main`. To test an
+applying. The Dockerfile source defaults to `thenewbinary/cerin-nuphos` on `main`. To test an
 unmerged branch or deploy a fork, set `NUPHOS_GITHUB_REPO` and
 `NUPHOS_GITHUB_BRANCH` in this shell before planning. The source must contain
 `deploy/railway/runtime/Dockerfile`. The spec explicitly selects the Dockerfile

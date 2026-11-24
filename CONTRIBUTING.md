@@ -220,11 +220,11 @@ Cerin product App, whose installations reach customer organizations. Its
 private key is a secret of the `renovate` environment, so only this job can read
 it. Until a maintainer sets the App up, the job is skipped:
 
-1. Create a GitHub App owned by the `nuphos` organization (for example
-   `nuphos-renovate`), with webhooks off and these repository permissions:
+1. Create a GitHub App owned by the `thenewbinary` organization (for example
+   `cerin-renovate`), with webhooks off and these repository permissions:
    Contents, Pull requests, Issues and Workflows: read and write; Checks,
    Commit statuses and Dependabot alerts: read; Metadata: read.
-2. Install it on `nuphos/nuphos` only.
+2. Install it on `thenewbinary/cerin-nuphos` only.
 3. Generate a private key.
 4. In the repository settings, create the environment `renovate` (deployment
    branches: `main` only), add the secret `RENOVATE_APP_PRIVATE_KEY` (the key)

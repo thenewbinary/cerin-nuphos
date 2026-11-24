@@ -1,6 +1,6 @@
 # Google and Apple sign-in across clients
 
-Tracks https://github.com/nuphos/nuphos/issues/700.
+Tracks https://github.com/thenewbinary/cerin-nuphos/issues/700.
 
 ## Clients and contract
 

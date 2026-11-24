@@ -10,7 +10,7 @@ tag, not marked as latest. The signed AAB also stays downloadable as an artifact
 ## Administrator setup
 
 Before production signing, a repository administrator must complete this setup
-in the official `nuphos/nuphos` repository:
+in the official `thenewbinary/cerin-nuphos` repository:
 
 - Protect `main`. Review release source and its checks before starting a run.
 - Create the `android-release` Environment. Require an authorized maintainer's

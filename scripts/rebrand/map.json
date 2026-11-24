@@ -142,6 +142,68 @@
       "replace": "cerin:\\\\/\\\\/"
     },
     {
+      "name": "current-repository",
+      "why": "Links, workflow guards and release feeds for this repository use its current owner and name. Generic GitHub fixtures and Android's external WIF policy stay unchanged.",
+      "pattern": "nuphos/nuphos",
+      "replace": "thenewbinary/cerin-nuphos",
+      "exclude_paths": [
+        "apps/android/RELEASE.md",
+        "apps/android/app/src/test/java/ai/nuphos/android/NuphosLogicTest.kt",
+        "apps/backend/src/lib/agent/message-metadata.test.ts",
+        "apps/backend/src/lib/agent/thread-turn.test.ts",
+        "apps/backend/src/lib/agent/title-fallback.test.ts",
+        "apps/backend/src/routes/home-layout.test.ts",
+        "apps/desktop/electron/github-cli.test.ts",
+        "apps/desktop/electron/main/webview-guard.test.ts",
+        "apps/desktop/src/app/workspace/chatExternalLink.test.ts",
+        "apps/desktop/src/components/agent/panel/githubRefs.test.ts",
+        "apps/desktop/src/components/agent/summary/chatSummaryModel.test.ts",
+        "apps/desktop/src/components/session-search/matchedResource.test.ts",
+        "apps/ios/nuphos-ios/Views/Chat/TranscriptList.swift",
+        "apps/ios/tests/BareURLTests.swift",
+        "apps/ios/tests/SessionLinkTests.swift"
+      ]
+    },
+    {
+      "name": "repository-clone-directory",
+      "why": "The runtime build instructions enter the directory created by cloning this repository.",
+      "pattern": "cd nuphos/apps/runtime",
+      "replace": "cd cerin-nuphos/apps/runtime"
+    },
+    {
+      "name": "android-official-repository-doc",
+      "why": "Android release administration happens in this repository; the separate WIF subject remains a legacy external policy.",
+      "pattern": "official `nuphos/nuphos` repository",
+      "replace": "official `thenewbinary/cerin-nuphos` repository"
+    },
+    {
+      "name": "repository-action-target",
+      "why": "The GitHub App token action targets this repository by its repository-only name.",
+      "pattern": "repositories: nuphos",
+      "replace": "repositories: cerin-nuphos"
+    },
+    {
+      "name": "renovate-app-example",
+      "why": "The example name for a newly created Renovate GitHub App uses Cerin.",
+      "pattern": "nuphos-renovate",
+      "replace": "cerin-renovate"
+    },
+    {
+      "name": "current-repository-owner-doc",
+      "why": "The contributor setup names this repository's current owner.",
+      "pattern": "owned by the `nuphos` organization",
+      "replace": "owned by the `thenewbinary` organization"
+    },
+    {
+      "name": "apple-release-team",
+      "why": "Desktop and CLI releases use The New Binary's Apple team; installed iOS signing metadata is unchanged.",
+      "pattern": "6T873K59LQ",
+      "replace": "MT4V6HEGSU",
+      "exclude_paths": [
+        "apps/ios/**"
+      ]
+    },
+    {
       "name": "example-host",
       "why": "Test fixtures.",
       "pattern": "(?<![A-Za-z0-9\\-])nuphos\\.example\\.com",

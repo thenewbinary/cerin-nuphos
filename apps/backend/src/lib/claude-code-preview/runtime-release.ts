@@ -5,7 +5,7 @@ import { IMAGE_PROVIDERS } from './runtime-provider'
 
 import type { OpenAbProvider } from './runtime-provider'
 
-export const RUNTIME_RELEASES_URL = 'https://github.com/nuphos/nuphos/releases'
+export const RUNTIME_RELEASES_URL = 'https://github.com/thenewbinary/cerin-nuphos/releases'
 const legacyReleasesUrl = 'https://github.com/zeabur/nuphos-runtime/releases'
 
 export const NUPHOS_RUNTIME_REPOSITORY = 'ghcr.io/nuphos/runtime'
@@ -91,7 +91,7 @@ async function fetchReleases(): Promise<Map<OpenAbProvider, RuntimeRelease>> {
   for (let page = 1; ; page++) {
     if (found.size === IMAGE_PROVIDERS.length) break
     const response = await fetch(
-      `https://api.github.com/repos/nuphos/nuphos/releases?per_page=100&page=${String(page)}`,
+      `https://api.github.com/repos/thenewbinary/cerin-nuphos/releases?per_page=100&page=${String(page)}`,
       { headers, signal },
     )
 

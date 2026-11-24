@@ -222,7 +222,7 @@ jobs:
         run: |
           set -euo pipefail
           IDENTITY=$(jq -er '
-            [.[] | select(.name | startswith("Developer ID Application:") and endswith("(6T873K59LQ)"))]
+            [.[] | select(.name | startswith("Developer ID Application:") and endswith("(MT4V6HEGSU)"))]
             | if length == 1 then .[0].hash else error("Expected one Cerin Developer ID identity") end
           ' <<< "$SIGNING_IDENTITIES")
           for target in ${TARGETS//,/ }; do

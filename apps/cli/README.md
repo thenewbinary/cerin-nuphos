@@ -290,7 +290,7 @@ same Developer ID Application certificate and notarization credentials as Deskto
 The pinned `apple-actions/import-codesign-certs` action manages the temporary signing
 keychain; the CLI script only signs, verifies, and submits the binary for notarization.
 Both macOS architectures are signed with identifier `ai.nuphos.cli`, Team ID
-`6T873K59LQ`, hardened runtime, and a secure timestamp before packaging and hashing.
+`MT4V6HEGSU`, hardened runtime, and a secure timestamp before packaging and hashing.
 Signing or notarization failure blocks publication. Linux binaries remain unsigned.
 Only macOS builds require the environment's release approval; Linux builds do not.
 
@@ -303,7 +303,7 @@ codesign --verify --strict --verbose=2 ./cerin
 codesign --display --verbose=4 --requirements - ./cerin
 ```
 
-Check `Identifier=ai.nuphos.cli`, `TeamIdentifier=6T873K59LQ`, and a Developer ID
+Check `Identifier=ai.nuphos.cli`, `TeamIdentifier=MT4V6HEGSU`, and a Developer ID
 Application authority. For the end-to-end upgrade check, sign in with one signed
 release, read the session, install a second signed release at the same path with
 `cerin update`, and read the session again. The second read must not prompt for

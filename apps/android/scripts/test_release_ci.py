@@ -77,9 +77,9 @@ class SigningTest(unittest.TestCase):
         with zipfile.ZipFile(self.bundle, 'w') as archive:
             archive.writestr('base/manifest/AndroidManifest.xml', b'test manifest')
             archive.writestr('base/dex/classes.dex', b'test payload')
-        self.metadata = {'source_commit': 'a' * 40, 'repository': 'nuphos/nuphos', 'run_id': '42', 'run_attempt': '1', 'package_id': 'ai.nuphos.android', 'version_code': 2, 'version_name': '1.2.3', 'min_sdk': 33, 'target_sdk': 36, 'unsigned_sha256': hashlib.sha256(self.bundle.read_bytes()).hexdigest(), 'signed': False}
+        self.metadata = {'source_commit': 'a' * 40, 'repository': 'thenewbinary/cerin-nuphos', 'run_id': '42', 'run_attempt': '1', 'package_id': 'ai.nuphos.android', 'version_code': 2, 'version_name': '1.2.3', 'min_sdk': 33, 'target_sdk': 36, 'unsigned_sha256': hashlib.sha256(self.bundle.read_bytes()).hexdigest(), 'signed': False}
         (source / 'metadata.json').write_text(json.dumps(self.metadata))
-        self.env = {**os.environ, 'RUNNER_TEMP': str(self.directory), 'GITHUB_SHA': 'a' * 40, 'GITHUB_REPOSITORY': 'nuphos/nuphos', 'GITHUB_RUN_ID': '42', 'GITHUB_RUN_ATTEMPT': '1', 'VERSION_CODE': '2', 'VERSION_NAME': '1.2.3', 'ANDROID_UPLOAD_KEYSTORE_BASE64': base64.b64encode(self.key.read_bytes()).decode(), 'ANDROID_UPLOAD_STORE_PASSWORD': 'disposable-test-password', 'ANDROID_UPLOAD_KEY_PASSWORD': 'disposable-test-password', 'ANDROID_UPLOAD_KEY_ALIAS': 'upload', 'ANDROID_UPLOAD_CERT_SHA256': self.fingerprint}
+        self.env = {**os.environ, 'RUNNER_TEMP': str(self.directory), 'GITHUB_SHA': 'a' * 40, 'GITHUB_REPOSITORY': 'thenewbinary/cerin-nuphos', 'GITHUB_RUN_ID': '42', 'GITHUB_RUN_ATTEMPT': '1', 'VERSION_CODE': '2', 'VERSION_NAME': '1.2.3', 'ANDROID_UPLOAD_KEYSTORE_BASE64': base64.b64encode(self.key.read_bytes()).decode(), 'ANDROID_UPLOAD_STORE_PASSWORD': 'disposable-test-password', 'ANDROID_UPLOAD_KEY_PASSWORD': 'disposable-test-password', 'ANDROID_UPLOAD_KEY_ALIAS': 'upload', 'ANDROID_UPLOAD_CERT_SHA256': self.fingerprint}
 
     def run_sign(self):
         result = subprocess.run(['bash', '-c', signing_script()], env=self.env, capture_output=True, text=True, timeout=60)
@@ -173,7 +173,7 @@ class WorkflowBoundaryTest(unittest.TestCase):
 
     def test_release_is_manual_canonical_main_and_secrets_are_isolated(self):
         text = WORKFLOW.read_text()
-        guard = "github.event_name == 'workflow_dispatch' && github.repository == 'nuphos/nuphos' && github.ref == 'refs/heads/main'"
+        guard = "github.event_name == 'workflow_dispatch' && github.repository == 'thenewbinary/cerin-nuphos' && github.ref == 'refs/heads/main'"
         self.assertEqual(text.count('if: ' + guard), 3)
         self.assertNotIn('pull_request:', text)
         build, rest = text.split('\n  sign:\n', 1)

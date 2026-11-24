@@ -77,14 +77,14 @@ function feed({
       )
     }
 
-    if (legacy && url.includes('/repos/nuphos/nuphos/releases?'))
+    if (legacy && url.includes('/repos/thenewbinary/cerin-nuphos/releases?'))
       return Promise.resolve(Response.json([]))
     if (legacy && version && url.includes('/releases/latest')) {
       return Promise.resolve(Response.json({ tag_name: `v${version}`, body }))
     }
 
     return Promise.resolve(
-      version && url.includes('/repos/nuphos/nuphos/releases?')
+      version && url.includes('/repos/thenewbinary/cerin-nuphos/releases?')
         ? Response.json([{ tag_name: `runtime-v${version}`, body }])
         : new Response('', { status: 500 }),
     )

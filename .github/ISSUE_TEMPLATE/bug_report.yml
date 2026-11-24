@@ -5,9 +5,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        Search [existing issues](https://github.com/nuphos/nuphos/issues?q=is%3Aissue) first, including closed ones. If one matches, add your details there instead.
+        Search [existing issues](https://github.com/thenewbinary/cerin-nuphos/issues?q=is%3Aissue) first, including closed ones. If one matches, add your details there instead.
 
-        **Security vulnerabilities must not be reported here.** Use [private vulnerability reporting](https://github.com/nuphos/nuphos/security/advisories/new) as described in [SECURITY.md](https://github.com/nuphos/nuphos/blob/main/SECURITY.md).
+        **Security vulnerabilities must not be reported here.** Use [private vulnerability reporting](https://github.com/thenewbinary/cerin-nuphos/security/advisories/new) as described in [SECURITY.md](https://github.com/thenewbinary/cerin-nuphos/blob/main/SECURITY.md).
 
         This issue is public. Remove tokens, account IDs, hostnames, private paths and conversation content before posting.
   - type: textarea

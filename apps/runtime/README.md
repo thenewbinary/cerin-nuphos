@@ -191,8 +191,8 @@ else on `node:22-trixie-slim`. `BASE_IMAGE` must be set — there is no
 default, so nothing bakes a registry path into the published image.
 
 ```sh
-git clone https://github.com/nuphos/nuphos.git
-cd nuphos/apps/runtime
+git clone https://github.com/thenewbinary/cerin-nuphos.git
+cd cerin-nuphos/apps/runtime
 
 docker build -t openab-base:local openab
 
@@ -645,7 +645,7 @@ steps.
 
 ### Release changelogs
 
-[GitHub Releases](https://github.com/nuphos/nuphos/releases?q=runtime-v) is the runtime
+[GitHub Releases](https://github.com/thenewbinary/cerin-nuphos/releases?q=runtime-v) is the runtime
 changelog. Tagged builds publish a release only after all requested provider images
 succeed. Notes include commits since the previous tag (including automated SDK
 updates), bundled SDK/CLI and adapter versions, image tags and a full comparison
@@ -688,7 +688,7 @@ is `true`. Before enabling it:
 1. Finish the runtime CI (both provider images and adapter smoke tests).
 2. The image-build job uses its `GITHUB_TOKEN` with `packages: write` to publish
    `ghcr.io/nuphos/runtime`; no separate GHCR username or token is required.
-   If the package already exists, grant `nuphos/nuphos` Actions access to it.
+   If the package already exists, grant `thenewbinary/cerin-nuphos` Actions access to it.
    Make the package public before enabling managed-agent updates or documenting
    pulls: runtime hosts resolve manifests and pull images anonymously.
 3. Freeze the old repository's manual and scheduled releases, wait for active
