@@ -99,9 +99,9 @@ function notConnectedName(code) {
   return (brand ? BRANDS[brand] : key[0].toUpperCase()) + rest
 }
 
-// Thin, GET-only Nuphos client restricted to this dashboard's team and the
+// Thin, GET-only Cerin client restricted to this dashboard's team and the
 // configured backend origin. Selected credentials stay reachable so panels can
-// query provider read APIs when Nuphos has no equivalent endpoint.
+// query provider read APIs when Cerin has no equivalent endpoint.
 async function request(path) {
   if (!backendUrl) throw new Error('NUPHOS_BACKEND_URL is not set for the panel job')
   let url
@@ -110,7 +110,7 @@ async function request(path) {
     // client won't forward the bearer token to an arbitrary host. The `+ '/'`
     // boundary rejects look-alikes like `<backend>.evil.com`.
     if (path !== backendUrl && !path.startsWith(`${backendUrl}/`)) {
-      throw new Error('nuphos client may only call the Nuphos backend origin')
+      throw new Error('cerin client may only call the Cerin backend origin')
     }
     url = path
   } else {
@@ -119,7 +119,7 @@ async function request(path) {
   const parsedUrl = new URL(url)
   const teamId = globalThis.params?.teamId
   if (!teamId || !parsedUrl.pathname.startsWith(`/teams/${encodeURIComponent(teamId)}/`)) {
-    throw new Error('nuphos client may only call routes for this dashboard team')
+    throw new Error('cerin client may only call routes for this dashboard team')
   }
   const res = await fetch(url, { headers: token ? { authorization: `Bearer ${token}` } : {} })
   const text = await res.text()
@@ -131,7 +131,7 @@ async function request(path) {
   }
   if (!res.ok) {
     const detail = typeof parsed === 'string' ? parsed : JSON.stringify(parsed)
-    const error = new Error(`nuphos GET ${path} failed: ${res.status} ${detail}`)
+    const error = new Error(`cerin GET ${path} failed: ${res.status} ${detail}`)
 
     error.notConnected = notConnectedName(parsed?.error?.code)
     throw error
@@ -155,7 +155,7 @@ async function main() {
 
   globalThis.params = params
   globalThis.cerin = cerin
-  // Scripts written before the rename still use `nuphos`.
+  // Deprecated: scripts written before the rename still use `nuphos`.
   globalThis.nuphos = cerin
   globalThis.emit = emit
 
