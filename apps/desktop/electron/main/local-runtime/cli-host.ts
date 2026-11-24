@@ -95,7 +95,6 @@ let tunnel: RuntimeTunnelClient | undefined
 const launchToken = process.env.NUPHOS_SESSION_TOKEN || null
 
 delete process.env.NUPHOS_SESSION_TOKEN
-
 const launch = { token: launchToken, keychainAccount: readCliConfig()?.keychainAccount }
 const currentToken = () => cliSessionToken(readCliConfig(), launch)
 
@@ -249,6 +248,7 @@ function report(): void {
   const lines = LOCAL_AGENT_PROVIDERS.map((provider) => {
     const agent = agents[provider]
     let detail = 'starting…'
+
     if (agent.online && agent.cli?.installed && !agent.cli.loggedIn)
       detail = 'not signed in; run `cerin agent` in a terminal to sign in'
     else if (agent.online) detail = 'online'
@@ -258,6 +258,7 @@ function report(): void {
     return `  ${NAMES[provider]}: ${detail}`
   })
   const summary = lines.join('\n')
+
   if (summary === lastSummary) return
   lastSummary = summary
   console.log(`${new Date().toLocaleTimeString()} ${device.label}\n${summary}`)
@@ -290,7 +291,6 @@ setInterval(() => {
 
     return online && cli?.installed === true && !cli.loggedIn
   })
-
   // Added agents follow their own provider's refresh, which also probes every instance.
   const instanceSignedOut = instances.some(({ cli }) => cli?.installed === true && !cli.loggedIn)
 
