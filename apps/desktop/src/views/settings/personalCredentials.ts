@@ -1,14 +1,14 @@
-import { api } from '../../api'
-import { parseAtlasError } from '../../api/errors'
-import { toast } from '../../components/ui/toast'
-import { t } from '../../i18n'
-import { isGoogle } from '../../types'
+import { parseAtlasError } from '../../api/errors.ts'
+import { api } from '../../api.ts'
+import { toast } from '../../components/ui/toast.ts'
+import { t } from '../../i18n/index.ts'
+import { isGoogle } from '../../types.ts'
 
 import type {
   PersonalCredential,
   PersonalCredentialDeepLinkPayload,
   PersonalCredentialProvider,
-} from '../../types'
+} from '../../types.ts'
 
 /** Fired after the main process claims an OAuth grant, so an open section refetches. */
 export const PERSONAL_CREDENTIALS_CHANGED = 'personal-credentials:changed'
@@ -27,19 +27,63 @@ export function nameOf(provider: PersonalCredentialProvider): string {
 
 export const PERSONAL_CREDENTIALS_SECTION = 'account.personalCredentials'
 
-/** Starts signing in to the member's own account in the browser; a failure says why. */
+const PERSONAL_CREDENTIAL_TIMEOUT_MS = 10 * 60_000
+
+type PendingPersonalCredential = {
+  wait: Promise<void>
+  settle: () => void
+  timeout?: ReturnType<typeof setTimeout>
+}
+
+// A return names its provider, not its team, so all clicks for one provider share this wait.
+const pendingPersonalCredentials = new Map<PersonalCredentialProvider, PendingPersonalCredential>()
+
+function settlePersonalCredential(provider: PersonalCredentialProvider) {
+  const attempt = pendingPersonalCredentials.get(provider)
+
+  if (!attempt) return
+  pendingPersonalCredentials.delete(provider)
+  if (attempt.timeout) clearTimeout(attempt.timeout)
+  attempt.settle()
+}
+
+/** Starts signing in to the member's own account and waits for its bounded browser return. */
 export async function connectPersonalCredential(
   provider: PersonalCredentialProvider,
   teamId: string | undefined,
 ): Promise<void> {
+  const existing = pendingPersonalCredentials.get(provider)
+
+  if (existing) return existing.wait
+  let settle!: () => void
+  const wait = new Promise<void>((resolve) => {
+    settle = resolve
+  })
+  const attempt: PendingPersonalCredential = { wait, settle }
+
+  pendingPersonalCredentials.set(provider, attempt)
+  attempt.timeout = setTimeout(() => {
+    if (pendingPersonalCredentials.get(provider) !== attempt) return
+    settlePersonalCredential(provider)
+    toast.error(
+      t('Could not connect {name}', { name: nameOf(provider) }),
+      t('This connection attempt expired or was cancelled. Click Connect again.'),
+    )
+  }, PERSONAL_CREDENTIAL_TIMEOUT_MS)
+
   try {
     const { authorizeUrl } = await api.atlasStartPersonalCredential(
       provider,
       isGoogle(provider) ? teamId : undefined,
     )
 
+    if (pendingPersonalCredentials.get(provider) !== attempt) return await wait
     await api.appOpenExternal(authorizeUrl)
+
+    return await wait
   } catch (err) {
+    if (pendingPersonalCredentials.get(provider) !== attempt) return wait
+    settlePersonalCredential(provider)
     if (parseAtlasError(err).code === 'personal_credential_not_configured') {
       toast.error(
         t('Could not connect {name}', { name: nameOf(provider) }),
@@ -99,6 +143,7 @@ export function announcePersonalCredential({
   login,
   error,
 }: PersonalCredentialDeepLinkPayload) {
+  settlePersonalCredential(provider)
   const name = nameOf(provider)
 
   if (login) {
