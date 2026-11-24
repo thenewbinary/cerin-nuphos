@@ -34,7 +34,7 @@ final class ConnectorOAuth {
     /// host check one provider's redirect could satisfy another's flow.
     func run(url: URL, expectedHost: String) async throws -> [String: String] {
         let callback = try await authenticate(url: url)
-        guard callback.host()?.lowercased() == expectedHost else {
+        guard NuphosWeb.isCallbackScheme(callback.scheme), callback.host()?.lowercased() == expectedHost else {
             throw Failure.provider(String(localized: "The browser came back to an unexpected address."))
         }
         let items = URLComponents(url: callback, resolvingAgainstBaseURL: false)?.queryItems ?? []

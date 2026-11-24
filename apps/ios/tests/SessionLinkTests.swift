@@ -40,6 +40,7 @@ enum SessionLinkTests {
             SessionLink.target(in: URL(string: link)!).map { "\($0.teamId)|\($0.sessionId)" }
         }
         precondition(target("https://platform.cerin.ai/teams/\(team)/agent/ses_abc") == "\(team)|ses_abc")
+        precondition(target("https://nuphos.ai/teams/\(team)/agent/ses_abc") == "\(team)|ses_abc")
         precondition(target("https://platform.cerin.ai/teams/\(team)/agent/ses_abc?x=1#y") == "\(team)|ses_abc")
         precondition(target("/teams/\(team)/agent/0f8e2c1a-9b7d-4e6f-a5c3-2d1b0e9f8a7c") == "\(team)|0f8e2c1a-9b7d-4e6f-a5c3-2d1b0e9f8a7c")
         precondition(target(SessionLink.url(teamId: team, sessionId: "ses_abc")!.absoluteString) == "\(team)|ses_abc")
@@ -60,6 +61,10 @@ enum SessionLinkTests {
             "https://dev.platform.cerin.ai/teams/\(team)/agent/ses_abc",
             "http://platform.cerin.ai/teams/\(team)/agent/ses_abc",
             "https://platform.cerin.ai:8443/teams/\(team)/agent/ses_abc",
+            "https://nuphos.ai.evil.com/teams/\(team)/agent/ses_abc",
+            "https://www.nuphos.ai/teams/\(team)/agent/ses_abc",
+            "http://nuphos.ai/teams/\(team)/agent/ses_abc",
+            "https://nuphos.ai:8443/teams/\(team)/agent/ses_abc",
             "https://example.com/teams/\(team)/agent/ses_abc",
             "https://platform.cerin.ai/teams/\(team)/plans/7",
             "https://platform.cerin.ai/teams/\(team)/agent",

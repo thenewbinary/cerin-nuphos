@@ -34,7 +34,7 @@ enum SessionMention {
     /// shows as its `@Title`, still a link, as desktop shows it as a chip.
     static func named(_ text: String, title: (String) -> String?) -> String {
         // A link already in markdown, `[label](link)` or `<link>`, keeps its own text.
-        text.replacing(#/(^|[^(\[<])(https://nuphos\.ai/teams/[^\s/]+/agent/[A-Za-z0-9_-]+)/#.anchorsMatchLineEndings()) { match in
+        text.replacing(#/(^|[^(\[<])(https://(?:platform\.cerin\.ai|nuphos\.ai)/teams/[^\s/]+/agent/[A-Za-z0-9_-]+)/#.anchorsMatchLineEndings()) { match in
             let (whole, before, link) = match.output
             guard let url = URL(string: String(link)), let session = SessionLink.target(in: url),
                   let name = title(session.sessionId), !name.isEmpty else { return String(whole) }

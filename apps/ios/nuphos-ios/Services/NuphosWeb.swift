@@ -4,8 +4,13 @@ import Security
 
 enum NuphosWeb {
     static let siteURL = URL(string: "https://platform.cerin.ai")!
-    static let callbackScheme = "nuphos"
+    static let callbackScheme = "cerin"
+    static let legacyCallbackScheme = "nuphos"
     static let callbackHost = "google-callback"
+
+    static func isCallbackScheme(_ scheme: String?) -> Bool {
+        scheme?.lowercased() == callbackScheme || scheme?.lowercased() == legacyCallbackScheme
+    }
 
     enum CallbackResult: Equatable {
         case code(String)
@@ -56,7 +61,7 @@ enum NuphosWeb {
     /// with this sign-in's handle and PKCE verifier, so a stray path, fragment
     /// or extra parameter added on the way back is not worth failing over.
     static func parseCallback(_ url: URL, expectedState: String) -> CallbackResult? {
-        guard url.scheme == callbackScheme, url.host == callbackHost,
+        guard isCallbackScheme(url.scheme), url.host == callbackHost,
               let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems,
               items.first(where: { $0.name == "state" })?.value == expectedState else { return nil }
         if items.contains(where: { $0.name == "error" }) { return .failure("Sign-in did not complete. Please try again.") }

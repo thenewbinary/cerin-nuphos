@@ -5,26 +5,29 @@ enum AppLinkTests {
         let team = "69e989027ab63e8d6a0ffcb6"
         let child = "6797aa32-c875-42d7-8530-1c635060bae5"
         func route(_ link: String) -> AppLink? { AppLink(URL(string: link)!) }
-        func handoff(_ page: String) -> String {
-            var components = URLComponents(string: "cerin://open")!
+        func handoff(_ page: String, scheme: String = "cerin") -> String {
+            var components = URLComponents(string: "\(scheme)://open")!
             components.queryItems = [.init(name: "url", value: page), .init(name: "path", value: URL(string: page)?.path())]
             return components.url!.absoluteString
         }
 
         let session = "https://platform.cerin.ai/teams/\(team)/agent/\(child)"
+        let legacySession = "https://nuphos.ai/teams/\(team)/agent/\(child)"
         let plan = "https://platform.cerin.ai/teams/\(team)/plans/42"
+        let legacyPlan = "https://nuphos.ai/teams/\(team)/plans/42"
 
         // A tapped platform.cerin.ai link and the page platform.cerin.ai hands over through
         // "Open in Cerin" land on the same screen.
-        for link in [session, handoff(session)] {
+        for link in [session, handoff(session), legacySession, handoff(legacySession), handoff(session, scheme: "nuphos"), handoff(legacySession, scheme: "nuphos")] {
             precondition(route(link) == .session(teamId: team, sessionId: child), link)
         }
-        for link in [plan, handoff(plan)] {
+        for link in [plan, handoff(plan), legacyPlan, handoff(legacyPlan), handoff(plan, scheme: "nuphos")] {
             precondition(route(link) == .plan(PlanLink.Target(teamId: team, planId: "42")), link)
         }
         precondition(route("/teams/\(team)/agent/\(child)") == .session(teamId: team, sessionId: child))
         // The Live Activity's own link outside its rows opens the conversation list.
         precondition(route(SessionLink.conversations.absoluteString) == .conversations)
+        precondition(route(SessionLink.legacyConversations.absoluteString) == .conversations)
 
         // Pages without an app screen keep the app where it is.
         for page in [
@@ -43,6 +46,7 @@ enum AppLinkTests {
             handoff("https://dev.platform.cerin.ai/teams/\(team)/agent/\(child)"),
             handoff("http://platform.cerin.ai/teams/\(team)/agent/\(child)"),
             handoff(handoff(session)),
+            handoff(handoff(session, scheme: "nuphos"), scheme: "nuphos"),
             "cerin://open?path=/teams/\(team)/agent/\(child)",
             "cerin://agent-chat?url=\(session)",
             "cerin://open",

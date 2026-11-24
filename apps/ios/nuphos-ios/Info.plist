@@ -11,7 +11,8 @@
 			<string>ai.nuphos.auth</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>nuphos</string>
+				<string>cerin</string>
+					<string>nuphos</string>
 			</array>
 		</dict>
 	</array>

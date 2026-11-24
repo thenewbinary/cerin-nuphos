@@ -17,7 +17,7 @@ enum AppLink: Equatable {
             self = .session(teamId: link.teamId, sessionId: link.sessionId)
         } else if let plan = PlanLink.target(in: page) {
             self = .plan(plan)
-        } else if page == SessionLink.conversations {
+        } else if page == SessionLink.conversations || page == SessionLink.legacyConversations {
             self = .conversations
         } else {
             return nil
@@ -27,11 +27,12 @@ enum AppLink: Equatable {
     /// The page inside a `cerin://open` link; any other URL as it is. The
     /// page still has to pass the exact-origin checks of the targets above.
     private static func unwrapped(_ url: URL) -> URL {
-        guard url.scheme == "nuphos", url.host() == "open",
+        let schemes = ["cerin", "nuphos"]
+        guard schemes.contains(url.scheme ?? ""), url.host() == "open",
               let page = URLComponents(url: url, resolvingAgainstBaseURL: false)?
                 .queryItems?.first(where: { $0.name == "url" })?.value
                 .flatMap(URL.init(string:)),
-              page.scheme != "nuphos" else { return url }
+              !schemes.contains(page.scheme ?? "") else { return url }
         return page
     }
 }

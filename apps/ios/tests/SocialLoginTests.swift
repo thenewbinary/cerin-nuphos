@@ -4,10 +4,13 @@ import Foundation
     static func main() throws {
         let state = "expected-state"
         let code = String(repeating: "c", count: 43)
-        func parse(_ query: String) -> NuphosWeb.CallbackResult? {
-            NuphosWeb.parseCallback(URL(string: "cerin://google-callback?\(query)")!, expectedState: state)
+        func parse(_ query: String, scheme: String = "cerin") -> NuphosWeb.CallbackResult? {
+            NuphosWeb.parseCallback(URL(string: "\(scheme)://google-callback?\(query)")!, expectedState: state)
         }
+        precondition(NuphosWeb.callbackScheme == "cerin")
         precondition(parse("state=\(state)&code=\(code)") == .code(code))
+        precondition(parse("state=\(state)&code=\(code)", scheme: "nuphos") == .code(code))
+        precondition(parse("state=\(state)&code=\(code)", scheme: "other") == nil)
         precondition(parse("state=wrong&code=\(code)") == nil)
         precondition(parse("code=\(code)") == nil)
         precondition(parse("state=\(state)&token=secret") == nil)

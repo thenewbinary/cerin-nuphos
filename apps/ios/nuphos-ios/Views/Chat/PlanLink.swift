@@ -1,7 +1,7 @@
 import Foundation
 
 /// Recognises the app's own plan links — `https://platform.cerin.ai/teams/T/plans/N`
-/// (any platform.cerin.ai host) or the bare path — the way the desktop's
+/// (an exact app web host) or the bare path — the way the desktop's
 /// `parseAtlasLink` does, so a tap opens the plan in-app instead of Safari.
 enum PlanLink {
     struct Target: Equatable, Identifiable {
