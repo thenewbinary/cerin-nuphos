@@ -102,12 +102,12 @@ test('the MCP bridge turns transport and HTTP failures into JSON-RPC errors', as
     {
       jsonrpc: '2.0',
       id: 7,
-      error: { code: -32000, message: 'Nuphos MCP HTTP 401: {"code":"unauthorized"}' },
+      error: { code: -32000, message: 'Cerin MCP HTTP 401: {"code":"unauthorized"}' },
     },
     {
       jsonrpc: '2.0',
       id: 8,
-      error: { code: -32000, message: 'Nuphos MCP request failed: ECONNREFUSED' },
+      error: { code: -32000, message: 'Cerin MCP request failed: ECONNREFUSED' },
     },
     { jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } },
   ])

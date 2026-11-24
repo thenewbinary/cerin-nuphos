@@ -199,20 +199,26 @@ ARG RUNTIME_PROVIDER
 
 COPY --from=openab /usr/local/bin/openab /usr/local/bin/openab
 
-# The `nuphos agent` host from that CLI release. A container given NUPHOS_JOIN_TOKEN runs
+# The `cerin agent` host from that CLI release. A container given NUPHOS_JOIN_TOKEN runs
 # it instead of openab and joins Cerin as a device, the way a Box does (runtime-start.sh).
+# The bundle is cerin-agent-linux-<arch>.tar.gz; releases before the rename only have
+# nuphos-agent-linux-<arch>.tar.gz, so that name is the fallback. /opt/nuphos-agent
+# stays as a link for anything that still uses the old path.
 ARG NUPHOS_AGENT_VERSION=0.8.3
+ARG CERIN_AGENT_RELEASES=https://github.com/nuphos/nuphos/releases/download
 RUN arch=$(case "$(dpkg --print-architecture)" in amd64) echo x64 ;; *) dpkg --print-architecture ;; esac) \
- && asset="nuphos-agent-linux-${arch}.tar.gz" \
- && base="https://github.com/nuphos/nuphos/releases/download/cli-v${NUPHOS_AGENT_VERSION}" \
+ && base="${CERIN_AGENT_RELEASES}/cli-v${NUPHOS_AGENT_VERSION}" \
  && cd /tmp \
- && curl -fsSLO "${base}/${asset}" && curl -fsSLO "${base}/${asset}.sha256" \
+ && { asset="cerin-agent-linux-${arch}.tar.gz"; curl -fsSLO "${base}/${asset}" \
+      || { asset="nuphos-agent-linux-${arch}.tar.gz"; curl -fsSLO "${base}/${asset}"; }; } \
+ && curl -fsSLO "${base}/${asset}.sha256" \
  && sha256sum -c "${asset}.sha256" \
- && install -d -m 755 /opt/nuphos-agent \
- && tar -xzf "${asset}" -C /opt/nuphos-agent \
+ && install -d -m 755 /opt/cerin-agent \
+ && tar -xzf "${asset}" -C /opt/cerin-agent \
  && rm -f "${asset}" "${asset}.sha256" \
- && chmod -R a+rX /opt/nuphos-agent
-ENV NUPHOS_LOCAL_RUNTIME_DIR=/opt/nuphos-agent \
+ && chmod -R a+rX /opt/cerin-agent \
+ && ln -s /opt/cerin-agent /opt/nuphos-agent
+ENV NUPHOS_LOCAL_RUNTIME_DIR=/opt/cerin-agent \
     NUPHOS_CLI_VERSION="${NUPHOS_AGENT_VERSION}"
 
 # The openab commit the binary was built from, reported on ACP initialize.
@@ -307,6 +313,7 @@ RUN test -x /opt/nuphos-runtime \
  && test -r /opt/nuphos-runtime/dsh-login.mjs \
  && test -r /opt/nuphos-runtime/dsh-sign-in.mjs \
  && test -r /opt/nuphos-runtime/panel-job.mjs \
+ && test -r /opt/cerin-agent/host.mjs \
  && test -r /opt/nuphos-agent/host.mjs \
  && test -r /etc/openab/config.toml \
  && test -x /usr/local/bin/nuphos-runtime-start \

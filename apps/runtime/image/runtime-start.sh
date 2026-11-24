@@ -42,7 +42,7 @@ memory_watch &
 agent_home=${NUPHOS_AGENT_HOME:-${HOME:-}/.local/share/nuphos/agent}
 if [ -n "${NUPHOS_JOIN_TOKEN:-}" ]; then
   export NUPHOS_AGENT_HOME="$agent_home"
-  exec node "${NUPHOS_LOCAL_RUNTIME_DIR:-/opt/nuphos-agent}/host.mjs"
+  exec node "${NUPHOS_LOCAL_RUNTIME_DIR:-/opt/cerin-agent}/host.mjs"
 fi
 # A credential an earlier join left names a device that is gone, so a later join starts afresh.
 rm -f "$agent_home/device-credential.json"
