@@ -100,7 +100,9 @@ describe('root redirects in the full app', () => {
 
   test('keeps POST /auth/device starting device sign-in', async () => {
     installDb({
-      db: () => ({ collection: () => ({ insertOne: () => Promise.resolve({ acknowledged: true }) }) }),
+      db: () => ({
+        collection: () => ({ insertOne: () => Promise.resolve({ acknowledged: true }) }),
+      }),
     })
     const response = await app.request('/auth/device', {
       method: 'POST',
