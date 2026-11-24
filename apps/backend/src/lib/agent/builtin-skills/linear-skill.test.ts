@@ -187,6 +187,9 @@ function spawnEnv(home: string): Record<string, string> {
     HOME: home,
     LINEAR_TEST_GRAPHQL_URL: server.url.toString(),
     NUPHOS_SESSION_ID: 'session-123',
+    // Exercise the default Cerin link without inheriting a host from another suite.
+    NUPHOS_PUBLIC_URL: '',
+    NUPHOS_BACKEND_URL: '',
   } as Record<string, string>
 }
 
