@@ -26,7 +26,7 @@ fn update_asks_the_configured_backend_for_the_release() {
     });
     let home = std::env::temp_dir().join(format!("nuphos-update-test-{}", std::process::id()));
     std::fs::create_dir_all(&home).unwrap();
-    let output = Command::new(env!("CARGO_BIN_EXE_nuphos"))
+    let output = Command::new(env!("CARGO_BIN_EXE_cerin"))
         .arg("update")
         .env_clear()
         .env("PATH", std::env::var_os("PATH").unwrap_or_default())

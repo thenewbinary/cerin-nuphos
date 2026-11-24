@@ -95,7 +95,7 @@ export function Inspector({
 
       <label style={lbl}>{t('Link (open on double-click)')}</label>
       <input
-        placeholder="https://nuphos.ai/teams/…"
+        placeholder="https://cerin.ai/teams/…"
         value={node.url ?? ''}
         onFocus={() => {
           inspectorDirtyRef.current = false

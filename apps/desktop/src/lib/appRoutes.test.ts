@@ -1117,11 +1117,11 @@ test('legacy aliases parse to the same navigation as their canonical form', () =
   }
 })
 
-// Full nuphos.ai URLs (what chat links and deep links actually carry) parse
+// Full platform.cerin.ai URLs (what chat links and deep links actually carry) parse
 // the same as bare paths, including query strings.
 test('parser accepts absolute URLs and query params', () => {
   const parsed = navigationFromAppPath(
-    'https://nuphos.ai/teams/6a6198d06a7585a89e02775d/infra/aws/682033483399/cloudwatch-metrics',
+    'https://platform.cerin.ai/teams/6a6198d06a7585a89e02775d/infra/aws/682033483399/cloudwatch-metrics',
   )
 
   assert.ok(parsed)
@@ -1152,7 +1152,7 @@ test('a pull request path without a state backs out to the list that can show it
 
 test('non-app paths return null', () => {
   assert.equal(navigationFromAppPath('/login'), null)
-  assert.equal(navigationFromAppPath('https://docs.nuphos.ai/teams/x'), null)
+  assert.equal(navigationFromAppPath('https://docs.platform.cerin.ai/teams/x'), null)
   assert.equal(navigationFromAppPath('not a url //'), null)
   // Malformed percent-encoding survives URL parsing; must not throw URIError.
   assert.equal(navigationFromAppPath('/teams/%E0%A4%A/plans'), null)

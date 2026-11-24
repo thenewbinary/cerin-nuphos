@@ -1,4 +1,4 @@
-// The Nuphos web origin the desktop app treats as "ours".
+// The Cerin web origin the desktop app treats as "ours".
 //
 // It decides three things that must agree: which links render as in-app
 // mentions, which open in the app instead of a browser, and which a
@@ -10,7 +10,7 @@
 // reads the resolved value over the preload bridge rather than compiling its
 // own copy in.
 
-const DEFAULT_WEB_BASE_URL = 'https://nuphos.ai'
+const DEFAULT_WEB_BASE_URL = 'https://platform.cerin.ai'
 
 function normalize(raw: string | undefined): string {
   const trimmed = raw?.trim()

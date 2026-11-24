@@ -11,7 +11,11 @@ import { normalizedApi } from './auth/accounts.ts'
 import { authSession } from './auth-session.ts'
 import { CLI_CONFIG_PATH } from './cli-config-path.ts'
 
-const DEFAULT_API_URL = 'https://api.nuphos.ai'
+const DEFAULT_API_URL = 'https://platform.cerin.ai'
+
+// Nuphos's hosted backend. Auto-update, the changelog feed and usage analytics
+// are Nuphos services, so they stay on only for this host, never for the default.
+const NUPHOS_CLOUD_API_URL = 'https://api.nuphos.ai'
 
 // What this process was launched with; resetting the switch returns here, so a
 // `bun run dev` build never falls through to Nuphos Cloud.
@@ -43,7 +47,7 @@ export function apiUrl(): string {
 
 /** Whether the backend is Nuphos Cloud rather than a self-hosted one. */
 export function isNuphosCloud(): boolean {
-  return new URL(apiUrl()).hostname.replace(/\.$/u, '') === new URL(DEFAULT_API_URL).hostname
+  return new URL(apiUrl()).hostname.replace(/\.$/u, '') === new URL(NUPHOS_CLOUD_API_URL).hostname
 }
 
 /** A dev window may use Cloud, but must not advertise this computer there. */

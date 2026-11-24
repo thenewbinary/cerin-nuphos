@@ -2,7 +2,7 @@
 # Run on a disposable macOS release runner, before archiving the binary.
 set -euo pipefail
 
-BINARY=${1:?Usage: sign-macos.sh path/to/nuphos}
+BINARY=${1:?Usage: sign-macos.sh path/to/cerin}
 : "${RUNNER_TEMP:?}"
 
 : "${SIGNING_IDENTITIES:?}"

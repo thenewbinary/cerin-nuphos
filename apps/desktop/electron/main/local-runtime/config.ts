@@ -207,7 +207,7 @@ export function openabEnv(launch: LocalRuntimeLaunch): Record<string, string> {
     OPENAB_ACP_AUTH_KEY: launch.authKey,
     OPENAB_ACP_CONTROL_KEY: deriveControlKey(launch.authKey),
     OPENAB_ADAPTER_VERSION: launch.adapter.version,
-    OPENAB_RUNTIME_LABEL: 'Nuphos Desktop',
+    OPENAB_RUNTIME_LABEL: 'Cerin Desktop',
     ...(launch.bundle.openabCommit ? { OPENAB_BUILD_SHA: launch.bundle.openabCommit } : {}),
     ...runtimeJobs(launch),
     ...launch.secretEnv,

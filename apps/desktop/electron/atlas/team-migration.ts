@@ -17,7 +17,7 @@ export async function saveTeamExport(event: IpcMainInvokeEvent, teamId: string):
   const parent = BrowserWindow.fromWebContents(event.sender)
   const chosen = await dialog.showSaveDialog(parent ?? (undefined as never), {
     title: 'Export team data',
-    defaultPath: 'nuphos-team.zip',
+    defaultPath: 'cerin-team.zip',
     filters: [{ name: 'Team ZIP archive', extensions: ['zip'] }],
   })
 

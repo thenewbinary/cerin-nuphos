@@ -1,5 +1,5 @@
-//! `nuphos agent`: runs this computer's Claude Code and Codex as local agents
-//! for Nuphos, as the desktop app does, without the app. The runtime (openab,
+//! `cerin agent`: runs this computer's Claude Code and Codex as local agents
+//! for Cerin, as the desktop app does, without the app. The runtime (openab,
 //! the ACP adapters and the desktop's host code) is a per-platform asset of
 //! this CLI release, fetched on first use and run on the user's own Node, or
 //! on Node.js 22 fetched from nodejs.org when the computer has no new enough one.
@@ -68,7 +68,7 @@ pub async fn run(join: Option<String>) -> Result<i32> {
     if let Some(token) = config::read_session().token {
         host.env("NUPHOS_SESSION_TOKEN", token);
     }
-    // Under the service only: the restart `nuphos update` ends with starts the new one, so the
+    // Under the service only: the restart `cerin update` ends with starts the new one, so the
     // host updates this computer when idle (cli-auto-update.ts runs `<exe> update`).
     if crate::service::running() {
         host.env("NUPHOS_CLI_EXE", std::env::current_exe()?);
@@ -123,7 +123,7 @@ fn fetched_node(root: &Path) -> Option<PathBuf> {
 
 /// Whether `node` on PATH is Node.js 22 or newer; the error says what is missing.
 fn system_node() -> Result<()> {
-    let missing = || anyhow!("`nuphos agent` needs Node.js {MIN_NODE} or newer on PATH");
+    let missing = || anyhow!("`cerin agent` needs Node.js {MIN_NODE} or newer on PATH");
     let output = Command::new("node").arg("--version").output().map_err(|_| missing())?;
     let version = String::from_utf8_lossy(&output.stdout);
     let major: u64 = version.trim().trim_start_matches('v').split('.').next().and_then(|m| m.parse().ok()).unwrap_or(0);
@@ -169,7 +169,7 @@ async fn fetch() -> Result<PathBuf> {
     }
 
     let base = std::env::var("NUPHOS_DOWNLOAD_URL")
-        .unwrap_or_else(|_| format!("https://github.com/nuphos/nuphos/releases/download/cli-v{VERSION}"));
+        .unwrap_or_else(|_| format!("https://github.com/thenewbinary/cerin-nuphos/releases/download/cli-v{VERSION}"));
     let asset = format!("nuphos-agent-{platform}.tar.gz");
     eprintln!("Downloading the local runtime for {platform}…");
     let checksum = get(format!("{base}/{asset}.sha256")).await?;

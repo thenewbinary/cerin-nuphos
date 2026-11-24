@@ -12,7 +12,7 @@ test('an app that names itself is shown by name, without the version it claims',
   )
   assert.equal(
     sessionDevice({ client: 'nuphos-android/1.4.0', userAgent: null }),
-    'Nuphos for Android',
+    'Cerin for Android',
   )
   assert.equal(
     sessionDevice({ client: 'nuphos-desktop/1.verify-at.evil-phish.com', userAgent: null }),
@@ -29,7 +29,10 @@ test('an app that names itself is shown by name, without the version it claims',
 })
 
 test('without an app name, the user agent gives a rough guess', () => {
-  assert.equal(sessionDevice({ client: null, userAgent: 'node' }), 'Web sign-in (nuphos.ai)')
+  assert.equal(
+    sessionDevice({ client: null, userAgent: 'node' }),
+    'Web sign-in (platform.cerin.ai)',
+  )
   assert.equal(
     sessionDevice({
       client: null,

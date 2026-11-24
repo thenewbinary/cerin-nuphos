@@ -176,13 +176,7 @@
       "category": "Development",
       "icon": "build/icon.png"
     },
-    "publish": {
-      "provider": "s3",
-      "bucket": "nuphos-releases",
-      "region": "us-east-1",
-      "path": "desktop",
-      "acl": null
-    },
+    "publish": null,
     "extraResources": [
       {
         "from": "build/local-runtime/${platform}-${arch}",

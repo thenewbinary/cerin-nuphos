@@ -9,7 +9,7 @@ import { MESSAGES } from './index.ts'
 const SRC = join(import.meta.dirname, '..')
 const AWS_TERMS = new Set(['views/ecs/EcsInfrastructureView.tsx'])
 // Names that contain the word but are not about agents: ssh-agent, AGENTS.md, a log file, a skills folder.
-const NAMES = /ssh-agent|AGENTS\.md|nuphos-agent\.log|~\/\.agents\//g
+const NAMES = /ssh-agent|AGENTS\.md|cerin-agent\.log|~\/\.agents\//g
 const call = /\bt\(\s*(['"])((?:\\.|(?!\1)[^\\])*)\1/g
 
 const sources = readdirSync(SRC, { recursive: true, withFileTypes: true })

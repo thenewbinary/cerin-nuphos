@@ -96,7 +96,7 @@ func leave() -> Never {
 // Nuphos went before the watch above began.
 if kill(parent, 0) != 0 { exit(0) }
 
-let permissionHolder = ownPermissions ? "mac-screen-host" : "Nuphos"
+let permissionHolder = ownPermissions ? "mac-screen-host" : "Cerin"
 if !CGPreflightScreenCaptureAccess() {
     CGRequestScreenCaptureAccess()
     fail("Screen Recording is not allowed for \(permissionHolder) yet")

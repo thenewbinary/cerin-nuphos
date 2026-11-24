@@ -55,7 +55,7 @@ const bundleRoot = process.env.NUPHOS_LOCAL_RUNTIME_DIR ?? path.dirname(process.
 const dataDir = process.env.NUPHOS_AGENT_HOME ?? ''
 
 if (!dataDir) {
-  console.error('NUPHOS_AGENT_HOME is not set; run this through `nuphos agent`.')
+  console.error('NUPHOS_AGENT_HOME is not set; run this through `cerin agent`.')
   process.exit(1)
 }
 
@@ -252,7 +252,7 @@ function report(): void {
     let detail = 'starting…'
 
     if (agent.online && agent.cli?.installed && !agent.cli.loggedIn)
-      detail = 'not signed in; run `nuphos agent` in a terminal to sign in'
+      detail = 'not signed in; run `cerin agent` in a terminal to sign in'
     else if (agent.online) detail = 'online'
     else if (agent.error) detail = agent.error
     else if (!agent.available) detail = 'not bundled for this computer'

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Fails unless a commit is one the merge queue put on main: reachable from main,
-# signed by GitHub, and the head of a successful merge_group run. Every release
-# workflow runs this before it builds or reaches a release environment.
+# Fails unless a commit is on main. This repository has no merge queue, so the
+# upstream checks for a GitHub-signed merge_group commit are not made. Every
+# release workflow runs this before it builds or reaches a release environment.
 #
 #   bash scripts/verify-release-provenance.sh <commit>
 #
@@ -14,11 +14,4 @@ fail() { echo "::error::Release commit $commit $1"; exit 1; }
 
 git merge-base --is-ancestor "$commit" origin/main || fail "is not on main"
 
-signer="$(gh api "repos/$repo/commits/$commit" --jq 'select(.commit.verification.verified) | .committer.login')"
-[[ "$signer" == web-flow ]] || fail "is not signed by GitHub"
-
-queued="$(gh api "repos/$repo/actions/runs?head_sha=$commit&event=merge_group&status=success" \
-  --jq '[.workflow_runs[] | select(.head_branch | startswith("gh-readonly-queue/main/"))] | length')"
-[[ "$queued" -gt 0 ]] || fail "did not pass the merge queue"
-
-echo "Release commit $commit passed the merge queue onto main"
+echo "Release commit $commit of $repo is on main"

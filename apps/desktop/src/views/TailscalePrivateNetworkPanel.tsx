@@ -30,7 +30,7 @@ export function TailscalePrivateNetworkPanel({
   sandboxAccess: TailscaleSandboxAccess | null | undefined
 }) {
   const [enabled, setEnabled] = useState(sandboxAccess?.enabled ?? false)
-  const [tag, setTag] = useState(sandboxAccess?.tag ?? 'tag:nuphos')
+  const [tag, setTag] = useState(sandboxAccess?.tag ?? 'tag:cerin')
   const [saving, setSaving] = useState(false)
   const [targetTag, setTargetTag] = useState('tag:staging')
   const [sshUser, setSshUser] = useState('deploy')
@@ -40,7 +40,7 @@ export function TailscalePrivateNetworkPanel({
 
   useResetOnKey(`${String(sandboxAccess?.enabled ?? false)}|${sandboxAccess?.tag ?? ''}`, () => {
     setEnabled(sandboxAccess?.enabled ?? false)
-    setTag(sandboxAccess?.tag ?? 'tag:nuphos')
+    setTag(sandboxAccess?.tag ?? 'tag:cerin')
   })
 
   const tagValid = TAG_PATTERN.test(tag)
@@ -49,7 +49,7 @@ export function TailscalePrivateNetworkPanel({
     // Revoking must never depend on the tag field being valid — an unsaved typo
     // would otherwise trap access in the on position.
     if (nextEnabled && !TAG_PATTERN.test(tag)) {
-      toast.error(t('Enter a tag like tag:nuphos before enabling private network access'))
+      toast.error(t('Enter a tag like tag:cerin before enabling private network access'))
 
       return
     }
@@ -131,7 +131,7 @@ export function TailscalePrivateNetworkPanel({
           value={tag}
           onChange={(e) => setTag(e.target.value.trim())}
           spellCheck={false}
-          placeholder="tag:nuphos"
+          placeholder="tag:cerin"
           className="flex-1 min-w-0 h-7 px-2 rounded-md bg-surface-sunken border border-line-control font-mono text-[12px] text-main outline-none focus:border-line-control"
         />
         {enabled && (

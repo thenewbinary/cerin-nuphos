@@ -144,7 +144,7 @@ export const agentChannels = {
       parentWindow && !parentWindow.isDestroyed() ? parentWindow : (undefined as never),
       {
         title: 'Export compliance audit records',
-        defaultPath: `nuphos-compliance-audit-${stamp}.zip`,
+        defaultPath: `cerin-compliance-audit-${stamp}.zip`,
         filters: [{ name: 'ZIP archive', extensions: ['zip'] }],
       },
     )

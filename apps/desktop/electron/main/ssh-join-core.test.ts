@@ -82,18 +82,21 @@ test('the script starts the agent in the background with the token from stdin', 
 
   assert.match(
     script,
-    /curl -fsSL https:\/\/nuphos.ai\/install \| PATH="\$HOME\/.local\/bin:\$PATH" sh/,
+    /curl -fsSL https:\/\/cerin.ai\/install \| PATH="\$HOME\/.local\/bin:\$PATH" sh/,
   )
   assert.match(
     script,
-    /NUPHOS_API_URL='https:\/\/api.dev' NUPHOS_JOIN_TOKEN='nj_1' nohup "\$HOME\/.local\/bin\/nuphos" agent .*&\n/,
+    /NUPHOS_API_URL='https:\/\/api.dev' NUPHOS_JOIN_TOKEN='nj_1' nohup "\$HOME\/.local\/bin\/cerin" agent .*&\n/,
   )
-  assert.doesNotMatch(sshJoinScript({ token: 'nj_1', apiUrl: 'https://api.nuphos.ai' }), /API_URL/)
+  assert.doesNotMatch(
+    sshJoinScript({ token: 'nj_1', apiUrl: 'https://platform.cerin.ai' }),
+    /API_URL/,
+  )
   // An agent that exits without joining fails the run with its log, instead of a silent wait;
   // one that installed the systemd service exits once it joined.
   assert.match(
     script,
-    /\[ -s "\$cred" \] \|\| kill -0 \$agent 2>\/dev\/null \|\| \{ cat "\$HOME\/.nuphos-agent.log" >&2; exit 1; \}/,
+    /\[ -s "\$cred" \] \|\| kill -0 \$agent 2>\/dev\/null \|\| \{ cat "\$HOME\/.cerin-agent.log" >&2; exit 1; \}/,
   )
   // It names the computer it joined, so Desktop waits for that one.
   assert.match(script, /device-credential\.json[\s\S]*"deviceId"[\s\S]*Device: /)
@@ -106,7 +109,7 @@ test('failures are told apart by what ssh wrote', () => {
   assert.equal(sshJoinProblem(255, 'Host key verification failed.\r\n'), 'host-key')
   assert.equal(sshJoinProblem(255, 'me@box: Permission denied (publickey).'), 'auth')
   assert.equal(sshJoinProblem(255, 'ssh: Could not resolve hostname box'), 'unreachable')
-  assert.equal(sshJoinProblem(1, 'The Nuphos CLI did not install.'), 'failed')
+  assert.equal(sshJoinProblem(1, 'The Cerin CLI did not install.'), 'failed')
   assert.equal(sshJoinProblem(1, 'mkdir: /opt/x: Permission denied'), 'failed')
 })
 
@@ -117,7 +120,7 @@ test('the system ssh, wherever OpenSSH puts it', () => {
 
 test('the joined computer is the id the script printed', () => {
   assert.equal(
-    sshJoinDevice('Installed nuphos\nStarted.\nDevice: b6b2bd58-fd01-4414\n'),
+    sshJoinDevice('Installed cerin\nStarted.\nDevice: b6b2bd58-fd01-4414\n'),
     'b6b2bd58-fd01-4414',
   )
   assert.equal(sshJoinDevice('Started.\n'), null)

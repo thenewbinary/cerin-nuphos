@@ -225,7 +225,7 @@ export function HuaweiBindWizard({
                     type="text"
                     value={idpId}
                     onChange={(e) => onIdpIdChange(e.target.value)}
-                    placeholder="nuphos"
+                    placeholder="cerin"
                     className={inputClass}
                   />
                 </Field>
@@ -237,7 +237,7 @@ export function HuaweiBindWizard({
                     type="text"
                     value={agencyName}
                     onChange={(e) => onAgencyNameChange(e.target.value)}
-                    placeholder="nuphos-readonly"
+                    placeholder="cerin-readonly"
                     className={inputClass}
                   />
                 </Field>

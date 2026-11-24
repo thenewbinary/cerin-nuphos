@@ -1,14 +1,14 @@
 [package]
-name = "nuphos-cli"
+name = "cerin-cli"
 version = "0.27.1"
 edition = "2021"
 rust-version = "1.82"
 license = "Apache-2.0"
 publish = false
-description = "Terminal client for Nuphos agent conversations"
+description = "Terminal client for Cerin agent conversations"
 
 [[bin]]
-name = "nuphos"
+name = "cerin"
 path = "src/main.rs"
 
 [dependencies]

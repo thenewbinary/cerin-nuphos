@@ -1,6 +1,6 @@
 //! Sign-in and preferences on disk. The CLI's sign-in is `~/.config/nuphos/cli.yaml`
 //! and the desktop app's is `desktop.yaml` beside it; each signs in and out on
-//! its own, and `nuphos login` starts from the desktop's sign-in when there is
+//! its own, and `cerin login` starts from the desktop's sign-in when there is
 //! one. The token itself is in the keychain where there is one (`secret.rs`);
 //! the file names the item.
 
@@ -14,7 +14,7 @@ use serde_json::Value;
 
 use crate::secret;
 
-const DEFAULT_API_URL: &str = "https://api.nuphos.ai";
+const DEFAULT_API_URL: &str = "https://platform.cerin.ai";
 
 /// As the desktop's `Config` (`apps/desktop/electron/auth/config.ts`).
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
@@ -188,7 +188,7 @@ fn prefs_path() -> PathBuf {
 }
 
 /// `NUPHOS_API_URL`, `ATLAS_API_URL`, the endpoint saved on the desktop's
-/// sign-in screen, then Nuphos Cloud.
+/// sign-in screen, then Cerin Cloud.
 pub fn api_url() -> String {
     if let Some(api) = ACCOUNT.get().and_then(|s| s.api.clone()) {
         return api;
@@ -212,7 +212,7 @@ pub fn api_url() -> String {
 }
 
 /// The endpoint the desktop's sign-in screen saved (`cli.api-url`), else
-/// Nuphos Cloud: the backend of a desktop sign-in that does not name its own.
+/// Cerin Cloud: the backend of a desktop sign-in that does not name its own.
 pub fn shared_api_url() -> String {
     fs::read_to_string(api_url_path())
         .ok()
@@ -255,7 +255,7 @@ fn read_session_file() -> Session {
 
 /// The sign-in with its token: `NUPHOS_CLI_TOKEN`, then the keychain, or the
 /// file, which moves it to the keychain where there is one. The environment
-/// variable is not `NUPHOS_TOKEN`: Nuphos's own agent sandboxes set that one to
+/// variable is not `NUPHOS_TOKEN`: Cerin's own agent sandboxes set that one to
 /// a conversation credential.
 pub fn read_session() -> Session {
     if let Some(account) = ACCOUNT.get() {
@@ -269,7 +269,7 @@ pub fn read_session() -> Session {
         if secret::enabled() {
             match write_session(&session) {
                 Ok(()) => session.keychain_account = read_session_file().keychain_account,
-                Err(e) => eprintln!("nuphos: could not move the session token to the keychain: {e:#}"),
+                Err(e) => eprintln!("cerin: could not move the session token to the keychain: {e:#}"),
             }
         }
         return session;
@@ -278,7 +278,7 @@ pub fn read_session() -> Session {
         session.token = match secret::get(account) {
             Ok(token) => token,
             Err(e) => {
-                eprintln!("nuphos: {e:#}");
+                eprintln!("cerin: {e:#}");
                 None
             }
         };
@@ -294,7 +294,7 @@ pub fn write_session(session: &Session) -> anyhow::Result<()> {
     let Some(token) = &session.token else {
         // Signed out either way; an item left behind is only reported.
         if let Some(Err(e)) = previous.map(|account| secret::delete(&account)) {
-            eprintln!("nuphos: could not remove the session token from the keychain: {e:#}");
+            eprintln!("cerin: could not remove the session token from the keychain: {e:#}");
         }
         return write_private(&path, b"{}\n");
     };
@@ -316,7 +316,7 @@ pub fn write_session(session: &Session) -> anyhow::Result<()> {
                 stored.keychain_account = Some(account);
             }
             // Still signed in, only less safely: say so rather than fail.
-            Err(e) => eprintln!("nuphos: keeping the session token in {} instead: {e:#}", path.display()),
+            Err(e) => eprintln!("cerin: keeping the session token in {} instead: {e:#}", path.display()),
         }
     }
     if let Some(old) = previous.filter(|old| stored.keychain_account.as_ref() != Some(old)) {
@@ -326,7 +326,7 @@ pub fn write_session(session: &Session) -> anyhow::Result<()> {
 }
 
 /// One item per user and backend, so a dev backend's sign-in never replaces
-/// Nuphos Cloud's.
+/// Cerin Cloud's.
 fn keychain_account(session: &Session) -> String {
     let user = session.user_info.as_ref().and_then(|u| u["id"].as_str()).unwrap_or("default");
     format!("{user}@{}", session.api.clone().unwrap_or_else(api_url))
@@ -340,18 +340,18 @@ pub fn forget_rejected(session: &Session) -> anyhow::Result<()> {
         anyhow::bail!("NUPHOS_CLI_TOKEN was rejected (revoked or expired); unset it or set a valid token");
     }
     if session.from_account {
-        anyhow::bail!("that desktop account's sign-in was rejected; sign in to it again in Nuphos Desktop");
+        anyhow::bail!("that desktop account's sign-in was rejected; sign in to it again in Cerin Desktop");
     }
     write_session(&Session::default())
 }
 
-/// Where `read_session` found the token, for `nuphos auth status`.
+/// Where `read_session` found the token, for `cerin auth status`.
 pub fn token_storage(session: &Session) -> String {
     if session.from_env {
         return "the NUPHOS_CLI_TOKEN environment variable".to_string();
     }
     if session.from_account {
-        return "Nuphos Desktop's sign-in, for this run (--account)".to_string();
+        return "Cerin Desktop's sign-in, for this run (--account)".to_string();
     }
     match &session.keychain_account {
         Some(_) => secret::STORE_NAME.to_string(),

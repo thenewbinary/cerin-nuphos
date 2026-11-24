@@ -290,8 +290,8 @@ jobs:
         run: cargo build --locked
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: nuphos-cli-macos-arm64
-          path: apps/cli/target/debug/nuphos
+          name: cerin-cli-macos-arm64
+          path: apps/cli/target/debug/cerin
           retention-days: 7
           if-no-files-found: error
 

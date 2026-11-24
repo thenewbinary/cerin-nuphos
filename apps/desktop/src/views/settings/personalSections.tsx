@@ -72,23 +72,11 @@ const THEME_OPTIONS: { value: ThemePreference; label: string; icon: LucideIcon }
   { value: 'dark', label: t('Dark'), icon: MoonIcon },
 ]
 
-// Rendered by scripts/render-app-icons.mjs; B2 is the bundled icon, A the original mark.
-const APP_ICON_CHARACTERS = [
-  t('Napoleon'),
-  t('Pearl Earring'),
-  t('Van Gogh'),
-  t('The Scream'),
-  t('Son of Man'),
-]
-const APP_ICON_LAYOUTS = [t('Classic'), t('Bleed'), t('Peek')]
+// The Cerin mark on a navy (A, the bundled icon), light (B) or dark (C) tile.
 const APP_ICONS = [
   { id: 'A', name: 'Cerin' },
-  ...APP_ICON_CHARACTERS.flatMap((character, c) =>
-    APP_ICON_LAYOUTS.map((layout, l) => ({
-      id: `${'BCDEF'[c]}${String(l + 1)}`,
-      name: t('{character}, {layout}', { character, layout }),
-    })),
-  ),
+  { id: 'B', name: t('Light') },
+  { id: 'C', name: t('Dark') },
 ]
 
 function AppIconPicker() {

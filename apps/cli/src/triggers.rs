@@ -1,4 +1,4 @@
-//! `nuphos triggers`: a task's schedules and webhooks with their last and
+//! `cerin triggers`: a task's schedules and webhooks with their last and
 //! next run, and what a trigger spent.
 
 use anyhow::{bail, Result};
@@ -12,7 +12,7 @@ fn now() -> i64 {
     std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_secs() as i64)
 }
 
-/// `nuphos triggers [SESSION]`: one row per trigger of the task, or of mine
+/// `cerin triggers [SESSION]`: one row per trigger of the task, or of mine
 /// without one.
 pub async fn list(ctx: &Ctx, session: Option<&str>) -> Result<()> {
     let triggers = ctx.api.triggers(&ctx.team_id(), session).await?;
@@ -30,7 +30,7 @@ pub async fn list(ctx: &Ctx, session: Option<&str>) -> Result<()> {
     Ok(())
 }
 
-/// `nuphos triggers usage TRIGGER`: the last 7 days of spend.
+/// `cerin triggers usage TRIGGER`: the last 7 days of spend.
 pub async fn usage(ctx: &Ctx, wanted: &str) -> Result<()> {
     let team = ctx.team_id();
     let trigger = if is_id(wanted) {
