@@ -44,6 +44,7 @@ import { personalCredentialRoutes } from '@/routes/personal-credentials'
 import { plaudAppRoutes } from '@/routes/plaud-app'
 import { posthogAppRoutes } from '@/routes/posthog-app'
 import { pushRoutes } from '@/routes/push-devices'
+import { rootRedirects } from '@/routes/root-redirects'
 import { sentryAppRoutes } from '@/routes/sentry-app'
 import { slackRoutes } from '@/routes/slack'
 import { slackAppRoutes } from '@/routes/slack-app'
@@ -144,6 +145,7 @@ app.route('/discord', discordRoutes)
 app.route('/slack', slackRoutes)
 app.route('/lark', larkRoutes)
 app.route('/admin', adminRoutes)
+app.route('/', rootRedirects)
 
 app.notFound(notFoundHandler)
 app.onError(errorHandler)
