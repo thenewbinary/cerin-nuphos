@@ -1,4 +1,4 @@
-// `nuphos agent`'s model provider: the operator's own environment variables, the ones each CLI
+// `cerin agent`'s model provider: the operator's own environment variables, the ones each CLI
 // already reads, passed on only when set. The values go into openab's environment and reach the
 // agent by name (`inherit_env`), as a saved custom provider's key does, so no file or log Cerin
 // writes holds them. Desktop never reads these from a person's shell, which may hold keys meant

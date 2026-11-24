@@ -96,7 +96,7 @@ export const BOX_CLEAR_CACHES_COMMAND = [
 
 /**
  * Starts the host, which keeps the Box's own credential, as the systemd user service
- * `nuphos agent` installs on its first run, so it also starts again after a reboot.
+ * `cerin agent` installs on its first run, so it also starts again after a reboot.
  * A CLI from before the service runs the host itself, detached. Run with `background: true`.
  */
 export const AGENT_COMMAND = `export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"; systemctl --user start nuphos-agent 2>/dev/null || pgrep -f "[h]ost.mjs" >/dev/null || exec setsid nuphos agent >> "$HOME/nuphos-agent.log" 2>&1 < /dev/null`

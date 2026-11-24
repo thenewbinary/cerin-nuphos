@@ -25,7 +25,7 @@ describe('Cerin Discord command', () => {
     }
   })
 
-  test('bulk overwrites global commands with only our configured command', async () => {
+  test('bulk overwrites global commands with the configured and legacy names', async () => {
     const saved = { ...config.discord }
     const fetchSpy = spyOn(globalThis, 'fetch').mockResolvedValue(Response.json([]))
 
@@ -41,8 +41,14 @@ describe('Cerin Discord command', () => {
       expect(url).toBe('https://discord.com/api/v10/applications/test-app/commands')
       expect(init?.method).toBe('PUT')
       if (typeof init?.body !== 'string') throw new Error('Expected a JSON request body')
-      expect(JSON.parse(init.body)).toEqual([NUPHOS_DISCORD_COMMAND])
-      expect(NUPHOS_DISCORD_COMMAND.name).toBe(config.discord.commandName)
+      const commands = JSON.parse(init.body) as { name: string }[]
+
+      expect(commands.map((command) => command.name)).toEqual(
+        NUPHOS_DISCORD_COMMAND.name === 'nuphos'
+          ? ['nuphos']
+          : [NUPHOS_DISCORD_COMMAND.name, 'nuphos'],
+      )
+      expect(commands[0]).toEqual(NUPHOS_DISCORD_COMMAND)
     } finally {
       fetchSpy.mockRestore()
       Object.assign(config.discord, saved)

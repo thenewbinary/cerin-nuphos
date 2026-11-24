@@ -19,6 +19,7 @@ COPY apps/backend/tsconfig.json ./tsconfig.json
 COPY apps/backend/src ./src
 COPY apps/backend/scripts ./scripts
 COPY --chmod=0755 apps/backend/bin/nuphos-admin /usr/local/bin/nuphos-admin
+COPY --chmod=0755 apps/backend/bin/nuphos-admin /usr/local/bin/cerin-admin
 
 # Drop privileges. The oven/bun image ships with the `bun` user (uid 1000).
 USER bun

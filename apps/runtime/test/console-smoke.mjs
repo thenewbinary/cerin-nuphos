@@ -121,7 +121,7 @@ csrf = state.csrfToken
 const minted = await call('POST', '/_openab/console/pairing-codes')
 assert.equal(minted.status, 200, minted.text)
 assert.match(minted.json.code, /^[A-Z2-7]{26}$/)
-if (minted.json.deepLink) assert.match(minted.json.deepLink, /^nuphos:\/\/connect-runtime\?url=/)
+if (minted.json.deepLink) assert.match(minted.json.deepLink, /^cerin:\/\/connect-runtime\?url=/)
 
 const exchange = await fetch(`${base}/_openab/pairing/exchange`, {
   method: 'POST',

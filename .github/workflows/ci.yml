@@ -574,7 +574,7 @@ jobs:
       - name: Build renderer and main bundles
         working-directory: apps/desktop
         run: pnpm exec vite build
-      # `nuphos agent` runs this bundle under plain Node. An `electron` import
+      # `cerin agent` runs this bundle under plain Node. An `electron` import
       # that reaches it only fails when the host loads (#2749), so load it.
       - name: Load the nuphos agent host bundle
         working-directory: apps/desktop

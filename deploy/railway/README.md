@@ -18,7 +18,7 @@ Prerequisites: Node 22.18+, the current Railway CLI with `railway config` suppor
 a Railway account with volume capacity, two custom domains whose DNS you control,
 and optionally a Resend API key with a verified sender. Without one, email
 sign-in is off: create the first user and team with
-`railway ssh --service backend -- nuphos-admin bootstrap --email <email> --team <name>`,
+`railway ssh --service backend -- cerin-admin bootstrap --email <email> --team <name>`,
 which also prints their sign-in code (see the
 [Helm README](../helm/README.md#first-user-and-team) for the other commands). The default data volumes are
 10 GiB each in `us-west2`; services are explicitly placed in the same region.

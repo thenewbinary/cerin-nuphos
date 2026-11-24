@@ -138,12 +138,12 @@ export async function wakeRefusal(deviceId: string, wake: (() => Promise<boolean
   }
 }
 
-/** A Box's `nuphos agent` has no terminal, so it is never offered one; say so when it is named. */
+/** A Box's `cerin agent` has no terminal, so it is never offered one; say so when it is named. */
 function noTerminal(device: string | undefined, devices: LocalExecDevice[]): string {
   const others = devices.length ? ` Terminals can open on: ${describeDevices(devices)}.` : ''
   const subject = device ? `Device ${device} cannot` : 'No selected device can'
 
-  return `${subject} open a terminal: a Box's \`nuphos agent\` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead.${others}`
+  return `${subject} open a terminal: a Box's \`cerin agent\` does not support terminals, and an offline computer cannot open one. Use local_exec on a Box instead.${others}`
 }
 
 /**

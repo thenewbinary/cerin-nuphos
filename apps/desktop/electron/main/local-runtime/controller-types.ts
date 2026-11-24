@@ -184,7 +184,7 @@ export function tunnelStatusOf(
     }
   }
 
-  // A Box's host is the `nuphos` CLI (`nuphos agent` sets it); the backend offers its update.
+  // A Box's host is the `nuphos` CLI (`cerin agent` sets it); the backend offers its update.
   const cliVersion = process.env.NUPHOS_CLI_VERSION
 
   return { agents, backendUrl, ...(cliVersion ? { cliVersion } : {}) }

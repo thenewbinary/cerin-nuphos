@@ -1,4 +1,4 @@
-// `/nuphos pickup` — continue a desktop conversation from Slack. The slash
+// `/cerin pickup` — continue a desktop conversation from Slack. The slash
 // command lists the caller's recent conversations as an ephemeral picker; the
 // button interaction binds the chosen session to a DM root (or reuses its
 // existing thread) via the same pickup service the desktop button calls.
@@ -46,7 +46,7 @@ async function resolvePickupIdentity(args: {
 }
 
 /**
- * The `/nuphos pickup` response: an ephemeral picker of the caller's most
+ * The `/cerin pickup` response: an ephemeral picker of the caller's most
  * recent conversations. Sessions that already have a Slack thread stay
  * listed — picking one hands back the existing thread's link.
  */

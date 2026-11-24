@@ -96,7 +96,7 @@ type CreateTunnel<R, S, C, T> = (
 
 /**
  * The e2e suite's stand-in for an update a Cerin Desktop downloaded (scripts/e2e/second-computer.ts):
- * with NUPHOS_E2E_STAGED_UPDATE set, `nuphos agent` reports that version staged, and its owner's
+ * with NUPHOS_E2E_STAGED_UPDATE set, `cerin agent` reports that version staged, and its owner's
  * Update runs `install`, as the Desktop quits to install it. Unset, the tunnel is made as before.
  */
 export function withE2eStagedUpdate<R, S, C, T>(

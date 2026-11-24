@@ -19,7 +19,7 @@ backend:
 
 # Optional. With both set, sign-in codes are emailed through Resend. Without
 # them, email sign-in is off and an operator issues codes with
-# `kubectl exec deploy/<release>-backend -- nuphos-admin sign-in-code --email <email>`.
+# `kubectl exec deploy/<release>-backend -- cerin-admin sign-in-code --email <email>`.
 email:
   resendApiKey: '' # RESEND_API_KEY, or put it in secrets.existingSecret
   from: '' # a sender on a verified domain, e.g. Cerin <noreply@example.com>

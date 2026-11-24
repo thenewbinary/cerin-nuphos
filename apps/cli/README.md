@@ -116,7 +116,7 @@ Sharing.
 A machine nobody signs in on, such as a VM, a Mac mini or a container, joins
 with a one-time token instead of a session. Create one while signed in
 (`POST /agent/devices/join-tokens`, valid 15 minutes by default), or on a
-self-hosted backend with `nuphos-admin join-token --team <id>` in its container
+self-hosted backend with `cerin-admin join-token --team <id>` in its container
 (and add `--api-url` with that backend's URL), then on the machine:
 
 ```sh

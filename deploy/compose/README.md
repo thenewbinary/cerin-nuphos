@@ -53,13 +53,13 @@ Or create the user and team from the backend container, which works the same on
 a production stack with no mail service:
 
 ```sh
-docker compose exec backend nuphos-admin bootstrap --email me@example.com --team Local
+docker compose exec backend cerin-admin bootstrap --email me@example.com --team Local
 ```
 
 It prints the team id, a sign-in code valid for 10 minutes, and an
 `ATLAS_ADMIN_TEAM_ID=<id>` line. Running it again reuses the same user and team.
 Add the line to `.env` and run `docker compose up -d backend` to turn on `/admin`
-for that team. `nuphos-admin sign-in-code --email <email>` prints a code for
+for that team. `cerin-admin sign-in-code --email <email>` prints a code for
 anyone else: on a backend without Resend (`RESEND_API_KEY` and
 `NUPHOS_EMAIL_FROM` unset) email sign-in is otherwise off, and **Continue with
 email** goes through only while such a code is waiting.
@@ -67,14 +67,14 @@ email** goes through only while such a code is waiting.
 ## Join a server as a computer
 
 A server nobody signs in on joins with a one-time token, without a browser or
-`nuphos login --device`:
+`cerin login --device`:
 
 ```sh
-docker compose exec backend nuphos-admin join-token --team <team-id> --label build-vm
+docker compose exec backend cerin-admin join-token --team <team-id> --label build-vm
 ```
 
 It joins as the team owner's computer. On the server, run the command it prints
-(`NUPHOS_API_URL=<backend-url> nuphos agent --join -`) and paste the token; see
+(`NUPHOS_API_URL=<backend-url> cerin agent --join -`) and paste the token; see
 [the CLI README](../../apps/cli/README.md#on-a-server) for running it under systemd.
 
 ## Point Cerin Desktop at the stack
@@ -208,9 +208,9 @@ With the Helm chart, add it to `backend.extraEnv`.
 **See the last report and switch it off or on** without a restart:
 
 ```sh
-docker compose exec backend nuphos-admin telemetry       # status and the exact last payload
-docker compose exec backend nuphos-admin telemetry off   # stop sending
-docker compose exec backend nuphos-admin telemetry on    # resume
+docker compose exec backend cerin-admin telemetry       # status and the exact last payload
+docker compose exec backend cerin-admin telemetry off   # stop sending
+docker compose exec backend cerin-admin telemetry on    # resume
 ```
 
 Admins can do the same over HTTP with `GET /admin/telemetry` and

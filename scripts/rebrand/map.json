@@ -90,6 +90,58 @@
       "replace": "client=cerin-ios"
     },
     {
+      "name": "discord-slash-command",
+      "why": "Visible Discord help prefers the primary command; the registered legacy command still parses.",
+      "pattern": "/nuphos(?= (?:enable|disable))",
+      "replace": "/cerin"
+    },
+    {
+      "name": "slack-slash-command",
+      "why": "Visible Slack help prefers the primary command; the registered legacy command still parses.",
+      "pattern": "/nuphos(?= (?:pickup|…))",
+      "replace": "/cerin"
+    },
+    {
+      "name": "admin-command",
+      "why": "The image installs both admin command names; visible instructions prefer Cerin.",
+      "pattern": "nuphos-admin",
+      "replace": "cerin-admin",
+      "exclude_paths": [
+        "apps/backend/Dockerfile",
+        "apps/backend/bin/nuphos-admin"
+      ]
+    },
+    {
+      "name": "box-agent-inline-code",
+      "why": "Inline-code references to the Box CLI use the primary name, including escaped TypeScript templates.",
+      "pattern": "nuphos agent(?=[`\\\\])",
+      "replace": "cerin agent"
+    },
+    {
+      "name": "cli-device-login",
+      "why": "The installer provides both CLI names; visible instructions prefer Cerin.",
+      "pattern": "nuphos login --device",
+      "replace": "cerin login --device"
+    },
+    {
+      "name": "cli-agent-join",
+      "why": "The installer provides both CLI names; visible join instructions prefer Cerin.",
+      "pattern": "nuphos agent --join -",
+      "replace": "cerin agent --join -"
+    },
+    {
+      "name": "runtime-error-prefix",
+      "why": "Runtime diagnostics use the product's current name.",
+      "pattern": "nuphos: could not",
+      "replace": "cerin: could not"
+    },
+    {
+      "name": "regex-url-scheme",
+      "why": "Regex fixtures for outbound links use the primary scheme.",
+      "pattern": "nuphos:\\\\/\\\\/",
+      "replace": "cerin:\\\\/\\\\/"
+    },
+    {
       "name": "example-host",
       "why": "Test fixtures.",
       "pattern": "(?<![A-Za-z0-9\\-])nuphos\\.example\\.com",

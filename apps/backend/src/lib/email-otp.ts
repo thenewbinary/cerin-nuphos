@@ -54,7 +54,7 @@ export async function requestEmailOtp(
   const normalized = normalizeEmail(email)
 
   if (!config.email.devLogOtp && !isEmailConfigured()) {
-    // Nothing can be sent, but a code an operator issued (`nuphos-admin sign-in-code`) can be entered.
+    // Nothing can be sent, but a code an operator issued (`cerin-admin sign-in-code`) can be entered.
     if (await otps().findOne({ email: normalized, expiresAt: { $gt: new Date() } })) return
     throw new AppError(503, 'email_not_configured', 'Email sign-in is not available on this server')
   }

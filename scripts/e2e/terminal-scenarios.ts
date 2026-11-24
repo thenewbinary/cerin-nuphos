@@ -1,4 +1,4 @@
-// #3536: a Box runs the `nuphos agent` host, which has no terminal. The agent is not offered one
+// #3536: a Box runs the `cerin agent` host, which has no terminal. The agent is not offered one
 // there, and naming it says so instead of reporting the computer as disconnected.
 import { randomUUID } from 'node:crypto'
 
@@ -48,7 +48,7 @@ function must(ok: boolean, message: string) {
 
 export const terminalScenarios: Scenario[] = [
   {
-    name: 'a computer running `nuphos agent` is not offered a terminal, and naming it says why',
+    name: 'a computer running `cerin agent` is not offered a terminal, and naming it says why',
     run: async (_page, stack) => {
       const computer = await startSecondComputer(stack, 'E2E terminal-less box')
       const { deviceId } = computer

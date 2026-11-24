@@ -110,7 +110,7 @@ What to know before you plan around it:
   iOS both have a "Self-hosted? Set API endpoint" link there, Android has
   **Server settings** on its welcome screen, and email sign-in works against
   any backend. Emailing codes needs a Resend key;
-  without one, `nuphos-admin` in the backend image creates the first user and
+  without one, `cerin-admin` in the backend image creates the first user and
   team and prints sign-in codes and server join tokens (see the
   [Helm README](deploy/helm/README.md#first-user-and-team)). A launch-time `NUPHOS_API_URL` (as
   `bun run dev` sets) is Desktop's starting endpoint and can still be changed.

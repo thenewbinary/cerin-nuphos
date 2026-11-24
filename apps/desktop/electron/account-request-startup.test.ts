@@ -5,7 +5,7 @@ import path from 'node:path'
 import { after, mock, test } from 'node:test'
 
 // A process whose session nothing has set yet: the token is still on disk, as
-// at Desktop launch before `auth:status`, or in the `nuphos agent` host.
+// at Desktop launch before `auth:status`, or in the `cerin agent` host.
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'account-request-startup-'))
 
 process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')

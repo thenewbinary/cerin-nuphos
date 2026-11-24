@@ -67,7 +67,7 @@ export default defineRailway(() => {
       NUPHOS_AUTH_BASE_URL: `https://${apiDomain}`,
       NUPHOS_BACKEND_URL: `https://${apiDomain}`,
       NUPHOS_PUBLIC_BACKEND_URL: `https://${apiDomain}`,
-      // Optional: without a key, email sign-in is off and `nuphos-admin` issues codes.
+      // Optional: without a key, email sign-in is off and `cerin-admin` issues codes.
       ...(optional('RESEND_API_KEY') && {
         RESEND_API_KEY: required('RESEND_API_KEY'),
         NUPHOS_EMAIL_FROM: required('NUPHOS_EMAIL_FROM'),

@@ -20,7 +20,7 @@ export function teamIdFromUrl(url?: string): string | undefined {
 
 let accountSource: () => Promise<AccountContext> = requestContext
 
-/** `nuphos agent`'s host reads the token through the CLI rather than the keychain. */
+/** `cerin agent`'s host reads the token through the CLI rather than the keychain. */
 export function setTokenSource(source: () => Promise<string | null>) {
   accountSource = async () => ({ ...authSession.context(), token: await source() })
 }

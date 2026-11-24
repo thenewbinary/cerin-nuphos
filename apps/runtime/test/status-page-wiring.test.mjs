@@ -27,6 +27,6 @@ test('the image turns on the runtime console with its state on the home volume',
   assert.match(dockerfile, /^ {4}OPENAB_RUNTIME_STATE_DIR=\/home\/node\/\.nuphos-runtime \\$/mu)
   assert.match(
     dockerfile,
-    /^ {4}OPENAB_RUNTIME_CONNECT_URL_TEMPLATE="nuphos:\/\/connect-runtime\?url=\{url\}&code=\{code\}&exp=\{exp\}"$/mu,
+    /^ {4}OPENAB_RUNTIME_CONNECT_URL_TEMPLATE="cerin:\/\/connect-runtime\?url=\{url\}&code=\{code\}&exp=\{exp\}"$/mu,
   )
 })

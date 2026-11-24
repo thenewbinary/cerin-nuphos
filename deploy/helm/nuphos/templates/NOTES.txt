@@ -5,7 +5,7 @@ Cerin backend: {{ include "nuphos.backendUrl" . }}
 
 2. Create the first user and team (it also prints their sign-in code and the
    ATLAS_ADMIN_TEAM_ID line for backend.extraEnv):
-     kubectl -n {{ .Release.Namespace }} exec deploy/{{ include "nuphos.fullname" . }}-backend -- nuphos-admin bootstrap --email <you@example.com> --team <name>
+     kubectl -n {{ .Release.Namespace }} exec deploy/{{ include "nuphos.fullname" . }}-backend -- cerin-admin bootstrap --email <you@example.com> --team <name>
 
    In Cerin Desktop, choose "Self-hosted? Set API endpoint", enter the URL
 

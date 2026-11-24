@@ -1,4 +1,4 @@
-// Another computer, as `nuphos agent` runs one: the real host on a home of its own, with no
+// Another computer, as `cerin agent` runs one: the real host on a home of its own, with no
 // agent CLI. Adding an agent there installs fixture-install.sh's `claude`.
 import { execFileSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'

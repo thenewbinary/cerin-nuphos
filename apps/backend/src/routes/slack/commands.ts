@@ -1,4 +1,4 @@
-// Slash commands (`/nuphos …`). Slack requires an ack within 3 seconds; the
+// Slash commands (`/cerin …`). Slack requires an ack within 3 seconds; the
 // real response goes through response_url detached, since building it may do
 // Slack profile lookups and Mongo queries.
 import { AppError } from '@/lib/errors'
@@ -12,7 +12,7 @@ import type { Hono } from 'hono'
 
 const USAGE_MESSAGE = [
   '*Cerin commands*',
-  '• `/nuphos pickup` — continue one of your recent Cerin conversations from Slack',
+  '• `/cerin pickup` — continue one of your recent Cerin conversations from Slack',
 ].join('\n')
 
 async function respondToSlashCommand(args: {
@@ -82,7 +82,12 @@ export function registerSlackCommandRoutes(slackRoutes: Hono<{ Variables: AuthVa
     const responseUrl = params.get('response_url')
     const subcommand = (params.get('text') ?? '').trim().split(/\s+/)[0]?.toLowerCase() ?? ''
 
-    if (command !== '/nuphos' || !slackWorkspaceId || !slackUserId || !responseUrl) {
+    if (
+      (command !== '/cerin' && command !== '/nuphos') ||
+      !slackWorkspaceId ||
+      !slackUserId ||
+      !responseUrl
+    ) {
       logEvent('info', 'slack.command.unhandled', {
         command: command ?? 'unknown',
         slack_workspace_id: slackWorkspaceId ?? undefined,

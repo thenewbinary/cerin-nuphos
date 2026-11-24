@@ -111,7 +111,7 @@ services:
       NUPHOS_AUTH_BASE_URL: http://localhost:${BACKEND_PORT:-3000}
       NUPHOS_DEV_EMAIL_OTP_LOG: 'true'
       NUPHOS_LOCAL_STACK: 'true'
-      # Printed by `nuphos-admin bootstrap`; set it in .env to turn on /admin.
+      # Printed by `cerin-admin bootstrap`; set it in .env to turn on /admin.
       ATLAS_ADMIN_TEAM_ID: ${ATLAS_ADMIN_TEAM_ID:-}
       # Opt-in health reports to Cerin; unset sends nothing (see README).
       NUPHOS_TELEMETRY_KEY: ${NUPHOS_TELEMETRY_KEY:-}

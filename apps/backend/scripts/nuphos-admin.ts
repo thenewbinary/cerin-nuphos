@@ -2,10 +2,10 @@
  * Operator commands for a self-hosted backend, run inside its container with the
  * backend's own environment:
  *
- *   nuphos-admin bootstrap --email <email> --team <name>
- *   nuphos-admin sign-in-code --email <email>
- *   nuphos-admin join-token --team <teamId> [--label <label>]
- *   nuphos-admin telemetry [on|off]
+ *   cerin-admin bootstrap --email <email> --team <name>
+ *   cerin-admin sign-in-code --email <email>
+ *   cerin-admin join-token --team <teamId> [--label <label>]
+ *   cerin-admin telemetry [on|off]
  */
 import { config } from '@/config'
 import { boxBackendUrl } from '@/lib/agent/devices/box-instabox-client'
@@ -21,14 +21,14 @@ import {
 import { setTelemetryEnabled, telemetryStatus } from '@/lib/telemetry/report'
 
 const USAGE = `usage:
-  nuphos-admin bootstrap --email <email> --team <name>
+  cerin-admin bootstrap --email <email> --team <name>
       Creates the user and a team they administer (or reuses both), prints the
       ATLAS_ADMIN_TEAM_ID line and a sign-in code.
-  nuphos-admin sign-in-code --email <email>
+  cerin-admin sign-in-code --email <email>
       Prints a 10-minute sign-in code for a server that does not send email.
-  nuphos-admin join-token --team <teamId> [--label <label>]
+  cerin-admin join-token --team <teamId> [--label <label>]
       Prints a one-time token that joins a machine as the team owner's computer.
-  nuphos-admin telemetry [on|off]
+  cerin-admin telemetry [on|off]
       Prints whether health reports are sent and the exact last one; on/off
       switches sending without a restart (NUPHOS_TELEMETRY_KEY must be set).`
 

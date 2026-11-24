@@ -1,4 +1,4 @@
-// `nuphos agent` in a terminal: Claude's own sign-in, into the runtime's config dir.
+// `cerin agent` in a terminal: Claude's own sign-in, into the runtime's config dir.
 
 import { spawn } from 'node:child_process'
 import path from 'node:path'

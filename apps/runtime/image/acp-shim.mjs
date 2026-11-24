@@ -175,7 +175,7 @@ function shareFromRuntimeHome(path, sessionHome, runtimeHome) {
   } catch (error) {
     // Unshared, the agent starts without the runtime's login there; the turn still runs.
     process.stderr.write(
-      `nuphos: could not share ${path} with the runtime home: ${error.message}\n`,
+      `cerin: could not share ${path} with the runtime home: ${error.message}\n`,
     )
   }
 }

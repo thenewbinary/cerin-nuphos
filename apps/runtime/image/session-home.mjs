@@ -65,7 +65,7 @@ export function nuphosSessionHomeEnv(sessionEnv = {}, runtimeEnv = process.env) 
   } catch (error) {
     // A session's own rc wins, and a cache setting never stops a session from starting.
     if (error.code !== 'EEXIST')
-      process.stderr.write(`nuphos: could not share the pnpm store: ${error.message}\n`)
+      process.stderr.write(`cerin: could not share the pnpm store: ${error.message}\n`)
   }
   // Gradle has no setting for its caches alone, and gradle.properties beside them can
   // hold repository credentials, so only caches/ is linked. Gradle locks inside it.
@@ -77,7 +77,7 @@ export function nuphosSessionHomeEnv(sessionEnv = {}, runtimeEnv = process.env) 
   } catch (error) {
     // Already linked, or caches this home made before they were shared.
     if (error.code !== 'EEXIST')
-      process.stderr.write(`nuphos: could not share the Gradle caches: ${error.message}\n`)
+      process.stderr.write(`cerin: could not share the Gradle caches: ${error.message}\n`)
   }
   return {
     HOME: home,

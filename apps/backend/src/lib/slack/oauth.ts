@@ -13,7 +13,7 @@ export const SLACK_BOT_SCOPES = [
   'channels:history',
   'channels:read',
   'chat:write',
-  // Slash commands (`/nuphos pickup` — continue a desktop conversation from
+  // Slash commands (`/cerin pickup` — continue a desktop conversation from
   // Slack). Adding it requires every workspace to re-install; until then the
   // command simply does not appear in the workspace.
   'commands',
