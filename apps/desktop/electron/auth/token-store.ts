@@ -8,7 +8,8 @@
 // file (mode 0600).
 
 /** This app's item; the account names the user and backend. The CLI's is `ai.nuphos.cli.session`. */
-export const KEYCHAIN_SERVICE = 'ai.nuphos.desktop.session'
+export const KEYCHAIN_SERVICE = 'ai.cerin.desktop.session'
+export const LEGACY_KEYCHAIN_SERVICE = 'ai.nuphos.desktop.session'
 
 export type TokenStore = {
   get: (account: string) => Promise<string | null>
@@ -51,8 +52,7 @@ async function entry(service: string, account: string) {
   return new AsyncEntry(service, account, ENTRY_OPTIONS)
 }
 
-/** The items of one service in the credential store. */
-export function keychainFor(service: string): TokenStore {
+function directKeychainFor(service: string): TokenStore {
   return {
     get: async (account) => (await entry(service, account)).getPassword(),
     set: async (account, token) => {
@@ -64,4 +64,27 @@ export function keychainFor(service: string): TokenStore {
   }
 }
 
-export const keychainStore: TokenStore = keychainFor(KEYCHAIN_SERVICE)
+export function withLegacyKeychain(current: TokenStore, legacy: TokenStore): TokenStore {
+  return {
+    ...current,
+    get: async (account) => {
+      const token = await current.get(account)
+      if (token !== null) return token
+      const legacyToken = await legacy.get(account)
+      if (legacyToken === null) return null
+      await current.set(account, legacyToken)
+      await legacy.delete(account)
+
+      return legacyToken
+    },
+  }
+}
+
+/** The items of one service in the credential store. */
+export function keychainFor(service: string, legacyService?: string): TokenStore {
+  const store = directKeychainFor(service)
+
+  return legacyService ? withLegacyKeychain(store, directKeychainFor(legacyService)) : store
+}
+
+export const keychainStore: TokenStore = keychainFor(KEYCHAIN_SERVICE, LEGACY_KEYCHAIN_SERVICE)

@@ -14,7 +14,8 @@ use anyhow::Result;
 pub const SERVICE: &str = "ai.nuphos.cli.session";
 
 /// The desktop app's item (`apps/desktop/electron/auth/token-store.ts`).
-pub const DESKTOP_SERVICE: &str = "ai.nuphos.desktop.session";
+pub const DESKTOP_SERVICE: &str = "ai.cerin.desktop.session";
+const LEGACY_DESKTOP_SERVICE: &str = "ai.nuphos.desktop.session";
 
 /// The credential store's name, for `cerin auth status`.
 pub const STORE_NAME: &str = if cfg!(target_os = "macos") {
@@ -164,7 +165,54 @@ pub fn delete(account: &str) -> Result<()> {
     imp::delete(SERVICE, account)
 }
 
+fn desktop_token_with(
+    mut get: impl FnMut(&str, &str) -> Result<Option<String>>,
+    account: &str,
+) -> Result<Option<String>> {
+    match get(DESKTOP_SERVICE, account)? {
+        Some(token) => Ok(Some(token)),
+        None => get(LEGACY_DESKTOP_SERVICE, account),
+    }
+}
+
 /// The desktop app's token; macOS asks once whether the CLI may read it.
 pub fn desktop_token(account: &str) -> Result<Option<String>> {
-    imp::get(DESKTOP_SERVICE, account)
+    desktop_token_with(imp::get, account)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{desktop_token_with, DESKTOP_SERVICE, LEGACY_DESKTOP_SERVICE};
+
+    #[test]
+    fn desktop_token_prefers_the_cerin_entry() {
+        let mut services = Vec::new();
+        let token = desktop_token_with(
+            |service, _| {
+                services.push(service.to_string());
+                Ok(Some("new".to_string()))
+            },
+            "account",
+        )
+        .unwrap();
+
+        assert_eq!(token.as_deref(), Some("new"));
+        assert_eq!(services, [DESKTOP_SERVICE]);
+    }
+
+    #[test]
+    fn desktop_token_falls_back_to_the_legacy_entry() {
+        let mut services = Vec::new();
+        let token = desktop_token_with(
+            |service, _| {
+                services.push(service.to_string());
+                Ok((service == LEGACY_DESKTOP_SERVICE).then(|| "old".to_string()))
+            },
+            "account",
+        )
+        .unwrap();
+
+        assert_eq!(token.as_deref(), Some("old"));
+        assert_eq!(services, [DESKTOP_SERVICE, LEGACY_DESKTOP_SERVICE]);
+    }
 }

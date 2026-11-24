@@ -27,7 +27,8 @@ export type KeyStore = {
 }
 
 /** The credential store's service the keys are kept under, one item per account and agent. */
-export const PROVIDER_KEYCHAIN_SERVICE = 'ai.nuphos.desktop.provider'
+export const PROVIDER_KEYCHAIN_SERVICE = 'ai.cerin.desktop.provider'
+export const LEGACY_PROVIDER_KEYCHAIN_SERVICE = 'ai.nuphos.desktop.provider'
 
 /** Claude Code's gateway token, and the variable Codex's provider names as its `env_key`. */
 export const PROVIDER_KEY_ENV: Record<CustomProviderAgent, string> = {

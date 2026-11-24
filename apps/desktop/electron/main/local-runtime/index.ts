@@ -27,6 +27,7 @@ import { browserStreams } from './browser-streams.ts'
 import { readCliCache, writeCliCache } from './cli-cache.ts'
 import { readBundle } from './config.ts'
 import {
+  LEGACY_PROVIDER_KEYCHAIN_SERVICE,
   PROVIDER_KEYCHAIN_SERVICE,
   readCustomProviders,
   saveCustomProvider,
@@ -66,7 +67,7 @@ function bundleRoot(): string {
 }
 
 const findBundle = (): LocalRuntimeBundle | null => readBundle(bundleRoot())
-const providerKeys = keychainFor(PROVIDER_KEYCHAIN_SERVICE)
+const providerKeys = keychainFor(PROVIDER_KEYCHAIN_SERVICE, LEGACY_PROVIDER_KEYCHAIN_SERVICE)
 const ownDir = (userId: string) => path.join(dataDir(), 'users', userId)
 
 export async function userEnv(fresh?: boolean): Promise<NodeJS.ProcessEnv> {
