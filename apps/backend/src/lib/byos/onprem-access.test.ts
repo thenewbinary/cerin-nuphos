@@ -158,7 +158,7 @@ describe('readOnpremAccess', () => {
 
     const readout = await readOnpremAccess({
       kubeconfig: KUBECONFIG,
-      proxyUrl: 'https://nr1_token:x@relay.nuphos.ai:8443',
+      proxyUrl: 'https://nr1_token:x@relay.platform.cerin.ai:8443',
       teamId: 'team-1',
     })
 
@@ -172,7 +172,7 @@ describe('readOnpremAccess', () => {
     // reach the API server address directly.
     expect(calls).toHaveLength(4)
     for (const call of calls) {
-      expect(call.proxy).toBe('https://nr1_token:x@relay.nuphos.ai:8443')
+      expect(call.proxy).toBe('https://nr1_token:x@relay.platform.cerin.ai:8443')
       expect(call.auth).toBe('Bearer sa-token')
       expect(call.url.startsWith('https://10.0.0.1:6443')).toBe(true)
     }

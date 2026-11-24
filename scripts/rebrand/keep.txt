@@ -1,0 +1,9 @@
+# Lines that may keep a person-visible Nuphos form. One per line:
+#   <path glob> <regex the line must match>    # reason
+# The rename leaves internal identifiers (ai.nuphos.* packages and bundle ids,
+# NUPHOS_* env vars, nuphos.* storage keys, Nuphos* type names, ghcr.io and
+# zeabur/* artifacts) alone, so they need no entry here; only the forms in
+# map.json check_patterns are checked.
+apps/backend/src/lib/native-auth.ts nuphos://   # legacy Google sign-in return for installed apps
+apps/backend/src/lib/native-auth.test.ts nuphos://   # tests the legacy return
+deploy/compose/README.md telemetry\.nuphos\.ai   # upstream Nuphos telemetry host; Cerin runs none and NUPHOS_TELEMETRY_URL has no default

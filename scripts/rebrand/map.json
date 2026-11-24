@@ -1,0 +1,61 @@
+{
+  "comment": "Nuphos -> Cerin rename map. Rules run in order on every tracked text file except exclude_paths. Each rule must be idempotent: its output never matches its own pattern.",
+  "exclude_paths": [
+    "LICENSE",
+    "NOTICE",
+    "apps/runtime/NOTICE",
+    "TRADEMARK.md",
+    "bun.lock",
+    "scripts/rebrand/**",
+    "**/LICENSE",
+    "**/NOTICE"
+  ],
+  "rules": [
+    {
+      "name": "product-name",
+      "why": "The product name, wherever a person can read it (UI, copy, docs, comments).",
+      "pattern": "(?<![A-Za-z0-9_])Nuphos(?![A-Za-z0-9_])",
+      "replace": "Cerin"
+    },
+    {
+      "name": "url-scheme",
+      "why": "Deep links the apps hand out. Inbound handlers keep nuphos:// as a hidden legacy alias (see keep.txt).",
+      "pattern": "nuphos://",
+      "replace": "cerin://",
+      "exclude_paths": [
+        "apps/backend/src/lib/native-auth.ts",
+        "apps/backend/src/lib/native-auth.test.ts"
+      ]
+    },
+    {
+      "name": "hosts",
+      "why": "nuphos.ai and api.nuphos.ai -> platform.cerin.ai (desktop already uses it for both API and web); other subdomains keep their prefix, including in user@host and mailto test fixtures. telemetry.nuphos.ai is upstream's own endpoint and stays (keep.txt).",
+      "pattern": "(?<![A-Za-z0-9.\\-])(\\.?)(?!telemetry\\.)((?:[a-z0-9\\-]+\\.)*?)(?:api\\.)?nuphos\\.ai(?![A-Za-z0-9\\-])",
+      "replace": "\\1\\2platform.cerin.ai"
+    },
+    {
+      "name": "lookalike-host",
+      "why": "Tests that reject a lookalike of the real host.",
+      "pattern": "(?<![A-Za-z0-9\\-])evilnuphos\\.ai",
+      "replace": "evilplatform.cerin.ai"
+    },
+    {
+      "name": "hosts-upper",
+      "why": "Case-folding tests.",
+      "pattern": "API\\.NUPHOS\\.AI",
+      "replace": "PLATFORM.CERIN.AI"
+    },
+    {
+      "name": "example-host",
+      "why": "Test fixtures.",
+      "pattern": "(?<![A-Za-z0-9\\-])nuphos\\.example\\.com",
+      "replace": "cerin.example.com"
+    }
+  ],
+  "check_patterns": [
+    "(?<![A-Za-z0-9_])Nuphos(?![A-Za-z0-9_])",
+    "nuphos://",
+    "nuphos\\.ai",
+    "(?i)nuphos\\.example\\.com"
+  ]
+}

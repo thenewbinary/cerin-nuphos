@@ -55,7 +55,7 @@ enum SessionLinkTests {
         // subdomains still leave the app.
         for link in [
             "https://platform.cerin.ai.evil.com/teams/\(team)/agent/ses_abc",
-            "https://evilnuphos.ai/teams/\(team)/agent/ses_abc",
+            "https://evilplatform.cerin.ai/teams/\(team)/agent/ses_abc",
             "https://platform.cerin.ai@evil.com/teams/\(team)/agent/ses_abc",
             "https://dev.platform.cerin.ai/teams/\(team)/agent/ses_abc",
             "http://platform.cerin.ai/teams/\(team)/agent/ses_abc",
@@ -63,7 +63,7 @@ enum SessionLinkTests {
             "https://example.com/teams/\(team)/agent/ses_abc",
             "https://platform.cerin.ai/teams/\(team)/plans/7",
             "https://platform.cerin.ai/teams/\(team)/agent",
-            "mailto:a@nuphos.ai",
+            "mailto:a@platform.cerin.ai",
         ] {
             precondition(target(link) == nil, link)
         }

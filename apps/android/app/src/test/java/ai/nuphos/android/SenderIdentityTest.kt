@@ -13,7 +13,7 @@ class SenderIdentityTest {
         assertEquals(base + path, SenderAvatar.trusted(base + path, base))
         assertEquals("https://lh3.googleusercontent.com/photo?s=40", SenderAvatar.trusted("https://lh3.googleusercontent.com/photo?s=40", base))
         for (url in listOf("http://platform.cerin.ai$path", "https://platform.cerin.ai.evil.test$path",
-            "https://user@api.nuphos.ai$path", "$base$path?token=1", "$base$path#x",
+            "https://user@platform.cerin.ai$path", "$base$path?token=1", "$base$path#x",
             "$base:443$path", "$base/avatars/other/photo.webp", "https://lh3.googleusercontent.com:444/x",
             "https://lh3.googleusercontent.com.evil.test/x", "https://evil.test/x", "$base/avatars/%61/photo.webp"))
             assertNull(url, SenderAvatar.trusted(url, base))

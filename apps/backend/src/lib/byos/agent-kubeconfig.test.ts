@@ -184,13 +184,13 @@ describe('renderAgentKubeconfig', () => {
         endpoint: 'https://10.0.0.1:6443',
         caBase64: 'T05QUkVN',
         relayClusterKey: 'abc123',
-        proxyUrl: 'https://nr1_token:x@relay.nuphos.ai:8443',
+        proxyUrl: 'https://nr1_token:x@relay.platform.cerin.ai:8443',
         user: { token: 'sa-token' },
       },
     ])
 
     expect(yaml).toContain('server: "https://10.0.0.1:6443"')
-    expect(yaml).toContain('proxy-url: "https://nr1_token:x@relay.nuphos.ai:8443"')
+    expect(yaml).toContain('proxy-url: "https://nr1_token:x@relay.platform.cerin.ai:8443"')
   })
 
   test('omits proxy-url for clusters we can reach directly', () => {
