@@ -93,7 +93,7 @@ test('the script starts the agent in the background with the token from stdin', 
   // one that installed the systemd service exits once it joined.
   assert.match(
     script,
-    /\[ -s "\$cred" \] \|\| kill -0 \$agent 2>\/dev\/null \|\| \{ cat "\$HOME\/.nuphos-agent.log" >&2; exit 1; \}/,
+    /\[ -s "\$cred" \] \|\| kill -0 \$agent 2>\/dev\/null \|\| \{ cat "\$HOME\/.cerin-agent.log" >&2; exit 1; \}/,
   )
   // It names the computer it joined, so Desktop waits for that one.
   assert.match(script, /device-credential\.json[\s\S]*"deviceId"[\s\S]*Device: /)
@@ -106,7 +106,7 @@ test('failures are told apart by what ssh wrote', () => {
   assert.equal(sshJoinProblem(255, 'Host key verification failed.\r\n'), 'host-key')
   assert.equal(sshJoinProblem(255, 'me@box: Permission denied (publickey).'), 'auth')
   assert.equal(sshJoinProblem(255, 'ssh: Could not resolve hostname box'), 'unreachable')
-  assert.equal(sshJoinProblem(1, 'The Nuphos CLI did not install.'), 'failed')
+  assert.equal(sshJoinProblem(1, 'The Cerin CLI did not install.'), 'failed')
   assert.equal(sshJoinProblem(1, 'mkdir: /opt/x: Permission denied'), 'failed')
 })
 

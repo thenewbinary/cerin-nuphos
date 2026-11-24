@@ -3,9 +3,8 @@ import path from 'node:path'
 
 import { app } from 'electron'
 
-// B2 is the bundled icon; A is the original mark. All but A come from
-// scripts/render-app-icons.mjs.
-export const APP_ICONS = ['A', ...'BCDEF'.split('').flatMap((c) => [`${c}1`, `${c}2`, `${c}3`])]
+// The Cerin mark on a navy (A, the bundled icon), light (B) or dark (C) tile.
+export const APP_ICONS = ['A', 'B', 'C']
 
 const file = () => path.join(app.getPath('userData'), 'app-icon.json')
 
@@ -18,7 +17,7 @@ export function readAppIcon(): string {
     // No choice saved yet.
   }
 
-  return 'B2'
+  return 'A'
 }
 
 /** Shows the icon on the running Dock tile. Finder keeps the bundled icon. */

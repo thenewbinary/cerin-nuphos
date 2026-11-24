@@ -30,7 +30,7 @@
       import { mountLogoIntro } from './logo-intro.js'
       const finish = () => parent.postMessage('nuphos:introFinished', '*')
       try {
-        const response = await fetch('./nuphos.json')
+        const response = await fetch('./cerin.json')
         const brand = await response.json()
         const light = new URLSearchParams(location.search).get('theme') === 'light'
         brand.theme.background = light ? '#F7F7F8' : '#0E0E10'

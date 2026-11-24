@@ -142,6 +142,9 @@ const json = (value) => JSON.stringify(value, null, 2) + '\n'
 const xcode = { author: 'xcode', version: 1 }
 
 const BUNDLED = 'B2'
+// Desktop ships the Cerin mark (public/app-icons/{A,B,C}.png, build/icon.png) as committed
+// assets drawn from public/cerin-mark.svg, so this script leaves the desktop icons alone.
+const WRITE_DESKTOP = false
 // Android icons with a themed-icon layer, `drawable/app_icon_<id>_monochrome.xml`.
 const MONOCHROME = new Set(['B2'])
 
@@ -175,11 +178,13 @@ for (const [letter, file] of Object.entries(CHARACTERS)) {
   for (const [number, layout] of Object.entries(LAYOUTS)) {
     const id = letter + number
 
-    const desktopIcon = await macGrid(screenshot(page(file, layout, 0, true), SIZE))
+    if (WRITE_DESKTOP) {
+      const desktopIcon = await macGrid(screenshot(page(file, layout, 0, true), SIZE))
 
-    write(path.join(desktop, `public/app-icons/${id}.png`), desktopIcon)
-    // electron-builder makes the .icns (and the Windows and Linux icons) from this file.
-    if (id === BUNDLED) write(path.join(desktop, 'build/icon.png'), desktopIcon)
+      write(path.join(desktop, `public/app-icons/${id}.png`), desktopIcon)
+      // electron-builder makes the .icns (and the Windows and Linux icons) from this file.
+      if (id === BUNDLED) write(path.join(desktop, 'build/icon.png'), desktopIcon)
+    }
     await writeIos(id, screenshot(page(file, layout, 0, false), SIZE))
     const bled = screenshot(page(file, layout, BLEED, false), SIZE + BLEED * 2)
 
