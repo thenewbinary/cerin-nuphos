@@ -5,12 +5,12 @@ Cerin Platform is built from upstream Nuphos
 code into Cerin code the same way every time, so upstream updates can be
 merged and renamed without hand work.
 
-| File | What it is |
-| --- | --- |
-| `map.json` | The rename rules (regex, replacement, reason), the paths never touched (LICENSE, NOTICE, TRADEMARK.md, bun.lock) and the patterns the check looks for. |
-| `keep.txt` | Lines allowed to keep a checked Nuphos form, each with a reason (legacy `nuphos://` sign-in return, upstream telemetry host). |
-| `rebrand.py` | Applies `map.json` to every tracked text file. Idempotent: a second run changes nothing. |
-| `check.sh` | Exits 1 if a rule would still change a file, or a checked form is left that `keep.txt` does not allow. Prints each offending file or line. |
+| File         | What it is                                                                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `map.json`   | The rename rules (regex, replacement, reason), the paths never touched (LICENSE, NOTICE, TRADEMARK.md, bun.lock) and the patterns the check looks for. |
+| `keep.txt`   | Lines allowed to keep a checked Nuphos form, each with a reason (legacy `nuphos://` sign-in return, upstream telemetry host).                          |
+| `rebrand.py` | Applies `map.json` to every tracked text file. Idempotent: a second run changes nothing.                                                               |
+| `check.sh`   | Exits 1 if a rule would still change a file, or a checked form is left that `keep.txt` does not allow. Prints each offending file or line.             |
 
 ```sh
 python3 scripts/rebrand/rebrand.py   # rename in place

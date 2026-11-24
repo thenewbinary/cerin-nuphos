@@ -6,7 +6,7 @@ One `docker compose up` brings up a complete, minimal Cerin:
 | --------- | --------------------------------------- | --------------------------------------------------------- |
 | `mongo`   | `mongo:8.0.32`                          | Single-node replica set (`rs0`), required by transactions |
 | `rustfs`  | `rustfs/rustfs:1.0.0`                   | S3-compatible storage; initializes buckets on boot        |
-| `backend` | built from `apps/backend/Dockerfile`    | Cerin backend, one replica                               |
+| `backend` | built from `apps/backend/Dockerfile`    | Cerin backend, one replica                                |
 | `runtime` | `ghcr.io/nuphos/runtime:${RUNTIME_TAG}` | Claude Code agent runtime                                 |
 
 All data lives in local volumes and **never touches production Mongo, Redis or S3**. There is no Redis: the backend runs in single-replica in-memory mode.

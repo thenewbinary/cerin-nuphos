@@ -1,11 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import {
-  KEYCHAIN_SERVICE,
-  LEGACY_KEYCHAIN_SERVICE,
-  withLegacyKeychain,
-} from './token-store.ts'
+import { KEYCHAIN_SERVICE, LEGACY_KEYCHAIN_SERVICE, withLegacyKeychain } from './token-store.ts'
 import {
   LEGACY_PROVIDER_KEYCHAIN_SERVICE,
   PROVIDER_KEYCHAIN_SERVICE,

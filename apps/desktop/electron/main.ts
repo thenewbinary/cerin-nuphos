@@ -132,7 +132,9 @@ if (!isDev) {
   }
 } else if (process.env.ATLAS_REGISTER_NUPHOS_PROTOCOL === '1' && process.argv.length >= 2) {
   for (const protocol of [githubInstall.GITHUB_PROTOCOL, 'nuphos']) {
-    app.setAsDefaultProtocolClient(protocol, process.execPath, [path.resolve(process.argv[1] ?? '')])
+    app.setAsDefaultProtocolClient(protocol, process.execPath, [
+      path.resolve(process.argv[1] ?? ''),
+    ])
   }
 }
 

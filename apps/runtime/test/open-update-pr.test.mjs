@@ -52,7 +52,9 @@ test('a stale update pull request is closed before its branch is reset to main',
   const reset = log.findIndex((call) => call.includes('git/refs/heads/runtime/update'))
   const create = log.findIndex((call) => call.startsWith('pr create'))
   const comment = log.findIndex((call) =>
-    call.startsWith('pr comment 403 --repo thenewbinary/cerin-nuphos --body Superseded by https://'),
+    call.startsWith(
+      'pr comment 403 --repo thenewbinary/cerin-nuphos --body Superseded by https://',
+    ),
   )
   assert.ok(close !== -1 && close < reset && reset < create && create < comment, log.join('\n'))
   assert.match(log[0], /--app github-actions/)

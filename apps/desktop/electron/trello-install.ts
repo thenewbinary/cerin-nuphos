@@ -72,8 +72,7 @@ export function isCallbackUrl(rawUrl: string): boolean {
     const u = new URL(rawUrl)
 
     return (
-      (u.protocol === 'cerin:' || u.protocol === 'nuphos:') &&
-      u.hostname === TRELLO_CALLBACK_HOST
+      (u.protocol === 'cerin:' || u.protocol === 'nuphos:') && u.hostname === TRELLO_CALLBACK_HOST
     )
   } catch {
     return false

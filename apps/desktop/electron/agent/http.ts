@@ -12,7 +12,9 @@ import type { AccountContext } from '../auth-session.ts'
 export function teamIdFromUrl(url?: string): string | undefined {
   if (!url) return undefined
   try {
-    return /^\/teams\/([a-f0-9]{24})(?:\/|$)/.exec(new URL(url, 'https://platform.cerin.ai').pathname)?.[1]
+    return /^\/teams\/([a-f0-9]{24})(?:\/|$)/.exec(
+      new URL(url, 'https://platform.cerin.ai').pathname,
+    )?.[1]
   } catch {
     return undefined
   }

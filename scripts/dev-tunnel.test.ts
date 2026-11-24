@@ -15,8 +15,14 @@ ingress:
 `
 
 test('namedTunnelUrlFromConfig resolves the hostname mapped to the backend port', () => {
-  assert.equal(namedTunnelUrlFromConfig(config, 3718), 'https://api-dev-example-1.platform.cerin.ai')
-  assert.equal(namedTunnelUrlFromConfig(config, 3719), 'https://api-dev-example-2.platform.cerin.ai')
+  assert.equal(
+    namedTunnelUrlFromConfig(config, 3718),
+    'https://api-dev-example-1.platform.cerin.ai',
+  )
+  assert.equal(
+    namedTunnelUrlFromConfig(config, 3719),
+    'https://api-dev-example-2.platform.cerin.ai',
+  )
 })
 
 test('namedTunnelUrlFromConfig does not invent a hostname for an unmapped port', () => {

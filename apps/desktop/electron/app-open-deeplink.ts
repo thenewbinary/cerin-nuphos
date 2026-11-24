@@ -20,10 +20,7 @@ function parseAllowedWebUrl(value: string | null): URL | null {
   try {
     const url = new URL(value)
 
-    if (
-      url.protocol !== 'https:' ||
-      (!ALLOWED_WEB_HOSTS.has(url.hostname) && !isAppWebUrl(value))
-    )
+    if (url.protocol !== 'https:' || (!ALLOWED_WEB_HOSTS.has(url.hostname) && !isAppWebUrl(value)))
       return null
 
     return url

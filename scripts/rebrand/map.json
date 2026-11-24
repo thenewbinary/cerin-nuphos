@@ -107,10 +107,7 @@
       "why": "The image installs both admin command names; visible instructions prefer Cerin.",
       "pattern": "nuphos-admin",
       "replace": "cerin-admin",
-      "exclude_paths": [
-        "apps/backend/Dockerfile",
-        "apps/backend/bin/nuphos-admin"
-      ]
+      "exclude_paths": ["apps/backend/Dockerfile", "apps/backend/bin/nuphos-admin"]
     },
     {
       "name": "box-agent-inline-code",
@@ -209,9 +206,7 @@
       "why": "Desktop and CLI releases use The New Binary's Apple team; installed iOS signing metadata is unchanged.",
       "pattern": "6T873K59LQ",
       "replace": "MT4V6HEGSU",
-      "exclude_paths": [
-        "apps/ios/**"
-      ]
+      "exclude_paths": ["apps/ios/**"]
     },
     {
       "name": "mongo-example-database",

@@ -174,9 +174,7 @@ function shareFromRuntimeHome(path, sessionHome, runtimeHome) {
     symlinkSync(join(runtimeHome, path), link, 'junction')
   } catch (error) {
     // Unshared, the agent starts without the runtime's login there; the turn still runs.
-    process.stderr.write(
-      `cerin: could not share ${path} with the runtime home: ${error.message}\n`,
-    )
+    process.stderr.write(`cerin: could not share ${path} with the runtime home: ${error.message}\n`)
   }
 }
 

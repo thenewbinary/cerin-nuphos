@@ -8,7 +8,8 @@ const joined = (pieces: ReturnType<typeof pastePieces>) =>
   pieces.map((p) => ('url' in p ? p.url : p.text)).join('')
 
 test('Cerin links become chips and the text around them stays as typed', () => {
-  const raw = 'see https://platform.cerin.ai/teams/t/plans/1 then https://platform.cerin.ai/teams/t/plans/2 ok'
+  const raw =
+    'see https://platform.cerin.ai/teams/t/plans/1 then https://platform.cerin.ai/teams/t/plans/2 ok'
   const pieces = pastePieces(raw, isUrl)
 
   assert.deepEqual(pieces, [

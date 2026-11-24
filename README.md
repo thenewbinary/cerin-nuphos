@@ -62,7 +62,7 @@ affiliated with xAI.
 | `apps/desktop` | Electron/Vite/React client — the workspace itself                       |
 | `apps/runtime` | Claude Code / Codex container images, adapters and independent releases |
 | `apps/ios`     | SwiftUI client: pick a session back up away from your desk              |
-| `apps/android` | Jetpack Compose client for Cerin Cloud or a self-hosted backend        |
+| `apps/android` | Jetpack Compose client for Cerin Cloud or a self-hosted backend         |
 
 See [`apps/android/README.md`](apps/android/README.md) for Android build and test
 instructions. The Android client defaults to Cerin Cloud, and **Server
