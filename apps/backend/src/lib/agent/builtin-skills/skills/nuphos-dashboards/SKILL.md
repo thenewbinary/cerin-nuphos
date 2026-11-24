@@ -26,7 +26,7 @@ A panel script runs as an ES module on one of the team's agent runtimes (any onl
 Globals available to every script:
 
 - `params` — the resolved run params: `{ periodStart, periodEnd, granularity, ...staticParams }`. `periodStart`/`periodEnd` are ISO strings and **come from the requested view range, or the dashboard's saved default for scheduled runs** (a panel never sets its own window). `granularity` is `"day" | "week" | "month"`. Anything you put in a panel's `staticParams` (e.g. `provider`, `accountId`, filters) is merged in here.
-- `nuphos` — a read-only HTTP client authenticated with a short-lived panel token for the current script's author: `nuphos.get(path)`. It only calls the Cerin backend, and the token only allows GET requests for the credentials selected in the panel's settings, connector metadata, `/usage`, and dashboards.
+- `cerin` — a read-only HTTP client authenticated with a short-lived panel token for the current script's author: `cerin.get(path)`. It only calls the Cerin backend, and the token only allows GET requests for the credentials selected in the panel's settings, connector metadata, `/usage`, and dashboards.
 - `emit(payload)` — record the panel output. Last call wins. Alternatively `export default` the payload (or a function returning it).
 
 The payload MUST be one of these three shapes (`kind` is the discriminator, and must match the panel's declared `kind`):
@@ -63,7 +63,7 @@ the last 31 days of AI usage as
 can filter that response to the dashboard range:
 
 ```js
-const usage = await nuphos.get(`/teams/${params.teamId}/usage`);
+const usage = await cerin.get(`/teams/${params.teamId}/usage`);
 const start = params.periodStart.slice(0, 10);
 const end = params.periodEnd.slice(0, 10);
 const data = usage.days
@@ -89,7 +89,7 @@ Prefer an implemented Cerin **read endpoint** when it already returns the data
 the panel needs. Build Cerin paths with `params.teamId`; never hard-code a team
 id.
 
-When Cerin has no suitable read endpoint, the panel may use `nuphos.get(...)`
+When Cerin has no suitable read endpoint, the panel may use `cerin.get(...)`
 to retrieve the selected connected account's team-scoped `/credentials`, then
 call the provider API directly with `fetch`. A panel can vend only the
 credentials selected in its settings (`credentialAccess` on the panel; absent
@@ -158,4 +158,4 @@ These apply to every panel you create or edit, not just the initial build.
 1. For spend panels, prefer the provider's native billing/usage export and mark data `actual`. Otherwise compute from official provider pricing and label it `estimated` with assumptions — never turn missing usage into zero cost. For any metric, never turn missing data into zero.
 2. A panel script must be deterministic given `params` and must not mutate infrastructure — it only reads and shapes data.
 3. Never make changes during analysis; any change needs a **Plan** the user confirms.
-4. If a panel run fails, read the snapshot's `error.kind` (`timeout` / `oversize` / `nonzero_exit` / `invalid_output`) and fix the script — usually an off-contract payload (a row missing `xKey`, a string where a number is required) or an unhandled `nuphos` response. `runtime_unavailable` (no runtime online, or it was busy/unreachable) and `runtime_outdated` (the runtime image cannot run panels) are not script bugs: report the snapshot's `error.message` to the user instead of editing the script. Neither is `not_connected`: an integration the script reads is no longer connected to the team (the message's first line names it), so ask the user to reconnect it in Connectors.
+4. If a panel run fails, read the snapshot's `error.kind` (`timeout` / `oversize` / `nonzero_exit` / `invalid_output`) and fix the script — usually an off-contract payload (a row missing `xKey`, a string where a number is required) or an unhandled `cerin` response. `runtime_unavailable` (no runtime online, or it was busy/unreachable) and `runtime_outdated` (the runtime image cannot run panels) are not script bugs: report the snapshot's `error.message` to the user instead of editing the script. Neither is `not_connected`: an integration the script reads is no longer connected to the team (the message's first line names it), so ask the user to reconnect it in Connectors.

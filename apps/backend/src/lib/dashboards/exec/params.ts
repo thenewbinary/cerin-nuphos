@@ -112,7 +112,7 @@ export function resolveParams(
     // shadowed by a panel-supplied key.
     ...(panel.staticParams ?? {}),
     // teamId is injected so scripts can build team-scoped Nuphos URLs
-    // (e.g. `nuphos.get('/teams/'+params.teamId+'/aws-accounts/...')`) without
+    // (e.g. `cerin.get('/teams/'+params.teamId+'/aws-accounts/...')`) without
     // hard-coding it.
     teamId: dashboard.teamId.toHexString(),
     periodStart: dashboard.timeRange.periodStart.toISOString(),
