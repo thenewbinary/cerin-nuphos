@@ -42,7 +42,7 @@ which one; `/team` in the TUI, `cerin team NAME` or `--team` switch it.
 Over SSH, or on Linux without a display, `cerin login` shows a code
 instead of opening a browser. Open https://platform.cerin.ai/auth/social/device
 on any device, sign in, enter the code, choose Continue, then choose Approve.
-Approve signs the terminal in as you. Approve only a code you started
+This signs the terminal in as you. Approve only a code you started
 yourself. `cerin login --device` uses the code even when a browser is
 available. `cerin token list` lists each CLI sign-in, and
 `cerin token revoke ID` signs one out.
