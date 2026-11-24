@@ -123,7 +123,7 @@ describe('Box update', () => {
 
   test('the update installs the newest CLI, drops generated panels and always restarts the host', () => {
     // One install step for create and update: it always fetches the newest CLI.
-    expect(BOX_INSTALL_COMMAND).toContain("curl -fsSL 'http://localhost:3000/install' | sh")
+    expect(BOX_INSTALL_COMMAND).toContain('curl -fsSL https://cerin.ai/install | sh')
     expect(BOX_INSTALL_COMMAND).not.toContain('command -v nuphos')
     const lines = BOX_UPDATE_COMMAND.split('\n')
 
