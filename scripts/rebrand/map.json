@@ -50,7 +50,8 @@
         "apps/desktop/src/lib/webBaseUrl.ts",
         "apps/desktop/src/lib/webBaseUrl.test.ts",
         "apps/desktop/src/lib/atlasLinkMention.test.ts",
-        "apps/desktop/src/app/workspace/useWorkspaceLinkOpeners.test.tsx"
+        "apps/desktop/src/app/workspace/useWorkspaceLinkOpeners.test.tsx",
+        "apps/desktop/local-runtime/reply-images-render.test.mjs"
       ]
     },
     {
@@ -106,10 +107,7 @@
       "why": "The image installs both admin command names; visible instructions prefer Cerin.",
       "pattern": "nuphos-admin",
       "replace": "cerin-admin",
-      "exclude_paths": [
-        "apps/backend/Dockerfile",
-        "apps/backend/bin/nuphos-admin"
-      ]
+      "exclude_paths": ["apps/backend/Dockerfile", "apps/backend/bin/nuphos-admin"]
     },
     {
       "name": "box-agent-inline-code",
@@ -140,6 +138,12 @@
       "why": "Regex fixtures for outbound links use the primary scheme.",
       "pattern": "nuphos:\\\\/\\\\/",
       "replace": "cerin:\\\\/\\\\/"
+    },
+    {
+      "name": "regex-web-hosts",
+      "why": "Regular expressions that recognize existing web links accept both exact origins.",
+      "pattern": "(?<![|])nuphos\\x5c[.]ai",
+      "replace": "(?:platform[.]cerin[.]ai|nuphos[.]ai)"
     },
     {
       "name": "current-repository",
@@ -199,9 +203,7 @@
       "why": "Desktop and CLI releases use The New Binary's Apple team; installed iOS signing metadata is unchanged.",
       "pattern": "6T873K59LQ",
       "replace": "MT4V6HEGSU",
-      "exclude_paths": [
-        "apps/ios/**"
-      ]
+      "exclude_paths": ["apps/ios/**"]
     },
     {
       "name": "mongo-example-database",

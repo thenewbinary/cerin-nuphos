@@ -133,7 +133,10 @@ function createComponents(
   return {
     img: ({ src, alt, width, height }) => {
       const url = typeof src === 'string' ? src : undefined
-      const groupId = /^https:\/\/nuphos\.ai\/_reply-images\/([a-f0-9]{24})$/.exec(url ?? '')?.[1]
+      const groupId =
+        /^https:\/\/(?:platform[.]cerin[.]ai|nuphos[.]ai)\/_reply-images\/([a-f0-9]{24})$/.exec(
+          url ?? '',
+        )?.[1]
 
       return groupId ? (
         <ReplyImage

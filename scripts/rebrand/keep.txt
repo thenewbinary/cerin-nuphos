@@ -25,3 +25,6 @@ apps/desktop/src/lib/webBaseUrl.ts nuphos\.ai   # exact legacy cloud origin and 
 apps/desktop/src/lib/webBaseUrl.test.ts nuphos\.ai   # tests exact legacy host acceptance and lookalike rejection
 apps/desktop/src/lib/atlasLinkMention.test.ts nuphos\.ai   # tests legacy conversation-link mentions
 apps/desktop/src/app/workspace/useWorkspaceLinkOpeners.test.tsx nuphos\.ai   # tests opening legacy cloud conversation links
+apps/desktop/local-runtime/reply-images-render.test.mjs nuphos\.ai   # tests rendering attachments from the exact legacy host
+apps/desktop/src/components/agent/MessageResponse.tsx nuphos\[.\]ai   # regex recognizes attachments from the exact legacy host
+apps/desktop/src/components/agent/panel/UserMessage.tsx nuphos\[.\]ai   # regex recognizes plan mentions from the exact legacy host

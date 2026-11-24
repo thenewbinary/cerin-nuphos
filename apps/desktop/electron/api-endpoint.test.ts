@@ -56,8 +56,8 @@ test('endpoint changes notify runtime listeners after the new endpoint takes eff
   setApiUrl(null)
 })
 
-test('the Cerin backend is not Cerin Cloud, so Cerin updates and usage data stay off', () => {
-  setApiUrl('https://platform.cerin.ai')
+test('a self-hosted backend is not Cerin Cloud, so Cerin updates and usage data stay off', () => {
+  setApiUrl('https://cerin.example.com')
   assert.equal(isNuphosCloud(), false)
   setApiUrl('https://platform.cerin.ai')
   assert.equal(isNuphosCloud(), true)

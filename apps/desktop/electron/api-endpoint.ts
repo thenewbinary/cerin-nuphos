@@ -14,7 +14,7 @@ import { CLI_CONFIG_PATH } from './cli-config-path.ts'
 const DEFAULT_API_URL = 'https://platform.cerin.ai'
 
 // Cerin's hosted backend. Auto-update, the changelog feed and usage analytics
-// are Cerin services, so they stay on only for this host, never for the default.
+// are Cerin services, so they stay on only for this host.
 const NUPHOS_CLOUD_API_URL = 'https://platform.cerin.ai'
 
 // What this process was launched with; resetting the switch returns here, so a

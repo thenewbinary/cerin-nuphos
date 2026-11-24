@@ -35,7 +35,7 @@ const PLAN_MENTION_TRAILING_PUNCT = new Set(['.', ',', ';', ':', '!', '?', ']', 
 function extractPlanMentions(text: string): { planId: string; teamId: string }[] {
   const out: { planId: string; teamId: string }[] = []
   const seen = new Set<string>()
-  const re = /https:\/\/nuphos\.ai\/\S+/g
+  const re = /https:\/\/(?:platform[.]cerin[.]ai|nuphos[.]ai)\/\S+/g
   let m: RegExpExecArray | null
 
   while ((m = re.exec(text)) !== null) {
