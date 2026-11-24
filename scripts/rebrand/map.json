@@ -204,6 +204,18 @@
       ]
     },
     {
+      "name": "mongo-example-database",
+      "why": "The editable example database name uses the current product name; existing database names are unchanged.",
+      "pattern": "nuphos_demo",
+      "replace": "cerin_demo"
+    },
+    {
+      "name": "team-export-filename",
+      "why": "The team export download uses the current product name.",
+      "pattern": "nuphos-team\\.zip",
+      "replace": "cerin-team.zip"
+    },
+    {
       "name": "example-host",
       "why": "Test fixtures.",
       "pattern": "(?<![A-Za-z0-9\\-])nuphos\\.example\\.com",

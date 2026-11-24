@@ -37,7 +37,7 @@ export function registerTeamMigrationRoutes(routes: Hono<{ Variables: TeamAuthVa
         headers: {
           'Content-Type': 'application/zip',
           'Content-Length': String(archive.bytes),
-          'Content-Disposition': 'attachment; filename="nuphos-team.zip"',
+          'Content-Disposition': 'attachment; filename="cerin-team.zip"',
           'Cache-Control': 'no-store',
           'X-Content-Type-Options': 'nosniff',
         },
