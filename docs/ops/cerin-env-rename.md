@@ -209,10 +209,12 @@ These refs point at images or in-image paths that exist only once CI publishes
 from this branch (`runtime-build.yml`, `release-backend.yml`). Until then they
 will not pull or will not match an older image:
 
-- `deploy/compose/docker-compose.yml`, `deploy/railway/runtime/Dockerfile`,
-  `deploy/railway/.railway/railway.ts`, `deploy/helm/cerin/values.yaml`: image
-  repositories and pinned tags (`0.1.66-claude-code`, `v0.145.6`) under the
-  new names. Re-pin to the first published Cerin tags.
+- `deploy/compose`, `deploy/railway`, `deploy/helm`: repinned to the first
+  published Cerin images. Runtime
+  `ghcr.io/thenewbinary/cerin-runtime:commit-45f3647f283b1c6d54d8b942ae0a02d456f67472-claude-code`
+  (`sha256:4d6e77e6ec01aaa39f0c1ca0fe5315f5fab267427c4ce5521a05a00cdca0656c`), backend
+  `ghcr.io/thenewbinary/cerin-backend:v0.145.7`
+  (`sha256:059beab3a3fd09cfad9d0d4f4d5d5a58d5f369bef443131188567a7fede70f5c`).
 - `deploy/railway/runtime/start.sh`, `deploy/compose/smoke.py`,
   `scripts/dev-compose.ts`: the `cerin-runtime-start` entrypoint and
   `.cerin-runtime/auth-key` path exist only in the new image.
