@@ -16,6 +16,9 @@ try {
   const page = desktop.page
 
   await signInScenarios[1]!.run(page, stack)
+  // Sign-in opens Home; a first Bot starts from the Bots page.
+  await page.getByRole('tab', { name: 'Bots' }).click()
+  await page.getByText('Start with your first Bot').waitFor({ state: 'visible' })
   await connectorScenarios[0]!.run(page, stack)
   await page.getByRole('button', { name: 'Connectors', exact: true }).click()
   const dialog = page.getByRole('dialog')

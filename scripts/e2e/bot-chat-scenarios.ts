@@ -17,6 +17,9 @@ import type { Scenario } from './ui.ts'
 export const createBotScenario: Scenario = {
   name: 'create a Bot, talk to it in its chat, and answer its question there',
   run: async (page, stack) => {
+    // Sign-in opens Home; a first Bot starts from the Bots page.
+    await page.getByRole('tab', { name: 'Bots' }).click()
+    await page.getByText('Start with your first Bot').waitFor({ state: 'visible' })
     await page.getByRole('button', { name: 'New Bot', exact: true }).click()
     await page.getByRole('textbox', { name: 'Bot name' }).fill('E2E Bot')
     await page.getByRole('button', { name: 'Create', exact: true }).click()
