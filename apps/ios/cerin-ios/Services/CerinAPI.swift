@@ -162,7 +162,7 @@ extension CerinAPI {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("cerin-ios/\(appVersion)", forHTTPHeaderField: "x-atlas-client")
-        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-nuphos-ai-consent-version")
+        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-cerin-ai-consent-version")
         request.timeoutInterval = timeout
 
         let (data, response) = try await URLSession.shared.data(for: request)

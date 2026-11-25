@@ -6,7 +6,7 @@ import XCTest
 final class InboxUITests: XCTestCase {
     private let pending = "GET /agent/conversations?pendingDecision=true"
     private var live: URL!
-    /// What the app sent, one JSON line per request with a body (`NUPHOS_PREVIEW_REQUESTS`).
+    /// What the app sent, one JSON line per request with a body (`CERIN_PREVIEW_REQUESTS`).
     private var sent: URL!
     private var responses: [String: Any] = [:]
     private var app: XCUIApplication!
@@ -83,7 +83,7 @@ final class InboxUITests: XCTestCase {
     func testAnswersAQuestionFromTheInbox() throws {
         app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
 
         let inboxTab = app.tabBars.buttons["Inbox"].firstMatch
@@ -809,7 +809,7 @@ final class InboxUITests: XCTestCase {
     private func launch(page: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push"] + (page.map { ["-page", $0] } ?? [])
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path, "NUPHOS_PREVIEW_REQUESTS": sent.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path, "CERIN_PREVIEW_REQUESTS": sent.path]
         app.launch()
         return app
     }
@@ -855,14 +855,14 @@ final class InboxUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: live, options: .atomic)
     }
 
-    /// The simulator's screen only; also saved to `NUPHOS_SHOTS` when the run sets it.
+    /// The simulator's screen only; also saved to `CERIN_SHOTS` when the run sets it.
     private func shot(_ name: String) {
         let screenshot = XCUIScreen.main.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
-        if let dir = ProcessInfo.processInfo.environment["NUPHOS_SHOTS"] {
+        if let dir = ProcessInfo.processInfo.environment["CERIN_SHOTS"] {
             try? screenshot.pngRepresentation.write(to: URL(filePath: dir).appending(path: "\(name).png"))
         }
     }

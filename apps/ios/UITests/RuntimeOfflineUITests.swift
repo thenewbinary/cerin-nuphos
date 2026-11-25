@@ -71,7 +71,7 @@ final class RuntimeOfflineUITests: XCTestCase {
             "-preview-home", "-preview-no-push",
             "-open-links", "https://platform.cerin.ai/teams/\(teamId)/agent/\(sessionId)",
         ]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
     }
 

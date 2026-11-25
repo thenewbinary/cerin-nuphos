@@ -42,7 +42,7 @@ struct ConversationView: View {
     @State private var dockScreen: DockDestination?
     /// A watched tab is laid out on the Mac at this screen's size, so its page fits the phone.
     private static var screenSize: CGSize {
-        #if NUPHOS_SHARE_EXTENSION
+        #if CERIN_SHARE_EXTENSION
         // Extensions cannot reach UIApplication; the share sheet keeps the default size.
         return CGSize(width: 390, height: 844)
         #else
@@ -132,7 +132,7 @@ struct ConversationView: View {
     }
 
     private func dismissComposerKeyboard() {
-        #if os(iOS) && !NUPHOS_SHARE_EXTENSION
+        #if os(iOS) && !CERIN_SHARE_EXTENSION
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         #endif
     }

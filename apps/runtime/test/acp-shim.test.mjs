@@ -19,8 +19,8 @@ rl.on('line', (line) => {
   const m = JSON.parse(line)
   if (m.id === undefined) return
   const seen = { method: m.method, params: m.params, pid: process.pid, env: {
-    HOME: process.env.HOME, NUPHOS_TOKEN: process.env.NUPHOS_TOKEN, EXTRA: process.env.EXTRA,
-    GROK_HOME: process.env.GROK_HOME, NUPHOS_AGENT_HOME: process.env.NUPHOS_AGENT_HOME,
+    HOME: process.env.HOME, CERIN_TOKEN: process.env.CERIN_TOKEN, EXTRA: process.env.EXTRA,
+    GROK_HOME: process.env.GROK_HOME, CERIN_AGENT_HOME: process.env.CERIN_AGENT_HOME,
     XDG_DATA_HOME: process.env.XDG_DATA_HOME, XDG_CONFIG_HOME: process.env.XDG_CONFIG_HOME,
     OPENCODE_DISABLE_AUTOUPDATE: process.env.OPENCODE_DISABLE_AUTOUPDATE,
     DSH_HOME: process.env.DSH_HOME } }
@@ -82,7 +82,7 @@ const session = (systemPrompt) => ({
   _meta: {
     [SESSION_META]: {
       systemPrompt,
-      env: { NUPHOS_SESSION_ID: 'conversation-1', NUPHOS_TOKEN: 'token', EXTRA: 'dropped' },
+      env: { CERIN_SESSION_ID: 'conversation-1', CERIN_TOKEN: 'token', EXTRA: 'dropped' },
     },
   },
 })
@@ -106,7 +106,7 @@ test('grok opens the session under its own env and takes the instructions as rul
     assert.equal(children.length, 2)
     assert.deepEqual(children[1].command, ['grok', 'agent', '--no-leader', 'stdio'])
     assert.notEqual(seen.pid, init.result.seen.pid)
-    assert.equal(seen.env.NUPHOS_TOKEN, 'token')
+    assert.equal(seen.env.CERIN_TOKEN, 'token')
     assert.equal(seen.env.EXTRA, undefined)
     assert.match(seen.env.HOME, /\.cerin\/session-homes\/[0-9a-f]{64}$/)
     assert.equal(seen.env.GROK_HOME, join(home, '.grok'))
@@ -126,7 +126,7 @@ test('a teammate reloading the session restarts the agent in their own home, and
       const params = session('Be Cerin.')
       const env = {
         ...params._meta[SESSION_META].env,
-        ...(actor ? { NUPHOS_SESSION_ACTOR: actor } : {}),
+        ...(actor ? { CERIN_SESSION_ACTOR: actor } : {}),
       }
       return call('session/load', {
         ...params,
@@ -273,7 +273,7 @@ test('antigravity takes the instructions on the first prompt only', async () => 
       '--gemini-dir',
       join(home, '.gemini'),
     ])
-    assert.equal(reply.result.seen.env.NUPHOS_AGENT_HOME, home)
+    assert.equal(reply.result.seen.env.CERIN_AGENT_HOME, home)
     assert.equal(reply.result.seen.params._meta.rules, undefined)
 
     const first = await call('session/prompt', {

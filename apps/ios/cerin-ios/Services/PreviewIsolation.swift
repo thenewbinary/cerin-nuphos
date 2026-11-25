@@ -65,7 +65,7 @@ nonisolated enum PreviewIsolation {
 
     private static func launchFixture() -> String? {
         #if targetEnvironment(simulator)
-        ProcessInfo.processInfo.environment["NUPHOS_PREVIEW_RESPONSES"]
+        ProcessInfo.processInfo.environment["CERIN_PREVIEW_RESPONSES"]
             ?? UserDefaults.standard.string(forKey: "previewResponses")
         #else
         nil

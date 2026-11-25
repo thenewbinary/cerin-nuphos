@@ -143,11 +143,11 @@ async function selfHealDesktop(): Promise<void> {
 }
 
 export async function startDesktop() {
-  if (process.env.NUPHOS_DEV_NO_DESKTOP) {
+  if (process.env.CERIN_DEV_NO_DESKTOP) {
     desktop.status = 'stopped'
     desktop.health = { disabled: '—' }
     desktop.url = '(desktop disabled)'
-    pushEvent(desktop, 'skipped (NUPHOS_DEV_NO_DESKTOP=1)')
+    pushEvent(desktop, 'skipped (CERIN_DEV_NO_DESKTOP=1)')
 
     return
   }
@@ -178,9 +178,9 @@ export async function startDesktop() {
     cwd: DESKTOP_DIR,
     env: {
       ...process.env,
-      NUPHOS_API_URL: apiUrl,
-      NUPHOS_LAUNCHER_HEALTH: '1',
-      NUPHOS_CLI_CONFIG: DEV_CLI_CONFIG,
+      CERIN_API_URL: apiUrl,
+      CERIN_LAUNCHER_HEALTH: '1',
+      CERIN_CLI_CONFIG: DEV_CLI_CONFIG,
       ATLAS_WT_BADGE: INSTANCE,
       ATLAS_DEV_SUFFIX: DESKTOP_SUFFIX,
       ATLAS_DEV_CDP_PORT: String(cdp),

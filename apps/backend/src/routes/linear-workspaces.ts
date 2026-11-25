@@ -147,7 +147,7 @@ bindingScoped.delete(
 )
 
 // Agent credential handout, mirroring github-installations /token and
-// betterstack /credentials: the sandbox exchanges its NUPHOS_TOKEN for the
+// betterstack /credentials: the sandbox exchanges its CERIN_TOKEN for the
 // binding's Linear access token and talks to api.linear.app directly. Gated by
 // the per-binding member allow-list.
 bindingScoped.get('/credentials', requireLinearMemberAccess(), async (c) => {

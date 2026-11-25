@@ -61,7 +61,7 @@ function age(path, days) {
 }
 
 function home(host, id, ...files) {
-  const { HOME } = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: id }, host)
+  const { HOME } = cerinSessionHomeEnv({ CERIN_SESSION_ID: id }, host)
   for (const file of files) put(join(HOME, file))
   return HOME
 }
@@ -139,13 +139,13 @@ test('only idle, unused, real session homes directly under the root are removed'
 test('a conversation woken after its home was swept gets a clean one that is kept', async (t) => {
   if (!sweepable) return t.skip('Homes are only swept on Linux and macOS')
   const host = runtime(t)
-  const before = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'woken' }, host)
+  const before = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'woken' }, host)
   put(before.KUBECONFIG, 'old login')
   age(before.HOME, 8)
   assert.deepEqual(await cerinSweepSessionHomes(host.root, { pauseMs: 0 }), [sha('woken')])
   assert.equal(existsSync(before.HOME), false)
 
-  const after = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'woken' }, host)
+  const after = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'woken' }, host)
   assert.deepEqual(after, before)
   assert.equal(statSync(after.HOME).mode & 0o777, 0o700)
   assert.throws(() => readFileSync(after.KUBECONFIG), { code: 'ENOENT' })
@@ -157,10 +157,10 @@ test('a conversation woken after its home was swept gets a clean one that is kep
 test('reopening an idle home renews it, so a resumed conversation keeps its logins', async (t) => {
   if (!sweepable) return t.skip('Homes are only swept on Linux and macOS')
   const host = runtime(t)
-  const { HOME, KUBECONFIG } = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'resumed' }, host)
+  const { HOME, KUBECONFIG } = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'resumed' }, host)
   put(KUBECONFIG, 'login')
   age(HOME, 8)
-  cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'resumed' }, host)
+  cerinSessionHomeEnv({ CERIN_SESSION_ID: 'resumed' }, host)
   assert.deepEqual(await cerinSweepSessionHomes(host.root, { pauseMs: 0 }), [])
   assert.equal(readFileSync(KUBECONFIG, 'utf8'), 'login')
 })

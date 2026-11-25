@@ -16,8 +16,8 @@ import { join } from 'node:path'
 import { createInterface } from 'node:readline'
 import { pathToFileURL } from 'node:url'
 
-const HERMES = process.env.NUPHOS_AGENT_EXECUTABLE || 'hermes'
-const HOME = process.env.NUPHOS_AGENT_HOME || process.env.HOME || '/home/node'
+const HERMES = process.env.CERIN_AGENT_EXECUTABLE || 'hermes'
+const HOME = process.env.CERIN_AGENT_HOME || process.env.HOME || '/home/node'
 const WINDOWS = process.platform === 'win32'
 // What Python on Windows needs to start, find its temp folder and run commands.
 const WINDOWS_ENV = ['SYSTEMROOT', 'TEMP', 'TMP', 'PATHEXT', 'LOCALAPPDATA', 'APPDATA']

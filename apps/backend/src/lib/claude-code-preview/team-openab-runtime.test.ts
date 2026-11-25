@@ -286,7 +286,7 @@ test('records the jobs a runtime advertises and runs one over the control socket
     jobId: 'job-1',
     job: 'panel',
     stdin: '{}',
-    env: { NUPHOS_TOKEN: 't' },
+    env: { CERIN_TOKEN: 't' },
     timeoutMs: 1_000,
     maxStdoutBytes: 10,
   }

@@ -8,9 +8,9 @@ import { resolveDevelopmentRuntimeEndpoint } from '@/lib/claude-code-preview/gat
 
 /** A local stack has no key to hand out, so it derives a stable one from its JWT secret. */
 function localStackTokenKey(): string | undefined {
-  const jwtSecret = optional('NUPHOS_JWT_SECRET')
+  const jwtSecret = optional('CERIN_JWT_SECRET')
 
-  if (process.env.NODE_ENV === 'production' || !bool('NUPHOS_LOCAL_STACK', false) || !jwtSecret)
+  if (process.env.NODE_ENV === 'production' || !bool('CERIN_LOCAL_STACK', false) || !jwtSecret)
     return undefined
 
   return createHmac('sha256', jwtSecret)
@@ -21,9 +21,9 @@ function localStackTokenKey(): string | undefined {
 export function claudeCodePreviewConfig(): ClaudeCodePreviewConfig {
   return {
     developmentControlKey:
-      process.env.NODE_ENV === 'production' ? undefined : optional('NUPHOS_CLAUDE_CONTROL_KEY'),
+      process.env.NODE_ENV === 'production' ? undefined : optional('CERIN_CLAUDE_CONTROL_KEY'),
     codexDevelopmentControlKey:
-      process.env.NODE_ENV === 'production' ? undefined : optional('NUPHOS_CODEX_CONTROL_KEY'),
+      process.env.NODE_ENV === 'production' ? undefined : optional('CERIN_CODEX_CONTROL_KEY'),
     tokenEncryptionKey:
       optional('OPENAB_RUNTIME_TOKEN_ENCRYPTION_KEY') ??
       optional('CLAUDE_CODE_PREVIEW_TOKEN_ENCRYPTION_KEY') ??

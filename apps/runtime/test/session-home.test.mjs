@@ -34,8 +34,8 @@ test('concurrent sessions keep HOME state separate, resume it, and never copy th
   const host = runtime(t)
   put(join(host.HOME, '.aws', 'credentials'), 'host-credentials')
   const originalEnv = { ...host }
-  const a = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host)
-  const b = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'b' }, host)
+  const a = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host)
+  const b = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'b' }, host)
   assert.notEqual(a.HOME, b.HOME)
   assert.deepEqual(host, originalEnv)
   assert.equal(statSync(a.HOME).mode & 0o777, 0o700)
@@ -66,16 +66,16 @@ test('concurrent sessions keep HOME state separate, resume it, and never copy th
   }
   // Tools keep login state under XDG_CACHE_HOME (e.g. Hugging Face tokens).
   assert.notEqual(a.XDG_CACHE_HOME, b.XDG_CACHE_HOME)
-  const resumed = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'b', NUPHOS_TOKEN: 'refreshed' }, host)
+  const resumed = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'b', CERIN_TOKEN: 'refreshed' }, host)
   assert.deepEqual(resumed, b)
   assert.equal(readFileSync(resumed.AWS_SHARED_CREDENTIALS_FILE, 'utf8'), 'session-b')
   assert.equal(readFileSync(join(host.HOME, '.aws', 'credentials'), 'utf8'), 'host-credentials')
-  const traversal = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: '../../outside' }, host)
+  const traversal = cerinSessionHomeEnv({ CERIN_SESSION_ID: '../../outside' }, host)
   assert.match(
     relative(join(host.HOME, '.cerin', 'session-homes'), traversal.HOME),
     /^[a-f0-9]{64}$/,
   )
-  assert.throws(() => cerinSessionHomeEnv({ NUPHOS_TOKEN: 'scoped' }, host), /SESSION_ID/)
+  assert.throws(() => cerinSessionHomeEnv({ CERIN_TOKEN: 'scoped' }, host), /SESSION_ID/)
 })
 
 test('on macOS a session finds the account login Keychain, as it would without a session home', (t) => {
@@ -87,16 +87,16 @@ test('on macOS a session finds the account login Keychain, as it would without a
   const host = runtime(t)
   // A bare HOME has none: Chrome then shows "Keychain Not Found" and waits for a click.
   assert.notEqual(keychain(host.HOME).status, 0)
-  const a = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host)
+  const a = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host)
   assert.equal(keychain(a.HOME).stdout, account.stdout)
-  assert.deepEqual(cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host), a)
+  assert.deepEqual(cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host), a)
 })
 
 test('Claude and Codex receive the same isolated paths without moving the agent login store', (t) => {
   const host = { ...runtime(t), CLAUDE_CONFIG_DIR: '/runtime/claude-login' }
   const context = {
-    NUPHOS_SESSION_ID: 'conversation',
-    NUPHOS_TOKEN: 'session-token',
+    CERIN_SESSION_ID: 'conversation',
+    CERIN_TOKEN: 'session-token',
     HOME: '/override',
   }
   const claude = cerinClaudeSessionEnv({ ...host, ...context }, context, host)
@@ -104,7 +104,7 @@ test('Claude and Codex receive the same isolated paths without moving the agent 
   assert.equal(claude.HOME, codex.shell_environment_policy.set.HOME)
   assert.equal(claude.CLAUDE_CONFIG_DIR, host.CLAUDE_CONFIG_DIR)
   assert.notEqual(claude.HOME, context.HOME)
-  assert.equal(claude.NUPHOS_TOKEN, 'session-token')
+  assert.equal(claude.CERIN_TOKEN, 'session-token')
   assert.equal(
     cerinClaudeSessionEnv({}, context, { HOME: host.HOME }).CLAUDE_CONFIG_DIR,
     join(host.HOME, '.claude'),
@@ -113,9 +113,9 @@ test('Claude and Codex receive the same isolated paths without moving the agent 
 
 test('a teammate acting in a conversation gets their own HOME, the owner keeps theirs', (t) => {
   const host = runtime(t)
-  const owner = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'c' }, host)
-  const guest = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'c', NUPHOS_SESSION_ACTOR: 'g' }, host)
-  const other = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'c', NUPHOS_SESSION_ACTOR: 'h' }, host)
+  const owner = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'c' }, host)
+  const guest = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'c', CERIN_SESSION_ACTOR: 'g' }, host)
+  const other = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'c', CERIN_SESSION_ACTOR: 'h' }, host)
   put(owner.KUBECONFIG, 'owner')
   assert.notEqual(owner.HOME, guest.HOME)
   // Named under the conversation, so reclaiming it finds every teammate's home.
@@ -123,11 +123,11 @@ test('a teammate acting in a conversation gets their own HOME, the owner keeps t
   assert.notEqual(guest.HOME, other.HOME)
   assert.throws(() => readFileSync(guest.KUBECONFIG), { code: 'ENOENT' })
   assert.deepEqual(
-    cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'c', NUPHOS_SESSION_ACTOR: 'g' }, host),
+    cerinSessionHomeEnv({ CERIN_SESSION_ID: 'c', CERIN_SESSION_ACTOR: 'g' }, host),
     guest,
   )
   // Both adapters forward the actor, so Claude and Codex land in the same guest home.
-  const context = { NUPHOS_SESSION_ID: 'c', NUPHOS_SESSION_ACTOR: 'g', NUPHOS_TOKEN: 't' }
+  const context = { CERIN_SESSION_ID: 'c', CERIN_SESSION_ACTOR: 'g', CERIN_TOKEN: 't' }
   const claude = cerinClaudeSessionEnv({ ...host, ...context }, context, host)
   const codex = cerinCodexSessionConfig({}, { 'ai.cerin/codex': { env: context } }, host)
   assert.equal(claude.HOME, guest.HOME)
@@ -143,7 +143,7 @@ test('a selected connector beats credentials in the runtime environment; without
     AWS_PROFILE: 'runtime-profile',
     GH_TOKEN: 'runtime-token',
   }
-  const session = { NUPHOS_SESSION_ID: 'a', NUPHOS_TOKEN: 't' }
+  const session = { CERIN_SESSION_ID: 'a', CERIN_TOKEN: 't' }
   // What the backend adds when AWS and GitHub connectors are selected (connectorEnv).
   const cleared = {
     AWS_ACCESS_KEY_ID: '',
@@ -185,8 +185,8 @@ test('a selected connector beats credentials in the runtime environment; without
 
 test('real git global config changes stay in the calling session', (t) => {
   const host = runtime(t)
-  const a = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host)
-  const b = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'b' }, host)
+  const a = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host)
+  const b = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'b' }, host)
   const git = (env, ...args) =>
     execFileSync('git', ['config', '--global', ...args], { env, encoding: 'utf8' }).trim()
   git(b, 'user.name', 'Session B')
@@ -198,8 +198,8 @@ test('real git global config changes stay in the calling session', (t) => {
 
 test('two sessions install into one pnpm store, and a session keeps a store it chose', (t) => {
   const host = runtime(t)
-  const a = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host)
-  const b = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'b' }, host)
+  const a = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host)
+  const b = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'b' }, host)
   const store = join(host.HOME, '.local', 'share', 'pnpm', 'store')
   const rc = (env) => join(env.XDG_CONFIG_HOME, 'pnpm', 'rc')
   for (const env of [a, b]) {
@@ -207,7 +207,7 @@ test('two sessions install into one pnpm store, and a session keeps a store it c
     assert.equal(readFileSync(rc(env), 'utf8'), `store-dir=${store}\n`)
   }
   writeFileSync(rc(b), 'store-dir=/elsewhere\n')
-  cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'b' }, host)
+  cerinSessionHomeEnv({ CERIN_SESSION_ID: 'b' }, host)
   assert.equal(readFileSync(rc(b), 'utf8'), 'store-dir=/elsewhere\n')
   writeFileSync(rc(b), `store-dir=${store}\n`)
   if (spawnSync('pnpm', ['--version'], { stdio: 'ignore' }).status !== 0)
@@ -221,8 +221,8 @@ test('two sessions install into one pnpm store, and a session keeps a store it c
 
 test('two sessions share Gradle caches but keep their own gradle.properties', (t) => {
   const host = runtime(t)
-  const a = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host)
-  const b = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'b' }, host)
+  const a = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host)
+  const b = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'b' }, host)
   const shared = join(host.HOME, '.gradle', 'caches')
   put(join(a.HOME, '.gradle', 'caches', 'modules-2', 'a.jar'), 'jar')
   assert.equal(readFileSync(join(b.HOME, '.gradle', 'caches', 'modules-2', 'a.jar'), 'utf8'), 'jar')
@@ -235,19 +235,19 @@ test('two sessions share Gradle caches but keep their own gradle.properties', (t
   // A home that already has caches of its own keeps them.
   rmSync(join(b.HOME, '.gradle', 'caches'))
   mkdirSync(join(b.HOME, '.gradle', 'caches'))
-  cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'b' }, host)
+  cerinSessionHomeEnv({ CERIN_SESSION_ID: 'b' }, host)
   assert.equal(lstatSync(join(b.HOME, '.gradle', 'caches')).isDirectory(), true)
 })
 
 test('a session still starts when its pnpm rc cannot be written', (t) => {
   if (process.getuid?.() === 0) return t.skip('root writes through the read-only directory')
   const host = runtime(t)
-  const first = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host)
+  const first = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host)
   const dir = join(first.XDG_CONFIG_HOME, 'pnpm')
   rmSync(join(dir, 'rc'))
   chmodSync(dir, 0o500)
   const warn = t.mock.method(process.stderr, 'write', () => true)
-  const env = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host)
+  const env = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host)
   warn.mock.restore()
   chmodSync(dir, 0o700)
   assert.equal(env.HOME, first.HOME)
@@ -262,8 +262,8 @@ test('real gcloud active configuration and gh token reads remain session scoped'
   if (!available)
     return t.skip('Optional real CLI check requires gcloud and gh; no cloud requests are made')
   const host = runtime(t)
-  const a = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'a' }, host)
-  const b = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'b' }, host)
+  const a = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'a' }, host)
+  const b = cerinSessionHomeEnv({ CERIN_SESSION_ID: 'b' }, host)
   const gcloud = (env, ...args) =>
     execFileSync('gcloud', ['config', ...args, '--quiet'], {
       env,
@@ -298,7 +298,7 @@ test('real gcloud active configuration and gh token reads remain session scoped'
 test('sessions get the long-lived token until it lapses, and an explicit one wins', (t) => {
   const host = runtime(t)
   const configDir = join(host.HOME, '.claude')
-  const context = { NUPHOS_SESSION_ID: 'long-lived' }
+  const context = { CERIN_SESSION_ID: 'long-lived' }
   const now = Date.parse('2026-10-29T00:00:00Z')
   put(
     join(configDir, '.cerin-oauth-token.json'),

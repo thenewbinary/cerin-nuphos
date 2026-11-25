@@ -36,7 +36,7 @@ final class VoiceDictation {
         try session.setCategory(.record, mode: .default)
         try session.setActive(true)
         // The recording ends when the screen locks, so it stays on meanwhile.
-        #if !NUPHOS_SHARE_EXTENSION
+        #if !CERIN_SHARE_EXTENSION
         UIApplication.shared.isIdleTimerDisabled = true
         #endif
         #endif
@@ -82,7 +82,7 @@ final class VoiceDictation {
         recorder = nil
         #if os(iOS)
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-        #if !NUPHOS_SHARE_EXTENSION
+        #if !CERIN_SHARE_EXTENSION
         UIApplication.shared.isIdleTimerDisabled = false
         #endif
         #endif

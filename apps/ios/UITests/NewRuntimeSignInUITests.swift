@@ -61,7 +61,7 @@ final class NewRuntimeSignInUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: live, options: .atomic)
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "runtimes"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
 
         let add = app.buttons["new-runtime-device:box-1"]

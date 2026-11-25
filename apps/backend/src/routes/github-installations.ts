@@ -75,7 +75,7 @@ githubInstallationsRoutes.get('/install-url', requireTeamRole('ADMINISTRATOR'), 
     throw new AppError(
       503,
       'github_app_not_configured',
-      'GitHub App is not configured (set GITHUB_APP_SLUG and NUPHOS_PUBLIC_BACKEND_URL)',
+      'GitHub App is not configured (set GITHUB_APP_SLUG and CERIN_PUBLIC_BACKEND_URL)',
     )
   }
 

@@ -86,7 +86,7 @@ test('the script starts the agent in the background with the token from stdin', 
   )
   assert.match(
     script,
-    /NUPHOS_API_URL='https:\/\/api.dev' NUPHOS_JOIN_TOKEN='nj_1' nohup "\$HOME\/.local\/bin\/cerin" agent .*&\n/,
+    /CERIN_API_URL='https:\/\/api.dev' CERIN_JOIN_TOKEN='nj_1' nohup "\$HOME\/.local\/bin\/cerin" agent .*&\n/,
   )
   assert.doesNotMatch(
     sshJoinScript({ token: 'nj_1', apiUrl: 'https://platform.cerin.ai' }),

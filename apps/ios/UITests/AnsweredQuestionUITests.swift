@@ -50,7 +50,7 @@ final class AnsweredQuestionUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
             "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let lines = app.buttons.matching(identifier: "answered.line")
         XCTAssertTrue(lines.firstMatch.waitForExistence(timeout: 10))
@@ -109,7 +109,7 @@ final class AnsweredQuestionUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
             "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         XCTAssertTrue(app.buttons.matching(identifier: "answered.line").firstMatch.waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts[note].waitForExistence(timeout: 5), "The line says what the answer waits for")

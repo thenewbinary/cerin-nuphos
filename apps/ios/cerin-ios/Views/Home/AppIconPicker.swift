@@ -14,7 +14,7 @@ struct AppIconPicker: View {
         }
 
     static var current: String {
-        #if NUPHOS_SHARE_EXTENSION
+        #if CERIN_SHARE_EXTENSION
         return "B2"
         #else
         return UIApplication.shared.alternateIconName.map { String($0.dropFirst("AppIcon-".count)) } ?? "B2"
@@ -29,7 +29,7 @@ struct AppIconPicker: View {
                 ForEach(Self.icons, id: \.id) { icon in
                     Button {
                         selected = icon.id
-                        #if !NUPHOS_SHARE_EXTENSION
+                        #if !CERIN_SHARE_EXTENSION
                         UIApplication.shared.setAlternateIconName(icon.id == "B2" ? nil : "AppIcon-\(icon.id)") { error in
                             if error != nil { selected = Self.current }
                         }

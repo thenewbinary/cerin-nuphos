@@ -56,10 +56,10 @@ else:
     return {
       PATH: `${bin}:${process.env.PATH ?? ''}`,
       HOME: home,
-      NUPHOS_SESSION_HOME: home,
-      NUPHOS_SESSION_ID: id,
-      NUPHOS_TOKEN: 'synthetic',
-      NUPHOS_BACKEND_URL: 'https://backend.invalid',
+      CERIN_SESSION_HOME: home,
+      CERIN_SESSION_ID: id,
+      CERIN_TOKEN: 'synthetic',
+      CERIN_BACKEND_URL: 'https://backend.invalid',
       CLOUDSDK_CONFIG: join(home, 'custom-gcloud'),
       GH_CONFIG_DIR: join(home, 'custom-gh'),
       GIT_CONFIG_GLOBAL: join(home, '.gitconfig'),
@@ -90,8 +90,8 @@ else:
                     Object.entries(env).filter(
                       ([key]) =>
                         ![
-                          'NUPHOS_SESSION_HOME',
-                          'NUPHOS_SESSION_ID',
+                          'CERIN_SESSION_HOME',
+                          'CERIN_SESSION_ID',
                           'CLOUDSDK_CONFIG',
                           'GH_CONFIG_DIR',
                           'GIT_CONFIG_GLOBAL',

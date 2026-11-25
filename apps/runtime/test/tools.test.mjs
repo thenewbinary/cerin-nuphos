@@ -84,7 +84,7 @@ test('a shim runs the installed launcher directly once the tool is present', () 
   writeFileSync(join(bin, 'demo'), '#!/bin/sh\nprintf "%s|" "$@"\n')
   chmodSync(join(bin, 'demo'), 0o755)
   const out = execFileSync(shim, ['a b', 'c'], {
-    env: { NUPHOS_TOOLS_DIR: root, PATH: '/usr/bin:/bin' },
+    env: { CERIN_TOOLS_DIR: root, PATH: '/usr/bin:/bin' },
   })
   assert.equal(out.toString(), 'a b|c|')
 })
@@ -226,7 +226,7 @@ test('list --json reports every tool with its state for the runtime console', ()
   mkdirSync(join(root, lazy[0], lazy[1].version, '.bin'), { recursive: true })
   const cli = new URL('../image/tools/cerin-tools.mjs', import.meta.url).pathname
   const out = execFileSync(process.execPath, [cli, 'list', '--json'], {
-    env: { NUPHOS_TOOLS_DIR: root, PATH: '/usr/bin:/bin' },
+    env: { CERIN_TOOLS_DIR: root, PATH: '/usr/bin:/bin' },
   }).toString()
   const { tools } = JSON.parse(out)
   assert.deepEqual(

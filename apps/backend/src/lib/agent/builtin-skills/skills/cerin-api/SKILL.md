@@ -49,9 +49,9 @@ bash skills/cerin-api/scripts/openapi.sh --raw
 bash skills/cerin-api/scripts/openapi.sh --no-refresh --path clusters
 ```
 
-The script fetches `${NUPHOS_BACKEND_URL:-https://api.cerin.ai}/openapi.json`, caches it at `/tmp/cerin-openapi.json`, and prints a compact summary by default so the agent can inspect the live contract without reading a huge JSON blob in every turn. If refresh fails but a cache exists, it falls back to the cached schema.
+The script fetches `${CERIN_BACKEND_URL:-https://api.cerin.ai}/openapi.json`, caches it at `/tmp/cerin-openapi.json`, and prints a compact summary by default so the agent can inspect the live contract without reading a huge JSON blob in every turn. If refresh fails but a cache exists, it falls back to the cached schema.
 
-Always call Cerin backend APIs through the `ac` helper or `${NUPHOS_BACKEND_URL:-https://api.cerin.ai}`. Do not hard-code `https://api.cerin.ai`; local dev injects `NUPHOS_BACKEND_URL` so sandbox calls route back through the developer tunnel to the same backend this chat is using.
+Always call Cerin backend APIs through the `ac` helper or `${CERIN_BACKEND_URL:-https://api.cerin.ai}`. Do not hard-code `https://api.cerin.ai`; local dev injects `CERIN_BACKEND_URL` so sandbox calls route back through the developer tunnel to the same backend this chat is using.
 
 Do not fetch raw provider credentials from Cerin credential endpoints just to inspect a third-party provider. For Zeabur, use the documented Cerin API routes under `/teams/{teamId}/zeabur-providers/...` for providers, projects, and servers. Do not put a Zeabur token into shell commands, logs, or external GraphQL calls.
 
@@ -60,11 +60,11 @@ Do not fetch raw provider credentials from Cerin credential endpoints just to in
 All API routes except health/openapi-style public routes should be called with:
 
 ```bash
-Authorization: Bearer $NUPHOS_TOKEN
+Authorization: Bearer $CERIN_TOKEN
 ```
 
 The token is already exported in the sandbox. In a classic sandbox it is the
-current user's session. When `NUPHOS_SESSION_ID` is set it is a conversation
+current user's session. When `CERIN_SESSION_ID` is set it is a conversation
 principal: call the same `/teams/...` URLs, and the backend automatically
 limits the request to that conversation's team, selected credentials, and
 explicitly supported API capabilities. Do not inspect, print, replace, or test
@@ -75,7 +75,7 @@ not available instead of looking for another token or route.
 Reusable helper:
 
 ```bash
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 ```
 
 Call the backend with `curl` (this helper or a skill's scripts), not an HTTP
@@ -86,7 +86,7 @@ default client signatures before the request reaches Cerin. Python's
 
 ## Admin routes and human-only operations
 
-In a conversation principal (`NUPHOS_SESSION_ID` set) the allow-list is the
+In a conversation principal (`CERIN_SESSION_ID` set) the allow-list is the
 whole story: admin-only routes, `GET /teams/:teamId` itself, and every route
 that creates, edits, or removes a cloud/integration binding are denied no
 matter what role the signed-in user holds. Checking the role proves nothing —
@@ -100,7 +100,7 @@ the exact values they need to enter. Do everything you *can* do first — for a
 cloud onboarding that usually means preparing the service account, role, or
 trust policy with the provider skill — so only the human step is left.
 
-In a classic sandbox (no `NUPHOS_SESSION_ID`) the token is the user's own
+In a classic sandbox (no `CERIN_SESSION_ID`) the token is the user's own
 session and admin routes follow the user's team role as usual.
 
 If the work requires external credentials or capabilities outside Cerin API access, such as a cloud CLI action that Cerin does not expose, use the relevant `aws`, `gcloud`, `kubectl`, `github`, `grafana`, or `cloudflare` skill.
@@ -109,7 +109,7 @@ If the work requires external credentials or capabilities outside Cerin API acce
 
 1. For a Cerin API task, fetch the latest OpenAPI schema with `scripts/openapi.sh`. For provider credential setup or a provider-specific workflow, load that provider skill and use its semantic scripts instead.
 2. Pick the matching operation from the live schema.
-3. Use `ac` to call the endpoint with `$NUPHOS_TOKEN`.
+3. Use `ac` to call the endpoint with `$CERIN_TOKEN`.
 4. For a destructive or high-risk mutation, ask for approval with `request_user_decision` (category `approval`) before executing it.
 5. For read-only questions, call the API directly and summarize the result.
 

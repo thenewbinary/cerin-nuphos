@@ -12,21 +12,21 @@ export function storageConfig() {
     // the StorageProvider key — 's3' is the Zeabur-owned default; future
     // team-level BYOS S3 plugs in behind the same interface.
     fileTransfer: {
-      provider: optional('NUPHOS_FILE_TRANSFER_PROVIDER') ?? 's3',
+      provider: optional('CERIN_FILE_TRANSFER_PROVIDER') ?? 's3',
       s3: {
-        bucket: optional('NUPHOS_FILE_TRANSFER_S3_BUCKET'),
-        region: optional('NUPHOS_FILE_TRANSFER_S3_REGION') ?? 'us-east-1',
+        bucket: optional('CERIN_FILE_TRANSFER_S3_BUCKET'),
+        region: optional('CERIN_FILE_TRANSFER_S3_REGION') ?? 'us-east-1',
         // Dedicated credentials scoped to the transfer bucket only — NOT the
         // BYOS connector (that assumes customer roles for customer buckets).
-        accessKeyId: optional('NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID'),
-        secretAccessKey: optional('NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY'),
+        accessKeyId: optional('CERIN_FILE_TRANSFER_S3_ACCESS_KEY_ID'),
+        secretAccessKey: optional('CERIN_FILE_TRANSFER_S3_SECRET_ACCESS_KEY'),
         // Unset ⇒ real AWS S3. Set ⇒ any S3-compatible server (self-hosted
         // RustFS/MinIO, R2, …); see `lib/storage/s3-client.ts`.
-        endpoint: optional('NUPHOS_FILE_TRANSFER_S3_ENDPOINT'),
+        endpoint: optional('CERIN_FILE_TRANSFER_S3_ENDPOINT'),
         // Origin written into presigned URLs, which Desktop and the runtime
         // fetch directly. Unset ⇒ `endpoint`. Set it when the backend reaches
         // storage by a name clients can't resolve, like Compose's `rustfs`.
-        publicEndpoint: optional('NUPHOS_FILE_TRANSFER_S3_PUBLIC_ENDPOINT'),
+        publicEndpoint: optional('CERIN_FILE_TRANSFER_S3_PUBLIC_ENDPOINT'),
       },
       // Lifetime of a transfer record + its S3 object. The S3 bucket lifecycle
       // rule should mirror this as a backstop.

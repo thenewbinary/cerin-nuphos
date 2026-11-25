@@ -6,7 +6,7 @@
 // The adapters are this repository's apps/runtime/image adapters, patched as
 // the image patches them.
 // openab is built from apps/runtime/openab unless --openab (or
-// NUPHOS_OPENAB_BINARY) supplies one. Its build lives in ~/.cache/cerin, so
+// CERIN_OPENAB_BINARY) supplies one. Its build lives in ~/.cache/cerin, so
 // every checkout on this computer shares it. Without --require a target that cannot
 // get an openab binary is staged without one, and the app reports the Local
 // runtime as unavailable in that build.
@@ -351,7 +351,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
   await prepare({
     targets: values.targets.split(',').filter(Boolean),
-    openab: values.openab ?? process.env.NUPHOS_OPENAB_BINARY,
+    openab: values.openab ?? process.env.CERIN_OPENAB_BINARY,
     skipOpenab: values['no-openab'],
     require: values.require,
   })

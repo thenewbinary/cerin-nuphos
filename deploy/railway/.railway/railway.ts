@@ -25,8 +25,8 @@ export default defineRailway(() => {
       // Kernel 6.19+: let glibc own rseq so tcmalloc skips per-CPU caches (SERVER-121912).
       GLIBC_TUNABLES: 'glibc.pthread.rseq=1',
       // Stable replica identity across container replacement; clients use directConnection.
-      NUPHOS_MONGO_HOST: 'localhost',
-      MONGO_INITDB_ROOT_USERNAME: 'nuphos',
+      CERIN_MONGO_HOST: 'localhost',
+      MONGO_INITDB_ROOT_USERNAME: 'cerin',
       MONGO_INITDB_ROOT_PASSWORD: mongoPassword,
     },
   })
@@ -52,7 +52,7 @@ export default defineRailway(() => {
     },
   })
   const backend = service('backend', {
-    source: image('ghcr.io/nuphos/backend:v0.145.6'),
+    source: image('ghcr.io/thenewbinary/cerin-backend:v0.145.6'),
     replicas: { 'us-west2': 1 },
     deploy: { restartPolicyType: 'ALWAYS' },
     healthcheck: '/health/ready',
@@ -61,23 +61,23 @@ export default defineRailway(() => {
     env: {
       NODE_ENV: 'production',
       PORT: '3000',
-      MONGODB_URI: `mongodb://nuphos:${encodeURIComponent(mongoPassword)}@\${{mongo.RAILWAY_PRIVATE_DOMAIN}}:27017/nuphos?authSource=admin&replicaSet=rs0&directConnection=true`,
-      MONGODB_DB: 'nuphos',
-      NUPHOS_JWT_SECRET: required('JWT_SECRET'),
-      NUPHOS_AUTH_BASE_URL: `https://${apiDomain}`,
-      NUPHOS_BACKEND_URL: `https://${apiDomain}`,
-      NUPHOS_PUBLIC_BACKEND_URL: `https://${apiDomain}`,
+      MONGODB_URI: `mongodb://cerin:${encodeURIComponent(mongoPassword)}@\${{mongo.RAILWAY_PRIVATE_DOMAIN}}:27017/cerin?authSource=admin&replicaSet=rs0&directConnection=true`,
+      MONGODB_DB: 'cerin',
+      CERIN_JWT_SECRET: required('JWT_SECRET'),
+      CERIN_AUTH_BASE_URL: `https://${apiDomain}`,
+      CERIN_BACKEND_URL: `https://${apiDomain}`,
+      CERIN_PUBLIC_BACKEND_URL: `https://${apiDomain}`,
       // Optional: without a key, email sign-in is off and `cerin-admin` issues codes.
       ...(optional('RESEND_API_KEY') && {
         RESEND_API_KEY: required('RESEND_API_KEY'),
-        NUPHOS_EMAIL_FROM: required('NUPHOS_EMAIL_FROM'),
+        CERIN_EMAIL_FROM: required('CERIN_EMAIL_FROM'),
       }),
       ATLAS_REDIS_ENABLED: 'false',
-      NUPHOS_FILE_TRANSFER_S3_BUCKET: 'cerin-file-transfers',
-      NUPHOS_FILE_TRANSFER_S3_REGION: 'us-east-1',
-      NUPHOS_FILE_TRANSFER_S3_ENDPOINT: `https://${storageDomain}`,
-      NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: 'cerin',
-      NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: storageSecret,
+      CERIN_FILE_TRANSFER_S3_BUCKET: 'cerin-file-transfers',
+      CERIN_FILE_TRANSFER_S3_REGION: 'us-east-1',
+      CERIN_FILE_TRANSFER_S3_ENDPOINT: `https://${storageDomain}`,
+      CERIN_FILE_TRANSFER_S3_ACCESS_KEY_ID: 'cerin',
+      CERIN_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: storageSecret,
       ATLAS_SKILLS_BUCKET: 'cerin-skills',
       ATLAS_SKILLS_S3_REGION: 'us-east-1',
       ATLAS_SKILLS_S3_ENDPOINT: `https://${storageDomain}`,

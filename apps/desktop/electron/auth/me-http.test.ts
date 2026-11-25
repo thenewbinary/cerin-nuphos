@@ -15,8 +15,8 @@ const API = 'https://a.example.test'
 const USER = { id: 'u1', name: 'Bruce', email: 'bruce@example.com', username: 'bruce' }
 
 // This app's own sign-in file (cli.yaml → desktop.yaml) and launch endpoint.
-process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
-process.env.NUPHOS_API_URL = API
+process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
+process.env.CERIN_API_URL = API
 
 // What GET /auth/me answers, replaced by each test.
 let answer: () => Response = () => new Response(null, { status: 500 })

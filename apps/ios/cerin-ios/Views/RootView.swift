@@ -32,7 +32,7 @@ struct RootView: View {
         .task(id: "\(session.generation)/\(isSignedIn)") {
             if isSignedIn { await session.activatePush() }
         }
-        #if os(iOS) && !NUPHOS_SHARE_EXTENSION
+        #if os(iOS) && !CERIN_SHARE_EXTENSION
         // A request that needs a recent code waits on this sheet (StepUp.swift).
         .onAppear { stepUp.present = presentStepUp }
         #endif
@@ -58,7 +58,7 @@ private struct SplashView: View {
     }
 }
 
-#if os(iOS) && !NUPHOS_SHARE_EXTENSION
+#if os(iOS) && !CERIN_SHARE_EXTENSION
 /// Over whatever is on screen, settings sheets included: a SwiftUI sheet on the
 /// root view would not show while another sheet is up.
 @MainActor private func presentStepUp(_ prompt: StepUpPrompt) {

@@ -59,7 +59,7 @@ function secret(): string {
   const value = config.auth.jwtSecret
 
   if (!value) {
-    throw new AppError(503, 'jwt_secret_unavailable', 'NUPHOS_JWT_SECRET is required')
+    throw new AppError(503, 'jwt_secret_unavailable', 'CERIN_JWT_SECRET is required')
   }
 
   return value

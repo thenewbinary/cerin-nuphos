@@ -20,8 +20,8 @@ export async function cerinSyncRuntimeSkills(params, run) {
     params?._meta?.['ai.cerin/codex']?.env ??
     params?._meta?.['ai.cerin/session']?.env ??
     {}
-  const url = env.NUPHOS_RUNTIME_SKILLS_URL
-  const token = env.NUPHOS_RUNTIME_SKILLS_TOKEN
+  const url = env.CERIN_RUNTIME_SKILLS_URL
+  const token = env.CERIN_RUNTIME_SKILLS_TOKEN
 
   // Both or nothing: a managed pod carries neither and must not be touched.
   if (typeof url !== 'string' || typeof token !== 'string' || !url || !token)
@@ -36,7 +36,7 @@ export async function cerinSyncRuntimeSkills(params, run) {
       const child = spawn(run?.script ?? '/usr/local/bin/cerin-sync-skills', {
         // The bundle credential is the only thing this child needs from us; it must not
         // inherit the agent's account or the runtime's transport keys.
-        // Deliberately not NUPHOS_RUNTIME_WORKSPACE. The script mkdirs under it,
+        // Deliberately not CERIN_RUNTIME_WORKSPACE. The script mkdirs under it,
         // replaces files in it and recursively removes trees beneath it, so a path
         // chosen per session would be a write primitive pointed wherever the caller
         // liked. The image's own workspace is the script's default and the only one
@@ -45,8 +45,8 @@ export async function cerinSyncRuntimeSkills(params, run) {
         env: {
           PATH: '/usr/local/bin:/usr/bin:/bin',
           HOME: '/home/node',
-          NUPHOS_RUNTIME_SKILLS_URL: url,
-          NUPHOS_RUNTIME_SKILLS_TOKEN: token,
+          CERIN_RUNTIME_SKILLS_URL: url,
+          CERIN_RUNTIME_SKILLS_TOKEN: token,
           ...extra,
           ...(run?.env ?? {}),
         },
@@ -78,7 +78,7 @@ export async function cerinSyncRuntimeSkills(params, run) {
 
   // The script's own default workspace; see the note on the child's environment above.
   const teamSkills = path.join(
-    run?.env?.NUPHOS_RUNTIME_WORKSPACE ?? '/workspace',
+    run?.env?.CERIN_RUNTIME_WORKSPACE ?? '/workspace',
     '.claude',
     'skills',
   )
@@ -162,7 +162,7 @@ export async function cerinSyncRuntimeSkills(params, run) {
     const credentials = run?.credentialsDir ?? process.env.OPENAB_CREDENTIALS_DIR
     const refreshed = !credentials
       ? ''
-      : await fs.readFile(path.join(credentials, 'NUPHOS_RUNTIME_SKILLS_TOKEN'), 'utf8').then(
+      : await fs.readFile(path.join(credentials, 'CERIN_RUNTIME_SKILLS_TOKEN'), 'utf8').then(
           (value) => value.trim(),
           () => '',
         )
@@ -180,7 +180,7 @@ export async function cerinSyncRuntimeSkills(params, run) {
     if (!credential) await empty()
     else if (
       await sync(
-        { NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR: personal, NUPHOS_RUNTIME_SKILLS_TOKEN: credential },
+        { CERIN_RUNTIME_PERSONAL_SKILLS_DIR: personal, CERIN_RUNTIME_SKILLS_TOKEN: credential },
         timeoutMs,
       )
     ) {
@@ -332,7 +332,7 @@ export async function cerinTraceRestore(params, operation, restore) {
     params?._meta?.['ai.cerin/codex']?.env ??
     params?._meta?.['ai.cerin/session']?.env ??
     {}
-  const sessionId = env.NUPHOS_SESSION_ID
+  const sessionId = env.CERIN_SESSION_ID
   let record = () => {}
   // Do not log arbitrary metadata, native error messages, prompts, or credentials.
   if (typeof sessionId === 'string' && /^[\da-f-]{36}$/iu.test(sessionId)) {

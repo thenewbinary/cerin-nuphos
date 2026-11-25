@@ -19,7 +19,7 @@ class ConsentInterceptor : Interceptor {
         val revision = AiAccess.revision
         if (!AiAccess.allows(bearer)) throw IOException("Confirm your AI sharing choice before using agents.")
         val response = chain.proceed(request.newBuilder()
-            .header("x-nuphos-ai-consent-version", AccountApi.AI_CONSENT_VERSION).build())
+            .header("x-cerin-ai-consent-version", AccountApi.AI_CONSENT_VERSION).build())
         if (response.code == 403 && response.peekBody(4096).string().contains("ai_consent_required")) {
             AiAccess.revokeIfCurrent(bearer, revision)
         }

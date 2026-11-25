@@ -112,7 +112,7 @@ What to know before you plan around it:
   any backend. Emailing codes needs a Resend key;
   without one, `cerin-admin` in the backend image creates the first user and
   team and prints sign-in codes and server join tokens (see the
-  [Helm README](deploy/helm/README.md#first-user-and-team)). A launch-time `NUPHOS_API_URL` (as
+  [Helm README](deploy/helm/README.md#first-user-and-team)). A launch-time `CERIN_API_URL` (as
   `bun run dev` sets) is Desktop's starting endpoint and can still be changed.
   Google sign-in goes through the `platform.cerin.ai` web page, so it only works
   against Cerin Cloud.
@@ -141,7 +141,7 @@ change touches.
 - Docker (Docker Desktop, or Docker Engine with Compose v2.24+) and `openssl` for the local stack `bun run dev` runs on.
 - Rust, installed with [rustup](https://rustup.rs), for the Local runtime's `openab` binary, which
   `bun run dev` builds from `apps/runtime/openab`. The build installs the pinned toolchain itself.
-- Google OAuth credentials and `NUPHOS_JWT_SECRET` for Cerin auth flows.
+- Google OAuth credentials and `CERIN_JWT_SECRET` for Cerin auth flows.
 
 ## Formatting and Linting
 
@@ -217,7 +217,7 @@ share one Mongo / RustFS / runtime stack, whose secrets live in
 is one. If that file and the running stack ever disagree, `bun run dev` stops
 before recreating the stack under the other instances; copy the stack's keys
 into the file, or wipe the stack with `bun run dev:reset`. Everything else derives from the instance
-name, which is the checkout's directory name or `NUPHOS_DEV_INSTANCE`:
+name, which is the checkout's directory name or `CERIN_DEV_INSTANCE`:
 
 - the backend, Vite and DevTools (CDP) ports, each claimed free at start;
 - the Desktop profile, `Cerin Dev (<name> local)`;
@@ -225,7 +225,7 @@ name, which is the checkout's directory name or `NUPHOS_DEV_INSTANCE`:
 - the logs, `$TMPDIR/cerin-dev-logs/<name>/`.
 
 Two checkouts with the same directory name, or two instances from one
-checkout, need different `NUPHOS_DEV_INSTANCE` values. Sign-ins from the old
+checkout, need different `CERIN_DEV_INSTANCE` values. Sign-ins from the old
 shared `cli.dev.yaml` are not carried over, so each instance signs in once; the
 backend prints the email code in the dashboard.
 

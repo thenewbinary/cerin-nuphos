@@ -6,7 +6,7 @@ The Composio API key remains on the backend. Jira authorization is not reused.
 
 ## Server configuration
 
-Set `NUPHOS_COMPOSIO_API_KEY` to a Composio project's API key. That turns on
+Set `CERIN_COMPOSIO_API_KEY` to a Composio project's API key. That turns on
 every Composio connector, Trello included; there is no separate Trello switch.
 The backend uses the project's oldest Composio-managed Trello auth config, and
 creates one when the project has none. Connections use the hosted Connect Link
@@ -14,7 +14,7 @@ flow; legacy managed-account initiation is unsupported. No SDK or additional
 secret-storage service is required.
 
 The backend needs a public HTTPS origin, resolved like the other OAuth connectors:
-`NUPHOS_PUBLIC_BACKEND_URL`, or `NUPHOS_BACKEND_URL` when that is public. The generated
+`CERIN_PUBLIC_BACKEND_URL`, or `CERIN_BACKEND_URL` when that is public. The generated
 Connect Link returns to `<origin>/trello-app/setup?state=…`, then opens the
 `cerin://trello-callback` application link. Completion requires the initiating
 administrator's authenticated session and a one-time code. Trello always uses

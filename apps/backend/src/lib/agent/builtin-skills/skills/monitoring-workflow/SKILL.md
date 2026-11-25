@@ -20,7 +20,7 @@ provider-native condition
 ```
 
 Every Trigger needs `targetSessionId`. Use the current conversation
-(`$NUPHOS_SESSION_ID`) unless the user names another of theirs.
+(`$CERIN_SESSION_ID`) unless the user names another of theirs.
 
 The provider-side sender is the provider's resource, not Cerin's: Cerin does
 not record, verify, or clean it up. Deleting the trigger leaves it in place.

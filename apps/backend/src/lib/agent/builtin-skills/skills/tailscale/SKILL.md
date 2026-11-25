@@ -7,7 +7,7 @@ description: Use a Tailscale OAuth client bound in Cerin to inspect or change Ta
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -50,8 +50,8 @@ read -r -s -p "Tailscale OAuth client secret: " tailscale_client_secret
 printf '\n'
 
 python3 - "$team_id" "$label" "$tailscale_client_id" "$tailscale_client_secret" <<'PY' | \
-  curl -fsS -X POST "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}/teams/${team_id}/tailscale-clients" \
-    -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+  curl -fsS -X POST "${CERIN_BACKEND_URL:-https://api.cerin.ai}/teams/${team_id}/tailscale-clients" \
+    -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
     -H "Content-Type: application/json" \
     --data-binary @-
 import json
@@ -69,8 +69,8 @@ PY
 After binding, list clients:
 
 ```bash
-curl -fsS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") \
-  "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}/teams/${team_id}/tailscale-clients" | python3 -m json.tool
+curl -fsS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") \
+  "${CERIN_BACKEND_URL:-https://api.cerin.ai}/teams/${team_id}/tailscale-clients" | python3 -m json.tool
 ```
 
 ## Authenticate
@@ -81,7 +81,7 @@ Use the exact setup command shown in the Cerin credential prompt. It looks like:
 bash skills/tailscale/scripts/setup-credentials.sh <teamId> <clientId>
 ```
 
-The script calls `GET /teams/:teamId/tailscale-clients/:clientId/credentials` on the Cerin backend with the user's `NUPHOS_TOKEN`. In an Cerin agent sandbox it automatically prefers the agent-session scoped endpoint. It writes `~/.tailscale/cerin.env` and exports values that later shell commands can source.
+The script calls `GET /teams/:teamId/tailscale-clients/:clientId/credentials` on the Cerin backend with the user's `CERIN_TOKEN`. In an Cerin agent sandbox it automatically prefers the agent-session scoped endpoint. It writes `~/.tailscale/cerin.env` and exports values that later shell commands can source.
 
 ```bash
 source ~/.tailscale/cerin.env

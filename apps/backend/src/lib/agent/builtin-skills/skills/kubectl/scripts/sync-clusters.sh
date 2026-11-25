@@ -8,18 +8,18 @@
 # ~/.kube/config is missing or a context you expect isn't listed.
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
-if [ -z "${NUPHOS_TOKEN:-}" ] || [ -z "${NUPHOS_SESSION_ID:-}" ]; then
-  echo "NUPHOS_TOKEN / NUPHOS_SESSION_ID are not set — this script only works inside the Cerin agent sandbox." >&2
+if [ -z "${CERIN_TOKEN:-}" ] || [ -z "${CERIN_SESSION_ID:-}" ]; then
+  echo "CERIN_TOKEN / CERIN_SESSION_ID are not set — this script only works inside the Cerin agent sandbox." >&2
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
-url="${base}/agent-sessions/${NUPHOS_SESSION_ID}/kubeconfig"
+url="${base}/agent-sessions/${CERIN_SESSION_ID}/kubeconfig"
 connect_timeout=10
 max_time=90
 
@@ -56,7 +56,7 @@ trap 'rm -f "$tmp" "$resolved" "$merged"' EXIT
 # enumeration sweeps cloud list APIs, so allow a generous ceiling.
 http_code="$(curl -sS -o "$tmp" -w '%{http_code}' \
   --connect-timeout "$connect_timeout" --max-time "$max_time" \
-  -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+  -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
   -H 'Accept: application/yaml' \
   "$url")"
 
@@ -80,7 +80,7 @@ if [ "$http_code" != "200" ]; then
   exit 1
 fi
 
-sed "s|__NUPHOS_SKILLS_DIR__|${skills_dir}|g" "$tmp" > "$resolved"
+sed "s|__CERIN_SKILLS_DIR__|${skills_dir}|g" "$tmp" > "$resolved"
 
 rm -f "$no_clusters_marker"
 out="$HOME/.kube/config"

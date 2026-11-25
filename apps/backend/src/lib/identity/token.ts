@@ -25,7 +25,7 @@ export const MAX_RUN_TOKEN_TTL_SEC = 24 * 60 * 60
  * Sign-in JWTs issued before sessions existed lived 30 days. They are accepted
  * until they expire on their own; anything signed for longer is refused. Once
  * the last of them has expired, verify against MAX_RUN_TOKEN_TTL_SEC instead.
- * To end them all sooner, rotate NUPHOS_JWT_SECRET.
+ * To end them all sooner, rotate CERIN_JWT_SECRET.
  */
 const LEGACY_SIGN_IN_TTL_SEC = 30 * 24 * 60 * 60
 
@@ -93,7 +93,7 @@ export function verifyCerinToken(token: string): CerinRunClaims | null {
 
 function requireJwtSecret(): string {
   if (!config.auth.jwtSecret) {
-    throw new Error('NUPHOS_JWT_SECRET or JWT_SECRET_KEY is required for Cerin auth')
+    throw new Error('CERIN_JWT_SECRET or JWT_SECRET_KEY is required for Cerin auth')
   }
 
   return config.auth.jwtSecret

@@ -5,7 +5,7 @@ import { cerinAuthorizeComputerUse } from './computer-use-permission.mjs'
 
 const authorize = (platform) =>
   runInNewContext(`(${cerinAuthorizeComputerUse.toString()})`, {
-    process: { platform, env: { NUPHOS_CUA_PERMISSION_CLIENT: '/bundle/cua-permission' } },
+    process: { platform, env: { CERIN_CUA_PERMISSION_CLIENT: '/bundle/cua-permission' } },
   })
 const cua = { _meta: { connector_id: 'computer-use' } }
 

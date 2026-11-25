@@ -82,7 +82,7 @@ const endpoint = { url: 'wss://runtime.invalid/acp', authKey: 'test', runtimeId:
 const attach = (connection = client()) =>
   attachOpenAbSession(connection, 'team', 'conversation', endpoint, [], undefined, {
     provider: 'codex',
-    env: { NUPHOS_TOKEN: 'scoped' },
+    env: { CERIN_TOKEN: 'scoped' },
   })
 
 beforeEach(() => {
@@ -96,7 +96,7 @@ test('a new session snapshots the conversation’s picks into native session met
   defaults = { model: 'b', fast: 'off', effort: 'high' }
   expect(await attach()).toEqual({ openabSessionId: 'new-session', fresh: true, defaults })
   expect(calls).toEqual([
-    { method: 'create', runtime: { provider: 'codex', env: { NUPHOS_TOKEN: 'scoped' }, defaults } },
+    { method: 'create', runtime: { provider: 'codex', env: { CERIN_TOKEN: 'scoped' }, defaults } },
   ])
   expect(attachment).toEqual({
     openabSessionId: 'new-session',

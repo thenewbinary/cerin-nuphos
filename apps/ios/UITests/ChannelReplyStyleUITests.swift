@@ -129,7 +129,7 @@ final class ChannelReplyStyleUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
             "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         return app
     }

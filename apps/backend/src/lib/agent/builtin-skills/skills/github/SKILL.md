@@ -39,7 +39,7 @@ merge requirements apply to both paths.
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, write to a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -80,7 +80,7 @@ is exported in the runtime environment.
 
 ```bash
 # Reuse the helper from the cerin-api skill (loads it if needed):
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 ac /teams/$TEAM/github-installations | python3 -m json.tool
 # → { "installations": [

@@ -39,8 +39,8 @@ test('Claude recreates a live session when the turn runs in another session home
       return { sessionId: opts.resume };
     };
     const turn = (actor) => ({ cwd: process.env.HOME, sessionId: 'live', mcpServers: [],
-      _meta: { claudeCode: { options: { env: { NUPHOS_SESSION_ID: 'conv-1', NUPHOS_TOKEN: 'synthetic',
-        ...(actor ? { NUPHOS_SESSION_ACTOR: actor } : {}) } } } } });
+      _meta: { claudeCode: { options: { env: { CERIN_SESSION_ID: 'conv-1', CERIN_TOKEN: 'synthetic',
+        ...(actor ? { CERIN_SESSION_ACTOR: actor } : {}) } } } } });
     const steps = [];
     // owner, owner again, a teammate (#453), the owner, automated work, automated again
     for (const actor of [null, null, 'teammate-2', null, 'automated', 'automated']) {

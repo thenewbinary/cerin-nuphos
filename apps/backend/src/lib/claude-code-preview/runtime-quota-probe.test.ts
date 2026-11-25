@@ -148,7 +148,7 @@ test('the probe names the Claude account by a hash of its UUID, never the email'
 })
 
 test('a reading keeps only a 16-hex account key', () => {
-  expect(parseQuotaReading('__NUPHOS_QUOTA__{"usage":{},"accountKey":"a@example.com"}\n')).toEqual({
+  expect(parseQuotaReading('__CERIN_QUOTA__{"usage":{},"accountKey":"a@example.com"}\n')).toEqual({
     usage: {},
   })
 })

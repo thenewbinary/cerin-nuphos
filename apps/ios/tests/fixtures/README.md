@@ -1,6 +1,6 @@
 # Offline by construction
 
-Preview mode (a `-preview-*` argument or `NUPHOS_PREVIEW_RESPONSES`) cannot reach a
+Preview mode (a `-preview-*` argument or `CERIN_PREVIEW_RESPONSES`) cannot reach a
 real backend. The API moves to `api.preview.invalid`, answered from the fixture.
 Every other host is refused and logged as `preview_blocked`, except this machine:
 `127.0.0.1`, `localhost` and files still work, so point local assets at those.
@@ -9,7 +9,7 @@ A web view's subresources are out of reach of this, so the dock opens only local
 # Simulator notification regression
 
 Build Debug and install `ai.cerin.ios` into an iOS simulator. Launch it with
-`SIMCTL_CHILD_NUPHOS_PREVIEW_RESPONSES` set to the absolute path of
+`SIMCTL_CHILD_CERIN_PREVIEW_RESPONSES` set to the absolute path of
 `push-responses.json`, and pass `-preview-home` to `simctl launch`.
 The fake responses apply only to platform.cerin.ai; no real account or provider is used.
 The simulator remembers the fixture path for OS-initiated cold launches.
@@ -42,7 +42,7 @@ agent in a turn that answers `chat-release` (its `channelIds`), so the typing
 bubble shows there. Launch a Debug build with it:
 
 ```sh
-SIMCTL_CHILD_NUPHOS_PREVIEW_RESPONSES="$PWD/tests/fixtures/channel-responses.json" \
+SIMCTL_CHILD_CERIN_PREVIEW_RESPONSES="$PWD/tests/fixtures/channel-responses.json" \
   xcrun simctl launch booted ai.cerin.ios -preview-home \
   -open-links https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release
 ```

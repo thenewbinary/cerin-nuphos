@@ -54,9 +54,9 @@ export async function startStorage(port: number): Promise<Record<string, string>
   await until('the file-transfer bucket to exist', async () => createBucket(endpoint))
 
   return {
-    NUPHOS_FILE_TRANSFER_S3_BUCKET: BUCKET,
-    NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: ACCESS_KEY,
-    NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: SECRET_KEY,
-    NUPHOS_FILE_TRANSFER_S3_ENDPOINT: endpoint,
+    CERIN_FILE_TRANSFER_S3_BUCKET: BUCKET,
+    CERIN_FILE_TRANSFER_S3_ACCESS_KEY_ID: ACCESS_KEY,
+    CERIN_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: SECRET_KEY,
+    CERIN_FILE_TRANSFER_S3_ENDPOINT: endpoint,
   }
 }

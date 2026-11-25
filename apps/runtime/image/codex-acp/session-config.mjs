@@ -6,15 +6,15 @@ export function cerinCodexSessionConfig(config, meta, processEnv = process.env) 
   const context = meta?.['ai.cerin/codex']
   if (!context) return config
   const allowed = new Set([
-    'NUPHOS_TOKEN',
-    'NUPHOS_BACKEND_URL',
-    'NUPHOS_PUBLIC_URL',
-    'NUPHOS_TEAM_ID',
+    'CERIN_TOKEN',
+    'CERIN_BACKEND_URL',
+    'CERIN_PUBLIC_URL',
+    'CERIN_TEAM_ID',
     'TEAM',
-    'NUPHOS_SESSION_ID',
-    'NUPHOS_SESSION_ACTOR',
-    'NUPHOS_PLAN_API_BASE',
-    'NUPHOS_PLAN_API_TOKEN',
+    'CERIN_SESSION_ID',
+    'CERIN_SESSION_ACTOR',
+    'CERIN_PLAN_API_BASE',
+    'CERIN_PLAN_API_TOKEN',
   ])
   const env = Object.fromEntries(
     Object.entries(context.env ?? {}).filter(
@@ -93,8 +93,8 @@ const cerinThreadHomes = new Map()
 
 function cerinThreadHome(meta, processEnv) {
   const env = meta?.['ai.cerin/codex']?.env ?? {}
-  const { NUPHOS_SESSION_ID, NUPHOS_SESSION_ACTOR } = env
-  return cerinSessionHomeEnv({ NUPHOS_SESSION_ID, NUPHOS_SESSION_ACTOR }, processEnv).HOME ?? ''
+  const { CERIN_SESSION_ID, CERIN_SESSION_ACTOR } = env
+  return cerinSessionHomeEnv({ CERIN_SESSION_ID, CERIN_SESSION_ACTOR }, processEnv).HOME ?? ''
 }
 
 // App Server ignores a resume's config while a subscription holds the loaded

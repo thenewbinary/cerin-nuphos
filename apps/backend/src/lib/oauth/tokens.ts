@@ -14,7 +14,7 @@ import { MCP_SCOPE } from './metadata'
 function jwtSecret(): string {
   const secret = config.auth.jwtSecret
 
-  if (!secret) throw new Error('NUPHOS_JWT_SECRET / JWT_SECRET_KEY is required to issue MCP tokens')
+  if (!secret) throw new Error('CERIN_JWT_SECRET / JWT_SECRET_KEY is required to issue MCP tokens')
 
   return secret
 }

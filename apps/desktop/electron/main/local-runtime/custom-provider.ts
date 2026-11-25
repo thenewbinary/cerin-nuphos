@@ -32,7 +32,7 @@ export const PROVIDER_KEYCHAIN_SERVICE = 'ai.cerin.desktop.provider'
 /** Claude Code's gateway token, and the variable Codex's provider names as its `env_key`. */
 export const PROVIDER_KEY_ENV: Record<CustomProviderAgent, string> = {
   'claude-code': 'ANTHROPIC_AUTH_TOKEN',
-  codex: 'NUPHOS_CODEX_PROVIDER_KEY',
+  codex: 'CERIN_CODEX_PROVIDER_KEY',
 }
 
 const FILE = 'custom-providers.json'

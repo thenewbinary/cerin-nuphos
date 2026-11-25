@@ -10,13 +10,12 @@
 # CERIN_VERSION=X.Y.Z pins a version, CERIN_INSTALL_DIR changes where it
 # goes (default ~/.local/bin), CERIN_DOWNLOAD_URL points at a mirror of the
 # release assets, CERIN_LATEST_URL at another backend's /cli/latest, and
-# CERIN_NO_MODIFY_PATH=1 leaves your shell profile alone. The NUPHOS_* names
-# of these still work.
+# CERIN_NO_MODIFY_PATH=1 leaves your shell profile alone.
 set -eu
 
 REPO=${CERIN_REPO:-thenewbinary/cerin-platform}
-DIR=${CERIN_INSTALL_DIR:-${NUPHOS_INSTALL_DIR:-$HOME/.local/bin}}
-VERSION=${CERIN_VERSION:-${NUPHOS_VERSION:-}}
+DIR=${CERIN_INSTALL_DIR:-$HOME/.local/bin}
+VERSION=${CERIN_VERSION:-}
 JOIN=
 
 fail() {
@@ -29,7 +28,7 @@ while [ $# -gt 0 ]; do
   case "$#:$1" in
     1:*) fail "usage: sh -s -- --join TOKEN [--api-url URL]" ;;
     *:--join) JOIN=$2 ;;
-    *:--api-url) export NUPHOS_API_URL="$2" ;;
+    *:--api-url) export CERIN_API_URL="$2" ;;
     *) fail "usage: sh -s -- --join TOKEN [--api-url URL]" ;;
   esac
   shift 2
@@ -51,7 +50,7 @@ trap 'rm -rf "$tmp"' EXIT
 
 if [ -z "$VERSION" ]; then
   # Asked of Cerin rather than the GitHub API, which rate-limits shared IPs.
-  latest=${CERIN_LATEST_URL:-${NUPHOS_LATEST_URL:-https://platform.cerin.ai/cli/latest}}
+  latest=${CERIN_LATEST_URL:-https://platform.cerin.ai/cli/latest}
   VERSION=$(curl -fsS "$latest" 2>"$tmp/latest.err") ||
     fail "could not look up the newest version at $latest: $(cat "$tmp/latest.err")
 Set CERIN_VERSION=X.Y.Z to install a known version (see https://github.com/$REPO/releases)."
@@ -61,7 +60,7 @@ Set CERIN_VERSION=X.Y.Z to install a known version (see https://github.com/$REPO
   esac
 fi
 
-base=${CERIN_DOWNLOAD_URL:-${NUPHOS_DOWNLOAD_URL:-https://github.com/$REPO/releases/download/cli-v$VERSION}}
+base=${CERIN_DOWNLOAD_URL:-https://github.com/$REPO/releases/download/cli-v$VERSION}
 asset="cerin-$target.tar.gz"
 echo "Installing cerin $VERSION ($target) into $DIR"
 curl -fsSL "$base/$asset" -o "$tmp/$asset" || fail "could not download $base/$asset"
@@ -99,7 +98,7 @@ esac
 case ":$PATH:" in
   *":$DIR:"*) ;;
   *)
-    if [ "${CERIN_NO_MODIFY_PATH:-${NUPHOS_NO_MODIFY_PATH:-}}" != 1 ] &&
+    if [ "${CERIN_NO_MODIFY_PATH:-}" != 1 ] &&
       { grep -qsxF "$line" "$profile" || printf '\n%s\n' "$line" >>"$profile"; }; then
       echo "Added $DIR to PATH in $profile; open a new shell to run \`cerin\`."
     else
@@ -112,5 +111,5 @@ esac
 # Started here by its path, since this shell's PATH change cannot reach the caller's.
 if [ -n "$JOIN" ]; then
   rm -rf "$tmp"
-  NUPHOS_JOIN_TOKEN=$JOIN exec "$DIR/cerin" agent
+  CERIN_JOIN_TOKEN=$JOIN exec "$DIR/cerin" agent
 fi

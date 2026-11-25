@@ -7,7 +7,7 @@ import os from 'node:os'
 // the user's terminal actually sees, run their shell once as an interactive
 // login shell, dump `env` between markers, and cache the result.
 
-const MARKER = '__NUPHOS_SHELL_ENV_MARKER__'
+const MARKER = '__CERIN_SHELL_ENV_MARKER__'
 const RESOLVE_TIMEOUT_MS = 10_000
 // Interactive rc files can print arbitrary noise (prompts, banners) around the
 // markers; give the buffer plenty of headroom.

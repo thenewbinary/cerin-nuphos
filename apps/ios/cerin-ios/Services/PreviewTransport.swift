@@ -15,13 +15,13 @@ nonisolated final class PreviewTransport: URLProtocol, @unchecked Sendable {
             return
         }
         let env = ProcessInfo.processInfo.environment
-        let file = env["NUPHOS_PREVIEW_RESPONSES"] ?? UserDefaults.standard.string(forKey: "previewResponses") ?? ""
+        let file = env["CERIN_PREVIEW_RESPONSES"] ?? UserDefaults.standard.string(forKey: "previewResponses") ?? ""
         let responses = (try? Data(contentsOf: URL(fileURLWithPath: file))).flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] } ?? [:]
         let key = "\(request.httpMethod ?? "GET") \(url.path)"
         // Simulator regression scripts read this to see which requests ran.
         Logger(subsystem: "ai.cerin.ios", category: "preview").notice("preview_request \(key, privacy: .public)")
         // UI tests read this to see what a request sent: one JSON line per request with a JSON body.
-        if let log = env["NUPHOS_PREVIEW_REQUESTS"], let sent = Self.body(of: request),
+        if let log = env["CERIN_PREVIEW_REQUESTS"], let sent = Self.body(of: request),
            let line = try? JSONSerialization.data(withJSONObject: ["request": key, "body": sent]) {
             Self.append(line + Data("\n".utf8), to: log)
         }

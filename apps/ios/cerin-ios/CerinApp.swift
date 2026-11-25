@@ -1,6 +1,6 @@
 import SwiftUI
 
- #if !NUPHOS_SHARE_EXTENSION
+ #if !CERIN_SHARE_EXTENSION
 @main
 struct CerinApp: App {
     #if canImport(UIKit)
@@ -53,7 +53,7 @@ private struct NewChatCommand: Commands {
     }
 }
 
-#if DEBUG && os(iOS) && !NUPHOS_SHARE_EXTENSION
+#if DEBUG && os(iOS) && !CERIN_SHARE_EXTENSION
 /// A stand-in conversation with its desktop open, presented as HomeView presents one: beside the
 /// conversation where the window is wide, else full screen, with "Open desktop" once it is closed.
 private struct PreviewDesktop: View {

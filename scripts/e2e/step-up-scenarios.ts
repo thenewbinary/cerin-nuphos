@@ -84,7 +84,7 @@ function agentRunToken(mongoUri: string, email: string): string {
     env: {
       ...process.env,
       MONGODB_URI: mongoUri,
-      NUPHOS_JWT_SECRET: 'local-e2e-jwt-secret-not-a-production-credential',
+      CERIN_JWT_SECRET: 'local-e2e-jwt-secret-not-a-production-credential',
     },
   })
     .toString()

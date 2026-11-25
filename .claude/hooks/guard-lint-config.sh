@@ -2,13 +2,13 @@
 # PreToolUse guard: refuses agent writes to the files that define lint policy.
 # Reads the hook payload on stdin, prints a PreToolUse decision on stdout.
 #
-# Set NUPHOS_LINT_UNLOCK=1 in the environment to disable.
+# Set CERIN_LINT_UNLOCK=1 in the environment to disable.
 
 set -u
 
 payload=$(cat)
 
-if [ "${NUPHOS_LINT_UNLOCK:-}" = "1" ]; then
+if [ "${CERIN_LINT_UNLOCK:-}" = "1" ]; then
   exit 0
 fi
 
@@ -42,7 +42,7 @@ threshold, delete the rule, widen an ignore list, or disable the hook.
 If loosening the rule really is the right call, it is a human decision and a
 PR of its own. Two ways to proceed:
   - the human edits the file directly (this guard only covers agent tools), or
-  - relaunch with NUPHOS_LINT_UNLOCK=1 to turn the guard off for a session.
+  - relaunch with CERIN_LINT_UNLOCK=1 to turn the guard off for a session.
 MSG
 }
 

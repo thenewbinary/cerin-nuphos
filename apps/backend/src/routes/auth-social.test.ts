@@ -81,8 +81,8 @@ test('provider chooser offers only configured providers without reflecting arbit
   const response = await app.request('/login')
 
   expect(response.status).toBe(200)
-  expect(response.headers.get('x-nuphos-social-login')).toBe('1')
-  expect(response.headers.get('x-nuphos-social-providers')).toBe('google')
+  expect(response.headers.get('x-cerin-social-login')).toBe('1')
+  expect(response.headers.get('x-cerin-social-providers')).toBe('google')
   const html = await response.text()
 
   expect(html).toContain('Continue with Google')
@@ -101,7 +101,7 @@ test('provider chooser offers only configured providers without reflecting arbit
   })
   const withApple = await app.request('/login')
 
-  expect(withApple.headers.get('x-nuphos-social-providers')).toBe('google,apple')
+  expect(withApple.headers.get('x-cerin-social-providers')).toBe('google,apple')
   expect(await withApple.text()).toContain('Continue with Apple')
 })
 test('chooser is unavailable until a provider is configured', async () => {
@@ -109,7 +109,7 @@ test('chooser is unavailable until a provider is configured', async () => {
   const response = await app.request('/login')
 
   expect(response.status).toBe(503)
-  expect(response.headers.get('x-nuphos-social-login')).toBeNull()
+  expect(response.headers.get('x-cerin-social-login')).toBeNull()
 })
 test('browser correlation cookie is required; cancellation consumes state once', async () => {
   const start = await app.request('/google/start')
@@ -204,8 +204,8 @@ test('chooser names the OIDC provider', async () => {
     })) as typeof fetch
   const response = await app.request('/login')
 
-  expect(response.headers.get('x-nuphos-social-providers')).toBe('google,oidc')
-  expect(response.headers.get('x-nuphos-social-oidc-name')).toBe('Logto <SSO>')
+  expect(response.headers.get('x-cerin-social-providers')).toBe('google,oidc')
+  expect(response.headers.get('x-cerin-social-oidc-name')).toBe('Logto <SSO>')
   expect(await response.text()).toContain('Continue with Logto &#60;SSO&#62;')
   const start = new URL((await app.request('/oidc/start')).headers.get('location')!)
 

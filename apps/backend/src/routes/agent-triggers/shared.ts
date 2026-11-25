@@ -87,11 +87,11 @@ export async function jsonObjectBody(c: {
 
 export function webhookUrlFor(triggerId: string | undefined): string | undefined {
   if (!triggerId) return undefined
-  // Prefer the public origin: NUPHOS_BACKEND_URL is the cluster-INTERNAL base
+  // Prefer the public origin: CERIN_BACKEND_URL is the cluster-INTERNAL base
   // in production (it exists so sandboxes can call the backend), which external
   // webhook senders can't reach. auth.publicBaseUrl is the deploy's public
   // origin — but skip its localhost fallback (local dev with no
-  // NUPHOS_AUTH_BASE_URL), where backendUrl (e.g. a dev tunnel) is the
+  // CERIN_AUTH_BASE_URL), where backendUrl (e.g. a dev tunnel) is the
   // reachable one.
   const publicBase = config.auth.publicBaseUrl
   const raw =

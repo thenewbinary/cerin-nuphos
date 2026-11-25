@@ -4,7 +4,7 @@ import { dirname as cerinDeathDirname } from 'node:path'
 // Why the agent's CLI (Claude Code, Codex) died, in words the person can act on.
 // A SIGKILL while this cgroup's OOM kill count went up is the memory limit; any
 // other death keeps its own reason. Either way the next message resumes the session.
-const NUPHOS_CGROUP_ROOT = '/sys/fs/cgroup'
+const CERIN_CGROUP_ROOT = '/sys/fs/cgroup'
 
 function cerinDeathText(file) {
   try {
@@ -20,7 +20,7 @@ export function cerinOwnCgroup(procCgroup = cerinDeathText('/proc/self/cgroup'))
     .find((line) => line.startsWith('0::'))
     ?.slice(3)
 
-  return path ? `${NUPHOS_CGROUP_ROOT}${path}` : null
+  return path ? `${CERIN_CGROUP_ROOT}${path}` : null
 }
 
 export function cerinOomKills(cgroup) {
@@ -35,7 +35,7 @@ function cerinMemoryLimit(cgroup) {
 
   for (
     let dir = cgroup;
-    dir.startsWith(NUPHOS_CGROUP_ROOT) && dir !== NUPHOS_CGROUP_ROOT;
+    dir.startsWith(CERIN_CGROUP_ROOT) && dir !== CERIN_CGROUP_ROOT;
     dir = cerinDeathDirname(dir)
   ) {
     const max = Number(cerinDeathText(`${dir}/memory.max`)?.trim())

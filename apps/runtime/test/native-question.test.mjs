@@ -73,7 +73,7 @@ test('AskUserQuestion registers a decision and tells Claude the answer comes lat
 test('the current credential file wins over the session header', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'cerin-question-'))
   try {
-    writeFileSync(join(dir, 'NUPHOS_TOKEN'), 'rotated\n')
+    writeFileSync(join(dir, 'CERIN_TOKEN'), 'rotated\n')
     cerinRememberDecisionServer(servers)
     const { calls, request } = recorder()
 
@@ -254,7 +254,7 @@ test('a revoked credential file fails the question instead of using the session 
       request,
     )
 
-    writeFileSync(join(dir, 'NUPHOS_TOKEN'), '\n')
+    writeFileSync(join(dir, 'CERIN_TOKEN'), '\n')
     const empty = await cerinAskClaudeQuestion(
       { questions: [{ question: 'Proceed?' }] },
       { OPENAB_CREDENTIALS_DIR: dir },

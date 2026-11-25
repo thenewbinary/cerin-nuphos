@@ -98,7 +98,7 @@ describe('redactSecrets', () => {
   test('Cerin session and CLI tokens anywhere in the text', async () => {
     const session = 'nus_Q2hhbmdlTWVQbGVhc2VJdElzTm90QVJlYWxUb2tlbjAx'
     const cli = 'nup_Q2hhbmdlTWVQbGVhc2VJdElzTm90QVJlYWxUb2tlbjAy'
-    const { redacted } = await redactSecrets(`NUPHOS_TOKEN=${session} other=${cli}`)
+    const { redacted } = await redactSecrets(`CERIN_TOKEN=${session} other=${cli}`)
 
     expect(redacted).not.toContain(session)
     expect(redacted).not.toContain(cli)
@@ -281,7 +281,7 @@ describe('findEmbeddedSecret', () => {
   })
 
   test('allows documentation that only references credentials', async () => {
-    const doc = '# Deploy\n\nexport TOKEN="$NUPHOS_TOKEN"\npassword: ${DB_PASSWORD}\n'
+    const doc = '# Deploy\n\nexport TOKEN="$CERIN_TOKEN"\npassword: ${DB_PASSWORD}\n'
 
     expect(await findEmbeddedSecret(doc)).toBeNull()
   })

@@ -40,9 +40,9 @@ function skillSyncEnv(
   base: string,
 ): Record<string, string> {
   return {
-    NUPHOS_RUNTIME_SKILLS_URL: runtimeSkillsUrl(teamId, undefined, base),
+    CERIN_RUNTIME_SKILLS_URL: runtimeSkillsUrl(teamId, undefined, base),
     // Naming a member lets the same sync fetch their personal skills as well.
-    NUPHOS_RUNTIME_SKILLS_TOKEN: mintRuntimeSkillsToken(teamId, skillsOwnerId),
+    CERIN_RUNTIME_SKILLS_TOKEN: mintRuntimeSkillsToken(teamId, skillsOwnerId),
   }
 }
 
@@ -61,14 +61,14 @@ export function previewSessionEnv(args: {
     // Native skills share the classic setup scripts. Give those scripts the
     // same variable names they already understand, but with the narrowly
     // scoped preview bearer rather than a user's general Cerin token.
-    NUPHOS_TOKEN: args.token,
-    NUPHOS_BACKEND_URL: args.base,
-    NUPHOS_PUBLIC_URL: publicWebUrl(),
-    NUPHOS_SESSION_ID: args.conversationId,
-    ...(args.sessionActor ? { NUPHOS_SESSION_ACTOR: args.sessionActor } : {}),
+    CERIN_TOKEN: args.token,
+    CERIN_BACKEND_URL: args.base,
+    CERIN_PUBLIC_URL: publicWebUrl(),
+    CERIN_SESSION_ID: args.conversationId,
+    ...(args.sessionActor ? { CERIN_SESSION_ACTOR: args.sessionActor } : {}),
     // Skills address team-scoped routes as /teams/$TEAM/...
     TEAM: args.teamId,
-    NUPHOS_TEAM_ID: args.teamId,
+    CERIN_TEAM_ID: args.teamId,
   }
 }
 

@@ -24,7 +24,7 @@ use super::session_owners::SessionOwners;
 pub const TRANSPORT_PREFIX: &str = "nrt_";
 pub const CONTROL_PREFIX: &str = "nrc_";
 /// Must match `deriveRuntimeControlKey` in the Cerin backend and the cerin-runtime entrypoint.
-const LEGACY_CONTROL_CONTEXT: &[u8] = b"nuphos-runtime-control-v1";
+const LEGACY_CONTROL_CONTEXT: &[u8] = b"cerin-runtime-control-v1";
 const LEGACY_BINDING_ID: &str = "legacy";
 const BINDINGS_FILE: &str = "bindings.json";
 const INSTANCE_ID_FILE: &str = "instance-id";
@@ -707,11 +707,11 @@ mod tests {
         let control = legacy_control_key(&password);
         assert_eq!(
             control,
-            // HMAC-SHA256("a"*64, "nuphos-runtime-control-v1"), as the backend derives it.
+            // HMAC-SHA256("a"*64, "cerin-runtime-control-v1"), as the backend derives it.
             {
                 use hmac::{Hmac, Mac};
                 let mut mac = Hmac::<Sha256>::new_from_slice(password.as_bytes()).unwrap();
-                mac.update(b"nuphos-runtime-control-v1");
+                mac.update(b"cerin-runtime-control-v1");
                 hex(&mac.finalize().into_bytes())
             }
         );

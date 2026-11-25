@@ -107,7 +107,7 @@ test('project settings stay off; the working directory CLAUDE.md is appended as 
       let options;
       try {
         await agent.newSession({ cwd, mcpServers: [], _meta: { claudeCode: { options: {
-          env: { NUPHOS_SESSION_ID: name, NUPHOS_TOKEN: 'synthetic' } } } } });
+          env: { CERIN_SESSION_ID: name, CERIN_TOKEN: 'synthetic' } } } } });
       } catch (error) {
         if (!error.capturedOptions) throw error;
         options = error.capturedOptions;

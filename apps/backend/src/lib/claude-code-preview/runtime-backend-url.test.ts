@@ -106,7 +106,7 @@ describe('isAllowedRemoteOpenAbUrl', () => {
   })
 })
 
-// The suite runs off-cluster with NUPHOS_PUBLIC_BACKEND_URL seeded and the
+// The suite runs off-cluster with CERIN_PUBLIC_BACKEND_URL seeded and the
 // backend url cleared, so a managed session has no reachable base at all and an
 // external one has exactly the public base.
 describe('what a self-hosted session is handed', () => {
@@ -131,6 +131,6 @@ describe('what a self-hosted session is handed', () => {
       'https://unit-test.invalid/agent-sessions/conv-1/teams/team-1/mcp',
       'https://unit-test.invalid/agent-sessions/conv-1/teams/team-1/mcp-tools',
     ])
-    expect(external.runtimeEnv?.NUPHOS_BACKEND_URL).toBe('https://unit-test.invalid')
+    expect(external.runtimeEnv?.CERIN_BACKEND_URL).toBe('https://unit-test.invalid')
   })
 })

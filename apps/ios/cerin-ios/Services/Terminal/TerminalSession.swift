@@ -107,7 +107,7 @@ final class TerminalSession {
         ]
         var request = URLRequest(url: components.url!)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-nuphos-ai-consent-version")
+        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-cerin-ai-consent-version")
         let socket = URLSession.shared.webSocketTask(with: request)
         self.socket = socket
         socket.resume()

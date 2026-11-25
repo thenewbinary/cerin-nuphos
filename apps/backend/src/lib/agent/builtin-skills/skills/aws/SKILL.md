@@ -7,7 +7,7 @@ description: Run AWS CLI v2 commands from the sandbox to inspect or change AWS r
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -50,7 +50,7 @@ If `aws: command not found` (cold start without the runtime image), run the inst
 bash skills/aws/scripts/install.sh
 ```
 
-`setup-credentials.sh` calls `GET /teams/:teamId/aws-accounts/:accountId/credentials` on Cerin backend with the user's `NUPHOS_TOKEN`. The role assumed is whatever role the team admin bound when connecting the AWS account, so the credentials inherit exactly that role's permissions.
+`setup-credentials.sh` calls `GET /teams/:teamId/aws-accounts/:accountId/credentials` on Cerin backend with the user's `CERIN_TOKEN`. The role assumed is whatever role the team admin bound when connecting the AWS account, so the credentials inherit exactly that role's permissions.
 
 Always run `aws sts get-caller-identity` first to confirm which account/role you are about to operate on, and tell the user before doing anything mutating.
 

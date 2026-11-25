@@ -16,7 +16,7 @@ import {
 // Same guard as claude-login.test.mjs: never spawn a sign-in on a managed runtime.
 const onManagedRuntime =
   process.env.HOME?.startsWith('/home/node') === true &&
-  Object.keys(process.env).some((name) => name.startsWith('NUPHOS_RUNTIME'))
+  Object.keys(process.env).some((name) => name.startsWith('CERIN_RUNTIME'))
 const spawnsCli = { skip: onManagedRuntime && 'never spawns a sign-in on a managed runtime' }
 
 const TOKEN = `sk-ant-oat01-${'a1B2_c3-'.repeat(12)}`

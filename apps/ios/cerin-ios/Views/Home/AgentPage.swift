@@ -639,7 +639,7 @@ struct NewChatComposer: View {
 /// focus a pushed chat covered and hands it back when a back swipe starts,
 /// raising a keyboard that lifts the chat's composer mid-swipe.
 private func endEditing() {
-    #if canImport(UIKit) && !NUPHOS_SHARE_EXTENSION
+    #if canImport(UIKit) && !CERIN_SHARE_EXTENSION
     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     #endif
 }

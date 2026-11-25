@@ -38,7 +38,7 @@ describe('tailnet-ssh connect.sh', () => {
   test('never writes the auth key into the sourced env file', () => {
     const envBlock = connect.slice(connect.indexOf('session.env'))
 
-    expect(envBlock).not.toContain('NUPHOS_TAILNET_AUTH_KEY')
+    expect(envBlock).not.toContain('CERIN_TAILNET_AUTH_KEY')
     expect(envBlock).not.toMatch(/export\s+\w*AUTH_KEY/)
   })
 

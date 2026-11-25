@@ -37,9 +37,9 @@ test('Codex new/resume context keeps instructions, MCP, and shell credentials sc
       'ai.cerin/codex': {
         developerInstructions: 'context A',
         env: {
-          NUPHOS_TOKEN: 'actor-a',
-          NUPHOS_SESSION_ID: 'session-a',
-          NUPHOS_PLAN_API_TOKEN: 'actor-a',
+          CERIN_TOKEN: 'actor-a',
+          CERIN_SESSION_ID: 'session-a',
+          CERIN_PLAN_API_TOKEN: 'actor-a',
           OPENAB_ACP_AUTH_KEY: 'blocked',
         },
       },
@@ -51,7 +51,7 @@ test('Codex new/resume context keeps instructions, MCP, and shell credentials sc
     {
       'ai.cerin/codex': {
         developerInstructions: 'context B',
-        env: { NUPHOS_TOKEN: 'actor-b', NUPHOS_SESSION_ID: 'session-b' },
+        env: { CERIN_TOKEN: 'actor-b', CERIN_SESSION_ID: 'session-b' },
       },
     },
     runtimeEnv,
@@ -62,7 +62,7 @@ test('Codex new/resume context keeps instructions, MCP, and shell credentials sc
     actorB.shell_environment_policy.set.HOME,
   )
   assert.equal(actorA.developer_instructions, 'context A')
-  assert.equal(actorA.shell_environment_policy.set.NUPHOS_PLAN_API_TOKEN, 'actor-a')
+  assert.equal(actorA.shell_environment_policy.set.CERIN_PLAN_API_TOKEN, 'actor-a')
   assert.equal(actorA.shell_environment_policy.set.OPENAB_ACP_AUTH_KEY, undefined)
   assert.equal(actorA.shell_environment_policy.inherit, 'none')
   assert.equal(actorA.mcp_servers.cerin.tool_timeout_sec, 1800)
@@ -71,7 +71,7 @@ test('Codex new/resume context keeps instructions, MCP, and shell credentials sc
     'browser@openai-bundled': { enabled: false },
     'browser@openai-curated-remote': { enabled: false },
   })
-  assert.equal(actorB.shell_environment_policy.set.NUPHOS_TOKEN, 'actor-b')
+  assert.equal(actorB.shell_environment_policy.set.CERIN_TOKEN, 'actor-b')
   assert.equal(JSON.stringify(actorB).includes('actor-a'), false)
   assert.equal(config.shell_environment_policy, undefined)
   assert.equal(cerinCodexSessionConfig(config, {}).model, 'test')
@@ -98,7 +98,7 @@ test('a Cerin session gives the skills catalog the whole budget Codex allows', (
     { skills: { include_instructions: false } },
     {
       'ai.cerin/codex': {
-        env: { NUPHOS_TOKEN: 'actor-a', NUPHOS_SESSION_ID: 'session-a' },
+        env: { CERIN_TOKEN: 'actor-a', CERIN_SESSION_ID: 'session-a' },
       },
     },
     runtimeEnv,
@@ -115,19 +115,19 @@ test('a Cerin session gives the skills catalog the whole budget Codex allows', (
 test('Codex shell inherits only baseline variables and explicitly scoped credentials', () => {
   const result = cerinCodexSessionConfig(
     {},
-    { 'ai.cerin/codex': { env: { NUPHOS_TOKEN: 'scoped', NUPHOS_SESSION_ID: 'scoped-session' } } },
+    { 'ai.cerin/codex': { env: { CERIN_TOKEN: 'scoped', CERIN_SESSION_ID: 'scoped-session' } } },
     {
       PATH: '/usr/bin:/bin',
       HOME: runtimeHome,
       OPENAB_ACP_AUTH_KEY: 'pod-wide',
-      NUPHOS_TOKEN: 'stale',
+      CERIN_TOKEN: 'stale',
     },
   )
 
   assert.equal(result.shell_environment_policy.inherit, 'none')
   const env = result.shell_environment_policy.set
   assert.notEqual(env.HOME, runtimeHome)
-  assert.equal(env.NUPHOS_TOKEN, 'scoped')
+  assert.equal(env.CERIN_TOKEN, 'scoped')
   assert.equal(env.OPENAB_ACP_AUTH_KEY, undefined)
   assert.ok(env.PATH.endsWith('/usr/bin:/bin'))
 })
@@ -142,7 +142,7 @@ test('Codex shell keeps the Windows system variables', () => {
   }
   const env = cerinCodexSessionConfig(
     {},
-    { 'ai.cerin/codex': { env: { NUPHOS_SESSION_ID: 'windows-session' } } },
+    { 'ai.cerin/codex': { env: { CERIN_SESSION_ID: 'windows-session' } } },
     { PATH: 'C:\\Windows\\system32', HOME: runtimeHome, ...windows },
   ).shell_environment_policy.set
 
@@ -213,9 +213,9 @@ test('Codex login seeding preserves refreshes on restart and replaces credential
       execFileSync('/bin/sh', ['image/seed-codex-auth.sh'], {
         env: {
           ...process.env,
-          NUPHOS_AUTH_REVISION: revision,
-          NUPHOS_CODEX_AUTH_DIRECTORY: dir,
-          NUPHOS_CODEX_AUTH_SOURCE: seed,
+          CERIN_AUTH_REVISION: revision,
+          CERIN_CODEX_AUTH_DIRECTORY: dir,
+          CERIN_CODEX_AUTH_SOURCE: seed,
         },
       })
 

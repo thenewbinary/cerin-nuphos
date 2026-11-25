@@ -2,12 +2,12 @@
 
 One `docker compose up` brings up a complete, minimal Cerin:
 
-| Service   | Image                                   | Purpose                                                   |
-| --------- | --------------------------------------- | --------------------------------------------------------- |
-| `mongo`   | `mongo:8.0.32`                          | Single-node replica set (`rs0`), required by transactions |
-| `rustfs`  | `rustfs/rustfs:1.0.0`                   | S3-compatible storage; initializes buckets on boot        |
-| `backend` | built from `apps/backend/Dockerfile`    | Cerin backend, one replica                                |
-| `runtime` | `ghcr.io/nuphos/runtime:${RUNTIME_TAG}` | Claude Code agent runtime                                 |
+| Service   | Image                                               | Purpose                                                   |
+| --------- | --------------------------------------------------- | --------------------------------------------------------- |
+| `mongo`   | `mongo:8.0.32`                                      | Single-node replica set (`rs0`), required by transactions |
+| `rustfs`  | `rustfs/rustfs:1.0.0`                               | S3-compatible storage; initializes buckets on boot        |
+| `backend` | built from `apps/backend/Dockerfile`                | Cerin backend, one replica                                |
+| `runtime` | `ghcr.io/thenewbinary/cerin-runtime:${RUNTIME_TAG}` | Claude Code agent runtime                                 |
 
 All data lives in local volumes and **never touches production Mongo, Redis or S3**. There is no Redis: the backend runs in single-replica in-memory mode.
 
@@ -38,7 +38,7 @@ To change the runtime version, edit `RUNTIME_TAG` in `.env` (for example `0.1.66
 
 ## First sign-in
 
-There is no mail service locally. The backend runs with `NUPHOS_DEV_EMAIL_OTP_LOG=true`, so sign-in codes are written to its log instead of being emailed (the setting has no effect when `NODE_ENV=production`).
+There is no mail service locally. The backend runs with `CERIN_DEV_EMAIL_OTP_LOG=true`, so sign-in codes are written to its log instead of being emailed (the setting has no effect when `NODE_ENV=production`).
 
 1. On the Cerin Desktop sign-in screen, enter any email (for example `me@example.com`) and request a code.
 2. Read the code from the log:
@@ -61,7 +61,7 @@ It prints the team id, a sign-in code valid for 10 minutes, and an
 Add the line to `.env` and run `docker compose up -d backend` to turn on `/admin`
 for that team. `cerin-admin sign-in-code --email <email>` prints a code for
 anyone else: on a backend without Resend (`RESEND_API_KEY` and
-`NUPHOS_EMAIL_FROM` unset) email sign-in is otherwise off, and **Continue with
+`CERIN_EMAIL_FROM` unset) email sign-in is otherwise off, and **Continue with
 email** goes through only while such a code is waiting.
 
 ## Join a server as a computer
@@ -74,7 +74,7 @@ docker compose exec backend cerin-admin join-token --team <team-id> --label buil
 ```
 
 It joins as the team owner's computer. On the server, run the command it prints
-(`NUPHOS_API_URL=<backend-url> cerin agent --join -`) and paste the token; see
+(`CERIN_API_URL=<backend-url> cerin agent --join -`) and paste the token; see
 [the CLI README](../../apps/cli/README.md#on-a-server) for running it under systemd.
 
 ## Point Cerin Desktop at the stack
@@ -86,7 +86,7 @@ The simplest way is on the sign-in screen: click **Self-hosted? Set API endpoint
 Installed app (macOS):
 
 ```sh
-NUPHOS_API_URL=http://localhost:3000 /Applications/Cerin.app/Contents/MacOS/Cerin
+CERIN_API_URL=http://localhost:3000 /Applications/Cerin.app/Contents/MacOS/Cerin
 ```
 
 For development from source, run `bun run dev` from the repository root.
@@ -97,21 +97,21 @@ The desktop app's sign-in is stored in `~/.config/cerin/desktop.yaml` (on macOS 
 
 ## Connect the runtime
 
-1. Print the runtime password. This compose file sets `NUPHOS_RUNTIME_AUTOGEN_PASSWORD=true`, so the runtime generates it on first boot, logs it once, and keeps it on the `runtime-home` volume:
+1. Print the runtime password. This compose file sets `CERIN_RUNTIME_AUTOGEN_PASSWORD=true`, so the runtime generates it on first boot, logs it once, and keeps it on the `runtime-home` volume:
 
    ```sh
    docker compose logs runtime | grep 'runtime password'
    # or, at any time:
-   docker compose exec -T runtime cat /home/node/.nuphos-runtime/auth-key
+   docker compose exec -T runtime cat /home/node/.cerin-runtime/auth-key
    ```
 
 2. Open the runtime console and sign in with that password. Both stacks publish it at <http://127.0.0.1:18180> by default (`RUNTIME_PORT` in `.env`).
 
 3. In the console, set the public URL to `ws://runtime:8080/acp`. That is the address the backend dials from inside the compose network, not the one your browser uses. Then choose **Connect to Cerin**.
 
-   Cerin Desktop opens **Connect this agent to a team**: pick the team, then press **Connect agent**. A Desktop run from source handles `cerin://` links only with `ATLAS_REGISTER_NUPHOS_PROTOCOL=1`. Without it, open Settings → Agent → **Add agent** → **Self-hosted Cloud Agent** and paste the address and pairing code the console shows. An image without the console connects the same way through **Use a password instead**, with the address `ws://runtime:8080/acp` and the password from step 1.
+   Cerin Desktop opens **Connect this agent to a team**: pick the team, then press **Connect agent**. A Desktop run from source handles `cerin://` links only with `ATLAS_REGISTER_CERIN_PROTOCOL=1`. Without it, open Settings → Agent → **Add agent** → **Self-hosted Cloud Agent** and paste the address and pairing code the console shows. An image without the console connects the same way through **Use a password instead**, with the address `ws://runtime:8080/acp` and the password from step 1.
 
-   The backend exchanges the code with the runtime for a key that belongs to this team alone, and detects that the runtime runs Claude Code. This compose file sets `NUPHOS_LOCAL_STACK=true` (ignored when `NODE_ENV=production`), so the backend treats a single-label host such as `runtime` as internal: plain `ws://` is accepted, and the runtime calls the backend back at `http://backend:3000`.
+   The backend exchanges the code with the runtime for a key that belongs to this team alone, and detects that the runtime runs Claude Code. This compose file sets `CERIN_LOCAL_STACK=true` (ignored when `NODE_ENV=production`), so the backend treats a single-label host such as `runtime` as internal: plain `ws://` is accepted, and the runtime calls the backend back at `http://backend:3000`.
 
 4. Sign the runtime in to Claude once, from the console or with:
 
@@ -178,7 +178,7 @@ docker compose exec runtime curl -s -o /dev/null -w '%{http_code}\n' http://ceri
 
 An instance can send Cerin a small health report every 5 minutes, so we learn
 when a self-hosted install breaks. Nothing is collected or sent unless
-`NUPHOS_TELEMETRY_KEY` is set; leave it unset and the instance never contacts
+`CERIN_TELEMETRY_KEY` is set; leave it unset and the instance never contacts
 `telemetry.cerin.ai`.
 
 **What is sent** (numbers only; the full allowlist is `REPORT_FIELDS` in
@@ -199,7 +199,7 @@ but like any HTTPS request, the receiver sees the source IP of the connection.
 the backend:
 
 ```sh
-echo 'NUPHOS_TELEMETRY_KEY=<key>' >> .env
+echo 'CERIN_TELEMETRY_KEY=<key>' >> .env
 docker compose up -d backend
 ```
 
@@ -215,8 +215,8 @@ docker compose exec backend cerin-admin telemetry on    # resume
 
 Admins can do the same over HTTP with `GET /admin/telemetry` and
 `PUT /admin/telemetry` (`{"enabled": false}`); switching it on without
-`NUPHOS_TELEMETRY_KEY` set is refused. To stop for good, remove
-`NUPHOS_TELEMETRY_KEY`; Cerin can also revoke a key. A report that cannot be
+`CERIN_TELEMETRY_KEY` set is refused. To stop for good, remove
+`CERIN_TELEMETRY_KEY`; Cerin can also revoke a key. A report that cannot be
 delivered is retried twice, then dropped with one `backend.telemetry.send_failed`
 log line; it never blocks a request.
 

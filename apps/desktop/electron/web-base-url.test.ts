@@ -2,22 +2,22 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 // WEB_BASE_URL is resolved once at module load, so each case that needs a
-// different NUPHOS_WEB_URL imports a fresh copy through a cache-busting
+// different CERIN_WEB_URL imports a fresh copy through a cache-busting
 // specifier rather than trying to mutate a frozen const.
 let caseId = 0
 
 async function load(webUrl?: string) {
-  const previous = process.env.NUPHOS_WEB_URL
+  const previous = process.env.CERIN_WEB_URL
 
-  if (webUrl === undefined) delete process.env.NUPHOS_WEB_URL
-  else process.env.NUPHOS_WEB_URL = webUrl
+  if (webUrl === undefined) delete process.env.CERIN_WEB_URL
+  else process.env.CERIN_WEB_URL = webUrl
   try {
     return (await import(
       `./web-base-url.ts?case=${++caseId}`
     )) as typeof import('./web-base-url.ts')
   } finally {
-    if (previous === undefined) delete process.env.NUPHOS_WEB_URL
-    else process.env.NUPHOS_WEB_URL = previous
+    if (previous === undefined) delete process.env.CERIN_WEB_URL
+    else process.env.CERIN_WEB_URL = previous
   }
 }
 

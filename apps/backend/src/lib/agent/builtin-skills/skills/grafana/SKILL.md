@@ -19,7 +19,7 @@ to run and no token to fetch.
 
 ```bash
 # Reuse the helper from the cerin-api skill (loads it if needed):
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 # Stash the instance id from the credential section for the rest of the session.
 GI=<instanceId from the credential section>
@@ -42,11 +42,11 @@ ac /teams/$TEAM/grafana-instances | python3 -m json.tool
 Every Grafana HTTP API path you'd hit on the upstream maps 1:1 onto:
 
 ```
-${NUPHOS_BACKEND_URL:-https://api.cerin.ai}/teams/$TEAM/grafana-instances/$GI/proxy/<grafana-path>
+${CERIN_BACKEND_URL:-https://api.cerin.ai}/teams/$TEAM/grafana-instances/$GI/proxy/<grafana-path>
 ```
 
 - All HTTP methods are forwarded (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`).
-- The agent's `Authorization: Bearer $NUPHOS_TOKEN` is consumed by Cerin backend; the proxy strips it and replaces it with the bound `Bearer <saToken>` before forwarding. **Don't** try to send a Grafana token yourself — it'll just be discarded.
+- The agent's `Authorization: Bearer $CERIN_TOKEN` is consumed by Cerin backend; the proxy strips it and replaces it with the bound `Bearer <saToken>` before forwarding. **Don't** try to send a Grafana token yourself — it'll just be discarded.
 - Cookies and `Set-Cookie` are stripped both ways. This is an API channel, not a browser session.
 - Query strings, request bodies, and response bodies pass through unchanged. You can stream Loki `tail` responses if needed.
 - 30 s upstream timeout. Long Prometheus range queries should narrow the time window or use `step=` rather than retrying.

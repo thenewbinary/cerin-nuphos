@@ -148,7 +148,7 @@ export function plainText(input: string): string {
 
 const WORD = /[\p{L}\p{N}]/u
 
-/** An underscore inside a word marks no emphasis: NUPHOS_AGENT_HOME stays. */
+/** An underscore inside a word marks no emphasis: CERIN_AGENT_HOME stays. */
 function keepInWord(run: string, at: number, text: string): string {
   return WORD.test(text[at - 1] ?? '') && WORD.test(text[at + run.length] ?? '') ? run : ''
 }

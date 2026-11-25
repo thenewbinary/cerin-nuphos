@@ -68,15 +68,15 @@ describe('credentialsMcpTools', () => {
         personalSkillsOf: 'user-1',
       }),
     ).toEqual({
-      NUPHOS_RUNTIME_SKILLS_URL:
+      CERIN_RUNTIME_SKILLS_URL:
         'https://backend.example/internal/claude-code-runtime-skills/team-1',
-      NUPHOS_RUNTIME_SKILLS_TOKEN: expect.any(String),
-      NUPHOS_TOKEN: 'scoped',
-      NUPHOS_BACKEND_URL: 'https://backend.example',
-      NUPHOS_PUBLIC_URL: config.auth.publicWebUrl ?? config.auth.publicBaseUrl,
-      NUPHOS_SESSION_ID: 'conv-1',
+      CERIN_RUNTIME_SKILLS_TOKEN: expect.any(String),
+      CERIN_TOKEN: 'scoped',
+      CERIN_BACKEND_URL: 'https://backend.example',
+      CERIN_PUBLIC_URL: config.auth.publicWebUrl ?? config.auth.publicBaseUrl,
+      CERIN_SESSION_ID: 'conv-1',
       TEAM: 'team-1',
-      NUPHOS_TEAM_ID: 'team-1',
+      CERIN_TEAM_ID: 'team-1',
     })
   })
 
@@ -112,8 +112,8 @@ describe('credentialsMcpTools', () => {
       humanTurn: true,
     })
 
-    expect(own.runtimeEnv).not.toHaveProperty('NUPHOS_SESSION_ACTOR')
-    expect(guest.runtimeEnv).toMatchObject({ NUPHOS_SESSION_ACTOR: 'guest' })
+    expect(own.runtimeEnv).not.toHaveProperty('CERIN_SESSION_ACTOR')
+    expect(guest.runtimeEnv).toMatchObject({ CERIN_SESSION_ACTOR: 'guest' })
   })
 
   test('automated turns act as the session owner, in the owner’s HOME', async () => {
@@ -122,7 +122,7 @@ describe('credentialsMcpTools', () => {
         backendUrl: 'https://backend.example',
       })
 
-      expect(automated.runtimeEnv).not.toHaveProperty('NUPHOS_SESSION_ACTOR')
+      expect(automated.runtimeEnv).not.toHaveProperty('CERIN_SESSION_ACTOR')
     }
   })
 

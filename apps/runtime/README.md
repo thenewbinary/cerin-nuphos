@@ -9,8 +9,7 @@ backend does not run the agent itself; it opens an ACP session against a
 runtime and streams the conversation through it. This repository builds the
 image those runtimes run.
 
-New images are published to `ghcr.io/nuphos/runtime`. Historical versions remain
-available from `ghcr.io/zeabur/nuphos-runtime`.
+Images are published to `ghcr.io/thenewbinary/cerin-runtime`.
 
 ## Shared with the desktop local runtime
 
@@ -162,7 +161,7 @@ shows what is installed, and `cerin-tools install <tool>` (or `--all`) fetches
 ahead of time.
 
 Tools install under `/home/node/.cerin-runtime/tools` (override with
-`NUPHOS_TOOLS_DIR`), so they last exactly as long as the home directory does:
+`CERIN_TOOLS_DIR`), so they last exactly as long as the home directory does:
 
 - **Cerin-provisioned pods** mount a persistent volume at `/home/node`, so a
   tool is fetched once per runtime and survives restarts and image upgrades. An
@@ -213,17 +212,15 @@ reaches users through a rebuild of both.
 
 ## Running one
 
-The following example uses an existing historical release. For a newly published
-monorepo version, use `ghcr.io/nuphos/runtime:<version>-codex` instead.
-Give it a persistent home and start it:
+Give a published runtime a persistent home and start it:
 
 ```sh
 docker run -d --name cerin-runtime -p 8080:8080 \
   -v cerin-runtime-home:/home/node \
-  ghcr.io/zeabur/nuphos-runtime:0.0.12-codex
+  ghcr.io/thenewbinary/cerin-runtime:<version>-codex
 ```
 
-Use `0.0.12-claude-code` for a Claude Code runtime.
+Use `<version>-claude-code` for a Claude Code runtime.
 
 Then open its base URL in a browser (`http://<host>:8080/`, or its `https://`
 address once TLS is in front). A fresh volume shows a setup page: choose a console
@@ -272,7 +269,7 @@ shorter one stops the container at startup with an error.
 runtime generates a password, stores it in `/home/node/.cerin-runtime/auth-key`
 (mode `0600`) and prints it once. Every Cerin team connects with that one password.
 `OPENAB_ACP_AUTH_KEY_FILE` moves the file. With the console on,
-`NUPHOS_RUNTIME_AUTOGEN_PASSWORD=true` still generates that file on first boot (the
+`CERIN_RUNTIME_AUTOGEN_PASSWORD=true` still generates that file on first boot (the
 local compose stack uses it), and the console takes it as its password and as a
 connection.
 
@@ -555,16 +552,11 @@ a matching `runtime-vX.Y.Z` publishes semantic version tags.
 Cerin pins runtimes by immutable digest, never by tag:
 
 ```text
-ghcr.io/nuphos/runtime@sha256:...
+ghcr.io/thenewbinary/cerin-runtime@sha256:...
 ```
 
 Publishing an image rolls nothing out. Each runtime is moved to a new digest
 deliberately.
-
-Images published before this repository existed live under the earlier package
-name `ghcr.io/zeabur/nuphos-openab-runtime`. That package is retained, read
-only, so runtimes pinned to one of its digests keep resolving; everything new
-is published here.
 
 ## Relationship to openabdev/openab
 
@@ -687,7 +679,7 @@ is `true`. Before enabling it:
 
 1. Finish the runtime CI (both provider images and adapter smoke tests).
 2. The image-build job uses its `GITHUB_TOKEN` with `packages: write` to publish
-   `ghcr.io/nuphos/runtime`; no separate GHCR username or token is required.
+   `ghcr.io/thenewbinary/cerin-runtime`; no separate GHCR username or token is required.
    If the package already exists, grant `thenewbinary/cerin-platform` Actions access to it.
    Make the package public before enabling managed-agent updates or documenting
    pulls: runtime hosts resolve manifests and pull images anonymously.
@@ -703,18 +695,13 @@ is `true`. Before enabling it:
    Deploying those images to existing runtimes is a separate operation.
 
 Backend update discovery filters stable `runtime-vX.Y.Z` releases and follows
-pagination past other components' releases. Until the first such release exists,
-it uses the old repository's latest release. Existing image references and
-self-hosted Compose installs keep their existing pinned legacy images. New
-monorepo releases resolve only from `ghcr.io/nuphos/runtime`; explicit historical
-version pins can still resolve from the legacy package. CI and candidate builds
-retain their existing published gateway base until a new base is available.
-Desktop's local adapter bundle retains its existing pinned source commit during
-this migration; changing that bundle is a separate runtime upgrade.
+pagination past other components' releases, and resolves images only from
+`ghcr.io/thenewbinary/cerin-runtime`. There is no fallback to the upstream
+project's releases or registry.
 
 The initial source snapshot is imported from
-[`zeabur/nuphos-runtime@ce0cfc0`](https://github.com/zeabur/nuphos-runtime/commit/ce0cfc06112cacff63365d7cd0953f8ebc32e64c); its original
-history remains available there. Preserve this directory's LICENSE and NOTICE.
+the upstream runtime repository at commit `ce0cfc06112cacff63365d7cd0953f8ebc32e64c`
+(see NOTICE); its original history remains available upstream. Preserve this directory's LICENSE and NOTICE.
 
 ## Reply images
 

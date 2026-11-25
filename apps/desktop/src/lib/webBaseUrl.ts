@@ -1,5 +1,5 @@
 // Renderer-side view of the Cerin web origin. The value itself is resolved in
-// the main process (electron/web-base-url.ts) from NUPHOS_WEB_URL and handed
+// the main process (electron/web-base-url.ts) from CERIN_WEB_URL and handed
 // over the preload bridge, so a self-hosted deployment configures it at runtime
 // instead of the client compiling platform.cerin.ai in.
 //

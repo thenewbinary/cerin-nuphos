@@ -68,7 +68,7 @@ if (includes('dsh')) {
 lines.push('', '## Container images', '')
 for (const name of PROVIDERS.filter(includes))
   lines.push(
-    `- \`ghcr.io/nuphos/runtime:${runtime.version}-${name === 'claude' ? 'claude-code' : name}\``,
+    `- \`ghcr.io/thenewbinary/cerin-runtime:${runtime.version}-${name === 'claude' ? 'claude-code' : name}\``,
   )
 lines.push(
   '',

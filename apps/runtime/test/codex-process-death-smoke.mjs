@@ -36,7 +36,7 @@ test('the adapter fails the turn with the cause and exits when Codex dies', asyn
       PATH: process.env.PATH,
       HOME: base,
       CODEX_PATH: fileURLToPath(new URL('./fixtures/codex-app-server.mjs', import.meta.url)),
-      NUPHOS_SMOKE_RECORD: join(base, 'requests.jsonl'),
+      CERIN_SMOKE_RECORD: join(base, 'requests.jsonl'),
     },
     stdio: ['pipe', 'pipe', 'pipe'],
   })

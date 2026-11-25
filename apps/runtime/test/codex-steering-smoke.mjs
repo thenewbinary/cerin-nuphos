@@ -72,7 +72,7 @@ before(async () => {
       PATH: process.env.PATH,
       HOME: base,
       CODEX_PATH: fileURLToPath(new URL('./fixtures/codex-app-server.mjs', import.meta.url)),
-      NUPHOS_SMOKE_RECORD: record,
+      CERIN_SMOKE_RECORD: record,
     },
     stdio: ['pipe', 'pipe', 'pipe'],
   })

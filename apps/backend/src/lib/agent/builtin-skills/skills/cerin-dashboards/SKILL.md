@@ -114,7 +114,7 @@ bash "$SCRIPT" "$TEAM" POST "$DASH/panels" @/tmp/panel.json
 bash "$SCRIPT" "$TEAM" GET "$DASH"
 ```
 
-The script builds the canonical team URL, authenticates with `NUPHOS_TOKEN`,
+The script builds the canonical team URL, authenticates with `CERIN_TOKEN`,
 accepts either inline JSON or `@file`, prints formatted JSON, and turns non-2xx
 responses into a failing command. Put scripts and large bodies in files rather
 than shell-escaping them inline. Do not call a bound `cost_dashboard_*` tool;

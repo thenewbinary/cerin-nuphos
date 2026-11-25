@@ -6422,7 +6422,7 @@ mod acp_handlers {
     #[tokio::test]
     async fn prompt_meta_refreshes_the_live_session_passthrough() {
         let sessions = new_sessions();
-        let stale = json!({"dev.openab/credentials": {"NUPHOS_TOKEN": "old"}});
+        let stale = json!({"dev.openab/credentials": {"CERIN_TOKEN": "old"}});
         let v = serde_json::to_value(
             handle_session_new(&sessions, json!(1), Vec::new(), Some(stale.clone()))
                 .await
@@ -6448,7 +6448,7 @@ mod acp_handlers {
         );
         assert_eq!(session.session_meta, Some(stale));
 
-        let fresh = json!({"dev.openab/credentials": {"NUPHOS_TOKEN": "new"}});
+        let fresh = json!({"dev.openab/credentials": {"CERIN_TOKEN": "new"}});
         let http = json!({"type": "http", "name": "tools", "url": "http://b/mcp", "headers": [
             {"name": "Authorization", "value": "Bearer new"}
         ]});
@@ -8464,7 +8464,7 @@ mod acp_ws_integration {
         let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
         let seen = calls.clone();
         state.acp_session_credentials = Some(Arc::new(move |channel, expected, credentials| {
-            assert_eq!(expected, json!({"NUPHOS_TOKEN":"stale"}));
+            assert_eq!(expected, json!({"CERIN_TOKEN":"stale"}));
             seen.lock().unwrap().push((channel, credentials));
             Box::pin(async { Ok(()) })
         }));
@@ -8489,11 +8489,11 @@ mod acp_ws_integration {
             send(&mut ws, json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":1}})).await;
             let init = recv(&mut ws).await;
             assert_eq!(init["result"]["agentCapabilities"]["_meta"]["dev.openab/credentialRefresh"], true);
-            send(&mut ws, json!({"jsonrpc":"2.0","id":2,"method":"_openab/session/credentials","params":{"sessionId":"sess_173201f5-7973-4186-ae78-e63c2988d1b9","expected":{"NUPHOS_TOKEN":"stale"},"credentials":{"NUPHOS_TOKEN":"fresh"}}})).await;
+            send(&mut ws, json!({"jsonrpc":"2.0","id":2,"method":"_openab/session/credentials","params":{"sessionId":"sess_173201f5-7973-4186-ae78-e63c2988d1b9","expected":{"CERIN_TOKEN":"stale"},"credentials":{"CERIN_TOKEN":"fresh"}}})).await;
             let result = recv(&mut ws).await;
             if operator {
                 assert_eq!(result["result"], json!({}));
-                send(&mut ws, json!({"jsonrpc":"2.0","id":3,"method":"_openab/session/credentials","params":{"sessionId":"sess_173201f5-7973-4186-ae78-e63c2988d1b9","credentials":{"NUPHOS_TOKEN":"fresh"}}})).await;
+                send(&mut ws, json!({"jsonrpc":"2.0","id":3,"method":"_openab/session/credentials","params":{"sessionId":"sess_173201f5-7973-4186-ae78-e63c2988d1b9","credentials":{"CERIN_TOKEN":"fresh"}}})).await;
                 assert_eq!(recv(&mut ws).await["error"]["code"], -32602);
             } else {
                 assert_eq!(result["error"]["code"], -32003);
@@ -8503,7 +8503,7 @@ mod acp_ws_integration {
             *calls.lock().unwrap(),
             vec![(
                 "acp_173201f5-7973-4186-ae78-e63c2988d1b9".to_string(),
-                json!({"NUPHOS_TOKEN":"fresh"})
+                json!({"CERIN_TOKEN":"fresh"})
             )]
         );
     }
@@ -9059,11 +9059,11 @@ mod acp_ws_integration {
     async fn only_the_operator_credential_runs_an_advertised_runtime_job() {
         let _serialized = runtime_job::TEST_GUARD.lock().await;
         let address = serve_runtime_jobs(
-            RuntimeJobs::default().with_job("echo", sh_job("cat; printf \" $NUPHOS_TOKEN\"")),
+            RuntimeJobs::default().with_job("echo", sh_job("cat; printf \" $CERIN_TOKEN\"")),
         )
         .await;
         let job = json!({"jsonrpc":"2.0","id":2,"method":"_openab/runtime/job","params":{
-            "jobId":"ws-1","job":"echo","stdin":"hello","env":{"NUPHOS_TOKEN":"t0k"},
+            "jobId":"ws-1","job":"echo","stdin":"hello","env":{"CERIN_TOKEN":"t0k"},
             "timeoutMs":10_000,"maxStdoutBytes":1024
         }});
 

@@ -41,7 +41,7 @@ pub struct Session {
     /// accounts, and a token is never sent to another backend.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub api: Option<String>,
-    /// The token is `NUPHOS_CLI_TOKEN`, not the saved sign-in, which must then
+    /// The token is `CERIN_CLI_TOKEN`, not the saved sign-in, which must then
     /// be left alone when the token fails.
     #[serde(skip)]
     pub from_env: bool,
@@ -59,14 +59,14 @@ pub fn running_as_account() -> bool {
     ACCOUNT.get().is_some()
 }
 
-/// Whether commands authenticate with `NUPHOS_CLI_TOKEN` instead of the saved sign-in.
+/// Whether commands authenticate with `CERIN_CLI_TOKEN` instead of the saved sign-in.
 pub fn env_token_set() -> bool {
     env_token().is_some()
 }
 
-/// `NUPHOS_CLI_TOKEN`, when set to something: an empty one is ignored everywhere.
+/// `CERIN_CLI_TOKEN`, when set to something: an empty one is ignored everywhere.
 fn env_token() -> Option<String> {
-    std::env::var("NUPHOS_CLI_TOKEN").ok().map(|t| t.trim().to_string()).filter(|t| !t.is_empty())
+    std::env::var("CERIN_CLI_TOKEN").ok().map(|t| t.trim().to_string()).filter(|t| !t.is_empty())
 }
 
 /// Runs this process as `session`, a desktop account's sign-in.
@@ -102,9 +102,9 @@ fn home() -> PathBuf {
     std::env::var_os("HOME").map(PathBuf::from).unwrap_or_default()
 }
 
-/// `NUPHOS_CLI_CONFIG` or `~/.config/cerin/cli.yaml`, as on the desktop.
+/// `CERIN_CLI_CONFIG` or `~/.config/cerin/cli.yaml`, as on the desktop.
 pub fn session_path() -> PathBuf {
-    std::env::var_os("NUPHOS_CLI_CONFIG").map(PathBuf::from).unwrap_or_else(|| home().join(".config/cerin/cli.yaml"))
+    std::env::var_os("CERIN_CLI_CONFIG").map(PathBuf::from).unwrap_or_else(|| home().join(".config/cerin/cli.yaml"))
 }
 
 /// The desktop app's sign-in beside this one: `cli.yaml` → `desktop.yaml`,
@@ -187,13 +187,13 @@ fn prefs_path() -> PathBuf {
     session_path().with_extension("tui.json")
 }
 
-/// `NUPHOS_API_URL`, `ATLAS_API_URL`, the endpoint saved on the desktop's
+/// `CERIN_API_URL`, `ATLAS_API_URL`, the endpoint saved on the desktop's
 /// sign-in screen, then Cerin Cloud.
 pub fn api_url() -> String {
     if let Some(api) = ACCOUNT.get().and_then(|s| s.api.clone()) {
         return api;
     }
-    for key in ["NUPHOS_API_URL", "ATLAS_API_URL"] {
+    for key in ["CERIN_API_URL", "ATLAS_API_URL"] {
         if let Ok(v) = std::env::var(key) {
             if !v.trim().is_empty() {
                 return v.trim().trim_end_matches('/').to_string();
@@ -223,7 +223,7 @@ pub fn shared_api_url() -> String {
 
 /// Override the provider chooser URL, otherwise use the selected backend.
 pub fn login_url(api_url: &str) -> String {
-    if let Ok(v) = std::env::var("NUPHOS_LOGIN_URL") {
+    if let Ok(v) = std::env::var("CERIN_LOGIN_URL") {
         if !v.trim().is_empty() {
             return v;
         }
@@ -239,7 +239,7 @@ pub fn saved_session() -> Session {
 
 /// An endpoint set in the environment, which outranks a sign-in's own backend.
 pub fn env_api_override() -> Option<String> {
-    ["NUPHOS_API_URL", "ATLAS_API_URL"]
+    ["CERIN_API_URL", "ATLAS_API_URL"]
         .into_iter()
         .filter_map(|key| std::env::var(key).ok())
         .map(|v| v.trim().trim_end_matches('/').to_string())
@@ -253,9 +253,9 @@ fn read_session_file() -> Session {
         .unwrap_or_default()
 }
 
-/// The sign-in with its token: `NUPHOS_CLI_TOKEN`, then the keychain, or the
+/// The sign-in with its token: `CERIN_CLI_TOKEN`, then the keychain, or the
 /// file, which moves it to the keychain where there is one. The environment
-/// variable is not `NUPHOS_TOKEN`: Cerin's own agent sandboxes set that one to
+/// variable is not `CERIN_TOKEN`: Cerin's own agent sandboxes set that one to
 /// a conversation credential.
 pub fn read_session() -> Session {
     if let Some(account) = ACCOUNT.get() {
@@ -333,11 +333,11 @@ fn keychain_account(session: &Session) -> String {
 }
 
 /// Signs out after the backend rejected `session`'s token, as the desktop
-/// does. A rejected `NUPHOS_CLI_TOKEN` is only reported: the saved sign-in it
+/// does. A rejected `CERIN_CLI_TOKEN` is only reported: the saved sign-in it
 /// overrode is a different credential.
 pub fn forget_rejected(session: &Session) -> anyhow::Result<()> {
     if session.from_env {
-        anyhow::bail!("NUPHOS_CLI_TOKEN was rejected (revoked or expired); unset it or set a valid token");
+        anyhow::bail!("CERIN_CLI_TOKEN was rejected (revoked or expired); unset it or set a valid token");
     }
     if session.from_account {
         anyhow::bail!("that desktop account's sign-in was rejected; sign in to it again in Cerin Desktop");
@@ -348,7 +348,7 @@ pub fn forget_rejected(session: &Session) -> anyhow::Result<()> {
 /// Where `read_session` found the token, for `cerin auth status`.
 pub fn token_storage(session: &Session) -> String {
     if session.from_env {
-        return "the NUPHOS_CLI_TOKEN environment variable".to_string();
+        return "the CERIN_CLI_TOKEN environment variable".to_string();
     }
     if session.from_account {
         return "Cerin Desktop's sign-in, for this run (--account)".to_string();
@@ -461,7 +461,7 @@ mod tests {
     fn a_rejected_env_token_keeps_the_saved_sign_in() {
         let dir = std::env::temp_dir().join(format!("cerin-cli-test-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
-        std::env::set_var("NUPHOS_CLI_CONFIG", dir.join("cli.yaml"));
+        std::env::set_var("CERIN_CLI_CONFIG", dir.join("cli.yaml"));
         write_private(&dir.join("cli.yaml"), b"token: saved\nkeychainAccount: u1@x\n").unwrap();
 
         let env = Session { token: Some("revoked".into()), from_env: true, ..Session::default() };
@@ -474,7 +474,7 @@ mod tests {
         let saved = Session { token: Some("saved".into()), ..Session::default() };
         forget_rejected(&saved).unwrap();
         assert!(read_session_file().token.is_none());
-        std::env::remove_var("NUPHOS_CLI_CONFIG");
+        std::env::remove_var("CERIN_CLI_CONFIG");
         let _ = std::fs::remove_dir_all(dir);
     }
 

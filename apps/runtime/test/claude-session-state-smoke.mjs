@@ -284,7 +284,7 @@ test('loading a session publishes its state and records restoration phases', asy
       sessionId: SESSION,
       cwd: '/test',
       mcpServers: [],
-      _meta: { claudeCode: { options: { env: { NUPHOS_SESSION_ID: conversation } } } },
+      _meta: { claudeCode: { options: { env: { CERIN_SESSION_ID: conversation } } } },
     })
     const diagnostic = JSON.parse(await readFile(file, 'utf8'))
     assert.equal(diagnostic.status, 'completed')

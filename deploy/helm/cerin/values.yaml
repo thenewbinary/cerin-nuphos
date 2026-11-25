@@ -3,11 +3,11 @@
 backend:
   url: '' # required, e.g. https://api.cerin.example.com
   image:
-    repository: ghcr.io/nuphos/backend
+    repository: ghcr.io/thenewbinary/cerin-backend
     tag: '' # defaults to v{{ .Chart.AppVersion }}
     pullPolicy: IfNotPresent
   # Extra env vars, e.g. ATLAS_ADMIN_TEAM_ID, Bedrock credentials or the opt-in
-  # NUPHOS_TELEMETRY_KEY (see deploy/compose/README.md).
+  # CERIN_TELEMETRY_KEY (see deploy/compose/README.md).
   extraEnv: []
   resources:
     requests:
@@ -48,7 +48,7 @@ oidc:
 secrets:
   # Name of a Secret with the keys listed below. The chart then creates none.
   existingSecret: ''
-  jwtSecret: '' # NUPHOS_JWT_SECRET
+  jwtSecret: '' # CERIN_JWT_SECRET
   mongoPassword: '' # MONGO_PASSWORD
   storageSecretKey: '' # STORAGE_SECRET_KEY
   runtimeAuthKey: '' # RUNTIME_AUTH_KEY
@@ -95,7 +95,7 @@ runtime:
   enabled: true
   url: '' # required when enabled, e.g. https://runtime.cerin.example.com
   image:
-    repository: ghcr.io/nuphos/runtime
+    repository: ghcr.io/thenewbinary/cerin-runtime
     tag: 0.1.66-claude-code
     pullPolicy: IfNotPresent
   persistence:

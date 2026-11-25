@@ -6,8 +6,8 @@
 #   relative structure). For very large trees, zip first and push the zip.
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 if [ "$#" -lt 2 ]; then
@@ -16,12 +16,12 @@ if [ "$#" -lt 2 ]; then
 fi
 
 team_id="$1"; shift
-base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
-token="${NUPHOS_TOKEN:-}"
-session="${NUPHOS_SESSION_ID:-}"
+token="${CERIN_TOKEN:-}"
+session="${CERIN_SESSION_ID:-}"
 if [ -z "$token" ] || [ -z "$session" ]; then
-  echo "NUPHOS_TOKEN and NUPHOS_SESSION_ID must be set" >&2
+  echo "CERIN_TOKEN and CERIN_SESSION_ID must be set" >&2
   exit 1
 fi
 api="${base}/agent-sessions/${session}/teams/${team_id}/file-transfers"

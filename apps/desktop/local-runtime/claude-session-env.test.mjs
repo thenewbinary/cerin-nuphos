@@ -28,7 +28,7 @@ test(
       USERPROFILE: root,
       GH_CONFIG_DIR: path.join(root, '.config', 'gh'),
       AWS_SHARED_CREDENTIALS_FILE: path.join(root, '.aws', 'credentials'),
-      NUPHOS_SESSION_HOME: root,
+      CERIN_SESSION_HOME: root,
     }
     const env = cerinDesktopClaudeEnv(
       isolated,
@@ -103,20 +103,20 @@ test(
     ).CLAUDE_CODE_SHELL_PREFIX
     // Claude Code runs `bash -c "<prefix> <command>"` with a socket for stdin.
     const token = () =>
-      spawnSync('/bin/bash', ['-c', `'${wrapper}' 'printf %s "$NUPHOS_TOKEN"'`], {
+      spawnSync('/bin/bash', ['-c', `'${wrapper}' 'printf %s "$CERIN_TOKEN"'`], {
         env: {
           PATH: process.env.PATH,
           ...shellGuardEnv({ bundle: { root }, openabHome: root }),
           OPENAB_CREDENTIALS_DIR: credentials,
-          NUPHOS_TOKEN: 'spawn',
+          CERIN_TOKEN: 'spawn',
         },
         encoding: 'utf8',
         stdio: 'pipe',
       }).stdout
 
-    writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), 'turn-1')
+    writeFileSync(path.join(credentials, 'CERIN_TOKEN'), 'turn-1')
     assert.equal(token(), 'turn-1')
-    writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), 'turn-2')
+    writeFileSync(path.join(credentials, 'CERIN_TOKEN'), 'turn-2')
     assert.equal(token(), 'turn-2')
   },
 )

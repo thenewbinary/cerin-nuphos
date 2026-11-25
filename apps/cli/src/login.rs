@@ -137,7 +137,7 @@ fn save_device_session(body: &Value, api_url: &str) -> Result<Session> {
 /// `/auth/me` before it is saved.
 /// Signs this computer out. A device sign-in is a token of its own, so it is
 /// revoked on the server as well. An agent token, Desktop's sign-in and
-/// `NUPHOS_CLI_TOKEN` are used elsewhere too, so those are only forgotten here.
+/// `CERIN_CLI_TOKEN` are used elsewhere too, so those are only forgotten here.
 pub async fn logout() -> Result<()> {
     // A run as a desktop account (`--account`) never touches the saved sign-in.
     if config::running_as_account() {

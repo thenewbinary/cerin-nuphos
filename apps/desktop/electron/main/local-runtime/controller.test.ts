@@ -610,17 +610,17 @@ test('a host run by the `cerin` CLI reports that CLI, which a Box updates by', a
     hermes: { runtime: null },
     pi: { runtime: null },
   } as unknown as Parameters<typeof tunnelStatusOf>[0]
-  const before = process.env.NUPHOS_CLI_VERSION
+  const before = process.env.CERIN_CLI_VERSION
 
-  process.env.NUPHOS_CLI_VERSION = '0.4.0'
+  process.env.CERIN_CLI_VERSION = '0.4.0'
   try {
     assert.equal(tunnelStatusOf(agents, 'https://api.test').cliVersion, '0.4.0')
-    delete process.env.NUPHOS_CLI_VERSION
+    delete process.env.CERIN_CLI_VERSION
     // The Desktop app runs the same host and is not a CLI: it reports none.
     assert.equal('cliVersion' in tunnelStatusOf(agents, 'https://api.test'), false)
   } finally {
-    if (before === undefined) delete process.env.NUPHOS_CLI_VERSION
-    else process.env.NUPHOS_CLI_VERSION = before
+    if (before === undefined) delete process.env.CERIN_CLI_VERSION
+    else process.env.CERIN_CLI_VERSION = before
   }
 })
 

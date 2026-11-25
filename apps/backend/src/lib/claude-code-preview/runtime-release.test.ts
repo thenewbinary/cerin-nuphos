@@ -76,13 +76,13 @@ test('a floor is met by its own version and everything newer, and by nothing els
   expect(runtimeVersionAtLeast('dev', '0.95.0')).toBe(false)
 })
 
-test('runtime discovery skips other components, follows pages and preserves the pre-cutover fallback', async () => {
+test('runtime discovery skips other components and follows only the current release feed', async () => {
   const { latestRuntimeRelease, resetRuntimeReleaseCache } = await import('./runtime-release')
 
   resetRuntimeReleaseCache()
   const originalFetch = globalThis.fetch
   const image = (version: string, provider = 'codex') =>
-    `ghcr.io/nuphos/runtime:${version}-${provider}`
+    `ghcr.io/thenewbinary/cerin-runtime:${version}-${provider}`
   const requests: string[] = []
   let responses: Response[] = []
 
@@ -124,19 +124,10 @@ test('runtime discovery skips other components, follows pages and preserves the 
     expect(requests).toHaveLength(2)
 
     resetRuntimeReleaseCache()
-    responses = [
-      Response.json([]),
-      Response.json({
-        tag_name: 'v0.1.9',
-        body: image('0.1.9').replace('nuphos/runtime', 'zeabur/nuphos-runtime'),
-      }),
-    ]
-    expect((await latestRuntimeRelease('codex', true))?.url).toBe(
-      'https://github.com/zeabur/nuphos-runtime/releases/tag/v0.1.9',
-    )
-    expect(requests.at(-1)).toBe(
-      'https://api.github.com/repos/zeabur/nuphos-runtime/releases/latest',
-    )
+    requests.length = 0
+    responses = [Response.json([])]
+    expect(await latestRuntimeRelease('codex', true)).toBeNull()
+    expect(requests).toHaveLength(1)
 
     resetRuntimeReleaseCache()
     responses = [new Response('', { status: 403 })]
@@ -144,7 +135,7 @@ test('runtime discovery skips other components, follows pages and preserves the 
     responses = [Response.json({ unexpected: true })]
     expect(await latestRuntimeRelease('codex', true)).toBeNull()
     resetRuntimeReleaseCache()
-    responses = [Response.json([]), Response.json({ tag_name: 'v0.1.11', prerelease: true })]
+    responses = [Response.json([{ tag_name: 'runtime-v0.1.11', prerelease: true }])]
     expect(await latestRuntimeRelease('codex', true)).toBeNull()
   } finally {
     globalThis.fetch = originalFetch
@@ -158,7 +149,7 @@ test('each provider follows the newest release that published it', async () => {
   resetRuntimeReleaseCache()
   const originalFetch = globalThis.fetch
   const image = (version: string, provider: string) =>
-    `ghcr.io/nuphos/runtime:${version}-${provider}`
+    `ghcr.io/thenewbinary/cerin-runtime:${version}-${provider}`
   const all = ['claude-code', 'codex', 'grok', 'antigravity', 'opencode', 'dsh']
 
   globalThis.fetch = (async (_url: FetchInput) =>

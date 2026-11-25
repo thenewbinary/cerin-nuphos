@@ -150,7 +150,7 @@ bindingScoped.delete(
 )
 
 // Agent credential handout, mirroring jira-sites /credentials: the sandbox
-// exchanges its NUPHOS_TOKEN for a fresh (auto-refreshed) Asana access token and
+// exchanges its CERIN_TOKEN for a fresh (auto-refreshed) Asana access token and
 // calls app.asana.com/api/1.0 directly. Gated by the per-binding member
 // allow-list.
 bindingScoped.get('/credentials', requireAsanaMemberAccess(), async (c) => {

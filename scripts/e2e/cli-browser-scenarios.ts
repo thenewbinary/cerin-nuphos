@@ -94,7 +94,7 @@ export const cliBrowserScenarios: Scenario[] = [
             ['local_browser', { action: 'record_start', tab: 1 }],
             ['local_browser', { action: 'navigate', tab: 1, url: `${site.url}/next` }],
             ['local_browser', { action: 'record_stop', tab: 1 }],
-            ['local_exec', { command: 'cat "$NUPHOS_AGENT_HOME"/har/*.har' }],
+            ['local_exec', { command: 'cat "$CERIN_AGENT_HOME"/har/*.har' }],
           ],
         )
 

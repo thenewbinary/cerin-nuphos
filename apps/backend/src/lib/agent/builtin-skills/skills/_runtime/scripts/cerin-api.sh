@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 if [[ $# -lt 2 || $# -gt 3 ]]; then
@@ -31,8 +31,8 @@ if [[ "$path" =~ [[:cntrl:]] ]]; then
   exit 2
 fi
 
-: "${NUPHOS_TOKEN:?Cerin API authorization is unavailable}"
-if [[ ! "$NUPHOS_TOKEN" =~ ^[A-Za-z0-9._-]+$ ]]; then
+: "${CERIN_TOKEN:?Cerin API authorization is unavailable}"
+if [[ ! "$CERIN_TOKEN" =~ ^[A-Za-z0-9._-]+$ ]]; then
   printf 'Cerin API authorization has an invalid format\n' >&2
   exit 2
 fi
@@ -49,7 +49,7 @@ import sys
 import urllib.parse
 
 try:
-    payload = os.environ["NUPHOS_TOKEN"].split(".")[1]
+    payload = os.environ["CERIN_TOKEN"].split(".")[1]
     payload += "=" * (-len(payload) % 4)
     origin = json.loads(base64.urlsafe_b64decode(payload))["ori"]
     parsed = urllib.parse.urlsplit(origin)
@@ -79,7 +79,7 @@ body_file="$request_dir/body.json"
 
 {
   printf 'silent\nshow-error\nconnect-timeout = 10\nmax-time = 300\n'
-  printf 'header = "Authorization: Bearer %s"\n' "$NUPHOS_TOKEN"
+  printf 'header = "Authorization: Bearer %s"\n' "$CERIN_TOKEN"
   printf 'header = "Accept: application/json"\n'
   printf 'output = "%s"\n' "$response"
   printf 'write-out = "%%{http_code}"\n'

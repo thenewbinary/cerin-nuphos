@@ -12,7 +12,7 @@ import {
 
 test('pull progress counts layers from docker pull plain output', () => {
   const progress = [
-    '0.0.13-claude-code: Pulling from zeabur/nuphos-runtime',
+    '0.0.13-claude-code: Pulling from thenewbinary/cerin-runtime',
     'aaaaaaaaaaaa: Already exists',
     'bbbbbbbbbbbb: Pulling fs layer',
     'cccccccccccc: Pulling fs layer',
@@ -39,7 +39,7 @@ test('compose config yields each service image and platform', () => {
     services: {
       mongo: { image: 'mongo:8.0.32' },
       runtime: {
-        image: 'ghcr.io/zeabur/nuphos-runtime:0.0.13-claude-code',
+        image: 'ghcr.io/thenewbinary/cerin-runtime:0.0.13-claude-code',
         platform: 'linux/amd64',
       },
       backend: { build: {} },
@@ -48,7 +48,10 @@ test('compose config yields each service image and platform', () => {
 
   assert.deepEqual(composeImages(json), {
     mongo: { image: 'mongo:8.0.32' },
-    runtime: { image: 'ghcr.io/zeabur/nuphos-runtime:0.0.13-claude-code', platform: 'linux/amd64' },
+    runtime: {
+      image: 'ghcr.io/thenewbinary/cerin-runtime:0.0.13-claude-code',
+      platform: 'linux/amd64',
+    },
   })
 })
 

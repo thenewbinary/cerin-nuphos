@@ -248,7 +248,7 @@ function hashCode(email: string, code: string): string {
     const secret = config.auth.jwtSecret
 
     if (!secret) {
-      throw new Error('NUPHOS_JWT_SECRET or JWT_SECRET_KEY is required for email OTP sign-in')
+      throw new Error('CERIN_JWT_SECRET or JWT_SECRET_KEY is required for email OTP sign-in')
     }
     otpHmacKey = Buffer.from(hkdfSync('sha256', secret, '', 'cerin-email-otp-v1', 32))
   }

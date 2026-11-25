@@ -163,7 +163,7 @@ final class AgentListFailureUITests: XCTestCase {
         try? write()
         app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         guard page else { return }
         XCTAssertTrue(row("Release ops").waitForExistence(timeout: 10), "The list did not load")

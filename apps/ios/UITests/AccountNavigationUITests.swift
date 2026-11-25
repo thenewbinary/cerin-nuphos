@@ -40,7 +40,7 @@ final class AccountNavigationUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: live)
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         return app
     }
@@ -133,7 +133,7 @@ final class AccountNavigationUITests: XCTestCase {
         responses["GET /teams"] = teamsEntry
         let responseFile = FileManager.default.temporaryDirectory.appending(path: "account-\(UUID().uuidString).json")
         try! JSONSerialization.data(withJSONObject: responses).write(to: responseFile)
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": responseFile.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": responseFile.path]
         app.launch()
         return app
     }

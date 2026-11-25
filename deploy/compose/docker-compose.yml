@@ -106,23 +106,23 @@ services:
       NODE_ENV: development
       PORT: '3000'
       MONGODB_URI: mongodb://mongo:27017/?replicaSet=rs0
-      MONGODB_DB: nuphos
-      NUPHOS_JWT_SECRET: ${NUPHOS_JWT_SECRET:?run ./init-env.sh first}
-      NUPHOS_AUTH_BASE_URL: http://localhost:${BACKEND_PORT:-3000}
-      NUPHOS_DEV_EMAIL_OTP_LOG: 'true'
-      NUPHOS_LOCAL_STACK: 'true'
+      MONGODB_DB: cerin
+      CERIN_JWT_SECRET: ${CERIN_JWT_SECRET:?run ./init-env.sh first}
+      CERIN_AUTH_BASE_URL: http://localhost:${BACKEND_PORT:-3000}
+      CERIN_DEV_EMAIL_OTP_LOG: 'true'
+      CERIN_LOCAL_STACK: 'true'
       # Printed by `cerin-admin bootstrap`; set it in .env to turn on /admin.
       ATLAS_ADMIN_TEAM_ID: ${ATLAS_ADMIN_TEAM_ID:-}
       # Opt-in health reports to Cerin; unset sends nothing (see README).
-      NUPHOS_TELEMETRY_KEY: ${NUPHOS_TELEMETRY_KEY:-}
+      CERIN_TELEMETRY_KEY: ${CERIN_TELEMETRY_KEY:-}
       ATLAS_REDIS_ENABLED: 'false'
-      NUPHOS_BACKEND_URL: http://backend:3000
-      NUPHOS_FILE_TRANSFER_S3_BUCKET: cerin-file-transfers
-      NUPHOS_FILE_TRANSFER_S3_ENDPOINT: http://rustfs:9000
+      CERIN_BACKEND_URL: http://backend:3000
+      CERIN_FILE_TRANSFER_S3_BUCKET: cerin-file-transfers
+      CERIN_FILE_TRANSFER_S3_ENDPOINT: http://rustfs:9000
       # Origin of presigned transfer URLs; unset means http://rustfs:9000 (see README).
-      NUPHOS_FILE_TRANSFER_S3_PUBLIC_ENDPOINT: ${RUSTFS_PUBLIC_URL:-}
-      NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
-      NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
+      CERIN_FILE_TRANSFER_S3_PUBLIC_ENDPOINT: ${RUSTFS_PUBLIC_URL:-}
+      CERIN_FILE_TRANSFER_S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
+      CERIN_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
       ATLAS_SKILLS_BUCKET: cerin-skills
       ATLAS_SKILLS_S3_ENDPOINT: http://rustfs:9000
       ATLAS_SKILLS_S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
@@ -142,16 +142,16 @@ services:
     restart: unless-stopped
 
   runtime:
-    image: ghcr.io/nuphos/runtime:${RUNTIME_TAG:-0.1.66-claude-code}
+    image: ghcr.io/thenewbinary/cerin-runtime:${RUNTIME_TAG:-0.1.66-claude-code}
     environment:
       OPENAB_STREAM_EDIT_INTERVAL_MS: '300'
       # A fresh volume otherwise waits for someone to open the setup screen;
       # locally, a generated password in the logs is quicker.
-      NUPHOS_RUNTIME_AUTOGEN_PASSWORD: 'true'
+      CERIN_RUNTIME_AUTOGEN_PASSWORD: 'true'
     ports:
       - 127.0.0.1:${RUNTIME_PORT:-18180}:8080
     # The runtime generates its password on first boot and keeps it in
-    # /home/node/.nuphos-runtime/auth-key, so this volume must persist.
+    # /home/node/.cerin-runtime/auth-key, so this volume must persist.
     volumes:
       - runtime-home:/home/node
       - runtime-workspace:/workspace

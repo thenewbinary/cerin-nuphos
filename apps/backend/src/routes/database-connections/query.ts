@@ -39,7 +39,7 @@ databaseConnectionQueryRoutes.post(
     const auditId = new ObjectId()
     const startedAt = Date.now()
     const conversationSessionId = conversationDatabaseSessionId(c)
-    const sessionHeader = c.req.header('x-nuphos-session-id')?.trim()
+    const sessionHeader = c.req.header('x-cerin-session-id')?.trim()
     const auditStatement = mongoAuditStatement(input)
 
     await databaseQueryAudits().insertOne({

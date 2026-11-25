@@ -87,7 +87,7 @@ describe('get_kubeconfig', () => {
     // skills script, a general bearer, or a token written into the file.
     expect(payload.kubeconfig).toContain('exec-credential')
     expect(payload.kubeconfig).not.toContain('get-credential.sh')
-    expect(payload.kubeconfig).toContain('OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN')
+    expect(payload.kubeconfig).toContain('OPENAB_CREDENTIALS_DIR/CERIN_TOKEN')
     expect(payload.kubeconfig).not.toMatch(/eyJ[\w-]+\.[\w-]+\./)
     expect(payload.kubeconfig).not.toContain('env:')
     expect(payload.kubeconfig).toContain('--fail-with-body')

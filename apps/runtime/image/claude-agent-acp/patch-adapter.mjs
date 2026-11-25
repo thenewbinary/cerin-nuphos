@@ -48,7 +48,7 @@ patched = patched
       `}, userProvidedOptions?.env);
         // Settings env overrides the child environment in Claude Code. Pin the
         // session paths at the programmatic tier too, just like provider routing.
-        if (env.NUPHOS_SESSION_HOME) {
+        if (env.CERIN_SESSION_HOME) {
             const sessionSettings = typeof settings === "string"
                 ? JSON.parse(await fs.readFile(path.resolve(params.cwd, settings), "utf8"))
                 : settings;
@@ -138,7 +138,7 @@ if (patched.split(fingerprint).length !== 2)
   throw new Error('Expected one Claude session fingerprint.')
 patched = patched.replace(
   fingerprint,
-  `    const home = cerinSessionHomeEnv(params._meta?.claudeCode?.options?.env ?? {}).NUPHOS_SESSION_HOME;
+  `    const home = cerinSessionHomeEnv(params._meta?.claudeCode?.options?.env ?? {}).CERIN_SESSION_HOME;
     return JSON.stringify({ cwd: params.cwd, mcpServers: servers, home });`,
 )
 for (const method of ['loadSession', 'resumeSession']) {

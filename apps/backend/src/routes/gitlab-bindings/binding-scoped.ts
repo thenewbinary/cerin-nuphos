@@ -72,7 +72,7 @@ export function registerGitlabBindingScopedRoutes(
   })
 
   // Agent credential handout, mirroring github-installations /token: the
-  // sandbox exchanges its NUPHOS_TOKEN for the binding's short-lived (~2 h,
+  // sandbox exchanges its CERIN_TOKEN for the binding's short-lived (~2 h,
   // auto-refreshed) OAuth access token and talks to GitLab directly.
   bindingScoped.get('/token', requireTeamRole('ADMINISTRATOR', 'EDITOR'), async (c) => {
     const teamId = parseObjectId(c.get('teamId'), 'teamId')

@@ -1253,7 +1253,7 @@ describe('OpenAbAcpClient', () => {
       socketFactory: h.connect,
     })
     const runtime = {
-      env: { NUPHOS_PLAN_API_BASE: 'http://backend/plans', NUPHOS_PLAN_API_TOKEN: 'scoped' },
+      env: { CERIN_PLAN_API_BASE: 'http://backend/plans', CERIN_PLAN_API_TOKEN: 'scoped' },
     }
     const creating = client.createSession('/workspace', [], undefined, runtime)
     const frame = await nextSent(h.socket(), 0)
@@ -1261,7 +1261,7 @@ describe('OpenAbAcpClient', () => {
     expect((frame.params as { _meta: unknown })._meta).toEqual({
       'ai.cerin/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
-      'dev.openab/credentials': { NUPHOS_PLAN_API_TOKEN: 'scoped' },
+      'dev.openab/credentials': { CERIN_PLAN_API_TOKEN: 'scoped' },
       claudeCode: { options: { env: runtime.env } },
     })
     h.socket().receive({ jsonrpc: '2.0', id: frame.id, result: { sessionId: 'sess_native' } })
@@ -1285,7 +1285,7 @@ describe('OpenAbAcpClient', () => {
     ]
     const runtime = {
       provider: 'codex' as const,
-      env: { NUPHOS_TOKEN: 'turn-2', NUPHOS_PLAN_API_TOKEN: 'turn-2', TEAM: 'team' },
+      env: { CERIN_TOKEN: 'turn-2', CERIN_PLAN_API_TOKEN: 'turn-2', TEAM: 'team' },
     }
     const prompting = client.prompt(
       's',
@@ -1308,7 +1308,7 @@ describe('OpenAbAcpClient', () => {
     expect(meta['dev.openab/sessionMeta']).toEqual({
       'ai.cerin/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
-      'dev.openab/credentials': { NUPHOS_TOKEN: 'turn-2', NUPHOS_PLAN_API_TOKEN: 'turn-2' },
+      'dev.openab/credentials': { CERIN_TOKEN: 'turn-2', CERIN_PLAN_API_TOKEN: 'turn-2' },
       'ai.cerin/codex': { developerInstructions: 'Instructions', env: runtime.env },
     })
     h.socket().receive({ jsonrpc: '2.0', id: frame.id, result: { stopReason: 'end_turn' } })
@@ -1575,7 +1575,7 @@ test('both providers forward runtime defaults with the session-scoped environmen
     const creating = client.createSession('/workspace', [], 'Instructions', {
       provider,
       defaults,
-      env: { NUPHOS_TOKEN: 'scoped' },
+      env: { CERIN_TOKEN: 'scoped' },
     })
     const frame = await nextSent(h.socket(), 0)
     const meta = (frame.params as { _meta: Record<string, unknown> })._meta

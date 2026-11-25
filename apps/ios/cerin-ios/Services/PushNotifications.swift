@@ -137,7 +137,7 @@ final class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
     /// Called once a session is signed in: asks for permission (the system
     /// only prompts the first time) and registers with APNs.
     func activate(authToken: String) async {
-        #if !NUPHOS_SHARE_EXTENSION
+        #if !CERIN_SHARE_EXTENSION
         self.authToken = authToken
         routingEnabled = true
         #if DEBUG

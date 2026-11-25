@@ -42,7 +42,7 @@ async function capturedAuthorization(script: string[], stdin = '', revoked = fal
   writeFileSync(capture, '')
   writeFileSync(argv, '')
   if (!revoked) {
-    writeFileSync(join(credentials, 'NUPHOS_TOKEN'), jwt('fresh'))
+    writeFileSync(join(credentials, 'CERIN_TOKEN'), jwt('fresh'))
   }
   const child = Bun.spawn(['bash', ...script], {
     env: {
@@ -51,9 +51,9 @@ async function capturedAuthorization(script: string[], stdin = '', revoked = fal
       CURL_CAPTURE: capture,
       CURL_ARGV: argv,
       OPENAB_CREDENTIALS_DIR: credentials,
-      NUPHOS_TOKEN: jwt('stale'),
-      NUPHOS_BACKEND_URL: 'http://backend.invalid',
-      NUPHOS_SESSION_ID: 'session',
+      CERIN_TOKEN: jwt('stale'),
+      CERIN_BACKEND_URL: 'http://backend.invalid',
+      CERIN_SESSION_ID: 'session',
     },
     stdin: new Blob([stdin]),
     stdout: 'ignore',
@@ -134,7 +134,7 @@ async function authorizationWithEnv(script: string, env: Record<string, string>)
       HOME: dir,
       CURL_CAPTURE: capture,
       CURL_ARGV: join(dir, 'argv'),
-      NUPHOS_BACKEND_URL: 'http://backend.invalid',
+      CERIN_BACKEND_URL: 'http://backend.invalid',
       ...env,
     },
     stdout: 'ignore',
@@ -156,8 +156,8 @@ describe('builtin setup scripts share one Cerin token lookup', () => {
       )
     })
 
-    test(`${name} uses NUPHOS_TOKEN without a credentials directory`, async () => {
-      const { captured } = await authorizationWithEnv(script, { NUPHOS_TOKEN: jwt('env') })
+    test(`${name} uses CERIN_TOKEN without a credentials directory`, async () => {
+      const { captured } = await authorizationWithEnv(script, { CERIN_TOKEN: jwt('env') })
 
       expect(captured).toContain(`Bearer ${jwt('env')}`)
       expect(captured).not.toContain('session')

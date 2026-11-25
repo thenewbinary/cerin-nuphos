@@ -22,7 +22,7 @@ test(
     // A shebang cannot contain the spaces in the macOS session Node path.
     const node = `'${process.execPath.replaceAll("'", "'\\''")}'`
     const source = `#!/bin/sh
-exec ${node} - "$@" <<'NUPHOS_TEST_JS'
+exec ${node} - "$@" <<'CERIN_TEST_JS'
 if (process.argv.includes('--version')) console.log('2.1.0');
 else {
   const e = process.env;
@@ -30,7 +30,7 @@ else {
   console.log(e.CODEX_HOME === ${JSON.stringify(path.join(dir, 'isolated'))}
     ? 'Logged in using ChatGPT' : 'Not logged in');
 }
-NUPHOS_TEST_JS
+CERIN_TEST_JS
 `
 
     for (const command of ['claude', 'codex'])

@@ -80,7 +80,7 @@ if (flag === '--legacy') {
   await rpc(transport, 1, 'initialize', { protocolVersion: 1 })
   assert.equal((await rpc(transport, 2, '_openab/runtime/state')).error?.code, -32003)
   const control = createHmac('sha256', legacyPassword)
-    .update('nuphos-runtime-control-v1')
+    .update('cerin-runtime-control-v1')
     .digest('hex')
   const operator = await openAcp(control)
   await rpc(operator, 1, 'initialize', { protocolVersion: 1 })

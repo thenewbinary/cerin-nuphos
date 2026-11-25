@@ -26,7 +26,7 @@ export async function sendEmail(input: SendEmailInput): Promise<void> {
   const { resendApiKey: apiKey, from } = config.email
 
   if (!apiKey || !from) {
-    throw new Error('Email delivery is not configured (RESEND_API_KEY / NUPHOS_EMAIL_FROM)')
+    throw new Error('Email delivery is not configured (RESEND_API_KEY / CERIN_EMAIL_FROM)')
   }
 
   const res = await fetch('https://api.resend.com/emails', {

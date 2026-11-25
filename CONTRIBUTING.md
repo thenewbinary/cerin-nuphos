@@ -144,7 +144,7 @@ this repository while that happens. It is enforced in two places:
   majors wait until a maintainer ticks them on the Dependency Dashboard issue.
   GitHub Actions are pinned to commit digests. The runtime image's agent SDKs
   (`apps/runtime/image`, updated by `runtime-update-*.yml`) and our own
-  `ghcr.io/nuphos` images are left out. The dependencies we patch are left out
+  `ghcr.io/thenewbinary/cerin-*` images are left out. The dependencies we patch are left out
   too, and the packages that pin them exactly (`electron-builder`, the three
   `@opentelemetry/exporter-*-otlp-http`) wait for Dashboard approval, because
   their update needs the patch regenerated.
@@ -257,6 +257,5 @@ before the details are public.
 ## Licence and naming
 
 Contributions are under Apache-2.0, the same as the rest of the repository. The
-Cerin name and logo are trademarks and are handled separately — see
-[TRADEMARK.md](TRADEMARK.md). In short: fork freely, rename if you ship it as
-your own product.
+upstream project's name and logo are trademarks of Zeabur Inc. and are not
+licensed by Apache-2.0; see [NOTICE](NOTICE).

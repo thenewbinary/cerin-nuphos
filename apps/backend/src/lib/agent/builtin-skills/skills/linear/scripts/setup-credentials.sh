@@ -10,7 +10,7 @@ fi
 
 team_id="$1"
 binding_id="$2"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.cerin.ai}}"
+base="${CERIN_BACKEND_URL:-${CERIN_API_URL:-https://api.cerin.ai}}"
 base="${base%/}"
 
 urlencode() {
@@ -60,7 +60,7 @@ with open(dst, "w") as f:
         raise SystemExit("Credentials response missing accessToken; re-bind the Linear workspace.")
     f.write("unset LINEAR_ACCESS_TOKEN\n")
     f.write(f"export LINEAR_ACCESS_TOKEN={shlex.quote(token)}\n")
-    f.write(f"export LINEAR_NUPHOS_TEAM_ID={shlex.quote(sys.argv[3])}\n")
+    f.write(f"export LINEAR_CERIN_TEAM_ID={shlex.quote(sys.argv[3])}\n")
     f.write(f"export LINEAR_WORKSPACE_ID={shlex.quote(str(data.get('workspaceId', '')))}\n")
     f.write(f"export LINEAR_WORKSPACE_NAME={shlex.quote(str(data.get('workspaceName', '')))}\n")
     f.write(f"export LINEAR_ORG_URL_KEY={shlex.quote(str(data.get('organizationUrlKey') or ''))}\n")

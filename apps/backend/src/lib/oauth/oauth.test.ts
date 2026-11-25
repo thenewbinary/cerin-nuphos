@@ -5,8 +5,8 @@ import { describe, expect, test, beforeAll } from 'bun:test'
 // config.ts requires JWT env at import; set the minimum so the token
 // helpers (which read config.auth.jwtSecret) can be exercised in isolation.
 beforeAll(() => {
-  process.env.NUPHOS_JWT_SECRET ??= 'test-secret-for-oauth-unit-tests'
-  process.env.NUPHOS_PUBLIC_URL ??= 'https://api.cerin.test'
+  process.env.CERIN_JWT_SECRET ??= 'test-secret-for-oauth-unit-tests'
+  process.env.CERIN_PUBLIC_URL ??= 'https://api.cerin.test'
 })
 
 describe('metadata', () => {

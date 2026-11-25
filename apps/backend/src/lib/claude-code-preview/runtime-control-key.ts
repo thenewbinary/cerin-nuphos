@@ -7,5 +7,5 @@ import { createHmac } from 'node:crypto'
  * password itself: openab discards an operator key equal to the transport key.
  */
 export function deriveRuntimeControlKey(password: string): string {
-  return createHmac('sha256', password).update('nuphos-runtime-control-v1').digest('hex')
+  return createHmac('sha256', password).update('cerin-runtime-control-v1').digest('hex')
 }

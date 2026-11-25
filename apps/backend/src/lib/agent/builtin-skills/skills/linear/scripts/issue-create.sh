@@ -47,8 +47,8 @@ if [ -r "$env_path" ]; then
   # shellcheck disable=SC1090
   source "$env_path"
 fi
-cerin_team_id="${LINEAR_NUPHOS_TEAM_ID:-}"
-cerin_session_id="${NUPHOS_SESSION_ID:-}"
+cerin_team_id="${LINEAR_CERIN_TEAM_ID:-}"
+cerin_session_id="${CERIN_SESSION_ID:-}"
 
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 payload="$(mktemp)"
@@ -127,7 +127,7 @@ PY
 )"
 
 if [ -n "$cerin_team_id" ] && [ -n "$cerin_session_id" ]; then
-  session_url="${NUPHOS_PUBLIC_URL:-${NUPHOS_BACKEND_URL:-https://api.cerin.ai}}/teams/${cerin_team_id}/agent/${cerin_session_id}"
+  session_url="${CERIN_PUBLIC_URL:-${CERIN_BACKEND_URL:-https://api.cerin.ai}}/teams/${cerin_team_id}/agent/${cerin_session_id}"
   python3 - "$attachment_payload" "$issue_id" "$session_url" "$cerin_session_id" <<'PY'
 import json
 import sys

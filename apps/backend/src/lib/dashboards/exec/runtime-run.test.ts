@@ -101,8 +101,8 @@ describe('runOnRuntime', () => {
     expect(result.output).toEqual(scalar as never)
     expect(sent?.job).toBe('panel')
     expect(sent?.env).toEqual({
-      NUPHOS_BACKEND_URL: 'https://unit-test.invalid',
-      NUPHOS_TOKEN: token,
+      CERIN_BACKEND_URL: 'https://unit-test.invalid',
+      CERIN_TOKEN: token,
     })
     expect(sent?.timeoutMs).toBe(config.dashboards.execTimeoutMs)
     expect(sent?.maxStdoutBytes).toBe(config.dashboards.maxOutputBytes)

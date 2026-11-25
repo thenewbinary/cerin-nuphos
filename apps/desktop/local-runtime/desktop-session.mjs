@@ -10,7 +10,7 @@
 // session the server dies with it and the display is torn down. `reap` (run by
 // the host) removes displays whose owner is gone. Display :1 is instabox's own and is never touched.
 //
-//   desktop-session.mjs serve            env: NUPHOS_SESSION_ID, NUPHOS_DESKTOP_POOL, NUPHOS_DESKTOP_POOL_SIZE, HOME
+//   desktop-session.mjs serve            env: CERIN_SESSION_ID, CERIN_DESKTOP_POOL, CERIN_DESKTOP_POOL_SIZE, HOME
 //   desktop-session.mjs reap <pool>
 //   desktop-session.mjs list <pool>      JSON [{display, sessionId, since}]
 //   desktop-session.mjs open <pool> <sessionId> <pid>   prints the display
@@ -388,11 +388,11 @@ function computerUse(env) {
 }
 
 async function serve() {
-  const { NUPHOS_SESSION_ID: sessionId, NUPHOS_DESKTOP_POOL: pool, HOME: home } = process.env
-  const size = Number(process.env.NUPHOS_DESKTOP_POOL_SIZE) || os.cpus().length
+  const { CERIN_SESSION_ID: sessionId, CERIN_DESKTOP_POOL: pool, HOME: home } = process.env
+  const size = Number(process.env.CERIN_DESKTOP_POOL_SIZE) || os.cpus().length
 
   if (!sessionId || !pool || !home)
-    throw new Error('desktop-session: NUPHOS_SESSION_ID, NUPHOS_DESKTOP_POOL and HOME are required')
+    throw new Error('desktop-session: CERIN_SESSION_ID, CERIN_DESKTOP_POOL and HOME are required')
   let relay
   const end = () => {
     relay?.server().kill()
@@ -463,7 +463,7 @@ export function reap(pool, now = Date.now()) {
  * stays manual and unwatched, so `reap` frees it after MANUAL_IDLE_MS.
  */
 export async function open(pool, sessionId, pid) {
-  const size = Number(process.env.NUPHOS_DESKTOP_POOL_SIZE) || os.cpus().length
+  const size = Number(process.env.CERIN_DESKTOP_POOL_SIZE) || os.cpus().length
   const display = claimDisplay(pool, sessionId, size, pid, true)
 
   if (display === null)
@@ -476,12 +476,12 @@ export async function open(pool, sessionId, pid) {
 const [command, argument, ...rest] = process.argv.slice(2)
 
 if (command === 'serve') await serve()
-else if (command === 'reap') reap(argument ?? process.env.NUPHOS_DESKTOP_POOL)
+else if (command === 'reap') reap(argument ?? process.env.CERIN_DESKTOP_POOL)
 else if (command === 'open')
   process.stdout.write(`${String(await open(argument, rest[0], Number(rest[1])))}\n`)
 else if (command === 'list')
   process.stdout.write(
-    `${JSON.stringify(listDesktops(argument ?? process.env.NUPHOS_DESKTOP_POOL))}\n`,
+    `${JSON.stringify(listDesktops(argument ?? process.env.CERIN_DESKTOP_POOL))}\n`,
   )
 else if (command !== undefined) {
   process.stderr.write(

@@ -1,15 +1,15 @@
 // Speaks mac-screen-host.swift's protocol with fixed colour bars and exits a minute after its
-// last viewer, logging starts, viewers and input to NUPHOS_E2E_MAC_SCREEN_LOG. With
-// NUPHOS_E2E_MAC_SCREEN_BLANK it never sends a picture, like frames the viewer cannot decode.
+// last viewer, logging starts, viewers and input to CERIN_E2E_MAC_SCREEN_LOG. With
+// CERIN_E2E_MAC_SCREEN_BLANK it never sends a picture, like frames the viewer cannot decode.
 import { appendFileSync, readFileSync, rmSync } from 'node:fs'
 import { createServer } from 'node:net'
 
 const [socketPath] = process.argv.slice(2)
 const IDLE_MS = 60_000
-const blank = Boolean(process.env.NUPHOS_E2E_MAC_SCREEN_BLANK)
+const blank = Boolean(process.env.CERIN_E2E_MAC_SCREEN_BLANK)
 const log = (line) => {
-  if (process.env.NUPHOS_E2E_MAC_SCREEN_LOG)
-    appendFileSync(process.env.NUPHOS_E2E_MAC_SCREEN_LOG, `${String(process.pid)} ${line}\n`)
+  if (process.env.CERIN_E2E_MAC_SCREEN_LOG)
+    appendFileSync(process.env.CERIN_E2E_MAC_SCREEN_LOG, `${String(process.pid)} ${line}\n`)
 }
 const fixture = readFileSync(new URL('./fixtures/mac-screen-bars.bin', import.meta.url))
 const frames = []

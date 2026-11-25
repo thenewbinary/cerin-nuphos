@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 if [ "$#" -lt 2 ]; then
@@ -18,8 +18,8 @@ fi
 team_id="$1"
 client_id="$2"
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is required" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is required" >&2
   exit 1
 fi
 
@@ -28,7 +28,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}/teams/${team_id}/tailscale-clients/${client_id}/credentials"
 
@@ -39,7 +39,7 @@ cleanup() {
 trap cleanup EXIT
 
 status="$(curl -fsS -w '%{http_code}' -o "$tmp" \
-  -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+  -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
   "$url" || true)"
 
 if [ "$status" != "200" ]; then

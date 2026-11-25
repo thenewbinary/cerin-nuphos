@@ -43,7 +43,7 @@ export function loginWrapper(
     env: {
       ...target.env,
       ...(provider === 'codex'
-        ? { CODEX_EXECUTABLE: target.cliPath, NUPHOS_CODEX_AUTH_DIRECTORY: target.agentHome }
+        ? { CODEX_EXECUTABLE: target.cliPath, CERIN_CODEX_AUTH_DIRECTORY: target.agentHome }
         : {}),
     },
   }

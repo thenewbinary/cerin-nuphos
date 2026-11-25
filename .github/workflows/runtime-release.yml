@@ -54,7 +54,6 @@ jobs:
             echo "$TAG already exists; nothing to release."
             exit 0
           fi
-          node scripts/check-legacy-version.mjs "$VERSION"
           gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$TAG" -f sha="$GITHUB_SHA" >/dev/null
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 

@@ -148,7 +148,7 @@ bindingScoped.delete(
 )
 
 // Agent credential handout, mirroring asana-accounts /credentials: the sandbox
-// exchanges its NUPHOS_TOKEN for a fresh (auto-refreshed) Sentry access token
+// exchanges its CERIN_TOKEN for a fresh (auto-refreshed) Sentry access token
 // and calls sentry.io/api/0 directly. Gated by the per-binding member
 // allow-list.
 bindingScoped.get('/credentials', requireSentryMemberAccess(), async (c) => {

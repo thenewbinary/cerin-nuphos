@@ -33,7 +33,7 @@ enum AgentChatAPI {
         request.setValue("text/event-stream", forHTTPHeaderField: "accept")
         request.setValue("identity", forHTTPHeaderField: "accept-encoding")
         request.setValue(clientVersion, forHTTPHeaderField: "x-atlas-client")
-        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-nuphos-ai-consent-version")
+        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-cerin-ai-consent-version")
         request.setValue(Locale.current.identifier.replacingOccurrences(of: "_", with: "-"), forHTTPHeaderField: "x-atlas-locale")
         request.setValue("/teams/\(body.teamId)/agent/\(body.id)", forHTTPHeaderField: "x-atlas-url")
         // URLSession's idle timeout between packets, not a deadline for the
@@ -510,7 +510,7 @@ enum AgentChatAPI {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "authorization")
         request.setValue("application/json", forHTTPHeaderField: "accept")
         request.setValue(clientVersion, forHTTPHeaderField: "x-atlas-client")
-        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-nuphos-ai-consent-version")
+        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-cerin-ai-consent-version")
         request.timeoutInterval = timeout
         if let body {
             request.setValue("application/json", forHTTPHeaderField: "content-type")

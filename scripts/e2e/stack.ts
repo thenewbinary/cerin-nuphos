@@ -41,7 +41,7 @@ export type Stack = {
 }
 
 function findOpenab(): string {
-  const explicit = process.env.OPENAB ?? process.env.NUPHOS_OPENAB_BINARY
+  const explicit = process.env.OPENAB ?? process.env.CERIN_OPENAB_BINARY
 
   if (explicit) return explicit
   const cache = join(homedir(), '.cache/cerin')
@@ -211,12 +211,12 @@ export async function startStack(
     env: {
       NODE_ENV: 'development',
       PORT: String(backendPort),
-      NUPHOS_JWT_SECRET: 'local-e2e-jwt-secret-not-a-production-credential',
+      CERIN_JWT_SECRET: 'local-e2e-jwt-secret-not-a-production-credential',
       MONGODB_URI: mongoUri,
       MONGODB_DB: 'cerin_e2e',
       ATLAS_REDIS_ENABLED: 'false',
-      NUPHOS_DEV_EMAIL_OTP_LOG: 'true',
-      NUPHOS_LOCAL_STACK: 'true',
+      CERIN_DEV_EMAIL_OTP_LOG: 'true',
+      CERIN_LOCAL_STACK: 'true',
       // Cloudflare is never reached: a scenario answers for it on this redirect.
       CLOUDFLARE_OAUTH_CLIENT_ID: 'e2e-cloudflare-client',
       CLOUDFLARE_OAUTH_CLIENT_SECRET: 'e2e-cloudflare-secret-not-a-production-credential',
@@ -229,8 +229,8 @@ export async function startStack(
       LINODE_BYOK_ENCRYPTION_KEY: 'bG9jYWwtZTJlLWxpbm9kZS1rZXktbm90LXByb2R1Y3Q=',
       SONARQUBE_BYOK_ENCRYPTION_KEY: 'bG9jYWwtZTJlLXNvbmFycXViZS1rZXktbm90LXByb2Q=',
       // Where the agent reaches the backend's tools, as a runtime on this computer would.
-      NUPHOS_BACKEND_URL: apiUrl,
-      ...(options.boxes ? { NUPHOS_PUBLIC_BACKEND_URL: apiUrl } : {}),
+      CERIN_BACKEND_URL: apiUrl,
+      ...(options.boxes ? { CERIN_PUBLIC_BACKEND_URL: apiUrl } : {}),
       ...fakes,
     },
   })

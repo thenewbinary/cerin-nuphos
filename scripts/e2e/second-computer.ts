@@ -61,17 +61,17 @@ export async function startSecondComputer(
   )
   const env = {
     HOME: home,
-    NUPHOS_AGENT_HOME: agentHome,
-    NUPHOS_LOCAL_RUNTIME_DIR: runtimeDir,
-    NUPHOS_API_URL: apiUrl,
-    NUPHOS_CLI_CONFIG: cliConfig,
-    NUPHOS_E2E_AGENT_INSTALLER: resolve(import.meta.dirname, 'fixture-install.sh'),
+    CERIN_AGENT_HOME: agentHome,
+    CERIN_LOCAL_RUNTIME_DIR: runtimeDir,
+    CERIN_API_URL: apiUrl,
+    CERIN_CLI_CONFIG: cliConfig,
+    CERIN_E2E_AGENT_INSTALLER: resolve(import.meta.dirname, 'fixture-install.sh'),
     ...extra,
   }
   let stopped = false
   let restarts = 0
   let child = spawn(`computer-${label}`, ['node', host], {
-    env: stagedUpdate ? { ...env, NUPHOS_E2E_STAGED_UPDATE: stagedUpdate } : env,
+    env: stagedUpdate ? { ...env, CERIN_E2E_STAGED_UPDATE: stagedUpdate } : env,
   })
 
   if (stagedUpdate)

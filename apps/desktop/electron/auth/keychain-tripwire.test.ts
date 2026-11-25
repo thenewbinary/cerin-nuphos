@@ -26,7 +26,7 @@ test('plain Node never reaches the keychain, even beside a keychain sign-in', as
       },
     },
   })
-  process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
+  process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
   await fs.writeFile(
     path.join(dir, 'desktop.yaml'),
     yaml.dump({ keychainAccount: 'u1@https://platform.cerin.ai', user: 'bruce@example.com' }),

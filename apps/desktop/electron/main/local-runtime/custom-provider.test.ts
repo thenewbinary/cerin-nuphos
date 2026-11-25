@@ -72,7 +72,7 @@ test('the key goes only to the credential store, and an edit without one keeps i
   assert.deepEqual(readCustomProviders(dir).codex?.models, ['kimi-k2'])
   assert.deepEqual(await customProviderLaunch(store, 'codex', path.join(dir, 'codex-home')), {
     models: ['kimi-k2'],
-    env: { NUPHOS_CODEX_PROVIDER_KEY: 'sk-gw-secret' },
+    env: { CERIN_CODEX_PROVIDER_KEY: 'sk-gw-secret' },
   })
 
   await saveCustomProvider(store, dir, 'u1', 'codex', null)
@@ -136,7 +136,7 @@ test('Codex gets its own provider entry at the top of config.toml, replaced in p
       '# Cerin custom provider (begin)',
       'model_provider = "cerin-custom"',
       'model = "glm-4.6"',
-      'model_providers.cerin-custom = { name = "Custom provider", base_url = "https://gw.example.com/anthropic", env_key = "NUPHOS_CODEX_PROVIDER_KEY" }',
+      'model_providers.cerin-custom = { name = "Custom provider", base_url = "https://gw.example.com/anthropic", env_key = "CERIN_CODEX_PROVIDER_KEY" }',
       '# Cerin custom provider (end)',
       base,
     ].join('\n'),
@@ -200,7 +200,7 @@ test('a saved provider stands in for the sign-in, and its key reaches only opena
     customProvider: 'gw.example.com',
   })
   await process.start(options)
-  assert.deepEqual(started, [undefined, { NUPHOS_CODEX_PROVIDER_KEY: 'sk-gw' }])
+  assert.deepEqual(started, [undefined, { CERIN_CODEX_PROVIDER_KEY: 'sk-gw' }])
 })
 
 test('a key the store will not delete keeps the provider listed; a key already gone does not', async (t) => {

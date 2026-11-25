@@ -20,7 +20,7 @@ const processEnv = {
   CODEX_HOME: join(base, '.codex'),
   OPENAB_ACP_AUTH_KEY: 'synthetic-transport-key',
   UNSCOPED_SESSION_MARKER: 'synthetic-unscoped-value',
-  NUPHOS_TOKEN: 'stale-actor',
+  CERIN_TOKEN: 'stale-actor',
   GOMEMLIMIT: '6GiB',
   NODE_OPTIONS: '--max-old-space-size=6144',
   GOFLAGS: '-p=2',
@@ -36,7 +36,7 @@ const processEnv = {
 const { shell_environment_policy: policy } = cerinCodexSessionConfig(
   {},
   {
-    'ai.cerin/codex': { env: { NUPHOS_TOKEN: 'scoped-actor', NUPHOS_SESSION_ID: 'shell-smoke' } },
+    'ai.cerin/codex': { env: { CERIN_TOKEN: 'scoped-actor', CERIN_SESSION_ID: 'shell-smoke' } },
   },
   processEnv,
 )
@@ -98,12 +98,12 @@ try {
           `${process.env.SystemRoot}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe`,
           '-NoProfile',
           '-Command',
-          'if ($env:NUPHOS_TOKEN -ne "scoped-actor" -or $env:OPENAB_ACP_AUTH_KEY) { exit 3 }; Write-Output NUPHOS_OK',
+          'if ($env:CERIN_TOKEN -ne "scoped-actor" -or $env:OPENAB_ACP_AUTH_KEY) { exit 3 }; Write-Output CERIN_OK',
         ]
       : [
           '/bin/sh',
           '-c',
-          'test -z "${OPENAB_ACP_AUTH_KEY+x}" && test -z "${UNSCOPED_SESSION_MARKER+x}" && test "$NUPHOS_TOKEN" = scoped-actor && test "$GOMEMLIMIT" = 6GiB && test "$NODE_OPTIONS" = --max-old-space-size=6144 && test "$GOFLAGS" = -p=2 && test "$MAKEFLAGS" = -j2 && test "$BASH_ENV" = /opt/cerin-runtime/runtime-guard.sh && test "$HOME" = "$NUPHOS_SESSION_HOME" && test "$GH_CONFIG_DIR" = "$HOME/.config/gh" && test "$CLOUDSDK_CONFIG" = "$HOME/.config/gcloud" && command -v sh >/dev/null',
+          'test -z "${OPENAB_ACP_AUTH_KEY+x}" && test -z "${UNSCOPED_SESSION_MARKER+x}" && test "$CERIN_TOKEN" = scoped-actor && test "$GOMEMLIMIT" = 6GiB && test "$NODE_OPTIONS" = --max-old-space-size=6144 && test "$GOFLAGS" = -p=2 && test "$MAKEFLAGS" = -j2 && test "$BASH_ENV" = /opt/cerin-runtime/runtime-guard.sh && test "$HOME" = "$CERIN_SESSION_HOME" && test "$GH_CONFIG_DIR" = "$HOME/.config/gh" && test "$CLOUDSDK_CONFIG" = "$HOME/.config/gcloud" && command -v sh >/dev/null',
         ]
   const started = Date.now()
   const result = await rpc('command/exec', {
@@ -117,7 +117,7 @@ try {
 
   console.log(`exit ${result.exitCode} after ${Date.now() - started} ms: ${result.stdout.trim()}`)
   assert.equal(result.exitCode, 0, `Codex shell environment isolation failed: ${result.stderr}`)
-  if (process.platform === 'win32') assert.match(result.stdout, /NUPHOS_OK/u)
+  if (process.platform === 'win32') assert.match(result.stdout, /CERIN_OK/u)
   console.log(
     'PASS real Codex App Server shell: no transport key or unscoped env; scoped credentials and CLI environment available',
   )

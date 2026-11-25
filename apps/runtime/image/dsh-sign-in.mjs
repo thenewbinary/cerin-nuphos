@@ -15,7 +15,7 @@ export function apply(ctx) {
   const out = createWriteStream('', { fd: 3 })
   const send = (frame) => out.write(`${JSON.stringify(frame)}\n`)
   const run =
-    process.env.NUPHOS_DSH_SIGN_IN === 'account' ? () => account(ctx, send) : () => apiKey(ctx)
+    process.env.CERIN_DSH_SIGN_IN === 'account' ? () => account(ctx, send) : () => apiKey(ctx)
   run().then(
     () => send({ type: 'done', phase: 'succeeded' }),
     (error) => send({ type: 'done', phase: error?.phase ?? 'failed' }),
@@ -34,11 +34,11 @@ async function account(ctx, send) {
   const service = ctx.deepseekAccount
   const view = await service.startSignIn(
     {
-      version: process.env.NUPHOS_DSH_VERSION ?? '0.0.0',
+      version: process.env.CERIN_DSH_VERSION ?? '0.0.0',
       locale: 'en',
       timezoneOffsetSeconds: -new Date().getTimezoneOffset() * 60,
     },
-    `http://127.0.0.1:${process.env.NUPHOS_DSH_SIGN_IN_PORT}`,
+    `http://127.0.0.1:${process.env.CERIN_DSH_SIGN_IN_PORT}`,
     'web',
   )
   const id = view.attempt?.id

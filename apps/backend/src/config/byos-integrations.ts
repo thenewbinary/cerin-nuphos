@@ -208,7 +208,7 @@ export function byosIntegrationsConfig() {
       // Trello, and Gmail / Google Drive for teams without their own Google
       // OAuth client. Each toolkit's Composio-managed auth config is found (or
       // created) in the project at first use.
-      apiKey: optional('NUPHOS_COMPOSIO_API_KEY'),
+      apiKey: optional('CERIN_COMPOSIO_API_KEY'),
     },
     linear: {
       // OAuth2 app the team authorises against. Linear has a single hosted

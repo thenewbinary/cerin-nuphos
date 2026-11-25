@@ -19,7 +19,7 @@ import {
 // write where they are told to, but on such a pod they do not spawn a CLI at all.
 const onManagedRuntime =
   process.env.HOME?.startsWith('/home/node') === true &&
-  Object.keys(process.env).some((name) => name.startsWith('NUPHOS_RUNTIME'))
+  Object.keys(process.env).some((name) => name.startsWith('CERIN_RUNTIME'))
 const spawnsCli = { skip: onManagedRuntime && 'never spawns a sign-in on a managed runtime' }
 
 const URL_LINE =
