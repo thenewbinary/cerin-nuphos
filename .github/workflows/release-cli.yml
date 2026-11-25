@@ -13,7 +13,7 @@ on:
         type: string
         required: true
       platforms:
-        description: all, or linux or macos alone (macOS needs the Developer ID signing secrets)
+        description: all, or linux or macos alone (macOS signs and notarizes only when the Developer ID secrets are present)
         type: choice
         options: [linux, macos, all]
         default: linux
@@ -60,7 +60,7 @@ jobs:
           [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || { echo '::error::Expected a stable SemVer version'; exit 1; }
           [[ "$RELEASE_TAG" == "cli-v$VERSION" ]] || { echo '::error::Tag must match apps/cli/Cargo.toml'; exit 1; }
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-      # macOS builds are signed with Desktop's identity; `linux` ships without them.
+      # macOS builds sign with Desktop's identity when its secrets are present; `linux` ships without them.
       - name: Pick platforms
         id: matrix
         env:
@@ -108,7 +108,7 @@ jobs:
 
   build:
     needs: [provenance, validate]
-    # Only macOS needs Desktop's signing secrets and its release approval.
+    # Only macOS uses Desktop's signing secrets and its release approval.
     environment: ${{ contains(matrix.target, 'apple-darwin') && 'desktop-release' || '' }}
     strategy:
       fail-fast: true
@@ -136,15 +136,28 @@ jobs:
           set -euo pipefail
           rustup target add "$TARGET"
           cargo build --release --locked --target "$TARGET"
-      - name: Import macOS signing certificate
+      # The cert is optional: detect it without printing it (an empty value
+      # would fail the import action) and skip signing when absent. cargo's
+      # linker already leaves an ad-hoc signature, which then ships as-is.
+      - name: Check for macOS signing secrets
         if: contains(matrix.target, 'apple-darwin')
+        id: certs
+        env:
+          MAC_CERTS: ${{ secrets.MAC_CERTS }}
+        run: |
+          set -euo pipefail
+          available=false
+          [[ -z "$MAC_CERTS" ]] || available=true
+          echo "available=$available" >> "$GITHUB_OUTPUT"
+      - name: Import macOS signing certificate
+        if: contains(matrix.target, 'apple-darwin') && steps.certs.outputs.available == 'true'
         id: signing
         uses: apple-actions/import-codesign-certs@77ba2a2a8f5cfc8c405ebf3159f767c323e238f9 # v7
         with:
           p12-file-base64: ${{ secrets.MAC_CERTS }}
           p12-password: ${{ secrets.MAC_CERTS_PASSWORD }}
       - name: Sign and notarize macOS CLI
-        if: contains(matrix.target, 'apple-darwin')
+        if: contains(matrix.target, 'apple-darwin') && steps.certs.outputs.available == 'true'
         env:
           TARGET: ${{ matrix.target }}
           SIGNING_IDENTITIES: ${{ steps.signing.outputs.identities }}
@@ -168,7 +181,8 @@ jobs:
   # local runtime (openab and the ACP adapters) plus its host for plain Node.
   agent:
     needs: [provenance, validate]
-    # macOS signs the bundle's helpers with Desktop's identity, behind its release approval.
+    # macOS signs the bundle's helpers with Desktop's identity when the secrets
+    # are present, behind its release approval.
     environment: ${{ startsWith(matrix.runner, 'macos') && 'desktop-release' || '' }}
     strategy:
       fail-fast: true
@@ -207,8 +221,20 @@ jobs:
         env:
           TARGETS: ${{ matrix.targets }}
         run: node local-runtime/prepare.mjs --targets "$TARGETS" --require
-      - name: Import macOS signing certificate
+      # The cert is optional: detect it without printing it (an empty value
+      # would fail the import action) and skip helper signing when absent.
+      - name: Check for macOS signing secrets
         if: runner.os == 'macOS'
+        id: certs
+        env:
+          MAC_CERTS: ${{ secrets.MAC_CERTS }}
+        run: |
+          set -euo pipefail
+          available=false
+          [[ -z "$MAC_CERTS" ]] || available=true
+          echo "available=$available" >> "$GITHUB_OUTPUT"
+      - name: Import macOS signing certificate
+        if: runner.os == 'macOS' && steps.certs.outputs.available == 'true'
         id: signing
         uses: apple-actions/import-codesign-certs@77ba2a2a8f5cfc8c405ebf3159f767c323e238f9 # v7
         with:
@@ -219,7 +245,7 @@ jobs:
       # grants across updates; an ad-hoc one would change with every release.
       # Not notarized: the CLI downloads the bundle itself, so it is not quarantined.
       - name: Sign the macOS helpers
-        if: runner.os == 'macOS'
+        if: runner.os == 'macOS' && steps.certs.outputs.available == 'true'
         env:
           TARGETS: ${{ matrix.targets }}
           SIGNING_IDENTITIES: ${{ steps.signing.outputs.identities }}
