@@ -486,6 +486,10 @@ jobs:
           (cd apps/desktop && pnpm install --frozen-lockfile)
       # The scenarios' 60 s wait for MongoDB must not include a cold image pull (#3102).
       # Keep the tags in step with MONGO_IMAGE in scripts/e2e/stack.ts and STORAGE_IMAGE in storage.ts.
+      # Ubuntu 24.04 blocks the unprivileged user namespaces Chromium's sandbox needs, so the
+      # headless Chromium `cerin agent` launches exits at once.
+      - name: Let Chromium start its sandbox
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Pull the MongoDB and file store images
         run: |
           docker pull mongo:8.0.32
