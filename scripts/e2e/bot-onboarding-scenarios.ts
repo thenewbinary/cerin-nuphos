@@ -28,6 +28,8 @@ export const botOnboardingScenarios: Scenario[] = [
           )
         ).body as { conversations: Row[] }
 
+      // Sign-in opens Home; a first Bot starts from the Bots page.
+      await page.getByRole('tab', { name: 'Bots' }).click()
       await page.getByRole('button', { name: 'New Bot', exact: true }).click()
       await page.getByRole('textbox', { name: 'Bot name' }).fill('Release Helper')
       await page.getByRole('button', { name: 'Create', exact: true }).click()
