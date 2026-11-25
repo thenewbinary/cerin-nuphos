@@ -65,7 +65,7 @@ session.endSession();
 with tempfile.TemporaryDirectory() as directory:
     env_file = Path(directory) / 'mongo.env'
     password = secrets.token_hex(32)
-    env_file.write_text('MONGO_INITDB_ROOT_USERNAME=cerin\n'
+    env_file.write_text('MONGO_INITDB_ROOT_USERNAME=nuphos\n'
                         f'MONGO_INITDB_ROOT_PASSWORD={password}\n'
                         'NUPHOS_MONGO_HOST=localhost\n'
                         'GLIBC_TUNABLES=glibc.pthread.rseq=1\n')

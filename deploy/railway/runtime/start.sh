@@ -4,4 +4,4 @@ set -eu
 mkdir -p /home/node/workspace
 chown node:node /home/node /home/node/workspace
 exec setpriv --reuid=node --regid=node --init-groups --no-new-privs \
-  /usr/local/bin/cerin-runtime-start "$@"
+  /usr/local/bin/nuphos-runtime-start "$@"

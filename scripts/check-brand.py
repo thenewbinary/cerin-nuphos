@@ -20,6 +20,11 @@ PENDING = [
     re.compile(r'\bzeabur/' + OLD + r'-(?:runtime|openab-runtime)\b[A-Za-z0-9_.:${}-]*'),  # images
     re.compile(OLD + r'-(?:runtime-control|relay-status)-v1'),  # key-derivation labels the published runtime and relay images share
     re.compile(r"(?<=')" + OLD + r"/runtime(?=')"),  # image path in a test fixture
+    re.compile(r'ghcr\\\.io\\/' + OLD + r'\\/runtime'),  # image path in an escaped regex
+    re.compile(r'/home/node/\.' + OLD + r'-runtime\b'),  # state dir inside the published runtime image
+    re.compile(r'/usr/local/bin/' + OLD + r'-runtime-start\b'),  # entrypoint inside the published runtime image
+    re.compile(r"MONGO_INITDB_ROOT_USERNAME(?::\s*'|=)" + OLD + r"\b"),  # DB user
+    re.compile(r"MONGODB_DB:\s*'" + OLD + r"'"),  # DB name, quoted
     re.compile(r'MONGODB_DB:\s*' + OLD + r'\w*'),  # database name
     re.compile(r'(?<=mongodb://)' + OLD + r'(?=:)'),  # database user
     re.compile(r'(?<=:27017/)' + OLD + r'\w*'),  # database name

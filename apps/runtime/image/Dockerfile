@@ -204,7 +204,7 @@ COPY --from=openab /usr/local/bin/openab /usr/local/bin/openab
 # The bundle is cerin-agent-linux-<arch>.tar.gz; releases before the rename only have
 # cerin-agent-linux-<arch>.tar.gz, so that name is the fallback. /opt/cerin-agent
 # stays as a link for anything that still uses the old path.
-ARG NUPHOS_AGENT_VERSION=0.28.0
+ARG NUPHOS_AGENT_VERSION=0.28.1
 ARG CERIN_AGENT_RELEASES=https://github.com/thenewbinary/cerin-platform/releases/download
 RUN arch=$(case "$(dpkg --print-architecture)" in amd64) echo x64 ;; *) dpkg --print-architecture ;; esac) \
  && base="${CERIN_AGENT_RELEASES}/cli-v${NUPHOS_AGENT_VERSION}" \

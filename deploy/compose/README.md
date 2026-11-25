@@ -102,7 +102,7 @@ The desktop app's sign-in is stored in `~/.config/cerin/desktop.yaml` (on macOS 
    ```sh
    docker compose logs runtime | grep 'runtime password'
    # or, at any time:
-   docker compose exec -T runtime cat /home/node/.cerin-runtime/auth-key
+   docker compose exec -T runtime cat /home/node/.nuphos-runtime/auth-key
    ```
 
 2. Open the runtime console and sign in with that password. Both stacks publish it at <http://127.0.0.1:18180> by default (`RUNTIME_PORT` in `.env`).

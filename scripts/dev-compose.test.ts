@@ -27,7 +27,7 @@ test('reset asks first unless --yes is passed', () => {
 test('runtime-password prints the password the runtime generated', () => {
   assert.deepEqual(parseStackCommand(['runtime-password']), {
     kind: 'run',
-    args: ['exec', '-T', 'runtime', 'cat', '/home/node/.cerin-runtime/auth-key'],
+    args: ['exec', '-T', 'runtime', 'cat', '/home/node/.nuphos-runtime/auth-key'],
   })
 })
 

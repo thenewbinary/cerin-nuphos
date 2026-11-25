@@ -151,7 +151,7 @@ services:
     ports:
       - 127.0.0.1:${RUNTIME_PORT:-18180}:8080
     # The runtime generates its password on first boot and keeps it in
-    # /home/node/.cerin-runtime/auth-key, so this volume must persist.
+    # /home/node/.nuphos-runtime/auth-key, so this volume must persist.
     volumes:
       - runtime-home:/home/node
       - runtime-workspace:/workspace

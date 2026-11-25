@@ -26,7 +26,7 @@ export default defineRailway(() => {
       GLIBC_TUNABLES: 'glibc.pthread.rseq=1',
       // Stable replica identity across container replacement; clients use directConnection.
       NUPHOS_MONGO_HOST: 'localhost',
-      MONGO_INITDB_ROOT_USERNAME: 'cerin',
+      MONGO_INITDB_ROOT_USERNAME: 'nuphos',
       MONGO_INITDB_ROOT_PASSWORD: mongoPassword,
     },
   })
@@ -62,7 +62,7 @@ export default defineRailway(() => {
       NODE_ENV: 'production',
       PORT: '3000',
       MONGODB_URI: `mongodb://nuphos:${encodeURIComponent(mongoPassword)}@\${{mongo.RAILWAY_PRIVATE_DOMAIN}}:27017/nuphos?authSource=admin&replicaSet=rs0&directConnection=true`,
-      MONGODB_DB: 'cerin',
+      MONGODB_DB: 'nuphos',
       NUPHOS_JWT_SECRET: required('JWT_SECRET'),
       NUPHOS_AUTH_BASE_URL: `https://${apiDomain}`,
       NUPHOS_BACKEND_URL: `https://${apiDomain}`,

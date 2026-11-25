@@ -92,7 +92,7 @@ join = compose('exec', '-T', 'backend', 'cerin-admin', 'join-token', '--team', a
 assert re.search(r'nbj_[A-Za-z0-9_-]{20,}', join), 'No join token printed'
 print('PASS: cerin-admin bootstrap signs in to its team and issues a join token', flush=True)
 
-password = compose('exec', '-T', 'runtime', 'cat', '/home/node/.cerin-runtime/auth-key').strip()
+password = compose('exec', '-T', 'runtime', 'cat', '/home/node/.nuphos-runtime/auth-key').strip()
 runtime = api(root + '/agent-runtimes/external', {
     'url': 'ws://runtime:8080/acp', 'authKey': password, 'label': 'Compose smoke runtime',
 })
