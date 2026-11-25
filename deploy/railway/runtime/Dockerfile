@@ -1,4 +1,4 @@
-FROM ghcr.io/thenewbinary/cerin-runtime:0.1.66-claude-code
+FROM ghcr.io/thenewbinary/cerin-runtime:commit-45f3647f283b1c6d54d8b942ae0a02d456f67472-claude-code
 USER root
 # Railway mounts one volume per service. Keep workspaces on the home volume too.
 RUN rmdir /workspace && ln -s /home/node/workspace /workspace

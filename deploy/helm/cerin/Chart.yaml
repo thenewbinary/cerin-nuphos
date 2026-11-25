@@ -3,7 +3,7 @@ name: cerin
 description: Self-hosted Cerin backend with MongoDB, RustFS and an optional Claude Code runtime.
 type: application
 version: 0.3.41
-appVersion: '0.145.6'
+appVersion: '0.145.7'
 home: https://github.com/thenewbinary/cerin-platform
 sources:
   - https://github.com/thenewbinary/cerin-platform
