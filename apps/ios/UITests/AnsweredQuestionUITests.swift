@@ -26,7 +26,7 @@ final class AnsweredQuestionUITests: XCTestCase {
                 "Answered by: \"Jamie Doe\", this conversation's owner: it is their own answer.",
              ] + lines + ["Continue the task with this answer."]).joined(separator: "\n")]],
              "metadata": ["version": 1, "source": "agent.resource", "sentAt": "2026-11-14T01:47:00Z",
-                          "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Cerin"]]]
+                          "sender": ["type": "system", "id": "cerin:decision", "displayName": "Cerin"]]]
         }
         body["messages"] = [
             card("q-8f2c1a", ["category": "approval", "question": "How should I run the sessions migration?", "body": context,
@@ -98,7 +98,7 @@ final class AnsweredQuestionUITests: XCTestCase {
                 "- Which hero layout should I ship? → Split, image right", "Continue the task with this answer.",
              ].joined(separator: "\n")]],
              "metadata": ["version": 1, "source": "agent.resource", "sentAt": "2026-11-16T11:09:00Z",
-                          "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Cerin"]]],
+                          "sender": ["type": "system", "id": "cerin:decision", "displayName": "Cerin"]]],
         ]
         body["waitingAnswers"] = [["requestId": "q-77", "note": note]]
         conversation["body"] = body

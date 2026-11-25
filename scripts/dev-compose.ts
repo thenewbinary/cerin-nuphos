@@ -59,7 +59,7 @@ export const RUNTIME_PASSWORD_ARGS = [
   '-T',
   'runtime',
   'cat',
-  '/home/node/.nuphos-runtime/auth-key',
+  '/home/node/.cerin-runtime/auth-key',
 ]
 
 export type StackCommand =

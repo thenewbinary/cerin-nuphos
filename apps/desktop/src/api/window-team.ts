@@ -236,7 +236,7 @@ export type WindowTeamApi = {
     input: {
       slackWorkspaceId: string
       slackUserId: string
-      nuphosUserId: string
+      cerinUserId: string
       enabled?: boolean
     },
   ): Promise<SlackUserMapping>

@@ -25,7 +25,7 @@ The script calls the ordinary team API with the current `NUPHOS_TOKEN`:
 
 When the bearer is a conversation principal, the backend automatically enforces that the integration is selected for this conversation.
 
-It writes `~/.betterstack/nuphos.env` containing:
+It writes `~/.betterstack/cerin.env` containing:
 
 - `BETTERSTACK_UPTIME_API_TOKEN` when the integration has an Uptime API token
 - `BETTERSTACK_TELEMETRY_API_TOKEN` when the integration has a Telemetry API token
@@ -74,7 +74,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
      -H @<(printf 'Authorization: Bearer %s\n' "$BETTERSTACK_UPTIME_API_TOKEN") \
      -H 'content-type: application/json' \
      -d '{
-       "name": "nuphos-<trigger name>",
+       "name": "cerin-<trigger name>",
        "url": "<webhookUrl>",
        "trigger_type": "incident_change",
        "custom_webhook_template_attributes": {

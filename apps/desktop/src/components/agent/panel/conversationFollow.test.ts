@@ -14,7 +14,7 @@ const sentBy = (id: string, senderId?: string, role: Message['role'] = 'user'): 
         metadata: {
           version: 1,
           sender: { type: 'user', id: senderId, displayName: senderId },
-          source: 'nuphos',
+          source: 'cerin',
         },
       }
     : {}),

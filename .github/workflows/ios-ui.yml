@@ -1,6 +1,6 @@
 # The iOS UI tests on a simulator: every night on main, on any branch when
 # dispatched by hand (Actions > iOS UI tests > Run workflow, or
-# `gh workflow run ios-ui.yml --ref <branch> -f tests='nuphos-iosUITests/SomeTests'`
+# `gh workflow run ios-ui.yml --ref <branch> -f tests='cerin-iosUITests/SomeTests'`
 # to run only some tests), and when a pull request that changes iOS navigation,
 # lists or the toolbar is approved. They run serially, one suite after another
 # on one simulator, on the newest iOS the runner has. A failed test fails the job,
@@ -50,7 +50,7 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
         run: |
           if [ -z "$PR" ]; then echo run=true >> "$GITHUB_OUTPUT"; exit 0; fi
-          paths='^(apps/ios/nuphos-ios/Views/(Home|Chat)/|apps/ios/nuphos-ios/Services/(AgentStore|ConversationNesting)\.swift$|apps/ios/UITests/|scripts/compare-ios-ui-results\.mjs$|\.github/workflows/ios-ui\.yml$)'
+          paths='^(apps/ios/cerin-ios/Views/(Home|Chat)/|apps/ios/cerin-ios/Services/(AgentStore|ConversationNesting)\.swift$|apps/ios/UITests/|scripts/compare-ios-ui-results\.mjs$|\.github/workflows/ios-ui\.yml$)'
           if gh api --paginate "repos/$GH_REPO/pulls/$PR/files" --jq '.[].filename' | grep -qE "$paths"; then
             echo run=true >> "$GITHUB_OUTPUT"
           else
@@ -85,7 +85,7 @@ jobs:
           TESTS: ${{ inputs.tests }}
         run: |
           set -uo pipefail
-          only=(-only-testing:nuphos-iosUITests)
+          only=(-only-testing:cerin-iosUITests)
           if [ -n "${TESTS:-}" ]; then
             [[ "$TESTS" =~ ^[A-Za-z0-9_/\ -]+$ ]] || { echo "::error::tests must be -only-testing identifiers"; exit 1; }
             only=(); for t in $TESTS; do only+=("-only-testing:$t"); done
@@ -107,7 +107,7 @@ jobs:
           xcrun simctl ui "$udid" appearance light
           # The shell stops at the first failed command, so keep the test status for the end.
           status=0
-          xcodebuild test -project nuphos-ios.xcodeproj -scheme nuphos-ios -destination "id=$udid" \
+          xcodebuild test -project cerin-ios.xcodeproj -scheme cerin-ios -destination "id=$udid" \
             -parallel-testing-enabled NO "${only[@]}" \
             -resultBundlePath "$RUNNER_TEMP/ui.xcresult" > "$RUNNER_TEMP/xcodebuild.log" 2>&1 || status=$?
           xcrun xcresulttool get test-results tests --path "$RUNNER_TEMP/ui.xcresult" > "$RUNNER_TEMP/tests.json"

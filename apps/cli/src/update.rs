@@ -63,7 +63,7 @@ pub async fn update() -> Result<i32> {
     let status = std::process::Command::new("sh")
         .arg("-c")
         .arg(format!(
-            "curl -fsSL https://raw.githubusercontent.com/thenewbinary/cerin-nuphos/cli-v{latest}/apps/cli/install.sh | sh"
+            "curl -fsSL https://raw.githubusercontent.com/thenewbinary/cerin-platform/cli-v{latest}/apps/cli/install.sh | sh"
         ))
         .env("NUPHOS_INSTALL_DIR", dir)
         .env("NUPHOS_VERSION", &latest)

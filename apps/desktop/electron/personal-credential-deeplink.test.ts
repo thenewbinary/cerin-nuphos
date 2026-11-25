@@ -20,18 +20,6 @@ test('claims the staged grant with the one-time code', async () => {
   assert.deepEqual(result, { provider: 'github', login: 'fong' })
 })
 
-test('accepts the legacy scheme for installed callback links', async () => {
-  const url = 'cerin://personal-credential?provider=github&state=s&code=c'.replace(
-    'cerin:',
-    'nuphos:',
-  )
-  const result = await completePersonalCredentialUrl(url, (provider) =>
-    Promise.resolve({ provider, login: 'fong', workspaceName: null, connectedAt: 'now' }),
-  )
-
-  assert.deepEqual(result, { provider: 'github', login: 'fong' })
-})
-
 test('passes a provider error through without completing', async () => {
   const result = await completePersonalCredentialUrl(
     'cerin://personal-credential?provider=linear&error=access_denied',

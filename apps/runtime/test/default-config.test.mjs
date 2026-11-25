@@ -14,7 +14,7 @@ const configs = new Map(
 test('every published variant boots without a mounted config', () => {
   assert.match(
     dockerfile,
-    /install -m 644 "\/tmp\/nuphos-config\/openab-config\.\$\{RUNTIME_PROVIDER\}\.toml" \\\n\s+\/etc\/openab\/config\.toml/,
+    /install -m 644 "\/tmp\/cerin-config\/openab-config\.\$\{RUNTIME_PROVIDER\}\.toml" \\\n\s+\/etc\/openab\/config\.toml/,
     'the image must install a default at the path openab is told to read',
   )
   for (const variant of VARIANTS) {

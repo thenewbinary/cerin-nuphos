@@ -5,7 +5,7 @@ import { startTraceSpan } from '@/lib/agent/tracing'
 import { resolveConversationChatRuntime } from '@/lib/claude-code-preview/agent-chat-runtime'
 import { conversationExecutionState } from '@/lib/claude-code-preview/session-execution-state'
 import { AppError } from '@/lib/errors'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import { logEvent } from '@/lib/observability'
 import { requestClient } from '@/lib/request-origin'
 
@@ -230,7 +230,7 @@ agent.post('/chat', async (c) => {
       streamId,
       userId,
       // Never this sign-in: the runtime gets its own token; a CLI token passes as is (team limit).
-      nuphosToken: c.get('cliToken') ? c.get('authToken') : signNuphosToken(userId, 8 * 60 * 60),
+      cerinToken: c.get('cliToken') ? c.get('authToken') : signCerinToken(userId, 8 * 60 * 60),
       locale,
       currentUrl: header('X-Atlas-Url') ?? header('referer') ?? header('origin') ?? null,
       localToolsEnabled,

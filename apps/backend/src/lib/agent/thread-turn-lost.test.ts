@@ -40,7 +40,7 @@ let finishReasons: (string | undefined)[] = []
 
 useIdentity({
   getTeamMembership: async () => ({ role: 'MEMBER' }),
-  signNuphosToken: () => 'test-token',
+  signCerinToken: () => 'test-token',
 })
 useConversationChatRoute({
   resolveConversationChatRuntime: async () => ({ runtime: 'claude-code' }),
@@ -107,7 +107,7 @@ test('a thread turn lost to a runtime restart tells its sender, once', async () 
     metadata: {
       source: 'agent.resource',
       resourceUrl: '/teams/team/agent/child',
-      sender: { type: 'system', id: 'nuphos' },
+      sender: { type: 'system', id: 'cerin' },
     },
   })
   expect(JSON.stringify(runs[1]?.messages.at(-1)?.parts)).toContain('was cut off')
@@ -131,7 +131,7 @@ test('a lost notice is not reported back', async () => {
       { ...conversation, sessionId: 'child' },
       'Your message to thread other was cut off.',
       'agent.resource',
-      systemSender('nuphos', 'Cerin'),
+      systemSender('cerin', 'Cerin'),
     )
   ).run
   await settle()

@@ -22,9 +22,7 @@ export const INLINE_SECRET_MIN_DESKTOP = '0.95.0'
 function desktopVersion(client: string | undefined): string | undefined {
   const [app, version] = client?.split('/') ?? []
 
-  return (app === 'cerin-desktop' || app === 'nuphos-desktop') && stableRuntimeVersion(version)
-    ? version
-    : undefined
+  return app === 'cerin-desktop' && stableRuntimeVersion(version) ? version : undefined
 }
 
 /** A Desktop too old to take a secret inline; nothing else is affected. */

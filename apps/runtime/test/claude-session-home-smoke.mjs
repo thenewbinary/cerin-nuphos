@@ -12,7 +12,7 @@ test('Claude new/load/resume isolate SDK and settings env while retaining runtim
     '../image/claude-agent-acp/node_modules/@agentclientprotocol/claude-agent-acp/dist/acp-agent.js',
     import.meta.url,
   )
-  const instrumented = new URL(`./nuphos-home-smoke-${process.pid}.js`, target)
+  const instrumented = new URL(`./cerin-home-smoke-${process.pid}.js`, target)
   const source = readFileSync(target, 'utf8')
   const anchor = '        const q = query({'
   assert.equal(source.split(anchor).length, 2)
@@ -23,7 +23,7 @@ test('Claude new/load/resume isolate SDK and settings env while retaining runtim
       `        throw Object.assign(new Error('captured-sdk-options'), { capturedOptions: options });\n${anchor}`,
     ),
   )
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-claude-home-smoke-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-claude-home-smoke-'))
   t.after(() => {
     rmSync(instrumented)
     rmSync(home, { recursive: true, force: true })

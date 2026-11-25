@@ -1,5 +1,5 @@
 {
-  "name": "nuphos-runtime",
+  "name": "cerin-runtime",
   "private": true,
   "version": "0.1.66",
   "description": "Container image for the Cerin agent runtime.",

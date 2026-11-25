@@ -37,7 +37,7 @@ export type ConversationProps = {
     keepPolling: boolean
   } | null
   /** Opens Cerin markdown links from assistant messages inside the desktop workspace. */
-  onOpenNuphosLink?: (href: string, beside?: boolean) => boolean
+  onOpenCerinLink?: (href: string, beside?: boolean) => boolean
   /** Re-runs one of your sent messages with new text, in a fork of the chat. */
   onEditMessage?: {
     allowed: (message: Message) => boolean

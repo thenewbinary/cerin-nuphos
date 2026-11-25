@@ -12,7 +12,7 @@ import { canReplyIn } from '@/lib/agent/devices/conversation-computer'
 import { createMessageMetadata } from '@/lib/agent/message-attribution'
 import { buildPendingUserMessage } from '@/lib/agent/pending-messages'
 import { AppError } from '@/lib/errors'
-import { getTeamMembership, signNuphosToken } from '@/lib/identity'
+import { getTeamMembership, signCerinToken } from '@/lib/identity'
 import { toolError, toolResult } from '@/lib/mcp/protocol'
 import { logError } from '@/lib/observability'
 import { claimAgentRunOrEnqueue, runAgentForTrigger } from '@/routes/agent'
@@ -27,7 +27,7 @@ import type { UIMessage } from 'ai'
 
 // Token TTL for the minted per-call Cerin identity. Mirrors executeTrigger's
 // 8h window — long enough to outlive a slow run, short enough to stay bounded.
-const NUPHOS_TOKEN_TTL_SECONDS = 60 * 60 * 8
+const CERIN_TOKEN_TTL_SECONDS = 60 * 60 * 8
 
 /**
  * Continuing a session: the caller's own, or one they take part in and may
@@ -59,7 +59,7 @@ async function answerQuestion(
   ctx: McpCallContext,
 ): Promise<ToolResult> {
   try {
-    const { sender } = await createMessageMetadata(ctx.userId, 'nuphos')
+    const { sender } = await createMessageMetadata(ctx.userId, 'cerin')
 
     await answerDecision({
       conversation,
@@ -83,7 +83,7 @@ async function answerQuestion(
     status: 'running',
     session_id: conversation.sessionId,
     progress: {
-      message: 'The answer was delivered and the Cerin Agent carries on. Poll nuphos_check.',
+      message: 'The answer was delivered and the Cerin Agent carries on. Poll cerin_check.',
     },
   })
 }
@@ -96,7 +96,7 @@ async function untilStored(sessionId: string): Promise<void> {
   }
 }
 
-export async function nuphosAsk(
+export async function cerinAsk(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {
@@ -112,7 +112,7 @@ export async function nuphosAsk(
 
   if (!teamId) {
     return toolError(
-      '`team_id` is required. Call nuphos_list_teams to see your teams and pass ' +
+      '`team_id` is required. Call cerin_list_teams to see your teams and pass ' +
         'one of the returned team_id values.',
     )
   }
@@ -167,7 +167,7 @@ export async function nuphosAsk(
   const renderedText = `${prompt}${contextBlock}`
   // The caller's own request, made through their MCP client: attributed to them.
   // Resolved before the claim below, which nothing would release if this threw.
-  const attribution = await createMessageMetadata(ctx.userId, 'nuphos')
+  const attribution = await createMessageMetadata(ctx.userId, 'cerin')
   // A prompt sent while this session is already running is handed to the turn
   // in flight instead of being refused: the agent sees it at its next step and
   // decides whether to ignore it, finish first, or change course.
@@ -199,7 +199,7 @@ export async function nuphosAsk(
       progress: {
         message:
           'The Cerin Agent is already working on this session; your prompt was handed ' +
-          'to the run in progress. Poll nuphos_check for the answer.',
+          'to the run in progress. Poll cerin_check for the answer.',
       },
     })
   }
@@ -224,7 +224,7 @@ export async function nuphosAsk(
 
   // runAgentForTrigger drives its own AbortController, so a dropped HTTP
   // connection does not cancel the run: it finishes and persists, and
-  // nuphos_check can retrieve the answer.
+  // cerin_check can retrieve the answer.
   // The claim is released however the run ends, also when it fails to start.
   const run = (async () => {
     try {
@@ -242,7 +242,7 @@ export async function nuphosAsk(
       await runAgentForTrigger({
         userId: ctx.userId,
         conversationOwnerUserId: ownerUserId,
-        nuphosToken: signNuphosToken(ctx.userId, NUPHOS_TOKEN_TTL_SECONDS),
+        cerinToken: signCerinToken(ctx.userId, CERIN_TOKEN_TTL_SECONDS),
         teamId,
         sessionId,
         messages,
@@ -264,13 +264,13 @@ export async function nuphosAsk(
     })
 
     // A new session is stored as its first turn starts. Return once it is, so
-    // the nuphos_check that follows finds it.
+    // the cerin_check that follows finds it.
     if (!existing) await Promise.race([settled, untilStored(sessionId)])
 
     return toolResult({
       status: 'running',
       session_id: sessionId,
-      progress: { message: 'The Cerin Agent started on this request. Poll nuphos_check.' },
+      progress: { message: 'The Cerin Agent started on this request. Poll cerin_check.' },
     })
   }
 

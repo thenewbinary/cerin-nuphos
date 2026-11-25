@@ -60,7 +60,7 @@ fi
 config_dir="$HOME/.config/hcloud"
 config_path="$config_dir/cli.toml"
 env_dir="$HOME/.hetzner"
-env_path="$env_dir/nuphos.env"
+env_path="$env_dir/cerin.env"
 mkdir -p "$config_dir" "$env_dir"
 chmod 700 "$env_dir"
 
@@ -74,7 +74,7 @@ if not token:
     raise SystemExit("Credentials response missing a non-empty token")
 account_id = d.get("accountId") or ""
 label = d.get("label") or account_id
-context = "nuphos"
+context = "cerin"
 
 def toml_escape(value):
     return value.replace("\\", "\\\\").replace('"', '\\"')

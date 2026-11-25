@@ -198,7 +198,7 @@ export function filterSubAgents(
   )
 }
 
-/** "nuphos #12" for a pull request ("app !12" on GitLab), the issue key ("ENG-12") for Linear. */
+/** "cerin #12" for a pull request ("app !12" on GitLab), the issue key ("ENG-12") for Linear. */
 export function changeSubtitle(resource: SessionResource): string {
   if (isPull(resource)) {
     const repo = resource.repository?.split('/').at(-1) ?? ''

@@ -24,7 +24,7 @@ const BOB: UserInfo = { id: 'bob', name: 'Bob', email: 'b@example.com', username
 const CAROL: UserInfo = { id: 'carol', name: 'Carol', email: 'c@example.com', username: 'carol' }
 
 async function harness({ failKeep = false } = {}) {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-switch-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-switch-'))
   const file = path.join(dir, 'desktop.yaml')
   const session = new AuthSession(CLOUD)
   const kept: string[] = []
@@ -200,7 +200,7 @@ test('a switch on the same backend leaves the saved endpoint alone', async () =>
 })
 
 test('one backend spelt two ways is one account: not parked, not listed twice', async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-switch-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-switch-'))
   const file = path.join(dir, 'desktop.yaml')
 
   await fs.writeFile(

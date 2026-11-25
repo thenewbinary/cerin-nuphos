@@ -19,7 +19,7 @@ useByosGcpWif({
 
 const TEAM_ID = new ObjectId()
 const PROJECT = 'robotic-almanac-213113'
-const ADMIN_SA = 'nuphos-permission-admin@robotic-almanac-213113.iam.gserviceaccount.com'
+const ADMIN_SA = 'cerin-permission-admin@robotic-almanac-213113.iam.gserviceaccount.com'
 
 const stored: { gcpServiceAccounts: unknown[] } = { gcpServiceAccounts: [] }
 

@@ -148,14 +148,14 @@ export function useWorkspaceShellState() {
     [sharedSetSearchOpen],
   )
   const [localSidebarCollapsed, setLocalSidebarCollapsed] = useState<boolean>(
-    () => readLocalStorage('nuphos.sidebarCollapsed') === '1',
+    () => readLocalStorage('cerin.sidebarCollapsed') === '1',
   )
   const toggleLocalSidebar = useCallback(() => setLocalSidebarCollapsed((value) => !value), [])
   const sidebarCollapsed = pane?.sidebarCollapsed ?? localSidebarCollapsed
   const toggleSidebarCollapsed = pane?.toggleSidebarCollapsed ?? toggleLocalSidebar
 
   useEffect(() => {
-    if (!pane) writeLocalStorage('nuphos.sidebarCollapsed', localSidebarCollapsed ? '1' : '0')
+    if (!pane) writeLocalStorage('cerin.sidebarCollapsed', localSidebarCollapsed ? '1' : '0')
   }, [pane, localSidebarCollapsed])
   // Expanded keeps the workspace dock mounted but lets it occupy the complete
   // main canvas. The persistent left rail then returns to resource navigation.

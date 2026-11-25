@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto'
 import { normalizeCredentialSelection } from '@/routes/agent/team-scope'
 
 import type {
-  NuphosDashboard,
+  CerinDashboard,
   DashboardPanel,
   DashboardPanelScriptVersion,
   DashboardPanelSnapshot,
@@ -44,7 +44,7 @@ export function appendScriptVersion(
 // Serialization
 // ---------------------------------------------------------------------------
 
-export function serializeDashboard(doc: NuphosDashboard) {
+export function serializeDashboard(doc: CerinDashboard) {
   return {
     id: doc._id.toHexString(),
     teamId: doc.teamId.toHexString(),
@@ -100,7 +100,7 @@ export function serializeSnapshot(doc: DashboardPanelSnapshot) {
  *  code + version metadata (it edits against the head). */
 export function serializePanel(
   doc: DashboardPanel,
-  dashboard: Pick<NuphosDashboard, 'cadence'>,
+  dashboard: Pick<CerinDashboard, 'cadence'>,
   currentSnapshot: DashboardPanelSnapshot | null,
   lastSuccessfulSnapshot: DashboardPanelSnapshot | null = null,
 ) {

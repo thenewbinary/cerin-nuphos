@@ -11,7 +11,7 @@ function proposal(overrides: Partial<PermissionGrantProposal>): PermissionGrantP
     createdByUserId: 'u1',
     provider: 'aws',
     permissionAdminBindingId: 'b1',
-    permissionAdminLabel: 'nuphos-permission-admin',
+    permissionAdminLabel: 'cerin-permission-admin',
     reason: 'hit a wall',
     status: 'proposed',
     createdAt: new Date('2026-07-25T00:00:00Z'),
@@ -44,10 +44,10 @@ describe('getProposalChanges', () => {
 describe('proposalSummaryLabel', () => {
   test('single create-custom change', () => {
     const p = proposal({
-      changes: [{ action: 'create-custom', grantLabel: 'nuphos-s3-uploads-read' }],
+      changes: [{ action: 'create-custom', grantLabel: 'cerin-s3-uploads-read' }],
     })
 
-    expect(proposalSummaryLabel(p)).toBe('Create nuphos-s3-uploads-read')
+    expect(proposalSummaryLabel(p)).toBe('Create cerin-s3-uploads-read')
   })
 
   test('mixed batch counts grants, creates, and revokes', () => {
@@ -70,9 +70,9 @@ describe('proposalDecisions', () => {
       changes: [
         {
           action: 'create-custom',
-          grantLabel: 'nuphos-s3-uploads-read',
+          grantLabel: 'cerin-s3-uploads-read',
           targetRoleArn: 'arn:aws:iam::1:role/op',
-          inlinePolicyName: 'nuphos-s3-uploads-read',
+          inlinePolicyName: 'cerin-s3-uploads-read',
           policyDocument: JSON.stringify({
             Version: '2012-10-17',
             Statement: [
@@ -88,12 +88,12 @@ describe('proposalDecisions', () => {
     expect(rows).toEqual([
       {
         label: 'Create policy',
-        value: 'nuphos-s3-uploads-read (inline) on arn:aws:iam::1:role/op',
+        value: 'cerin-s3-uploads-read (inline) on arn:aws:iam::1:role/op',
       },
       { label: 'Allow', value: 's3:GetObject on arn:aws:s3:::uploads/*' },
       { label: 'Allow', value: 's3:ListBucket on arn:aws:s3:::uploads' },
       { label: 'AWS account', value: '123456789012' },
-      { label: 'Via permission-admin', value: 'nuphos-permission-admin' },
+      { label: 'Via permission-admin', value: 'cerin-permission-admin' },
     ])
   })
 
@@ -103,16 +103,16 @@ describe('proposalDecisions', () => {
       changes: [
         {
           action: 'revoke',
-          grantLabel: 'nuphos-s3-uploads-read',
+          grantLabel: 'cerin-s3-uploads-read',
           targetRoleArn: 'arn:aws:iam::1:role/op',
-          inlinePolicyName: 'nuphos-s3-uploads-read',
+          inlinePolicyName: 'cerin-s3-uploads-read',
         },
       ],
     })
 
     expect(proposalDecisions(p)[0]).toEqual({
       label: 'Delete policy',
-      value: 'nuphos-s3-uploads-read (inline) from arn:aws:iam::1:role/op',
+      value: 'cerin-s3-uploads-read (inline) from arn:aws:iam::1:role/op',
     })
   })
 
@@ -125,7 +125,7 @@ describe('proposalDecisions', () => {
           action: 'create-custom',
           grantLabel: 'Cerin uploads reader',
           targetServiceAccountEmail: 'op@proj-1.iam.gserviceaccount.com',
-          customRoleId: 'nuphos_uploads_reader',
+          customRoleId: 'cerin_uploads_reader',
           permissions: ['storage.objects.get', 'storage.objects.list'],
         },
       ],
@@ -134,7 +134,7 @@ describe('proposalDecisions', () => {
 
     expect(rows[0]).toEqual({
       label: 'Create role',
-      value: 'nuphos_uploads_reader — grant to op@proj-1.iam.gserviceaccount.com',
+      value: 'cerin_uploads_reader — grant to op@proj-1.iam.gserviceaccount.com',
     })
     expect(rows[1]).toEqual({
       label: 'Permissions',

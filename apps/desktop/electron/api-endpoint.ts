@@ -14,8 +14,8 @@ import { CLI_CONFIG_PATH } from './cli-config-path.ts'
 const DEFAULT_API_URL = 'https://platform.cerin.ai'
 
 // Cerin's hosted backend. Auto-update, the changelog feed and usage analytics
-// are Cerin services, so they stay on only for this host.
-const NUPHOS_CLOUD_API_URL = 'https://platform.cerin.ai'
+// stay on only for this host.
+const CERIN_CLOUD_API_URL = 'https://platform.cerin.ai'
 
 // What this process was launched with; resetting the switch returns here, so a
 // `bun run dev` build never falls through to Cerin Cloud.
@@ -46,13 +46,13 @@ export function apiUrl(): string {
 }
 
 /** Whether the backend is Cerin Cloud rather than a self-hosted one. */
-export function isNuphosCloud(): boolean {
-  return new URL(apiUrl()).hostname.replace(/\.$/u, '') === new URL(NUPHOS_CLOUD_API_URL).hostname
+export function isCerinCloud(): boolean {
+  return new URL(apiUrl()).hostname.replace(/\.$/u, '') === new URL(CERIN_CLOUD_API_URL).hostname
 }
 
 /** A dev window may use Cloud, but must not advertise this computer there. */
 export function deviceRegistrationAllowed(dev: boolean): boolean {
-  return !dev || !isNuphosCloud()
+  return !dev || !isCerinCloud()
 }
 
 /**

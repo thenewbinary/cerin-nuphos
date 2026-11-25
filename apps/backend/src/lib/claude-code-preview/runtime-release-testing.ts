@@ -1,4 +1,4 @@
-// Test-only: stands in for the nuphos-runtime GitHub Releases feed and the ghcr manifests
+// Test-only: stands in for the cerin-runtime GitHub Releases feed and the ghcr manifests
 // behind it, so a test can say which release is the latest one — and which tags the
 // registry actually serves — without reaching the network.
 
@@ -77,14 +77,14 @@ function feed({
       )
     }
 
-    if (legacy && url.includes('/repos/nuphos/nuphos/releases?'))
+    if (legacy && url.includes('/repos/thenewbinary/cerin-platform/releases?'))
       return Promise.resolve(Response.json([]))
     if (legacy && version && url.includes('/releases/latest')) {
       return Promise.resolve(Response.json({ tag_name: `v${version}`, body }))
     }
 
     return Promise.resolve(
-      version && url.includes('/repos/nuphos/nuphos/releases?')
+      version && url.includes('/repos/thenewbinary/cerin-platform/releases?')
         ? Response.json([{ tag_name: `runtime-v${version}`, body }])
         : new Response('', { status: 500 }),
     )

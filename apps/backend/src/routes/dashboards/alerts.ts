@@ -83,9 +83,9 @@ const alertSchema = z.object({
 })
 
 export function registerDashboardAlertRoutes(
-  nuphosDashboardsRoutes: Hono<{ Variables: TeamAuthVariables }>,
+  cerinDashboardsRoutes: Hono<{ Variables: TeamAuthVariables }>,
 ): void {
-  nuphosDashboardsRoutes.get('/:dashboardId/panels/:panelId/alert', async (c) => {
+  cerinDashboardsRoutes.get('/:dashboardId/panels/:panelId/alert', async (c) => {
     const viewer = viewerOf(c)
     const { teamId, dashboard, panel, inTeam } = await loadPanel(
       c.get('teamId'),
@@ -101,7 +101,7 @@ export function registerDashboardAlertRoutes(
     return c.json({ alert: alert ? serializeAlert(alert, redact) : null })
   })
 
-  nuphosDashboardsRoutes.put(
+  cerinDashboardsRoutes.put(
     '/:dashboardId/panels/:panelId/alert',
     zv('json', alertSchema),
     async (c) => {
@@ -135,7 +135,7 @@ export function registerDashboardAlertRoutes(
     },
   )
 
-  nuphosDashboardsRoutes.delete('/:dashboardId/panels/:panelId/alert', async (c) => {
+  cerinDashboardsRoutes.delete('/:dashboardId/panels/:panelId/alert', async (c) => {
     const { teamId, panel } = await loadPanel(
       c.get('teamId'),
       c.req.param('dashboardId'),

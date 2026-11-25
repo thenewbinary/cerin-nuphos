@@ -219,7 +219,7 @@ test('turn start replaces optimistic attribution with server metadata without lo
   const metadata: NonNullable<Message['metadata']> = {
     version: 1,
     sender: { type: 'user', id: 'verified', displayName: 'Yuan' },
-    source: 'nuphos',
+    source: 'cerin',
     sentAt: '2026-09-27T10:00:00Z',
   }
 

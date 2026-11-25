@@ -26,7 +26,7 @@ const helper = readFileSync(
 )
 
 test('the adapter fails the turn with the cause and exits when Codex dies', async (t) => {
-  const base = mkdtempSync(join(tmpdir(), 'nuphos-codex-death-'))
+  const base = mkdtempSync(join(tmpdir(), 'cerin-codex-death-'))
 
   t.after(() => rmSync(base, { recursive: true, force: true }))
   writeFileSync(join(base, 'patched.mjs'), patchAdapter(readFileSync(source, 'utf8'), helper))

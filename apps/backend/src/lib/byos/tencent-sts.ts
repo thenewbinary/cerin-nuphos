@@ -8,7 +8,7 @@ import {
   getAwsOidcIssuer,
   getAwsOidcJwks,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from './aws-oidc'
 import { tencentBootstrapRegion, tencentErrorCode } from './tencent-core'
 
@@ -66,11 +66,11 @@ export function tencentOidcInfo(teamId: string): {
 
 /** RoleSessionName must be 2-64 chars of [\w+=,.@-]; sanitize defensively. */
 function sanitizeSessionName(name: string): string {
-  const sanitized = (name || 'nuphos').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
+  const sanitized = (name || 'cerin').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
 
   // Enforce Tencent's 2-char minimum: an all-invalid 1-char input could sanitize
   // to a single '-'. Fall back to a safe default.
-  return sanitized.length >= 2 ? sanitized : 'nuphos'
+  return sanitized.length >= 2 ? sanitized : 'cerin'
 }
 
 /**
@@ -96,9 +96,9 @@ export async function assumeRoleWithWebIdentity(
   const site = opts.site ?? 'china'
   const payload = {
     ProviderId: providerId,
-    WebIdentityToken: mintNuphosOidcToken(teamId, config.byos.tencent.oidc.audience),
+    WebIdentityToken: mintCerinOidcToken(teamId, config.byos.tencent.oidc.audience),
     RoleArn: roleArn,
-    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'nuphos'),
+    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'cerin'),
     DurationSeconds: opts.durationSec ?? config.byos.tencent.oidc.sessionDurationSec,
   }
   let resp: {
@@ -164,7 +164,7 @@ export async function verifyTencentRole(
   try {
     await assumeRoleWithWebIdentity(roleArn, providerId, teamId, {
       site,
-      sessionName: 'nuphos-bind-verify',
+      sessionName: 'cerin-bind-verify',
       durationSec: 900,
     })
   } catch (e) {

@@ -214,7 +214,7 @@ export const teamApi = {
     input: {
       slackWorkspaceId: string
       slackUserId: string
-      nuphosUserId: string
+      cerinUserId: string
       enabled?: boolean
     },
   ) => ipcRenderer.invoke('atlas:upsertSlackUserMapping', teamId, input),

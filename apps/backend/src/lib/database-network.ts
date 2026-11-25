@@ -191,7 +191,7 @@ export async function resolveDatabaseNetwork(
   }
   const baseUrl = loopbackUrl(dialerUrl)
   const endpoint = new URL('/v1/proxies', baseUrl)
-  const hostname = `nuphos-db-${teamId.toHexString().slice(-6)}-${bindingId.toHexString().slice(-6)}`
+  const hostname = `cerin-db-${teamId.toHexString().slice(-6)}-${bindingId.toHexString().slice(-6)}`
 
   let response: Response
 

@@ -22,7 +22,7 @@ function stored(stack: Stack, hourKey: string, groupId = ''): Stored {
     import { MongoClient, ObjectId } from 'mongodb'
     const [uri, hourKey, groupId] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const group = groupId
       ? await db.collection('file_transfer_groups').findOne({ _id: new ObjectId(groupId) })
       : null

@@ -22,7 +22,7 @@ export function slackPlanLink(teamId: string | undefined, plan: SlackCreatedPlan
 }
 
 // The Approve button on plan review cards (block_actions in /interactions).
-export const PLAN_APPROVE_ACTION = 'nuphos_plan_approve'
+export const PLAN_APPROVE_ACTION = 'cerin_plan_approve'
 
 // task_card titles are plain text; Slack caps them tightly (same 256-char
 // ceiling as Block Kit text fields).

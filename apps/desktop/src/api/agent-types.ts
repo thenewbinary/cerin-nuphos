@@ -158,7 +158,7 @@ export type AgentSignInRequest = {
 }
 
 export type AgentConversationActivitySource = {
-  origin: 'nuphos' | 'slack' | 'trigger' | 'mcp' | 'unknown'
+  origin: 'cerin' | 'slack' | 'trigger' | 'mcp' | 'unknown'
   linkedSlackThread: boolean
 }
 
@@ -232,7 +232,7 @@ export type AgentMessageMetadata = {
     /** An agent token's message: the user it acts for. */
     onBehalfOf?: { id: string; displayName: string }
   }
-  source: 'nuphos' | 'slack' | 'discord' | 'lark' | 'agent.thread' | 'agent.resource'
+  source: 'cerin' | 'slack' | 'discord' | 'lark' | 'agent.thread' | 'agent.resource'
   sentAt: string
   /** The session an agent.thread message came from. */
   sourceSessionId?: string

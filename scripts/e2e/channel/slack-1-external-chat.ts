@@ -19,7 +19,7 @@ function mongo(stack: Stack, body: string, args: unknown = null): unknown {
   const script = `
     import { MongoClient, ObjectId } from 'mongodb'
     const client = await new MongoClient(process.argv[1]).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const args = JSON.parse(process.argv[2])
     const result = await (async () => { ${body} })()
     console.log(JSON.stringify(result ?? null))

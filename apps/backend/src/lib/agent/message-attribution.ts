@@ -12,7 +12,7 @@ import type { MessageMetadata } from './message-metadata'
 import type { CliTokenPrincipal } from '@/lib/identity/cli-tokens'
 import type { UIMessage } from 'ai'
 
-import { getNuphosUserById } from '@/lib/identity/auth'
+import { getCerinUserById } from '@/lib/identity/auth'
 import { logError } from '@/lib/observability'
 
 /**
@@ -27,7 +27,7 @@ export async function createMessageMetadata(
   cliToken?: CliTokenPrincipal,
 ): Promise<MessageMetadata> {
   const [user, device] = await Promise.all([
-    getNuphosUserById(userId),
+    getCerinUserById(userId),
     deviceId ? getAgentDevice(userId, deviceId) : null,
   ])
 
@@ -57,7 +57,7 @@ export async function createMessageMetadata(
       id: userId,
       displayName,
       // Discord and Lark threads can be read by people outside the team.
-      ...(user?.email && (source === 'nuphos' || source === 'slack') ? { email: user.email } : {}),
+      ...(user?.email && (source === 'cerin' || source === 'slack') ? { email: user.email } : {}),
       ...(trustedAvatarURL(user?.avatarURL)
         ? { avatarURL: trustedAvatarURL(user?.avatarURL) }
         : {}),
@@ -92,7 +92,7 @@ export async function attributeAppMessages(
   const last = messages.at(-1)
   const fresh =
     !continuation && last?.role === 'user' && !byId.has(last.id)
-      ? await createMessageMetadata(actorId, 'nuphos', deviceId, cliToken)
+      ? await createMessageMetadata(actorId, 'cerin', deviceId, cliToken)
       : undefined
 
   // Speaking in someone else's session is joining it, so the same step that

@@ -22,15 +22,15 @@ cat <<EOF
 
 ==> Pipe through gh:
 
-gh secret set MAC_CERTS --repo thenewbinary/cerin-nuphos --body "$CERT_B64"
-gh secret set MAC_CERTS_PASSWORD --repo thenewbinary/cerin-nuphos --body "$P12_PASS"
-gh secret set APPLE_API_KEY_BASE64 --repo thenewbinary/cerin-nuphos --body "$KEY_B64"
-gh secret set APPLE_API_KEY_ID --repo thenewbinary/cerin-nuphos --body "66Q44L35XP"
-gh secret set APPLE_API_ISSUER --repo thenewbinary/cerin-nuphos --body "acc0b783-e12f-41e3-b181-f79a462630d8"
+gh secret set MAC_CERTS --repo thenewbinary/cerin-platform --body "$CERT_B64"
+gh secret set MAC_CERTS_PASSWORD --repo thenewbinary/cerin-platform --body "$P12_PASS"
+gh secret set APPLE_API_KEY_BASE64 --repo thenewbinary/cerin-platform --body "$KEY_B64"
+gh secret set APPLE_API_KEY_ID --repo thenewbinary/cerin-platform --body "66Q44L35XP"
+gh secret set APPLE_API_ISSUER --repo thenewbinary/cerin-platform --body "acc0b783-e12f-41e3-b181-f79a462630d8"
 
 # AWS — set with byos-connector creds:
-# gh secret set AWS_ACCESS_KEY_ID --repo thenewbinary/cerin-nuphos --body "AKIA..."
-# gh secret set AWS_SECRET_ACCESS_KEY --repo thenewbinary/cerin-nuphos --body "..."
+# gh secret set AWS_ACCESS_KEY_ID --repo thenewbinary/cerin-platform --body "AKIA..."
+# gh secret set AWS_SECRET_ACCESS_KEY --repo thenewbinary/cerin-platform --body "..."
 
 EOF
 

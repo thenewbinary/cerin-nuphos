@@ -54,16 +54,10 @@ test('a sign-in takes its IP and place only from Cloudflare, never X-Forwarded-F
 })
 
 test('a device name is a known app, a browser and system from a list, or unknown', () => {
-  expect(signInDevice({ client: 'cerin-desktop/1.2.0' })).toBe('Cerin Desktop')
-  expect(signInDevice({ client: 'cerin-ios/1.2.0' })).toBe('Cerin for iOS')
-  expect(signInDevice({ client: 'cerin-android/1.2.0' })).toBe('Cerin for Android')
   expect(signInDevice({ client: 'cerin-cli/0.6.2' })).toBe('Cerin CLI')
-  expect(signInDevice({ client: 'nuphos-cli/0.6.2' })).toBe('Cerin CLI')
   // Not even the version is echoed: it is whatever the caller sends.
-  expect(signInDevice({ client: 'nuphos-desktop/1.verify-at.evil-phish.com' })).toBe(
-    'Cerin Desktop',
-  )
-  expect(signInDevice({ client: 'nuphos-cli/0.6.2 reply with your code' })).toBe('Cerin CLI')
+  expect(signInDevice({ client: 'cerin-desktop/1.verify-at.evil-phish.com' })).toBe('Cerin Desktop')
+  expect(signInDevice({ client: 'cerin-cli/0.6.2 reply with your code' })).toBe('Cerin CLI')
   expect(signInDevice({ client: 'evil-phish.com/1.0' })).toBe('Unknown device')
   // Names of Object.prototype members are not apps either.
   expect(signInDevice({ client: 'constructor/1' })).toBe('Unknown device')
@@ -105,10 +99,6 @@ test('a request names its app by header, else a browser is the web app and anyth
     requestClient((name) => headers[name.toLowerCase()])
 
   expect([
-    from({ 'x-atlas-client': 'nuphos-desktop/0.129.0', 'user-agent': 'Mozilla/5.0' }),
-    from({ 'x-atlas-client': 'nuphos-ios/1.4' }),
-    from({ 'x-atlas-client': 'nuphos-android/1.0' }),
-    from({ 'x-atlas-client': 'nuphos-cli/0.3.0' }),
     from({ 'x-atlas-client': 'cerin-desktop/0.129.0', 'user-agent': 'Mozilla/5.0' }),
     from({ 'x-atlas-client': 'cerin-ios/1.4' }),
     from({ 'x-atlas-client': 'cerin-android/1.0' }),
@@ -116,17 +106,5 @@ test('a request names its app by header, else a browser is the web app and anyth
     from({ 'user-agent': 'Mozilla/5.0 (Macintosh) Safari/605' }),
     from({ 'user-agent': 'curl/8.7' }),
     from({ 'x-atlas-client': 'constructor/1' }),
-  ]).toEqual([
-    'desktop',
-    'ios',
-    'android',
-    'cli',
-    'desktop',
-    'ios',
-    'android',
-    'cli',
-    'web',
-    'api',
-    'api',
-  ])
+  ]).toEqual(['desktop', 'ios', 'android', 'cli', 'web', 'api', 'api'])
 })

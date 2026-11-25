@@ -12,7 +12,7 @@ import { escapeSlackMrkdwn } from '@/lib/slack/mrkdwn'
 import { pickUpConversationInSlack } from '@/lib/slack/session-pickup'
 import { resolveSlackUserMapping } from '@/routes/slack/identity'
 
-export const PICKUP_SESSION_ACTION = 'nuphos_pickup_session'
+export const PICKUP_SESSION_ACTION = 'cerin_pickup_session'
 
 const PICKUP_LIST_LIMIT = 5
 
@@ -20,8 +20,8 @@ const NOT_LINKED_MESSAGE =
   'Your Slack account is not linked to Cerin yet. Link it in Cerin → Settings → Slack first.'
 
 type PickupIdentity = {
-  nuphosTeamId: string
-  nuphosUserId: string
+  cerinTeamId: string
+  cerinUserId: string
 }
 
 // Both entry points authenticate the same way the DM assistant flow does: the
@@ -29,20 +29,20 @@ type PickupIdentity = {
 // names the caller. Null means the caller was already answered.
 async function resolvePickupIdentity(args: {
   botToken: string
-  nuphosTeamId: string
+  cerinTeamId: string
   slackWorkspaceId: string
   slackUserId: string
 }): Promise<PickupIdentity | null> {
   const { mapping } = await resolveSlackUserMapping(
     args.slackWorkspaceId,
-    args.nuphosTeamId,
+    args.cerinTeamId,
     args.slackUserId,
     args.botToken,
   )
 
   if (!mapping) return null
 
-  return { nuphosTeamId: args.nuphosTeamId, nuphosUserId: mapping.nuphosUserId }
+  return { cerinTeamId: args.cerinTeamId, cerinUserId: mapping.cerinUserId }
 }
 
 /**
@@ -52,7 +52,7 @@ async function resolvePickupIdentity(args: {
  */
 export async function buildPickupCommandResponse(args: {
   botToken: string
-  nuphosTeamId: string
+  cerinTeamId: string
   slackWorkspaceId: string
   slackUserId: string
 }): Promise<Record<string, unknown>> {
@@ -61,8 +61,8 @@ export async function buildPickupCommandResponse(args: {
   if (!identity) {
     return { response_type: 'ephemeral', text: NOT_LINKED_MESSAGE }
   }
-  const { conversations } = await getConversations(identity.nuphosUserId, {
-    teamId: identity.nuphosTeamId,
+  const { conversations } = await getConversations(identity.cerinUserId, {
+    teamId: identity.cerinTeamId,
     limit: PICKUP_LIST_LIMIT,
     archived: 'exclude',
   })
@@ -140,14 +140,14 @@ export async function handlePickupSessionInteraction(args: {
   try {
     const botContext = await resolveSlackBotForWorkspace(args.slackWorkspaceId)
 
-    if (!botContext?.nuphosTeamId) {
+    if (!botContext?.cerinTeamId) {
       await respond('Cerin is not fully installed for this Slack workspace yet.')
 
       return
     }
     const identity = await resolvePickupIdentity({
       botToken: botContext.botToken,
-      nuphosTeamId: botContext.nuphosTeamId,
+      cerinTeamId: botContext.cerinTeamId,
       slackWorkspaceId: args.slackWorkspaceId,
       slackUserId: args.slackUserId,
     })
@@ -162,16 +162,16 @@ export async function handlePickupSessionInteraction(args: {
     const conversation = await getConversationBySessionId(args.sessionId)
 
     if (
-      conversation?.userId !== identity.nuphosUserId ||
-      (conversation.teamId ?? undefined) !== identity.nuphosTeamId
+      conversation?.userId !== identity.cerinUserId ||
+      (conversation.teamId ?? undefined) !== identity.cerinTeamId
     ) {
       await respond('That conversation is not yours to pick up on this team.')
 
       return
     }
     const result = await pickUpConversationInSlack({
-      userId: identity.nuphosUserId,
-      teamId: identity.nuphosTeamId,
+      userId: identity.cerinUserId,
+      teamId: identity.cerinTeamId,
       sessionId: args.sessionId,
       conversationTitle: conversation.title.trim() || 'New chat',
     })

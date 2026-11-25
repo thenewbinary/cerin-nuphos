@@ -5,7 +5,7 @@ Electron desktop app for Cerin — multi-cloud BYOS infra control plane.
 ## Releases
 
 Release notes and version history are published on
-[GitHub Releases](https://github.com/thenewbinary/cerin-nuphos/releases).
+[GitHub Releases](https://github.com/thenewbinary/cerin-platform/releases).
 
 ## Develop
 
@@ -52,7 +52,7 @@ device with local exec allowed — and opens no debugging port.
 
 ### Box desktops
 
-On a Linux Box every conversation gets a `nuphos-desktop` MCP server
+On a Linux Box every conversation gets a `cerin-desktop` MCP server
 (`local-runtime/desktop-session.mjs`). It claims a display from the pool on its
 first tool call, not when the session starts. Agents open apps from the XFCE
 panel's launchers; their desktop guidance is in the backend runtime prompt, so a
@@ -129,10 +129,10 @@ and every 6 hours). Updates are downloaded silently and installed on next quit.
    ```
 
    This signs, notarizes, builds `.dmg` + `.zip`, generates `latest-mac.yml`,
-   and uploads everything to `s3://nuphos-releases/desktop/`.
+   and uploads everything to `s3://cerin-releases/desktop/`.
 
 8. **Distribute** the `.dmg` URL for first-time installs:
-   `https://nuphos-releases.s3.amazonaws.com/desktop/Cerin-<ver>-arm64.dmg`
+   `https://cerin-releases.s3.amazonaws.com/desktop/Cerin-<ver>-arm64.dmg`
 
 ### What end-users see
 

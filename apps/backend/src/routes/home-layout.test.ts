@@ -53,7 +53,7 @@ const layout = (team: boolean): HomeLayout => ({
     {
       id: 'c1',
       kind: 'ci',
-      repos: [{ installationId: 1, fullName: 'nuphos/nuphos' }],
+      repos: [{ installationId: 1, fullName: 'thenewbinary/cerin-platform' }],
       statuses: ['running', 'failed'],
     },
   ],

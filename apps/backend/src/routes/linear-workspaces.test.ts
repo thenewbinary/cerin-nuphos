@@ -22,7 +22,7 @@ function binding(overrides: Record<string, unknown> = {}) {
     label: 'Cerin',
     workspaceId: 'workspace-1',
     workspaceName: 'Cerin',
-    organizationUrlKey: 'nuphos',
+    organizationUrlKey: 'cerin',
     accountId: 'account-1',
     accountName: 'Yuanlin',
     scope: 'read,write',
@@ -130,7 +130,7 @@ describe('GET /:bindingId/issues/:identifier', () => {
       id: 'team-uuid',
       key: 'NUPS',
       name: 'Cerin',
-      url: 'https://linear.app/nuphos/team/NUPS',
+      url: 'https://linear.app/cerin/team/NUPS',
     })
     expect(json.comments).toEqual([
       {
@@ -195,14 +195,14 @@ describe('GET /:bindingId/teams', () => {
           key: 'API',
           name: 'Api',
           color: null,
-          url: 'https://linear.app/nuphos/team/API',
+          url: 'https://linear.app/cerin/team/API',
         },
         {
           id: 't2',
           key: 'WEB',
           name: 'Web',
           color: '#0f0',
-          url: 'https://linear.app/nuphos/team/WEB',
+          url: 'https://linear.app/cerin/team/WEB',
         },
       ],
     })
@@ -221,7 +221,7 @@ describe('GET /:bindingId/teams/:linearTeamId/issues', () => {
   const issueRow = {
     identifier: 'EX-1',
     title: 'First',
-    url: 'https://linear.app/nuphos/issue/EX-1',
+    url: 'https://linear.app/cerin/issue/EX-1',
     priority: 1,
     priorityLabel: 'Urgent',
     updatedAt: '2026-01-02T00:00:00.000Z',
@@ -264,7 +264,7 @@ describe('GET /:bindingId/teams/:linearTeamId/issues', () => {
         id: 'team-uuid',
         key: 'NUPS',
         name: 'Cerin',
-        url: 'https://linear.app/nuphos/team/NUPS',
+        url: 'https://linear.app/cerin/team/NUPS',
       },
       issues: [issueRow],
       nextCursor: 'cursor-2',

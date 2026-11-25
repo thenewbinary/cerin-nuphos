@@ -8,7 +8,7 @@ import { sampleExternalRuntimeMetrics } from './runtime-external-metrics'
 import { RUNTIME_METRIC_SAMPLE_INTERVAL_MS, sampleBucket } from './runtime-metrics-store'
 
 const samplerGlobal = globalThis as typeof globalThis & {
-  nuphosRuntimeMetricsSampler?: { timer: ReturnType<typeof setInterval>; running: boolean }
+  cerinRuntimeMetricsSampler?: { timer: ReturnType<typeof setInterval>; running: boolean }
 }
 
 export async function sampleRuntimeMetrics(nowMs = Date.now()): Promise<void> {
@@ -31,14 +31,14 @@ export function initRuntimeMetricsSampler(): void {
   }
 
   state.timer = setInterval(() => void tick(), RUNTIME_METRIC_SAMPLE_INTERVAL_MS)
-  samplerGlobal.nuphosRuntimeMetricsSampler = state
+  samplerGlobal.cerinRuntimeMetricsSampler = state
   void tick()
 }
 
 export function shutdownRuntimeMetricsSampler(): void {
-  const state = samplerGlobal.nuphosRuntimeMetricsSampler
+  const state = samplerGlobal.cerinRuntimeMetricsSampler
 
   if (!state) return
   clearInterval(state.timer)
-  delete samplerGlobal.nuphosRuntimeMetricsSampler
+  delete samplerGlobal.cerinRuntimeMetricsSampler
 }

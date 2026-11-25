@@ -18,7 +18,7 @@ const ALICE: UserInfo = { id: 'alice', name: 'Alice', email: 'a@example.com', us
 const BOB: UserInfo = { id: 'bob', name: 'Bob', email: 'b@example.com', username: 'bob' }
 
 async function harness({ secure = true } = {}) {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-accounts-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-accounts-'))
   const file = path.join(dir, 'desktop.yaml')
   const items = new Map<string, string>()
   const store: TokenStore = {

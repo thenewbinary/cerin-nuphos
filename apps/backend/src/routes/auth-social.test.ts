@@ -123,7 +123,7 @@ test('browser correlation cookie is required; cancellation consumes state once',
   const callback = `/google/callback?state=${state}&error=access_denied`
 
   expect((await app.request(callback)).status).toBe(400)
-  const headers = { cookie: `__Host-nuphos-oauth=${state}` }
+  const headers = { cookie: `__Host-cerin-oauth=${state}` }
 
   expect((await app.request(callback, { headers })).status).toBe(401)
   expect((await app.request(callback, { headers })).status).toBe(400)
@@ -132,7 +132,7 @@ test('start keeps the first-touch cookie, which a cross-site POST callback would
   const firstTouch = JSON.stringify({ channel: 'x' })
 
   await app.request('/google/start', {
-    headers: { cookie: `nuphos_first_touch=${encodeURIComponent(firstTouch)}` },
+    headers: { cookie: `cerin_first_touch=${encodeURIComponent(firstTouch)}` },
   })
 
   expect(docs.get('social_auth_attempts')?.[0]?.firstTouch).toBe(firstTouch)
@@ -140,7 +140,7 @@ test('start keeps the first-touch cookie, which a cross-site POST callback would
 test('state cannot be moved to another provider or used after expiry', async () => {
   const start = await app.request('/google/start')
   const state = new URL(start.headers.get('location')!).searchParams.get('state')!
-  const headers = { cookie: `__Host-nuphos-oauth=${state}` }
+  const headers = { cookie: `__Host-cerin-oauth=${state}` }
 
   expect((await app.request(`/apple/callback?state=${state}&code=x`, { headers })).status).toBe(400)
   docs.get('social_auth_attempts')![0]!.expiresAt = new Date(0)
@@ -263,14 +263,14 @@ for (const native of [true, false]) {
             : { keys: [{ ...rsa.publicKey.export({ format: 'jwk' }), kid, alg: 'RS256' }] },
         )) as typeof fetch
       const response = await app.request(`/google/callback?state=${state}&code=provider-code`, {
-        headers: { cookie: `__Host-nuphos-oauth=${state}` },
+        headers: { cookie: `__Host-cerin-oauth=${state}` },
       })
 
       if (!native) {
         expect(response.status).toBe(200)
         const cookie = response.headers
           .getSetCookie()
-          .find((value) => value.startsWith('__Host-nuphos-social='))!
+          .find((value) => value.startsWith('__Host-cerin-social='))!
           .split(';')[0]!
         const sessionToken = cookie.slice(cookie.indexOf('=') + 1)
 
@@ -358,7 +358,7 @@ test('device page counts every code lookup and decision against the approval quo
     email: 'person@example.com',
     email_verified: true,
   })
-  const headers = { cookie: `__Host-nuphos-social=${await createUserSession(user.id)}` }
+  const headers = { cookie: `__Host-cerin-social=${await createUserSession(user.id)}` }
 
   expect((await device.request('/device', { headers })).status).toBe(200)
   expect(keys).toEqual([])
@@ -380,7 +380,7 @@ test('device page counts every code lookup and decision against the approval quo
   expect(post.status).toBe(429)
   expect(keys).toEqual(Array(3).fill(`device-login:approve:${user.id}`))
 })
-test('nuphos login uses its configured approval page with or without OIDC', async () => {
+test('cerin login uses its configured approval page with or without OIDC', async () => {
   const cli = new Hono().onError(errorHandler).route(
     '/',
     createCliAuthRoutes(async () => true),
@@ -402,10 +402,7 @@ test('nuphos login uses its configured approval page with or without OIDC', asyn
     })
     expect(await verificationUri()).toBe(`${config.auth.publicBaseUrl}/auth/social/device`)
     config.auth.oidc.issuer = undefined
-    for (const base of [
-      'https://platform.cerin.ai',
-      'https://nuphos.ai', // rebrand:keep: the legacy host
-    ]) {
+    for (const base of ['https://platform.cerin.ai', 'https://platform.cerin.ai']) {
       config.auth.publicBaseUrl = base
       expect(await verificationUri()).toBe(`${base}/auth/social/device`)
     }

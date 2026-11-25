@@ -17,7 +17,7 @@ export function patchClaudeAskUserQuestion(source) {
   let patched = replaceOnce(
     source,
     disallowed,
-    '        const disallowedTools = elicitationSupport.form || nuphosOffersDecisions(params.mcpServers) ? [] : ["AskUserQuestion"];',
+    '        const disallowedTools = elicitationSupport.form || cerinOffersDecisions(params.mcpServers) ? [] : ["AskUserQuestion"];',
   )
 
   patched = replaceOnce(
@@ -25,7 +25,7 @@ export function patchClaudeAskUserQuestion(source) {
     elicited,
     `            if (toolName === "AskUserQuestion" && !this.clientCapabilities?.elicitation?.form) {
                 await this.ensureToolCallEmitted(sessionId, toolName, toolUseID, toolInput, parentToolUseId, signal, permissionSessionId);
-                return nuphosAskClaudeQuestion(toolInput);
+                return cerinAskClaudeQuestion(toolInput);
             }
 ${elicited}`,
   )
@@ -33,6 +33,6 @@ ${elicited}`,
   return replaceOnce(
     patched,
     servers,
-    `${servers}        nuphosRememberDecisionServer(params.mcpServers);\n`,
+    `${servers}        cerinRememberDecisionServer(params.mcpServers);\n`,
   )
 }

@@ -47,7 +47,7 @@ function withInlineExec(contexts: AgentClusterContext[]): AgentClusterContext[] 
         exec: {
           apiVersion: 'client.authentication.k8s.io/v1',
           command: 'bash',
-          args: ['-c', EXEC_SCRIPT, 'nuphos-exec-credential', ...execArgs],
+          args: ['-c', EXEC_SCRIPT, 'cerin-exec-credential', ...execArgs],
           interactiveMode: 'Never',
           provideClusterInfo: false,
         },

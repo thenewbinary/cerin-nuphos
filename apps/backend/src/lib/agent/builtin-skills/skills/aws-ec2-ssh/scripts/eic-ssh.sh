@@ -49,7 +49,7 @@ fi
 
 tmpkey="$(mktemp -u)"
 trap 'rm -f "$tmpkey" "$tmpkey.pub"' EXIT
-ssh-keygen -q -t rsa -b 2048 -N '' -f "$tmpkey" -C "nuphos-eic-${iid}"
+ssh-keygen -q -t rsa -b 2048 -N '' -f "$tmpkey" -C "cerin-eic-${iid}"
 
 echo "Pushing ephemeral key to ${iid} (user ${user}, 60s validity)" >&2
 aws ec2-instance-connect send-ssh-public-key --region "$region" \

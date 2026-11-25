@@ -126,7 +126,7 @@ export async function presentedByRuntime(
   args: unknown,
   run: (toolCallId: string) => unknown,
 ) {
-  const toolCallId = `nuphos-${randomUUID()}`
+  const toolCallId = `cerin-${randomUUID()}`
   const emit = (frame: Record<string, unknown>) =>
     publish(ctx, frame).catch(() => {
       // Frames are best-effort UI; the tool result itself still reaches the agent.

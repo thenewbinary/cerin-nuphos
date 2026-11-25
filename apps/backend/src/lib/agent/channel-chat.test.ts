@@ -73,7 +73,7 @@ let departed = new Set<string>()
 useIdentity({
   getTeamMembership: async (userId) =>
     departed.has(userId) ? null : ({ role: 'MEMBER' } as never),
-  signNuphosToken: () => 'test-token',
+  signCerinToken: () => 'test-token',
   getTeamMembers: async () =>
     [
       ...['owner', 'agent-a-owner', 'mei'].map((id) => ({
@@ -118,7 +118,7 @@ useSessionExecutionState({
 const person: MessageMetadata = {
   version: 1,
   sender: { type: 'user', id: 'owner', displayName: 'Owner' },
-  source: 'nuphos',
+  source: 'cerin',
   sentAt: new Date().toISOString(),
 }
 
@@ -284,7 +284,7 @@ describe('waking a channel’s agents', () => {
       'agent.resource',
       {
         version: 1,
-        sender: { type: 'system', id: 'nuphos:decision', displayName: 'Cerin' },
+        sender: { type: 'system', id: 'cerin:decision', displayName: 'Cerin' },
         source: 'agent.resource',
         sentAt: new Date().toISOString(),
       },
@@ -892,7 +892,7 @@ describe('reading a channel', () => {
     // Nor does an agent, even one acting for the owner or claiming their id.
     await say('go ahead', {
       ...agentSpeaker('bot'),
-      source: 'nuphos',
+      source: 'cerin',
       sender: {
         type: 'agent',
         id: 'token',

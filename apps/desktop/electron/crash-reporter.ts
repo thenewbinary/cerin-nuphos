@@ -20,7 +20,7 @@ import { getHeapStatistics } from 'node:v8'
 import { app, BrowserWindow, crashReporter, ipcMain } from 'electron'
 
 import { captureMainException, setMainAnalyticsEnabled } from './analytics.ts'
-import { apiUrl, isNuphosCloud } from './api-endpoint.ts'
+import { apiUrl, isCerinCloud } from './api-endpoint.ts'
 import { authSession } from './auth-session.ts'
 import { readDeviceIdentity } from './main/device-identity.ts'
 import { isDev } from './main/env.ts'
@@ -31,7 +31,7 @@ const settingFile = () => path.join(app.getPath('userData'), 'diagnostics.json')
 let sendDiagnostics = true
 // The backend Crashpad uploads to. It is read once, at start.
 let crashpadApi: string | undefined
-const sendsUsage = () => sendDiagnostics && isNuphosCloud()
+const sendsUsage = () => sendDiagnostics && isCerinCloud()
 
 function readSendDiagnostics(): boolean {
   try {

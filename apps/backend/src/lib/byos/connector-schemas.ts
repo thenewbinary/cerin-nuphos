@@ -56,13 +56,13 @@ export const aliyunConnectorSchema = z.object({
   // `china` — the original single-partition behavior.
   site: z.enum(['china', 'international']).default('china'),
   // RAM role ARN whose trust policy allows the Cerin OIDC provider to
-  // sts:AssumeRoleWithOIDC, e.g. acs:ram::123456789:role/NuphosConnector.
+  // sts:AssumeRoleWithOIDC, e.g. acs:ram::123456789:role/CerinConnector.
   roleArn: z
     .string()
     .trim()
     .regex(/^acs:ram::\d+:role\/.+/, 'Invalid Alibaba Cloud role ARN'),
   // The RAM OIDC provider ARN the role trusts (required by AssumeRoleWithOIDC),
-  // e.g. acs:ram::123456789:oidc-provider/nuphos.
+  // e.g. acs:ram::123456789:oidc-provider/cerin.
   oidcProviderArn: z
     .string()
     .trim()
@@ -72,7 +72,7 @@ export const aliyunConnectorSchema = z.object({
 export const volcengineConnectorSchema = z.object({
   label: z.string().trim().min(1).max(100),
   // Volcengine IAM role TRN whose trust policy allows the Cerin connector to
-  // sts:AssumeRole, e.g. trn:iam::2100000000:role/NuphosRole.
+  // sts:AssumeRole, e.g. trn:iam::2100000000:role/CerinRole.
   roleTrn: z
     .string()
     .trim()

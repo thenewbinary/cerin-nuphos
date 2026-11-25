@@ -2,7 +2,7 @@ import Foundation
 import PostHog
 
 // Only the endpoint boundary is replaced; exercise the production wrapper.
-@MainActor enum NuphosAPI {
+@MainActor enum CerinAPI {
     static let defaultBaseURL = URL(string: "https://platform.cerin.ai")!
     static var baseURL = defaultBaseURL
 }
@@ -11,18 +11,18 @@ import PostHog
     @MainActor static func main() {
         let analytics = Analytics.shared
         let sdk = PostHogSDK.shared
-        let alice = NuphosUser(id: "alice", email: "private@example.com", name: "Private", username: "private", avatarURL: "")
-        let bob = NuphosUser(id: "bob", email: "", name: "", username: "", avatarURL: "")
+        let alice = CerinUser(id: "alice", email: "private@example.com", name: "Private", username: "private", avatarURL: "")
+        let bob = CerinUser(id: "bob", email: "", name: "", username: "", avatarURL: "")
         analytics.setActive(true)
         analytics.screen("agent")
         analytics.track("agent_message_sent")
         precondition(sdk.configs.isEmpty && sdk.events.isEmpty, "No anonymous or unvalidated-session events")
 
-        NuphosAPI.baseURL = URL(string: "https://self-hosted.example.com")!
+        CerinAPI.baseURL = URL(string: "https://self-hosted.example.com")!
         analytics.identify(alice)
         analytics.screen("agent")
         precondition(sdk.configs.isEmpty && sdk.events.isEmpty, "Self-hosted must never start Cloud telemetry")
-        NuphosAPI.baseURL = NuphosAPI.defaultBaseURL
+        CerinAPI.baseURL = CerinAPI.defaultBaseURL
         analytics.identify(alice)
         #if DEBUG
         analytics.screen("agent")
@@ -77,7 +77,7 @@ import PostHog
         precondition(sdk.events.last?.properties["team_id"] == nil, "Old screen/team cleared on logout")
         analytics.identify(alice)
         precondition(sdk.events.last?.user == "alice" && sdk.resets >= 3, "Direct account switches reset identity")
-        NuphosAPI.baseURL = URL(string: "https://self-hosted.example.com")!
+        CerinAPI.baseURL = URL(string: "https://self-hosted.example.com")!
         let cloudCount = sdk.events.count
         analytics.track("login")
         analytics.setActive(false)

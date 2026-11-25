@@ -21,7 +21,7 @@ import { zv } from '@/lib/validate'
 import { requireTeamRole } from '@/middleware/auth'
 import { avatarBodyLimit } from '@/routes/auth'
 
-import type { NuphosTeam } from '@/lib/identity/types'
+import type { CerinTeam } from '@/lib/identity/types'
 import type { TeamAuthVariables } from '@/middleware/auth'
 import type { Context, Hono } from 'hono'
 
@@ -59,7 +59,7 @@ const updateAgentRuntimeSchema = z
   .strict()
 
 /** The team as its routes return it, or a 404 when the update found no team. */
-export function teamJson(c: Context<{ Variables: TeamAuthVariables }>, team: NuphosTeam | null) {
+export function teamJson(c: Context<{ Variables: TeamAuthVariables }>, team: CerinTeam | null) {
   if (!team) throw new AppError(404, 'team_not_found', 'Team not found')
 
   return c.json({ ...team, isOwner: team.ownerID === c.get('userId'), role: c.get('teamRole') })

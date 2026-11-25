@@ -120,7 +120,7 @@ jobs:
           context: apps/runtime/image
           file: apps/runtime/image/Dockerfile
           load: true
-          tags: nuphos-runtime:ci
+          tags: cerin-runtime:ci
           build-args: |
             BASE_IMAGE=ghcr.io/zeabur/nuphos-runtime:0.0.12-base-codex
             RUNTIME_PROVIDER=${{ matrix.provider }}
@@ -130,5 +130,5 @@ jobs:
         env:
           TOOLS: ${{ matrix.provider == 'claude-code' && '--tools' || '' }}
         run: |
-          docker run --rm -v "$PWD/test:/smoke:ro" --entrypoint bash nuphos-runtime:ci \
+          docker run --rm -v "$PWD/test:/smoke:ro" --entrypoint bash cerin-runtime:ci \
             /smoke/image-smoke.sh $TOOLS

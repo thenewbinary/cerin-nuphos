@@ -1,4 +1,4 @@
-// What `nuphos agent --join <token>` leaves on a computer: its own credential,
+// What `cerin agent --join <token>` leaves on a computer: its own credential,
 // which opens only its runtime tunnel and is revoked on its own, so a server
 // never has to hold a person's session.
 
@@ -35,7 +35,7 @@ export const tunnelUrlFor = (apiUrl: string, deviceId: string, reclaim = false) 
  * systemd by RestartPreventExitStatus=78, and the LaunchAgent, which restarts only a
  * failed exit, by 0.
  */
-export const EXIT_REVOKED = process.env.XPC_SERVICE_NAME === 'ai.nuphos.agent' ? 0 : 78
+export const EXIT_REVOKED = process.env.XPC_SERVICE_NAME === 'ai.cerin.agent' ? 0 : 78
 
 export function deviceCredentialStore(dataDir: string) {
   const file = path.join(dataDir, 'device-credential.json')

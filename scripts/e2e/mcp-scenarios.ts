@@ -35,21 +35,18 @@ type Tool = ReturnType<typeof mcp>['tool']
 
 const prompt = (marker: string) => `From MCP ${marker}`
 
-/** Starts a Task with `nuphos_ask` and polls `nuphos_check` until the agent acknowledges `marker`. */
+/** Starts a Task with `cerin_ask` and polls `cerin_check` until the agent acknowledges `marker`. */
 async function askOverMcp(tool: Tool, teamId: string, marker: string): Promise<string> {
-  const asked = await tool<{ session_id: string }>('nuphos_ask', {
+  const asked = await tool<{ session_id: string }>('cerin_ask', {
     prompt: prompt(marker),
     team_id: teamId,
     wait: false,
   })
   const sessionId = asked.structuredContent?.session_id
 
-  must(
-    typeof sessionId === 'string',
-    `nuphos_ask to return a session, got ${asked.content[0].text}`,
-  )
-  await until(`nuphos_check to return the reply to ${marker}`, async () => {
-    const checked = await tool<{ status: string; answer?: string }>('nuphos_check', {
+  must(typeof sessionId === 'string', `cerin_ask to return a session, got ${asked.content[0].text}`)
+  await until(`cerin_check to return the reply to ${marker}`, async () => {
+    const checked = await tool<{ status: string; answer?: string }>('cerin_check', {
       session_id: sessionId,
     })
     const result = checked.structuredContent
@@ -79,7 +76,7 @@ export const mcpScenarios: Scenario[] = [
           personal_credential_ids: string[]
           team_identity: string[]
         }
-      }>('nuphos_update_credentials', {
+      }>('cerin_update_credentials', {
         ...args,
         github_installation_ids: [],
         personal_credential_ids: [],
@@ -88,7 +85,7 @@ export const mcpScenarios: Scenario[] = [
 
       must(changed.isError !== true, `credential update to succeed, got ${JSON.stringify(changed)}`)
       const read = await tool<{ enabled_for_session: Record<string, unknown> }>(
-        'nuphos_list_credentials',
+        'cerin_list_credentials',
         args,
       )
 
@@ -98,7 +95,7 @@ export const mcpScenarios: Scenario[] = [
         'an explicit empty GitHub allowlist to persist',
       )
       const preserved = await tool<{ enabled_for_session: Record<string, unknown> }>(
-        'nuphos_update_credentials',
+        'cerin_update_credentials',
         args,
       )
 
@@ -107,14 +104,14 @@ export const mcpScenarios: Scenario[] = [
           '["github"]',
         'omission to preserve team identity',
       )
-      const invalid = await tool('nuphos_update_credentials', {
+      const invalid = await tool('cerin_update_credentials', {
         ...args,
         github_installation_ids: 'invalid',
       })
 
       must(invalid.isError === true, 'the shared validator to reject a malformed GitHub list')
       const cleared = await tool<{ enabled_for_session: Record<string, unknown> }>(
-        'nuphos_update_credentials',
+        'cerin_update_credentials',
         { ...args, team_identity: [] },
       )
 
@@ -134,23 +131,18 @@ export const mcpScenarios: Scenario[] = [
         clientInfo: { name: 'e2e', version: '0' },
       })
 
-      must(init.serverInfo.name === 'nuphos-agent', `the Cerin server, got ${init.serverInfo.name}`)
+      must(init.serverInfo.name === 'cerin-agent', `the Cerin server, got ${init.serverInfo.name}`)
       const { tools } = await rpc<{ tools: { name: string }[] }>('tools/list')
       const names = tools.map((listed) => listed.name)
 
-      for (const name of [
-        'nuphos_ask',
-        'nuphos_check',
-        'nuphos_list_teams',
-        'nuphos_update_session',
-      ])
+      for (const name of ['cerin_ask', 'cerin_check', 'cerin_list_teams', 'cerin_update_session'])
         must(names.includes(name), `${name} in tools/list, got ${names.join(', ')}`)
-      const listed = await tool<{ teams: { team_id: string }[] }>('nuphos_list_teams')
+      const listed = await tool<{ teams: { team_id: string }[] }>('cerin_list_teams')
       const teams = listed.structuredContent?.teams ?? []
 
       must(
         teams.some((team) => team.team_id === stack.teamId),
-        `the E2E team in nuphos_list_teams, got ${JSON.stringify(teams)}`,
+        `the E2E team in cerin_list_teams, got ${JSON.stringify(teams)}`,
       )
       await askOverMcp(tool, stack.teamId, 'E2E_DELIVERY:mcp')
       await page.getByRole('tab', { name: 'Tasks' }).click()
@@ -190,7 +182,7 @@ export const mcpScenarios: Scenario[] = [
 
       must((await model()) === 'fixture', "the Task on the fixture agent's default model")
       for (const fullAccess of [false, true]) {
-        const refused = await tool('nuphos_update_session', {
+        const refused = await tool('cerin_update_session', {
           session_id: task,
           model: 'fixture-small',
           full_access: fullAccess,
@@ -207,7 +199,7 @@ export const mcpScenarios: Scenario[] = [
       }
       // Model alone still changes, and the Task reports whose Full Access it follows.
       const changed = await tool<{ full_access: boolean; full_access_follows?: string }>(
-        'nuphos_update_session',
+        'cerin_update_session',
         { session_id: task, model: 'fixture-small' },
       )
 

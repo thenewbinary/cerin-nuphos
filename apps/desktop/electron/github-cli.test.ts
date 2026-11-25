@@ -48,7 +48,7 @@ beforeEach(() => {
 })
 
 const sha = 'a'.repeat(40)
-const pull = { owner: 'nuphos', repo: 'nuphos', number: 50, headSha: sha }
+const pull = { owner: 'thenewbinary', repo: 'cerin-platform', number: 50, headSha: sha }
 const sender = {} as Parameters<typeof cli.githubCliMerge>[0]
 
 test('comments go to github.com through the gh found on PATH, body on stdin', async () => {
@@ -60,7 +60,7 @@ test('comments go to github.com through the gh found on PATH, body on stdin', as
     'github.com',
     '--method',
     'POST',
-    'repos/nuphos/nuphos/issues/50/comments',
+    'repos/thenewbinary/cerin-platform/issues/50/comments',
     '--input',
     '-',
   ])
@@ -108,6 +108,8 @@ test('the viewer is null when gh is signed out', async () => {
 
 test('a review is filed against the head the reviewer saw, not a later push', async () => {
   await cli.githubCliReview(pull, 'APPROVE', '')
-  assert.deepEqual(calls[0].args.slice(-3, -2), ['repos/nuphos/nuphos/pulls/50/reviews'])
+  assert.deepEqual(calls[0].args.slice(-3, -2), [
+    'repos/thenewbinary/cerin-platform/pulls/50/reviews',
+  ])
   assert.deepEqual(JSON.parse(calls[0].stdin), { event: 'APPROVE', commit_id: sha, body: '' })
 })

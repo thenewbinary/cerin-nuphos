@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">Kredensial · %1$d</string>
     <string name="composer_computers_count">Komputer · %1$d</string>
     <string name="composer_queue_a_message">Antrekan pesan</string>
-    <string name="composer_ask_nuphos">Tanyakan apa saja ke Cerin</string>
+    <string name="composer_ask_cerin">Tanyakan apa saja ke Cerin</string>
     <string name="composer_remove_attachment_failed">Tidak dapat menghapus lampiran tersimpan ini. Periksa penyimpanan lalu coba lagi.</string>
     <string name="composer_photos">Foto</string>
     <string name="composer_files">File</string>

@@ -8,7 +8,7 @@ import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from './aws-oidc'
 import { unwrapVolcResult, volcErrorCode } from './volcengine-api'
 
@@ -52,7 +52,7 @@ export function volcengineOidcInfo(teamId: string): {
 
 /** RoleSessionName must be ≤64 chars of [\w+=,.@-]; sanitize defensively. */
 function sanitizeSessionName(name: string): string {
-  return (name || 'nuphos').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
+  return (name || 'cerin').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
 }
 
 /**
@@ -77,8 +77,8 @@ export async function assumeRoleWithOidc(
   }
   const body = new URLSearchParams({
     RoleTrn: roleTrn,
-    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'nuphos'),
-    OIDCToken: mintNuphosOidcToken(teamId, config.byos.volcengine.oidc.audience),
+    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'cerin'),
+    OIDCToken: mintCerinOidcToken(teamId, config.byos.volcengine.oidc.audience),
     DurationSeconds: String(opts.durationSec ?? config.byos.volcengine.oidc.sessionDurationSec),
   })
   let resp: VolcResponse<{
@@ -125,7 +125,7 @@ export async function assumeRoleWithOidc(
 export async function verifyVolcengineRole(roleTrn: string, teamId: string): Promise<void> {
   try {
     await assumeRoleWithOidc(roleTrn, teamId, {
-      sessionName: 'nuphos-bind-verify',
+      sessionName: 'cerin-bind-verify',
       durationSec: 900,
     })
   } catch (e) {

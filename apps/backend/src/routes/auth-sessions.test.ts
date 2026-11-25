@@ -29,11 +29,11 @@ useDb({
 useIdentity({
   authenticateToken: (async (token: string) => {
     // A 30-day sign-in JWT from before sessions: a user, but no session.
-    if (token === 'old-sign-in') return { user: USER, cacheHit: false, provider: 'nuphos' }
+    if (token === 'old-sign-in') return { user: USER, cacheHit: false, provider: 'cerin' }
     if (token === 'session')
-      return { user: USER, cacheHit: false, provider: 'nuphos', sessionId: CURRENT }
-    if (token === 'run') return { user: USER, cacheHit: false, provider: 'nuphos', agentRun: true }
-    if (token === 'legacy') return { user: USER, cacheHit: false, provider: 'nuphos' }
+      return { user: USER, cacheHit: false, provider: 'cerin', sessionId: CURRENT }
+    if (token === 'run') return { user: USER, cacheHit: false, provider: 'cerin', agentRun: true }
+    if (token === 'legacy') return { user: USER, cacheHit: false, provider: 'cerin' }
 
     return null
   }) as unknown as typeof identityActual.authenticateToken,

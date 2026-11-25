@@ -29,7 +29,7 @@ test('anything not Apple is a laptop: Windows in its own finish, the rest plain'
 test('a Box is a Cerin box, whatever it runs', () => {
   const box = { provider: 'instabox', sandboxId: 'sb', state: 'running' } as AgentDevice['box']
 
-  assert.deepEqual(machine('linux', undefined, box), { form: 'box', brand: 'nuphos' })
+  assert.deepEqual(machine('linux', undefined, box), { form: 'box', brand: 'cerin' })
 })
 
 test('every machine on the page opens at the same moment, then the page opens afresh', () => {

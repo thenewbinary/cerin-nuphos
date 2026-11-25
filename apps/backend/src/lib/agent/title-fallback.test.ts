@@ -33,7 +33,9 @@ describe('fallbackTitle', () => {
 
   test('drops links before the first words', () => {
     expect(
-      fallbackTitle('https://github.com/nuphos/nuphos/issues/1891 make task names readable'),
+      fallbackTitle(
+        'https://github.com/thenewbinary/cerin-platform/issues/1891 make task names readable',
+      ),
     ).toBe('make task names readable')
   })
 
@@ -44,9 +46,9 @@ describe('fallbackTitle', () => {
   })
 
   test('names a message that is only a link after its host', () => {
-    expect(fallbackTitle('[Image #1] https://github.com/nuphos/nuphos/pull/2088')).toBe(
-      'github.com',
-    )
+    expect(
+      fallbackTitle('[Image #1] https://github.com/thenewbinary/cerin-platform/pull/2088'),
+    ).toBe('github.com')
   })
 
   test('keeps a message that is only an image token as it is', () => {

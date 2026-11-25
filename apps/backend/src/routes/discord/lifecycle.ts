@@ -62,7 +62,7 @@ export async function completeDiscordOAuth(
           guildId: guild.id,
           guildName: guild.name,
           installerDiscordUserId: discordUserId,
-          installerNuphosUserId: pending.requesterUserId,
+          installerCerinUserId: pending.requesterUserId,
           // A new installation must never reuse a deleted installation's generation.
           generation: Math.max(now.getTime(), (existing?.generation ?? 0) + 1),
           enabled: true,
@@ -92,7 +92,7 @@ export async function completeDiscordOAuth(
         .discordUserMappings()
         .findOne({ guildId: installation.guildId, discordUserId }, { session })
 
-      if (prior && prior.nuphosUserId !== pending.requesterUserId) {
+      if (prior && prior.cerinUserId !== pending.requesterUserId) {
         throw new Error('discord_account_already_linked')
       }
       const now = new Date()
@@ -103,7 +103,7 @@ export async function completeDiscordOAuth(
           $setOnInsert: { createdAt: now },
           $set: {
             teamId: pending.teamId,
-            nuphosUserId: pending.requesterUserId,
+            cerinUserId: pending.requesterUserId,
             enabled: true,
             updatedAt: now,
           },

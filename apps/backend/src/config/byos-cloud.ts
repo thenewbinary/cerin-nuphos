@@ -50,7 +50,7 @@ export function byosCloudConfig() {
       // trust the shared Cerin issuer, so customers create nothing — they grant
       // Token Creator on their service account to
       //   principal://iam.googleapis.com/projects/<projectNumber>/locations/global/
-      //     workloadIdentityPools/<poolId>/subject/nuphos:team:<teamId>
+      //     workloadIdentityPools/<poolId>/subject/cerin:team:<teamId>
       // and Google itself enforces that a token minted for team A can never
       // impersonate team B's service account. The signing key / issuer / JWKS come
       // from byos.aws.oidc; the audience is the provider's own resource path.

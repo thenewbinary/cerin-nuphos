@@ -3,7 +3,7 @@ import { userSessions } from '@/lib/identity/sessions'
 import { logEvent } from '@/lib/observability'
 import { signInDevice, signInPlace } from '@/lib/request-origin'
 
-import type { NuphosUser } from '@/lib/identity/types'
+import type { CerinUser } from '@/lib/identity/types'
 import type { SignInSource } from '@/lib/request-origin'
 
 const NEW_ACCOUNT_MS = 60 * 60 * 1000
@@ -21,7 +21,7 @@ const NEW_ACCOUNT_MS = 60 * 60 * 1000
  *
  * City and country only describe the sign-in in the email.
  */
-export async function isNewSignIn(user: NuphosUser, source: SignInSource): Promise<boolean> {
+export async function isNewSignIn(user: CerinUser, source: SignInSource): Promise<boolean> {
   const others = await userSessions()
     .find({ userId: user.id, expiresAt: { $gt: new Date() } })
     .limit(200)
@@ -35,7 +35,7 @@ export async function isNewSignIn(user: NuphosUser, source: SignInSource): Promi
 }
 
 /** Best effort: a failed alert is logged, never a failed sign-in. */
-export async function sendNewSignInAlert(user: NuphosUser, source: SignInSource): Promise<void> {
+export async function sendNewSignInAlert(user: CerinUser, source: SignInSource): Promise<void> {
   if (!isEmailConfigured()) return
   const when = `${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC`
   // Time and IP are what the server saw; place and device are only hints.

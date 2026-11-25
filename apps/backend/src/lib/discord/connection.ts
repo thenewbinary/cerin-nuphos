@@ -6,7 +6,7 @@ export async function getDiscordConnection(teamId: string, userId: string) {
   const [installation, channels, self] = await Promise.all([
     discordInstallations().findOne({ teamId, enabled: true }),
     discordChannelMappings().find({ teamId, enabled: true }).toArray(),
-    discordUserMappings().findOne({ teamId, nuphosUserId: userId, enabled: true }),
+    discordUserMappings().findOne({ teamId, cerinUserId: userId, enabled: true }),
   ])
 
   return {

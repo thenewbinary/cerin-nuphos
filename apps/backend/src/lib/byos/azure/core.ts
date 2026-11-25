@@ -5,7 +5,7 @@ import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from '../aws-oidc'
 
 // OIDC workload identity federation reuses the shared Cerin issuer (same signing
@@ -97,7 +97,7 @@ export async function assumeAzureViaOidc(
       'The Cerin OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Azure tokens cannot be minted.',
     )
   }
-  const assertion = mintNuphosOidcToken(teamId, config.byos.azure.oidc.audience)
+  const assertion = mintCerinOidcToken(teamId, config.byos.azure.oidc.audience)
   const body = new URLSearchParams({
     grant_type: 'client_credentials',
     client_id: identity.clientId,

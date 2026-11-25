@@ -15,7 +15,7 @@ Use this skill whenever the user asks you to look at or change resources on one 
 
 ## Target a cluster
 
-The kubeconfig comes from the `get_kubeconfig` tool (in the `nuphos-tools` MCP server). Call it, write the returned YAML to `~/.kube/config` with mode 0600, and every cluster this session can access — EKS, GKE, TKE, ACK, LKE, VKE, AKS, and on-prem clusters — is a context named `<provider>/<account>/<cluster>` (e.g. `aws/123456789012/prod-main`, `gcp/my-project/staging`, `tencent/prod/web`, `onprem/acme-dc1/cluster`).
+The kubeconfig comes from the `get_kubeconfig` tool (in the `cerin-tools` MCP server). Call it, write the returned YAML to `~/.kube/config` with mode 0600, and every cluster this session can access — EKS, GKE, TKE, ACK, LKE, VKE, AKS, and on-prem clusters — is a context named `<provider>/<account>/<cluster>` (e.g. `aws/123456789012/prod-main`, `gcp/my-project/staging`, `tencent/prod/web`, `onprem/acme-dc1/cluster`).
 
 ```bash
 kubectl config get-contexts                          # list reachable clusters

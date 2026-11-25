@@ -2,12 +2,12 @@
 set -euo pipefail
 umask 077
 mkdir -p /data/configdb
-if [ ! -s /data/configdb/nuphos-keyfile ]; then
-  head -c 48 /dev/urandom | base64 > /data/configdb/nuphos-keyfile
+if [ ! -s /data/configdb/cerin-keyfile ]; then
+  head -c 48 /dev/urandom | base64 > /data/configdb/cerin-keyfile
 fi
-chown mongodb:mongodb /data/configdb/nuphos-keyfile
-chmod 400 /data/configdb/nuphos-keyfile
-/usr/local/bin/docker-entrypoint.sh mongod --ipv6 --replSet rs0 --keyFile /data/configdb/nuphos-keyfile --bind_ip_all &
+chown mongodb:mongodb /data/configdb/cerin-keyfile
+chmod 400 /data/configdb/cerin-keyfile
+/usr/local/bin/docker-entrypoint.sh mongod --ipv6 --replSet rs0 --keyFile /data/configdb/cerin-keyfile --bind_ip_all &
 pid=$!
 trap 'kill -TERM "$pid"; wait "$pid"' TERM INT
 for attempt in $(seq 1 120); do

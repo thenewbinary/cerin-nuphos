@@ -10,7 +10,7 @@ const mapping = (overrides: Partial<SlackUserMapping> = {}): SlackUserMapping =>
   slackWorkspaceId: 'T1',
   slackUserId: 'U1',
   teamId: 'team-1',
-  nuphosUserId: 'user-1',
+  cerinUserId: 'user-1',
   enabled: true,
   createdBy: 'test',
   createdAt: now,
@@ -43,7 +43,7 @@ const args = {
   botToken: 'secret-token',
   slackWorkspaceId: 'T1',
   teamId: 'team-1',
-  nuphosUserId: 'user-1',
+  cerinUserId: 'user-1',
 }
 
 beforeEach(() => {
@@ -63,15 +63,15 @@ describe('Slack self mapping', () => {
 
   test('auto-links the same normalized email when the Slack identity is unclaimed', async () => {
     await expect(resolveSlackSelfMapping(args, dependencies)).resolves.toEqual(
-      expect.objectContaining({ slackUserId: 'U1', nuphosUserId: 'user-1' }),
+      expect.objectContaining({ slackUserId: 'U1', cerinUserId: 'user-1' }),
     )
     expect(lookupEmail).toBe('person@example.com')
     expect(claimInput).toEqual({
       slackWorkspaceId: 'T1',
       slackUserId: 'U1',
       teamId: 'team-1',
-      nuphosUserId: 'user-1',
-      createdBy: 'auto:nuphos-email',
+      cerinUserId: 'user-1',
+      createdBy: 'auto:cerin-email',
     })
   })
 

@@ -6,7 +6,7 @@ import type { ImportBatch, ImportItem } from './batch'
 export async function saveTemplateOrigin(batch: ImportBatch, item: ImportItem) {
   const source = batch.manifest.source
 
-  if (source.application !== 'nuphos-template') return
+  if (source.application !== 'cerin-template') return
   const result = await agentConversations().updateOne(
     { sessionId: item.sessionId, userId: batch.userId, teamId: batch.teamId },
     {

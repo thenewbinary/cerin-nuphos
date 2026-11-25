@@ -16,7 +16,7 @@
     <string name="my_chats">Mis tareas</string>
     <string name="team_chats">Tareas del equipo</string>
     <string name="show_dismissed">Mostrar descartados</string>
-    <string name="ask_nuphos">Pregunta lo que quieras a Cerin…</string>
+    <string name="ask_cerin">Pregunta lo que quieras a Cerin…</string>
     <string name="queue_message">Poner un mensaje en cola…</string>
     <string name="send">Enviar</string>
     <string name="stop">Detener</string>

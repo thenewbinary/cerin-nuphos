@@ -15,9 +15,9 @@ const window = {
   isDestroyed: () => false,
   webContents: {
     executeJavaScript: async (script: string) => {
-      asked.push(script.startsWith('window.nuphosWatchDockTab') ? 'watch' : 'unwatch')
+      asked.push(script.startsWith('window.cerinWatchDockTab') ? 'watch' : 'unwatch')
 
-      return script.startsWith('window.nuphosWatchDockTab') ? 7 : undefined
+      return script.startsWith('window.cerinWatchDockTab') ? 7 : undefined
     },
   },
 }

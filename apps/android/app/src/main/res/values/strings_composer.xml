@@ -38,7 +38,7 @@
     <string name="composer_credentials_count">Credentials · %1$d</string>
     <string name="composer_computers_count">Computers · %1$d</string>
     <string name="composer_queue_a_message">Queue a message</string>
-    <string name="composer_ask_nuphos">Ask Cerin anything</string>
+    <string name="composer_ask_cerin">Ask Cerin anything</string>
     <string name="composer_remove_attachment_failed">Could not remove this saved attachment. Check storage and try again.</string>
     <string name="composer_photos">Photos</string>
     <string name="composer_files">Files</string>

@@ -42,7 +42,7 @@ export function gcpContentStep(_purpose: 'operational', index: number): number {
 }
 
 export function gcpSpec(_purpose: 'operational') {
-  const sa = 'nuphos-connector'
+  const sa = 'cerin-connector'
 
   return {
     sa,

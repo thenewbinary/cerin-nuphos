@@ -84,7 +84,7 @@ function lineOf(
     avatarURL: owner?.avatarURL ?? '',
   }
 
-  if (change.actorId === 'system') actor = reported ? runtimeActor(provider) : { type: 'nuphos' }
+  if (change.actorId === 'system') actor = reported ? runtimeActor(provider) : { type: 'cerin' }
   else if (change.agentSessionId)
     actor = {
       type: 'task',

@@ -30,7 +30,7 @@ rl.on('line', (line) => {
 `
 
 async function withShim(provider, run, agentScript = FAKE_AGENT) {
-  const home = await mkdtemp(join(tmpdir(), 'nuphos-shim-test-'))
+  const home = await mkdtemp(join(tmpdir(), 'cerin-shim-test-'))
   const input = new PassThrough()
   const output = new PassThrough()
   const children = []
@@ -108,7 +108,7 @@ test('grok opens the session under its own env and takes the instructions as rul
     assert.notEqual(seen.pid, init.result.seen.pid)
     assert.equal(seen.env.NUPHOS_TOKEN, 'token')
     assert.equal(seen.env.EXTRA, undefined)
-    assert.match(seen.env.HOME, /\.nuphos\/session-homes\/[0-9a-f]{64}$/)
+    assert.match(seen.env.HOME, /\.cerin\/session-homes\/[0-9a-f]{64}$/)
     assert.equal(seen.env.GROK_HOME, join(home, '.grok'))
     assert.equal(seen.params._meta.rules, 'Be Cerin.')
 
@@ -156,7 +156,7 @@ test('opencode shares only its own data directory with the runtime home', async 
     const { seen } = (await call('session/new', session('Be Cerin.'))).result
 
     assert.deepEqual(children[1].command, ['opencode', 'acp'])
-    assert.match(seen.env.HOME, /\.nuphos\/session-homes\/[0-9a-f]{64}$/)
+    assert.match(seen.env.HOME, /\.cerin\/session-homes\/[0-9a-f]{64}$/)
     // The rest of XDG_DATA_HOME stays the conversation's own.
     assert.equal(seen.env.XDG_DATA_HOME, join(seen.env.HOME, '.local', 'share'))
     assert.equal(
@@ -190,7 +190,7 @@ test('a link the OS refuses never fails the turn, and Windows gets a junction', 
         new Promise((resolve) => setTimeout(() => resolve({ timedOut: true }), 5000)),
       ])
 
-      assert.match(reply.result?.seen?.env.HOME ?? '', /\.nuphos\/session-homes\/[0-9a-f]{64}$/)
+      assert.match(reply.result?.seen?.env.HOME ?? '', /\.cerin\/session-homes\/[0-9a-f]{64}$/)
       // OpenCode's two links and Gradle's caches.
       assert.equal(links.length, 3)
       // Node makes a junction from this on Windows and ignores it elsewhere.
@@ -256,7 +256,7 @@ test('history replayed while a session loads does not open a turn', async () => 
       await call('session/load', { ...session('Be Cerin.'), sessionId: 's1' })
 
       assert.ok(notifications.some((m) => m.params?.update?.content?.text === 'old'))
-      assert.ok(!notifications.some((m) => m.params?.update?._meta?.['ai.nuphos/sessionState']))
+      assert.ok(!notifications.some((m) => m.params?.update?._meta?.['ai.cerin/sessionState']))
     },
     REPLAYING_AGENT,
   )
@@ -281,7 +281,7 @@ test('antigravity takes the instructions on the first prompt only', async () => 
       prompt: [{ type: 'text', text: 'hi' }],
     })
     assert.deepEqual(first.result.seen.params.prompt, [
-      { type: 'text', text: '<nuphos-instructions>\nBe Cerin.\n</nuphos-instructions>' },
+      { type: 'text', text: '<cerin-instructions>\nBe Cerin.\n</cerin-instructions>' },
       { type: 'text', text: 'hi' },
     ])
     const second = await call('session/prompt', {
@@ -297,7 +297,7 @@ test('antigravity takes refreshed instructions after a load or resume', async ()
     call('session/prompt', { sessionId: 's1', prompt: [{ type: 'text', text }] })
   const block = (text) => ({
     type: 'text',
-    text: `<nuphos-instructions>\n${text}\n</nuphos-instructions>`,
+    text: `<cerin-instructions>\n${text}\n</cerin-instructions>`,
   })
 
   // Same process: new with A, then load with B.
@@ -362,7 +362,7 @@ test('a turn grok starts on its own ends with the marker the backend reads', asy
       await call('session/prompt', { sessionId: 's1', prompt: [{ type: 'text', text: 'hi' }] })
       await new Promise((resolve) => setTimeout(resolve, 200))
 
-      const states = (m) => m.params?.update?._meta?.['ai.nuphos/sessionState']?.state
+      const states = (m) => m.params?.update?._meta?.['ai.cerin/sessionState']?.state
       // The prompt's turn, then the wakeup's: each opens active and closes idle,
       // and the wakeup's message sits inside its own.
       const order = outputs
@@ -453,7 +453,7 @@ test('a grok background command stays a running terminal until it ends', async (
         ['in_progress', 'in_progress', 'completed'],
       )
       assert.deepEqual(tool[0]._meta.terminal_info, { terminalId: 't1', command: 'sleep 1' })
-      const states = (m) => m.params?.update?._meta?.['ai.nuphos/sessionState']?.state
+      const states = (m) => m.params?.update?._meta?.['ai.cerin/sessionState']?.state
       // The command's end is a background update; the wakeup that reports it is a turn.
       const order = outputs
         .map(
@@ -528,7 +528,7 @@ test('a reopened session takes the stored settings; only a value no longer offer
           sessionId: 's1',
           cwd: '/workspace',
           mcpServers: [],
-          _meta: { 'ai.nuphos/runtimeDefaults': { model } },
+          _meta: { 'ai.cerin/runtimeDefaults': { model } },
         })
 
       assert.equal((await load('b')).result.configOptions[0].currentValue, 'b')
@@ -567,18 +567,18 @@ test('Antigravity forwards advertised capabilities, errors and process exit', as
 test('pi runs through the pi-acp adapter and gets the session MCP servers as its mcp.json', async () => {
   await withShim('pi', async ({ call, children, home }) => {
     await call('initialize', { protocolVersion: 1 })
-    const servers = [{ name: 'nuphos', command: 'node', args: ['bridge.mjs'], env: [] }]
+    const servers = [{ name: 'cerin', command: 'node', args: ['bridge.mjs'], env: [] }]
     await call('session/new', { ...session('Be Cerin.'), mcpServers: servers })
     const [executable, adapter] = children.at(-1).command
     assert.equal(executable, process.execPath)
     assert.match(adapter, /node_modules[\\/]pi-acp[\\/]dist[\\/]index\.js$/u)
     const { readdir, readFile } = await import('node:fs/promises')
-    const sessions = join(home, '.nuphos', 'session-homes')
+    const sessions = join(home, '.cerin', 'session-homes')
     const [sessionHome] = await readdir(sessions)
     const mcp = JSON.parse(
       await readFile(join(sessions, sessionHome, '.pi', 'agent', 'mcp.json'), 'utf8'),
     )
-    assert.deepEqual(Object.keys(mcp.mcpServers), ['nuphos'])
+    assert.deepEqual(Object.keys(mcp.mcpServers), ['cerin'])
   })
 })
 

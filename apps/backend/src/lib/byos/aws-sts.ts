@@ -88,7 +88,7 @@ export async function assumeRoleWithWebIdentityForTeam(
   opts: AssumeOptions = {},
 ): Promise<TempCredentials> {
   const sts = new STSClient({ region: 'us-east-1' })
-  const sessionName = sanitizeSessionName(opts.sessionName ?? 'nuphos-byos')
+  const sessionName = sanitizeSessionName(opts.sessionName ?? 'cerin-byos')
   const cmd = new AssumeRoleWithWebIdentityCommand({
     RoleArn: roleArn,
     RoleSessionName: sessionName,

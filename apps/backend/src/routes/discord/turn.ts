@@ -110,7 +110,7 @@ export async function executeDiscordTurn(args: {
   ownerUserId: string
   actorUserId: string
   sessionId: string
-  nuphosToken: string
+  cerinToken: string
   messages: UIMessage[]
   firstMessage: string
   turnContext?: string
@@ -149,7 +149,7 @@ export async function executeDiscordTurn(args: {
     const outcome = await turnRunner.runAgentForTrigger({
       userId: args.actorUserId,
       conversationOwnerUserId: args.ownerUserId,
-      nuphosToken: args.nuphosToken,
+      cerinToken: args.cerinToken,
       teamId: args.teamId,
       sessionId: args.sessionId,
       messages: args.messages,

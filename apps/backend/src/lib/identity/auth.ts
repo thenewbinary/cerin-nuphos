@@ -7,12 +7,12 @@ import { AppError } from '@/lib/errors'
 import { getGoogleAccessToken, getGoogleProfile } from '@/lib/identity/google'
 import { findLiveSession, isSessionToken } from '@/lib/identity/sessions'
 import { mapUser, teams, users } from '@/lib/identity/shared'
-import { MAX_RUN_TOKEN_TTL_SEC, verifyNuphosToken } from '@/lib/identity/token'
+import { MAX_RUN_TOKEN_TTL_SEC, verifyCerinToken } from '@/lib/identity/token'
 
-import type { NuphosUserDoc } from '@/lib/identity/shared'
-import type { AuthenticatedIdentity, NuphosUser } from '@/lib/identity/types'
+import type { CerinUserDoc } from '@/lib/identity/shared'
+import type { AuthenticatedIdentity, CerinUser } from '@/lib/identity/types'
 
-export { signNuphosToken } from '@/lib/identity/token'
+export { signCerinToken } from '@/lib/identity/token'
 
 export async function setupIdentityIndexes(): Promise<void> {
   await Promise.all([
@@ -35,13 +35,13 @@ export async function setupIdentityIndexes(): Promise<void> {
  */
 export async function authenticateToken(token: string): Promise<AuthenticatedIdentity | null> {
   const session = isSessionToken(token) ? await findLiveSession(token) : null
-  const claims = session ? null : verifyNuphosToken(token)
+  const claims = session ? null : verifyCerinToken(token)
   const credential = session
     ? { userId: session.userId, issuedAt: session.createdAt }
     : claims && { userId: claims.sub, issuedAt: new Date(claims.iat * 1000) }
 
   if (!credential) return null
-  const user = await getNuphosUserForCredential(credential.userId, credential.issuedAt)
+  const user = await getCerinUserForCredential(credential.userId, credential.issuedAt)
 
   if (!user) return null
   upsertCachedUser(user)
@@ -49,7 +49,7 @@ export async function authenticateToken(token: string): Promise<AuthenticatedIde
   return {
     user,
     cacheHit: false,
-    provider: 'nuphos',
+    provider: 'cerin',
     ...(session ? { sessionId: session._id.toHexString() } : {}),
     ...(claims && claims.exp - claims.iat <= MAX_RUN_TOKEN_TTL_SEC ? { agentRun: true } : {}),
   }
@@ -65,7 +65,7 @@ function refuseDisabled<T extends { deletedAt?: Date } | null>(user: T): T {
   return user
 }
 
-export async function signInWithGoogleCode(code: string, redirectUri: string): Promise<NuphosUser> {
+export async function signInWithGoogleCode(code: string, redirectUri: string): Promise<CerinUser> {
   const accessToken = await getGoogleAccessToken(code, redirectUri)
   const profile = await getGoogleProfile(accessToken)
 
@@ -85,7 +85,7 @@ export async function signInWithGoogleCode(code: string, redirectUri: string): P
   const now = new Date()
 
   if (user) {
-    const update: Partial<NuphosUserDoc> = {
+    const update: Partial<CerinUserDoc> = {
       googleID: profile.id,
       ...(user.profileEdited
         ? {}
@@ -121,22 +121,22 @@ export async function signInWithGoogleCode(code: string, redirectUri: string): P
     }
   }
 
-  const nuphosUser = mapUser(user)
+  const cerinUser = mapUser(user)
 
-  upsertCachedUser(nuphosUser)
+  upsertCachedUser(cerinUser)
 
-  return nuphosUser
+  return cerinUser
 }
 
 // Sign in (or sign up) with an email address whose ownership has already been
 // proven — e.g. via an OTP code. Callers must never pass an unverified email.
-export async function signInWithVerifiedEmail(email: string): Promise<NuphosUser> {
+export async function signInWithVerifiedEmail(email: string): Promise<CerinUser> {
   const normalizedEmail = email.toLowerCase()
   let user = refuseDisabled(await users().findOne({ email: normalizedEmail }))
 
   if (!user) {
     const now = new Date()
-    const candidate: NuphosUserDoc = {
+    const candidate: CerinUserDoc = {
       _id: new MongoObjectId(),
       email: normalizedEmail,
       name: normalizedEmail,
@@ -157,15 +157,15 @@ export async function signInWithVerifiedEmail(email: string): Promise<NuphosUser
     }
   }
 
-  const nuphosUser = mapUser(user)
+  const cerinUser = mapUser(user)
 
-  upsertCachedUser(nuphosUser)
+  upsertCachedUser(cerinUser)
 
-  return nuphosUser
+  return cerinUser
 }
 
 /** Loads a live (non-deleted) user by id. */
-export async function getNuphosUserById(userId: string): Promise<NuphosUser | null> {
+export async function getCerinUserById(userId: string): Promise<CerinUser | null> {
   if (!MongoObjectId.isValid(userId)) return null
   const user = await users().findOne({
     _id: new MongoObjectId(userId),
@@ -179,10 +179,10 @@ export async function getNuphosUserById(userId: string): Promise<NuphosUser | nu
  * The live user behind a credential issued at `issuedAt`, unless "sign out
  * everywhere" (a password reset) happened since, as for session tokens.
  */
-export async function getNuphosUserForCredential(
+export async function getCerinUserForCredential(
   userId: string,
   issuedAt: Date,
-): Promise<NuphosUser | null> {
+): Promise<CerinUser | null> {
   if (!MongoObjectId.isValid(userId)) return null
   const user = await users().findOne({
     _id: new MongoObjectId(userId),

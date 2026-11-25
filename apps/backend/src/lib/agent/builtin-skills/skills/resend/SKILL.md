@@ -48,10 +48,10 @@ another way to send.
 
 ```bash
 bash skills/resend/scripts/setup-credentials.sh <teamId> <integrationId>
-source ~/.resend/nuphos.env
+source ~/.resend/cerin.env
 ```
 
-That writes `~/.resend/nuphos.env` (mode 600) with `RESEND_API_KEY`,
+That writes `~/.resend/cerin.env` (mode 600) with `RESEND_API_KEY`,
 `RESEND_API_BASE_URL`, `RESEND_PERMISSION` and `RESEND_BINDING_ID`.
 
 If setup fails with **HTTP 403**, this Resend binding is not enabled for this

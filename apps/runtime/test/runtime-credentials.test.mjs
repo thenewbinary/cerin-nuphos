@@ -6,13 +6,13 @@ import { join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 
-import { nuphosBridgeMcpServers } from '../image/mcp-bridge-config.mjs'
+import { cerinBridgeMcpServers } from '../image/mcp-bridge-config.mjs'
 import { currentAuthorization, relay } from '../image/mcp-http-bridge.mjs'
 
 const guard = fileURLToPath(new URL('../image/runtime-guard.sh', import.meta.url))
 
 function credentialsDir(token) {
-  const dir = mkdtempSync(join(tmpdir(), 'nuphos-credentials-'))
+  const dir = mkdtempSync(join(tmpdir(), 'cerin-credentials-'))
 
   writeFileSync(join(dir, 'NUPHOS_TOKEN'), token)
   writeFileSync(join(dir, 'NUPHOS_PLAN_API_TOKEN'), token)
@@ -29,7 +29,7 @@ const http = (name, value) => ({
 
 test('bearer-only Cerin MCP servers are bridged only when credential files exist', () => {
   const servers = [
-    http('nuphos-tools', 'Bearer spawn'),
+    http('cerin-tools', 'Bearer spawn'),
     http('other', 'Basic x'),
     {
       ...http('multi', 'Bearer y'),
@@ -37,17 +37,17 @@ test('bearer-only Cerin MCP servers are bridged only when credential files exist
     },
   ]
 
-  assert.equal(nuphosBridgeMcpServers(servers, {}, '/node'), servers)
-  const [bridged, basic, multi] = nuphosBridgeMcpServers(
+  assert.equal(cerinBridgeMcpServers(servers, {}, '/node'), servers)
+  const [bridged, basic, multi] = cerinBridgeMcpServers(
     servers,
     { OPENAB_CREDENTIALS_DIR: '/c' },
     '/node',
   )
 
   assert.deepEqual(bridged, {
-    name: 'nuphos-tools',
+    name: 'cerin-tools',
     command: '/node',
-    args: ['/opt/nuphos-runtime/mcp-http-bridge.mjs', 'http://backend/nuphos-tools'],
+    args: ['/opt/cerin-runtime/mcp-http-bridge.mjs', 'http://backend/cerin-tools'],
     env: [{ name: 'OPENAB_CREDENTIALS_DIR', value: '/c' }],
   })
   assert.equal(basic, servers[1])

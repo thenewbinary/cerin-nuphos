@@ -7,18 +7,18 @@ import { dirname, join } from 'node:path'
 import { test } from 'node:test'
 
 import {
-  nuphosSyncRuntimeSkills,
+  cerinSyncRuntimeSkills,
   patchSkillsRefresh,
   patchRuntimeDefaults,
 } from '../image/runtime-defaults.mjs'
 
 /** Waits for the fetch the session itself never waits for. */
-const synced = async (params, run) => (await nuphosSyncRuntimeSkills(params, run)).synced
+const synced = async (params, run) => (await cerinSyncRuntimeSkills(params, run)).synced
 
-/** Stand in for /usr/local/bin/nuphos-sync-skills by recording what it was handed. */
+/** Stand in for /usr/local/bin/cerin-sync-skills by recording what it was handed. */
 async function withFakeScript(body, run) {
-  const directory = await mkdtemp(join(tmpdir(), 'nuphos-skills-test-'))
-  const script = join(directory, 'nuphos-sync-skills')
+  const directory = await mkdtemp(join(tmpdir(), 'cerin-skills-test-'))
+  const script = join(directory, 'cerin-sync-skills')
   const record = join(directory, 'record.json')
 
   await writeFile(script, `#!/bin/sh\n${body}\n`)
@@ -33,7 +33,7 @@ async function withFakeScript(body, run) {
 const meta = (env, provider = 'claudeCode') =>
   provider === 'claudeCode'
     ? { _meta: { claudeCode: { options: { env } } } }
-    : { _meta: { 'ai.nuphos/codex': { env } } }
+    : { _meta: { 'ai.cerin/codex': { env } } }
 
 const bundleSession = meta({
   NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
@@ -42,7 +42,7 @@ const bundleSession = meta({
 
 /** A workspace whose team bundle is already installed, as a 304 leaves it. */
 async function withInstalledBundle(run) {
-  const workspace = await mkdtemp(join(tmpdir(), 'nuphos-workspace-'))
+  const workspace = await mkdtemp(join(tmpdir(), 'cerin-workspace-'))
 
   await mkdir(join(workspace, '.claude/skills/kept'), { recursive: true })
   await writeFile(join(workspace, '.claude/skills/kept/SKILL.md'), '# One')
@@ -164,7 +164,7 @@ test('personal skills follow the turn’s credential, and a prompt never rebuild
       calls.length = 0
       if (token === undefined) await rm(credential, { force: true })
       else await writeFile(credential, `${token}\n`)
-      await globalThis.nuphosRefreshSkills(agent, { sessionId: 's1' })
+      await globalThis.cerinRefreshSkills(agent, { sessionId: 's1' })
 
       return [...calls]
     }
@@ -221,7 +221,7 @@ test('personal skills follow the turn’s credential, and a prompt never rebuild
     await synced(reopened, run)
     assert.deepEqual(await readdir(skills), [])
   })
-  delete globalThis.nuphosRefreshSkills
+  delete globalThis.cerinRefreshSkills
 })
 
 test('a reopened session never starts on another member’s personal skills', async () => {
@@ -240,7 +240,7 @@ test('a reopened session never starts on another member’s personal skills', as
         NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
         NUPHOS_RUNTIME_SKILLS_TOKEN: `p.${who}.1.sig`,
       })
-      const { synced: fetch } = await nuphosSyncRuntimeSkills(opened, {
+      const { synced: fetch } = await cerinSyncRuntimeSkills(opened, {
         script,
         sessionHome: directory,
         credentialsDir,
@@ -248,7 +248,7 @@ test('a reopened session never starts on another member’s personal skills', as
       const onDisk = await readdir(join(claude, 'skills'))
 
       await fetch
-      delete globalThis.nuphosRefreshSkills
+      delete globalThis.cerinRefreshSkills
 
       return onDisk
     }
@@ -268,7 +268,7 @@ test('both adapters re-sync skills before a prompt', () => {
 
     assert.match(
       patched,
-      /async prompt\(params(, signal)?\) \{\n\s+await globalThis\.nuphosRefreshSkills\?\.\(this, params\);/u,
+      /async prompt\(params(, signal)?\) \{\n\s+await globalThis\.cerinRefreshSkills\?\.\(this, params\);/u,
     )
   }
   assert.throws(() => patchSkillsRefresh('class A {}'), /exactly one/u)
@@ -294,11 +294,11 @@ test('a prompt re-syncs the team skills, so a live session gets a skill added af
       await synced(params, run)
       const opened = (await readFile(record, 'utf8')).split('\n').filter((k) => k === 'team').length
 
-      await globalThis.nuphosRefreshSkills(undefined, { sessionId: 's1' })
+      await globalThis.cerinRefreshSkills(undefined, { sessionId: 's1' })
       const after = (await readFile(record, 'utf8')).split('\n').filter((k) => k === 'team').length
 
       assert.equal(after, opened + 1, `${provider}: one team sync per prompt`)
-      delete globalThis.nuphosRefreshSkills
+      delete globalThis.cerinRefreshSkills
     })
 })
 
@@ -336,7 +336,7 @@ test('a failing or hanging sync never stops the conversation', async () => {
     assert.ok(Date.now() - started < 10_000)
   })
   // A missing script is the ordinary case on an image that ships no sync at all.
-  assert.equal(await synced(carrying, { script: '/nonexistent/nuphos-sync-skills' }), false)
+  assert.equal(await synced(carrying, { script: '/nonexistent/cerin-sync-skills' }), false)
 })
 
 test('a session on an older team bundle starts with the newer one', async () => {
@@ -349,7 +349,7 @@ test('a session on an older team bundle starts with the newer one', async () => 
 
     await withFakeScript(body, async ({ script }) => {
       // Not `.synced`: this is the moment the agent starts and reads its skills, once.
-      await nuphosSyncRuntimeSkills(bundleSession, {
+      await cerinSyncRuntimeSkills(bundleSession, {
         script,
         env: { NUPHOS_RUNTIME_WORKSPACE: workspace },
       })
@@ -365,12 +365,12 @@ test('each session offers the team skills, and only those, as a plugin of its ow
       const plugins = async () => {
         const params = structuredClone(bundleSession)
 
-        await nuphosSyncRuntimeSkills(params, {
+        await cerinSyncRuntimeSkills(params, {
           script,
           sessionHome: directory,
           env: { NUPHOS_RUNTIME_WORKSPACE: workspace },
         })
-        delete globalThis.nuphosRefreshSkills
+        delete globalThis.cerinRefreshSkills
 
         return params._meta.claudeCode.options.plugins
       }
@@ -402,7 +402,7 @@ test('each session offers the team skills, and only those, as a plugin of its ow
 })
 
 test('a skill added after the sync is fetched over, and never offered', async () => {
-  const workspace = await mkdtemp(join(tmpdir(), 'nuphos-workspace-'))
+  const workspace = await mkdtemp(join(tmpdir(), 'cerin-workspace-'))
   const claude = join(workspace, '.claude')
   // The backend's revision: a hash of the bundle's files.
   const hash = createHash('sha256')
@@ -426,12 +426,12 @@ test('a skill added after the sync is fetched over, and never offered', async ()
       const open = async () => {
         const params = structuredClone(bundleSession)
 
-        await nuphosSyncRuntimeSkills(params, {
+        await cerinSyncRuntimeSkills(params, {
           script,
           sessionHome: directory,
           env: { NUPHOS_RUNTIME_WORKSPACE: workspace, NUPHOS_TEST_RECORD: record },
         })
-        delete globalThis.nuphosRefreshSkills
+        delete globalThis.cerinRefreshSkills
 
         return params._meta.claudeCode.options.plugins.map((plugin) =>
           plugin.path.split('/').at(-1),
@@ -467,8 +467,8 @@ test('a skill added after the sync is fetched over, and never offered', async ()
 test('a wrapper goes with its session’s process, or with the next session after a crash', async () => {
   // A process that has ended, and one that is still running (this one's parent).
   const ended = spawnSync(process.execPath, ['-e', '']).pid
-  const stale = await mkdtemp(join(tmpdir(), `nuphos-skill-plugins-${String(ended)}-`))
-  const live = await mkdtemp(join(tmpdir(), `nuphos-skill-plugins-${String(process.ppid)}-`))
+  const stale = await mkdtemp(join(tmpdir(), `cerin-skill-plugins-${String(ended)}-`))
+  const live = await mkdtemp(join(tmpdir(), `cerin-skill-plugins-${String(process.ppid)}-`))
   const gone = (target) =>
     readdir(target).then(
       () => false,
@@ -477,12 +477,12 @@ test('a wrapper goes with its session’s process, or with the next session afte
 
   await withInstalledBundle(async (workspace) => {
     await withFakeScript('exit 0', async ({ script, directory }) => {
-      await nuphosSyncRuntimeSkills(structuredClone(bundleSession), {
+      await cerinSyncRuntimeSkills(structuredClone(bundleSession), {
         script,
         sessionHome: directory,
         env: { NUPHOS_RUNTIME_WORKSPACE: workspace },
       })
-      delete globalThis.nuphosRefreshSkills
+      delete globalThis.cerinRefreshSkills
       assert.ok(await gone(stale))
       assert.ok(!(await gone(live)))
       await rm(live, { recursive: true })
@@ -493,9 +493,9 @@ test('a wrapper goes with its session’s process, or with the next session afte
         [
           '--input-type=module',
           '-e',
-          `const { nuphosSyncRuntimeSkills } = await import(${JSON.stringify(new URL('../image/runtime-defaults.mjs', import.meta.url).href)})
+          `const { cerinSyncRuntimeSkills } = await import(${JSON.stringify(new URL('../image/runtime-defaults.mjs', import.meta.url).href)})
           const opened = ${JSON.stringify(bundleSession)}
-          await nuphosSyncRuntimeSkills(opened, { script: ${JSON.stringify(script)}, sessionHome: ${JSON.stringify(directory)}, env: { NUPHOS_RUNTIME_WORKSPACE: ${JSON.stringify(workspace)} } })
+          await cerinSyncRuntimeSkills(opened, { script: ${JSON.stringify(script)}, sessionHome: ${JSON.stringify(directory)}, env: { NUPHOS_RUNTIME_WORKSPACE: ${JSON.stringify(workspace)} } })
           console.log(opened._meta.claudeCode.options.plugins[0].path)
           process.exit(0)`,
         ],
@@ -503,14 +503,14 @@ test('a wrapper goes with its session’s process, or with the next session afte
       )
       const wrapper = dirname(child.stdout.trim())
 
-      assert.match(wrapper, /nuphos-skill-plugins-/u)
+      assert.match(wrapper, /cerin-skill-plugins-/u)
       assert.ok(await gone(wrapper))
     })
   })
 })
 
 test('the first session in a workspace starts with the team skills on disk', async () => {
-  const workspace = await mkdtemp(join(tmpdir(), 'nuphos-workspace-'))
+  const workspace = await mkdtemp(join(tmpdir(), 'cerin-workspace-'))
   const body = [
     'sleep 0.3',
     'mkdir -p "$NUPHOS_RUNTIME_WORKSPACE/.claude/skills/deploy"',
@@ -520,7 +520,7 @@ test('the first session in a workspace starts with the team skills on disk', asy
   try {
     await withFakeScript(body, async ({ script }) => {
       // Not `.synced`: this is the moment the agent starts and reads its skills, once.
-      await nuphosSyncRuntimeSkills(bundleSession, {
+      await cerinSyncRuntimeSkills(bundleSession, {
         script,
         env: { NUPHOS_RUNTIME_WORKSPACE: workspace },
       })
@@ -559,8 +559,8 @@ class Agent {
   }`
   const patched = patchRuntimeDefaults(source)
 
-  assert.ok(patched.includes('async function nuphosSyncRuntimeSkills'))
-  assert.equal(patched.split('await nuphosSyncRuntimeSkills(params);').length, 4)
+  assert.ok(patched.includes('async function cerinSyncRuntimeSkills'))
+  assert.equal(patched.split('await cerinSyncRuntimeSkills(params);').length, 4)
   for (const handler of ['newSession', 'loadSession', 'resumeSession'])
     assert.equal(patched.split(`async ${handler}(params) {`).length, 2)
   for (const handler of ['loadSession', 'resumeSession'])
@@ -575,7 +575,7 @@ class Agent {
     await writeFile(script, `#!/bin/sh\necho "$NUPHOS_RUNTIME_SKILLS_URL" >> '${record}'\n`)
     const module = await import(
       `data:text/javascript,${encodeURIComponent(
-        `${patched.replace("'/usr/local/bin/nuphos-sync-skills'", JSON.stringify(script))}\nexport { Agent }`,
+        `${patched.replace("'/usr/local/bin/cerin-sync-skills'", JSON.stringify(script))}\nexport { Agent }`,
       )}`
     )
     const agent = new module.Agent()
@@ -584,7 +584,7 @@ class Agent {
 
     const session = await agent.newSession({
       id: 'a',
-      _meta: { ...carrying('https://new')._meta, 'ai.nuphos/runtimeDefaults': { model: 'b' } },
+      _meta: { ...carrying('https://new')._meta, 'ai.cerin/runtimeDefaults': { model: 'b' } },
     })
     assert.equal(session.configOptions[0].currentValue, 'b')
     assert.equal(await agent.loadSession({ sessionId: 'a', ...carrying('https://load') }), 'loaded')

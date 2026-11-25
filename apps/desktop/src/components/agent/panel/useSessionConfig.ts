@@ -50,12 +50,12 @@ export function useSessionConfig(session: ModelSession | undefined, streaming: b
     const stopChanged = sessionId ? onSettingsChanged(sessionId, refresh) : undefined
 
     window.addEventListener('focus', refresh)
-    window.addEventListener('nuphos:conversation-runtime-moved', refresh)
+    window.addEventListener('cerin:conversation-runtime-moved', refresh)
 
     return () => {
       stopChanged?.()
       window.removeEventListener('focus', refresh)
-      window.removeEventListener('nuphos:conversation-runtime-moved', refresh)
+      window.removeEventListener('cerin:conversation-runtime-moved', refresh)
     }
   }, [sync, sessionId])
   useEffect(() => {

@@ -84,7 +84,7 @@ export type AliyunAccountBinding = {
 export type VolcengineAccountBinding = {
   id: ObjectId
   label: string
-  /** Volcengine IAM role TRN, e.g. trn:iam::2100000000:role/NuphosRole. */
+  /** Volcengine IAM role TRN, e.g. trn:iam::2100000000:role/CerinRole. */
   roleTrn: string
   createdAt: Date
   access?: BindingAccess

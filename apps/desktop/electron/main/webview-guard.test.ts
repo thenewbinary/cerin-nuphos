@@ -212,10 +212,15 @@ test('sign-in popups open as real windows that keep their opener; links still lo
   assert.deepEqual(loaded, [])
 
   // target=_blank links and non-HTTP popups keep today's behaviour.
-  assert.deepEqual(open('https://github.com/nuphos/nuphos', 'foreground-tab'), { action: 'deny' })
+  assert.deepEqual(open('https://github.com/thenewbinary/cerin-platform', 'foreground-tab'), {
+    action: 'deny',
+  })
   assert.deepEqual(open('https://example.com/docs', 'background-tab'), { action: 'deny' })
   assert.deepEqual(open('file:///etc/passwd', 'new-window'), { action: 'deny' })
-  assert.deepEqual(loaded, ['https://github.com/nuphos/nuphos', 'https://example.com/docs'])
+  assert.deepEqual(loaded, [
+    'https://github.com/thenewbinary/cerin-platform',
+    'https://example.com/docs',
+  ])
 })
 
 test('a browser popup window gets the same guard, and closes with the tab that opened it', () => {

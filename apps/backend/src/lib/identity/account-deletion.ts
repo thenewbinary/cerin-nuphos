@@ -8,7 +8,7 @@ import { signInWithPassword } from '@/lib/identity/password'
 import { users } from '@/lib/identity/shared'
 import { deleteAllPersonalCredentials } from '@/lib/personal-credentials'
 
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 
 type DeletionRequest = {
   _id: string
@@ -34,7 +34,7 @@ export async function getDeletionRequest(userId: string) {
   }
 }
 
-export async function requestAccountDeletion(user: NuphosUser, input: unknown) {
+export async function requestAccountDeletion(user: CerinUser, input: unknown) {
   const body = input as { confirmation?: unknown; code?: unknown; password?: unknown } | null
 
   if (

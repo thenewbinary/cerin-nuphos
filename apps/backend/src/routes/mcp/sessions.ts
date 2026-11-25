@@ -11,13 +11,13 @@ import type { McpCallContext } from '@/routes/mcp/types'
 
 const text = (value: unknown) => (typeof value === 'string' && value.trim() ? value.trim() : '')
 
-export async function nuphosListSessions(
+export async function cerinListSessions(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {
   const teamId = text(args.team_id)
 
-  if (!teamId) return toolError('`team_id` is required. Call nuphos_list_teams to see your teams.')
+  if (!teamId) return toolError('`team_id` is required. Call cerin_list_teams to see your teams.')
   if (!(await getTeamMembership(ctx.userId, teamId))) {
     return toolError(`You are not a member of team ${teamId}.`)
   }
@@ -56,7 +56,7 @@ export async function nuphosListSessions(
   })
 }
 
-export async function nuphosUpdateSession(
+export async function cerinUpdateSession(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {

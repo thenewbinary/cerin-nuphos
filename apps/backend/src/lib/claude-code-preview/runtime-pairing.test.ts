@@ -9,7 +9,7 @@ import { useDb } from '@/lib/test/doubles/db'
 import { useIdentity } from '@/lib/test/doubles/identity'
 
 import type { ClaudeCodeRuntimeDoc } from './runtime-registry'
-import type { NuphosTeam, NuphosUser } from '@/lib/identity/types'
+import type { CerinTeam, CerinUser } from '@/lib/identity/types'
 import type { TeamAuthVariables } from '@/middleware/auth'
 
 const previousKey = config.claudeCodePreview.tokenEncryptionKey
@@ -20,8 +20,8 @@ afterAll(() => {
 })
 useIdentity({
   getTeamsByIds: (ids: string[]) =>
-    Promise.resolve(ids.map((id) => ({ id, name: 'Platform' }) as NuphosTeam)),
-  getNuphosUserById: () => Promise.resolve({ name: 'Ada Admin' } as NuphosUser),
+    Promise.resolve(ids.map((id) => ({ id, name: 'Platform' }) as CerinTeam)),
+  getCerinUserById: () => Promise.resolve({ name: 'Ada Admin' } as CerinUser),
 })
 
 let docs: ClaudeCodeRuntimeDoc[] = []
@@ -149,7 +149,7 @@ beforeEach(() => {
   insertFails = false
   respond = (call) =>
     call.url.endsWith('/_openab/pairing/exchange') ? exchangeResponse() : new Response(null)
-  config.agent.publicBackendUrl = 'https://api.nuphos.test'
+  config.agent.publicBackendUrl = 'https://api.cerin.test'
   globalThis.fetch = fakeFetch as typeof fetch
 })
 
@@ -196,7 +196,7 @@ describe('POST /agent-runtimes/pair', () => {
       body: {
         code: CODE,
         client: {
-          backendOrigin: 'https://api.nuphos.test',
+          backendOrigin: 'https://api.cerin.test',
           teamId: 'team-1',
           teamName: 'Platform',
           pairedBy: 'Ada Admin',

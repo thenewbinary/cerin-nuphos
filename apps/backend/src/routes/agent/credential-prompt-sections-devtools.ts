@@ -135,7 +135,7 @@ export function appendPosthogIntegrationLines(
       .join(', ')
 
     lines.push(
-      `- integrationId=${integration.integrationId}; label=${safePromptField(integration.label)}; host=${safePromptField(integration.apiBaseUrl)}; projects=[${projects}]; setupCommand="bash skills/posthog/scripts/setup-credentials.sh ${teamId} ${integration.integrationId} && source ~/.posthog/nuphos.env"`,
+      `- integrationId=${integration.integrationId}; label=${safePromptField(integration.label)}; host=${safePromptField(integration.apiBaseUrl)}; projects=[${projects}]; setupCommand="bash skills/posthog/scripts/setup-credentials.sh ${teamId} ${integration.integrationId} && source ~/.posthog/cerin.env"`,
     )
   }
 }
@@ -149,7 +149,7 @@ export function appendPlaudAccountLines(
   lines.push('', 'Plaud accounts:')
   for (const account of plaudAccounts) {
     lines.push(
-      `- bindingId=${account.bindingId}; label=${safePromptField(account.label)}; setupCommand="bash skills/plaud/scripts/setup-credentials.sh ${teamId} ${account.bindingId} && source ~/.plaud/nuphos.env"`,
+      `- bindingId=${account.bindingId}; label=${safePromptField(account.label)}; setupCommand="bash skills/plaud/scripts/setup-credentials.sh ${teamId} ${account.bindingId} && source ~/.plaud/cerin.env"`,
     )
   }
 }

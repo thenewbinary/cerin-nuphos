@@ -4,7 +4,7 @@ import { users } from '@/lib/identity/shared'
 import { logError } from '@/lib/observability'
 import { setPersonOnce } from '@/lib/posthog'
 
-import type { NuphosUser } from '@/lib/identity/types'
+import type { CerinUser } from '@/lib/identity/types'
 
 /**
  * platform.cerin.ai writes this cookie on `.platform.cerin.ai` at a browser's first visit, so
@@ -12,7 +12,7 @@ import type { NuphosUser } from '@/lib/identity/types'
  * repository writes it (src/lib/analytics/firstTouchCookie.ts); keep the name
  * and fields in step.
  */
-export const FIRST_TOUCH_COOKIE = 'nuphos_first_touch'
+export const FIRST_TOUCH_COOKIE = 'cerin_first_touch'
 
 /** Where a new account came from, saved once on the user. */
 export type SignupSource = {
@@ -57,7 +57,7 @@ export function parseFirstTouch(raw: unknown): Omit<SignupSource, 'via'> {
  * `channel` means no first-touch cookie reached this sign-in. Never fails the sign-in.
  */
 export async function recordSignupSource(
-  user: NuphosUser,
+  user: CerinUser,
   via: string,
   firstTouch: unknown,
 ): Promise<void> {

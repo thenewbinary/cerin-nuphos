@@ -17,7 +17,7 @@ import {
 import { isConnectorsPage } from '../../lib/connectorScopeCrumb'
 import { requestArtifactOpen } from '../../lib/sessionArtifacts'
 import { isTeamId } from '../../lib/teamId'
-import { isAppWebUrl, toAbsoluteAtlasUrl } from '../../lib/webBaseUrl'
+import { ATLAS_WEB_BASE_URL, toAbsoluteAtlasUrl } from '../../lib/webBaseUrl'
 import { settingsLinkTarget, settingsSectionForPage } from '../../views/settings/settingsNav'
 
 import { navigationForLink } from './linkNavigation'
@@ -87,11 +87,22 @@ export function useWorkspaceLinkOpeners(a: Args) {
     workspaceActions.openTab(createWorkspaceTab(teamId), { openDock: true })
   }, [workspaceActions, workspaceStore])
 
-  const openNuphosLinkInNewTab = useCallback(
+  const openCerinLinkInNewTab = useCallback(
     (href: string, beside = false): boolean => {
-      const url = isAppWebUrl(href.trim())
+      const trimmed = href.trim()
+      let url: URL
 
-      if (!url || !url.pathname.startsWith('/teams/')) return false
+      try {
+        url = new URL(trimmed, ATLAS_WEB_BASE_URL)
+      } catch {
+        return false
+      }
+
+      const isRelativeCerinLink = trimmed.startsWith('/teams/')
+      const isCanonicalCerinLink = url.origin === ATLAS_WEB_BASE_URL
+
+      if (!isRelativeCerinLink && !isCanonicalCerinLink) return false
+      if (!url.pathname.startsWith('/teams/')) return false
 
       const navigation = navigationForLink(url)
 
@@ -195,8 +206,8 @@ export function useWorkspaceLinkOpeners(a: Args) {
 
   // The window asks only the focused pane to open a link from outside the workspace.
   useEffect(
-    () => (paneId ? registerLinkOpener?.(paneId, openNuphosLinkInNewTab) : undefined),
-    [openNuphosLinkInNewTab, paneId, registerLinkOpener],
+    () => (paneId ? registerLinkOpener?.(paneId, openCerinLinkInNewTab) : undefined),
+    [openCerinLinkInNewTab, paneId, registerLinkOpener],
   )
 
   const openAppOpenDeepLink = useCallback(
@@ -206,7 +217,7 @@ export function useWorkspaceLinkOpeners(a: Args) {
       const [pathnameOnly] = payload.path.split(/[?#]/, 1)
       const isBareTeamPath = /^\/teams\/[^/]+\/?$/.test(pathnameOnly)
 
-      if (!isBareTeamPath && openNuphosLinkInNewTab(payload.path)) return
+      if (!isBareTeamPath && openCerinLinkInNewTab(payload.path)) return
 
       const teamId = teamIdFromAppPath(payload.path)
 
@@ -218,7 +229,7 @@ export function useWorkspaceLinkOpeners(a: Args) {
 
       openInChat(payload.url, { forceOpen: true })
     },
-    [openInChat, openNuphosLinkInNewTab, workspaceActions],
+    [openInChat, openCerinLinkInNewTab, workspaceActions],
   )
 
   const scopeChipForPath = useCallback(
@@ -272,7 +283,7 @@ export function useWorkspaceLinkOpeners(a: Args) {
 
   return {
     newTab,
-    openNuphosLinkInNewTab,
+    openCerinLinkInNewTab,
     openAppOpenDeepLink,
     scopeChipForPath,
     onSidebarOpenPath,

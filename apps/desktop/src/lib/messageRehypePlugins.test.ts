@@ -62,7 +62,7 @@ test('code blocks render exactly as without file links, even when they hold only
 
 test('a long session-home path is linked whole', () => {
   const path =
-    '/data/home/.nuphos/session-homes/c52e824a551bef793e621d580b4cc7f90ce0d2602468470e80922629b979d609/recordings/box1-20261017-021652.mp4'
+    '/data/home/.cerin/session-homes/c52e824a551bef793e621d580b4cc7f90ce0d2602468470e80922629b979d609/recordings/box1-20261017-021652.mp4'
   const html = render(`錄好了：${path}`)
 
   assert.ok(html.includes(`<a href="${path}">${path}</a>`))

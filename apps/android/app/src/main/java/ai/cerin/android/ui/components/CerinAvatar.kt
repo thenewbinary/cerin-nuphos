@@ -1,0 +1,66 @@
+package ai.cerin.android.ui.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalDensity
+import ai.cerin.android.model.CerinUser
+import ai.cerin.android.ui.theme.Violet500
+import ai.cerin.android.ui.theme.Violet700
+import coil3.compose.AsyncImage
+
+@Composable
+fun CerinAvatar(
+    user: CerinUser,
+    size: Dp = 40.dp,
+    modifier: Modifier = Modifier,
+) {
+    val shape = CircleShape
+    Box(
+        modifier
+            .size(size)
+            .clip(shape)
+            .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.12f), shape),
+        contentAlignment = Alignment.Center,
+    ) {
+        val avatar = user.avatar
+        if (avatar != null) {
+            AsyncImage(
+                model = avatar,
+                contentDescription = user.displayName,
+                modifier = Modifier.size(size),
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            Box(
+                Modifier
+                    .size(size)
+                    .background(Brush.linearGradient(listOf(Violet500, Violet700))),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    user.initials,
+                    color = androidx.compose.ui.graphics.Color.White,
+                    // Initials are part of the fixed avatar artwork, like an image.
+                    fontSize = with(LocalDensity.current) { (size * 0.36f).toSp() },
+                    lineHeight = with(LocalDensity.current) { (size * 0.5f).toSp() },
+                    maxLines = 1,
+                    softWrap = false,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            }
+        }
+    }
+}

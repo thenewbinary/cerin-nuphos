@@ -34,7 +34,7 @@ export function tailnetSandboxHostname(teamId: ObjectId, sessionId: string): str
       .toLowerCase()
       .slice(-8) || 'session'
 
-  return `nuphos-${teamId.toHexString().slice(-6)}-${session}`
+  return `cerin-${teamId.toHexString().slice(-6)}-${session}`
 }
 
 export function requireTailnetSandboxTag(access: TailscaleSandboxAccess | undefined): string {

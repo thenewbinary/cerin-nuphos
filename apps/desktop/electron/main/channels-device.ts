@@ -34,7 +34,7 @@ import type { LocalAgentProvider } from './local-runtime/agent-cli.ts'
 
 async function copyAgentFile(...args: [string, string, string, string]) {
   const copy = await atlas.transferRuntimeFile(...args)
-  const target = join(await mkdtemp(join(tmpdir(), 'nuphos-html-')), basename(copy.fileName))
+  const target = join(await mkdtemp(join(tmpdir(), 'cerin-html-')), basename(copy.fileName))
 
   await downloadTo(copy.url, target)
 

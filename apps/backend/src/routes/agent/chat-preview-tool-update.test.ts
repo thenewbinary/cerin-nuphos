@@ -30,7 +30,7 @@ function toolLog(): ToolLog {
 }
 
 describe('handlePreviewToolUpdate', () => {
-  test('a Codex nuphos-tools call is recorded as the classic tool with its own input', () => {
+  test('a Codex cerin-tools call is recorded as the classic tool with its own input', () => {
     const frames: Record<string, unknown>[] = []
     const recorded = new Map<string, unknown>()
     const log = toolLog()
@@ -45,11 +45,11 @@ describe('handlePreviewToolUpdate', () => {
       label: 'Enabling Cloudflare access',
     }
 
-    const rawInput = { server: 'nuphos-tools', tool: 'request_user_decision', arguments: args }
+    const rawInput = { server: 'cerin-tools', tool: 'request_user_decision', arguments: args }
     // codex-acp starts an MCP call as `mcp.<server>.<tool>` with its arguments
     // wrapped, then completes it with the wrapped input again but no title.
     const updates = [
-      { title: 'mcp.nuphos-tools.request_user_decision', status: 'in_progress', rawInput },
+      { title: 'mcp.cerin-tools.request_user_decision', status: 'in_progress', rawInput },
       { status: 'completed', rawInput, rawOutput: { result: { content: [] }, error: null } },
     ]
 
@@ -86,7 +86,7 @@ describe('handlePreviewToolUpdate', () => {
       errorText: failures[0],
     })
   })
-  test('a revealed permission request surfaces a hidden nuphos-tools card', () => {
+  test('a revealed permission request surfaces a hidden cerin-tools card', () => {
     const frames: Record<string, unknown>[] = []
     const log = toolLog()
     const emit = (frame: Record<string, unknown>) => frames.push(frame)
@@ -95,7 +95,7 @@ describe('handlePreviewToolUpdate', () => {
       kind: 'tool',
       toolCallId: 'toolu_1',
       title: 'memory_get',
-      mcpToolId: 'mcp__nuphos-tools__memory_get',
+      mcpToolId: 'mcp__cerin-tools__memory_get',
       status: 'pending',
       rawInput: { memoryId: 'abc' },
     })

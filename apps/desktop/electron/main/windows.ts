@@ -176,7 +176,7 @@ export function createWindow(restore: SavedWindow | null = lastClosedWindow()): 
     win.show()
     if (placement.fullScreen) win.setFullScreen(true)
     // Readiness marker for scripts/dev-desktop.ts.
-    if (isDev) console.log('[nuphos-dev] electron window opened')
+    if (isDev) console.log('[cerin-dev] electron window opened')
   })
   win.on('focus', () => rememberAppWindowFocus(win))
   win.on('closed', () => {

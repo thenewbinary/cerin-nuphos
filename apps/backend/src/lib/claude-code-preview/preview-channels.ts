@@ -11,5 +11,5 @@ export function previewChannelPromptSection(
 ): string | null {
   if (!ctx.slackThread) return null
 
-  return buildSlackMessage({ nuphosOriginated: true }, ctx.teamId)
+  return buildSlackMessage({ cerinOriginated: true }, ctx.teamId)
 }

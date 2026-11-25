@@ -7,11 +7,11 @@ import * as configActual from '@/config'
 // The pool lives in Cerin's own GCP project, so these are deploy constants
 // rather than anything a customer supplies.
 const PROJECT_NUMBER = '548156476377'
-const POOL_ID = 'nuphos'
-const PROVIDER_ID = 'nuphos-oidc'
+const POOL_ID = 'cerin'
+const PROVIDER_ID = 'cerin-oidc'
 const TEAM_ID = '68b0f1f77bcf86cd79943901'
 const OTHER_TEAM_ID = '68b0f1f77bcf86cd79943902'
-const CUSTOMER_SA = 'nuphos@customer-project.iam.gserviceaccount.com'
+const CUSTOMER_SA = 'cerin@customer-project.iam.gserviceaccount.com'
 
 const { privateKey } = generateKeyPairSync('rsa', {
   modulusLength: 2048,
@@ -107,14 +107,14 @@ describe('the values customers paste', () => {
   test('audience is the provider resource path', () => {
     enableWif()
     expect(gcpWifAudience()).toBe(
-      '//iam.googleapis.com/projects/548156476377/locations/global/workloadIdentityPools/nuphos/providers/nuphos-oidc',
+      '//iam.googleapis.com/projects/548156476377/locations/global/workloadIdentityPools/cerin/providers/cerin-oidc',
     )
   })
 
   test('principal names the pool and this team, and no other', () => {
     enableWif()
     expect(gcpWifPrincipalForTeam(TEAM_ID)).toBe(
-      `principal://iam.googleapis.com/projects/548156476377/locations/global/workloadIdentityPools/nuphos/subject/nuphos:team:${TEAM_ID}`,
+      `principal://iam.googleapis.com/projects/548156476377/locations/global/workloadIdentityPools/cerin/subject/cerin:team:${TEAM_ID}`,
     )
     // The per-team subject is the confused-deputy mitigation — Google refuses a
     // grant made for one team when presented another team's token — so the two

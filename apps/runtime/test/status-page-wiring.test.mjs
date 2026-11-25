@@ -24,7 +24,7 @@ test('the published Codex and Claude Code images each pass their own label plus 
 
 test('the image turns on the runtime console with its state on the home volume', () => {
   assert.match(dockerfile, /^ {4}OPENAB_RUNTIME_CONSOLE=true \\$/mu)
-  assert.match(dockerfile, /^ {4}OPENAB_RUNTIME_STATE_DIR=\/home\/node\/\.nuphos-runtime \\$/mu)
+  assert.match(dockerfile, /^ {4}OPENAB_RUNTIME_STATE_DIR=\/home\/node\/\.cerin-runtime \\$/mu)
   assert.match(
     dockerfile,
     /^ {4}OPENAB_RUNTIME_CONNECT_URL_TEMPLATE="cerin:\/\/connect-runtime\?url=\{url\}&code=\{code\}&exp=\{exp\}"$/mu,

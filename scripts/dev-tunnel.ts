@@ -33,7 +33,7 @@ function machineHasNamedTunnel(): boolean {
   try {
     const p = Bun.spawnSync(['cloudflared', 'tunnel', 'list'])
 
-    return p.success && p.stdout.toString().includes('nuphos-local-dev')
+    return p.success && p.stdout.toString().includes('cerin-local-dev')
   } catch {
     return false
   }
@@ -95,7 +95,7 @@ function spawnNamedTunnel() {
       'http2',
       '--no-autoupdate',
       'run',
-      'nuphos-local-dev',
+      'cerin-local-dev',
     ],
     { detached: true, stdio: ['ignore', out, out] },
   )

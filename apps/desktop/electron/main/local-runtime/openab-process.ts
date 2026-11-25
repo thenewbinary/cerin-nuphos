@@ -115,7 +115,7 @@ export async function stopStaleOpenab(
  * Only MemoryMax: without swap, MemoryHigh stalls an agent instead of killing it.
  * Needs the user's systemd manager; without it agents run as before.
  */
-export const AGENT_SLICE = 'nuphos-agents.slice'
+export const AGENT_SLICE = 'cerin-agents.slice'
 let agentSlice: Promise<boolean> | undefined
 
 /** What `systemctl --user` and `systemd-run --user` need to reach the user's manager. */

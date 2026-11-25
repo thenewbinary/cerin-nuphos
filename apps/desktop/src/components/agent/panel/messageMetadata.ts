@@ -31,7 +31,7 @@ function parseChannelPost(value: unknown): AgentMessageMetadata['channelPost'] {
   }
 }
 
-const SOURCES = new Set(['nuphos', 'slack', 'discord', 'lark', 'agent.thread', 'agent.resource'])
+const SOURCES = new Set(['cerin', 'slack', 'discord', 'lark', 'agent.thread', 'agent.resource'])
 
 function parseReplyTo(value: unknown): AgentMessageMetadata['replyTo'] {
   const r = value as Partial<NonNullable<AgentMessageMetadata['replyTo']>> | undefined
@@ -53,7 +53,7 @@ export function parseMessageMetadata(value: unknown): AgentMessageMetadata | und
   if (m.version !== 1 || !m.source || !SOURCES.has(m.source)) return undefined
   const via = m.sender?.onBehalfOf
   const onBehalfOf =
-    m.source === 'nuphos' && typeof via?.id === 'string' && via.id
+    m.source === 'cerin' && typeof via?.id === 'string' && via.id
       ? { id: via.id, displayName: typeof via.displayName === 'string' ? via.displayName : '' }
       : undefined
   const senderType =
@@ -69,7 +69,7 @@ export function parseMessageMetadata(value: unknown): AgentMessageMetadata | und
   const agentRuntime = AGENT_PROVIDERS.find((p) => p === m.sender?.agentRuntime)
   const avatarURL = trustedAvatarURL(m.sender.avatarURL)
   const replyTo = parseReplyTo(m.replyTo)
-  const mentions = m.source === 'nuphos' ? parseMentions(m.mentions) : undefined
+  const mentions = m.source === 'cerin' ? parseMentions(m.mentions) : undefined
   const channelPost =
     m.source === 'agent.resource' && m.sender.id.startsWith('channel:')
       ? parseChannelPost(m.channelPost)
@@ -91,7 +91,7 @@ export function parseMessageMetadata(value: unknown): AgentMessageMetadata | und
       ? { sourceSessionId: m.sourceSessionId }
       : {}),
     ...(replyTo ? { replyTo } : {}),
-    ...(m.source === 'nuphos' && typeof m.requestId === 'string' && m.requestId
+    ...(m.source === 'cerin' && typeof m.requestId === 'string' && m.requestId
       ? {
           requestId: m.requestId,
           ...(m.answeredIn === 'inbox' ? { answeredIn: m.answeredIn } : {}),

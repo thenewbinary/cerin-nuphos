@@ -59,7 +59,7 @@ function answerCipherKey(): Buffer {
     const secret = config.auth.jwtSecret
 
     if (!secret) throw new Error('NUPHOS_JWT_SECRET or JWT_SECRET_KEY is required for sign-in')
-    answerKey = Buffer.from(hkdfSync('sha256', secret, '', 'nuphos-runtime-login-answer-v1', 32))
+    answerKey = Buffer.from(hkdfSync('sha256', secret, '', 'cerin-runtime-login-answer-v1', 32))
   }
 
   return answerKey

@@ -53,6 +53,6 @@ server=$!
 xcrun simctl keychain "$device" add-root-cert "$tmp/cert.pem"
 
 TEST_RUNNER_MARKDOWN_IMAGE_URL=https://127.0.0.1:8765/wide.png \
-  xcodebuild test -project nuphos-ios.xcodeproj -scheme nuphos-ios -destination "id=$device" \
-  -only-testing:nuphos-iosUITests/MarkdownImageUITests -parallel-testing-enabled NO -quiet
+  xcodebuild test -project cerin-ios.xcodeproj -scheme cerin-ios -destination "id=$device" \
+  -only-testing:cerin-iosUITests/MarkdownImageUITests -parallel-testing-enabled NO -quiet
 echo "Markdown image viewer passed"

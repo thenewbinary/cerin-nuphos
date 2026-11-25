@@ -73,7 +73,7 @@ enum ChannelPostTests {
         if case .object(var metadata) = message.metadata {
             metadata["replyTo"] = .object(["authorName": .string("Scribe"), "text": .string(question)])
             if let answeredIn { metadata["answeredIn"] = .string(answeredIn) }
-            metadata["source"] = .string("nuphos")
+            metadata["source"] = .string("cerin")
             if let request { metadata["requestId"] = .string(request) }
             message.metadata = .object(metadata)
         }
@@ -134,17 +134,17 @@ enum ChannelPostTests {
         precondition(ChannelPost(message("m", sender: person("me", "Bruce"), parts: [])) == nil)
         precondition(ChannelPost(message("m", sender: ["type": .string("user"), "id": .string("me")], parts: [text("hi")])) == nil)
         // A chat shows only what people and agents post, never a system notice.
-        let system: [String: JSONValue] = ["type": .string("system"), "id": .string("nuphos"), "displayName": .string("Cerin")]
+        let system: [String: JSONValue] = ["type": .string("system"), "id": .string("cerin"), "displayName": .string("Cerin")]
         precondition(ChannelPost(message("m", sender: system, parts: [text("Release Helper finished a turn.")])) == nil)
         // Except the record an answer to a question leaves: a line, not a post.
-        let decision: [String: JSONValue] = ["type": .string("system"), "id": .string("nuphos:decision"),
+        let decision: [String: JSONValue] = ["type": .string("system"), "id": .string("cerin:decision"),
                                              "displayName": .string("Cerin")]
         let record = ChannelPost(message("r", sender: decision, parts: [text("Yuanlin answered: Ship? → Ship it")]))
         precondition(record?.isRecord == true)
         let rows = ChannelPost.items(posts: [record!], events: [], typing: [])
         precondition(rows.map(\.item) == [.time(record!.sentAt!), .record("Yuanlin answered: Ship? → Ship it")])
         // And the record a change of owner leaves when the owner leaves the chat.
-        let owner: [String: JSONValue] = ["type": .string("system"), "id": .string("nuphos:chat"),
+        let owner: [String: JSONValue] = ["type": .string("system"), "id": .string("cerin:chat"),
                                           "displayName": .string("Cerin")]
         let handed = ChannelPost(message("o", sender: owner, parts: [text("Ann left. Bruce now owns this chat.")]))
         precondition(handed?.isRecord == true)

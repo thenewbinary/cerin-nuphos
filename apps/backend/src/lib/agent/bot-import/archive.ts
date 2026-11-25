@@ -225,7 +225,7 @@ export async function readBotBundle(input: Uint8Array): Promise<BotBundleArchive
   const parsed: unknown = JSON.parse(text)
   const result = botBundleSchema.safeParse(parsed)
 
-  if (!result.success) invalid('manifest does not match nuphos-bot-bundle version 1')
+  if (!result.success) invalid('manifest does not match cerin-bot-bundle version 1')
   // Walk parsed strings separately: JSON escaping must not conceal a secret from the scanner.
   const strings: string[] = []
   const scan = (value: unknown): void => {

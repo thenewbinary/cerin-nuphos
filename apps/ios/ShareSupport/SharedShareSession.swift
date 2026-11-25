@@ -33,8 +33,8 @@ enum SharedShareSession {
         }
     }
     private static var group: String? {
-        guard let value = Bundle.main.object(forInfoDictionaryKey: "NuphosSharedKeychainGroup") as? String,
-              !value.isEmpty, !value.contains("$("), value.hasSuffix(".ai.nuphos.ios.shared-auth") else { return nil }
+        guard let value = Bundle.main.object(forInfoDictionaryKey: "CerinSharedKeychainGroup") as? String,
+              !value.isEmpty, !value.contains("$("), value.hasSuffix(".ai.cerin.ios.shared-auth") else { return nil }
         return value
     }
     #if SHARE_SESSION_INTEGRATION_TESTS
@@ -44,13 +44,13 @@ enum SharedShareSession {
     private static func query() throws -> [String: Any] {
         #if SHARE_SESSION_INTEGRATION_TESTS
         let service = ProcessInfo.processInfo.arguments[1]
-        precondition(service.hasPrefix("ai.nuphos.ios.share-session.integration."))
+        precondition(service.hasPrefix("ai.cerin.ios.share-session.integration."))
         return [kSecClass as String: kSecClassGenericPassword,
                 kSecAttrService as String: service, kSecAttrAccount as String: "synthetic-only"]
         #else
         guard let group else { throw Failure.unavailable }
         return [kSecClass as String: kSecClassGenericPassword,
-                kSecAttrService as String: "ai.nuphos.ios.share-session",
+                kSecAttrService as String: "ai.cerin.ios.share-session",
                 kSecAttrAccount as String: "current",
                 kSecAttrAccessGroup as String: group]
         #endif

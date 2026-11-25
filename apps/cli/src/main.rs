@@ -121,7 +121,7 @@ enum Command {
         session: String,
     },
     /// Run this computer's Claude Code and Codex as local runtimes, as the desktop app does.
-    /// On Linux with systemd it installs and starts the user service `nuphos-agent`, which
+    /// On Linux with systemd it installs and starts the user service `cerin-agent`, which
     /// starts again after a reboot; elsewhere it runs in the foreground.
     Agent {
         /// Join Cerin with a one-time token instead of signing in. Pass `-` and pipe the token
@@ -598,12 +598,12 @@ mod avatar_tests {
 
     #[tokio::test]
     async fn a_file_over_the_limit_is_refused() {
-        let path = std::env::temp_dir().join(format!("nuphos-avatar-{}.png", std::process::id()));
+        let path = std::env::temp_dir().join(format!("cerin-avatar-{}.png", std::process::id()));
         std::fs::write(&path, vec![0u8; MAX_AVATAR_BYTES + 1]).unwrap();
         let result = read_avatar(path.to_str().unwrap()).await;
         std::fs::remove_file(&path).unwrap();
         assert!(result.unwrap_err().to_string().contains("over 2 MB"));
-        let small = std::env::temp_dir().join(format!("nuphos-avatar-ok-{}.png", std::process::id()));
+        let small = std::env::temp_dir().join(format!("cerin-avatar-ok-{}.png", std::process::id()));
         std::fs::write(&small, b"png").unwrap();
         assert_eq!(read_avatar(small.to_str().unwrap()).await.unwrap(), b"png");
         std::fs::remove_file(&small).unwrap();

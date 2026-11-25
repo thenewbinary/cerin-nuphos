@@ -3,7 +3,7 @@
     <style name="Theme.Cerin" parent="android:Theme.Material.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">@color/nuphos_canvas_dark</item>
+        <item name="android:windowBackground">@color/cerin_canvas_dark</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

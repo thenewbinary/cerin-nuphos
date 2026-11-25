@@ -5,7 +5,7 @@ import type { AgentCredentialOptions, AgentCredentialSelection } from '../../../
 export const MIN_WIDTH_VW = 20
 export const MAX_WIDTH_VW = 50
 export const DEFAULT_WIDTH_VW = 36
-export const AGENT_WIDTH_KEY = 'nuphos.agentWidthVw'
+export const AGENT_WIDTH_KEY = 'cerin.agentWidthVw'
 export const AGENT_PLACEHOLDER_PROMPTS = [
   'Review the open pull requests in our main repo.',
   'Triage the newest Linear issues and draft fixes.',

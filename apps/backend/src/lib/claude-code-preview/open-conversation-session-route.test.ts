@@ -11,7 +11,7 @@ import { useDb } from '@/lib/test/doubles/db'
 // A hosted runtime keeps its url when it joins as a device or leaves one; only the route changes.
 const url = 'ws://openab-claude-pod.openab-runtimes.svc:8080/acp'
 const direct: TeamRuntimeEndpoint = { url, authKey: 'key', provider: 'claude-code' }
-const tunnel = (deviceId: string) => `nuphos-device://runtime/owner/${deviceId}?team=team`
+const tunnel = (deviceId: string) => `cerin-device://runtime/owner/${deviceId}?team=team`
 const viaDevice = (deviceId: string): TeamRuntimeEndpoint => ({
   ...direct,
   tunnelUrl: tunnel(deviceId),

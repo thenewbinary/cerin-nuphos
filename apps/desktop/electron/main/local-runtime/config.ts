@@ -11,7 +11,7 @@ import type { LocalAgentProvider } from './providers.ts'
 export type LocalAgentAdapter = {
   /** The adapter's ACP entry point, run on Electron's own Node. */
   entry: string
-  /** nuphos-runtime's stdio bridge to the Cerin MCP endpoints. */
+  /** cerin-runtime's stdio bridge to the Cerin MCP endpoints. */
   bridge: string
   version: string
 }
@@ -69,13 +69,13 @@ const AGENT_ENV_PASSTHROUGH = [
   'SystemRoot',
   'ComSpec',
   'PATHEXT',
-  // A Linux Box with a desktop pool: the adapter adds a per-session nuphos-desktop server.
+  // A Linux Box with a desktop pool: the adapter adds a per-session cerin-desktop server.
   'NUPHOS_DESKTOP_SESSION',
   'NUPHOS_DESKTOP_POOL',
   'NUPHOS_DESKTOP_POOL_SIZE',
 ]
 
-/** Must match `deriveRuntimeControlKey` in the backend and `nuphos-runtime-start`. */
+/** Must match `deriveRuntimeControlKey` in the backend and `cerin-runtime-start`. */
 export function deriveControlKey(authKey: string): string {
   return createHmac('sha256', authKey).update('nuphos-runtime-control-v1').digest('hex')
 }

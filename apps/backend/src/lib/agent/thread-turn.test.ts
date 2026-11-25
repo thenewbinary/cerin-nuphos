@@ -58,7 +58,7 @@ useObservability({
 })
 useIdentity({
   getTeamMembership: async () => ({ role: 'MEMBER' }),
-  signNuphosToken: () => 'test-token',
+  signCerinToken: () => 'test-token',
 })
 useAgentDb({
   agentMessages: () => ({
@@ -309,7 +309,7 @@ test('recovered batch preserves every delivery ID and metadata across redelivery
       metadata: {
         version: 1,
         sender: { type: 'user', id: 'owner', displayName: 'Owner' },
-        source: 'nuphos',
+        source: 'cerin',
         sentAt: '2026-10-06T00:00:00Z',
       },
     }),
@@ -365,7 +365,7 @@ test('resource events preserve approval handling and are marked autonomous', asy
     version: 1 as const,
     sender: { type: 'system' as const, id: 'github', displayName: 'GitHub' },
     source: 'agent.resource' as const,
-    resourceUrl: 'https://github.com/nuphos/nuphos/pull/186',
+    resourceUrl: 'https://github.com/thenewbinary/cerin-platform/pull/186',
     sentAt: '2026-10-11T00:00:00Z',
   }
 

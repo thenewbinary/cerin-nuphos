@@ -44,7 +44,7 @@ export type TriggerRunParams = {
   // Durable conversation owner when a shared external thread is continued by
   // another teammate. Defaults to `userId`.
   conversationOwnerUserId?: string
-  nuphosToken: string
+  cerinToken: string
   teamId: string | undefined
   sessionId: string
   messages: UIMessage[]

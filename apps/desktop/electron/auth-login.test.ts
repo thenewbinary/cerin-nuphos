@@ -484,7 +484,7 @@ test('native: a rejected redemption fails the sign-in and stores nothing', async
 })
 
 const EACCES = () =>
-  Object.assign(new Error("EACCES: permission denied, mkdir '/Users/u/.config/nuphos'"), {
+  Object.assign(new Error("EACCES: permission denied, mkdir '/Users/u/.config/cerin'"), {
     code: 'EACCES',
   })
 const UNSAVED = /Cerin couldn.t save your sign-in to \S+: permission denied\./

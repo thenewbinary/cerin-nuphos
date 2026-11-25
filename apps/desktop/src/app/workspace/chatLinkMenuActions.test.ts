@@ -18,8 +18,8 @@ function setup(opts: { teamId?: string | null; handledInApp?: boolean } = {}) {
       return Promise.resolve()
     },
     openExternalLink: (url) => calls.external.push(url),
-    openNuphosLinkFromChat: () => opts.handledInApp ?? false,
-    openNuphosLinkInNewTab: (href) => {
+    openCerinLinkFromChat: () => opts.handledInApp ?? false,
+    openCerinLinkInNewTab: (href) => {
       calls.inNewTab.push(href)
 
       return true
@@ -87,12 +87,12 @@ test('provider resolution leaves in-app routing unchanged', async () => {
       calls.push(`copy:${url}`)
     },
     openExternalLink: (url) => calls.push(`external:${url}`),
-    openNuphosLinkFromChat: (href) => {
+    openCerinLinkFromChat: (href) => {
       calls.push(`app:${href}`)
 
       return true
     },
-    openNuphosLinkInNewTab: () => false,
+    openCerinLinkInNewTab: () => false,
   })
 
   actions.openInApp('/teams/team1/repository')

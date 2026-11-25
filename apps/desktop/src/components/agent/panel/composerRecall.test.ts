@@ -24,7 +24,7 @@ const said = (id: string, role: Message['role'], text: string, sender?: string):
         metadata: {
           version: 1,
           sender: { type: 'user', id: sender, displayName: sender },
-          source: 'nuphos',
+          source: 'cerin',
           sentAt: '',
         } as Message['metadata'],
       }

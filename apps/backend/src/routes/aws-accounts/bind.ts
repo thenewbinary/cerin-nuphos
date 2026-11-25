@@ -31,7 +31,7 @@ import type { Hono } from 'hono'
 // OIDC web identity pins the trust policy to this team's `sub`, making the
 // binding confused-deputy-safe without any long-lived AWS credentials.
 async function verifyRoleAssumable(teamId: ObjectId, roleArn: string): Promise<TempCredentials> {
-  const probe = { sessionName: 'nuphos-bind-verify', durationSec: 900 }
+  const probe = { sessionName: 'cerin-bind-verify', durationSec: 900 }
 
   if (!isAwsOidcConfigured()) {
     throw new AppError(
@@ -60,7 +60,7 @@ async function verifyRoleAssumable(teamId: ObjectId, roleArn: string): Promise<T
   throw new AppError(
     400,
     'role_not_assumable',
-    `Cerin cannot assume ${roleArn}. Its trust policy must trust the Cerin OIDC identity provider for sts:AssumeRoleWithWebIdentity with sub "nuphos:team:${teamId.toHexString()}". (${name}: ${message})`,
+    `Cerin cannot assume ${roleArn}. Its trust policy must trust the Cerin OIDC identity provider for sts:AssumeRoleWithWebIdentity with sub "cerin:team:${teamId.toHexString()}". (${name}: ${message})`,
     { roleArn, awsError: name },
   )
 }

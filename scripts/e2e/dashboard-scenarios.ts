@@ -115,7 +115,7 @@ function makeRefreshDue(stack: Stack, dashboardId: string, yesterday: { start: D
   const script = `
     import { MongoClient, ObjectId } from 'mongodb'
     const client = await new MongoClient(process.argv[1]).connect()
-    await client.db('nuphos_e2e').collection('cost_dashboards').updateOne(
+    await client.db('cerin_e2e').collection('cost_dashboards').updateOne(
       { _id: new ObjectId(process.argv[2]) },
       { $set: {
         nextRefreshAt: new Date(Date.now() - 1000),

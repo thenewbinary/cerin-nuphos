@@ -5,7 +5,7 @@ import { dashboardPanels } from '@/models'
 
 import type { AgentRef } from '@/lib/agents/identity'
 
-const AUDIENCE = 'nuphos-dashboard-panel'
+const AUDIENCE = 'cerin-dashboard-panel'
 const SESSION_PREFIX = 'dashboard-panel-'
 
 export type DashboardPanelClaims = {

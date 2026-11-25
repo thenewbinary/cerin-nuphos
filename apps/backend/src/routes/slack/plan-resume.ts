@@ -1,5 +1,5 @@
 import { turnRunner } from '@/lib/agent/turn-runner'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import { logEvent } from '@/lib/observability'
 import { postSlackMessage } from '@/lib/slack/api'
 import { resolveSlackBotForWorkspace } from '@/lib/slack/installations'
@@ -28,7 +28,7 @@ export async function resumeApprovedPlanTurn(args: {
    *  identity in this workspace — the thread is then told what happened
    *  without naming anyone rather than rendering a broken mention. */
   approverSlackUserId: string | null
-  approverNuphosUserId: string
+  approverCerinUserId: string
 }): Promise<void> {
   const botContext = await resolveSlackBotForWorkspace(args.thread.slackWorkspaceId)
 
@@ -104,7 +104,7 @@ export async function resumeApprovedPlanTurn(args: {
       userId: args.thread.agentUserId,
       teamId: args.thread.teamId,
       messageId: `slack-plan-approve-${args.planId}`,
-      actorUserId: args.approverNuphosUserId,
+      actorUserId: args.approverCerinUserId,
       turnKind: 'plan-approval',
       renderedText,
     })
@@ -114,11 +114,11 @@ export async function resumeApprovedPlanTurn(args: {
       eventId: null,
       sessionId: args.thread.sessionId,
       agentUserId: args.thread.agentUserId,
-      actorUserId: args.approverNuphosUserId,
+      actorUserId: args.approverCerinUserId,
       teamId: args.thread.teamId,
       channel: args.thread.slackChannelId,
       threadTs: args.thread.slackThreadTs,
-      nuphosToken: signNuphosToken(args.approverNuphosUserId, 60 * 60 * 8),
+      cerinToken: signCerinToken(args.approverCerinUserId, 60 * 60 * 8),
       messages,
       firstMessage: `Plan approved: ${args.planTitle}`,
     })

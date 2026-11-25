@@ -7,7 +7,7 @@ import { test } from 'node:test'
 import { prepareFirstLaunch } from './first-launch.ts'
 
 test('only fresh app data gets the intro, including after complete data removal', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-first-launch-'))
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-first-launch-'))
   const userData = path.join(root, 'Cerin')
 
   try {
@@ -21,7 +21,7 @@ test('only fresh app data gets the intro, including after complete data removal'
 })
 
 test('upgrading an existing installation does not show the intro', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-first-launch-'))
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-first-launch-'))
 
   try {
     fs.writeFileSync(path.join(root, 'Preferences'), '{}')
@@ -33,7 +33,7 @@ test('upgrading an existing installation does not show the intro', () => {
 })
 
 test('unwritable app data fails open without replaying the intro', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-first-launch-'))
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-first-launch-'))
   const file = path.join(root, 'file')
 
   try {
@@ -46,7 +46,7 @@ test('unwritable app data fails open without replaying the intro', () => {
 
 // Electron creates Singleton files while acquiring the instance lock.
 test('snapshot precedes Electron initialization and a competing claim loses', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-first-launch-'))
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-first-launch-'))
 
   try {
     const claim = prepareFirstLaunch(root)

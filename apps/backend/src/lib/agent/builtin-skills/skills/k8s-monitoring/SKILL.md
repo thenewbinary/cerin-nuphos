@@ -54,7 +54,7 @@ VMAgent scrapes, VMAlert evaluates, Alertmanager routes):
   operator auto-converts `PrometheusRule` CRs to `VMRule` when
   `--controller.useCustomConfigReloader` conversion is enabled (it is by
   default in victoria-metrics-k8s-stack). Verify after applying:
-  `kubectl get vmrules -A | grep nuphos`.
+  `kubectl get vmrules -A | grep cerin`.
 - The chart ships the same community alert rules as kube-prometheus-stack
   (converted), including `Watchdog` — the heartbeat route works the same.
 
@@ -159,7 +159,7 @@ KubePersistentVolumeFillingUp, …). Apply the Cerin supplement for the
 gaps (CronJob staleness, cert-manager expiry, endpoint-less Services):
 
 ```bash
-kubectl apply -f skills/k8s-monitoring/references/nuphos-rules.yaml
+kubectl apply -f skills/k8s-monitoring/references/cerin-rules.yaml
 ```
 
 Read that file before applying so you can tell the user exactly which
@@ -244,7 +244,7 @@ VMAgent — for the latter use a `VMProbe` CR instead of the scrape config):
 
 ```yaml
 # Alert: the probe itself fails ⇒ the service is not answering.
-- alert: NuphosInternalProbeFailed
+- alert: CerinInternalProbeFailed
   expr: probe_success == 0
   for: 5m
   labels: { severity: critical }

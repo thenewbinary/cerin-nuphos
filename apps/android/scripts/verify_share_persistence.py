@@ -5,8 +5,8 @@ import pathlib
 import re
 import subprocess
 
-RECEIVER = "ai.nuphos.android.sharepersist1359"
-SENDER = "ai.nuphos.sharepersist1359.sender"
+RECEIVER = "ai.cerin.android.sharepersist1359"
+SENDER = "ai.cerin.sharepersist1359.sender"
 PHASES = [
     "seedPending", "consumeExisting", "verifyExisting", "verifyEditedAndWarmCancel",
     "consumeNew", "verifyNewAndHandoff", "verifyNoReplay",
@@ -50,7 +50,7 @@ def main():
                     raise SystemExit(f"Package still running after force-stop: {package}")
             command = adb + ["shell", "am", "instrument", "-w", "-r", "-e", "persistentSharePhase", phase,
                              "-e", "captureSynthetic", "true", "-e", "class",
-                             "ai.nuphos.android.PersistentShareProcessDeviceTest",
+                             "ai.cerin.android.PersistentShareProcessDeviceTest",
                              RECEIVER + ".test/androidx.test.runner.AndroidJUnitRunner"]
             result = subprocess.run(command, capture_output=True, text=True, timeout=90)
             output = result.stdout + result.stderr

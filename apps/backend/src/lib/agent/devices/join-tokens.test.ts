@@ -64,10 +64,10 @@ useDb({ db: (() => ({ collection })) as unknown as typeof dbActual.db })
 let signedOutEverywhereAt = new Date(0)
 
 useIdentity({
-  getNuphosUserForCredential: (async (userId: string, issuedAt: Date) =>
+  getCerinUserForCredential: (async (userId: string, issuedAt: Date) =>
     userId === 'u1' && issuedAt >= signedOutEverywhereAt
       ? { id: userId }
-      : null) as unknown as typeof identityActual.getNuphosUserForCredential,
+      : null) as unknown as typeof identityActual.getCerinUserForCredential,
 })
 
 const { hashDeviceSecret, issueDeviceJoinToken, redeemDeviceJoinToken } =

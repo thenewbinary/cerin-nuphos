@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">憑證 · %1$d</string>
     <string name="composer_computers_count">電腦 · %1$d</string>
     <string name="composer_queue_a_message">排入一則訊息</string>
-    <string name="composer_ask_nuphos">問 Cerin 任何事</string>
+    <string name="composer_ask_cerin">問 Cerin 任何事</string>
     <string name="composer_remove_attachment_failed">無法移除此已儲存的附件。請檢查儲存空間後再試一次。</string>
     <string name="composer_photos">相片</string>
     <string name="composer_files">檔案</string>

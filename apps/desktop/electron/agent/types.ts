@@ -9,7 +9,7 @@ export type Conversation = {
   firstMessage: string
   messageCount: number
   activitySource?: {
-    origin: 'nuphos' | 'slack' | 'trigger' | 'mcp' | 'unknown'
+    origin: 'cerin' | 'slack' | 'trigger' | 'mcp' | 'unknown'
     linkedSlackThread: boolean
   }
   /** Set when a trigger fired this conversation: it is that Trigger's run,

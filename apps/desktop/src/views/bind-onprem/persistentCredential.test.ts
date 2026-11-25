@@ -19,6 +19,6 @@ test('grants the credential complete Kubernetes access for Cerin features', () =
 
   assert.match(command, /clusterrolebinding cerin-cluster-admin/)
   assert.match(command, /--clusterrole=cluster-admin/)
-  assert.match(command, /--serviceaccount=nuphos-relay:cerin/)
+  assert.match(command, /--serviceaccount=cerin-relay:cerin/)
   assert.doesNotMatch(command, /--clusterrole=view/)
 })

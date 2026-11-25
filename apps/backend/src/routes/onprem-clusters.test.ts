@@ -90,7 +90,7 @@ clusters:
       server: https://10.0.0.1:6443
       certificate-authority-data: Q0EtREFUQQ==
 users:
-  - name: nuphos
+  - name: cerin
     user:
       token: sa-token
 `

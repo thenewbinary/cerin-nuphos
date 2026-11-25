@@ -6,14 +6,14 @@ import { describe, expect, test } from 'bun:test'
 import { useDb } from '@/lib/test/doubles/db'
 import { useIdentity } from '@/lib/test/doubles/identity'
 
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 
 const TEAM = '64b5f1c2e4b0a1d2c3e4f5a6'
 const ADMIN = '62e6289482f5f9d9408f1a79'
 const MEMBER = '62e6289482f5f9d9408f1a7a'
 const CHAT = 'admin-chat'
 
-let role: NuphosTeamRole = 'VIEWER'
+let role: CerinTeamRole = 'VIEWER'
 let caller = MEMBER
 
 // What each collection answers: a single usage group, and the conversation it belongs to.
@@ -62,7 +62,7 @@ useIdentity({
 
 const { app } = await import('@/index-app')
 
-const read = async (who: string, teamRole: NuphosTeamRole) => {
+const read = async (who: string, teamRole: CerinTeamRole) => {
   caller = who
   role = teamRole
   const query = new URLSearchParams({

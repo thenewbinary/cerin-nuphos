@@ -87,7 +87,7 @@ const USER = '62e6289482f5f9d9408f1a79'
 function awsBinding(overrides?: Partial<AwsRoleBinding>): AwsRoleBinding {
   return {
     id: new ObjectId(),
-    roleArn: 'arn:aws:iam::123456789012:role/nuphos-connector',
+    roleArn: 'arn:aws:iam::123456789012:role/cerin-connector',
     createdAt: new Date(),
     ...overrides,
   }
@@ -108,7 +108,7 @@ function tencentBinding(label: string): TencentAccountBinding {
     id: new ObjectId(),
     label,
     roleArn: 'qcs::cam::uin/123456789:roleName/Cerin',
-    providerId: 'nuphos',
+    providerId: 'cerin',
     createdAt: new Date(),
   }
 }

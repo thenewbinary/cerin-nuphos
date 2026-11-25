@@ -22,7 +22,7 @@ it with `kubectl` using a kubeconfig they provide, not through this skill.
 
 `hcloud` is provided by the runtime image's tool manifest, not baked into it:
 the first call downloads the pinned, checksum-verified release and can take a
-while, so let it finish rather than interrupt it. `nuphos-tools list` shows the
+while, so let it finish rather than interrupt it. `cerin-tools list` shows the
 tool and its state. If the command is missing entirely, or that install keeps
 failing, report the runtime mismatch instead of installing another build during
 the task; do not conclude that Cerin lacks Hetzner credentials.
@@ -54,9 +54,9 @@ bash skills/hetzner/scripts/setup-credentials.sh <teamId> <accountId>
 
 The setup script uses the selected account for this agent session when
 `NUPHOS_SESSION_ID` is present, writes `~/.config/hcloud/cli.toml` with an
-active context, and also writes `~/.hetzner/nuphos.env` exporting `HCLOUD_TOKEN`
+active context, and also writes `~/.hetzner/cerin.env` exporting `HCLOUD_TOKEN`
 for tools that read it from the environment. `hcloud` prefers `HCLOUD_TOKEN`
-when it is set, so `source ~/.hetzner/nuphos.env` if a later shell doesn't pick
+when it is set, so `source ~/.hetzner/cerin.env` if a later shell doesn't pick
 up the context.
 
 Confirm the token works before mutating anything:

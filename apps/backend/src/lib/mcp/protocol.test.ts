@@ -13,13 +13,13 @@ import type { ToolHandler } from './protocol'
 // Real capabilities handler + stubs for the agent-touching tools, so the
 // protocol layer can be tested without a DB or an agent run.
 const tools: Record<string, ToolHandler> = {
-  nuphos_capabilities: async () => toolResult(getCapabilities()),
-  nuphos_ask: async () => toolResult({ status: 'completed', session_id: 's', answer: 'stub' }),
-  nuphos_check: async () => toolResult({ status: 'running', session_id: 's' }),
-  nuphos_list_teams: async () =>
+  cerin_capabilities: async () => toolResult(getCapabilities()),
+  cerin_ask: async () => toolResult({ status: 'completed', session_id: 's', answer: 'stub' }),
+  cerin_check: async () => toolResult({ status: 'running', session_id: 's' }),
+  cerin_list_teams: async () =>
     toolResult({ teams: [{ team_id: 't1', name: 'Team', role: 'EDITOR' }] }),
-  nuphos_list_credentials: async () => toolResult({ team_id: 't1', options: {} }),
-  nuphos_update_credentials: async () => toolResult({ session_id: 's', enabled_for_session: {} }),
+  cerin_list_credentials: async () => toolResult({ team_id: 't1', options: {} }),
+  cerin_update_credentials: async () => toolResult({ session_id: 's', enabled_for_session: {} }),
 }
 
 describe('handleMcpMessage', () => {
@@ -31,7 +31,7 @@ describe('handleMcpMessage', () => {
 
     expect(result.protocolVersion).toBe('2025-06-18')
     expect(result.capabilities.tools).toBeDefined()
-    expect(result.serverInfo.name).toBe('nuphos-agent')
+    expect(result.serverInfo.name).toBe('cerin-agent')
   })
 
   test('tools/list returns exactly the advertised tools', async () => {
@@ -39,35 +39,35 @@ describe('handleMcpMessage', () => {
     const list = (res as { result: { tools: { name: string }[] } }).result.tools
 
     expect(list.map((t) => t.name).sort((a, b) => a.localeCompare(b))).toEqual([
-      'nuphos_ask',
-      'nuphos_capabilities',
-      'nuphos_check',
-      'nuphos_events',
-      'nuphos_list_credentials',
-      'nuphos_list_queue',
-      'nuphos_list_runtimes',
-      'nuphos_list_sessions',
-      'nuphos_list_teams',
-      'nuphos_remove_queued',
-      'nuphos_stop',
-      'nuphos_update_credentials',
-      'nuphos_update_session',
+      'cerin_ask',
+      'cerin_capabilities',
+      'cerin_check',
+      'cerin_events',
+      'cerin_list_credentials',
+      'cerin_list_queue',
+      'cerin_list_runtimes',
+      'cerin_list_sessions',
+      'cerin_list_teams',
+      'cerin_remove_queued',
+      'cerin_stop',
+      'cerin_update_credentials',
+      'cerin_update_session',
     ])
   })
 
-  test('nuphos_ask requires prompt and team_id', async () => {
+  test('cerin_ask requires prompt and team_id', async () => {
     const res = await handleMcpMessage({ jsonrpc: '2.0', id: 3, method: 'tools/list' }, tools)
     const list = (res as { result: { tools: any[] } }).result.tools
-    const ask = list.find((t) => t.name === 'nuphos_ask')
+    const ask = list.find((t) => t.name === 'cerin_ask')
 
     expect(ask.inputSchema.properties.team_id).toBeDefined()
     expect(ask.inputSchema.required).toEqual(['prompt', 'team_id'])
   })
 
-  test('nuphos_update_credentials accepts Uptime Kuma credential ids', async () => {
+  test('cerin_update_credentials accepts Uptime Kuma credential ids', async () => {
     const res = await handleMcpMessage({ jsonrpc: '2.0', id: 4, method: 'tools/list' }, tools)
     const list = (res as { result: { tools: any[] } }).result.tools
-    const updateCredentials = list.find((t) => t.name === 'nuphos_update_credentials')
+    const updateCredentials = list.find((t) => t.name === 'cerin_update_credentials')
 
     expect(updateCredentials.inputSchema.properties.uptime_kuma_instance_ids).toEqual({
       type: 'array',
@@ -75,20 +75,20 @@ describe('handleMcpMessage', () => {
     })
   })
 
-  test('tools/call nuphos_capabilities returns structured capabilities', async () => {
+  test('tools/call cerin_capabilities returns structured capabilities', async () => {
     const res = await handleMcpMessage(
       {
         jsonrpc: '2.0',
         id: 5,
         method: 'tools/call',
-        params: { name: 'nuphos_capabilities', arguments: {} },
+        params: { name: 'cerin_capabilities', arguments: {} },
       },
       tools,
     )
     const result = (res as { result: any }).result
 
     expect(result.isError).toBeUndefined()
-    expect(result.structuredContent.agent).toBe('nuphos-agent')
+    expect(result.structuredContent.agent).toBe('cerin-agent')
     expect(Array.isArray(result.structuredContent.supported_task_types)).toBe(true)
   })
 
@@ -98,7 +98,7 @@ describe('handleMcpMessage', () => {
         jsonrpc: '2.0',
         id: 5,
         method: 'tools/call',
-        params: { name: 'nuphos_nope', arguments: {} },
+        params: { name: 'cerin_nope', arguments: {} },
       },
       tools,
     )
@@ -158,7 +158,7 @@ describe('handleMcpMessage', () => {
 
   test('a custom surface replaces server info, instructions, and the tool list', async () => {
     const surface = {
-      serverName: 'nuphos-credentials',
+      serverName: 'cerin-credentials',
       instructions: 'Scoped credential tools.',
       toolDefinitions: [{ name: 'list_credentials' }],
     }
@@ -169,7 +169,7 @@ describe('handleMcpMessage', () => {
     )
     const initResult = (init as { result: any }).result
 
-    expect(initResult.serverInfo.name).toBe('nuphos-credentials')
+    expect(initResult.serverInfo.name).toBe('cerin-credentials')
     expect(initResult.instructions).toBe('Scoped credential tools.')
 
     const list = await handleMcpMessage(

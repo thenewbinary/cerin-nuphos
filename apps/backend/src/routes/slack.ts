@@ -18,8 +18,8 @@ registerSlackUserMappingRoutes(slackRoutes)
 
 export { handleAppMention } from '@/routes/slack/mention'
 export { persistedMessageToUiMessage } from '@/routes/slack/messages'
-export { beginNuphosSlackTurn } from '@/routes/slack/nuphos-turn'
-export type { NuphosSlackTurnDelivery, NuphosSlackTurnOutcome } from '@/routes/slack/nuphos-turn'
+export { beginCerinSlackTurn } from '@/routes/slack/cerin-turn'
+export type { CerinSlackTurnDelivery, CerinSlackTurnOutcome } from '@/routes/slack/cerin-turn'
 export { handlePermissionGrantInteraction } from '@/routes/slack/permission-decide'
 export { handlePlanApproveInteraction } from '@/routes/slack/plan-approve'
 export { handleToolApprovalInteraction } from '@/routes/slack/tool-approval-decide'

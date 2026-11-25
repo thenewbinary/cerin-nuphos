@@ -45,7 +45,7 @@ export function WatchDestinationDialog({
   onClose,
   onContinue,
 }: WatchDestinationDialogProps) {
-  const [destination, setDestination] = useState<WatchDestination['type']>('nuphos')
+  const [destination, setDestination] = useState<WatchDestination['type']>('cerin')
   const [channels, setChannels] = useState<SlackChannelOption[]>([])
   const [channelId, setChannelId] = useState('')
   const [slackConnected, setSlackConnected] = useState(false)
@@ -126,13 +126,13 @@ export function WatchDestinationDialog({
   const dmAvailable = dmRecipient !== null
   const dmCopy = dmRecipient ? slackDmRecipientCopy(dmRecipient) : null
   const canContinue =
-    destination === 'nuphos' ||
+    destination === 'cerin' ||
     (destination === 'slack_dm' && dmAvailable) ||
     (destination === 'slack_channel' && selectedChannel !== undefined)
 
   const submit = () => {
-    if (destination === 'nuphos') {
-      onContinue({ type: 'nuphos' })
+    if (destination === 'cerin') {
+      onContinue({ type: 'cerin' })
     } else if (destination === 'slack_dm' && dmAvailable) {
       onContinue({ type: 'slack_dm' })
     } else if (destination === 'slack_channel' && selectedChannel) {
@@ -173,8 +173,8 @@ export function WatchDestinationDialog({
             aria-label={t('Watch destination')}
           >
             <WatchDestinationCard
-              value="nuphos"
-              selected={destination === 'nuphos'}
+              value="cerin"
+              selected={destination === 'cerin'}
               icon={<UiIcon size={14} icon={InboxIcon} className="h-3.5 w-3.5" />}
               title="Cerin"
               description={t('Investigate and keep the findings in Cerin.')}

@@ -51,7 +51,7 @@ struct TurnCardMark: View {
     let size: CGFloat
 
     var body: some View {
-        Image("NuphosMark").resizable().scaledToFit().frame(width: size, height: size)
+        Image("CerinMark").resizable().scaledToFit().frame(width: size, height: size)
     }
 }
 

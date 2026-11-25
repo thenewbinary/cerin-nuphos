@@ -22,12 +22,12 @@ export async function setupSlackAgentIndexes(): Promise<void> {
   )
   const createReverseMappingIndex = async () =>
     await slackUserMappings().createIndex(
-      { slackWorkspaceId: 1, teamId: 1, nuphosUserId: 1 },
+      { slackWorkspaceId: 1, teamId: 1, cerinUserId: 1 },
       {
         unique: true,
         partialFilterExpression: { enabled: true },
         background: true,
-        name: 'slack_user_mapping_active_nuphos_unique',
+        name: 'slack_user_mapping_active_cerin_unique',
       },
     )
 
@@ -47,7 +47,7 @@ export async function setupSlackAgentIndexes(): Promise<void> {
             _id: {
               slackWorkspaceId: '$slackWorkspaceId',
               teamId: '$teamId',
-              nuphosUserId: '$nuphosUserId',
+              cerinUserId: '$cerinUserId',
             },
             ids: { $push: '$_id' },
             count: { $sum: 1 },
@@ -66,7 +66,7 @@ export async function setupSlackAgentIndexes(): Promise<void> {
     await createReverseMappingIndex()
   }
   await slackUserMappings().createIndex({ teamId: 1, updatedAt: -1 }, { background: true })
-  await slackUserMappings().createIndex({ nuphosUserId: 1, updatedAt: -1 }, { background: true })
+  await slackUserMappings().createIndex({ cerinUserId: 1, updatedAt: -1 }, { background: true })
   await slackAgentThreads().createIndex(
     { slackWorkspaceId: 1, slackChannelId: 1, slackThreadTs: 1 },
     { unique: true, background: true },

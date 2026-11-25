@@ -97,7 +97,7 @@ export function AwsWizardStepContent({
                 button={<span className="text-main">Add condition</span>}
                 field={<CopyableValue value="platform.cerin.ai:sub" />}
                 condition={<span className="text-main">StringEquals</span>}
-                value={<CopyableValue value={`nuphos:team:${teamId}`} />}
+                value={<CopyableValue value={`cerin:team:${teamId}`} />}
               />
             </li>
             <li>

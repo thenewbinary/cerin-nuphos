@@ -1,4 +1,4 @@
-name: nuphos-local
+name: cerin-local
 
 x-s3: &s3
   S3_ENDPOINT: http://rustfs:9000
@@ -42,7 +42,7 @@ services:
       RUSTFS_SECRET_KEY: ${S3_SECRET_KEY:?run ./init-env.sh first}
       RUSTFS_ADDRESS: 0.0.0.0:9000
       S3_ENDPOINT: http://127.0.0.1:9000
-      BUCKETS: nuphos-file-transfers nuphos-skills nuphos-journal
+      BUCKETS: cerin-file-transfers cerin-skills cerin-journal
     entrypoint: ['/bin/sh', '-ec']
     command:
       - |
@@ -95,7 +95,7 @@ services:
     build:
       context: ../..
       dockerfile: apps/backend/Dockerfile
-    image: nuphos-backend:local
+    image: cerin-backend:local
     networks: [data, default]
     depends_on:
       mongo:
@@ -117,17 +117,17 @@ services:
       NUPHOS_TELEMETRY_KEY: ${NUPHOS_TELEMETRY_KEY:-}
       ATLAS_REDIS_ENABLED: 'false'
       NUPHOS_BACKEND_URL: http://backend:3000
-      NUPHOS_FILE_TRANSFER_S3_BUCKET: nuphos-file-transfers
+      NUPHOS_FILE_TRANSFER_S3_BUCKET: cerin-file-transfers
       NUPHOS_FILE_TRANSFER_S3_ENDPOINT: http://rustfs:9000
       # Origin of presigned transfer URLs; unset means http://rustfs:9000 (see README).
       NUPHOS_FILE_TRANSFER_S3_PUBLIC_ENDPOINT: ${RUSTFS_PUBLIC_URL:-}
       NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
       NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
-      ATLAS_SKILLS_BUCKET: nuphos-skills
+      ATLAS_SKILLS_BUCKET: cerin-skills
       ATLAS_SKILLS_S3_ENDPOINT: http://rustfs:9000
       ATLAS_SKILLS_S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
       ATLAS_SKILLS_S3_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
-      JOURNAL_S3_BUCKET: nuphos-journal
+      JOURNAL_S3_BUCKET: cerin-journal
       JOURNAL_S3_ENDPOINT: http://rustfs:9000
       JOURNAL_AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
       JOURNAL_AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
@@ -151,7 +151,7 @@ services:
     ports:
       - 127.0.0.1:${RUNTIME_PORT:-18180}:8080
     # The runtime generates its password on first boot and keeps it in
-    # /home/node/.nuphos-runtime/auth-key, so this volume must persist.
+    # /home/node/.cerin-runtime/auth-key, so this volume must persist.
     volumes:
       - runtime-home:/home/node
       - runtime-workspace:/workspace

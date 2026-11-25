@@ -6,12 +6,12 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { createInterface } from 'node:readline'
 
-import { nuphosCodexSessionConfig } from '../image/codex-acp/session-config.mjs'
+import { cerinCodexSessionConfig } from '../image/codex-acp/session-config.mjs'
 
 const binary = process.argv[2]
 
 if (!binary) throw new Error('Usage: node test/codex-shell-env-smoke.mjs <codex binary>')
-const base = mkdtempSync(join(tmpdir(), 'nuphos-codex-shell-smoke-'))
+const base = mkdtempSync(join(tmpdir(), 'cerin-codex-shell-smoke-'))
 
 mkdirSync(join(base, '.codex'))
 const processEnv = {
@@ -25,7 +25,7 @@ const processEnv = {
   NODE_OPTIONS: '--max-old-space-size=6144',
   GOFLAGS: '-p=2',
   MAKEFLAGS: '-j2',
-  BASH_ENV: '/opt/nuphos-runtime/runtime-guard.sh',
+  BASH_ENV: '/opt/cerin-runtime/runtime-guard.sh',
   // What openab passes the adapter on Windows (#3496).
   ...Object.fromEntries(
     ['SystemRoot', 'SystemDrive', 'ComSpec', 'PATHEXT'].flatMap((key) =>
@@ -33,10 +33,10 @@ const processEnv = {
     ),
   ),
 }
-const { shell_environment_policy: policy } = nuphosCodexSessionConfig(
+const { shell_environment_policy: policy } = cerinCodexSessionConfig(
   {},
   {
-    'ai.nuphos/codex': { env: { NUPHOS_TOKEN: 'scoped-actor', NUPHOS_SESSION_ID: 'shell-smoke' } },
+    'ai.cerin/codex': { env: { NUPHOS_TOKEN: 'scoped-actor', NUPHOS_SESSION_ID: 'shell-smoke' } },
   },
   processEnv,
 )
@@ -91,7 +91,7 @@ const rpc = async (method, params) => {
 }
 
 try {
-  await rpc('initialize', { clientInfo: { name: 'nuphos-shell-smoke', version: '1' } })
+  await rpc('initialize', { clientInfo: { name: 'cerin-shell-smoke', version: '1' } })
   const command =
     process.platform === 'win32'
       ? [
@@ -103,7 +103,7 @@ try {
       : [
           '/bin/sh',
           '-c',
-          'test -z "${OPENAB_ACP_AUTH_KEY+x}" && test -z "${UNSCOPED_SESSION_MARKER+x}" && test "$NUPHOS_TOKEN" = scoped-actor && test "$GOMEMLIMIT" = 6GiB && test "$NODE_OPTIONS" = --max-old-space-size=6144 && test "$GOFLAGS" = -p=2 && test "$MAKEFLAGS" = -j2 && test "$BASH_ENV" = /opt/nuphos-runtime/runtime-guard.sh && test "$HOME" = "$NUPHOS_SESSION_HOME" && test "$GH_CONFIG_DIR" = "$HOME/.config/gh" && test "$CLOUDSDK_CONFIG" = "$HOME/.config/gcloud" && command -v sh >/dev/null',
+          'test -z "${OPENAB_ACP_AUTH_KEY+x}" && test -z "${UNSCOPED_SESSION_MARKER+x}" && test "$NUPHOS_TOKEN" = scoped-actor && test "$GOMEMLIMIT" = 6GiB && test "$NODE_OPTIONS" = --max-old-space-size=6144 && test "$GOFLAGS" = -p=2 && test "$MAKEFLAGS" = -j2 && test "$BASH_ENV" = /opt/cerin-runtime/runtime-guard.sh && test "$HOME" = "$NUPHOS_SESSION_HOME" && test "$GH_CONFIG_DIR" = "$HOME/.config/gh" && test "$CLOUDSDK_CONFIG" = "$HOME/.config/gcloud" && command -v sh >/dev/null',
         ]
   const started = Date.now()
   const result = await rpc('command/exec', {

@@ -40,7 +40,6 @@ enum SessionLinkTests {
             SessionLink.target(in: URL(string: link)!).map { "\($0.teamId)|\($0.sessionId)" }
         }
         precondition(target("https://platform.cerin.ai/teams/\(team)/agent/ses_abc") == "\(team)|ses_abc")
-        precondition(target("https://nuphos.ai/teams/\(team)/agent/ses_abc") == "\(team)|ses_abc")
         precondition(target("https://platform.cerin.ai/teams/\(team)/agent/ses_abc?x=1#y") == "\(team)|ses_abc")
         precondition(target("/teams/\(team)/agent/0f8e2c1a-9b7d-4e6f-a5c3-2d1b0e9f8a7c") == "\(team)|0f8e2c1a-9b7d-4e6f-a5c3-2d1b0e9f8a7c")
         precondition(target(SessionLink.url(teamId: team, sessionId: "ses_abc")!.absoluteString) == "\(team)|ses_abc")
@@ -56,15 +55,11 @@ enum SessionLinkTests {
         // subdomains still leave the app.
         for link in [
             "https://platform.cerin.ai.evil.com/teams/\(team)/agent/ses_abc",
-            "https://evilplatform.cerin.ai/teams/\(team)/agent/ses_abc",
+            "https://evilcerin.ai/teams/\(team)/agent/ses_abc",
             "https://platform.cerin.ai@evil.com/teams/\(team)/agent/ses_abc",
-            "https://dev.platform.cerin.ai/teams/\(team)/agent/ses_abc",
+            "https://dev.cerin.ai/teams/\(team)/agent/ses_abc",
             "http://platform.cerin.ai/teams/\(team)/agent/ses_abc",
             "https://platform.cerin.ai:8443/teams/\(team)/agent/ses_abc",
-            "https://nuphos.ai.evil.com/teams/\(team)/agent/ses_abc",
-            "https://www.nuphos.ai/teams/\(team)/agent/ses_abc",
-            "http://nuphos.ai/teams/\(team)/agent/ses_abc",
-            "https://nuphos.ai:8443/teams/\(team)/agent/ses_abc",
             "https://example.com/teams/\(team)/agent/ses_abc",
             "https://platform.cerin.ai/teams/\(team)/plans/7",
             "https://platform.cerin.ai/teams/\(team)/agent",
@@ -78,7 +73,7 @@ enum SessionLinkTests {
         struct List: Decodable { let resources: [SessionResource] }
         let json = #"""
         {"resources":[
-          {"id":"r1","provider":"github","title":"Fix the picker","url":"https://github.com/nuphos/nuphos/pull/165","state":"merged","repository":"nuphos/nuphos","number":165,"linkedAt":"2026-10-11T05:57:37.006Z"},
+          {"id":"r1","provider":"github","title":"Fix the picker","url":"https://github.com/thenewbinary/cerin-platform/pull/165","state":"merged","repository":"thenewbinary/cerin-platform","number":165,"linkedAt":"2026-10-11T05:57:37.006Z"},
           {"id":"r2","provider":"linear","title":"NUPS-1022 Switch agents on iOS","url":"https://linear.app/zeabur/issue/NUPS-1022","state":"In Progress","linkedAt":"2026-10-11T05:57:37.006Z"}
         ],"canManage":true}
         """#

@@ -15,7 +15,7 @@ const now = '2026-11-13T00:00:00.000Z'
 
 async function fixture() {
   const archive = createMigrationArchive({
-    format: 'nuphos-team',
+    format: 'cerin-team',
     formatVersion: 1,
     backendVersion: 'test',
     sourceTeamId: source,

@@ -16,7 +16,7 @@ const from = (type: 'user' | 'agent', id: string, displayName: string) => ({
   metadata: {
     version: 1,
     sender: { type, id, displayName },
-    source: type === 'user' ? 'nuphos' : 'agent.thread',
+    source: type === 'user' ? 'cerin' : 'agent.thread',
     sentAt: '2026-11-15T00:00:00Z',
   } as MessageMetadata,
 })

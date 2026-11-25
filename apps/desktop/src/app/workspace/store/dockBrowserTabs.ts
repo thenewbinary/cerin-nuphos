@@ -52,20 +52,20 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- merges into Window
   interface Window {
     /** Read by the main process (`dock-mirror.ts`) when the iPhone asks for a dock. */
-    nuphosDockMirror?: (sessionId: string, teamId: string) => DockMirror | null
-    nuphosCloseDockTab?: (sessionId: string, tabId: string) => boolean
-    nuphosOpenDockTab?: (sessionId: string, teamId: string, target: OpenTarget) => string | null
+    cerinDockMirror?: (sessionId: string, teamId: string) => DockMirror | null
+    cerinCloseDockTab?: (sessionId: string, tabId: string) => boolean
+    cerinOpenDockTab?: (sessionId: string, teamId: string, target: OpenTarget) => string | null
     /**
      * A phone starts watching a dock tab (`browser-view.ts`): its page is mounted and kept
      * painting at `width`x`height`. Resolves the page's webContents id, or null.
      */
-    nuphosWatchDockTab?: (
+    cerinWatchDockTab?: (
       sessionId: string,
       tabId: string,
       width: number,
       height: number,
     ) => Promise<number | null>
-    nuphosUnwatchDockTab?: (tabId: string) => void
+    cerinUnwatchDockTab?: (tabId: string) => void
   }
 }
 
@@ -131,11 +131,11 @@ async function watchDockTab(sessionId: string, tabId: string, width: number, hei
 /** Mirrors a pane's docks to the main process, and lets the phone change and watch them, while it is mounted. */
 export function exposeDockBrowserTabs(store: PaneStore): () => void {
   stores.add(store)
-  window.nuphosDockMirror = mirrorDock
-  window.nuphosCloseDockTab = closeDockTab
-  window.nuphosOpenDockTab = openDockTab
-  window.nuphosWatchDockTab = watchDockTab
-  window.nuphosUnwatchDockTab = (tabId) => setWatchedDockTab(tabId, null)
+  window.cerinDockMirror = mirrorDock
+  window.cerinCloseDockTab = closeDockTab
+  window.cerinOpenDockTab = openDockTab
+  window.cerinWatchDockTab = watchDockTab
+  window.cerinUnwatchDockTab = (tabId) => setWatchedDockTab(tabId, null)
 
   return () => {
     stores.delete(store)

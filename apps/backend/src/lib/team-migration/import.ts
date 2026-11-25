@@ -17,7 +17,7 @@ import {
   architectureDiagrams,
   dashboardPanels,
   designs,
-  nuphosDashboards,
+  cerinDashboards,
   teamHomeLayouts,
 } from '@/models'
 
@@ -179,7 +179,7 @@ async function insertContents(
     'conversations/sessions.ndjson': db().collection(agentConversations().collectionName),
     'conversations/messages.ndjson': db().collection(agentMessages().collectionName),
     'work/plans.ndjson': db().collection(plans().collectionName),
-    'work/dashboards.ndjson': db().collection(nuphosDashboards().collectionName),
+    'work/dashboards.ndjson': db().collection(cerinDashboards().collectionName),
     'work/panels.ndjson': db().collection(dashboardPanels().collectionName),
     'work/diagrams.ndjson': db().collection(architectureDiagrams().collectionName),
     'work/designs.ndjson': db().collection(designs().collectionName),

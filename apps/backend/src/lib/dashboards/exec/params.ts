@@ -3,10 +3,10 @@ import { createHash } from 'node:crypto'
 import { ObjectId } from 'mongodb'
 
 import { byCodeUnit } from '@/lib/agent/sort-order'
-import { nuphosDashboards, dashboardPanelSnapshots } from '@/models'
+import { cerinDashboards, dashboardPanelSnapshots } from '@/models'
 
 import type {
-  NuphosDashboard,
+  CerinDashboard,
   DashboardPanel,
   DashboardPanelSnapshot,
   DashboardRangePreset,
@@ -53,7 +53,7 @@ export function presetWindow(
 /** Advance a saved rolling default before refresh. Compare-and-set prevents
  * concurrent preset, custom-range or granularity edits from being overwritten;
  * reload and retry when another writer wins. */
-export async function advanceRelativeWindow(dashboard: NuphosDashboard): Promise<NuphosDashboard> {
+export async function advanceRelativeWindow(dashboard: CerinDashboard): Promise<CerinDashboard> {
   let current = dashboard
 
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -72,7 +72,7 @@ export async function advanceRelativeWindow(dashboard: NuphosDashboard): Promise
       periodEnd,
       ...(cur.granularity ? { granularity: cur.granularity } : {}),
     }
-    const updated = await nuphosDashboards().findOneAndUpdate(
+    const updated = await cerinDashboards().findOneAndUpdate(
       {
         _id: current._id,
         teamId: current.teamId,
@@ -90,13 +90,13 @@ export async function advanceRelativeWindow(dashboard: NuphosDashboard): Promise
     if (updated) return updated
     // Lost the race to a concurrent edit — reload the authoritative doc and retry
     // against it rather than executing panels with stale parameters.
-    const latest = await nuphosDashboards().findOne({ _id: current._id, teamId: current.teamId })
+    const latest = await cerinDashboards().findOne({ _id: current._id, teamId: current.teamId })
 
     if (!latest) return current
     current = latest
   }
 
-  return (await nuphosDashboards().findOne({ _id: current._id, teamId: current.teamId })) ?? current
+  return (await cerinDashboards().findOne({ _id: current._id, teamId: current.teamId })) ?? current
 }
 
 /** Merge the dashboard's authoritative timeRange with the panel's staticParams
@@ -104,7 +104,7 @@ export async function advanceRelativeWindow(dashboard: NuphosDashboard): Promise
  *  comes from the dashboard — panels never carry their own. Same script + same
  *  resolved params ⇒ same paramsHash ⇒ dedupable. */
 export function resolveParams(
-  dashboard: NuphosDashboard,
+  dashboard: CerinDashboard,
   panel: DashboardPanel,
 ): { params: Record<string, unknown>; paramsHash: string } {
   const merged: Record<string, unknown> = {
@@ -171,7 +171,7 @@ export function panelExecutionPrincipal(panel: DashboardPanel, authoredBy: strin
  *  plus resolved params. Used to resolve which stored snapshot is "current" so
  *  switching to an already-computed range shows that range's snapshot. */
 export function panelSnapshotKey(
-  dashboard: NuphosDashboard,
+  dashboard: CerinDashboard,
   panel: DashboardPanel,
 ): { codeHash: string; paramsHash: string } {
   const { codeHash } = headCode(panel)
@@ -187,7 +187,7 @@ export function panelSnapshotKey(
  *  already-computed range shows that range's immutable snapshot. Batch-loaded to avoid N+1 reads. */
 export async function resolvePanelSnapshots(
   teamId: ObjectId,
-  dashboard: NuphosDashboard,
+  dashboard: CerinDashboard,
   panels: DashboardPanel[],
 ): Promise<Map<string, DashboardPanelSnapshot>> {
   const out = new Map<string, DashboardPanelSnapshot>()
@@ -221,7 +221,7 @@ export async function resolvePanelSnapshots(
  * inherit unrelated output. Month views never fall back across a month boundary.
  * At most 30 hashes, all served by the existing panel/script/params index. */
 export function rollingSnapshotHashes(
-  dashboard: NuphosDashboard,
+  dashboard: CerinDashboard,
   panel: DashboardPanel,
   preset?: DashboardRangePreset,
 ): string[] {
@@ -244,7 +244,7 @@ export function rollingSnapshotHashes(
 export async function resolveLastSuccessfulPanelSnapshots(
   teamId: ObjectId,
   panels: DashboardPanel[],
-  dashboard?: NuphosDashboard,
+  dashboard?: CerinDashboard,
   preset?: DashboardRangePreset,
 ): Promise<Map<string, DashboardPanelSnapshot>> {
   const out = new Map<string, DashboardPanelSnapshot>()

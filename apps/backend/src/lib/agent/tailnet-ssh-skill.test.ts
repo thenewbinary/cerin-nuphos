@@ -57,7 +57,7 @@ describe('tailnet-ssh connect.sh', () => {
 
     expect(connect).toContain('SSH_CONFIG_MARKER=')
     expect(connect).toContain('SSH_CONFIG_END=')
-    expect(disconnect).toContain('>>> nuphos-tailnet-ssh >>>')
-    expect(disconnect).toContain('<<< nuphos-tailnet-ssh <<<')
+    expect(disconnect).toContain('>>> cerin-tailnet-ssh >>>')
+    expect(disconnect).toContain('<<< cerin-tailnet-ssh <<<')
   })
 })

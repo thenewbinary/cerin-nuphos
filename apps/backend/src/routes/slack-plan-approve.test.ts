@@ -14,13 +14,13 @@ import { useSlackAgentBot } from '@/lib/test/doubles/slack-agent-bot'
 import { useSlackApi } from '@/lib/test/doubles/slack-api'
 import { useSlackInstallations } from '@/lib/test/doubles/slack-installations'
 
-import type { NuphosUser } from '@/lib/identity/types'
+import type { CerinUser } from '@/lib/identity/types'
 import type { SlackAgentThread, SlackUserMapping } from '@/lib/slack/agent-bot'
 
 const WORKSPACE = 'T1'
 const CHANNEL = 'C1'
 const SLACK_USER = 'USLACK'
-const NUPHOS_USER = '62e6289482f5f9d9408f1a79'
+const CERIN_USER = '62e6289482f5f9d9408f1a79'
 // The workspace's OAuth binding points at one team; the thread (channel
 // mapping) belongs to another. The plan lives in the thread's team.
 const WORKSPACE_TEAM = '64b5f1c2e4b0a1d2c3e4f5a6'
@@ -65,7 +65,7 @@ function makeThread(overrides?: Partial<SlackAgentThread>): SlackAgentThread {
     slackChannelId: CHANNEL,
     slackThreadTs: '100.1',
     teamId: THREAD_TEAM,
-    agentUserId: NUPHOS_USER,
+    agentUserId: CERIN_USER,
     sessionId: SESSION_ID,
     createdBySlackUserId: SLACK_USER,
     origin: 'slack',
@@ -80,7 +80,7 @@ function makeUserMapping(): SlackUserMapping {
     slackWorkspaceId: WORKSPACE,
     slackUserId: SLACK_USER,
     teamId: THREAD_TEAM,
-    nuphosUserId: NUPHOS_USER,
+    cerinUserId: CERIN_USER,
     enabled: true,
     createdBy: 'auto:slack-email',
     createdAt: new Date(),
@@ -92,7 +92,7 @@ const approvablePlan = {
   id: PLAN_ID,
   number: 88,
   teamId: THREAD_TEAM,
-  createdBy: NUPHOS_USER,
+  createdBy: CERIN_USER,
   sourceConversationId: SESSION_ID,
   title: 'Daily RustFS backup',
   steps: [{ title: 'Create backup job', jobs: [{ title: 'kubectl apply', commands: [] }] }],
@@ -110,7 +110,7 @@ useSlackInstallations({
     botUserId: 'UBOT',
     // Deliberately NOT the thread's team — scoping anything to this value is
     // the regression this suite guards against.
-    nuphosTeamId: WORKSPACE_TEAM,
+    cerinTeamId: WORKSPACE_TEAM,
     binding: null,
   }),
 })
@@ -123,7 +123,7 @@ useSlackAgentBot({
 
     return teamId === THREAD_TEAM ? makeUserMapping() : null
   },
-  getSlackUserMappingForNuphosUser: async () =>
+  getSlackUserMappingForCerinUser: async () =>
     state.approverHasSlackMapping ? makeUserMapping() : null,
 })
 
@@ -150,8 +150,8 @@ useSlackApi({
 useIdentity({
   getTeamMembership: async (_userId: string, teamId: string) =>
     teamId === THREAD_TEAM ? { role: 'MEMBER' } : null,
-  signNuphosToken: () => 'test-token',
-  getNuphosUserById: async () => ({ name: 'Ada Approver' }) as NuphosUser,
+  signCerinToken: () => 'test-token',
+  getCerinUserById: async () => ({ name: 'Ada Approver' }) as CerinUser,
 })
 
 useAgentPlans({
@@ -266,8 +266,8 @@ describe('handlePlanApproveInteraction', () => {
     expect(recordPlanApprovalCalls).toEqual([
       {
         id: PLAN_ID,
-        scope: { teamId: THREAD_TEAM, userId: NUPHOS_USER },
-        userId: NUPHOS_USER,
+        scope: { teamId: THREAD_TEAM, userId: CERIN_USER },
+        userId: CERIN_USER,
       },
     ])
     expect(journaled).toEqual([{ planId: PLAN_ID, decision: 'approved' }])

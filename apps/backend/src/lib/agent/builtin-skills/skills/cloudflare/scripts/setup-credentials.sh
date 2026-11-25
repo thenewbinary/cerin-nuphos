@@ -11,7 +11,7 @@ Usage: setup-credentials.sh <teamId> <accountId>
 
 Fetches Cloudflare API credentials from Cerin backend (using the user's
 NUPHOS_TOKEN) for an Cerin-bound account, then writes a private env file at
-~/.cloudflare/nuphos.env for later curl/API calls.
+~/.cloudflare/cerin.env for later curl/API calls.
 
 Arguments:
   teamId     Cerin team id (24-char hex)
@@ -58,7 +58,7 @@ fi
 mkdir -p "$HOME/.cloudflare"
 chmod 700 "$HOME/.cloudflare"
 
-python3 - "$tmp" "$HOME/.cloudflare/nuphos.env" <<'PY'
+python3 - "$tmp" "$HOME/.cloudflare/cerin.env" <<'PY'
 import json, shlex, sys
 
 src, dest = sys.argv[1], sys.argv[2]
@@ -72,8 +72,8 @@ with open(dest, "w") as f:
         f.write(f"export CLOUDFLARE_ACCOUNT_NAME={shlex.quote(d['accountName'])}\n")
 PY
 
-chmod 600 "$HOME/.cloudflare/nuphos.env"
+chmod 600 "$HOME/.cloudflare/cerin.env"
 
-echo "Wrote Cloudflare credentials to ~/.cloudflare/nuphos.env"
+echo "Wrote Cloudflare credentials to ~/.cloudflare/cerin.env"
 echo "  account:   ${account_id}"
 echo "  auth type: api_token"

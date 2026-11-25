@@ -4,7 +4,7 @@ import { mock, test } from 'bun:test'
 import { Window } from 'happy-dom'
 import { act, createElement } from 'react'
 
-import type { NuphosDashboardDetail } from '../schema'
+import type { CerinDashboardDetail } from '../schema'
 
 const dom = new Window()
 const browser: Record<string, unknown> = {
@@ -24,7 +24,7 @@ mock.module('./VisibilityMenu', () => ({ VisibilityMenu: () => null }))
 const { DashboardToolbar } = await import('./DashboardToolbar')
 const { createRoot } = await import('react-dom/client')
 
-const detail: NuphosDashboardDetail = {
+const detail: CerinDashboardDetail = {
   canEdit: true,
   dashboard: {
     id: 'd1',

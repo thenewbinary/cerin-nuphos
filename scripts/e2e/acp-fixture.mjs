@@ -5,7 +5,7 @@ import { appendFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { createInterface } from 'node:readline'
 
-import { nuphosApplyRuntimeDefaults } from '../../apps/runtime/image/runtime-defaults.mjs'
+import { cerinApplyRuntimeDefaults } from '../../apps/runtime/image/runtime-defaults.mjs'
 
 import { formSteps } from './acp-fixture-form.mjs'
 import { askSteps } from './fixture-ask.mjs'
@@ -234,12 +234,12 @@ async function answer(request) {
 
       setToolsServer(
         sessionId,
-        request.params.mcpServers?.find(({ name }) => name === 'nuphos-tools'),
+        request.params.mcpServers?.find(({ name }) => name === 'cerin-tools'),
       )
 
       // The settings the conversation was created with, applied by the runtime's own code,
       // which refuses to open a session on a value this agent does not offer.
-      const defaults = request.params._meta?.['ai.nuphos/runtimeDefaults'] ?? {}
+      const defaults = request.params._meta?.['ai.cerin/runtimeDefaults'] ?? {}
       const agent = {
         setSessionConfigOption: async ({ configId, value }) => ({
           configOptions: applySetting(sessionId, configId, value),
@@ -248,7 +248,7 @@ async function answer(request) {
 
       log({ sessionId, event: 'session', defaults })
 
-      return nuphosApplyRuntimeDefaults(agent, heldDefaults(sessionId, request.params), {
+      return cerinApplyRuntimeDefaults(agent, heldDefaults(sessionId, request.params), {
         sessionId,
         configOptions: applySetting(sessionId),
       })
@@ -259,7 +259,7 @@ async function answer(request) {
       // A restarted host loads the session with its tools again, as it opened it.
       setToolsServer(
         request.params.sessionId,
-        request.params.mcpServers?.find(({ name }) => name === 'nuphos-tools'),
+        request.params.mcpServers?.find(({ name }) => name === 'cerin-tools'),
       )
       log({ sessionId: request.params.sessionId, event: 'loaded' })
 

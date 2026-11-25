@@ -3,12 +3,12 @@ import { ObjectId as MongoObjectId } from 'mongodb'
 import { upsertCachedTeam } from '@/lib/agent/directory'
 import { mapTeam, teams } from '@/lib/identity/shared'
 
-import type { BindingShareDefault, NuphosTeam } from '@/lib/identity/types'
+import type { BindingShareDefault, CerinTeam } from '@/lib/identity/types'
 
 export async function setTeamBindingShareDefault(
   teamId: string,
   share: BindingShareDefault,
-): Promise<NuphosTeam | null> {
+): Promise<CerinTeam | null> {
   if (!MongoObjectId.isValid(teamId)) return null
   const result = await teams().findOneAndUpdate(
     { _id: new MongoObjectId(teamId), deletedAt: { $exists: false } },

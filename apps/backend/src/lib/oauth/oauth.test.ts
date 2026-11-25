@@ -6,14 +6,14 @@ import { describe, expect, test, beforeAll } from 'bun:test'
 // helpers (which read config.auth.jwtSecret) can be exercised in isolation.
 beforeAll(() => {
   process.env.NUPHOS_JWT_SECRET ??= 'test-secret-for-oauth-unit-tests'
-  process.env.NUPHOS_PUBLIC_URL ??= 'https://api.nuphos.test'
+  process.env.NUPHOS_PUBLIC_URL ??= 'https://api.cerin.test'
 })
 
 describe('metadata', () => {
   test('protected-resource + AS metadata are consistent and PKCE-required', async () => {
     const { buildProtectedResourceMetadata, buildAuthorizationServerMetadata, mcpResourceUrl } =
       await import('./metadata')
-    const base = 'https://api.nuphos.test'
+    const base = 'https://api.cerin.test'
 
     const prm = buildProtectedResourceMetadata(base) as any
 
@@ -36,14 +36,14 @@ describe('metadata', () => {
   test('authorize endpoint can live on a separate browser-facing base', async () => {
     const { buildAuthorizationServerMetadata } = await import('./metadata')
     const as = buildAuthorizationServerMetadata(
-      'https://api.nuphos.test',
-      'https://nuphos.test',
+      'https://api.cerin.test',
+      'https://cerin.test',
     ) as any
 
-    expect(as.issuer).toBe('https://api.nuphos.test')
-    expect(as.authorization_endpoint).toBe('https://nuphos.test/oauth/authorize')
-    expect(as.token_endpoint).toBe('https://api.nuphos.test/oauth/token')
-    expect(as.registration_endpoint).toBe('https://api.nuphos.test/oauth/register')
+    expect(as.issuer).toBe('https://api.cerin.test')
+    expect(as.authorization_endpoint).toBe('https://cerin.test/oauth/authorize')
+    expect(as.token_endpoint).toBe('https://api.cerin.test/oauth/token')
+    expect(as.registration_endpoint).toBe('https://api.cerin.test/oauth/register')
   })
 })
 
@@ -94,7 +94,7 @@ describe('consent token (cookie one-click authorize CSRF guard)', () => {
 })
 
 describe('access token', () => {
-  const base = 'https://api.nuphos.test'
+  const base = 'https://api.cerin.test'
   const resource = `${base}/mcp`
 
   test('round-trips and binds to subject + audience', async () => {

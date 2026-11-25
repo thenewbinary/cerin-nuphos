@@ -90,7 +90,7 @@ export function showsListControls(
     | 'architectureDetail'
     | 'designDetail'
     | 'connectorDetail'
-    | 'nuphosDashboard'
+    | 'cerinDashboard'
     | 'githubNav'
     | 'linearNav'
   >,
@@ -120,7 +120,7 @@ export function showsListControls(
     // The connector drill-down swaps the table out for a provider info page.
     !page.connectorDetail &&
     // The dashboard list page is a filterable list; an open dashboard is not.
-    !page.nuphosDashboard &&
+    !page.cerinDashboard &&
     !isUnfilterablePage
   )
 }
@@ -176,7 +176,7 @@ export function useWorkspaceToolbar(a: Args) {
     target,
     architectureDetail,
     designDetail,
-    nuphosDashboard,
+    cerinDashboard,
     connectorDetail,
     awsDetail,
     sshTerminal,
@@ -220,7 +220,7 @@ export function useWorkspaceToolbar(a: Args) {
     architectureDetail,
     designDetail,
     connectorDetail,
-    nuphosDashboard,
+    cerinDashboard,
     githubNav,
     linearNav,
   })

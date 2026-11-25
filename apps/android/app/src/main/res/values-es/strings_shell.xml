@@ -27,7 +27,7 @@
     <string name="shell_server_custom_settings">%1$s · Configuración del servidor</string>
     <string name="shell_server_body">Usa Cerin Cloud o introduce la dirección HTTPS de tu backend autoalojado.</string>
     <string name="shell_server_address">Dirección del servidor</string>
-    <string name="shell_use_nuphos_cloud">Usar Cerin Cloud</string>
+    <string name="shell_use_cerin_cloud">Usar Cerin Cloud</string>
     <string name="shell_server_save_failed">No se pudo guardar el servidor. Inténtalo de nuevo.</string>
     <string name="shell_cancel_adding_account">Cancelar la adición de la cuenta</string>
     <string name="shell_retry_sign_in_options">Reintentar opciones de inicio de sesión</string>

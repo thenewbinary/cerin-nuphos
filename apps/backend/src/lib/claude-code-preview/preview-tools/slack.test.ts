@@ -12,7 +12,7 @@ useSlackInstallations({
   resolveInstalledWorkspaceBot: (slackTeamId: string) =>
     Promise.resolve(
       slackTeamId === 'T-installed'
-        ? { botToken: 'xoxb-test', workspaceName: 'Acme', nuphosTeamId: 'team-1' }
+        ? { botToken: 'xoxb-test', workspaceName: 'Acme', cerinTeamId: 'team-1' }
         : null,
     ),
 })

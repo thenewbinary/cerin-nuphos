@@ -15,7 +15,7 @@ import { resolveMentionLabel } from './atlas-link-mention/resolveLabel.ts'
 import { trustedAvatarURL } from './avatarUrl'
 import { botAvatarUrl } from './botAvatars'
 import { isKubernetesClusterProvider } from './kubernetesClusterRoutes'
-import { ATLAS_WEB_BASE_URL, LEGACY_WEB_BASE_URL, isAppWebUrl } from './webBaseUrl'
+import { ATLAS_WEB_BASE_URL } from './webBaseUrl'
 
 import type { MentionTarget } from './atlas-link-mention/types.ts'
 
@@ -28,10 +28,8 @@ export type { MentionTarget }
 
 export function isAtlasUrl(s: string): boolean {
   const trimmed = s.trim()
-  const canonical = trimmed === ATLAS_WEB_BASE_URL || trimmed.startsWith(`${ATLAS_WEB_BASE_URL}/`)
-  const legacy = trimmed === LEGACY_WEB_BASE_URL || trimmed.startsWith(`${LEGACY_WEB_BASE_URL}/`)
 
-  return (canonical || legacy) && isAppWebUrl(trimmed) !== null
+  return trimmed.startsWith(`${ATLAS_WEB_BASE_URL}/`) || trimmed === ATLAS_WEB_BASE_URL
 }
 
 export function parseAtlasLink(rawUrl: string): MentionTarget | null {

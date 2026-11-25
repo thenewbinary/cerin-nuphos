@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-const OPEN_IN_APP = 'nuphos:open-in-app'
+const OPEN_IN_APP = 'cerin:open-in-app'
 
 type Opener = (href: string) => unknown
 

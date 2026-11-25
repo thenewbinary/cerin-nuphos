@@ -9,7 +9,7 @@ export type LineActor =
   | { type: 'person'; id: string; name: string; avatarURL: string }
   | { type: 'task'; sessionId: string; title: string; provider?: OpenAbProvider }
   | { type: 'runtime'; label: string; provider?: OpenAbProvider }
-  | { type: 'nuphos' }
+  | { type: 'cerin' }
 /** A value as the runtime names it. */
 export type Choice = { value: string; name?: string }
 /** A setting's change; an absent value is the agent's default. */

@@ -71,7 +71,7 @@ test('a page gets a viewport only when it brought none, and defaults it can over
 
 test('only messages on the frame’s own channel are read', () => {
   assert.deepEqual(
-    readArtifactFrameMessage({ nuphosArtifact: 'c', type: 'error', message: 'boom' }, 'c'),
+    readArtifactFrameMessage({ cerinArtifact: 'c', type: 'error', message: 'boom' }, 'c'),
     {
       channel: 'c',
       type: 'error',
@@ -79,7 +79,7 @@ test('only messages on the frame’s own channel are read', () => {
     },
   )
   assert.equal(
-    readArtifactFrameMessage({ nuphosArtifact: 'other', type: 'error', message: 'x' }, 'c'),
+    readArtifactFrameMessage({ cerinArtifact: 'other', type: 'error', message: 'x' }, 'c'),
     null,
   )
   assert.equal(readArtifactFrameMessage('boom', 'c'), null)
@@ -90,7 +90,7 @@ test('a click report is read, and a malformed one is dropped', () => {
 
   assert.equal(
     readArtifactFrameMessage(
-      { nuphosArtifact: 'c', type: 'click', message: JSON.stringify(report) },
+      { cerinArtifact: 'c', type: 'click', message: JSON.stringify(report) },
       'c',
     )?.type,
     'click',
@@ -109,7 +109,7 @@ test('an arrow key the page left alone is reported, outside fields only', () => 
   const doc = artifactSrcDoc('<p>hi</p>', 'c')
 
   assert.equal(
-    readArtifactFrameMessage({ nuphosArtifact: 'c', type: 'arrow', message: 'left' }, 'c')?.type,
+    readArtifactFrameMessage({ cerinArtifact: 'c', type: 'arrow', message: 'left' }, 'c')?.type,
     'arrow',
   )
   assert.ok(doc.includes("type:'arrow'"))

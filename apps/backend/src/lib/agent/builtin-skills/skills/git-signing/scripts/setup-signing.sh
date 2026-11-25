@@ -3,7 +3,7 @@
 #
 #   setup-signing.sh <sender-id> --name "<name>" --email "<email>"
 #
-# The key and git config live under ~/.config/nuphos-git-identities/<sender-id>/
+# The key and git config live under ~/.config/cerin-git-identities/<sender-id>/
 # and are used only through git-as. The session-global git config gets no author
 # or signing settings, so other participants cannot commit under this identity
 # by accident. Prints the public key to register as a Signing Key.
@@ -30,15 +30,15 @@ done
 # Sender ids become directory names; refuse anything that could escape them.
 [[ "$id" =~ ^[A-Za-z0-9_-]+$ ]] || { echo "setup-signing: invalid sender id" >&2; exit 2; }
 
-dir="$HOME/.config/nuphos-git-identities/$id"
+dir="$HOME/.config/cerin-git-identities/$id"
 key="$dir/signing_ed25519"
-mkdir -p "$HOME/.config/nuphos-git-identities"
+mkdir -p "$HOME/.config/cerin-git-identities"
 mkdir -p -m 700 "$dir"
 
 if [[ ! -f "$key" ]]; then
   # No passphrase: the agent signs non-interactively. The key signs only and is
   # revoked by deleting it from the forge.
-  ssh-keygen -q -t ed25519 -N '' -C "nuphos-signing $id $(date -u +%F)" -f "$key"
+  ssh-keygen -q -t ed25519 -N '' -C "cerin-signing $id $(date -u +%F)" -f "$key"
 fi
 chmod 600 "$key"
 printf '%s %s\n' "$email" "$(cut -d' ' -f1,2 "$key.pub")" > "$dir/allowed_signers"

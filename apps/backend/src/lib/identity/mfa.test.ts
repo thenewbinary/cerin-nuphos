@@ -41,12 +41,12 @@ const SESSION_ID = '64b7f0c2a1b2c3d4e5f60718'
 useIdentity({
   authenticateToken: (async (token: string) =>
     token === 'session-token'
-      ? { user: USER, cacheHit: false, provider: 'nuphos' as const, sessionId: SESSION_ID }
+      ? { user: USER, cacheHit: false, provider: 'cerin' as const, sessionId: SESSION_ID }
       : token === 'run-token'
-        ? { user: USER, cacheHit: false, provider: 'nuphos' as const, agentRun: true }
+        ? { user: USER, cacheHit: false, provider: 'cerin' as const, agentRun: true }
         : null) as unknown as typeof identityActual.authenticateToken,
-  getNuphosUserById: async (id: string) => (id === USER_ID ? USER : null),
-  getNuphosUserForCredential: async (id: string) => (id === USER_ID ? USER : null),
+  getCerinUserById: async (id: string) => (id === USER_ID ? USER : null),
+  getCerinUserForCredential: async (id: string) => (id === USER_ID ? USER : null),
   signInWithGoogleCode: (async () => USER) as unknown as typeof identityActual.signInWithGoogleCode,
 })
 const revoked: string[] = []

@@ -5,11 +5,8 @@ import Foundation
 /// path, `ATLAS_WEB_BASE_URL` the origin).
 enum SessionLink {
     static let webBase = "https://platform.cerin.ai"
-    static let legacyWebBase = "https://nuphos.ai"
-    private static let webHosts = Set(["platform.cerin.ai", "nuphos.ai"])
     /// Where the Live Activity sends a tap outside its rows: the conversation list.
     static let conversations = URL(string: "\(webBase)/agent")!
-    static let legacyConversations = URL(string: "\(legacyWebBase)/agent")!
 
     /// `https://platform.cerin.ai/teams/<teamId>/agent/<sessionId>`, with both
     /// segments percent-encoded the way `encodeURIComponent` encodes them.
@@ -33,7 +30,7 @@ enum SessionLink {
     /// `webBase`, as desktop's `isAppWebUrl` compares it — or of a bare path.
     static func appPath(of url: URL) -> [String]? {
         if url.scheme != nil || url.host() != nil {
-            guard url.scheme == "https", let host = url.host()?.lowercased(), webHosts.contains(host), url.port == nil else { return nil }
+            guard url.scheme == "https", url.host()?.lowercased() == "platform.cerin.ai", url.port == nil else { return nil }
         }
         return url.path().split(separator: "/").map(String.init)
     }

@@ -1,6 +1,6 @@
 # Helm chart
 
-[`nuphos/`](nuphos) deploys Cerin onto any Kubernetes cluster: authenticated single-node MongoDB, RustFS, the
+[`cerin/`](cerin) deploys Cerin onto any Kubernetes cluster: authenticated single-node MongoDB, RustFS, the
 released backend, and an optional Claude Code runtime. There is no Redis, so
 the backend runs as one replica in in-memory mode.
 
@@ -37,7 +37,7 @@ ingress:
         - storage.cerin.example.com
         - runtime.cerin.example.com
 EOF
-helm install cerin deploy/helm/nuphos -n cerin --create-namespace -f values.local.yaml
+helm install cerin deploy/helm/cerin -n cerin --create-namespace -f values.local.yaml
 ```
 
 The install notes print the next steps: sign in from Desktop with
@@ -50,7 +50,7 @@ your team and sign in to Claude from the console.
 `cerin-admin` in the backend image creates them, with no email involved:
 
 ```sh
-kubectl -n cerin exec deploy/cerin-nuphos-backend -- \
+kubectl -n cerin exec deploy/cerin-backend -- \
   cerin-admin bootstrap --email you@example.com --team Ops
 ```
 
@@ -153,8 +153,8 @@ credentials.
 ## Validation
 
 ```sh
-helm lint deploy/helm/nuphos -f deploy/helm/ci-values.yaml --strict
-helm template cerin deploy/helm/nuphos -f deploy/helm/ci-values.yaml | kubeconform -strict -summary
+helm lint deploy/helm/cerin -f deploy/helm/ci-values.yaml --strict
+helm template cerin deploy/helm/cerin -f deploy/helm/ci-values.yaml | kubeconform -strict -summary
 ```
 
 CI runs both. It does not install the chart on a cluster.

@@ -5,13 +5,13 @@
 
 import { authenticateToken } from '@/lib/identity'
 
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 
 const MAX_TOKEN_ATTEMPTS = 8
 
 const DEFAULT_COOKIE_NAMES = [
-  'nuphos_token',
-  'nuphosToken',
+  'cerin_token',
+  'cerinToken',
   'access_token',
   'accessToken',
   'auth_token',
@@ -63,7 +63,7 @@ export function collectCookieTokenCandidates(
 export async function authenticateUserFromCookies(
   cookieHeader: string | undefined,
   extraNames: string[] = [],
-): Promise<NuphosUser | null> {
+): Promise<CerinUser | null> {
   for (const token of collectCookieTokenCandidates(cookieHeader, extraNames)) {
     const result = await authenticateToken(token)
 

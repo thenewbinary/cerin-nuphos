@@ -3,14 +3,14 @@ import { ObjectId } from 'mongodb'
 
 import { useDb } from '@/lib/test/doubles/db'
 
-import type { NuphosTeamDoc } from './shared'
+import type { CerinTeamDoc } from './shared'
 import type { Filter } from 'mongodb'
 
 const TEAM_ID = new ObjectId()
 const OWNER_ID = new ObjectId()
 const ADMIN_ID = new ObjectId()
 const MEMBER_ID = new ObjectId()
-let filters: Filter<NuphosTeamDoc>[] = []
+let filters: Filter<CerinTeamDoc>[] = []
 
 // The read sees OWNER_ID as owner; every write then misses, as if a transfer
 // to the target committed in between.
@@ -27,7 +27,7 @@ useDb({
             { userId: MEMBER_ID, role: 'ADMINISTRATOR' },
           ],
         }),
-      updateOne: (filter: Filter<NuphosTeamDoc>) => {
+      updateOne: (filter: Filter<CerinTeamDoc>) => {
         filters.push(filter)
 
         return Promise.resolve({ modifiedCount: 0 })

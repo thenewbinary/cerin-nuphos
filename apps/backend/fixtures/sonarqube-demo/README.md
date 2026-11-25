@@ -14,7 +14,7 @@ bun run sonarqube:fixture
 
 The helper mounts only this directory into the scanner container. It neither
 clones a repository nor mounts the rest of the Cerin workspace. The resulting
-project key is `nuphos-sonarqube-isolated-fixture`; after analysis completes,
+project key is `cerin-sonarqube-isolated-fixture`; after analysis completes,
 ask Cerin to inspect that project through the SonarQube connector.
 
 The token remains in the local environment for this development drill. Do not

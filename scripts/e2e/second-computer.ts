@@ -32,11 +32,11 @@ export async function startSecondComputer(
 ) {
   const deviceId = randomUUID()
   const home = join(artifacts, `computer-${deviceId.slice(0, 8)}`)
-  const agentHome = join(home, '.nuphos-agent')
+  const agentHome = join(home, '.cerin-agent')
   // Beside the app's node_modules, which the host resolves its keyring module from.
   const host = join(DESKTOP_DIR, 'build', 'e2e-host.mjs')
 
-  // Signed in as `nuphos login` leaves it, beside the app's sign-in files the artifacts leave out.
+  // Signed in as `cerin login` leaves it, beside the app's sign-in files the artifacts leave out.
   const cliConfig = join(artifacts, 'sign-in', `computer-${deviceId.slice(0, 8)}.yaml`)
 
   mkdirSync(agentHome, { recursive: true })

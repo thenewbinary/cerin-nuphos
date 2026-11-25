@@ -6,7 +6,7 @@
 import { createWriteStream } from 'node:fs'
 import { createInterface } from 'node:readline'
 
-export const name = 'nuphos-sign-in'
+export const name = 'cerin-sign-in'
 export const inject = ['credentials', 'deepseekAccount']
 
 const TERMINAL = new Set(['succeeded', 'cancelled', 'expired', 'failed'])

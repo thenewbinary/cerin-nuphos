@@ -24,7 +24,7 @@ fi
 
 backend_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 fixture_dir="$backend_dir/fixtures/sonarqube-demo"
-work_dir="$(mktemp -d "${TMPDIR:-/tmp}/nuphos-sonarqube-fixture.XXXXXX")"
+work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cerin-sonarqube-fixture.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 cp -R "$fixture_dir/." "$work_dir/"
 # Run the container with the invoking account's numeric uid/gid. The disposable

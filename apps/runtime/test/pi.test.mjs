@@ -71,7 +71,7 @@ test("a session's MCP servers become the mcp.json Pi reads", () => {
   try {
     writePiMcpServers(dir, [
       {
-        name: 'nuphos',
+        name: 'cerin',
         command: '/usr/bin/node',
         args: ['bridge.mjs'],
         env: [{ name: 'OPENAB_CREDENTIALS_DIR', value: '/run/creds' }],
@@ -85,7 +85,7 @@ test("a session's MCP servers become the mcp.json Pi reads", () => {
     ])
     assert.deepEqual(readJson(join(dir, 'mcp.json')), {
       mcpServers: {
-        nuphos: {
+        cerin: {
           command: '/usr/bin/node',
           args: ['bridge.mjs'],
           env: { OPENAB_CREDENTIALS_DIR: '/run/creds' },
@@ -224,7 +224,7 @@ test('the sign-in a computer runs asks for a provider and a key, then is done', 
   }
 })
 
-const CUSTOM = 'nuphos-custom'
+const CUSTOM = 'cerin-custom'
 
 /** Signs in to a custom endpoint against a stand-in Pi that accepts it and lists its model. */
 async function signInCustom(home, baseUrl, model = 'qwen2.5:1.5b') {

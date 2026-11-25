@@ -9,20 +9,20 @@ import { useDb } from '@/lib/test/doubles/db'
 
 const TEAM = new ObjectId()
 const ACCOUNT = '123456789012'
-const BOUNDARY = `arn:aws:iam::${ACCOUNT}:policy/NuphosSubIdentityBoundary`
+const BOUNDARY = `arn:aws:iam::${ACCOUNT}:policy/CerinSubIdentityBoundary`
 
 const byosDoc = {
   _id: TEAM,
   awsRoles: [
     {
       id: new ObjectId(),
-      roleArn: `arn:aws:iam::${ACCOUNT}:role/nuphos-operator`,
+      roleArn: `arn:aws:iam::${ACCOUNT}:role/cerin-operator`,
       createdAt: new Date(),
       allowedBoundaryArns: [BOUNDARY],
     },
     {
       id: new ObjectId(),
-      roleArn: `arn:aws:iam::${ACCOUNT}:role/nuphos-breakglass`,
+      roleArn: `arn:aws:iam::${ACCOUNT}:role/cerin-breakglass`,
       createdAt: new Date(),
       purpose: 'permission-admin' as const,
       allowedBoundaryArns: [BOUNDARY],
@@ -31,7 +31,7 @@ const byosDoc = {
   awsManagedPrincipals: [
     {
       id: new ObjectId(),
-      principalArn: `arn:aws:iam::${ACCOUNT}:user/nuphos-monitoring/vps-1`,
+      principalArn: `arn:aws:iam::${ACCOUNT}:user/cerin-monitoring/vps-1`,
       label: 'vps-1 monitoring',
       allowedBoundaryArns: [BOUNDARY],
       createdAt: new Date(),
@@ -58,7 +58,7 @@ describe('permission-admin stays out of the agent credential surface', () => {
     const options = await getAgentCredentialOptions(TEAM.toHexString(), 'u1')
 
     expect(options.awsRoles.map((r) => r.roleArn)).toEqual([
-      `arn:aws:iam::${ACCOUNT}:role/nuphos-operator`,
+      `arn:aws:iam::${ACCOUNT}:role/cerin-operator`,
     ])
   })
 
@@ -66,6 +66,6 @@ describe('permission-admin stays out of the agent credential surface', () => {
     const options = await getAgentCredentialOptions(TEAM.toHexString(), 'u1')
     const serialized = JSON.stringify(options)
 
-    expect(serialized).not.toContain('nuphos-monitoring/vps-1')
+    expect(serialized).not.toContain('cerin-monitoring/vps-1')
   })
 })

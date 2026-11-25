@@ -45,7 +45,7 @@ test('an explicit [label](url) keeps its link', () => {
   assert.equal(isSynthesizedAutolink('mailto:support@platform.cerin.ai', '寄信給我們'), false)
 })
 
-test('a nuphos mention link is never mistaken for a bare literal', () => {
+test('a cerin mention link is never mistaken for a bare literal', () => {
   assert.equal(
     isSynthesizedAutolink(
       'https://platform.cerin.ai/plan/abc',

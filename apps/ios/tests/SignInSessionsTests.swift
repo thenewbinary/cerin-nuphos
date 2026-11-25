@@ -29,22 +29,18 @@ enum SignInSessionsTests {
     }
 
     private static func namesKnownApps() {
-        expect(device(client: "cerin-desktop/0.95.0"), "Cerin Desktop", "new desktop")
-        expect(device(client: "cerin-ios/0.14.3"), "Cerin for iOS", "new ios")
-        expect(device(client: "cerin-android/1.4.0"), "Cerin for Android", "new android")
-        expect(device(client: "cerin-cli/0.3.1"), "Cerin CLI", "new cli")
-        expect(device(client: "nuphos-desktop/0.95.0"), "Cerin Desktop", "desktop")
-        expect(device(client: "nuphos-ios/0.14.3"), "Cerin for iOS", "ios")
-        expect(device(client: "nuphos-android/1.4.0"), "Cerin for Android", "android")
-        expect(device(client: "nuphos-cli/0.3.1", userAgent: "curl/8"), "Cerin CLI", "cli")
-        expect(device(client: "nuphos-ios"), "Cerin for iOS", "no version")
+        expect(device(client: "cerin-desktop/0.95.0"), "Cerin Desktop", "desktop")
+        expect(device(client: "cerin-ios/0.14.3"), "Cerin for iOS", "ios")
+        expect(device(client: "cerin-android/1.4.0"), "Cerin for Android", "android")
+        expect(device(client: "cerin-cli/0.3.1", userAgent: "curl/8"), "Cerin CLI", "cli")
+        expect(device(client: "cerin-ios"), "Cerin for iOS", "no version")
     }
 
     private static func neverShowsClientOrUserAgentText() {
         // The version is the client's claim, so none of it is shown.
-        expect(device(client: "nuphos-desktop/1.verify-at.evil-phish.com"), "Cerin Desktop", "phish version")
-        expect(device(client: "nuphos-ios/1.0\nVisit evil.example"), "Cerin for iOS", "newline version")
-        let unknown = ["nuphos-tv/1.0", "Cerin-ios/1.0", "nuphos-ios 1.0", "/nuphos-ios", "evil.example/nuphos-ios", ""]
+        expect(device(client: "cerin-desktop/1.verify-at.evil-phish.com"), "Cerin Desktop", "phish version")
+        expect(device(client: "cerin-ios/1.0\nVisit evil.example"), "Cerin for iOS", "newline version")
+        let unknown = ["cerin-tv/1.0", "Cerin-ios/1.0", "cerin-ios 1.0", "/cerin-ios", "evil.example/cerin-ios", ""]
         for client in unknown {
             expect(device(client: client), "Unknown device", "client \(client.debugDescription)")
         }

@@ -59,8 +59,8 @@ jobs:
         run: |
           curl -fsSL https://get.helm.sh/helm-v3.19.0-linux-amd64.tar.gz | tar -xz -C /tmp linux-amd64/helm
           curl -fsSL https://github.com/yannh/kubeconform/releases/download/v0.7.0/kubeconform-linux-amd64.tar.gz | tar -xz -C /tmp kubeconform
-          /tmp/linux-amd64/helm lint deploy/helm/nuphos -f deploy/helm/ci-values.yaml --strict
-          /tmp/linux-amd64/helm template nuphos deploy/helm/nuphos -f deploy/helm/ci-values.yaml | /tmp/kubeconform -strict -summary
+          /tmp/linux-amd64/helm lint deploy/helm/cerin -f deploy/helm/ci-values.yaml --strict
+          /tmp/linux-amd64/helm template cerin deploy/helm/cerin -f deploy/helm/ci-values.yaml | /tmp/kubeconform -strict -summary
 
   platform-templates:
     name: Railway template validation

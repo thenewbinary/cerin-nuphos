@@ -65,7 +65,7 @@ async function servePage() {
     response.end(
       request.url === '/next'
         ? '<title>E2E next</title><h1>next</h1>'
-        : '<title>E2E headless page</title><h1 style="font-size:96px">Hello from nuphos agent</h1>',
+        : '<title>E2E headless page</title><h1 style="font-size:96px">Hello from cerin agent</h1>',
     )
   })
 

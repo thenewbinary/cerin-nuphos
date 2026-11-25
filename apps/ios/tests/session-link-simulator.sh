@@ -15,7 +15,7 @@ chat="https://platform.cerin.ai/teams/$team/agent/push-a"
 fixture="$(cd "$(dirname "$0")" && pwd)/fixtures/push-responses.json"
 
 launch=$(SIMCTL_CHILD_NUPHOS_PREVIEW_RESPONSES="$fixture" \
-  xcrun simctl launch --terminate-running-process "$device" ai.nuphos.ios \
+  xcrun simctl launch --terminate-running-process "$device" ai.cerin.ios \
   -preview-home -preview-no-push -open-links "$chat" "https://platform.cerin.ai/agent" "$chat")
 pid=${launch##*: }
 

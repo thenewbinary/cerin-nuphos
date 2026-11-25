@@ -79,7 +79,7 @@ Only if the credential section is missing or looks stale, query the backend dire
 is exported in the runtime environment.
 
 ```bash
-# Reuse the helper from the nuphos-api skill (loads it if needed):
+# Reuse the helper from the cerin-api skill (loads it if needed):
 ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 ac /teams/$TEAM/github-installations | python3 -m json.tool
@@ -163,7 +163,7 @@ Use GitHub's `createCommitOnBranch` GraphQL mutation with the token from the set
 When a participant wants commits signed with their own key, or the change needs a local `git commit` / `git push` that must be Verified, use the `git-signing` skill instead.
 
 1. Run the selected installation's setup command with `--for-commit` appended. It prints the current authenticated Cerin participant's `Co-authored-by` trailer. Refresh this on every committing turn; never infer the participant from the runtime/provider account, installation owner, or durable conversation owner. If the participant identity is unavailable, stop before committing.
-   If the repository uses the Developer Certificate of Origin (a `DCO` file at its root, a contributing guide that asks for `Signed-off-by`, or a DCO check on its PRs), also run `bash skills/github/scripts/commit-signoff.sh OWNER/REPO` against the repository the commit goes to (the fork, for a fork PR). It prints `Signed-off-by: NAME <EMAIL>` for the author GitHub records for the current identity; a DCO check compares that line with the author exactly, and no read-only API reports the commit email, so do not build the line yourself. It briefly creates and deletes a `nuphos/signoff-probe-*` branch. Run it again whenever the setup identity changes.
+   If the repository uses the Developer Certificate of Origin (a `DCO` file at its root, a contributing guide that asks for `Signed-off-by`, or a DCO check on its PRs), also run `bash skills/github/scripts/commit-signoff.sh OWNER/REPO` against the repository the commit goes to (the fork, for a fork PR). It prints `Signed-off-by: NAME <EMAIL>` for the author GitHub records for the current identity; a DCO check compares that line with the author exactly, and no read-only API reports the commit email, so do not build the line yourself. It briefly creates and deletes a `cerin/signoff-probe-*` branch. Run it again whenever the setup identity changes.
 2. Work from the target branch's current SHA. For a new PR, create a new branch at the base branch SHA using `gh api repos/OWNER/REPO/git/refs -f ref=refs/heads/BRANCH -f sha=BASE_SHA`.
 3. Prepare a JSON payload file for the mutation below. Include the complete new contents of each changed file as base64 in `fileChanges.additions`; include removed paths in `fileChanges.deletions`. Omit unchanged files. Add the participant and runtime trailers to `message.body`, after a blank line, followed by the `Signed-off-by` line when the repository uses the DCO.
 4. Submit with `gh api graphql --input /path/to/commit.json`. Use `expectedHeadOid` to prevent overwriting concurrent changes; on a mismatch, fetch and reconcile before retrying.

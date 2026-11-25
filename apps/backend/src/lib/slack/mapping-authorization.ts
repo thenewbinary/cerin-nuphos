@@ -13,7 +13,7 @@ export type ChannelMappingAuthorizationDependencies = {
     botToken: string
     slackWorkspaceId: string
     teamId: string
-    nuphosUserId: string
+    cerinUserId: string
   }) => Promise<string | null>
   assertBotInChannel: (botToken: string, channelId: string) => Promise<unknown>
   isChannelMember: (botToken: string, channelId: string, slackUserId: string) => Promise<boolean>
@@ -22,7 +22,7 @@ export type ChannelMappingAuthorizationDependencies = {
 
 const defaultDependencies: ChannelMappingAuthorizationDependencies = {
   getInstallationTeamId: async (slackWorkspaceId) =>
-    (await getSlackBindingByWorkspaceId(slackWorkspaceId))?.nuphosTeamId.toHexString() ?? null,
+    (await getSlackBindingByWorkspaceId(slackWorkspaceId))?.cerinTeamId.toHexString() ?? null,
   resolveWorkspaceBot: resolveInstalledWorkspaceBot,
   getMembership: async (userId, teamId) => {
     const { getTeamMembership } = await import('@/lib/identity')
@@ -35,7 +35,7 @@ const defaultDependencies: ChannelMappingAuthorizationDependencies = {
         botToken: input.botToken,
         slackWorkspaceId: input.slackWorkspaceId,
         teamId: input.teamId,
-        nuphosUserId: input.nuphosUserId,
+        cerinUserId: input.cerinUserId,
       })
     )?.slackUserId ?? null,
   assertBotInChannel: getJoinedSlackChannel,
@@ -97,7 +97,7 @@ export async function assertChannelMappingCreationAllowed(
     botToken: bot.botToken,
     slackWorkspaceId: input.slackWorkspaceId,
     teamId: input.teamId,
-    nuphosUserId: input.userId,
+    cerinUserId: input.userId,
   })
 
   if (

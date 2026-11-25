@@ -44,7 +44,7 @@ function findOpenab(): string {
   const explicit = process.env.OPENAB ?? process.env.NUPHOS_OPENAB_BINARY
 
   if (explicit) return explicit
-  const cache = join(homedir(), '.cache/nuphos')
+  const cache = join(homedir(), '.cache/cerin')
   const built = existsSync(cache)
     ? readdirSync(cache, { recursive: true, encoding: 'utf8' }).find((path) =>
         /^openab-[^/]+\/target\/[^/]+\/release\/openab$/.test(path),
@@ -112,7 +112,7 @@ function cloudflareState(uri: string): string {
   const script = `
     import { MongoClient } from 'mongodb'
     const client = await new MongoClient(process.argv[1]).connect()
-    const [pending] = await client.db('nuphos_e2e').collection('cloudflare_oauth_pending')
+    const [pending] = await client.db('cerin_e2e').collection('cloudflare_oauth_pending')
       .find().sort({ expiresAt: -1 }).limit(1).toArray()
     await client.close()
     console.log(pending?._id ?? '')`
@@ -213,7 +213,7 @@ export async function startStack(
       PORT: String(backendPort),
       NUPHOS_JWT_SECRET: 'local-e2e-jwt-secret-not-a-production-credential',
       MONGODB_URI: mongoUri,
-      MONGODB_DB: 'nuphos_e2e',
+      MONGODB_DB: 'cerin_e2e',
       ATLAS_REDIS_ENABLED: 'false',
       NUPHOS_DEV_EMAIL_OTP_LOG: 'true',
       NUPHOS_LOCAL_STACK: 'true',

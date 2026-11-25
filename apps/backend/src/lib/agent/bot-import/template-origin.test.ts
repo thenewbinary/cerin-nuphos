@@ -23,10 +23,10 @@ useDb({
 
 test('persists template attribution on the owned Bot and fails when destination is missing', async () => {
   writes.length = 0
-  const source = { application: 'nuphos-template', templateId: 'desk', version: '1.0.0' }
+  const source = { application: 'cerin-template', templateId: 'desk', version: '1.0.0' }
   const requirements = [{ provider: 'github', required: true, reason: 'Read issues' }]
   const manifest = botBundleSchema.parse({
-    format: 'nuphos-bot-bundle',
+    format: 'cerin-bot-bundle',
     version: 1,
     source,
     requirements,

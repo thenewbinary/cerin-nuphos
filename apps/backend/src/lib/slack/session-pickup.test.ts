@@ -14,7 +14,7 @@ const bot = (slackTeamId = 'T1'): ResolvedSlackBot =>
   ({
     botToken: 'xoxb-token',
     botUserId: 'B1',
-    nuphosTeamId: TEAM_ID,
+    cerinTeamId: TEAM_ID,
     binding: { slackTeamId },
   }) as ResolvedSlackBot
 
@@ -22,7 +22,7 @@ const mapping = (): SlackUserMapping => ({
   slackWorkspaceId: 'T1',
   slackUserId: 'U1',
   teamId: TEAM_ID,
-  nuphosUserId: 'user-1',
+  cerinUserId: 'user-1',
   enabled: true,
   createdBy: 'test',
   createdAt: now,

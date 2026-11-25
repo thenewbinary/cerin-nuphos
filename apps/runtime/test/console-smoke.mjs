@@ -128,7 +128,7 @@ const exchange = await fetch(`${base}/_openab/pairing/exchange`, {
   headers: { 'content-type': 'application/json' },
   body: JSON.stringify({
     code: minted.json.code,
-    client: { teamName: 'Smoke team', pairedBy: 'Smoke', backendOrigin: 'https://nuphos.test' },
+    client: { teamName: 'Smoke team', pairedBy: 'Smoke', backendOrigin: 'https://cerin.test' },
   }),
 })
 assert.equal(exchange.status, 200)

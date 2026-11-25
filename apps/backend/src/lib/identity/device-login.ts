@@ -2,12 +2,12 @@ import { randomInt } from 'node:crypto'
 
 import { db } from '@/lib/db'
 import { AppError } from '@/lib/errors'
-import { getNuphosUserById, getTeamMembership } from '@/lib/identity'
+import { getCerinUserById, getTeamMembership } from '@/lib/identity'
 import { mintCliToken } from '@/lib/identity/cli-tokens'
 import { generateOpaqueToken, hashToken } from '@/lib/oauth/tokens'
 
 import type { CliTokenPrincipal } from '@/lib/identity/cli-tokens'
-import type { NuphosUser } from '@/lib/identity/types'
+import type { CerinUser } from '@/lib/identity/types'
 
 /**
  * Device sign-in for terminals with no browser (RFC 8628). The terminal gets
@@ -143,7 +143,7 @@ export type DeviceDecision =
 /** Pending → approved/denied, once: a replayed approval finds nothing pending. */
 export async function decideDeviceLogin(
   rawUserCode: unknown,
-  user: NuphosUser,
+  user: CerinUser,
   decision: DeviceDecision,
 ) {
   const code = normalizeUserCode(rawUserCode)
@@ -179,7 +179,7 @@ export type DevicePollResult =
   | { status: 'slow_down' }
   | { status: 'denied' }
   | { status: 'expired' }
-  | { status: 'approved'; token: string; user: NuphosUser; cliToken: CliTokenPrincipal }
+  | { status: 'approved'; token: string; user: CerinUser; cliToken: CliTokenPrincipal }
 
 /**
  * One poll. Faster than the interval is `slow_down` (RFC 8628 §3.5). An
@@ -213,7 +213,7 @@ export async function pollDeviceLogin(deviceCode: unknown): Promise<DevicePollRe
   const approval = consumed?.approval
 
   if (!approval) return { status: 'expired' }
-  const user = await getNuphosUserById(approval.userId)
+  const user = await getCerinUserById(approval.userId)
 
   if (!user) return { status: 'expired' }
   const { token, principal } = await mintCliToken({

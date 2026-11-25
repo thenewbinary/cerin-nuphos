@@ -15,5 +15,5 @@ case "$action" in
 esac
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-request="$script_dir/../../_runtime/scripts/nuphos-api.sh"
+request="$script_dir/../../_runtime/scripts/cerin-api.sh"
 exec "$request" POST "/teams/$team_id/knowledge/$action" "$body"

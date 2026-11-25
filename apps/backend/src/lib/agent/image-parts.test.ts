@@ -11,7 +11,7 @@ const image = {
 }
 const metadata = {
   version: 1 as const,
-  source: 'nuphos' as const,
+  source: 'cerin' as const,
   sender: { type: 'user' as const, id: 'sender', displayName: 'Sender' },
   sentAt: '2026-10-02T18:00:00Z',
 }

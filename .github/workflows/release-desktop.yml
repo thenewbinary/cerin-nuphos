@@ -156,7 +156,7 @@ jobs:
               *.zip) type=application/zip ;;
               *) type=application/octet-stream ;;
             esac
-            aws s3 cp "$f" s3://nuphos-releases/desktop/ --content-type "$type"
+            aws s3 cp "$f" s3://cerin-releases/desktop/ --content-type "$type"
           done
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: matrix.platform == 'mac'
@@ -184,8 +184,8 @@ jobs:
           test -n "$PUBLISHER_NAME"
           pnpm exec electron-builder --win --publish always --config.forceCodeSigning=true \
             --config.win.azureSignOptions.endpoint=https://eus.codesigning.azure.net/ \
-            --config.win.azureSignOptions.codeSigningAccountName=nuphos-signing \
-            --config.win.azureSignOptions.certificateProfileName=nuphos-desktop \
+            --config.win.azureSignOptions.codeSigningAccountName=cerin-signing \
+            --config.win.azureSignOptions.certificateProfileName=cerin-desktop \
             --config.win.azureSignOptions.publisherName="$PUBLISHER_NAME"
       - name: Publish Linux AppImage
         if: matrix.platform == 'linux'
@@ -226,7 +226,7 @@ jobs:
           want=$(for f in arm64.dmg arm64.zip x64.dmg x64.zip; do echo "Cerin-$v-$f"; done)
           got=$(yq '.files[].url' latest-mac.yml | LC_ALL=C sort)
           [ "$got" = "$want" ] || { echo "::error::latest-mac.yml must list exactly: $want"; exit 1; }
-          aws s3 cp latest-mac.yml s3://nuphos-releases/desktop/latest-mac.yml --content-type text/yaml
+          aws s3 cp latest-mac.yml s3://cerin-releases/desktop/latest-mac.yml --content-type text/yaml
 
   announce:
     needs: [validate, build, mac-update-manifest]
@@ -241,7 +241,7 @@ jobs:
         run: |
           set -euo pipefail
           TAG="v$VERSION"
-          BASE='https://nuphos-releases.s3.amazonaws.com/desktop'
+          BASE='https://cerin-releases.s3.amazonaws.com/desktop'
           cat > release-notes.md <<EOF
           macOS builds are signed and notarized. Windows builds are signed. Linux builds are unsigned.
 

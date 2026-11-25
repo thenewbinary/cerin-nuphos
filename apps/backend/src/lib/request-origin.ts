@@ -71,10 +71,6 @@ const APPS = new Map([
   ['cerin-ios', 'Cerin for iOS'],
   ['cerin-android', 'Cerin for Android'],
   ['cerin-cli', 'Cerin CLI'],
-  ['nuphos-desktop', 'Cerin Desktop'],
-  ['nuphos-ios', 'Cerin for iOS'],
-  ['nuphos-android', 'Cerin for Android'],
-  ['nuphos-cli', 'Cerin CLI'],
 ])
 const BROWSERS: [RegExp, string][] = [
   [/Edg\//, 'Edge'],
@@ -118,10 +114,6 @@ const CLIENTS = new Map([
   ['cerin-ios', 'ios'],
   ['cerin-android', 'android'],
   ['cerin-cli', 'cli'],
-  ['nuphos-desktop', 'desktop'],
-  ['nuphos-ios', 'ios'],
-  ['nuphos-android', 'android'],
-  ['nuphos-cli', 'cli'],
 ])
 
 /** Which app sent a request: one of ours by its header, else a browser (the web app) or the API. */

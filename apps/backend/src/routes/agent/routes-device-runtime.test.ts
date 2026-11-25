@@ -201,7 +201,7 @@ describe('device runtime tunnel route', () => {
   test('the app holding a tunnel is recorded on its presence, for an old one to be told apart', async () => {
     const host = serve('owner')
     const desktop = new WebSocket(`ws://${host}/agent/devices/d1/runtime-tunnel`, {
-      headers: { 'x-atlas-client': 'nuphos-desktop/0.94.0' },
+      headers: { 'x-atlas-client': 'cerin-desktop/0.94.0' },
     } as unknown as string[])
 
     await waitFor<void>((resolve) => {
@@ -220,7 +220,7 @@ describe('device runtime tunnel route', () => {
       poll()
     })
 
-    expect(found.client).toBe('nuphos-desktop/0.94.0')
+    expect(found.client).toBe('cerin-desktop/0.94.0')
     desktop.close()
   })
 

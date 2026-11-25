@@ -21,8 +21,8 @@ type UpdateCall = {
 
 const TEAM_ID = new ObjectId()
 const DOMAIN_ID = '0a1b2c3d4e5f60718293a4b5c6d7e8f9'
-const IDP_ID = 'nuphos'
-const AGENCY_NAME = 'nuphos-readonly'
+const IDP_ID = 'cerin'
+const AGENCY_NAME = 'cerin-readonly'
 
 let updateCalls: UpdateCall[] = []
 /** Set to simulate another team's document already holding the same triple. */

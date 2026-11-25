@@ -7,20 +7,20 @@ import { test } from 'node:test'
 import { patchClaudeAskUserQuestion } from '../image/claude-agent-acp/ask-user-question.mjs'
 import { patchCodexUserInput } from '../image/codex-acp/ask-user-input.mjs'
 import {
-  NUPHOS_QUESTION_ASKED,
-  NUPHOS_QUESTION_FAILED,
-  nuphosAskClaudeQuestion,
-  nuphosAskCodexQuestion,
-  nuphosAskInNuphos,
-  nuphosDecisionArguments,
-  nuphosOffersDecisions,
-  nuphosRememberDecisionServer,
+  CERIN_QUESTION_ASKED,
+  CERIN_QUESTION_FAILED,
+  cerinAskClaudeQuestion,
+  cerinAskCodexQuestion,
+  cerinAskInCerin,
+  cerinDecisionArguments,
+  cerinOffersDecisions,
+  cerinRememberDecisionServer,
 } from '../image/native-question.mjs'
 
 const servers = [
-  { name: 'nuphos-credentials', type: 'http', url: 'https://api.test/mcp', headers: [] },
+  { name: 'cerin-credentials', type: 'http', url: 'https://api.test/mcp', headers: [] },
   {
-    name: 'nuphos-tools',
+    name: 'cerin-tools',
     type: 'http',
     url: 'https://api.test/mcp-tools',
     headers: [{ name: 'Authorization', value: 'Bearer from-session' }],
@@ -37,9 +37,9 @@ function recorder(result = { content: [] }, ok = true) {
 }
 
 test('AskUserQuestion registers a decision and tells Claude the answer comes later', async () => {
-  nuphosRememberDecisionServer(servers)
+  cerinRememberDecisionServer(servers)
   const { calls, request } = recorder()
-  const answer = await nuphosAskClaudeQuestion(
+  const answer = await cerinAskClaudeQuestion(
     {
       questions: [
         {
@@ -54,7 +54,7 @@ test('AskUserQuestion registers a decision and tells Claude the answer comes lat
     request,
   )
 
-  assert.deepEqual(answer, { behavior: 'deny', message: NUPHOS_QUESTION_ASKED })
+  assert.deepEqual(answer, { behavior: 'deny', message: CERIN_QUESTION_ASKED })
   assert.equal(calls.length, 1)
   assert.equal(calls[0].url, 'https://api.test/mcp-tools')
   assert.equal(calls[0].headers.authorization, 'Bearer from-session')
@@ -71,13 +71,13 @@ test('AskUserQuestion registers a decision and tells Claude the answer comes lat
 })
 
 test('the current credential file wins over the session header', async () => {
-  const dir = mkdtempSync(join(tmpdir(), 'nuphos-question-'))
+  const dir = mkdtempSync(join(tmpdir(), 'cerin-question-'))
   try {
     writeFileSync(join(dir, 'NUPHOS_TOKEN'), 'rotated\n')
-    nuphosRememberDecisionServer(servers)
+    cerinRememberDecisionServer(servers)
     const { calls, request } = recorder()
 
-    await nuphosAskClaudeQuestion(
+    await cerinAskClaudeQuestion(
       { questions: [{ question: 'Proceed?' }] },
       { OPENAB_CREDENTIALS_DIR: dir },
       request,
@@ -89,41 +89,41 @@ test('the current credential file wins over the session header', async () => {
 })
 
 test('a failed registration tells the agent to ask with request_user_decision', async () => {
-  nuphosRememberDecisionServer(servers)
+  cerinRememberDecisionServer(servers)
   for (const { request } of [
     recorder({ isError: true, content: [] }),
     recorder(undefined, false),
     { request: async () => Promise.reject(new Error('offline')) },
   ]) {
-    const answer = await nuphosAskClaudeQuestion(
+    const answer = await cerinAskClaudeQuestion(
       { questions: [{ question: 'Proceed?' }] },
       {},
       request,
     )
 
-    assert.equal(answer.message, NUPHOS_QUESTION_FAILED)
+    assert.equal(answer.message, CERIN_QUESTION_FAILED)
   }
   const { calls, request } = recorder()
-  const empty = await nuphosAskClaudeQuestion({ questions: [] }, {}, request)
+  const empty = await cerinAskClaudeQuestion({ questions: [] }, {}, request)
 
-  assert.equal(empty.message, NUPHOS_QUESTION_FAILED)
+  assert.equal(empty.message, CERIN_QUESTION_FAILED)
   assert.equal(calls.length, 0)
 })
 
 test('a load without servers keeps the conversation server', async () => {
-  nuphosRememberDecisionServer(servers)
-  nuphosRememberDecisionServer(undefined)
-  nuphosRememberDecisionServer([])
+  cerinRememberDecisionServer(servers)
+  cerinRememberDecisionServer(undefined)
+  cerinRememberDecisionServer([])
   const { calls, request } = recorder()
 
-  await nuphosAskClaudeQuestion({ questions: [{ question: 'Proceed?' }] }, {}, request)
+  await cerinAskClaudeQuestion({ questions: [{ question: 'Proceed?' }] }, {}, request)
   assert.equal(calls[0].url, 'https://api.test/mcp-tools')
 })
 
 test('request_user_input answers every question with the next step', async () => {
-  nuphosRememberDecisionServer(servers)
+  cerinRememberDecisionServer(servers)
   const { calls, request } = recorder()
-  const response = await nuphosAskCodexQuestion(
+  const response = await cerinAskCodexQuestion(
     {
       questions: [
         {
@@ -141,8 +141,8 @@ test('request_user_input answers every question with the next step', async () =>
 
   assert.deepEqual(response, {
     answers: {
-      db: { answers: [NUPHOS_QUESTION_ASKED] },
-      name: { answers: [NUPHOS_QUESTION_ASKED] },
+      db: { answers: [CERIN_QUESTION_ASKED] },
+      name: { answers: [CERIN_QUESTION_ASKED] },
     },
   })
   assert.deepEqual(calls[0].body.params.arguments, {
@@ -154,7 +154,7 @@ test('request_user_input answers every question with the next step', async () =>
 })
 
 test('decision arguments stay within request_user_decision limits', () => {
-  const args = nuphosDecisionArguments([
+  const args = cerinDecisionArguments([
     {
       question: 'q'.repeat(2000),
       options: ['a', 'b', 'c', 'd', 'e', 'f'].map((o) => o.repeat(400)),
@@ -169,7 +169,7 @@ test('decision arguments stay within request_user_decision limits', () => {
   assert.equal(args.options.length, 5)
   assert.ok(args.options.every((option) => option.length === 300))
   assert.equal(
-    nuphosDecisionArguments([{ question: 'Only one?', options: ['yes'] }]).options,
+    cerinDecisionArguments([{ question: 'Only one?', options: ['yes'] }]).options,
     undefined,
   )
 })
@@ -185,29 +185,29 @@ test('the Claude patch keeps AskUserQuestion and asks through Cerin', () => {
 
   assert.match(
     patched,
-    /const mcpServers = \{\};\n {8}nuphosRememberDecisionServer\(params\.mcpServers\);/,
+    /const mcpServers = \{\};\n {8}cerinRememberDecisionServer\(params\.mcpServers\);/,
   )
   assert.match(
     patched,
-    /const disallowedTools = elicitationSupport\.form \|\| nuphosOffersDecisions\(params\.mcpServers\) \? \[\] : \["AskUserQuestion"\];/,
+    /const disallowedTools = elicitationSupport\.form \|\| cerinOffersDecisions\(params\.mcpServers\) \? \[\] : \["AskUserQuestion"\];/,
   )
   assert.match(
     patched,
-    /!this\.clientCapabilities\?\.elicitation\?\.form\) \{\n.*ensureToolCallEmitted.*\n {16}return nuphosAskClaudeQuestion\(toolInput\);\n {12}\}\n {12}if \(toolName === "AskUserQuestion" && this\.clientCapabilities/,
+    /!this\.clientCapabilities\?\.elicitation\?\.form\) \{\n.*ensureToolCallEmitted.*\n {16}return cerinAskClaudeQuestion\(toolInput\);\n {12}\}\n {12}if \(toolName === "AskUserQuestion" && this\.clientCapabilities/,
   )
   assert.throws(() => patchClaudeAskUserQuestion('nothing to patch'))
 })
 
 test('AskUserQuestion stays off for a session that cannot ask through Cerin', () => {
-  assert.equal(nuphosOffersDecisions(servers), true)
-  assert.equal(nuphosOffersDecisions([servers[0]]), false)
-  assert.equal(nuphosOffersDecisions(undefined), false)
+  assert.equal(cerinOffersDecisions(servers), true)
+  assert.equal(cerinOffersDecisions([servers[0]]), false)
+  assert.equal(cerinOffersDecisions(undefined), false)
 })
 
 test('a secret question is never asked in chat, so its answer cannot reach the model', async () => {
-  nuphosRememberDecisionServer(servers)
+  cerinRememberDecisionServer(servers)
   const { calls, request } = recorder()
-  const response = await nuphosAskCodexQuestion(
+  const response = await cerinAskCodexQuestion(
     {
       questions: [
         { id: 'token', header: 'Token', question: 'Paste your API token', isSecret: true },
@@ -221,17 +221,17 @@ test('a secret question is never asked in chat, so its answer cannot reach the m
   assert.equal(calls.length, 0)
   assert.deepEqual(response, {
     answers: {
-      token: { answers: [NUPHOS_QUESTION_FAILED] },
-      region: { answers: [NUPHOS_QUESTION_FAILED] },
+      token: { answers: [CERIN_QUESTION_FAILED] },
+      region: { answers: [CERIN_QUESTION_FAILED] },
     },
   })
 })
 
 test('a hung tools server times out instead of holding the turn', async () => {
-  nuphosRememberDecisionServer(servers)
+  cerinRememberDecisionServer(servers)
   const { calls, request: recorded } = recorder()
 
-  await nuphosAskInNuphos([{ question: 'Proceed?' }], {}, recorded)
+  await cerinAskInCerin([{ question: 'Proceed?' }], {}, recorded)
   assert.ok(calls[0].signal instanceof AbortSignal, 'every request carries a timeout signal')
   const hung = (_url, init) =>
     new Promise((_resolve, reject) => {
@@ -239,30 +239,30 @@ test('a hung tools server times out instead of holding the turn', async () => {
     })
   const started = Date.now()
 
-  assert.equal(await nuphosAskInNuphos([{ question: 'Proceed?' }], {}, hung, 20), false)
+  assert.equal(await cerinAskInCerin([{ question: 'Proceed?' }], {}, hung, 20), false)
   assert.ok(Date.now() - started < 5_000)
 })
 
 test('a revoked credential file fails the question instead of using the session header', async () => {
-  const dir = mkdtempSync(join(tmpdir(), 'nuphos-question-'))
+  const dir = mkdtempSync(join(tmpdir(), 'cerin-question-'))
   try {
-    nuphosRememberDecisionServer(servers)
+    cerinRememberDecisionServer(servers)
     const { calls, request } = recorder()
-    const missing = await nuphosAskClaudeQuestion(
+    const missing = await cerinAskClaudeQuestion(
       { questions: [{ question: 'Proceed?' }] },
       { OPENAB_CREDENTIALS_DIR: dir },
       request,
     )
 
     writeFileSync(join(dir, 'NUPHOS_TOKEN'), '\n')
-    const empty = await nuphosAskClaudeQuestion(
+    const empty = await cerinAskClaudeQuestion(
       { questions: [{ question: 'Proceed?' }] },
       { OPENAB_CREDENTIALS_DIR: dir },
       request,
     )
 
-    assert.equal(missing.message, NUPHOS_QUESTION_FAILED)
-    assert.equal(empty.message, NUPHOS_QUESTION_FAILED)
+    assert.equal(missing.message, CERIN_QUESTION_FAILED)
+    assert.equal(empty.message, CERIN_QUESTION_FAILED)
     assert.equal(calls.length, 0)
   } finally {
     rmSync(dir, { recursive: true, force: true })
@@ -280,8 +280,8 @@ test('the Codex patch asks through Cerin at both server handoffs and the user in
   const source = [servers, 'newSession();', servers, 'loadSession();', userInput, ''].join('\n')
   const patched = patchCodexUserInput(source)
 
-  assert.equal(patched.split('nuphosRememberDecisionServer(request.mcpServers);').length, 3)
-  assert.match(patched, /return await nuphosAskCodexQuestion\(params\);/)
+  assert.equal(patched.split('cerinRememberDecisionServer(request.mcpServers);').length, 3)
+  assert.match(patched, /return await cerinAskCodexQuestion\(params\);/)
   assert.doesNotMatch(patched, /return \{ answers: \{\} \};/)
   // An anchor that moved, vanished or appears more often fails the build.
   assert.throws(() => patchCodexUserInput([servers, userInput].join('\n')))

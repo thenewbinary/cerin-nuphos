@@ -33,7 +33,7 @@ export async function openRequests(conversation: AgentConversation) {
   }))
 }
 
-export async function nuphosCheck(
+export async function cerinCheck(
   args: Record<string, unknown>,
   ctx: McpCallContext,
 ): Promise<ToolResult> {

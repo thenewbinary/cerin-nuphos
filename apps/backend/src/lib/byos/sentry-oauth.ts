@@ -5,7 +5,7 @@
 // selects an organization at query time via GET /organizations/.
 const SENTRY_AUTHORIZE_URL = 'https://sentry.io/oauth/authorize/'
 const SENTRY_TOKEN_URL = 'https://sentry.io/oauth/token/'
-const USER_AGENT = 'nuphos-backend'
+const USER_AGENT = 'cerin-backend'
 const SENTRY_FETCH_TIMEOUT_MS = 30_000
 
 export class SentryApiError extends Error {

@@ -1,6 +1,6 @@
 import { getTeamMembership } from '@/lib/identity'
 
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 
 // Paths that vend cloud or cluster access (keys, tokens, kubeconfigs,
 // exec-credential bearer tokens, tailnet auth keys). SaaS
@@ -18,7 +18,7 @@ export function isCloudCredentialPath(path: string): boolean {
 export async function canMintCredentials(
   teamId: string,
   userIds: string[],
-  roles: NuphosTeamRole[] = ['ADMINISTRATOR', 'EDITOR'],
+  roles: CerinTeamRole[] = ['ADMINISTRATOR', 'EDITOR'],
 ): Promise<boolean> {
   for (const userId of new Set(userIds)) {
     const role = (await getTeamMembership(userId, teamId))?.role

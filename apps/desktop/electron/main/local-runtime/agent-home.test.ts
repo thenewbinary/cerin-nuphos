@@ -268,7 +268,7 @@ test('on Windows without the owner’s login nothing is linked', (t) => {
 })
 
 test('a hosted pod’s owner uses the pod’s own Claude login; other members keep theirs', (t) => {
-  const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-pod-owner-'))
+  const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-pod-owner-'))
 
   t.after(() => rmSync(dir, { recursive: true, force: true }))
   const data = path.join(dir, 'agent')

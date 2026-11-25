@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">認証情報 · %1$d</string>
     <string name="composer_computers_count">コンピュータ · %1$d</string>
     <string name="composer_queue_a_message">メッセージをキューに追加</string>
-    <string name="composer_ask_nuphos">Cerin に何でも聞いてください</string>
+    <string name="composer_ask_cerin">Cerin に何でも聞いてください</string>
     <string name="composer_remove_attachment_failed">保存済みのこの添付ファイルを削除できませんでした。ストレージを確認してから、もう一度お試しください。</string>
     <string name="composer_photos">写真</string>
     <string name="composer_files">ファイル</string>

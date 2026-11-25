@@ -3,20 +3,20 @@ import { ObjectId } from 'mongodb'
 
 import { useDb } from '@/lib/test/doubles/db'
 
-import type { NuphosTeamDoc } from './shared'
+import type { CerinTeamDoc } from './shared'
 import type { Filter, UpdateFilter } from 'mongodb'
 
 const TEAM_ID = new ObjectId()
 const OWNER_ID = new ObjectId()
 const MEMBER_ID = new ObjectId()
-let writes: { filter: Filter<NuphosTeamDoc>; update: UpdateFilter<NuphosTeamDoc> }[] = []
+let writes: { filter: Filter<CerinTeamDoc>; update: UpdateFilter<CerinTeamDoc> }[] = []
 let modifiedCount = 1
 let storedOwner: ObjectId | null = OWNER_ID
 
 useDb({
   db: () => ({
     collection: () => ({
-      updateOne: (filter: Filter<NuphosTeamDoc>, update: UpdateFilter<NuphosTeamDoc>) => {
+      updateOne: (filter: Filter<CerinTeamDoc>, update: UpdateFilter<CerinTeamDoc>) => {
         writes.push({ filter, update })
 
         return Promise.resolve({ modifiedCount })

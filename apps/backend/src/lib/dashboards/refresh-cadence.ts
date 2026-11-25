@@ -1,7 +1,7 @@
 import { nextCronRun } from '@/lib/cron'
-import { nuphosDashboards } from '@/models'
+import { cerinDashboards } from '@/models'
 
-import type { DashboardRefreshCadence, NuphosDashboard } from '@/models'
+import type { DashboardRefreshCadence, CerinDashboard } from '@/models'
 
 const CADENCE_CRON: Record<DashboardRefreshCadence, string> = {
   daily: '0 0 * * *',
@@ -19,10 +19,10 @@ export function nextScheduledRefresh(cadence: DashboardRefreshCadence, after: Da
 /** The fields that arm (or, for null, clear) a dashboard's refresh schedule.
  *  Empty when the cadence is unchanged, so an overdue slot is kept for the sweeper. */
 export function dashboardCadenceUpdate(
-  dashboard: Pick<NuphosDashboard, 'cadence'>,
+  dashboard: Pick<CerinDashboard, 'cadence'>,
   cadence: DashboardRefreshCadence | null,
   now = new Date(),
-): { set: Partial<NuphosDashboard>; unset: Record<string, ''> } {
+): { set: Partial<CerinDashboard>; unset: Record<string, ''> } {
   if (cadence === (dashboard.cadence ?? null)) return { set: {}, unset: {} }
 
   return cadence
@@ -31,14 +31,14 @@ export function dashboardCadenceUpdate(
 }
 
 export async function setDashboardCadence(
-  dashboard: NuphosDashboard,
+  dashboard: CerinDashboard,
   cadence: DashboardRefreshCadence | null | undefined,
-): Promise<NuphosDashboard> {
+): Promise<CerinDashboard> {
   if (cadence === undefined) return dashboard
   const { set, unset } = dashboardCadenceUpdate(dashboard, cadence)
 
   if (!Object.keys(set).length && !Object.keys(unset).length) return dashboard
-  const updated = await nuphosDashboards().findOneAndUpdate(
+  const updated = await cerinDashboards().findOneAndUpdate(
     { _id: dashboard._id, teamId: dashboard.teamId },
     Object.keys(unset).length ? { $set: set, $unset: unset } : { $set: set },
     { returnDocument: 'after' },

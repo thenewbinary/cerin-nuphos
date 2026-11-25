@@ -104,7 +104,7 @@ The single plan-confirmation from the UX contract covers every step it lists (in
 
 ### 4. Verify end-to-end (always do this)
 
-The installer emits a marker line via `logger` (tag `nuphos-onboarding`). Prove retrieval works by querying it back through the bound Grafana proxy (see Query patterns below) with `{instance="<vm>"} |= "loki onboarding marker"` over the last 15 minutes, and show the user the returned line. Onboarding is not "done" until this query succeeds.
+The installer emits a marker line via `logger` (tag `cerin-onboarding`). Prove retrieval works by querying it back through the bound Grafana proxy (see Query patterns below) with `{instance="<vm>"} |= "loki onboarding marker"` over the last 15 minutes, and show the user the returned line. Onboarding is not "done" until this query succeeds.
 
 ## Query patterns (time range + keyword)
 

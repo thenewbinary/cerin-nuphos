@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/thenewbinary/cerin-nuphos/security/advisories/new
+    url: https://github.com/thenewbinary/cerin-platform/security/advisories/new
     about: Report vulnerabilities privately. Do not open a public issue.

@@ -140,7 +140,7 @@ test(
   'every bash the agent runs reads the current conversation token, not the spawn-time one',
   { skip: process.platform === 'win32' },
   () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'nuphos-guard-'))
+    const root = mkdtempSync(path.join(tmpdir(), 'cerin-guard-'))
     const credentials = path.join(root, 'credentials')
 
     try {
@@ -205,7 +205,7 @@ test('an explicit default Keychain override wins over a custom terminal config',
 })
 
 test('tunnel sign-in uses bundled wrappers and each provider’s isolated credential directory', () => {
-  const root = mkdtempSync(path.join(tmpdir(), 'nuphos-login-wrappers-'))
+  const root = mkdtempSync(path.join(tmpdir(), 'cerin-login-wrappers-'))
   // macOS keeps the user's HOME for the Keychain; openab's own HOME stays isolated.
   const prefix =
     process.platform === 'darwin' ? '/usr/bin/env HOME=/Users/me USERPROFILE=/Users/me ' : ''
@@ -247,7 +247,7 @@ test(
   'macOS sign-in without a usable HOME is left to the computer',
   { skip: process.platform !== 'darwin' },
   () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'nuphos-login-wrappers-'))
+    const root = mkdtempSync(path.join(tmpdir(), 'cerin-login-wrappers-'))
 
     try {
       writeFileSync(path.join(root, 'claude-login.mjs'), '')

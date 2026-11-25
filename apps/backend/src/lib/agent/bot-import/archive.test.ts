@@ -6,7 +6,7 @@ import { readBotBundle } from './archive'
 import { botBundleSchema, bundlePath } from './manifest'
 
 const manifest = () => ({
-  format: 'nuphos-bot-bundle',
+  format: 'cerin-bot-bundle',
   version: 1,
   source: { application: 'grok-bot', exportedAt: '2026-11-11T00:00:00Z' },
   bots: [{ key: 'research', name: 'Research', instructions: 'Write cited briefs.' }],
@@ -243,9 +243,9 @@ describe('independent Bot bundle admission', () => {
 
 test('template bundles preserve complete skill packages and require all referenced assets', async () => {
   const value = {
-    format: 'nuphos-bot-bundle',
+    format: 'cerin-bot-bundle',
     version: 1,
-    source: { application: 'nuphos-template', templateId: 'research', version: '1.0.0' },
+    source: { application: 'cerin-template', templateId: 'research', version: '1.0.0' },
     bots: [
       {
         key: 'research',

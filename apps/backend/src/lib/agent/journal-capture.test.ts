@@ -325,7 +325,7 @@ describe('wrapToolsWithJournal', () => {
     )
 
     const output = await (tools.web_search as { execute: ToolExecute }).execute(
-      { query: 'nuphos' },
+      { query: 'cerin' },
       execOpts,
     )
 

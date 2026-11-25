@@ -18,7 +18,7 @@ import type { InputRequest } from './db/pending-decision'
 
 export type { DecisionAnswer }
 
-const SENDER = 'nuphos:decision'
+const SENDER = 'cerin:decision'
 const BODY_EXCERPT = 600
 
 /** "Which regions? → us-east, eu-west", one line per question. */

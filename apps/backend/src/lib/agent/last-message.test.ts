@@ -40,7 +40,7 @@ async function post(
           metadata: {
             version: 1,
             sender: { type: sender.type, id: sender.id, displayName: sender.name },
-            source: sender.type === 'user' ? 'nuphos' : 'agent.thread',
+            source: sender.type === 'user' ? 'cerin' : 'agent.thread',
             ...(sender.type === 'agent' ? { sourceSessionId: sender.id } : {}),
             sentAt: new Date().toISOString(),
           },

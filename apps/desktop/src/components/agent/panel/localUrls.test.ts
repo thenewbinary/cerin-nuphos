@@ -49,7 +49,7 @@ const tool = (toolName: string, output: unknown): Part => ({
 test('turnLocalUrls reads own-machine tools only', () => {
   const parts: Part[] = [
     tool('bash', '  ➜  Local:   http://localhost:5173/'),
-    tool('mcp__nuphos-tools__local_exec', '{"stdout":"serving http://127.0.0.1:8787/\\n"}'),
+    tool('mcp__cerin-tools__local_exec', '{"stdout":"serving http://127.0.0.1:8787/\\n"}'),
     tool('local_terminal', { output: 'Local: http://0.0.0.0:3000' }),
   ]
 

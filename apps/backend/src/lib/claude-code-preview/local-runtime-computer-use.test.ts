@@ -180,7 +180,7 @@ describe('a local agent serves whoever may use its computer', () => {
   test('a teammate who may not use it cannot steer the owner’s conversation, even with no active run', async () => {
     const attached = {
       ...conversation('owner'),
-      claudeCodePreview: { runtimeUrl: 'nuphos-device://placeholder', openabSessionId: 's' },
+      claudeCodePreview: { runtimeUrl: 'cerin-device://placeholder', openabSessionId: 's' },
     } as AgentConversation
 
     await expect(

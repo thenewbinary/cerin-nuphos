@@ -1,4 +1,4 @@
-# @nuphos/design-tokens
+# @cerin/design-tokens
 
 Semantic design tokens for every Cerin surface. Tokens are named for what they
 do (`surface.sheet`, `status.attention`), never for how they look, so a palette

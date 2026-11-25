@@ -16,7 +16,7 @@
     <string name="my_chats">งานของฉัน</string>
     <string name="team_chats">งานของทีม</string>
     <string name="show_dismissed">แสดงรายการที่ปิดไปแล้ว</string>
-    <string name="ask_nuphos">ถาม Cerin ได้ทุกเรื่อง…</string>
+    <string name="ask_cerin">ถาม Cerin ได้ทุกเรื่อง…</string>
     <string name="queue_message">เพิ่มข้อความเข้าคิว…</string>
     <string name="send">ส่ง</string>
     <string name="stop">หยุด</string>

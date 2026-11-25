@@ -152,7 +152,7 @@ test("a question whose recorded id is not the transcript's own is found as its a
   })
   assert.equal(
     locateChatTarget(root, {
-      toolCallId: 'nuphos-1',
+      toolCallId: 'cerin-1',
       question: 'Red or blue?',
       options: ['red', 'blue'],
     }),
@@ -161,7 +161,7 @@ test("a question whose recorded id is not the transcript's own is found as its a
   assert.equal(found, older)
   assert.equal(
     locateChatTarget(root, {
-      toolCallId: 'nuphos-2',
+      toolCallId: 'cerin-2',
       question: 'Red or blue?',
       options: ['green'],
     }),

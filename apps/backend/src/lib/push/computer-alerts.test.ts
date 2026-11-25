@@ -26,7 +26,7 @@ const alerts = () =>
       keyId: 'k',
       teamId: 't',
       privateKey: 'p',
-      bundleId: 'ai.nuphos.ios',
+      bundleId: 'ai.cerin.ios',
       environment: 'sandbox',
     }),
     send: async (_credentials, request) => {

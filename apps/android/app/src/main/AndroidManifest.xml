@@ -18,7 +18,7 @@
     </queries>
 
     <application
-        android:name=".NuphosApplication"
+        android:name=".CerinApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -51,24 +51,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="cerin" android:host="open" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="nuphos" android:host="open" />
-            </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="platform.cerin.ai"
-                    android:pathAdvancedPattern="/teams/[a-fA-F0-9]{24}/agent/[A-Za-z0-9][A-Za-z0-9_-]{0,127}/{0,1}" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="nuphos.ai"
                     android:pathAdvancedPattern="/teams/[a-fA-F0-9]{24}/agent/[A-Za-z0-9][A-Za-z0-9_-]{0,127}/{0,1}" />
             </intent-filter>
             <intent-filter>
@@ -83,14 +70,6 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="google-callback"
-                    android:scheme="nuphos" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="cerin" android:host="linear-callback" />
                 <data android:scheme="cerin" android:host="jira-callback" />
                 <data android:scheme="cerin" android:host="asana-callback" />
@@ -98,18 +77,6 @@
                 <data android:scheme="cerin" android:host="plaud-callback" />
                 <data android:scheme="cerin" android:host="sentry-callback" />
                 <data android:scheme="cerin" android:host="github-callback" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="nuphos" android:host="linear-callback" />
-                <data android:scheme="nuphos" android:host="jira-callback" />
-                <data android:scheme="nuphos" android:host="asana-callback" />
-                <data android:scheme="nuphos" android:host="trello-callback" />
-                <data android:scheme="nuphos" android:host="plaud-callback" />
-                <data android:scheme="nuphos" android:host="sentry-callback" />
-                <data android:scheme="nuphos" android:host="github-callback" />
             </intent-filter>
         </activity>
         <!-- The launcher entry, one per app icon (Account > App icon); exactly one is enabled. -->
@@ -314,7 +281,7 @@
         </provider>
         <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
         <receiver android:name=".notifications.NotificationReplyReceiver" android:exported="false" />
-        <service android:name=".notifications.NuphosMessagingService" android:exported="false">
+        <service android:name=".notifications.CerinMessagingService" android:exported="false">
             <intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT" /></intent-filter>
         </service>
     </application>

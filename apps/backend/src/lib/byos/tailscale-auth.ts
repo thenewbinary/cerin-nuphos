@@ -1,4 +1,4 @@
-import { mintNuphosOidcToken } from '@/lib/byos/aws-oidc'
+import { mintCerinOidcToken } from '@/lib/byos/aws-oidc'
 
 export const TAILSCALE_API = 'https://api.tailscale.com/api/v2'
 
@@ -69,7 +69,7 @@ export async function mintTailscaleAccessToken(
   const body = federated
     ? new URLSearchParams({
         client_id: handle.clientId,
-        jwt: mintNuphosOidcToken(handle.teamId, handle.audience),
+        jwt: mintCerinOidcToken(handle.teamId, handle.audience),
       })
     : new URLSearchParams({
         client_id: handle.clientId,

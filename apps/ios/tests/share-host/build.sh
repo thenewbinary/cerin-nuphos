@@ -7,7 +7,7 @@ sdk="$(xcrun --sdk iphonesimulator --show-sdk-path)"
 xcrun --sdk iphonesimulator swiftc -parse-as-library -sdk "$sdk" -target arm64-apple-ios26.0-simulator main.swift -o "$out/ShareTestHost.app/ShareTestHost"
 cat > "$out/ShareTestHost.app/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?><plist version="1.0"><dict>
-<key>CFBundleIdentifier</key><string>ai.nuphos.ios.sharetesthost1013</string>
+<key>CFBundleIdentifier</key><string>ai.cerin.ios.sharetesthost1013</string>
 <key>CFBundleExecutable</key><string>ShareTestHost</string>
 <key>CFBundleName</key><string>Share test sender</string>
 <key>CFBundlePackageType</key><string>APPL</string>

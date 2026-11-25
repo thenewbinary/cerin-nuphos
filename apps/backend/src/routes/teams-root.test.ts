@@ -8,7 +8,7 @@ import { Hono } from 'hono'
 import { errorHandler } from '@/lib/errors'
 import { useIdentity } from '@/lib/test/doubles/identity'
 
-import type { NuphosTeam } from '@/lib/identity/types'
+import type { CerinTeam } from '@/lib/identity/types'
 import type { AuthVariables } from '@/middleware/auth'
 
 const USER = '62e6289482f5f9d9408f1a79'
@@ -19,7 +19,7 @@ const EMAIL = 'member@example.com'
  * What `createTeamForUser` resolves — role included, mirroring its contract of
  * reporting the creator's seeded membership (covered by its own unit test).
  */
-const CREATED: NuphosTeam = {
+const CREATED: CerinTeam = {
   id: TEAM,
   name: 'Ian’s Workspace',
   avatarUrl: '',

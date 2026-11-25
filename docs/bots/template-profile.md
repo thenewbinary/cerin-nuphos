@@ -2,10 +2,10 @@
 
 The backend accepts a template profile through the existing authenticated Bot bundle preview/apply routes. This is the import foundation for #3736, not a public catalog or a new creation UI.
 
-Use `format: "nuphos-bot-bundle"`, bundle `version: 1`, and this source:
+Use `format: "cerin-bot-bundle"`, bundle `version: 1`, and this source:
 
 ```json
-{"application":"nuphos-template","templateId":"research-desk","version":"1.0.0"}
+{"application":"cerin-template","templateId":"research-desk","version":"1.0.0"}
 ```
 
 The source version and each skill's `version` use numeric `major.minor.patch`. Template IDs and provider references use lowercase, hyphen-separated keys. The profile accepts exactly one Bot, no chats, no memories, and no working-file declarations. Avatar assets and complete skill directories still use the existing archive admission and secret-scanning rules. Each template skill must declare its package version and include its directory, including `SKILL.md`, scripts, references and assets. Declaring a version does not prove a package is maintained or trusted.

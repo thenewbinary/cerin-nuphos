@@ -15,7 +15,7 @@ import { useAgentDb } from '@/lib/test/doubles/agent-db'
 const SENDER = {
   version: 1 as const,
   sender: { type: 'user' as const, id: 'u-ada', displayName: 'Ada' },
-  source: 'nuphos' as const,
+  source: 'cerin' as const,
   sentAt: '2026-09-29T00:00:00.000Z',
 }
 
@@ -397,7 +397,7 @@ test('fresh runtime history retains accepted mid-turn user instructions', () => 
 
   expect(history).toContain('Sent during this turn:\nOnly inspect staging')
   expect(history).toMatch(
-    /Sent during this turn:\n<nuphos_message_metadata>\n.*"displayName":"Ada".*\n<\/nuphos_message_metadata>\n\nAnd skip the cache/u,
+    /Sent during this turn:\n<cerin_message_metadata>\n.*"displayName":"Ada".*\n<\/cerin_message_metadata>\n\nAnd skip the cache/u,
   )
   expect(history).toContain('Assistant continues:')
 })
@@ -406,7 +406,7 @@ test('history carries author envelopes and excludes all pending turn inputs', ()
   const metadata = {
     version: 1,
     sender: { type: 'user', id: 'u1', displayName: 'Yuan' },
-    source: 'nuphos',
+    source: 'cerin',
     sentAt: '2026-09-27T10:00:00Z',
   }
   const messages = [

@@ -75,7 +75,7 @@ export type SlackReplyToolContext = {
   // conversation and is being mirrored into the thread, rather than received
   // from Slack itself. Switches the system-prompt Slack block to the
   // dual-surface variant (routes/agent/chat-channel-messages.ts).
-  nuphosOriginated?: boolean
+  cerinOriginated?: boolean
   // Who sent the message that started this turn. Rendered transcripts show
   // display names only, so the system prompt uses this to hand the model the
   // Slack user id it needs to @-mention the sender.

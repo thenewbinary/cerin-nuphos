@@ -163,7 +163,7 @@ explicitly supplied for the SonarQube connector test.
 When `sonarqube_scan_fixture` is present in the current tool list, the backend
 operator has explicitly enabled that isolated development path. It accepts only
 the bound integration ID and always scans project
-`nuphos-sonarqube-isolated-fixture`; there is no source/path/URL argument.
+`cerin-sonarqube-isolated-fixture`; there is no source/path/URL argument.
 
 1. Call `sonarqube_scan_fixture` once with the selected integration ID.
 2. Poll the returned task with `sonarqube_scan_status` at reasonable intervals.

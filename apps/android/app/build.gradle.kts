@@ -8,56 +8,56 @@ plugins {
 // Firebase is optional for contributor/fixture builds. Release builds must supply configuration.
 if (file("google-services.json").exists()) apply(plugin = "com.google.gms.google-services")
 
-val releaseVersionCode = providers.gradleProperty("nuphosVersionCode").orElse("1").get()
-val releaseVersionName = providers.gradleProperty("nuphosVersionName").orElse("1.0").get()
-val debugApiBaseUrl = providers.gradleProperty("nuphosDebugApiBaseUrl").orElse("https://platform.cerin.ai").get()
+val releaseVersionCode = providers.gradleProperty("cerinVersionCode").orElse("1").get()
+val releaseVersionName = providers.gradleProperty("cerinVersionName").orElse("1.0").get()
+val debugApiBaseUrl = providers.gradleProperty("cerinDebugApiBaseUrl").orElse("https://platform.cerin.ai").get()
 require(debugApiBaseUrl == "https://platform.cerin.ai" || debugApiBaseUrl.matches(Regex("http://127\\.0\\.0\\.1:[0-9]{1,5}")))
 require(debugApiBaseUrl == "https://platform.cerin.ai" || debugApiBaseUrl.substringAfterLast(':').toInt() in 1..65535)
-val debugPushBaseUrl = providers.gradleProperty("nuphosDebugPushBaseUrl").orElse(debugApiBaseUrl).get()
+val debugPushBaseUrl = providers.gradleProperty("cerinDebugPushBaseUrl").orElse(debugApiBaseUrl).get()
 require(debugPushBaseUrl == "https://platform.cerin.ai" || debugPushBaseUrl.matches(Regex("http://127\\.0\\.0\\.1:[0-9]{1,5}"))) {
     "Debug push endpoint must be the production API or an adb-reversed loopback address"
 }
 require(debugPushBaseUrl == "https://platform.cerin.ai" || debugPushBaseUrl.substringAfterLast(':').toInt() in 1..65535)
 require(releaseVersionCode.matches(Regex("[1-9][0-9]{0,9}")) &&
     (releaseVersionCode.toLongOrNull() ?: Long.MAX_VALUE) <= 2100000000L) {
-    "nuphosVersionCode must be an integer from 1 to 2100000000 without leading zeros"
+    "cerinVersionCode must be an integer from 1 to 2100000000 without leading zeros"
 }
 require(releaseVersionName.matches(Regex("[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}"))) {
-    "nuphosVersionName must contain 1-64 filename-safe characters"
+    "cerinVersionName must contain 1-64 filename-safe characters"
 }
 
-val enabledIsolationFlags = providers.gradlePropertiesPrefixedBy("nuphosIsolated").get()
+val enabledIsolationFlags = providers.gradlePropertiesPrefixedBy("cerinIsolated").get()
     .filterValues { it == "true" }.keys
 require(enabledIsolationFlags.size <= 1) {
     "Enable only one isolated fixture flag: ${enabledIsolationFlags.sorted().joinToString()}"
 }
 
 android {
-    namespace = "ai.nuphos.android"
+    namespace = "ai.cerin.android"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "ai.nuphos.android"
+        applicationId = "ai.cerin.android"
         minSdk = 33
         targetSdk = 36
         versionCode = releaseVersionCode.toInt()
         versionName = releaseVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders["contentInputFixtureAuthority"] = "ai.nuphos.content-input-fixture"
+        manifestPlaceholders["contentInputFixtureAuthority"] = "ai.cerin.content-input-fixture"
         buildConfigField("String", "PUSH_BASE_URL", "\"https://platform.cerin.ai\"")
         buildConfigField("String", "API_BASE_URL", "\"https://platform.cerin.ai\"")
     }
 
     buildTypes {
         debug {
-            if (providers.gradleProperty("nuphosIsolatedPersistentShareFixture").orNull == "true") {
+            if (providers.gradleProperty("cerinIsolatedPersistentShareFixture").orNull == "true") {
                 applicationIdSuffix = ".sharepersist1359"
-                manifestPlaceholders["contentInputFixtureAuthority"] = "ai.nuphos.sharepersist1359.test.contentinput"
+                manifestPlaceholders["contentInputFixtureAuthority"] = "ai.cerin.sharepersist1359.test.contentinput"
             }
-            if (providers.gradleProperty("nuphosIsolatedShareFixture").orNull == "true") {
+            if (providers.gradleProperty("cerinIsolatedShareFixture").orNull == "true") {
                 applicationIdSuffix = ".shareinput1355"
-                manifestPlaceholders["contentInputFixtureAuthority"] = "ai.nuphos.shareinput1355.test.contentinput"
+                manifestPlaceholders["contentInputFixtureAuthority"] = "ai.cerin.shareinput1355.test.contentinput"
             }
             buildConfigField("String", "PUSH_BASE_URL", "\"$debugPushBaseUrl\"")
             buildConfigField("String", "API_BASE_URL", "\"$debugApiBaseUrl\"")
@@ -141,8 +141,8 @@ dependencies {
 tasks.withType<Test>().configureEach {
     forkEvery = 1
     maxParallelForks = 1
-    // Off a device, [ai.nuphos.android.model.Words] reads the English strings from here.
-    systemProperty("nuphos.strings", file("src/main/res/values").absolutePath)
+    // Off a device, [ai.cerin.android.model.Words] reads the English strings from here.
+    systemProperty("cerin.strings", file("src/main/res/values").absolutePath)
     inputs.dir("src/main/res").withPathSensitivity(PathSensitivity.RELATIVE)
 }
 

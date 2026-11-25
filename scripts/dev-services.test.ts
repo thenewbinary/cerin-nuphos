@@ -18,19 +18,19 @@ import { desktop, ensureDeps, lockfileDigest, pruneStaleLauncherLogs } from './d
 test('pruneStaleLauncherLogs removes dead owners but preserves active parallel launchers', () => {
   const logDir = mkdtempSync(join(tmpdir(), 'launcher-logs-'))
   const paths = {
-    current: join(logDir, 'nuphos-101-desktop.log'),
-    active: join(logDir, 'nuphos-202-desktop.log'),
-    stale: join(logDir, 'nuphos-303-desktop.log'),
-    otherService: join(logDir, 'nuphos-303-backend.log'),
+    current: join(logDir, 'cerin-101-desktop.log'),
+    active: join(logDir, 'cerin-202-desktop.log'),
+    stale: join(logDir, 'cerin-303-desktop.log'),
+    otherService: join(logDir, 'cerin-303-backend.log'),
     otherWorktree: join(logDir, 'feature-303-desktop.log'),
-    legacy: join(logDir, 'nuphos-desktop.log'),
+    legacy: join(logDir, 'cerin-desktop.log'),
   }
 
   for (const path of Object.values(paths)) writeFileSync(path, '')
 
   pruneStaleLauncherLogs({
     logDir,
-    worktreeId: 'nuphos',
+    worktreeId: 'cerin',
     serviceName: 'desktop',
     currentPid: 101,
     isAlive: (pid) => pid === 202,

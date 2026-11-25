@@ -8,8 +8,8 @@ import { newerRuntimeVersion, runtimeVersionAtLeast, stableRuntimeVersion } from
 type FetchInput = string | URL | Request
 
 test.each([
-  { env: undefined, repo: 'thenewbinary/cerin-nuphos' },
-  { env: '', repo: 'thenewbinary/cerin-nuphos' },
+  { env: undefined, repo: 'thenewbinary/cerin-platform' },
+  { env: '', repo: 'thenewbinary/cerin-platform' },
   { env: 'example/cerin-releases', repo: 'example/cerin-releases' },
 ])('CLI discovery uses repo $repo with env $env', async ({ env, repo }) => {
   const { latestCliRelease, resetRuntimeReleaseCache } = await import('./runtime-release')
@@ -107,7 +107,7 @@ test('runtime discovery skips other components, follows pages and preserves the 
         ],
         {
           headers: {
-            link: '<https://api.github.com/repos/nuphos/nuphos/releases?page=2>; rel="next"',
+            link: '<https://api.github.com/repos/thenewbinary/cerin-platform/releases?page=2>; rel="next"',
           },
         },
       ),
@@ -115,7 +115,7 @@ test('runtime discovery skips other components, follows pages and preserves the 
     ]
     expect(await latestRuntimeRelease('codex', true)).toEqual({
       version: '0.1.10',
-      url: 'https://github.com/nuphos/nuphos/releases/tag/runtime-v0.1.10',
+      url: 'https://github.com/thenewbinary/cerin-platform/releases/tag/runtime-v0.1.10',
       body: image('0.1.10'),
     })
     expect(requests).toHaveLength(2)

@@ -54,16 +54,14 @@ enum SessionMentionTests {
 
     private static func showsKnownLinksByName() {
         let team = "0123456789abcdef01234567"
+        let link = "https://platform.cerin.ai/teams/\(team)/agent/bot-a"
         let titles = ["bot-a": "Sign-in [beta]"]
-        for host in ["platform.cerin.ai", "nuphos.ai"] {
-            let link = "https://\(host)/teams/\(team)/agent/bot-a"
-            precondition(SessionMention.named("Ask \(link) now", title: { titles[$0] })
-                == "Ask [@Sign-in \\[beta\\]](\(link)) now")
-            precondition(SessionMention.named("\(link)", title: { titles[$0] }) == "[@Sign-in \\[beta\\]](\(link))")
-            // Unknown conversations and links already written as markdown keep their text.
-            precondition(SessionMention.named("see https://\(host)/teams/\(team)/agent/other", title: { titles[$0] })
-                == "see https://\(host)/teams/\(team)/agent/other")
-            precondition(SessionMention.named("[here](\(link))", title: { titles[$0] }) == "[here](\(link))")
-        }
+        precondition(SessionMention.named("Ask \(link) now", title: { titles[$0] })
+            == "Ask [@Sign-in \\[beta\\]](\(link)) now")
+        precondition(SessionMention.named("\(link)", title: { titles[$0] }) == "[@Sign-in \\[beta\\]](\(link))")
+        // Unknown conversations and links already written as markdown keep their text.
+        precondition(SessionMention.named("see https://platform.cerin.ai/teams/\(team)/agent/other", title: { titles[$0] })
+            == "see https://platform.cerin.ai/teams/\(team)/agent/other")
+        precondition(SessionMention.named("[here](\(link))", title: { titles[$0] }) == "[here](\(link))")
     }
 }

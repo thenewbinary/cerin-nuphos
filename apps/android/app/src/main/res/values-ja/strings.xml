@@ -16,7 +16,7 @@
     <string name="my_chats">自分のタスク</string>
     <string name="team_chats">チームのタスク</string>
     <string name="show_dismissed">非表示にした項目を表示</string>
-    <string name="ask_nuphos">Cerin に何でも聞いてください…</string>
+    <string name="ask_cerin">Cerin に何でも聞いてください…</string>
     <string name="queue_message">メッセージをキューに追加…</string>
     <string name="send">送信</string>
     <string name="stop">停止</string>

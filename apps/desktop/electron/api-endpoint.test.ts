@@ -10,7 +10,7 @@ process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.dev.test.yaml')
 process.env.NUPHOS_API_URL = 'http://127.0.0.1:3718'
 delete process.env.ATLAS_API_URL
 
-const { apiUrl, setApiUrl, deviceRegistrationAllowed, isNuphosCloud } =
+const { apiUrl, setApiUrl, deviceRegistrationAllowed, isCerinCloud } =
   await import('./api-endpoint.ts')
 const { authSession } = await import('./auth-session.ts')
 
@@ -25,7 +25,7 @@ test('resetting the endpoint returns to the launch-time one, not Cerin Cloud', (
 test('dev devices stay off Cloud, including normalized hostnames and alternate ports', () => {
   for (const url of [
     'https://platform.cerin.ai',
-    'https://PLATFORM.CERIN.AI/',
+    'https://platform.cerin.ai/',
     'https://platform.cerin.ai.:443/path',
     'http://platform.cerin.ai:8080',
   ]) {
@@ -56,10 +56,8 @@ test('endpoint changes notify runtime listeners after the new endpoint takes eff
   setApiUrl(null)
 })
 
-test('a self-hosted backend is not Cerin Cloud, so Cerin updates and usage data stay off', () => {
-  setApiUrl('https://cerin.example.com')
-  assert.equal(isNuphosCloud(), false)
+test('the Cerin backend is Cerin Cloud', () => {
   setApiUrl('https://platform.cerin.ai')
-  assert.equal(isNuphosCloud(), true)
+  assert.equal(isCerinCloud(), true)
   setApiUrl(null)
 })

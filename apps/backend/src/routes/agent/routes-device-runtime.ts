@@ -31,7 +31,7 @@ import { agent } from './router'
 import type { LocalRuntimeActivityPage } from '@/lib/agent/devices/local-runtime/activity'
 import type { RuntimeTunnel, TunnelHolderDeps } from '@/lib/agent/devices/local-runtime/holder'
 import type { AgentDevice } from '@/lib/agent/devices/store'
-import type { NuphosTeamMember } from '@/lib/identity'
+import type { CerinTeamMember } from '@/lib/identity'
 import type { AuthVariables } from '@/middleware/auth'
 import type { Context } from 'hono'
 import type { WSContext } from 'hono/ws'
@@ -45,7 +45,7 @@ export type DeviceRuntimeRouteDependencies = {
     options: { limit: number; cursor?: string },
   ) => Promise<LocalRuntimeActivityPage>
   conversationTitlesFor: (sessionIds: string[]) => Promise<Map<string, string>>
-  getTeamMembers: (teamId: string) => Promise<NuphosTeamMember[]>
+  getTeamMembers: (teamId: string) => Promise<CerinTeamMember[]>
 }
 
 function defaultDependencies(): DeviceRuntimeRouteDependencies {

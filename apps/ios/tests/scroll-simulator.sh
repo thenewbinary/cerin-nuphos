@@ -4,7 +4,7 @@ set -euo pipefail
 # Run after building/installing the Debug app. This fixture never contacts
 # the backend or modifies the signed-in user's conversations.
 device=${1:-booted}
-launch=$(xcrun simctl launch --terminate-running-process "$device" ai.nuphos.ios -scroll-regression)
+launch=$(xcrun simctl launch --terminate-running-process "$device" ai.cerin.ios -scroll-regression)
 pid=${launch##*: }
 for attempt in {1..60}; do
   logs=$(xcrun simctl spawn "$device" log show --last 2m --style compact \

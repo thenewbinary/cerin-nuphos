@@ -42,7 +42,7 @@ test('persists under the legacy key', () => {
   const storage = fakeStorage()
 
   writeDefaultPermissionMode(storage, 'bypass')
-  assert.deepEqual(storage.dump(), { 'nuphos.agentPermissionMode': 'bypass' })
+  assert.deepEqual(storage.dump(), { 'cerin.agentPermissionMode': 'bypass' })
 })
 
 test('a throwing storage fails safe to auto and swallows writes', () => {

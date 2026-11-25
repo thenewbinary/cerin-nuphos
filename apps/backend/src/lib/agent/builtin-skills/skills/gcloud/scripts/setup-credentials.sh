@@ -96,8 +96,8 @@ safe_config_name="$(printf '%s' "${service_account_id:-${projectId}-${serviceAcc
 if [ -z "$safe_config_name" ]; then
   safe_config_name="default"
 fi
-config_name="nuphos-${safe_config_name}"
-token_path="$token_dir/nuphos-access-token-${safe_config_name}"
+config_name="cerin-${safe_config_name}"
+token_path="$token_dir/cerin-access-token-${safe_config_name}"
 config_path="$config_dir/config_${config_name}"
 active_config_path="$token_dir/active_config"
 

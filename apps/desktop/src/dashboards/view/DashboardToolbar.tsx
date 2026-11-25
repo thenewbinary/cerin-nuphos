@@ -12,8 +12,8 @@ import { RANGE_PRESETS, rangeLabel } from './helpers'
 import { VisibilityMenu } from './VisibilityMenu'
 
 import type {
-  NuphosDashboard,
-  NuphosDashboardDetail,
+  CerinDashboard,
+  CerinDashboardDetail,
   DashboardViewRange,
   DashboardGranularity,
   DashboardRangePreset,
@@ -25,7 +25,7 @@ type CustomRange = { periodStart: string; periodEnd: string } | null
 type Props = {
   teamId: string
   onDefaultSaved: (id: string) => Promise<void>
-  detail: NuphosDashboardDetail | null
+  detail: CerinDashboardDetail | null
   viewRange?: DashboardViewRange
   customRange: CustomRange
   setCustomRange: Dispatch<SetStateAction<CustomRange>>
@@ -42,7 +42,7 @@ type Props = {
   onAddPanel: () => void
   openPanelAssistant: () => void
   /** A move between Personal and Team, or a new cadence. */
-  onSaved: (dashboard: NuphosDashboard) => void
+  onSaved: (dashboard: CerinDashboard) => void
 }
 
 export function DashboardToolbar({

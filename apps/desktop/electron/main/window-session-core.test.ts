@@ -153,7 +153,7 @@ test('the number of windows reopened is capped', () => {
 })
 
 test('a session written to disk reads back the same', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-window-session-'))
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-window-session-'))
   const file = path.join(root, 'nested', 'window-session.json')
 
   try {

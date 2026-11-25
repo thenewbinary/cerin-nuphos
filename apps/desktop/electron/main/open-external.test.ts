@@ -41,7 +41,6 @@ test('refuses other schemes and malformed URLs', async () => {
     'vscode://file/tmp/x',
     'ms-msdt:/id PCWDiagnostic',
     'cerin://open?url=https://platform.cerin.ai',
-    'cerin://open?url=https://platform.cerin.ai'.replace('cerin:', 'nuphos:'),
     ' file:///etc/passwd',
     '//example.com',
     'not a url',

@@ -69,7 +69,7 @@ export async function listClustersForTeam(
       // the partition field — treat them as China.
       const handle = await assumeRoleWithWebIdentity(b.roleArn, b.providerId, teamId, {
         site: b.site ?? 'china',
-        sessionName: `nuphos-list-${accountId}`,
+        sessionName: `cerin-list-${accountId}`,
       })
       const { clusters, errors } = await listTkeClusters(handle)
 
@@ -101,7 +101,7 @@ export async function listClustersForTeam(
       // the partition field — treat them as China.
       const handle = await assumeAliyunRoleWithOidc(b.roleArn, b.oidcProviderArn, teamId, {
         site: b.site ?? 'china',
-        sessionName: `nuphos-list-${accountId}`,
+        sessionName: `cerin-list-${accountId}`,
       })
       const { clusters, errors } = await listAckClusters(handle)
 
@@ -130,7 +130,7 @@ export async function listClustersForTeam(
       // OIDC web-identity federation: mint a per-team token and assume the
       // customer's role for short-lived creds.
       const handle = await assumeRoleWithOidc(b.roleTrn, teamId, {
-        sessionName: `nuphos-list-${accountId}`,
+        sessionName: `cerin-list-${accountId}`,
       })
       const regions = await getVolcRegions(handle)
       const { clusters, errors } = await listVkeClusters(handle, regions)

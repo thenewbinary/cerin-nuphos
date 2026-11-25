@@ -29,7 +29,7 @@ export type DashboardRefreshCadence = 'daily' | 'weekly' | 'monthly'
 /** Who sees a dashboard: only its creator, or the whole team. Absent means team. */
 export type DashboardVisibility = 'personal' | 'team'
 
-export type NuphosDashboard = {
+export type CerinDashboard = {
   _id: ObjectId
   teamId: ObjectId
   name: string
@@ -56,8 +56,8 @@ export type NuphosDashboard = {
   updatedAt: Date
 }
 
-export const nuphosDashboards = (): Collection<NuphosDashboard> =>
-  db().collection<NuphosDashboard>('cost_dashboards')
+export const cerinDashboards = (): Collection<CerinDashboard> =>
+  db().collection<CerinDashboard>('cost_dashboards')
 
 export type DashboardPanelKind = 'chart' | 'scalar' | 'table'
 

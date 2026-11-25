@@ -30,11 +30,11 @@ export function normalizeLarkPairCode(input: string): string | null {
 
 export async function createLarkPairCode(data: {
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
 }): Promise<{ code: string; expiresAt: Date }> {
   // One live code per member: drop any prior one so the desktop only ever shows
   // the single code the DM handler will accept.
-  await larkPairCodes().deleteMany({ teamId: data.teamId, nuphosUserId: data.nuphosUserId })
+  await larkPairCodes().deleteMany({ teamId: data.teamId, cerinUserId: data.cerinUserId })
   const now = new Date()
   const expiresAt = new Date(now.getTime() + PAIR_CODE_TTL_MS)
 
@@ -45,7 +45,7 @@ export async function createLarkPairCode(data: {
       await larkPairCodes().insertOne({
         code,
         teamId: data.teamId,
-        nuphosUserId: data.nuphosUserId,
+        cerinUserId: data.cerinUserId,
         createdAt: now,
         expiresAt,
       })
@@ -64,12 +64,12 @@ export async function createLarkPairCode(data: {
 export async function consumeLarkPairCode(data: {
   code: string
   teamId: string
-}): Promise<{ nuphosUserId: string } | null> {
+}): Promise<{ cerinUserId: string } | null> {
   const doc = await larkPairCodes().findOneAndDelete({
     code: data.code,
     teamId: data.teamId,
     expiresAt: { $gt: new Date() },
   })
 
-  return doc ? { nuphosUserId: doc.nuphosUserId } : null
+  return doc ? { cerinUserId: doc.cerinUserId } : null
 }

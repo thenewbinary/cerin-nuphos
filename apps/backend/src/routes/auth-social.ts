@@ -61,7 +61,7 @@ socialAuth.get('/login', async (c) => {
 socialAuth.route('/device', deviceApproval)
 
 socialAuth.get('/session', async (c) => {
-  const token = getCookie(c, '__Host-nuphos-social')
+  const token = getCookie(c, '__Host-cerin-social')
   const identity = token ? await authenticateToken(token) : null
 
   if (!identity) throw new AppError(401, 'unauthorized', 'Sign in first')
@@ -89,7 +89,7 @@ socialAuth.get('/:provider/start', async (c) => {
     firstTouch: getCookie(c, FIRST_TOUCH_COOKIE),
     expiresAt: new Date(Date.now() + 600_000),
   })
-  setCookie(c, '__Host-nuphos-oauth', state, {
+  setCookie(c, '__Host-cerin-oauth', state, {
     httpOnly: true,
     secure: true,
     sameSite: 'None',
@@ -119,7 +119,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
   const provider = parseProvider(c.req.param('provider'))
   const input = c.req.method === 'POST' ? await c.req.parseBody() : c.req.query()
   const state = input.state
-  const cookie = getCookie(c, '__Host-nuphos-oauth')
+  const cookie = getCookie(c, '__Host-cerin-oauth')
 
   if (typeof state !== 'string' || !cookie || !safeEqualStr(state, cookie))
     throw new AppError(400, 'invalid_state', 'Sign-in expired. Please try again.')
@@ -129,7 +129,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
     expiresAt: { $gt: new Date() },
   })
 
-  deleteCookie(c, '__Host-nuphos-oauth', { path: '/', secure: true })
+  deleteCookie(c, '__Host-cerin-oauth', { path: '/', secure: true })
   if (!attempt) throw new AppError(400, 'invalid_state', 'Sign-in expired. Please try again.')
   const delivery = attempt.handle ? await findPendingNativeSession(attempt.handle) : null
 
@@ -158,7 +158,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
     }
     const session = await startSession(c, identity.user)
 
-    setCookie(c, '__Host-nuphos-social', session.token, {
+    setCookie(c, '__Host-cerin-social', session.token, {
       httpOnly: true,
       secure: true,
       sameSite: 'Lax',

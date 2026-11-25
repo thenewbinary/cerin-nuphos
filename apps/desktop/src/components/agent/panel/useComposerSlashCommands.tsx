@@ -128,7 +128,7 @@ export function useComposerSlashCommands(
 
     close()
     if (!el) return
-    if (option.kind === 'nuphos') {
+    if (option.kind === 'cerin') {
       el.textContent = ''
       onEdited()
       option.action.run()

@@ -165,7 +165,7 @@ auth.post('/native/session/redeem', async (c) => {
   return c.json(await startSession(c, user))
 })
 
-// `nuphos agent --join`: a one-time token from the device's owner becomes a
+// `cerin agent --join`: a one-time token from the device's owner becomes a
 // credential for this device alone. No session is involved, so this stays public.
 const deviceJoinSchema = z.object({
   token: z.string().min(1).max(200),

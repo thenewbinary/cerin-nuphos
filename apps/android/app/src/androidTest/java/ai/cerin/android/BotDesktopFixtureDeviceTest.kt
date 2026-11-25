@@ -1,0 +1,247 @@
+package ai.cerin.android
+
+import android.content.Context
+import android.content.ContextWrapper
+import android.graphics.Bitmap
+import androidx.activity.ComponentActivity
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import ai.cerin.android.data.Http
+import ai.cerin.android.data.TokenStore
+import ai.cerin.android.model.Team
+import ai.cerin.android.session.AgentStore
+import ai.cerin.android.session.AiAccess
+import ai.cerin.android.session.AuthSession
+import ai.cerin.android.ui.LocalAgentStore
+import ai.cerin.android.ui.LocalAuthSession
+import ai.cerin.android.ui.chats.ChannelScreen
+import ai.cerin.android.ui.theme.CerinTheme
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.After
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.File
+
+/** Synthetic Bot chats only: the header's desktop button follows the Bot's runtime. Never touches a live API. */
+@RunWith(AndroidJUnit4::class)
+class BotDesktopFixtureDeviceTest {
+    @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+    private val inst = InstrumentationRegistry.getInstrumentation()
+    private val token = "synthetic-bot-desktop"
+    private val team = Team("aaaaaaaaaaaaaaaaaaaaaaaa", "Fixture A")
+    private lateinit var store: AgentStore
+    private lateinit var auth: AuthSession
+    private lateinit var tokens: TokenStore
+    private lateinit var original: OkHttpClient
+    private var savedAccess: Any? = null
+    private var historicalPosts = false
+    @Volatile private var denyBotTask = false
+    private val botReads = java.util.concurrent.atomic.AtomicInteger()
+    @Suppress("UNCHECKED_CAST") private fun access() = AiAccess::class.java.getDeclaredField("state")
+        .also { it.isAccessible = true }.get(AiAccess) as MutableState<Any?>
+
+    /** chat-box is the 1:1 of a Bot whose Box has a desktop; chat-plain's Bot has none. */
+    private data class Bot(val id: String, val title: String, val avatar: String, val desktop: Boolean, val asked: String, val answer: String)
+    private val bots = mapOf(
+        "chat-box" to Bot("bot-box", "Sign-in helper", "05-rembrandt", true,
+            "Sign in to the staging dashboard for me.", "I opened the sign-in page in a browser on my Box. Open my desktop to type your password."),
+        "chat-plain" to Bot("bot-plain", "Release notes", "02-leonardo", false,
+            "Draft the 0.26 release notes.", "Here is a first draft of the 0.26 release notes."),
+    )
+
+    private fun chat(id: String, bot: Bot): String {
+        fun post(n: String, sender: String, text: String, at: String) =
+            """{"id":"$n","role":"user","metadata":{"version":1,"sender":$sender,"sentAt":"$at"${if (n == "a") ""","sourceSessionId":"${bot.id}"""" else ""}},"parts":[{"type":"text","text":"$text"}]}"""
+        val posts = (if (historicalPosts) (0..39).map { index ->
+            post("history-$index", """{"type":"user","id":"viewer","displayName":"Preview User"}""",
+                "Historical post $index. A retained conversation position should survive opening the Bot Task.", "2026-11-08T09:38:00Z")
+        } else emptyList()) + listOf(
+            post("u", """{"type":"user","id":"viewer","displayName":"Preview User"}""", bot.asked, "2026-11-08T09:38:00Z"),
+            post("a", """{"type":"agent","id":"${bot.id}","displayName":"${bot.title}"}""", bot.answer, "2026-11-08T09:39:00Z"),
+        )
+        return """{"sessionId":"$id","kind":"channel","title":"${bot.title}","isOwner":true,"transcriptUpdatedAt":"t","messageCount":2,"activitySeq":2,"readSeq":2,
+            "faces":[{"id":"${bot.id}","name":"${bot.title}","agent":{"avatar":"${bot.avatar}"}}],"messages":[${posts.joinToString(",")}]}"""
+    }
+    private fun bot(bot: Bot): String {
+        val desktop = if (bot.desktop) ""","canOpenDesktop":true""" else ""
+        return """{"sessionId":"${bot.id}","title":"${bot.title}","avatar":"${bot.avatar}","isOwner":true,"canManage":true,"readOnly":false,"messages":[
+            {"id":"task-prompt","role":"user","parts":[{"type":"text","text":"Draft the 0.26 release notes."}]},
+            {"id":"task-answer","role":"assistant","parts":[{"type":"text","text":"Release notes draft: Shared Bot Tasks keep the conversation and working context together."}]}],
+            "runtimeState":{"schemaVersion":2,"state":"idle","phase":"idle","actions":{"send":true}$desktop}}"""
+    }
+
+    @Before fun before() {
+        val target = inst.targetContext
+        val context = object : ContextWrapper(target) {
+            override fun getSharedPreferences(name: String, mode: Int) = super.getSharedPreferences("bot-desktop-fixture", mode)
+        }
+        val field = Http::class.java.getDeclaredField("client").also { it.isAccessible = true }
+        original = field.get(null) as OkHttpClient
+        field.set(null, OkHttpClient.Builder().addInterceptor { chain ->
+            val request = chain.request()
+            val path = request.url.encodedPath
+            val chatId = bots.keys.firstOrNull { path.endsWith("/agent/conversations/$it") }
+            val ofBot = bots.values.firstOrNull { path.endsWith("/agent/conversations/${it.id}") }
+            if (ofBot != null) {
+                botReads.incrementAndGet()
+                if (denyBotTask) return@addInterceptor Response.Builder().request(request).protocol(Protocol.HTTP_1_1)
+                    .code(403).message("fixture").body("""{"error":{"message":"Session access denied"}}""".toResponseBody(Http.jsonMedia)).build()
+            }
+            val body = when {
+                chatId != null -> chat(chatId, bots.getValue(chatId))
+                ofBot != null -> bot(ofBot)
+                path.endsWith("/agents") -> bots.entries.first { path.contains("/${it.key}/") }.value
+                    .let { """{"agents":[{"sessionId":"${it.id}","title":"${it.title}","ownerId":"${if (denyBotTask) "another-viewer" else "viewer"}"}]}""" }
+                path.endsWith("/ai-consent") -> """{"version":"${ai.cerin.android.data.AccountApi.AI_CONSENT_VERSION}","accepted":true}"""
+                path.endsWith("/auth/me") -> """{"id":"viewer","email":"viewer@example.com","name":"Preview User"}"""
+                path.endsWith("/agent/conversations") -> """{"conversations":[],"hasMore":false}"""
+                path.endsWith("/resources") -> """{"resources":[]}"""
+                path.endsWith("/read") -> """{"activitySeq":2,"readSeq":2,"unread":false}"""
+                else -> "{}"
+            }
+            Response.Builder().request(request).protocol(Protocol.HTTP_1_1).code(200).message("fixture")
+                .body(body.toResponseBody(Http.jsonMedia)).build()
+        }.build())
+        val app = target.applicationContext as CerinApplication
+        val authContext = object : ContextWrapper(app) {
+            override fun getApplicationContext(): Context = this
+            override fun getSharedPreferences(name: String, mode: Int) = super.getSharedPreferences("bot_desktop_fixture_$name", mode)
+        }
+        tokens = TokenStore(authContext)
+        tokens.write(token)
+        inst.runOnMainSync {
+            savedAccess = access().value
+            // Signed in as the Bot's owner, through the app's own restore, since the viewer needs a user.
+            auth = AuthSession(app, tokens); auth.restore()
+        }
+        var ready = false
+        repeat(100) { if (!ready) { inst.runOnMainSync { ready = auth.user != null && auth.aiAllowed }; Thread.sleep(50) } }
+        assertTrue("The synthetic sign-in did not finish", ready)
+        inst.runOnMainSync {
+            store = AgentStore(token, context)
+            store.acceptMemberships(listOf(team), team.id)
+        }
+    }
+
+    @After fun after() {
+        inst.runOnMainSync {
+            if (::store.isInitialized) store.disposeForConsent()
+            if (::auth.isInitialized) auth.signOut()
+            access().value = savedAccess
+        }
+        if (::tokens.isInitialized) tokens.clear()
+        Http::class.java.getDeclaredField("client").also { it.isAccessible = true }.set(null, original)
+    }
+
+    private fun render(chatId: String, taskNavigation: Boolean = false) {
+        compose.setContent {
+            CerinTheme(darkTheme = false) {
+                CompositionLocalProvider(LocalAgentStore provides store, LocalAuthSession provides auth) {
+                    if (!taskNavigation) ChannelScreen(chatId, onBack = { fail("The chat closed itself") })
+                    else {
+                        val nav = rememberNavController()
+                        NavHost(nav, startDestination = "chat") {
+                            composable("chat") {
+                                ChannelScreen(chatId, onBack = { fail("The retained chat closed itself") },
+                                    onOpenTask = { id -> nav.navigate("task/$id") })
+                            }
+                            composable("task/{id}") { entry ->
+                                ai.cerin.android.ui.chat.ConversationScreen(entry.arguments!!.getString("id")!!,
+                                    fresh = false, onBack = { nav.popBackStack() }, nav = nav)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        compose.waitUntil(5_000) { compose.onAllNodesWithText(bots.getValue(chatId).answer).fetchSemanticsNodes().isNotEmpty() }
+    }
+    private val button = hasContentDescription("Desktop") and hasClickAction()
+
+    @Test fun channelMembershipDoesNotExposePrivateBotTask() {
+        denyBotTask = true
+        render("chat-plain", taskNavigation = true)
+        compose.waitUntil(5_000) { botReads.get() > 0 && store.session("bot-plain", "Release notes")?.loadError != null }
+        compose.onNodeWithTag("bot-task-entry").assertDoesNotExist()
+        compose.onNodeWithTag("channel-transcript").assertExists()
+    }
+
+    @Test fun botTaskReturnsToOriginalChatScrollAndDraft() {
+        historicalPosts = true
+        val app = inst.targetContext.applicationContext as CerinApplication
+        kotlinx.coroutines.runBlocking { app.incomingShares.bindAccount(auth.user!!.id) }
+        render("chat-plain", taskNavigation = true)
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("bot-task-entry").fetchSemanticsNodes().isNotEmpty() }
+        compose.waitUntil(8_000) { compose.onAllNodes(hasSetTextAction()).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNode(hasSetTextAction()).performTextInput("Retained Bot draft")
+        androidx.test.espresso.Espresso.closeSoftKeyboard()
+        compose.onNodeWithTag("channel-transcript").performScrollToIndex(12)
+        compose.waitForIdle()
+        fun position() = compose.onNodeWithTag("channel-transcript").fetchSemanticsNode()
+            .config[SemanticsProperties.VerticalScrollAxisRange].value()
+        val before = position()
+        assertTrue(before > 5)
+        capture("5-bot-task-entry")
+        compose.onNodeWithTag("bot-task-entry").performClick()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("channel-transcript").fetchSemanticsNodes().isEmpty() }
+        compose.waitUntil(5_000) { store.session("bot-plain", "Release notes")?.readAllowed == true }
+        compose.onNodeWithText("Release notes draft: Shared Bot Tasks keep the conversation and working context together.").assertExists()
+        compose.onNodeWithText(inst.targetContext.getString(R.string.chat_resources_unavailable)).assertDoesNotExist()
+        compose.waitUntil(5_000) { compose.onAllNodes(hasSetTextAction()).fetchSemanticsNodes().isNotEmpty() }
+        capture("6-bot-own-task")
+        compose.onNodeWithContentDescription(inst.targetContext.getString(R.string.chat_task_actions)).performClick()
+        compose.onNodeWithText(inst.targetContext.getString(R.string.chat_share)).assertDoesNotExist()
+        // This deep-link fixture did not load the Bots catalog: archive stays disabled rather than using the Task endpoint.
+        compose.onNodeWithText(inst.targetContext.getString(R.string.chat_menu_archive)).assertIsNotEnabled()
+        androidx.test.espresso.Espresso.pressBack()
+        compose.onNodeWithContentDescription(inst.targetContext.getString(R.string.chat_back)).performClick()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("channel-transcript").fetchSemanticsNodes().isNotEmpty() }
+        compose.waitForIdle()
+        assertEquals(before, position(), 0.05f)
+        compose.onNode(hasSetTextAction()).assertTextContains("Retained Bot draft")
+        capture("7-task-return-scroll-and-draft")
+    }
+
+    @Test fun aBotWithoutADesktopHasNoButton() {
+        render("chat-plain")
+        // Long enough for the Bot's own read to land.
+        compose.mainClock.advanceTimeBy(2_000)
+        compose.waitForIdle()
+        assertTrue(compose.onAllNodes(button).fetchSemanticsNodes().isEmpty())
+        capture("2-no-desktop")
+    }
+
+    @Test fun aBotWithADesktopOpensItFromTheHeader() {
+        render("chat-box")
+        compose.waitUntil(5_000) { compose.onAllNodes(button).fetchSemanticsNodes().isNotEmpty() }
+        capture("3-desktop-button")
+        compose.onNode(button).performClick()
+        // The Task screen's own viewer, for the Bot's session.
+        compose.waitUntil(5_000) { compose.onAllNodesWithText("Close").fetchSemanticsNodes().isNotEmpty() }
+        capture("4-desktop-viewer")
+    }
+
+    /** Screenshots for review, only with `-e botDesktopShots true`. */
+    private fun capture(name: String) {
+        if (InstrumentationRegistry.getArguments().getString("botDesktopShots") != "true") return
+        compose.waitForIdle()
+        Thread.sleep(500)
+        val directory = File(inst.targetContext.getExternalFilesDir(null), "bot-desktop").apply { mkdirs() }
+        val bitmap = inst.uiAutomation.takeScreenshot() ?: error("Screenshot unavailable")
+        File(directory, "$name.png").outputStream().use { check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)) }
+    }
+}

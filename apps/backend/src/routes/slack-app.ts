@@ -225,7 +225,7 @@ export async function persistSlackBinding(
     slackWorkspaceId: draft.slackTeamId,
     teamId: teamId.toHexString(),
     installerSlackUserId: draft.installerSlackUserId,
-    requesterNuphosUserId: requesterUserId,
+    requesterCerinUserId: requesterUserId,
   })
 
   // Only DM the installer on a fresh install. Reinstall reuses this callback

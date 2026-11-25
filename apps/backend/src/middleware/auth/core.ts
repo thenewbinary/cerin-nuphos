@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 import type { AuthVariables, TeamAuthVariables } from '@/middleware/auth/types'
 import type { MiddlewareHandler } from 'hono'
 
@@ -97,10 +97,10 @@ export function requireTeamMember(): MiddlewareHandler<{ Variables: TeamAuthVari
 /** The roles a team-role gate admits, readable off the middleware so the route
  *  table test can check every route's gate without calling it. */
 export type TeamRoleGate = MiddlewareHandler<{ Variables: TeamAuthVariables }> & {
-  teamRoles: readonly NuphosTeamRole[]
+  teamRoles: readonly CerinTeamRole[]
 }
 
-export function requireTeamRole(...allowed: NuphosTeamRole[]): TeamRoleGate {
+export function requireTeamRole(...allowed: CerinTeamRole[]): TeamRoleGate {
   const gate: MiddlewareHandler<{ Variables: TeamAuthVariables }> = async (c, next) => {
     const role = c.get('teamRole')
 

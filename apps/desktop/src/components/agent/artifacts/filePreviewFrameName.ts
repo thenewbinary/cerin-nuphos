@@ -3,4 +3,4 @@
  * of a frame by this name (electron/main/file-preview-guard.ts), whose test
  * checks the two agree. Kept apart so that test needs nothing from the DOM.
  */
-export const FILE_PREVIEW_FRAME_NAME = 'nuphos-file-preview'
+export const FILE_PREVIEW_FRAME_NAME = 'cerin-file-preview'

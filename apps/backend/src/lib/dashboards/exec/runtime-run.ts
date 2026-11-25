@@ -177,12 +177,12 @@ function readJobResult(raw: Record<string, unknown>): JobResult {
 export async function runOnRuntime(args: {
   runtime: PanelRuntime
   jobId: string
-  nuphosToken: string
+  cerinToken: string
   code: string
   params: Record<string, unknown>
   panel: DashboardPanel
 }): Promise<{ output: DashboardPanelSnapshot['output']; durationMs: number }> {
-  const { runtime, jobId, nuphosToken, code, params, panel } = args
+  const { runtime, jobId, cerinToken, code, params, panel } = args
   const backendUrl = runtime.endpoint.backendUrl ?? runtimeBackendUrl(runtime.endpoint.external)
 
   if (!backendUrl) throw new PanelExecError('runtime_unavailable', PUBLIC_URL_MISSING_MESSAGE)
@@ -195,7 +195,7 @@ export async function runOnRuntime(args: {
         jobId,
         job: PANEL_JOB,
         stdin: JSON.stringify({ runner: await runnerSource(), script: code, params }),
-        env: { NUPHOS_BACKEND_URL: backendUrl, NUPHOS_TOKEN: nuphosToken },
+        env: { NUPHOS_BACKEND_URL: backendUrl, NUPHOS_TOKEN: cerinToken },
         timeoutMs: config.dashboards.execTimeoutMs,
         maxStdoutBytes: config.dashboards.maxOutputBytes,
       },
@@ -217,7 +217,7 @@ export async function runOnRuntime(args: {
     )
   }
   if (result.exitCode !== 0) {
-    const diagnostic = await parseRunnerError(result.stdout, [nuphosToken])
+    const diagnostic = await parseRunnerError(result.stdout, [cerinToken])
     const exitMessage =
       result.exitCode === null || result.exitCode < 0
         ? 'panel process was terminated'

@@ -1,5 +1,5 @@
 {
-  "name": "nuphos-codex-acp-runtime",
+  "name": "cerin-codex-acp-runtime",
   "private": true,
   "dependencies": {
     "@agentclientprotocol/codex-acp": "1.1.4",

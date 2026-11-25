@@ -88,26 +88,26 @@ The adapters are patched at build time rather than forked. Each patch pins the
 SHA-256 of the upstream bundle it edits, so an adapter upgrade fails the build
 until someone re-reviews the patch.
 
-| Path in the image                           | What it does                                                                                                                                                                                                                                                                                                                                                 |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/opt/nuphos-claude-agent-acp`              | Claude adapter (0.74.0, Agent SDK 0.3.322), patched to publish session state and to bridge HTTP MCP servers                                                                                                                                                                                                                                                  |
-| `/opt/nuphos-codex-acp`                     | Codex adapter (1.1.4, Codex CLI 0.167.0), patched for per-session instructions and environment, MCP bridging, and steering an active turn                                                                                                                                                                                                                    |
-| `/usr/local/bin/nuphos-runtime-start`       | The entrypoint: checks a password set in the environment and derives the operator key from it, points openab's console at a password file from an earlier version, lays out `/workspace` the way a provisioned pod does, then becomes openab                                                                                                                 |
-| `/etc/openab/config.toml`                   | The gateway config openab reads, so the container starts with nothing mounted; a mount at this path replaces it                                                                                                                                                                                                                                              |
-| `/opt/runtime-defaults.mjs`                 | Applies a model, reasoning effort and fast-mode default to a new session                                                                                                                                                                                                                                                                                     |
-| `/opt/nuphos-runtime/mcp-http-bridge.mjs`   | Relays a stdio MCP server to a bearer-authenticated HTTP endpoint, re-reading the token per request                                                                                                                                                                                                                                                          |
-| `/opt/nuphos-runtime/runtime-guard.sh`      | Sourced via `BASH_ENV`; refreshes per-turn credentials into the shell environment                                                                                                                                                                                                                                                                            |
-| `/opt/nuphos-runtime/panel-job.mjs`         | The `panel` job OpenAB runs for `_openab/runtime/job`: writes the panel runner, script and params into a fresh directory and runs `node runner.mjs <dir>`, passing stdout and the exit code through                                                                                                                                                          |
-| `/opt/nuphos-runtime/codex-login.mjs`       | Drives Codex's device-code login in an isolated `CODEX_HOME`                                                                                                                                                                                                                                                                                                 |
-| `/opt/acp-shim.mjs`                         | The Cerin layer for Grok Build, Antigravity, OpenCode, Hermes Agent and DeepSeek Harness: respawns the agent with the conversation's environment and CLI home, syncs skills, applies runtime defaults, bridges MCP credentials, and hands over Cerin's instructions (Grok's `_meta.rules`; otherwise ahead of the first prompt after each session is opened) |
-| `/opt/nuphos-runtime/grok-login.mjs`        | Drives `grok login --device-auth` and reports the xAI device code                                                                                                                                                                                                                                                                                            |
-| `/opt/nuphos-runtime/opencode-login.mjs`    | Drives OpenCode's own server through every sign-in it offers: reports the provider, method and field choices, then an API key prompt or the provider's page, and passes back what the user picks, types or pastes                                                                                                                                            |
-| `/opt/nuphos-runtime/hermes-login.mjs`      | Drives `hermes auth add` for the provider and method the user picks: an API key on stdin, a device page and its code, or a page whose code is pasted back. Then makes that provider and its model Hermes's default                                                                                                                                           |
-| `/opt/nuphos-runtime/dsh-login.mjs`         | Signs DeepSeek Harness in with an API key or a DeepSeek account: boots the `acp` profile with a `--patch` overlay that swaps the ACP server for DSH's web server on loopback and `dsh-sign-in.mjs`, which asks DSH's own services to store the key or run the browser sign-in; the user pastes back the loopback address the browser lands on                |
-| `/opt/nuphos-runtime/antigravity-login.mjs` | Runs the official `agy acp --login`: reports its Google authorize URL and passes the code or callback URL back over stdin; the CLI owns the credential store                                                                                                                                                                                                 |
-| `/opt/nuphos-runtime/claude-login.mjs`      | Drives `claude auth login`: reports the authorize URL, passes back the code the user pastes, and leaves the credential in `~/.claude`                                                                                                                                                                                                                        |
-| `/usr/local/bin/nuphos-sync-skills`         | Fetches the workspace's skill bundle and swaps it in atomically — pushed by the provisioner for a managed pod, run per session by `runtime-defaults.mjs` for a self-hosted one                                                                                                                                                                               |
-| `/usr/local/bin/nuphos-seed-codex-auth`     | Seeds Codex credentials from a mounted secret, once per credential revision                                                                                                                                                                                                                                                                                  |
+| Path in the image                          | What it does                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/opt/cerin-claude-agent-acp`              | Claude adapter (0.74.0, Agent SDK 0.3.322), patched to publish session state and to bridge HTTP MCP servers                                                                                                                                                                                                                                                  |
+| `/opt/cerin-codex-acp`                     | Codex adapter (1.1.4, Codex CLI 0.167.0), patched for per-session instructions and environment, MCP bridging, and steering an active turn                                                                                                                                                                                                                    |
+| `/usr/local/bin/cerin-runtime-start`       | The entrypoint: checks a password set in the environment and derives the operator key from it, points openab's console at a password file from an earlier version, lays out `/workspace` the way a provisioned pod does, then becomes openab                                                                                                                 |
+| `/etc/openab/config.toml`                  | The gateway config openab reads, so the container starts with nothing mounted; a mount at this path replaces it                                                                                                                                                                                                                                              |
+| `/opt/runtime-defaults.mjs`                | Applies a model, reasoning effort and fast-mode default to a new session                                                                                                                                                                                                                                                                                     |
+| `/opt/cerin-runtime/mcp-http-bridge.mjs`   | Relays a stdio MCP server to a bearer-authenticated HTTP endpoint, re-reading the token per request                                                                                                                                                                                                                                                          |
+| `/opt/cerin-runtime/runtime-guard.sh`      | Sourced via `BASH_ENV`; refreshes per-turn credentials into the shell environment                                                                                                                                                                                                                                                                            |
+| `/opt/cerin-runtime/panel-job.mjs`         | The `panel` job OpenAB runs for `_openab/runtime/job`: writes the panel runner, script and params into a fresh directory and runs `node runner.mjs <dir>`, passing stdout and the exit code through                                                                                                                                                          |
+| `/opt/cerin-runtime/codex-login.mjs`       | Drives Codex's device-code login in an isolated `CODEX_HOME`                                                                                                                                                                                                                                                                                                 |
+| `/opt/acp-shim.mjs`                        | The Cerin layer for Grok Build, Antigravity, OpenCode, Hermes Agent and DeepSeek Harness: respawns the agent with the conversation's environment and CLI home, syncs skills, applies runtime defaults, bridges MCP credentials, and hands over Cerin's instructions (Grok's `_meta.rules`; otherwise ahead of the first prompt after each session is opened) |
+| `/opt/cerin-runtime/grok-login.mjs`        | Drives `grok login --device-auth` and reports the xAI device code                                                                                                                                                                                                                                                                                            |
+| `/opt/cerin-runtime/opencode-login.mjs`    | Drives OpenCode's own server through every sign-in it offers: reports the provider, method and field choices, then an API key prompt or the provider's page, and passes back what the user picks, types or pastes                                                                                                                                            |
+| `/opt/cerin-runtime/hermes-login.mjs`      | Drives `hermes auth add` for the provider and method the user picks: an API key on stdin, a device page and its code, or a page whose code is pasted back. Then makes that provider and its model Hermes's default                                                                                                                                           |
+| `/opt/cerin-runtime/dsh-login.mjs`         | Signs DeepSeek Harness in with an API key or a DeepSeek account: boots the `acp` profile with a `--patch` overlay that swaps the ACP server for DSH's web server on loopback and `dsh-sign-in.mjs`, which asks DSH's own services to store the key or run the browser sign-in; the user pastes back the loopback address the browser lands on                |
+| `/opt/cerin-runtime/antigravity-login.mjs` | Runs the official `agy acp --login`: reports its Google authorize URL and passes the code or callback URL back over stdin; the CLI owns the credential store                                                                                                                                                                                                 |
+| `/opt/cerin-runtime/claude-login.mjs`      | Drives `claude auth login`: reports the authorize URL, passes back the code the user pastes, and leaves the credential in `~/.claude`                                                                                                                                                                                                                        |
+| `/usr/local/bin/cerin-sync-skills`         | Fetches the workspace's skill bundle and swaps it in atomically — pushed by the provisioner for a managed pod, run per session by `runtime-defaults.mjs` for a self-hosted one                                                                                                                                                                               |
+| `/usr/local/bin/cerin-seed-codex-auth`     | Seeds Codex credentials from a mounted secret, once per credential revision                                                                                                                                                                                                                                                                                  |
 
 `OPENAB_AGENT_COMMAND` names the patched adapter, and `claude` on `PATH` is the
 same native CLI the Claude adapter runs.
@@ -157,11 +157,11 @@ Versions, download URLs and SHA-256 checksums are pinned in
 [`image/tools/manifest.json`](image/tools/manifest.json); a download that does not
 match is discarded. The Debian packages (the database clients and the toolchain)
 are fetched with `apt-get` as the unprivileged user and verified against the
-archive's signatures, then unpacked rather than installed. `nuphos-tools list`
-shows what is installed, and `nuphos-tools install <tool>` (or `--all`) fetches
+archive's signatures, then unpacked rather than installed. `cerin-tools list`
+shows what is installed, and `cerin-tools install <tool>` (or `--all`) fetches
 ahead of time.
 
-Tools install under `/home/node/.nuphos-runtime/tools` (override with
+Tools install under `/home/node/.cerin-runtime/tools` (override with
 `NUPHOS_TOOLS_DIR`), so they last exactly as long as the home directory does:
 
 - **Cerin-provisioned pods** mount a persistent volume at `/home/node`, so a
@@ -191,8 +191,8 @@ else on `node:22-trixie-slim`. `BASE_IMAGE` must be set — there is no
 default, so nothing bakes a registry path into the published image.
 
 ```sh
-git clone https://github.com/thenewbinary/cerin-nuphos.git
-cd cerin-nuphos/apps/runtime
+git clone https://github.com/thenewbinary/cerin-platform.git
+cd cerin-platform/apps/runtime
 
 docker build -t openab-base:local openab
 
@@ -200,7 +200,7 @@ docker build -f image/Dockerfile \
   --build-arg BASE_IMAGE=openab-base:local \
   --build-arg OPENAB_BUILD_SHA=$(git rev-parse --short=12 HEAD:apps/runtime/openab) \
   --build-arg RUNTIME_PROVIDER=codex \
-  -t nuphos-runtime-codex:local image
+  -t cerin-runtime-codex:local image
 ```
 
 For the other runtimes use `RUNTIME_PROVIDER=claude-code`, `grok`, `antigravity`, `opencode`, `hermes` or `dsh`. Any image with
@@ -218,8 +218,8 @@ monorepo version, use `ghcr.io/nuphos/runtime:<version>-codex` instead.
 Give it a persistent home and start it:
 
 ```sh
-docker run -d --name nuphos-runtime -p 8080:8080 \
-  -v nuphos-runtime-home:/home/node \
+docker run -d --name cerin-runtime -p 8080:8080 \
+  -v cerin-runtime-home:/home/node \
   ghcr.io/zeabur/nuphos-runtime:0.0.12-codex
 ```
 
@@ -244,15 +244,15 @@ From then on the same page is the runtime's console. Sign in with the password t
 - change the console password. This signs other browsers out and does not affect
   connected teams.
 
-The console keeps its state in `/home/node/.nuphos-runtime`: `console.json` holds
+The console keeps its state in `/home/node/.cerin-runtime`: `console.json` holds
 the password hash and when the runtime was set up, `bindings.json` holds a SHA-256
 digest of each team's keys (never the keys), and `instance-id` identifies the
 runtime. **`/home/node` must be persistent**, so mount a volume there as above.
 
 #### Forgotten console password
 
-Stop the container, delete `.nuphos-runtime/console.json` (and
-`.nuphos-runtime/auth-key`, if it exists) from the `/home/node` volume, then start
+Stop the container, delete `.cerin-runtime/console.json` (and
+`.cerin-runtime/auth-key`, if it exists) from the `/home/node` volume, then start
 it again. Setup reopens for 30 minutes. Connected teams keep working; delete
 `bindings.json` as well to disconnect all of them.
 
@@ -269,7 +269,7 @@ shorter one stops the container at startup with an error.
 #### Without the console
 
 `OPENAB_RUNTIME_CONSOLE=false` restores the behaviour of 0.0.x. On first boot the
-runtime generates a password, stores it in `/home/node/.nuphos-runtime/auth-key`
+runtime generates a password, stores it in `/home/node/.cerin-runtime/auth-key`
 (mode `0600`) and prints it once. Every Cerin team connects with that one password.
 `OPENAB_ACP_AUTH_KEY_FILE` moves the file. With the console on,
 `NUPHOS_RUNTIME_AUTOGEN_PASSWORD=true` still generates that file on first boot (the
@@ -320,15 +320,15 @@ container's limits. The agent command itself is not pinned there: it stays on
 Each runtime owns its own login. Cerin never stores the account and never sends
 one to a runtime it did not provision; it only shows what the runtime reports.
 
-| Variant       | Sign in on the host                                                                            | Credential                                     |
-| ------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| `claude-code` | `docker exec -it nuphos-runtime claude auth login` (or run `claude` and use `/login`)          | `/home/node/.claude/.credentials.json`         |
-| `codex`       | `docker exec -it nuphos-runtime codex login --device-auth`                                     | `/home/node/.codex/auth.json`                  |
-| `grok`        | `docker exec -it nuphos-runtime grok login --device-auth`                                      | `/home/node/.grok/auth.json`                   |
-| `antigravity` | Sign in from the app (below)                                                                   | Official CLI keyring (status via `agy models`) |
-| `opencode`    | None for its free models; `docker exec -it nuphos-runtime opencode providers login` for others | `/home/node/.local/share/opencode/auth.json`   |
-| `hermes`      | Sign in from the app (below)                                                                   | `/home/node/.hermes/auth.json`                 |
-| `dsh`         | Sign in from the app (below)                                                                   | `/home/node/.dsh/.credentials.yaml`            |
+| Variant       | Sign in on the host                                                                           | Credential                                     |
+| ------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `claude-code` | `docker exec -it cerin-runtime claude auth login` (or run `claude` and use `/login`)          | `/home/node/.claude/.credentials.json`         |
+| `codex`       | `docker exec -it cerin-runtime codex login --device-auth`                                     | `/home/node/.codex/auth.json`                  |
+| `grok`        | `docker exec -it cerin-runtime grok login --device-auth`                                      | `/home/node/.grok/auth.json`                   |
+| `antigravity` | Sign in from the app (below)                                                                  | Official CLI keyring (status via `agy models`) |
+| `opencode`    | None for its free models; `docker exec -it cerin-runtime opencode providers login` for others | `/home/node/.local/share/opencode/auth.json`   |
+| `hermes`      | Sign in from the app (below)                                                                  | `/home/node/.hermes/auth.json`                 |
+| `dsh`         | Sign in from the app (below)                                                                  | `/home/node/.dsh/.credentials.yaml`            |
 
 You can also sign in from the app once the runtime is connected (see below). Either
 way the credential is written inside the container, so mount the `/home/node` volume
@@ -374,7 +374,7 @@ agent wrote), one provider sign-in and account, and the same installed tools. Co
 it only to teams that may share them.
 
 Cerin conversations have separate CLI homes under
-`~/.nuphos/session-homes/<sha256-conversation-id>`. Both adapters give shell tools
+`~/.cerin/session-homes/<sha256-conversation-id>`. Both adapters give shell tools
 that conversation's `HOME`, XDG directories, and explicit config paths for gcloud,
 gh, AWS, Kubernetes, Azure, Docker, Git, npm and GPG. Exactly nine caches stay in
 the runtime home and are shared by every conversation: `GOCACHE`, `GOMODCACHE`,
@@ -447,7 +447,7 @@ the password can already run code in the container through the agent.
 #### Upgrading from 0.0.x to 0.1.0
 
 0.1.0 turns the console on. A volume that already has
-`/home/node/.nuphos-runtime/auth-key` needs no setup: that password becomes the
+`/home/node/.cerin-runtime/auth-key` needs no setup: that password becomes the
 console password, and every team already connected with it keeps working. The
 console lists them together as "Connected with the runtime password". To give each
 team its own key, press **Connect to Cerin**, choose to update the existing
@@ -500,25 +500,25 @@ and the credential path. A hand-built image has to pass them itself:
 
 ```sh
 # Codex
---build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/nuphos-runtime/codex-login.mjs --install' \
+--build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/cerin-runtime/codex-login.mjs --install' \
 --build-arg RUNTIME_AUTH_FILE=/home/node/.codex/auth.json
 # Claude Code
---build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/nuphos-runtime/claude-login.mjs --long-lived' \
---build-arg RUNTIME_AUTH_FILE=/home/node/.claude/.nuphos-oauth-token.json:/home/node/.claude/.credentials.json
+--build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/cerin-runtime/claude-login.mjs --long-lived' \
+--build-arg RUNTIME_AUTH_FILE=/home/node/.claude/.cerin-oauth-token.json:/home/node/.claude/.credentials.json
 # Grok Build
---build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/nuphos-runtime/grok-login.mjs' \
+--build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/cerin-runtime/grok-login.mjs' \
 --build-arg RUNTIME_AUTH_FILE=/home/node/.grok/auth.json
 # Antigravity
---build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/nuphos-runtime/antigravity-login.mjs' \
+--build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/cerin-runtime/antigravity-login.mjs' \
 --build-arg RUNTIME_AUTH_FILE=
 # OpenCode
---build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/nuphos-runtime/opencode-login.mjs' \
+--build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/cerin-runtime/opencode-login.mjs' \
 --build-arg RUNTIME_AUTH_FILE=/home/node/.local/share/opencode/auth.json
 # Hermes Agent
---build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/nuphos-runtime/hermes-login.mjs' \
+--build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/cerin-runtime/hermes-login.mjs' \
 --build-arg RUNTIME_AUTH_FILE=/home/node/.hermes/auth.json
 # DeepSeek Harness
---build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/nuphos-runtime/dsh-login.mjs' \
+--build-arg 'RUNTIME_LOGIN_COMMAND=node /opt/cerin-runtime/dsh-login.mjs' \
 --build-arg RUNTIME_AUTH_FILE=/home/node/.dsh/.credentials.yaml
 ```
 
@@ -599,15 +599,15 @@ runs against a local build rather than in PR CI. Build the base and the image, s
 the image on a free port, and drive it from the host:
 
 ```sh
-docker build -t nuphos-openab-base:local openab
-docker build image --build-arg BASE_IMAGE=nuphos-openab-base:local \
-  --build-arg RUNTIME_PROVIDER=claude-code -t nuphos-runtime:local
-docker run -d --rm --name nuphos-console-smoke -p 127.0.0.1:48080:8080 nuphos-runtime:local
+docker build -t cerin-openab-base:local openab
+docker build image --build-arg BASE_IMAGE=cerin-openab-base:local \
+  --build-arg RUNTIME_PROVIDER=claude-code -t cerin-runtime:local
+docker run -d --rm --name cerin-console-smoke -p 127.0.0.1:48080:8080 cerin-runtime:local
 node test/console-smoke.mjs http://127.0.0.1:48080
 ```
 
 To check an upgrade instead, start the image on a volume whose
-`.nuphos-runtime/auth-key` holds a password and pass `--legacy <password>`.
+`.cerin-runtime/auth-key` holds a password and pass `--legacy <password>`.
 
 ## Licence
 
@@ -645,7 +645,7 @@ steps.
 
 ### Release changelogs
 
-[GitHub Releases](https://github.com/thenewbinary/cerin-nuphos/releases?q=runtime-v) is the runtime
+[GitHub Releases](https://github.com/thenewbinary/cerin-platform/releases?q=runtime-v) is the runtime
 changelog. Tagged builds publish a release only after all requested provider images
 succeed. Notes include commits since the previous tag (including automated SDK
 updates), bundled SDK/CLI and adapter versions, image tags and a full comparison
@@ -688,7 +688,7 @@ is `true`. Before enabling it:
 1. Finish the runtime CI (both provider images and adapter smoke tests).
 2. The image-build job uses its `GITHUB_TOKEN` with `packages: write` to publish
    `ghcr.io/nuphos/runtime`; no separate GHCR username or token is required.
-   If the package already exists, grant `thenewbinary/cerin-nuphos` Actions access to it.
+   If the package already exists, grant `thenewbinary/cerin-platform` Actions access to it.
    Make the package public before enabling managed-agent updates or documenting
    pulls: runtime hosts resolve manifests and pull images anonymously.
 3. Freeze the old repository's manual and scheduled releases, wait for active

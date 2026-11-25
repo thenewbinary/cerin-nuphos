@@ -126,14 +126,14 @@ describe('credentialsMcpTools', () => {
     }
   })
 
-  test('the nuphos-tools URL carries the tools version the runtime compares', async () => {
+  test('the cerin-tools URL carries the tools version the runtime compares', async () => {
     const url = async (toolsVersion?: string) =>
       (
         await previewSessionAccess('conv-1', 'team-1', 'owner', 'owner', {
           backendUrl: 'https://backend.example',
           toolsVersion,
         })
-      ).mcpServers.find((server) => server.name === 'nuphos-tools')?.url
+      ).mcpServers.find((server) => server.name === 'cerin-tools')?.url
 
     expect(await url('abc123')).toEndWith(
       '/agent-sessions/conv-1/teams/team-1/mcp-tools?tools=abc123',

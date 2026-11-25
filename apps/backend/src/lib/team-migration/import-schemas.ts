@@ -20,7 +20,7 @@ const part = z
 
 export const manifestSchema = z
   .object({
-    format: z.literal('nuphos-team'),
+    format: z.literal('cerin-team'),
     formatVersion: z.literal(1),
     backendVersion: text.min(1),
     sourceTeamId: objectId,
@@ -62,7 +62,7 @@ export const teamSchema = z
     sourceTeamId: objectId,
     name: text.trim().min(1).max(80),
     allowedEmailDomains: z.array(text),
-    agentRuntime: z.enum([...OPENAB_PROVIDERS, 'nuphos']).optional(),
+    agentRuntime: z.enum([...OPENAB_PROVIDERS, 'cerin']).optional(),
     // Written by archives exported before the setting was retired (#2403); ignored.
     localAgentSharing: z.enum(['off', 'approve', 'full']).optional(),
     homeLayout: z

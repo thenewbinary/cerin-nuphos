@@ -7,7 +7,7 @@
 If you believe you have found a security vulnerability in Cerin — including the
 backend API, the desktop app, the agent sandbox, the agent runtimes, or any
 connected integration — report it through **[GitHub's private vulnerability
-reporting](https://github.com/thenewbinary/cerin-nuphos/security/advisories/new)**: the Security
+reporting](https://github.com/thenewbinary/cerin-platform/security/advisories/new)**: the Security
 tab of this repository, then "Report a vulnerability".
 
 The report stays private between you and the maintainers. You are added to the

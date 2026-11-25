@@ -25,10 +25,10 @@ const SETUP_SCRIPTS: Record<string, SetupScript> = {
     after: 'source ~/.huawei/credentials.env',
     note: 'call APIs with skills/huawei/scripts/hw-api.py (there is no Huawei CLI)',
   },
-  asana: { after: 'source ~/.asana/nuphos.env' },
-  sentry: { after: 'source ~/.sentry/nuphos.env' },
-  posthog: { after: 'source ~/.posthog/nuphos.env' },
-  plaud: { after: 'source ~/.plaud/nuphos.env' },
+  asana: { after: 'source ~/.asana/cerin.env' },
+  sentry: { after: 'source ~/.sentry/cerin.env' },
+  posthog: { after: 'source ~/.posthog/cerin.env' },
+  plaud: { after: 'source ~/.plaud/cerin.env' },
 }
 
 export function setupHint(skill: string, args: string, script: SetupScript = {}): string {
@@ -51,7 +51,7 @@ export function vendedAccountHint(provider: string, id: string): string | undefi
 function personalSetupHint(provider: PersonalCredentialProvider): string {
   if (provider === 'github') return setupHint('github', 'personal')
   if (provider === 'linear') {
-    return setupHint('linear', 'personal', { after: 'source ~/.linear/nuphos.env' })
+    return setupHint('linear', 'personal', { after: 'source ~/.linear/cerin.env' })
   }
 
   return setupHint('google-workspace', provider, { after: `source ~/.google/${provider}.env` })

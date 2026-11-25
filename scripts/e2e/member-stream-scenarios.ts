@@ -21,7 +21,7 @@ function makeTeamBox(stack: Stack, deviceId: string, ownerId: string) {
     import { MongoClient } from 'mongodb'
     const [uri, deviceId, teamId, createdBy] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    await client.db('nuphos_e2e').collection('agent_devices')
+    await client.db('cerin_e2e').collection('agent_devices')
       .updateOne({ deviceId }, { $set: { box: { provider: 'instabox', teamId, createdBy } } })
     await client.close()`
 

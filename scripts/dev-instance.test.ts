@@ -36,7 +36,7 @@ test('stopping a launcher releases its lease for the next invocation', async (t)
 })
 
 test('rm deletes only the named instance, never one whose name extends it', async (t) => {
-  const home = await mkdtemp(join(tmpdir(), 'nuphos-instances-'))
+  const home = await mkdtemp(join(tmpdir(), 'cerin-instances-'))
 
   t.after(() => rm(home, { recursive: true, force: true }))
   process.env.HOME = home

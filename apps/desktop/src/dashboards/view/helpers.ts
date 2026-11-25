@@ -2,8 +2,8 @@ import { api } from '../../api'
 import { t } from '../../i18n/index.ts'
 
 import type {
-  NuphosDashboard,
-  NuphosDashboardDetail,
+  CerinDashboard,
+  CerinDashboardDetail,
   DashboardPanel,
   DashboardRangePreset,
 } from '../schema'
@@ -16,10 +16,10 @@ export function defaultRange(): { periodStart: string; periodEnd: string } {
 }
 
 /** Create a dashboard with the standard naming and default range, personal until shared. */
-export function createNuphosDashboard(
+export function createCerinDashboard(
   teamId: string,
   hasExisting: boolean,
-): Promise<NuphosDashboard> {
+): Promise<CerinDashboard> {
   const name = hasExisting ? 'New dashboard' : 'Overview'
 
   return api.dashboardsCreate(teamId, {
@@ -46,7 +46,7 @@ export function rangeLabel(periodStart: string, periodEnd: string): string {
   return `${fmt(periodStart)} – ${fmt(periodEnd)}`
 }
 
-export function latestCompletedRefreshAt(detail: NuphosDashboardDetail | null): string | null {
+export function latestCompletedRefreshAt(detail: CerinDashboardDetail | null): string | null {
   let latest: string | null = null
 
   for (const panel of detail?.panels ?? []) {
@@ -82,7 +82,7 @@ export function refreshAge(timestamp: string): string {
 }
 
 /** Order panels by the dashboard's layout array (fallback: creation order). */
-export function orderPanels(detail: NuphosDashboardDetail): DashboardPanel[] {
+export function orderPanels(detail: CerinDashboardDetail): DashboardPanel[] {
   const index = new Map(detail.dashboard.layout.map((l, i) => [l.panelId, i]))
 
   return [...detail.panels].sort((a, b) => (index.get(a.id) ?? 999) - (index.get(b.id) ?? 999))

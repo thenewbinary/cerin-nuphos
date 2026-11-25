@@ -14,7 +14,7 @@ export const SlashCommandsContext = createContext<SlashCommand[]>([])
 
 /** A row in the `/` menu: one of the agent's own commands, or a Cerin action. */
 export type SlashOption =
-  { kind: 'agent'; command: AgentCommand } | { kind: 'nuphos'; action: SlashCommand }
+  { kind: 'agent'; command: AgentCommand } | { kind: 'cerin'; action: SlashCommand }
 
 /**
  * The `/query` being typed at the caret. `leading` when the message so far is
@@ -72,7 +72,7 @@ export function matchSlashOptions(
       )
       .map((command) => ({ kind: 'agent' as const, command })),
     ...(leading ? matchSlashCommands(actions, query) : []).map((action) => ({
-      kind: 'nuphos' as const,
+      kind: 'cerin' as const,
       action,
     })),
   ]
@@ -103,7 +103,7 @@ export function slashEnterTarget(
     return null
   }
   // A Cerin action typed out in full runs, as picking it does.
-  const action = options.find((o) => o.kind === 'nuphos' && o.action.id === typed)
+  const action = options.find((o) => o.kind === 'cerin' && o.action.id === typed)
 
   if (action) return action
   const candidate = options[pick.active >= 0 ? pick.active : 0]

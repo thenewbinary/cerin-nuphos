@@ -3,15 +3,15 @@ import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
 import { patchDesktopAdapter } from './adapter-patches.mjs'
-import { nuphosBoxDesktopMcpServers } from './box-desktop-mcp.mjs'
+import { cerinBoxDesktopMcpServers } from './box-desktop-mcp.mjs'
 
-// The injected function calls nuphosSessionHomeEnv from the adapter's scope.
-globalThis.nuphosSessionHomeEnv = (sessionEnv) => ({
+// The injected function calls cerinSessionHomeEnv from the adapter's scope.
+globalThis.cerinSessionHomeEnv = (sessionEnv) => ({
   HOME: `/homes/${sessionEnv.NUPHOS_SESSION_ID}`,
 })
 
 const bridge = [
-  { name: 'nuphos-tools', command: '/node', args: ['bridge.mjs', 'https://x'], env: [] },
+  { name: 'cerin-tools', command: '/node', args: ['bridge.mjs', 'https://x'], env: [] },
 ]
 const box = {
   NUPHOS_DESKTOP_SESSION: '/bundle/desktop-session.mjs',
@@ -20,12 +20,12 @@ const box = {
   PATH: '/usr/bin',
 }
 
-test('a session on a Box gets a nuphos-desktop server on its own desktop', () => {
-  const servers = nuphosBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 's1' }, box)
+test('a session on a Box gets a cerin-desktop server on its own desktop', () => {
+  const servers = cerinBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 's1' }, box)
 
   assert.equal(servers.length, 2)
   assert.deepEqual(servers[1], {
-    name: 'nuphos-desktop',
+    name: 'cerin-desktop',
     command: process.execPath,
     args: ['/bundle/desktop-session.mjs', 'serve'],
     env: [
@@ -41,19 +41,19 @@ test('a session on a Box gets a nuphos-desktop server on its own desktop', () =>
 
 test('without a pool, a session id or servers, nothing changes', () => {
   assert.equal(
-    nuphosBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 's1' }, { PATH: '/usr/bin' }),
+    cerinBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 's1' }, { PATH: '/usr/bin' }),
     bridge,
   )
-  assert.equal(nuphosBoxDesktopMcpServers(bridge, {}, box), bridge)
-  assert.equal(nuphosBoxDesktopMcpServers(undefined, { NUPHOS_SESSION_ID: 's1' }, box), undefined)
-  const own = [{ name: 'nuphos-desktop', command: 'x', args: [] }]
+  assert.equal(cerinBoxDesktopMcpServers(bridge, {}, box), bridge)
+  assert.equal(cerinBoxDesktopMcpServers(undefined, { NUPHOS_SESSION_ID: 's1' }, box), undefined)
+  const own = [{ name: 'cerin-desktop', command: 'x', args: [] }]
 
-  assert.equal(nuphosBoxDesktopMcpServers(own, { NUPHOS_SESSION_ID: 's1' }, box), own)
+  assert.equal(cerinBoxDesktopMcpServers(own, { NUPHOS_SESSION_ID: 's1' }, box), own)
 })
 
-test('Codex on a Box gets the same nuphos-desktop server, from its session env', () => {
+test('Codex on a Box gets the same cerin-desktop server, from its session env', () => {
   const handoff = (fallback) =>
-    `config: nuphosCodexSessionConfig(await this.createSessionConfig(request.cwd, additionalDirectories, nuphosBridgeMcpServers(request.mcpServers${fallback})), request._meta),`
+    `config: cerinCodexSessionConfig(await this.createSessionConfig(request.cwd, additionalDirectories, cerinBridgeMcpServers(request.mcpServers${fallback})), request._meta),`
   // What the runtime's codex patch leaves in the bundle: its session-home helper, inlined.
   const sessionHome = readFileSync(
     new URL('../../runtime/image/session-home.mjs', import.meta.url),
@@ -61,9 +61,9 @@ test('Codex on a Box gets the same nuphos-desktop server, from its session env',
   )
   const source = [
     sessionHome,
-    "      args: ['/opt/nuphos-runtime/mcp-http-bridge.mjs', server.url],",
+    "      args: ['/opt/cerin-runtime/mcp-http-bridge.mjs', server.url],",
     "      env: [{ name: 'OPENAB_CREDENTIALS_DIR', value: dir }],",
-    '    await nuphosSyncRuntimeSkills(params);',
+    '    await cerinSyncRuntimeSkills(params);',
     '  async handleElicitation(params) {\n    try {',
     handoff(''),
     handoff(' ?? []'),
@@ -71,20 +71,20 @@ test('Codex on a Box gets the same nuphos-desktop server, from its session env',
   ].join('\n')
   const patched = patchDesktopAdapter(source, 'codex')
 
-  assert.equal(patched.match(/nuphosBoxDesktopMcpServers\(nuphosBridgeMcpServers/gu)?.length, 3)
+  assert.equal(patched.match(/cerinBoxDesktopMcpServers\(cerinBridgeMcpServers/gu)?.length, 3)
   assert.match(
     patched,
-    /request\.mcpServers \?\? \[\]\), request\._meta\?\.\['ai\.nuphos\/codex'\]\?\.env/u,
+    /request\.mcpServers \?\? \[\]\), request\._meta\?\.\['ai\.cerin\/codex'\]\?\.env/u,
   )
-  assert.match(patched, /function nuphosBoxDesktopMcpServers\(/u)
+  assert.match(patched, /function cerinBoxDesktopMcpServers\(/u)
   // The env Codex's session carries names the session, as Claude's does.
-  const servers = nuphosBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 'c1' }, box)
+  const servers = cerinBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 'c1' }, box)
 
-  assert.equal(servers[1].name, 'nuphos-desktop')
+  assert.equal(servers[1].name, 'cerin-desktop')
   assert.throws(() => patchDesktopAdapter(source.replace(handoff(' ?? []'), ''), 'codex'))
   // Without the runtime patch's helper underneath, the desktop patch refuses to build.
   assert.throws(
     () => patchDesktopAdapter(source.replace(sessionHome, ''), 'codex'),
-    /nuphosSessionHomeEnv/u,
+    /cerinSessionHomeEnv/u,
   )
 })

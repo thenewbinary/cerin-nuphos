@@ -73,7 +73,7 @@ test('the Box install takes the lock around everything it runs', () => {
 
   expect(lines.slice(0, 3)).toEqual([
     'set -e',
-    'exec 9>"$HOME/.nuphos-install.lock" && flock 9',
+    'exec 9>"$HOME/.cerin-install.lock" && flock 9',
     '{',
   ])
   expect(lines.at(-1)).toBe('} 9>&-')

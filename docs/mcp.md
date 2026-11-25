@@ -1,10 +1,10 @@
 # External MCP tools
 
-Connect an MCP client to `POST /mcp` using its authenticated session or MCP OAuth token. `nuphos_list_teams` lists the teams the caller can access. Tools cannot grant access the caller does not have.
+Connect an MCP client to `POST /mcp` using its authenticated session or MCP OAuth token. `cerin_list_teams` lists the teams the caller can access. Tools cannot grant access the caller does not have.
 
 ## Select GitHub credentials and identity
 
-Call `nuphos_list_credentials(team_id, session_id)` for available options and the current selection, then `nuphos_update_credentials` with the same team and session IDs:
+Call `cerin_list_credentials(team_id, session_id)` for available options and the current selection, then `cerin_update_credentials` with the same team and session IDs:
 
 ```json
 {

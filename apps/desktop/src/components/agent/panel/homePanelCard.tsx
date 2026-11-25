@@ -46,11 +46,11 @@ export function DashboardPanelCard({
   pin,
   onUnpin,
   onGone,
-  onOpenNuphosLink,
+  onOpenCerinLink,
 }: {
   teamId: string
   pin: HomePanel
-  onOpenNuphosLink?: (href: string) => boolean
+  onOpenCerinLink?: (href: string) => boolean
   onUnpin: () => void
   onGone: () => void
 }) {
@@ -80,7 +80,7 @@ export function DashboardPanelCard({
   const panel = read?.status === 'ok' ? read.panel : null
   const dashboardName = read?.status === 'ok' ? read.dashboardName : ''
   const openDashboard = () =>
-    onOpenNuphosLink?.(
+    onOpenCerinLink?.(
       `/teams/${encodeURIComponent(teamId)}/dashboards/${encodeURIComponent(pin.dashboardId)}`,
     )
   let content = <div className="h-24 rounded-md bg-state-selected animate-pulse" />

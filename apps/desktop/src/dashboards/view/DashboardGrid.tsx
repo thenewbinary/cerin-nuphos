@@ -4,7 +4,7 @@ import { t } from '../../i18n'
 
 import { RANGE_PRESETS, rangeLabel } from './helpers'
 
-import type { NuphosDashboard } from '../schema'
+import type { CerinDashboard } from '../schema'
 
 export function DashboardGrid({
   dashboards,
@@ -13,12 +13,12 @@ export function DashboardGrid({
   onMenu,
   hasMenu = () => true,
 }: {
-  dashboards: NuphosDashboard[]
+  dashboards: CerinDashboard[]
   loading: boolean
-  onOpen: (dashboard: NuphosDashboard) => void
-  onMenu?: (dashboard: NuphosDashboard, position: { x: number; y: number }) => void
+  onOpen: (dashboard: CerinDashboard) => void
+  onMenu?: (dashboard: CerinDashboard, position: { x: number; y: number }) => void
   /** Whether this member may do anything from a dashboard's menu; its button is left out otherwise. */
-  hasMenu?: (dashboard: NuphosDashboard) => boolean
+  hasMenu?: (dashboard: CerinDashboard) => boolean
 }) {
   if (loading) return <div className="h-24 animate-pulse rounded-xl bg-state-selected" />
 

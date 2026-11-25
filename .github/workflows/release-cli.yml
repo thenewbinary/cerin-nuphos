@@ -228,7 +228,7 @@ jobs:
           for target in ${TARGETS//,/ }; do
             for helper in mac-screen-host cua-permission; do
               file="build/local-runtime/$target/$helper"
-              codesign --force --sign "$IDENTITY" --identifier "ai.nuphos.$helper" \
+              codesign --force --sign "$IDENTITY" --identifier "ai.cerin.$helper" \
                 --options runtime --timestamp "$file"
               codesign --verify --strict --verbose=2 "$file"
             done
@@ -248,7 +248,7 @@ jobs:
             ASSET="cerin-agent-$target.tar.gz"
             tar -czf "$ASSET" -C "$dir" .
             # Also under the old name, for anything that still downloads it by that name.
-            LEGACY="nuphos-agent-$target.tar.gz"
+            LEGACY="cerin-agent-$target.tar.gz"
             cp "$ASSET" "$LEGACY"
             for file in "$ASSET" "$LEGACY"; do
               if command -v sha256sum >/dev/null; then sha256sum "$file" > "$file.sha256"; else shasum -a 256 "$file" > "$file.sha256"; fi

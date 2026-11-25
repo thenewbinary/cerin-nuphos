@@ -24,7 +24,7 @@ let changelog: typeof ChangelogModule
 
 before(async () => {
   mock.module('electron', { namedExports: { BrowserWindow: { getAllWindows: () => [] } } })
-  mock.module('../api-endpoint.ts', { namedExports: { isNuphosCloud: () => cloud } })
+  mock.module('../api-endpoint.ts', { namedExports: { isCerinCloud: () => cloud } })
   mock.method(globalThis, 'fetch', () => {
     requests++
 

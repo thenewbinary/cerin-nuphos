@@ -16,7 +16,7 @@
     <string name="my_chats">내 작업</string>
     <string name="team_chats">팀 작업</string>
     <string name="show_dismissed">닫은 항목 표시</string>
-    <string name="ask_nuphos">Cerin에게 무엇이든 물어보세요…</string>
+    <string name="ask_cerin">Cerin에게 무엇이든 물어보세요…</string>
     <string name="queue_message">메시지 대기열에 추가…</string>
     <string name="send">보내기</string>
     <string name="stop">중지</string>

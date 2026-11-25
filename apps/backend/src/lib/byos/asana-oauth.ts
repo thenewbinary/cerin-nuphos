@@ -14,7 +14,7 @@ const ASANA_TOKEN_URL = 'https://app.asana.com/-/oauth_token'
 const ASANA_REVOKE_URL = 'https://app.asana.com/-/oauth_revoke'
 
 export const ASANA_API_BASE_URL = 'https://app.asana.com/api/1.0'
-const USER_AGENT = 'nuphos-backend'
+const USER_AGENT = 'cerin-backend'
 const ASANA_FETCH_TIMEOUT_MS = 30_000
 
 export class AsanaApiError extends Error {

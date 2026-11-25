@@ -338,21 +338,21 @@ mod tests {
             ..Default::default()
         };
         assert_eq!(
-            binding_label(&origin("https://api.nuphos.example/")),
-            "api.nuphos.example"
+            binding_label(&origin("https://api.cerin.example/")),
+            "api.cerin.example"
         );
         assert_eq!(
-            binding_label(&origin("api.nuphos.example")),
-            "api.nuphos.example"
+            binding_label(&origin("api.cerin.example")),
+            "api.cerin.example"
         );
         assert_eq!(
-            binding_label(&origin("api.nuphos.example:8443/x")),
-            "api.nuphos.example:8443"
+            binding_label(&origin("api.cerin.example:8443/x")),
+            "api.cerin.example:8443"
         );
         assert_eq!(binding_label(&origin("")), "Cerin");
         let named = BindingClient {
             team_name: Some("Acme".into()),
-            ..origin("https://api.nuphos.example")
+            ..origin("https://api.cerin.example")
         };
         assert_eq!(binding_label(&named), "Acme");
         assert_eq!(binding_label(&BindingClient::default()), "Cerin");
@@ -450,7 +450,7 @@ mod tests {
         let app = app(store.clone());
         let (code, _) = store.pairing.mint().unwrap();
         let body = json!({"code": code, "client": {
-            "backendOrigin": "https://api.nuphos.example",
+            "backendOrigin": "https://api.cerin.example",
             "teamId": "t1", "teamName": "Acme\u{7}", "pairedBy": "Ada",
             "runtimeRecordId": "rt_1", "unknown": true
         }});

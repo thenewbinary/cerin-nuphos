@@ -27,8 +27,8 @@ sock="${state_dir}/tailscaled.sock"
 socks_port="${NUPHOS_TAILNET_SOCKS_PORT:-1055}"
 log="${state_dir}/tailscaled.log"
 # Delimiters so disconnect.sh removes exactly this block and nothing else.
-SSH_CONFIG_MARKER="# >>> nuphos-tailnet-ssh >>>"
-SSH_CONFIG_END="# <<< nuphos-tailnet-ssh <<<"
+SSH_CONFIG_MARKER="# >>> cerin-tailnet-ssh >>>"
+SSH_CONFIG_END="# <<< cerin-tailnet-ssh <<<"
 
 ts() { tailscale --socket="$sock" "$@"; }
 

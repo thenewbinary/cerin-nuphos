@@ -106,10 +106,10 @@ describe('multiple instances of one provider', () => {
     // Claude Code's default agent keeps its suffix-free id; no second spelling of it parses.
     expect(parseLocalRuntimeId('local_owner_box-1_claude-code')).toBeUndefined()
     expect(
-      parseLocalRuntimeUrl('nuphos-device://runtime/owner/box-1?team=team&instance='),
+      parseLocalRuntimeUrl('cerin-device://runtime/owner/box-1?team=team&instance='),
     ).toBeUndefined()
     expect(
-      parseLocalRuntimeUrl('nuphos-device://runtime/owner/box-1?team=team&provider=unknown'),
+      parseLocalRuntimeUrl('cerin-device://runtime/owner/box-1?team=team&provider=unknown'),
     ).toBeUndefined()
   })
 

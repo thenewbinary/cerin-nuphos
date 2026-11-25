@@ -3,7 +3,7 @@ import { IdentityPoolClient } from 'google-auth-library'
 import { config } from '@/config'
 import { AppError } from '@/lib/errors'
 
-import { awsOidcSubjectForTeam, isAwsOidcConfigured, mintNuphosOidcToken } from './aws-oidc'
+import { awsOidcSubjectForTeam, isAwsOidcConfigured, mintCerinOidcToken } from './aws-oidc'
 
 /**
  * GCP workload identity federation for the BYOS connector.
@@ -97,7 +97,7 @@ export function gcpWifSourceClient(teamId: string): IdentityPoolClient {
     subject_token_supplier: {
       // Minted fresh per call: these are 5-minute tokens and the client only
       // asks when its own STS token needs replacing.
-      getSubjectToken: () => Promise.resolve(mintNuphosOidcToken(teamId, audience)),
+      getSubjectToken: () => Promise.resolve(mintCerinOidcToken(teamId, audience)),
     },
   })
 

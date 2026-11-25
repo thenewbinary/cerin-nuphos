@@ -26,8 +26,8 @@ import type { Hono } from 'hono'
 // 👍/👎 feedback buttons are no longer attached to new replies, but messages
 // posted before their removal still carry live buttons — the /interactions
 // handler keeps answering these action_ids so old cards don't dead-end.
-const FEEDBACK_UP_ACTION = 'nuphos_feedback_up'
-const FEEDBACK_DOWN_ACTION = 'nuphos_feedback_down'
+const FEEDBACK_UP_ACTION = 'cerin_feedback_up'
+const FEEDBACK_DOWN_ACTION = 'cerin_feedback_down'
 
 // 👍/👎 pressed on a finalized agent reply. Recorded per (message, user) —
 // pressing the other button later flips the vote. Responds ephemerally so the
@@ -210,7 +210,7 @@ async function handleSlackInteraction(
     return null
   }
 
-  if (action.action_id !== 'nuphos_link_channel') {
+  if (action.action_id !== 'cerin_link_channel') {
     logEvent('info', 'slack.interaction.unhandled', {
       interaction_type: payload.type,
       action_id: action.action_id,

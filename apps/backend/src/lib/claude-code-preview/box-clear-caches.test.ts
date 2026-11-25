@@ -114,7 +114,7 @@ describe('Box cache clear', () => {
     ].map(file)
     const kept = [
       '.cache/ms-playwright/browsers/chromium/chrome',
-      '.nuphos/session-homes/abc/workspace/main.go',
+      '.cerin/session-homes/abc/workspace/main.go',
       '.claude/.credentials.json',
       'go/bin/tool',
     ].map(file)

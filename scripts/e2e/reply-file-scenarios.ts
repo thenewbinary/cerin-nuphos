@@ -33,7 +33,7 @@ function expireAndCite(stack: Stack, marker: string, refused: string, deleted: s
     import { MongoClient, ObjectId } from 'mongodb'
     const [uri, teamId, marker, refused, deleted] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const past = new Date(Date.now() - 60_000)
     await db.collection('file_transfer_groups').updateOne({ _id: new ObjectId(refused) }, { $set: { expiresAt: past } })
     await db.collection('file_transfer_groups').deleteOne({ _id: new ObjectId(deleted) })

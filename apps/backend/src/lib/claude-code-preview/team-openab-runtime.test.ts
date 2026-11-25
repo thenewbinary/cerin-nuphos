@@ -318,7 +318,7 @@ test('a runtime reached through another route gets its own connection', async ()
     } as unknown as TeamPreviewClient)
   })
   const direct = { url: 'ws://rt/acp', authKey: 'k' }
-  const joined = { ...direct, tunnelUrl: 'nuphos-device://runtime/owner/device-a?team=t' }
+  const joined = { ...direct, tunnelUrl: 'cerin-device://runtime/owner/device-a?team=t' }
 
   const first = await registry.acquire('t', direct)
 

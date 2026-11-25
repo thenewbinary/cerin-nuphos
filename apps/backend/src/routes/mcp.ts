@@ -10,12 +10,12 @@
 // a single `POST /mcp` endpoint and reply with `application/json`. We do NOT
 // open a server->client SSE stream (`GET /mcp` is unsupported), because the
 // long-running-task story is handled at the data layer, not the transport:
-//   - `nuphos_ask` starts an agent run and blocks until it finishes. The run is
+//   - `cerin_ask` starts an agent run and blocks until it finishes. The run is
 //     created via `runAgentForTrigger`, which drives its own AbortController
 //     independent of this HTTP request — so if the caller's tool-call times out
 //     and the connection drops, the agent keeps running to completion and the
 //     transcript is persisted.
-//   - `nuphos_check` reconnects to a session by id and returns the answer if the
+//   - `cerin_check` reconnects to a session by id and returns the answer if the
 //     run has finished, or "running" if it's still going. This is how a caller
 //     recovers a result after a timeout — no separate "task" concept is exposed;
 //     the session id is the only handle.
@@ -119,5 +119,5 @@ mcp.post('/', async (c) => {
 })
 
 // We don't support the optional server->client SSE stream; long-running work is
-// recovered via nuphos_check, not a held-open GET stream.
+// recovered via cerin_check, not a held-open GET stream.
 mcp.get('/', (c) => c.json(fail(null, -32000, 'SSE stream not supported; use POST.'), 405))

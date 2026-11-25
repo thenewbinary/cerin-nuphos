@@ -20,7 +20,7 @@ for side in before after; do
   dir=$before; [ "$side" = after ] && dir=$after
   # Failing tests make xcodebuild exit non-zero; the verdict below comes from the result bundle.
   status=0
-  (cd "$dir/apps/ios" && xcodebuild test -project nuphos-ios.xcodeproj -scheme nuphos-ios -parallel-testing-enabled NO \
+  (cd "$dir/apps/ios" && xcodebuild test -project cerin-ios.xcodeproj -scheme cerin-ios -parallel-testing-enabled NO \
     -derivedDataPath "$derived/$side" -resultBundlePath "$out/$side.xcresult" CODE_SIGNING_ALLOWED=NO "$@") \
     > "$out/$side.log" 2>&1 || status=$?
   echo "$side: xcodebuild exited $status"

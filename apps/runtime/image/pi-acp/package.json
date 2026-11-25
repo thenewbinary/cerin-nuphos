@@ -1,5 +1,5 @@
 {
-  "name": "nuphos-pi-acp-runtime",
+  "name": "cerin-pi-acp-runtime",
   "private": true,
   "type": "module",
   "dependencies": {

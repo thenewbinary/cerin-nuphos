@@ -89,7 +89,7 @@ describe('buildSlackBoundTurnPlan', () => {
       ...uiText('u3', 'user', 'nightly build failed'),
       metadata: {
         version: 1,
-        source: 'nuphos',
+        source: 'cerin',
         sentAt: '2026-10-21T00:00:00.000Z',
         sender: {
           type: 'agent',

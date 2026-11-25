@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "nuphos",
+      "name": "cerin",
       "devDependencies": {
         "@eslint/js": "^10",
         "@stylistic/eslint-plugin": "^5.10.0",

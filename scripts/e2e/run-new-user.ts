@@ -20,7 +20,7 @@ try {
   const email = `e2e-new-${String(Date.now())}@example.com`
 
   page.setDefaultTimeout(30_000)
-  await page.evaluate(() => localStorage.setItem('nuphos.locale', 'en'))
+  await page.evaluate(() => localStorage.setItem('cerin.locale', 'en'))
   await page.reload()
   await page.locator('input[type=email]').fill(email)
   await page.getByRole('button', { name: 'Continue with email' }).click()

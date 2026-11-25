@@ -33,21 +33,21 @@ test('defaults to platform.cerin.ai when nothing is configured', async () => {
 })
 
 test('a self-hosted origin replaces the default everywhere, aliases included', async () => {
-  const m = await load('https://nuphos.acme.internal')
+  const m = await load('https://cerin.acme.internal')
 
-  assert.equal(m.WEB_BASE_URL, 'https://nuphos.acme.internal')
-  assert.ok(m.isAppWebUrl('https://nuphos.acme.internal/teams/abc'))
+  assert.equal(m.WEB_BASE_URL, 'https://cerin.acme.internal')
+  assert.ok(m.isAppWebUrl('https://cerin.acme.internal/teams/abc'))
   // The old default is just another host once the app is pointed elsewhere.
   assert.equal(m.isAppWebUrl('https://platform.cerin.ai/teams/abc'), null)
-  assert.ok(m.ALLOWED_WEB_HOSTS.has('www.nuphos.acme.internal'))
+  assert.ok(m.ALLOWED_WEB_HOSTS.has('www.cerin.acme.internal'))
 })
 
 test('a configured value keeps only its origin', async () => {
   // A base URL carrying a path would make every `new URL(path, base)` resolve
   // relative to that path instead of the site root.
-  const m = await load('https://nuphos.acme.internal/app/?x=1')
+  const m = await load('https://cerin.acme.internal/app/?x=1')
 
-  assert.equal(m.WEB_BASE_URL, 'https://nuphos.acme.internal')
+  assert.equal(m.WEB_BASE_URL, 'https://cerin.acme.internal')
 })
 
 test('an unparseable value falls back rather than breaking every link', async () => {
@@ -69,23 +69,6 @@ test('isAppWebUrl matches the exact host only', async () => {
   assert.equal(m.isAppWebUrl('https://api.platform.cerin.ai/teams/x'), null)
   assert.equal(m.isAppWebUrl('https://platform.cerin.ai.evil.example/teams/x'), null)
   assert.equal(m.isAppWebUrl('http://['), null)
-})
-
-test('accepts only the exact legacy host for the default cloud deployment', async () => {
-  const m = await load(undefined)
-  const legacy = 'https://nuphos.ai/teams/x'
-
-  assert.ok(m.isAppWebUrl(legacy))
-  for (const url of [
-    legacy.replace('https:', 'http:'),
-    legacy.replace('nuphos.ai', 'www.nuphos.ai'),
-    legacy.replace('nuphos.ai', 'app.nuphos.ai'),
-    legacy.replace('nuphos.ai', 'nuphos.ai:443'),
-    legacy.replace('nuphos.ai', 'user@nuphos.ai'),
-    legacy.replace('nuphos.ai', 'nuphos.ai.evil.example'),
-  ])
-    assert.equal(m.isAppWebUrl(url), null, url)
-  assert.equal((await load('https://example.com')).isAppWebUrl(legacy), null)
 })
 
 test('a same-host URL on another scheme or port is not ours', async () => {

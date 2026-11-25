@@ -109,7 +109,7 @@ export type PreviewSessionAccessOptions = {
   backendUrl?: string
   /** The actor sent this turn's message; otherwise the turn acts as the session owner. */
   humanTurn?: boolean
-  /** From `nuphosToolsVersion`; a change makes the runtime respawn an idle agent. */
+  /** From `cerinToolsVersion`; a change makes the runtime respawn an idle agent. */
   toolsVersion?: string
   /** Set for a sub-agent thread: its tokens name the parent as the RFC 8693 actor. */
   parentSessionId?: string
@@ -151,9 +151,9 @@ export async function previewSessionAccess(
 
   return {
     mcpServers: [
-      { name: 'nuphos-credentials', type: 'http', url: `${mount}/mcp`, headers },
+      { name: 'cerin-credentials', type: 'http', url: `${mount}/mcp`, headers },
       {
-        name: 'nuphos-tools',
+        name: 'cerin-tools',
         type: 'http',
         url: options?.toolsVersion
           ? `${mount}/mcp-tools?tools=${options.toolsVersion}`
@@ -189,7 +189,7 @@ const DESCRIPTION_PROPERTY = {
 }
 
 export const CREDENTIALS_MCP_SURFACE: McpSurface = {
-  serverName: 'nuphos-credentials',
+  serverName: 'cerin-credentials',
   instructions:
     'Cloud credentials the user selected for this Cerin conversation. Call ' +
     'list_credentials to see what is available, then get_credential with a ' +

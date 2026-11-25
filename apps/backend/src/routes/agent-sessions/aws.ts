@@ -46,7 +46,7 @@ accountScoped.get('/credentials', async (c) => {
 
 /**
  * Actor stamped onto the connector's mutating EKS access calls. CloudTrail only
- * ever sees the `nuphos-byos` connector session, so this is what lets a
+ * ever sees the `cerin-byos` connector session, so this is what lets a
  * high-risk-mutation alert be traced back to the agent turn that caused it.
  */
 function eksActor(c: Context<{ Variables: AgentAwsVars }>, source: string): EksAccessActor {

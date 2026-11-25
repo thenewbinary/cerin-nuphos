@@ -21,7 +21,7 @@ chat_b="https://platform.cerin.ai/teams/$team/agent/chat-design"
 launch() {
   local out
   out=$(SIMCTL_CHILD_NUPHOS_PREVIEW_RESPONSES="$fixture" \
-    xcrun simctl launch --terminate-running-process "$device" ai.nuphos.ios -preview-home -preview-no-push "$@")
+    xcrun simctl launch --terminate-running-process "$device" ai.cerin.ios -preview-home -preview-no-push "$@")
   pid=${out##*: }
 }
 
@@ -53,7 +53,7 @@ sleep 12
 xcrun simctl launch "$device" com.apple.Preferences >/dev/null
 sleep 12
 [[ $(requests 9s chat-design) -eq 0 ]] || fail "the open chat polls in the background"
-xcrun simctl launch "$device" ai.nuphos.ios >/dev/null
+xcrun simctl launch "$device" ai.cerin.ios >/dev/null
 sleep 10
 [[ $(requests 9s chat-design) -gt 0 ]] || fail "the open chat did not poll again in the foreground"
 echo "Only the open chat polls, and only while active: passed"

@@ -107,7 +107,7 @@ before(() => {
       },
     },
   })
-  mock.module('../api-endpoint.ts', { namedExports: { isNuphosCloud: () => cloud } })
+  mock.module('../api-endpoint.ts', { namedExports: { isCerinCloud: () => cloud } })
   mock.module('../analytics.ts', {
     namedExports: { captureMain: mock.fn(), captureMainException: mock.fn() },
   })

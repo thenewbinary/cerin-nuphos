@@ -191,7 +191,7 @@ export async function readRuntimeFile(
 }
 
 /** A file the secure input card saved on the conversation's runtime (`putConversationSecret`). */
-export const SAVED_SECRET_PATH = /[\\/]nuphos-secret-[^\\/]+[\\/]\d+[\\/][^\\/]+$/
+export const SAVED_SECRET_PATH = /[\\/]cerin-secret-[^\\/]+[\\/]\d+[\\/][^\\/]+$/
 
 /**
  * The value in one of those files, for `local_browser` `fill`. It is returned

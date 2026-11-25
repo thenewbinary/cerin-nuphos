@@ -17,7 +17,7 @@
     <string name="my_chats">My tasks</string>
     <string name="team_chats">Team tasks</string>
     <string name="show_dismissed">Show dismissed</string>
-    <string name="ask_nuphos">Ask Cerin anything…</string>
+    <string name="ask_cerin">Ask Cerin anything…</string>
     <string name="queue_message">Queue a message…</string>
     <string name="send">Send</string>
     <string name="stop">Stop</string>

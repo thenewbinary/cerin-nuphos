@@ -54,7 +54,7 @@ export function messagingConfig() {
     apns: {
       keyId: optional('APNS_KEY_ID'),
       teamId: optional('APNS_TEAM_ID'),
-      bundleId: optional('APNS_BUNDLE_ID') ?? 'ai.nuphos.ios',
+      bundleId: optional('APNS_BUNDLE_ID') ?? 'ai.cerin.ios',
       privateKey: optional('APNS_PRIVATE_KEY')?.replaceAll(String.raw`\n`, '\n'),
       environment:
         optional('APNS_ENV') === 'sandbox' ? ('sandbox' as const) : ('production' as const),

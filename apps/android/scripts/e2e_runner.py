@@ -10,8 +10,8 @@ import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
 
-PACKAGE = "ai.nuphos.android"
-TEST_CLASS = "ai.nuphos.android.LiveReadOnlyDeviceTest"
+PACKAGE = "ai.cerin.android"
+TEST_CLASS = "ai.cerin.android.LiveReadOnlyDeviceTest"
 
 
 class SetupError(Exception):

@@ -95,7 +95,7 @@ test('an answer wakes the asking agent with the card and the answer, and sends n
   })
 
   expect(turns).toHaveLength(1)
-  expect(turns[0]).toMatchObject({ session: 'bot', sender: 'nuphos:decision' })
+  expect(turns[0]).toMatchObject({ session: 'bot', sender: 'cerin:decision' })
   // Answered on its card in the chat or in the Inbox alike, so the notice names neither.
   expect(turns[0]!.text).toContain('Your question (requestId q1) was answered.')
   expect(turns[0]!.text).toContain('Answered by: "Yuanlin", this conversation\'s owner')
@@ -135,7 +135,7 @@ test("a question asked in a channel gets the answerer's replies there, one per q
     })
     expect(metadata).toMatchObject({
       version: 1,
-      source: 'nuphos',
+      source: 'cerin',
       sender: {
         type: 'user',
         id: 'owner',
@@ -249,7 +249,7 @@ test('a dismissal closes the question and wakes the asking agent to carry on wit
   await dismissDecision({ conversation: ask(), requestId: 'q1', actor: teammate, teamId: 't1' })
 
   expect(turns).toHaveLength(1)
-  expect(turns[0]).toMatchObject({ session: 'bot', sender: 'nuphos:decision' })
+  expect(turns[0]).toMatchObject({ session: 'bot', sender: 'cerin:decision' })
   expect(turns[0]!.text).toContain(
     'Your question (requestId q1) was dismissed by "Sam", a teammate: no answer is coming.',
   )
@@ -309,7 +309,7 @@ test('a conversation the question is about is told the answer as Cerin; a linked
   expect(turns.map((turn) => turn.session)).toEqual(['bot', 'reviewer'])
   const told = turns[1]!
 
-  expect(told.sender).toBe('nuphos:decision')
+  expect(told.sender).toBe('cerin:decision')
   expect(told.text).toContain(
     'A question about this conversation (requestId q1), asked by conversation bot',
   )

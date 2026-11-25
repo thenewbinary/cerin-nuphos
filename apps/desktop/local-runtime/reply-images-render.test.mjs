@@ -17,16 +17,14 @@ test('persisted reply image references survive Markdown sanitizing and reach the
     const { MessageResponse } = await server.ssrLoadModule(
       '/src/components/agent/MessageResponse.tsx',
     )
-    for (const origin of ['https://platform.cerin.ai', 'https://nuphos.ai']) {
-      const result = renderToString(
-        React.createElement(MessageResponse, {
-          teamId: 'test',
-          children: `![screen](${origin}/_reply-images/0123456789abcdef01234567)`,
-        }),
-      )
-      assert.ok(result.replaceAll('<!-- -->', '').includes('Loading screen'), origin)
-      assert.ok(!result.includes(`src="${origin}/_reply-images/`), origin)
-    }
+    const result = renderToString(
+      React.createElement(MessageResponse, {
+        teamId: 'test',
+        children: '![screen](https://platform.cerin.ai/_reply-images/0123456789abcdef01234567)',
+      }),
+    )
+    assert.ok(result.replaceAll('<!-- -->', '').includes('Loading screen'))
+    assert.ok(!result.includes('src="https://platform.cerin.ai/_reply-images/'))
   } finally {
     await server.close()
   }

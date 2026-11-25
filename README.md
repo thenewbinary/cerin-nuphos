@@ -1,10 +1,10 @@
-![Cerin, the open source Grok Bot alternative](assets/nuphos-banner.jpg)
+![Cerin, the open source Grok Bot alternative](assets/cerin-banner.jpg)
 
 # Cerin
 
 **The open source Grok Bot alternative for teams.**
 
-<a href="https://platform.cerin.ai/download"><img alt="Download for macOS" src="assets/download-macos.svg" height="44"></a> <a href="https://apps.apple.com/app/nuphos/id6812533633"><img alt="Download on the App Store" src="assets/download-app-store.svg" height="44"></a> <a href="https://play.google.com/store/apps/details?id=ai.nuphos.android"><img alt="Get it on Google Play" src="assets/get-it-on-google-play.png" height="44"></a> <a href="https://x.com/NuphosAI"><img alt="Follow on X" src="assets/follow-x.svg" height="44"></a> <a href="https://platform.cerin.ai/dc"><img alt="Join Discord" src="assets/join-discord.svg" height="44"></a>
+<a href="https://platform.cerin.ai/download"><img alt="Download for macOS" src="assets/download-macos.svg" height="44"></a> <a href="https://apps.apple.com/app/cerin/id6812533633"><img alt="Download on the App Store" src="assets/download-app-store.svg" height="44"></a> <a href="https://play.google.com/store/apps/details?id=ai.cerin.android"><img alt="Get it on Google Play" src="assets/get-it-on-google-play.png" height="44"></a> <a href="https://x.com/CerinAI"><img alt="Follow on X" src="assets/follow-x.svg" height="44"></a> <a href="https://platform.cerin.ai/dc"><img alt="Join Discord" src="assets/join-discord.svg" height="44"></a>
 
 Cerin is an open source (Apache-2.0) alternative to xAI's Grok Bot. It gives
 you always-on Bots that run on the Claude Code or Codex subscription you
@@ -212,7 +212,7 @@ pull request that repairs it adds the scenario that would have caught it.
 
 Every worktree or clone can run `bun run dev` at the same time. All of them
 share one Mongo / RustFS / runtime stack, whose secrets live in
-`~/.config/nuphos/dev-stack.env`. The first run copies the main checkout's
+`~/.config/cerin/dev-stack.env`. The first run copies the main checkout's
 `deploy/compose/.env`, and takes the S3 keys from the running stack when there
 is one. If that file and the running stack ever disagree, `bun run dev` stops
 before recreating the stack under the other instances; copy the stack's keys
@@ -221,8 +221,8 @@ name, which is the checkout's directory name or `NUPHOS_DEV_INSTANCE`:
 
 - the backend, Vite and DevTools (CDP) ports, each claimed free at start;
 - the Desktop profile, `Cerin Dev (<name> local)`;
-- the Desktop sign-in, `~/.config/nuphos/cli.dev.<name>.yaml`;
-- the logs, `$TMPDIR/nuphos-dev-logs/<name>/`.
+- the Desktop sign-in, `~/.config/cerin/cli.dev.<name>.yaml`;
+- the logs, `$TMPDIR/cerin-dev-logs/<name>/`.
 
 Two checkouts with the same directory name, or two instances from one
 checkout, need different `NUPHOS_DEV_INSTANCE` values. Sign-ins from the old

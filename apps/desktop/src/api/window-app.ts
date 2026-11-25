@@ -163,22 +163,22 @@ export type WindowAppApi = {
   ): Promise<Design>
   designsApplyOps(teamId: string, designId: string, ops: DesignOp[]): Promise<Design>
   designsDelete(teamId: string, designId: string): Promise<void>
-  dashboardsList(teamId: string): Promise<import('../dashboards/schema').NuphosDashboard[]>
-  dashboardsFormerMembers(teamId: string): Promise<import('../dashboards/schema').NuphosDashboard[]>
+  dashboardsList(teamId: string): Promise<import('../dashboards/schema').CerinDashboard[]>
+  dashboardsFormerMembers(teamId: string): Promise<import('../dashboards/schema').CerinDashboard[]>
   dashboardsCreate(
     teamId: string,
     input: import('../dashboards/schema').CreateDashboardInput,
-  ): Promise<import('../dashboards/schema').NuphosDashboard>
+  ): Promise<import('../dashboards/schema').CerinDashboard>
   dashboardsGet(
     teamId: string,
     dashboardId: string,
     viewRange?: DashboardViewRange,
-  ): Promise<import('../dashboards/schema').NuphosDashboardDetail>
+  ): Promise<import('../dashboards/schema').CerinDashboardDetail>
   dashboardsUpdate(
     teamId: string,
     dashboardId: string,
     input: import('../dashboards/schema').UpdateDashboardInput,
-  ): Promise<import('../dashboards/schema').NuphosDashboard>
+  ): Promise<import('../dashboards/schema').CerinDashboard>
   dashboardsDelete(teamId: string, dashboardId: string): Promise<void>
   dashboardsRefresh(
     teamId: string,

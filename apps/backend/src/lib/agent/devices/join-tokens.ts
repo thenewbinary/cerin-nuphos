@@ -1,7 +1,7 @@
 import { createHash, randomBytes, randomUUID } from 'node:crypto'
 
 import { db } from '@/lib/db'
-import { getNuphosUserForCredential } from '@/lib/identity'
+import { getCerinUserForCredential } from '@/lib/identity'
 
 import { claimBoxAgentDevice, insertJoinedAgentDevice } from './store'
 
@@ -101,7 +101,7 @@ export async function redeemDeviceJoinToken(
     return { userId: used.userId, deviceId: used.deviceId, credential, box: true }
   }
   // A person's machine: a token issued before "sign out everywhere" died with the sessions.
-  if (!(await getNuphosUserForCredential(used.userId, used.createdAt))) return null
+  if (!(await getCerinUserForCredential(used.userId, used.createdAt))) return null
   const deviceId = randomUUID()
 
   await joinTokens().updateOne({ _id: used._id }, { $set: { deviceId } })

@@ -2,7 +2,7 @@ import Foundation
 
 enum BareURLTests {
     static func run() {
-        let pr = "https://github.com/nuphos/nuphos/pull/2595"
+        let pr = "https://github.com/thenewbinary/cerin-platform/pull/2595"
         for tail in ["（Fixes", "，下一句", "。", "、b", "：", "「x」", "\u{3000}next"] {
             let split = BareURL.split(pr + tail)
             precondition(split?.url == pr && split?.rest == tail, "\(tail): \(String(describing: split))")

@@ -7,11 +7,11 @@ private final class BotAvatarBundle: NSObject {}
 
 /// Keep this order and hash identical to Desktop's botAvatars.ts.
 enum BotAvatars {
-    static let enabledKey = "nuphos.botAvatars"
+    static let enabledKey = "cerin.botAvatars"
 
     /// Shared with the notification extension, which shows the avatar on pushes.
     static let defaults: UserDefaults = {
-        migratedDefaults(legacy: .standard, shared: UserDefaults(suiteName: "group.ai.nuphos.ios") ?? .standard)
+        migratedDefaults(legacy: .standard, shared: UserDefaults(suiteName: "group.ai.cerin.ios") ?? .standard)
     }()
 
     /// Migrate once; later shared-suite changes take precedence over the old value.

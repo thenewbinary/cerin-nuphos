@@ -13,7 +13,7 @@ Changing runtime-global settings is possible, but strongly discouraged unless th
 
 Use this skill when the user wants to inspect or change Linode/Akamai Cloud resources directly with `linode-cli`, including Linode instances, LKE clusters, NodeBalancers, firewalls, volumes, object storage, images, and account events.
 
-`linode-cli` is provided by the runtime image's tool manifest, not baked into it: the first call installs the pinned build from its hash-locked requirements and can take a while, so let it finish rather than interrupt it. `nuphos-tools list` shows the tool and its state. If the command is missing entirely, or that install keeps failing, report the runtime mismatch instead of doing an unpinned package install during the task; do not conclude that Cerin lacks Linode credentials.
+`linode-cli` is provided by the runtime image's tool manifest, not baked into it: the first call installs the pinned build from its hash-locked requirements and can take a while, so let it finish rather than interrupt it. `cerin-tools list` shows the tool and its state. If the command is missing entirely, or that install keeps failing, report the runtime mismatch instead of doing an unpinned package install during the task; do not conclude that Cerin lacks Linode credentials.
 
 ## Prefer Cerin API for first-party reads
 
@@ -41,7 +41,7 @@ Authenticate before any `linode-cli` call:
 bash skills/linode/scripts/setup-credentials.sh <teamId> <accountId>
 ```
 
-The setup script uses the selected account for this agent session when `NUPHOS_SESSION_ID` is present, writes `~/.config/linode-cli`, and also writes `~/.linode/nuphos.env` for tools that prefer `LINODE_CLI_TOKEN`.
+The setup script uses the selected account for this agent session when `NUPHOS_SESSION_ID` is present, writes `~/.config/linode-cli`, and also writes `~/.linode/cerin.env` for tools that prefer `LINODE_CLI_TOKEN`.
 
 Confirm identity before mutating anything:
 

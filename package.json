@@ -1,5 +1,5 @@
 {
-  "name": "nuphos",
+  "name": "cerin",
   "private": true,
   "version": "0.0.0",
   "description": "Cerin monorepo — `bun run dev` boots backend + desktop with a live dashboard.",

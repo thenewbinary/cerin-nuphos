@@ -92,16 +92,16 @@ export async function handleToolApprovalInteraction(args: {
 
     return
   }
-  if (mapping.nuphosUserId !== wait.userId) {
+  if (mapping.cerinUserId !== wait.userId) {
     await repliers.reject(
       'wrong_principal',
       'Only the person whose credentials this turn is using can decide this tool request.',
-      { expected_nuphos_user_id: wait.userId, actual_nuphos_user_id: mapping.nuphosUserId },
+      { expected_cerin_user_id: wait.userId, actual_cerin_user_id: mapping.cerinUserId },
     )
 
     return
   }
-  if (!(await getTeamMembership(mapping.nuphosUserId, thread.teamId))) {
+  if (!(await getTeamMembership(mapping.cerinUserId, thread.teamId))) {
     await repliers.reject('not_team_member', 'You are no longer a member of this Cerin team.')
 
     return
@@ -125,7 +125,7 @@ export async function handleToolApprovalInteraction(args: {
     team_id: thread.teamId,
     slack_workspace_id: args.slackWorkspaceId,
     slack_user_id: args.slackUserId,
-    nuphos_user_id: mapping.nuphosUserId,
+    cerin_user_id: mapping.cerinUserId,
   })
   const allowed = args.decision === 'allow'
 

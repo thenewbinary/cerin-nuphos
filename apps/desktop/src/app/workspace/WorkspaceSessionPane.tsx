@@ -115,7 +115,7 @@ function TeamSessionPane({
             titlebarClassName={cornerPane ? CORNER_TITLEBAR_CLASS : undefined}
             onOpenTask={onOpenTask}
             onOpenSession={(agentId) => ws.workspaceActions.selectSession(agentId, { teamId })}
-            onOpenNuphosLink={ws.stableOpenNuphosLinkFromChat}
+            onOpenCerinLink={ws.stableOpenCerinLinkFromChat}
             fixes={{
               isTeamAdmin: ws.currentTeam?.role === 'ADMINISTRATOR',
               onOpenAgentSettings: () => ws.openSettingsSection('workspace.computers'),

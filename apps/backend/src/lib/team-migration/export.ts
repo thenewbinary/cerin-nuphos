@@ -103,7 +103,7 @@ async function writeSkills(
 export async function exportTeam(teamId: string) {
   const exportedAt = new Date().toISOString()
   const archive = createMigrationArchive({
-    format: 'nuphos-team',
+    format: 'cerin-team',
     formatVersion: 1,
     backendVersion: packageJson.version,
     sourceTeamId: teamId,

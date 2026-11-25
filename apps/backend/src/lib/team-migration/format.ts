@@ -34,7 +34,7 @@ export const MIGRATION_PARTS = [
 export type MigrationPart = (typeof MIGRATION_PARTS)[number]
 export type PartDigest = { records: number; bytes: number; sha256: string }
 export type MigrationManifest = {
-  format: 'nuphos-team'
+  format: 'cerin-team'
   formatVersion: 1
   backendVersion: string
   sourceTeamId: string

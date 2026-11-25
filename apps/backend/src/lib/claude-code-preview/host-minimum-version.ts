@@ -13,12 +13,7 @@ export const MINIMUM_HOST_VERSION = { desktop: '0.127.0', cli: '0.20.0' } as con
 
 export type OutdatedHost = keyof typeof MINIMUM_HOST_VERSION
 
-const APP: Record<string, OutdatedHost> = {
-  'cerin-desktop': 'desktop',
-  'cerin-cli': 'cli',
-  'nuphos-desktop': 'desktop',
-  'nuphos-cli': 'cli',
-}
+const APP: Record<string, OutdatedHost> = { 'cerin-desktop': 'desktop', 'cerin-cli': 'cli' }
 
 /**
  * Which Cerin on a computer is older than the floor: what its host reports about itself, else

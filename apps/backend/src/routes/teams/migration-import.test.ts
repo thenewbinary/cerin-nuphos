@@ -29,7 +29,7 @@ function app(signedIn = true, cli = false) {
 function fixture() {
   const source = '000000000000000000000001'
   const archive = createMigrationArchive({
-    format: 'nuphos-team',
+    format: 'cerin-team',
     formatVersion: 1,
     backendVersion: 'test',
     sourceTeamId: source,

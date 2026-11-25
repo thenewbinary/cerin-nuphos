@@ -33,7 +33,7 @@ export type AgentTimelineEvent = {
     | ({ type: 'person' } & AgentTimelinePerson)
     | { type: 'task'; sessionId: string; title: string; provider?: AgentProvider }
     | ({ type: 'runtime' } & AgentTimelineRuntime)
-    | { type: 'nuphos' }
+    | { type: 'cerin' }
   /** settings_changed: `set` when the agent filled in values nobody picked. */
   form?: 'set' | 'changed'
   /** settings_changed: each setting, as the picker names it; an absent value is the default. */

@@ -147,7 +147,7 @@ The workflow is not live when only the trigger exists. Finish every step, read i
 
    The create response returns the webhook URL and its secret once. Require an absolute permanent `https://` URL. If it is temporary and the user has not already accepted local-debug wiring, ask whether to use it and STOP; never invent or substitute a host.
 
-3. **Create a dedicated SNS topic and HTTPS subscription.** Create a uniquely named topic such as `nuphos-watch-<triggerId>`, set its `SignatureVersion` topic attribute to `2`, and subscribe the exact endpoint `<webhookUrl>?secret=<url-encoded webhookSecret>` using protocol `https`. Cerin verifies the AWS SNS signature and automatically confirms a valid `SubscriptionConfirmation`; do not fetch `SubscribeURL` yourself. Poll `list-subscriptions-by-topic` briefly until it returns a real subscription ARN instead of `PendingConfirmation`.
+3. **Create a dedicated SNS topic and HTTPS subscription.** Create a uniquely named topic such as `cerin-watch-<triggerId>`, set its `SignatureVersion` topic attribute to `2`, and subscribe the exact endpoint `<webhookUrl>?secret=<url-encoded webhookSecret>` using protocol `https`. Cerin verifies the AWS SNS signature and automatically confirms a valid `SubscriptionConfirmation`; do not fetch `SubscribeURL` yourself. Poll `list-subscriptions-by-topic` briefly until it returns a real subscription ARN instead of `PendingConfirmation`.
 
 4. **Attach additively to the alarm.** Add the topic ARN to both `AlarmActions` and `OKActions` (unless the user explicitly chose only one state), de-duplicate it, and preserve every pre-existing ALARM, OK, and INSUFFICIENT_DATA action exactly.
 

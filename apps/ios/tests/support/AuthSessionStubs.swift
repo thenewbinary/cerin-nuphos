@@ -11,7 +11,7 @@ enum Keychain {
     static func delete(_ key: String) { items[key] = nil }
 }
 
-enum NuphosAPI {
+enum CerinAPI {
     @discardableResult static func rememberOrigin(_ origin: String, token: String) -> Bool { true }
     static func baseURL(for token: String?) -> URL { baseURL }
     static let baseURLKey = "test-api-base-url"
@@ -25,15 +25,15 @@ enum NuphosAPI {
     }
 
     /// Answers `/auth/me` for a token; set by each test.
-    nonisolated(unsafe) static var me: @MainActor (String) async throws -> NuphosUser = { _ in throw Failure.unauthorized }
+    nonisolated(unsafe) static var me: @MainActor (String) async throws -> CerinUser = { _ in throw Failure.unauthorized }
 
-    @MainActor static func currentUser(token: String) async throws -> NuphosUser { try await me(token) }
+    @MainActor static func currentUser(token: String) async throws -> CerinUser { try await me(token) }
 }
 
 enum AccountAPI {
     static let aiConsentVersion = "2026-09-28"
     struct Consent: Codable { let version: String; let accepted: Bool }
-    struct SignIn: Decodable { let token: String; let user: NuphosUser }
+    struct SignIn: Decodable { let token: String; let user: CerinUser }
 
     /// The token the email sign-in hands out.
     nonisolated(unsafe) static var signInToken = ""
@@ -44,9 +44,9 @@ enum AccountAPI {
 
     static func request<T: Decodable>(_ path: String, method: String = "GET", token: String? = nil, body: [String: Any]? = nil, upload: Data? = nil) async throws -> T {
         if path == "ai-consent", let consentReply { return try await consentReply(token ?? "") as! T }
-        if path == "email/verify-code", let mfaChallenge { throw NuphosAPI.Failure.mfaRequired(token: mfaChallenge) }
+        if path == "email/verify-code", let mfaChallenge { throw CerinAPI.Failure.mfaRequired(token: mfaChallenge) }
         if path == "mfa/verify", body?["mfaToken"] as? String != mfaChallenge || body?["code"] as? String != "654321" {
-            throw NuphosAPI.Failure.http(401, message: "That code is not valid")
+            throw CerinAPI.Failure.http(401, message: "That code is not valid")
         }
         let json: Any = path == "ai-consent"
             ? ["version": aiConsentVersion, "accepted": true]
@@ -59,7 +59,7 @@ enum AccountAPI {
 
 enum LaunchCache {
     struct User: Codable {
-        let user: NuphosUser
+        let user: CerinUser
         let aiConsentVersion: String
     }
 
@@ -71,7 +71,7 @@ enum LaunchCache {
 
 final class Analytics {
     static let shared = Analytics()
-    func identify(_ user: NuphosUser) {}
+    func identify(_ user: CerinUser) {}
     func reset() {}
     func track(_ event: String, teamID: String? = nil, properties: [String: Any] = [:]) {}
 }
@@ -97,7 +97,7 @@ enum ComposerDrafts {
     static func clear() {}
 }
 
-enum NuphosWeb {
+enum CerinWeb {
     enum Provider { case apple, google }
     enum CallbackResult { case code(String), failure(String) }
     static let callbackScheme = "cerin"

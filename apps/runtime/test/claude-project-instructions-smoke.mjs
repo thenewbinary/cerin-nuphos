@@ -57,7 +57,7 @@ function project(root, name, claudeMd) {
 }
 
 test('project settings stay off; the working directory CLAUDE.md is appended as text', (t) => {
-  const instrumented = new URL(`./nuphos-instructions-smoke-${process.pid}.js`, target)
+  const instrumented = new URL(`./cerin-instructions-smoke-${process.pid}.js`, target)
   const source = readFileSync(target, 'utf8')
   const anchor = '        const q = query({'
   assert.equal(source.split(anchor).length, 2)
@@ -68,7 +68,7 @@ test('project settings stay off; the working directory CLAUDE.md is appended as 
       `        throw Object.assign(new Error('captured-sdk-options'), { capturedOptions: options });\n${anchor}`,
     ),
   )
-  const root = mkdtempSync(join(tmpdir(), 'nuphos-claude-instructions-'))
+  const root = mkdtempSync(join(tmpdir(), 'cerin-claude-instructions-'))
   t.after(() => {
     rmSync(instrumented)
     rmSync(root, { recursive: true, force: true })

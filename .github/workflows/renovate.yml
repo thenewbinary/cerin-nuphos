@@ -25,7 +25,7 @@ permissions: {}
 jobs:
   renovate:
     # Skipped until the App is set up (CONTRIBUTING.md, "Running Renovate").
-    if: github.repository == 'thenewbinary/cerin-nuphos' && vars.RENOVATE_APP_CLIENT_ID != ''
+    if: github.repository == 'thenewbinary/cerin-platform' && vars.RENOVATE_APP_CLIENT_ID != ''
     runs-on: ubuntu-latest
     timeout-minutes: 60
     # Holds RENOVATE_APP_PRIVATE_KEY, so the key is only exposed to this job.
@@ -39,7 +39,7 @@ jobs:
         with:
           client-id: ${{ vars.RENOVATE_APP_CLIENT_ID }}
           private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
-          repositories: cerin-nuphos
+          repositories: cerin-platform
 
       # GitHub authors platform commits as the App's bot user, so the DCO
       # sign-off must name that same identity.
@@ -58,7 +58,7 @@ jobs:
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
           RENOVATE_PLATFORM: github
-          RENOVATE_REPOSITORIES: '["thenewbinary/cerin-nuphos"]'
+          RENOVATE_REPOSITORIES: '["thenewbinary/cerin-platform"]'
           RENOVATE_ONBOARDING: 'false'
           RENOVATE_REQUIRE_CONFIG: required
           RENOVATE_GIT_AUTHOR: ${{ steps.identity.outputs.author }}

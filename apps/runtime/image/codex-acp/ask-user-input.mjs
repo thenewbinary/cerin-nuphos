@@ -11,9 +11,9 @@ export function patchCodexUserInput(source) {
     throw new Error('Expected Codex session server and user input handoffs')
 
   return source
-    .replaceAll(SERVERS, `${SERVERS}    nuphosRememberDecisionServer(request.mcpServers);\n`)
+    .replaceAll(SERVERS, `${SERVERS}    cerinRememberDecisionServer(request.mcpServers);\n`)
     .replace(
       USER_INPUT,
-      USER_INPUT.replace('return { answers: {} };', 'return await nuphosAskCodexQuestion(params);'),
+      USER_INPUT.replace('return { answers: {} };', 'return await cerinAskCodexQuestion(params);'),
     )
 }

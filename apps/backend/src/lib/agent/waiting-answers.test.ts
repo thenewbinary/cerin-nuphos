@@ -43,7 +43,7 @@ const answer = (id: string) => ({
     renderedText: `Your question (requestId ${id}) was answered from the Inbox.`,
     source: 'agent.resource',
     actorUserId: 'owner',
-    metadata: systemSender('nuphos:decision', 'Cerin'),
+    metadata: systemSender('cerin:decision', 'Cerin'),
   }),
   answers: question(id),
 })

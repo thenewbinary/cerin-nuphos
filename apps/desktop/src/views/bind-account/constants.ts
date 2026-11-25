@@ -61,7 +61,7 @@ export function cloudflareScopesFor(
   return [...new Set([...selected, ...CLOUDFLARE_BASELINE_SCOPES])]
 }
 
-// Volcengine role TRN, e.g. trn:iam::2100000000:role/NuphosConnector.
+// Volcengine role TRN, e.g. trn:iam::2100000000:role/CerinConnector.
 export const TRN_PATTERN = /^trn:iam::\d+:role\/.+$/
 // Huawei Cloud account (IAM domain) id, the IAM identity provider name, and
 // the trust agency name assigned to Cerin's audience.

@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">자격 증명 · %1$d</string>
     <string name="composer_computers_count">컴퓨터 · %1$d</string>
     <string name="composer_queue_a_message">메시지 대기열에 추가</string>
-    <string name="composer_ask_nuphos">Cerin에게 무엇이든 물어보세요</string>
+    <string name="composer_ask_cerin">Cerin에게 무엇이든 물어보세요</string>
     <string name="composer_remove_attachment_failed">저장된 이 첨부 파일을 제거할 수 없습니다. 저장 공간을 확인한 후 다시 시도하세요.</string>
     <string name="composer_photos">사진</string>
     <string name="composer_files">파일</string>

@@ -132,7 +132,7 @@ describe('internal tokens with an AWS KMS key', () => {
       },
     }
     // An alias resolves to an immutable key id, which signing then uses.
-    const signer = kmsSigner('alias/nuphos-internal-token', client as never)
+    const signer = kmsSigner('alias/cerin-internal-token', client as never)
 
     expect(keyIdOf(await signer.publicKey())).toBe(keyIdOf(publicKey))
     const signature = await signer.sign(signingInput)

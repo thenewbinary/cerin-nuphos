@@ -11,12 +11,12 @@ import {
 import { requireAuth } from '@/middleware/auth'
 import { teamInvitations } from '@/models'
 
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 import type { AuthVariables } from '@/middleware/auth'
 import type { TeamInvitation } from '@/models'
 
 /** Admin only while whoever invited is still an admin of the team; Editor otherwise. */
-async function roleOnAccept(invitation: TeamInvitation): Promise<NuphosTeamRole> {
+async function roleOnAccept(invitation: TeamInvitation): Promise<CerinTeamRole> {
   const role = invitationRole(invitation)
 
   if (role !== 'ADMINISTRATOR') return role
@@ -99,7 +99,7 @@ invitationsRoutes.post('/:invitationId/accept', async (c) => {
   }
 
   let added: boolean
-  let role: NuphosTeamRole
+  let role: CerinTeamRole
 
   try {
     role = await roleOnAccept(invitation)

@@ -95,9 +95,9 @@ export async function handleMcpHttpPayload(
 const DEFAULT_SURFACE: McpSurface = {
   serverName: MCP_SERVER_NAME,
   instructions:
-    'Talk to the Cerin Agent. Call nuphos_list_teams first — nuphos_ask ' +
+    'Talk to the Cerin Agent. Call cerin_list_teams first — cerin_ask ' +
     'requires a team_id from it. If a request times out, reconnect with ' +
-    'nuphos_check using the same session_id. Call nuphos_capabilities to ' +
+    'cerin_check using the same session_id. Call cerin_capabilities to ' +
     'learn what Cerin can do.',
   toolDefinitions: TOOL_DEFINITIONS,
 }

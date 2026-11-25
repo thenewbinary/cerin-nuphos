@@ -49,7 +49,7 @@ const correction = {
     metadata: {
       version: 1,
       sender: { type: 'user', id: 'ada', displayName: 'Ada' },
-      source: 'nuphos',
+      source: 'cerin',
       sentAt: '2026-10-21T10:00:00Z',
     },
   },
@@ -68,7 +68,7 @@ test('stored history includes the user correction between the surrounding assist
   })
 
   expect(line).toContain('"displayName":"Ada"')
-  expect(line).toContain(`</nuphos_message_metadata>\n\n${correction.data.text}`)
+  expect(line).toContain(`</cerin_message_metadata>\n\n${correction.data.text}`)
   const positions = [
     'I will inspect the changes.',
     correction.data.text,
@@ -96,7 +96,7 @@ test('live history preserves a correction before continuing assistant text', () 
   })
 
   expect(line).toContain('"displayName":"Ada"')
-  expect(line).toContain(`</nuphos_message_metadata>\n\n${correction.data.text}`)
+  expect(line).toContain(`</cerin_message_metadata>\n\n${correction.data.text}`)
   expect(line.indexOf(correction.data.text)).toBeLessThan(
     line.indexOf('The local change is ready.'),
   )

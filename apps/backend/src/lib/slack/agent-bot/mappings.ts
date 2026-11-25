@@ -104,15 +104,15 @@ export async function getSlackUserMapping(
   })
 }
 
-export async function getSlackUserMappingForNuphosUser(
+export async function getSlackUserMappingForCerinUser(
   slackWorkspaceId: string,
   teamId: string,
-  nuphosUserId: string,
+  cerinUserId: string,
 ): Promise<SlackUserMapping | null> {
   return await slackUserMappings().findOne({
     slackWorkspaceId,
     teamId,
-    nuphosUserId,
+    cerinUserId,
     enabled: true,
   })
 }
@@ -125,7 +125,7 @@ export async function upsertSlackUserMapping(data: {
   slackWorkspaceId: string
   slackUserId: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   createdBy: string
   enabled?: boolean
 }): Promise<SlackUserMapping> {
@@ -139,7 +139,7 @@ export async function upsertSlackUserMapping(data: {
       {
         slackWorkspaceId: data.slackWorkspaceId,
         teamId: data.teamId,
-        nuphosUserId: data.nuphosUserId,
+        cerinUserId: data.cerinUserId,
         slackUserId: { $ne: data.slackUserId },
         enabled: true,
       },
@@ -159,7 +159,7 @@ export async function upsertSlackUserMapping(data: {
           createdBy: data.createdBy,
         },
         $set: {
-          nuphosUserId: data.nuphosUserId,
+          cerinUserId: data.cerinUserId,
           enabled,
           updatedAt: now,
         },
@@ -191,7 +191,7 @@ export async function claimSlackUserMapping(data: {
   slackWorkspaceId: string
   slackUserId: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   createdBy: string
 }): Promise<SlackUserMapping | null> {
   const now = new Date()
@@ -203,15 +203,15 @@ export async function claimSlackUserMapping(data: {
         teamId: data.teamId,
         slackUserId: data.slackUserId,
         $or: [
-          { nuphosUserId: data.nuphosUserId },
+          { cerinUserId: data.cerinUserId },
           { enabled: false },
-          { nuphosUserId: { $exists: false } },
+          { cerinUserId: { $exists: false } },
         ],
       },
       {
         $setOnInsert: { createdAt: now, createdBy: data.createdBy },
         $set: {
-          nuphosUserId: data.nuphosUserId,
+          cerinUserId: data.cerinUserId,
           enabled: true,
           updatedAt: now,
         },

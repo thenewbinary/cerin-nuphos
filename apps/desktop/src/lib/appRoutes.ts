@@ -50,7 +50,7 @@ export type {
   ConnectorInfoProvider,
   LinearNavState,
   LinearTeamRef,
-  NuphosDashboardRef,
+  CerinDashboardRef,
   GrafanaSelection,
   NavigationSnapshot,
   PageLocation,
@@ -160,7 +160,7 @@ export function navigationFromAppPath(path: string): NavigationSnapshot | null {
         'team.dashboards',
         rest[1]
           ? {
-              nuphosDashboard: {
+              cerinDashboard: {
                 dashboardId: rest[1],
                 dashboardName: 'Dashboard',
                 ...(parseDashboardViewRange(query)

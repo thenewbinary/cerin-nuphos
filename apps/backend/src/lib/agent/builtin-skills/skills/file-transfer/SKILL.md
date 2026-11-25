@@ -45,10 +45,10 @@ ft() {
 }
 ```
 
-`$TEAM` is the team id — get it from the `nuphos-api` skill
+`$TEAM` is the team id — get it from the `cerin-api` skill
 (`GET /teams`) if you don't already have it. `$NUPHOS_TOKEN` and
 `$NUPHOS_SESSION_ID` are already in the environment. Use `ft` or the
-scripts below rather than another HTTP client; see the `nuphos-api` skill for
+scripts below rather than another HTTP client; see the `cerin-api` skill for
 why.
 
 ## Pull user uploads into the sandbox

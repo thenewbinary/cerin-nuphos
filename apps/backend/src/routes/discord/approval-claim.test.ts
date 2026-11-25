@@ -98,7 +98,7 @@ describe('Discord approval atomic authorization', () => {
     expect(f.writes.every((write) => write.session === f.session)).toBe(true)
     expect(f.writes[2]?.filter).toMatchObject({
       discordUserId: 'discord-user',
-      nuphosUserId: decision.actorUserId,
+      cerinUserId: decision.actorUserId,
       teamId: decision.teamId,
       enabled: true,
     })

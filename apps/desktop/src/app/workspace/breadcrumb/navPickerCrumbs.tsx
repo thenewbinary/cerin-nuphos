@@ -21,8 +21,8 @@ export function pushNavPickerCrumbs(ctx: BreadcrumbContext, out: BreadcrumbSegme
     s3Detail,
     architectureDetail,
     designDetail,
-    nuphosDashboard,
-    nuphosDashboards,
+    cerinDashboard,
+    cerinDashboards,
     connectorDetail,
     agentSessionTitle,
     agentSessionId,
@@ -55,8 +55,8 @@ export function pushNavPickerCrumbs(ctx: BreadcrumbContext, out: BreadcrumbSegme
       scope.kind === 'team' && active === 'team.architecture' && Boolean(architectureDetail)
     const inDesignDetail =
       scope.kind === 'team' && active === 'team.designs' && Boolean(designDetail)
-    const inNuphosDashboardDetail =
-      scope.kind === 'team' && active === 'team.dashboards' && Boolean(nuphosDashboard)
+    const inCerinDashboardDetail =
+      scope.kind === 'team' && active === 'team.dashboards' && Boolean(cerinDashboard)
     const inConnectorDetail =
       scope.kind === 'team' && isTeamIntegrationsActive(active) && Boolean(connectorDetail)
     // Chats sits under Agent, not beside Plans and Skills, so it gets no
@@ -103,8 +103,8 @@ export function pushNavPickerCrumbs(ctx: BreadcrumbContext, out: BreadcrumbSegme
               ? () => updateActiveTab((tab) => ({ ...tab, architectureDetail: null }))
               : inDesignDetail
                 ? () => updateActiveTab((tab) => ({ ...tab, designDetail: null }))
-                : inNuphosDashboardDetail
-                  ? () => updateActiveTab((tab) => ({ ...tab, nuphosDashboard: null }))
+                : inCerinDashboardDetail
+                  ? () => updateActiveTab((tab) => ({ ...tab, cerinDashboard: null }))
                   : inConnectorDetail
                     ? () => updateActiveTab((tab) => ({ ...tab, connectorDetail: null }))
                     : inAgentConversation
@@ -121,22 +121,22 @@ export function pushNavPickerCrumbs(ctx: BreadcrumbContext, out: BreadcrumbSegme
     if (inDesignDetail && designDetail) {
       out.push({ label: designDetail.designName, isResource: true, icon: currentNavItem.icon })
     }
-    if (inNuphosDashboardDetail && nuphosDashboard) {
+    if (inCerinDashboardDetail && cerinDashboard) {
       out.push({
-        label: nuphosDashboard.dashboardName,
+        label: cerinDashboard.dashboardName,
         isResource: true,
         icon: <LayoutDashboard className="w-3.5 h-3.5 text-tertiary" strokeWidth={1.8} />,
         // Sibling switcher, like the breadcrumb cluster picker: jump between
         // dashboards without going back through the list page.
-        options: (nuphosDashboards ?? []).map((d) => ({
+        options: (cerinDashboards ?? []).map((d) => ({
           key: d.id,
           label: d.name,
           icon: <LayoutDashboard className="w-3.5 h-3.5 text-tertiary" strokeWidth={1.8} />,
-          selected: d.id === nuphosDashboard.dashboardId,
+          selected: d.id === cerinDashboard.dashboardId,
           onPick: () =>
             updateActiveTab((tab) => ({
               ...tab,
-              nuphosDashboard: { dashboardId: d.id, dashboardName: d.name },
+              cerinDashboard: { dashboardId: d.id, dashboardName: d.name },
             })),
         })),
       })

@@ -101,7 +101,7 @@ const run = (token: string) =>
     endpoint,
     mcpServers: [
       {
-        name: 'nuphos-tools',
+        name: 'cerin-tools',
         type: 'http',
         url: 'http://backend/mcp-tools',
         headers: [{ name: 'Authorization', value: `Bearer ${token}` }],

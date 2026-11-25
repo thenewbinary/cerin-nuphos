@@ -16,7 +16,7 @@ test.after(async () => {
 
 // A load failure must still close the server, or its watcher keeps the test
 // process alive forever.
-const { isAtlasUrl, parseAtlasLink } = await server
+const { parseAtlasLink } = await server
   .ssrLoadModule('/src/lib/atlasLinkMention.ts')
   .catch(async (err: unknown) => {
     await server.close()
@@ -101,18 +101,4 @@ test('cluster-scoped custom resources ignore the browsing namespace filter', () 
 
 test('rejects inherited object keys as Kubernetes providers', () => {
   assert.equal(parseAtlasLink(`${BASE}/toString/account/region/cluster/overview`), null)
-})
-
-test('recognizes the exact legacy cloud origin for mentions', () => {
-  const legacy = 'https://nuphos.ai/teams/team-1/agent/session-1'
-
-  assert.equal(isAtlasUrl(legacy), true)
-  for (const url of [
-    legacy.replace('https:', 'http:'),
-    legacy.replace('nuphos.ai', 'www.nuphos.ai'),
-    legacy.replace('nuphos.ai', 'nuphos.ai:443'),
-    legacy.replace('nuphos.ai', 'user@nuphos.ai'),
-    legacy.replace('nuphos.ai', 'nuphos.ai.evil.example'),
-  ])
-    assert.equal(isAtlasUrl(url), false, url)
 })

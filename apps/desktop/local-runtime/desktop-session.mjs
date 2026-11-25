@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // A desktop per conversation on a Linux Box. Claude Code runs this as the
-// session's `nuphos-desktop` MCP server (see box-desktop-mcp.mjs), relaying to
+// session's `cerin-desktop` MCP server (see box-desktop-mcp.mjs), relaying to
 // instabox's computer-use MCP (open-computer-use behind its proxy). Agents start
 // every MCP server with the session, so the desktop waits for the first tool
 // call: until then the server runs without a display, which is enough to list
@@ -177,7 +177,7 @@ export async function startDisplay(pool, display, home) {
       'None',
       '-AlwaysShared',
       '-desktop',
-      `nuphos-${String(display)}`,
+      `cerin-${String(display)}`,
       '-nolisten',
       'tcp',
       '-FrameRate',
@@ -277,7 +277,7 @@ function writePanel(config) {
   writeFileSync(channel, PANEL)
 }
 
-const REPLAY_ID = 'nuphos-desktop-replay'
+const REPLAY_ID = 'cerin-desktop-replay'
 
 const toolError = (id, text) => ({
   jsonrpc: '2.0',

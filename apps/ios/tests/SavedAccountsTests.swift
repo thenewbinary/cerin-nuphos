@@ -8,8 +8,8 @@ import Foundation
             if failWrite { throw URLError(.cannotWriteToFile) }
             disk = value
         })
-        let alice = NuphosUser(id: "alice", email: "a@example.com", name: "Alice", username: "", avatarURL: "")
-        let bob = NuphosUser(id: "bob", email: "b@example.com", name: "Bob", username: "", avatarURL: "")
+        let alice = CerinUser(id: "alice", email: "a@example.com", name: "Alice", username: "", avatarURL: "")
+        let bob = CerinUser(id: "bob", email: "b@example.com", name: "Bob", username: "", avatarURL: "")
         try store.save(user: alice, token: "alice-secret", origin: "https://platform.cerin.ai")
         let aliceID = store.active!.id
         precondition(store.acceptsNotification(accountID: "alice"))

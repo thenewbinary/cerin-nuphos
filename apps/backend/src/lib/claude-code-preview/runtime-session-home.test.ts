@@ -31,7 +31,7 @@ const hash = (value: string) => createHash('sha256').update(value).digest('hex')
 // The program reads /proc, which only Linux runtimes have.
 describe.skipIf(!existsSync('/proc/self'))('RECLAIM_SESSION_HOME_PROGRAM', () => {
   let root = ''
-  const home = (id: string) => join(root, 'home', '.nuphos', 'session-homes', hash(id))
+  const home = (id: string) => join(root, 'home', '.cerin', 'session-homes', hash(id))
   // Where a teammate's turns in the conversation keep their CLI state.
   const guestHome = (id: string, actor: string) => `${home(id)}.${hash(actor)}`
   // Runs the program the way the panel job does: `node runner.mjs <dir>`.

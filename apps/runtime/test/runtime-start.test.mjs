@@ -18,7 +18,7 @@ import { test } from 'node:test'
 
 const startScript = new URL('../image/runtime-start.sh', import.meta.url).pathname
 
-// Pinned in nuphos's backend test too. The backend derives the operator key from the
+// Pinned in cerin's backend test too. The backend derives the operator key from the
 // password it was given and the container derives it from the password it was started
 // with; if these two drift, every self-hosted runtime silently loses its operator
 // channel — status, pending decisions and Codex sign-in all go dark.
@@ -34,9 +34,9 @@ const VECTORS = [
 ]
 
 /** Run the start script with a probe in place of openab and report what it saw. */
-function run(env, home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))) {
-  const workspace = mkdtempSync(join(tmpdir(), 'nuphos-start-'))
-  const keyFile = join(home, '.nuphos-runtime/auth-key')
+function run(env, home = mkdtempSync(join(tmpdir(), 'cerin-home-'))) {
+  const workspace = mkdtempSync(join(tmpdir(), 'cerin-start-'))
+  const keyFile = join(home, '.cerin-runtime/auth-key')
   const result = spawnSync(
     'sh',
     [startScript, 'node', '-e', 'require("node:fs").writeSync(3, JSON.stringify(process.env))'],
@@ -70,8 +70,8 @@ function start(env, home) {
 }
 
 test('a container handed a join token runs the CLI host instead, as a Box does', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
-  const bundle = mkdtempSync(join(tmpdir(), 'nuphos-agent-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
+  const bundle = mkdtempSync(join(tmpdir(), 'cerin-agent-'))
 
   writeFileSync(
     join(bundle, 'host.mjs'),
@@ -85,17 +85,17 @@ test('a container handed a join token runs the CLI host instead, as a Box does',
 
   // The command it was given (openab) never runs, and no runtime password is made.
   assert.deepEqual(env.argv, [])
-  assert.equal(env.env.NUPHOS_AGENT_HOME, join(home, '.local/share/nuphos/agent'))
+  assert.equal(env.env.NUPHOS_AGENT_HOME, join(home, '.local/share/cerin/agent'))
   assert.equal(env.env.NUPHOS_JOIN_TOKEN, 'nbj_token')
   assert.equal(env.env.OPENAB_ACP_CONTROL_KEY, undefined)
   assert.equal(existsSync(keyFile), false)
 })
 
 test('back on the direct path, the credential of an earlier join is dropped', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
-  const credential = join(home, '.local/share/nuphos/agent/device-credential.json')
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
+  const credential = join(home, '.local/share/cerin/agent/device-credential.json')
 
-  mkdirSync(join(home, '.local/share/nuphos/agent'), { recursive: true })
+  mkdirSync(join(home, '.local/share/cerin/agent'), { recursive: true })
   writeFileSync(credential, '{}')
   start({ HOME: home }, home)
   assert.equal(existsSync(credential), false)
@@ -140,7 +140,7 @@ test('the same password pasted into both variables still yields a working operat
 })
 
 test('a password in the environment wins over the stored one', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
   const first = start({}, home)
   const [password, expected] = VECTORS[0]
   const { env, stdout } = start({ OPENAB_ACP_AUTH_KEY: password }, home)
@@ -158,8 +158,8 @@ test('without a password one is generated once, stored privately, and announced 
   assert.match(password, /^[0-9a-f]{64}$/u)
   assert.equal(readFileSync(keyFile, 'utf8').trim(), password)
   assert.equal(statSync(keyFile).mode & 0o777, 0o600)
-  assert.equal(statSync(join(home, '.nuphos-runtime')).mode & 0o777, 0o700)
-  assert.deepEqual(readdirSync(join(home, '.nuphos-runtime')), ['auth-key'])
+  assert.equal(statSync(join(home, '.cerin-runtime')).mode & 0o777, 0o700)
+  assert.deepEqual(readdirSync(join(home, '.cerin-runtime')), ['auth-key'])
   assert.equal(stdout.split(password).length, 2)
   assert.match(stdout, /^Generated runtime password \(stored in [^)]+\): [0-9a-f]{64} — /u)
   assert.match(stdout, /persistent volume/u)
@@ -173,10 +173,10 @@ test('without a password one is generated once, stored privately, and announced 
 })
 
 test('the operator key is derived from the stored password', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
   const [password, expected] = VECTORS[1]
-  mkdirSync(join(home, '.nuphos-runtime'), { mode: 0o700 })
-  writeFileSync(join(home, '.nuphos-runtime/auth-key'), `${password}\n`, { mode: 0o600 })
+  mkdirSync(join(home, '.cerin-runtime'), { mode: 0o700 })
+  writeFileSync(join(home, '.cerin-runtime/auth-key'), `${password}\n`, { mode: 0o600 })
 
   const { env } = start({}, home)
 
@@ -194,7 +194,7 @@ test('the operator key is derived from a generated password', () => {
 })
 
 test('a home that has run before warns that the new password must be re-entered', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
   const authFile = join(home, 'codex-auth.json')
   writeFileSync(authFile, '{}')
 
@@ -205,7 +205,7 @@ test('a home that has run before warns that the new password must be re-entered'
 
 test('a settings file counts as a sign-in left behind only when it holds the listed key', () => {
   const run = (settings) => {
-    const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+    const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
     const file = join(home, 'settings.json')
 
     writeFileSync(file, settings)
@@ -218,7 +218,7 @@ test('a settings file counts as a sign-in left behind only when it holds the lis
 })
 
 test('a custom key file in a directory it does not own leaves that directory alone', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
   chmodSync(home, 0o755)
   const keyFile = join(home, 'runtime-password')
 
@@ -237,9 +237,9 @@ test('a password that is too short fails the start, wherever it came from', () =
   assert.match(fromEnv.result.stderr, /at least 32/u)
   assert.equal(fromEnv.result.stderr.includes('too-short'), false)
 
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
-  mkdirSync(join(home, '.nuphos-runtime'))
-  writeFileSync(join(home, '.nuphos-runtime/auth-key'), 'short\n')
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
+  mkdirSync(join(home, '.cerin-runtime'))
+  writeFileSync(join(home, '.cerin-runtime/auth-key'), 'short\n')
   const fromFile = run({}, home)
 
   assert.notEqual(fromFile.result.status, 0)
@@ -247,7 +247,7 @@ test('a password that is too short fails the start, wherever it came from', () =
 })
 
 test('a home it cannot write fails the start instead of running without a password', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
   chmodSync(home, 0o500)
   const { result } = run({}, home)
   chmodSync(home, 0o700)
@@ -278,7 +278,7 @@ test('the password never reaches argv or the output', () => {
 
 test('a token in the environment turns off sign-in and its status, and nothing else does', () => {
   const baked = {
-    OPENAB_RUNTIME_LOGIN_COMMAND: 'node /opt/nuphos-runtime/claude-login.mjs',
+    OPENAB_RUNTIME_LOGIN_COMMAND: 'node /opt/cerin-runtime/claude-login.mjs',
     OPENAB_RUNTIME_AUTH_FILE: '/home/node/.claude/.credentials.json',
   }
 
@@ -304,7 +304,7 @@ test('with the console on, a fresh volume gets no password and points at the set
   assert.equal(env.OPENAB_ACP_AUTH_KEY, undefined)
   assert.equal(env.OPENAB_ACP_CONTROL_KEY, undefined)
   assert.equal(env.OPENAB_RUNTIME_LEGACY_KEY_FILE, keyFile)
-  assert.equal(existsSync(join(home, '.nuphos-runtime')), false)
+  assert.equal(existsSync(join(home, '.cerin-runtime')), false)
   assert.match(
     stdout,
     /^Open this runtime's address in a browser to set its console password\. Setup stays open for 30 minutes/u,
@@ -312,10 +312,10 @@ test('with the console on, a fresh volume gets no password and points at the set
 })
 
 test('with the console on, a stored password is left for openab to import, not exported', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
   const [password] = VECTORS[1]
-  mkdirSync(join(home, '.nuphos-runtime'), { mode: 0o700 })
-  writeFileSync(join(home, '.nuphos-runtime/auth-key'), `${password}\n`, { mode: 0o600 })
+  mkdirSync(join(home, '.cerin-runtime'), { mode: 0o700 })
+  writeFileSync(join(home, '.cerin-runtime/auth-key'), `${password}\n`, { mode: 0o600 })
 
   const { env, stdout, keyFile } = start({ OPENAB_RUNTIME_CONSOLE: 'true' }, home)
 
@@ -374,7 +374,7 @@ test('the workspace is laid out the way a provisioned pod lays it out', () => {
 })
 
 test('temp files Claude Code left mid-save are cleared before any agent starts', () => {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-home-'))
 
   writeFileSync(join(home, '.claude.json'), '{}')
   writeFileSync(join(home, '.claude.json.tmp.123.abcdef'), '{}')
@@ -389,7 +389,7 @@ test('temp files Claude Code left mid-save are cleared before any agent starts',
 
 test('an unwritable workspace does not stop the runtime starting', () => {
   const result = spawnSync('sh', [startScript, 'true'], {
-    env: { PATH: process.env.PATH, NUPHOS_RUNTIME_WORKSPACE: '/proc/nuphos-cannot-exist' },
+    env: { PATH: process.env.PATH, NUPHOS_RUNTIME_WORKSPACE: '/proc/cerin-cannot-exist' },
     encoding: 'utf8',
   })
 
@@ -398,7 +398,7 @@ test('an unwritable workspace does not stop the runtime starting', () => {
 
 test('with no command it becomes openab with the baked config', () => {
   // Stub openab on PATH to record how it was invoked.
-  const bin = mkdtempSync(join(tmpdir(), 'nuphos-start-bin-'))
+  const bin = mkdtempSync(join(tmpdir(), 'cerin-start-bin-'))
   const record = join(bin, 'argv')
 
   spawnSync('sh', [
@@ -408,7 +408,7 @@ test('with no command it becomes openab with the baked config', () => {
   const result = spawnSync('sh', [startScript], {
     env: {
       PATH: `${bin}:${process.env.PATH}`,
-      NUPHOS_RUNTIME_WORKSPACE: mkdtempSync(join(tmpdir(), 'nuphos-start-')),
+      NUPHOS_RUNTIME_WORKSPACE: mkdtempSync(join(tmpdir(), 'cerin-start-')),
     },
     encoding: 'utf8',
   })

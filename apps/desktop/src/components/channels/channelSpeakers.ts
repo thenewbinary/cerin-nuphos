@@ -13,5 +13,5 @@ export function speaksInChannel(sender: Pick<AgentMessageMetadata['sender'], 'ty
  * an answer to an agent's question, and a change of owner when the owner leaves.
  */
 export function isChannelRecord(sender: Pick<AgentMessageMetadata['sender'], 'id'>): boolean {
-  return sender.id === 'nuphos:decision' || sender.id === 'nuphos:chat'
+  return sender.id === 'cerin:decision' || sender.id === 'cerin:chat'
 }

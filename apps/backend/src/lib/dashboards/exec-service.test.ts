@@ -8,14 +8,14 @@ import {
   resolveParams,
 } from '@/lib/dashboards/exec-service'
 
-import type { NuphosDashboard, DashboardPanel } from '@/models'
+import type { CerinDashboard, DashboardPanel } from '@/models'
 
 // Fixed ids so resolveParams (which now injects teamId) hashes deterministically
 // across helper calls.
 const FIXED_DASH_ID = new ObjectId('0000000000000000000000d1')
 const FIXED_TEAM_ID = new ObjectId('0000000000000000000000a1')
 
-function dashboard(overrides: Partial<NuphosDashboard> = {}): NuphosDashboard {
+function dashboard(overrides: Partial<CerinDashboard> = {}): CerinDashboard {
   const now = new Date('2026-07-16T00:00:00.000Z')
 
   return {

@@ -12,9 +12,9 @@ export type LocalStack = {
 }
 
 const S3_BUCKETS = {
-  fileTransfers: 'nuphos-file-transfers',
-  skills: 'nuphos-skills',
-  journal: 'nuphos-journal',
+  fileTransfers: 'cerin-file-transfers',
+  skills: 'cerin-skills',
+  journal: 'cerin-journal',
 }
 
 export function parseEnvFile(text: string): Record<string, string> {
@@ -79,7 +79,7 @@ export function localBackendEnv(stack: LocalStack): Record<string, string> {
     ATLAS_DEV_TLS_KEY: '',
     NUPHOS_DEV_HTTP_PORT: '0',
     MONGODB_URI: `mongodb://127.0.0.1:${String(stack.mongoPort)}/?directConnection=true`,
-    MONGODB_DB: 'nuphos',
+    MONGODB_DB: 'cerin',
     ATLAS_REDIS_ENABLED: 'false',
     NUPHOS_DEV_EMAIL_OTP_LOG: 'true',
     NUPHOS_LOCAL_STACK: 'true',

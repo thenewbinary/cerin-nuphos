@@ -27,7 +27,7 @@
     <string name="shell_server_custom_settings">%1$s · การตั้งค่าเซิร์ฟเวอร์</string>
     <string name="shell_server_body">ใช้ Cerin Cloud หรือป้อนที่อยู่ HTTPS ของแบ็กเอนด์ที่โฮสต์เอง</string>
     <string name="shell_server_address">ที่อยู่เซิร์ฟเวอร์</string>
-    <string name="shell_use_nuphos_cloud">ใช้ Cerin Cloud</string>
+    <string name="shell_use_cerin_cloud">ใช้ Cerin Cloud</string>
     <string name="shell_server_save_failed">บันทึกเซิร์ฟเวอร์ไม่ได้ โปรดลองอีกครั้ง</string>
     <string name="shell_cancel_adding_account">ยกเลิกการเพิ่มบัญชี</string>
     <string name="shell_retry_sign_in_options">โหลดตัวเลือกการลงชื่อเข้าใช้อีกครั้ง</string>

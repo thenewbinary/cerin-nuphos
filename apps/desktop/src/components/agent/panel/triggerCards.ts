@@ -12,7 +12,7 @@ const COMMAND_TOOLS = new Set([
   'Bash',
   'Terminal',
   'local_exec',
-  'mcp__nuphos-tools__local_exec',
+  'mcp__cerin-tools__local_exec',
 ])
 
 export type TriggerCardInfo = { triggerId: string; action: 'created' | 'updated' }

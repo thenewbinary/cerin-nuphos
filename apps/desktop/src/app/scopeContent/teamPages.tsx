@@ -85,7 +85,7 @@ export function renderTeamPages(ctx: ScopeRenderContext): React.ReactNode | unde
         active={active}
         refreshKey={refreshKey}
         isTeamAdmin={isTeamAdmin}
-        onChanged={() => window.dispatchEvent(new Event('nuphos:databases-changed'))}
+        onChanged={() => window.dispatchEvent(new Event('cerin:databases-changed'))}
         onLeave={onExitToConnectors}
         onOpenPlanInChat={onOpenPlanInChat}
       />,

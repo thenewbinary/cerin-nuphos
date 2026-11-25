@@ -6,18 +6,18 @@ import { CREDENTIAL_TOOLS } from './protocol-tools-credentials'
 
 export const TOOL_DEFINITIONS = [
   {
-    name: 'nuphos_ask',
+    name: 'cerin_ask',
     description:
       'Send a prompt to the Cerin Agent and get its response. Blocks until the ' +
       'agent finishes. The agent keeps running in the background even if this ' +
-      'call times out — reconnect with nuphos_check using the same session_id. ' +
+      'call times out — reconnect with cerin_check using the same session_id. ' +
       'Pass session_id back on a later call to continue a multi-turn conversation, ' +
-      'or the session_id of an existing Task from nuphos_list_sessions to pick it up. ' +
+      'or the session_id of an existing Task from cerin_list_sessions to pick it up. ' +
       'A prompt sent while that session is running is handed to the turn in flight, ' +
       'which is how you add an instruction or change direction mid-run. ' +
       'Set wait to false to return as soon as the turn is accepted and poll ' +
-      'nuphos_check instead. ' +
-      'ALWAYS call nuphos_list_teams first: team_id is required, and every ' +
+      'cerin_check instead. ' +
+      'ALWAYS call cerin_list_teams first: team_id is required, and every ' +
       'conversation runs inside one of your Cerin teams.',
     inputSchema: {
       type: 'object',
@@ -32,7 +32,7 @@ export const TOOL_DEFINITIONS = [
             "The Cerin team to run in — required. Scopes the agent to that team's " +
             'cloud accounts and resources, and makes the conversation visible in ' +
             "that team's workspace. You must be a member of the team; call " +
-            'nuphos_list_teams to discover your teams and their ids.',
+            'cerin_list_teams to discover your teams and their ids.',
         },
         session_id: {
           type: 'string',
@@ -47,12 +47,12 @@ export const TOOL_DEFINITIONS = [
             'false returns once the turn is accepted, with status "running", ' +
             'instead of blocking until it ends. Default true. For a new session ' +
             'it waits up to 5 seconds for the session to be stored; if ' +
-            'nuphos_check then says "Session not found", retry it shortly.',
+            'cerin_check then says "Session not found", retry it shortly.',
         },
         runtime_id: {
           type: 'string',
           description:
-            'The agent a NEW session runs on, from nuphos_list_runtimes. Omitted: ' +
+            'The agent a NEW session runs on, from cerin_list_runtimes. Omitted: ' +
             'your default agent in the team. An existing session keeps its own agent.',
         },
         model: {
@@ -60,7 +60,7 @@ export const TOOL_DEFINITIONS = [
           description:
             'The model a NEW session starts on; needs runtime_id. A model the agent does ' +
             "not offer is refused with its choices. Omitted: the agent's own default. " +
-            'For an existing session use nuphos_update_session.',
+            'For an existing session use cerin_update_session.',
         },
         effort: {
           type: 'string',
@@ -74,14 +74,14 @@ export const TOOL_DEFINITIONS = [
             'Full Access for a NEW session, set before its first turn: true runs commands ' +
             'without asking for approval, so use it only when the person you work for ' +
             'wants the session to run unattended. Omitted: each tool call that needs ' +
-            'approval waits as a tool_authorization in nuphos_check. For an existing ' +
-            'session use nuphos_update_session.',
+            'approval waits as a tool_authorization in cerin_check. For an existing ' +
+            'session use cerin_update_session.',
         },
         parent_session_id: {
           type: 'string',
           description:
             'Start a NEW session as a Task under one of your Bots (bot: true in ' +
-            "nuphos_list_sessions). It uses the Bot's credentials and Full Access mode, " +
+            "cerin_list_sessions). It uses the Bot's credentials and Full Access mode, " +
             "and starts on the Bot's agent, model and effort unless runtime_id, model " +
             'or effort say otherwise.',
         },
@@ -89,7 +89,7 @@ export const TOOL_DEFINITIONS = [
           type: 'string',
           description:
             'Answer an open request of the session, from the requests that ' +
-            'nuphos_check returns. For a question, prompt is the answer and the agent ' +
+            'cerin_check returns. For a question, prompt is the answer and the agent ' +
             'that asked carries on with it; questions that ask for a secret or to ' +
             'connect an account are answered in Cerin only. For a tool_authorization, ' +
             'prompt is "approve" or "deny".',
@@ -106,13 +106,13 @@ export const TOOL_DEFINITIONS = [
     },
   },
   {
-    name: 'nuphos_check',
+    name: 'cerin_check',
     description:
       'See where a session stands. status is "running" (with in_progress, what ' +
       'the turn has done so far), "waiting_for_input" (it stopped on the questions ' +
       'or tool calls awaiting your approval, category tool_authorization, in ' +
-      'requests; answer one with nuphos_ask request_id), "completed" (with the ' +
-      'answer) or "failed". Use this after nuphos_ask times out, to follow a ' +
+      'requests; answer one with cerin_ask request_id), "completed" (with the ' +
+      'answer) or "failed". Use this after cerin_ask times out, to follow a ' +
       'long-running request, or to read an existing Task: from_index returns a ' +
       'page of its transcript.',
     inputSchema: {
@@ -120,7 +120,7 @@ export const TOOL_DEFINITIONS = [
       properties: {
         session_id: {
           type: 'string',
-          description: 'The session_id from nuphos_ask or nuphos_list_sessions.',
+          description: 'The session_id from cerin_ask or cerin_list_sessions.',
         },
         from_index: {
           type: 'number',
@@ -141,15 +141,15 @@ export const TOOL_DEFINITIONS = [
   },
   ...CONTROL_TOOL_DEFINITIONS,
   {
-    name: 'nuphos_list_teams',
+    name: 'cerin_list_teams',
     description:
       'List the Cerin teams you belong to. Pass a returned team_id to ' +
-      "nuphos_ask to scope the agent to that team's cloud accounts and " +
+      "cerin_ask to scope the agent to that team's cloud accounts and " +
       'resources.',
     inputSchema: { type: 'object', properties: {} },
   },
   {
-    name: 'nuphos_list_sessions',
+    name: 'cerin_list_sessions',
     description:
       'List the Tasks (sessions) you can work with in a team, newest first: your ' +
       'own, or with scope "shared" those of teammates you take part in. Use it ' +
@@ -158,7 +158,7 @@ export const TOOL_DEFINITIONS = [
     inputSchema: {
       type: 'object',
       properties: {
-        team_id: { type: 'string', description: 'The Cerin team. See nuphos_list_teams.' },
+        team_id: { type: 'string', description: 'The Cerin team. See cerin_list_teams.' },
         search: {
           type: 'string',
           description: 'Only sessions whose title or first message contains this.',
@@ -185,7 +185,7 @@ export const TOOL_DEFINITIONS = [
     },
   },
   {
-    name: 'nuphos_update_session',
+    name: 'cerin_update_session',
     description:
       'Change how a session you own runs: its model, its reasoning effort, or ' +
       'Full Access. With Full Access on, the agent runs commands without asking ' +
@@ -210,7 +210,7 @@ export const TOOL_DEFINITIONS = [
   },
   ...CREDENTIAL_TOOLS,
   {
-    name: 'nuphos_capabilities',
+    name: 'cerin_capabilities',
     description:
       'Discover what the Cerin Agent can do — supported task types and limits. ' +
       'Call this first if you are unsure whether Cerin can handle a task.',
@@ -236,8 +236,8 @@ export function getCapabilities(): unknown {
     limits: {
       typical_latency_seconds: 30,
       note:
-        'Long tasks continue running in the background even if nuphos_ask times ' +
-        'out; reconnect with nuphos_check using the same session_id.',
+        'Long tasks continue running in the background even if cerin_ask times ' +
+        'out; reconnect with cerin_check using the same session_id.',
     },
   }
 }

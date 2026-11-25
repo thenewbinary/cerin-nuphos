@@ -5,8 +5,8 @@ export type DeskModel = {
    * over its side. */
   form: 'laptop' | 'box'
   /** The finish it is drawn in. `other` is the plain laptop for a machine whose maker Cerin cannot
-   * tell; `nuphos` is a Box, black with Cerin's mark. */
-  brand: 'apple' | 'windows' | 'other' | 'nuphos'
+   * tell; `cerin` is a Box, black with Cerin's mark. */
+  brand: 'apple' | 'windows' | 'other' | 'cerin'
 }
 
 // Desktop Apple apps report the "Model Name" from system_profiler: "MacBook Pro", "Mac mini"…
@@ -14,7 +14,7 @@ const DESKTOP_MAC = /Mac ?mini|Mac Studio|Mac Pro|iMac/iu
 
 /** How the Computers desk draws a machine. */
 export function deskModel(device: AgentDevice): DeskModel {
-  if (device.box) return { form: 'box', brand: 'nuphos' }
+  if (device.box) return { form: 'box', brand: 'cerin' }
   // A Mac that does not name its model is most likely a MacBook.
   if (device.platform === 'darwin')
     return { form: DESKTOP_MAC.test(device.model ?? '') ? 'box' : 'laptop', brand: 'apple' }

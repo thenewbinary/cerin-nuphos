@@ -42,10 +42,7 @@ export function isConnectAgentLink(rawUrl: string): boolean {
   try {
     const url = new URL(rawUrl)
 
-    return (
-      (url.protocol === 'cerin:' || url.protocol === 'nuphos:') &&
-      url.hostname === 'connect-runtime'
-    )
+    return url.protocol === 'cerin:' && url.hostname === 'connect-runtime'
   } catch {
     return false
   }

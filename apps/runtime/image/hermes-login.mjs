@@ -206,7 +206,7 @@ export async function runHermesLogin({
     })
     const add = run(HERMES, ['auth', 'add', id, '--type', 'oauth', '--no-browser'], {
       // OpenRouter shows a code to paste, rather than calling back a listener here.
-      env: hermesEnv(id === 'openrouter' ? { SSH_CLIENT: 'nuphos' } : {}),
+      env: hermesEnv(id === 'openrouter' ? { SSH_CLIENT: 'cerin' } : {}),
       // Once the page is printed and the output has settled, it includes the code to enter.
       onOutput: (output) => {
         clearTimeout(settle)

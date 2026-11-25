@@ -85,7 +85,7 @@ final class ChannelBubbleFillUITests: XCTestCase {
                 "Question: Ship it?", "Options: Ship | Wait", "Answer:", "- Ship it? → Ship",
                 "Continue the task with this answer."].joined(separator: "\n")]],
              "metadata": ["version": 1, "source": "agent.resource", "sentAt": "2026-11-14T01:47:00Z",
-                          "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Cerin"]]],
+                          "sender": ["type": "system", "id": "cerin:decision", "displayName": "Cerin"]]],
         ]
         conversation["body"] = body
         responses["GET /agent/conversations/push-a"] = conversation

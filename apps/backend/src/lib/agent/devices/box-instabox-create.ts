@@ -106,7 +106,7 @@ export async function createBox(
       },
       { preconnect: fetch.preconnect },
     ),
-    name: `nuphos-${deviceId.slice(0, 8)}`,
+    name: `cerin-${deviceId.slice(0, 8)}`,
     metadata: { teamId, deviceId, createdBy: userId },
     vault: false,
     ...size,

@@ -61,9 +61,9 @@ export function extractToolContentText(content: unknown): string {
     .join('\n')
 }
 
-// Raw Claude Code titles like "select:mcp__nuphos-credentials__get_credential"
-// or "mcp__nuphos-credentials__list_credentials" read as noise in the chat;
-// render them as "nuphos-credentials: list_credentials" instead.
+// Raw Claude Code titles like "select:mcp__cerin-credentials__get_credential"
+// or "mcp__cerin-credentials__list_credentials" read as noise in the chat;
+// render them as "cerin-credentials: list_credentials" instead.
 export function prettifyToolTitle(title: string): string {
   const raw = title.startsWith('select:') ? title.slice('select:'.length) : title
 
@@ -117,12 +117,12 @@ export function isToolSearchTitle(title: string): boolean {
   return title.startsWith('select:')
 }
 
-const NUPHOS_TOOLS_PREFIX = 'mcp__nuphos-tools__'
+const CERIN_TOOLS_PREFIX = 'mcp__cerin-tools__'
 
-/** The classic Cerin tool name behind a `nuphos-tools` MCP call, else null. */
-export function nuphosToolName(mcpToolId: string | undefined): string | null {
-  return mcpToolId?.startsWith(NUPHOS_TOOLS_PREFIX)
-    ? mcpToolId.slice(NUPHOS_TOOLS_PREFIX.length)
+/** The classic Cerin tool name behind a `cerin-tools` MCP call, else null. */
+export function cerinToolName(mcpToolId: string | undefined): string | null {
+  return mcpToolId?.startsWith(CERIN_TOOLS_PREFIX)
+    ? mcpToolId.slice(CERIN_TOOLS_PREFIX.length)
     : null
 }
 

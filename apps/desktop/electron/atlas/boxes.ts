@@ -257,7 +257,7 @@ export async function boxBillingPage(teamId: string, vcpus?: number): Promise<{ 
     vcpus === undefined
       ? await billing(teamId, 'POST', 'portal')
       : await billing(teamId, 'POST', 'checkout', {
-          plan: `nuphos_box_${String(vcpus)}vcpu_monthly`,
+          plan: `cerin_box_${String(vcpus)}vcpu_monthly`,
         })
 
   if (!page.ok && page.error === 'already_subscribed')

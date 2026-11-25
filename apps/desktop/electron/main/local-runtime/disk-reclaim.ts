@@ -8,7 +8,7 @@ import path from 'node:path'
  * one. Both have to agree before anything here is deleted: a hashed name can be a
  * coincidence, and a marker on its own can be copied.
  */
-export const SESSION_WORKSPACE_MARKER = '.nuphos-workspace'
+export const SESSION_WORKSPACE_MARKER = '.cerin-workspace'
 export const SESSION_WORKSPACE_NAME = /^[0-9a-f]{64}$/u
 export const SESSION_WORKSPACE_MARKER_VERSION = 1
 /**

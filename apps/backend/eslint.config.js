@@ -8,7 +8,7 @@ import stylistic from '@stylistic/eslint-plugin'
 import prettier from 'eslint-config-prettier/flat'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
-import nuphos from '../../eslint-rules/index.js'
+import cerin from '../../eslint-rules/index.js'
 
 // Backend lint policy. Severity is assigned by kind: `error` means a wrong
 // program, `warn` means debt worth seeing. Thresholds come from this
@@ -99,16 +99,16 @@ const blankLineDiscipline = {
 // change history in source. Rule implementations and their own docs live in
 // eslint-rules/; thresholds and the rejected alternatives are in the PR.
 const commentDiscipline = {
-  'nuphos/no-large-comment-block': ['warn', { max: 15 }],
-  'nuphos/no-duplicate-comment': ['warn', { max: 2, minWords: 4 }],
-  'nuphos/no-history-reference-comment': 'warn',
-  'nuphos/no-orphaned-doc-comment': 'warn',
+  'cerin/no-large-comment-block': ['warn', { max: 15 }],
+  'cerin/no-duplicate-comment': ['warn', { max: 2, minWords: 4 }],
+  'cerin/no-history-reference-comment': 'warn',
+  'cerin/no-orphaned-doc-comment': 'warn',
 }
 
 // bun types every matcher as returning `void`, so `no-floating-promises` sees
 // no thenable here and cannot report this shape under any option.
 const testAssertionHygiene = {
-  'nuphos/no-unawaited-async-assertion': 'error',
+  'cerin/no-unawaited-async-assertion': 'error',
 }
 
 export default defineConfig([
@@ -136,7 +136,7 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    plugins: { unicorn, 'import-x': importX, '@stylistic': stylistic, nuphos },
+    plugins: { unicorn, 'import-x': importX, '@stylistic': stylistic, cerin },
     settings: {
       'import-x/resolver-next': [createTypeScriptImportResolver({ project: './tsconfig.json' })],
     },
@@ -290,7 +290,7 @@ export default defineConfig([
     // keys legitimately share one. Only the duplicate rule is waived; this
     // file clears the other two on its own.
     files: ['src/config.ts'],
-    rules: { 'nuphos/no-duplicate-comment': 'off' },
+    rules: { 'cerin/no-duplicate-comment': 'off' },
   },
 
   {

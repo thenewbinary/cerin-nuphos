@@ -59,7 +59,7 @@ export type InternalChatCtx = {
   // Shared external threads keep a single durable conversation owned by the
   // user who created it. Omitted for ordinary single-user turns.
   conversationOwnerUserId?: string
-  nuphosToken: string
+  cerinToken: string
   locale: string
   currentUrl: string | null
   localToolsEnabled: boolean

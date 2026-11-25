@@ -1,6 +1,6 @@
 import { userAvatars } from '@/lib/identity/avatar-upload'
 import {
-  nuphosDashboards,
+  cerinDashboards,
   dashboardPanelAlerts,
   dashboardPanels,
   dashboardPanelSnapshots,
@@ -188,8 +188,8 @@ export async function setupCoreIndexes(): Promise<void> {
   await architectureDiagrams().createIndex({ teamId: 1 }, { background: true })
   await designs().createIndex({ teamId: 1, updatedAt: -1 }, { background: true })
   // ---- Dashboards (collections keep their cost_* names) ----
-  await nuphosDashboards().createIndex({ teamId: 1, updatedAt: -1 }, { background: true })
-  await nuphosDashboards().createIndex(
+  await cerinDashboards().createIndex({ teamId: 1, updatedAt: -1 }, { background: true })
+  await cerinDashboards().createIndex(
     { cadence: 1, nextRefreshAt: 1 },
     { partialFilterExpression: { nextRefreshAt: { $exists: true } }, background: true },
   )

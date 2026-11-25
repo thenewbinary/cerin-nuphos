@@ -39,8 +39,8 @@ const SESSION_IDLE: Duration = Duration::from_secs(12 * 60 * 60);
 const SESSION_MAX: Duration = Duration::from_secs(7 * 24 * 60 * 60);
 const MAX_SESSIONS: usize = 64;
 const MAX_BODY_BYTES: usize = 16 * 1024;
-const SECURE_COOKIE: &str = "__Host-nuphos_console";
-const PLAIN_COOKIE: &str = "nuphos_console";
+const SECURE_COOKIE: &str = "__Host-cerin_console";
+const PLAIN_COOKIE: &str = "cerin_console";
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -1089,7 +1089,7 @@ mod tests {
         assert!(password.len() >= 43);
         let cookie = setup.headers[header::SET_COOKIE].to_str().unwrap();
         assert!(
-            cookie.starts_with("nuphos_console=")
+            cookie.starts_with("cerin_console=")
                 && cookie.contains("HttpOnly")
                 && cookie.contains("SameSite=Strict")
         );
@@ -1242,7 +1242,7 @@ mod tests {
             )
             .await;
         let cookie = setup.headers[header::SET_COOKIE].to_str().unwrap();
-        assert!(cookie.starts_with("__Host-nuphos_console=") && cookie.contains("; Secure"));
+        assert!(cookie.starts_with("__Host-cerin_console=") && cookie.contains("; Secure"));
         let login = secure
             .call(
                 "POST",
@@ -1294,8 +1294,8 @@ mod tests {
             .collect();
         assert!(expired
             .iter()
-            .any(|c| c.starts_with("__Host-nuphos_console=;")));
-        assert!(expired.iter().any(|c| c.starts_with("nuphos_console=;")));
+            .any(|c| c.starts_with("__Host-cerin_console=;")));
+        assert!(expired.iter().any(|c| c.starts_with("cerin_console=;")));
 
         for cookie in [plain_cookie, secure_cookie, saved.unwrap()] {
             let mut probe = Client::new(app.clone());

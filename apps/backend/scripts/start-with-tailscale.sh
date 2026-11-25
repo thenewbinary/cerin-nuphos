@@ -34,7 +34,7 @@ if [ -n "${DATABASE_TAILSCALE_DIALER_URL:-}" ]; then
   esac
   NUPHOS_TAILSCALE_DIALER_TOKEN="$DATABASE_TAILSCALE_DIALER_TOKEN"
   export NUPHOS_TAILSCALE_DIALER_TOKEN NUPHOS_TAILSCALE_DIALER_ADDR
-  /usr/local/bin/nuphos-tailscale-dialer &
+  /usr/local/bin/cerin-tailscale-dialer &
   dialer_pid=$!
   bun scripts/wait-for-tailscale-dialer.ts
 fi

@@ -2,7 +2,7 @@ import type { OpenAbProvider } from '@/lib/claude-code-preview/runtime-provider'
 
 export type BindingShareDefault = 'private' | 'team'
 
-export type NuphosUser = {
+export type CerinUser = {
   id: string
   email: string
   name: string
@@ -12,9 +12,9 @@ export type NuphosUser = {
   createdAt: string
 }
 
-export type NuphosTeamRole = 'ADMINISTRATOR' | 'EDITOR' | 'VIEWER'
+export type CerinTeamRole = 'ADMINISTRATOR' | 'EDITOR' | 'VIEWER'
 
-export type NuphosTeam = {
+export type CerinTeam = {
   id: string
   name: string
   avatarUrl: string
@@ -25,7 +25,7 @@ export type NuphosTeam = {
   /** Who a newly connected binding is shared with when its owner does not say. */
   bindingShareDefault?: BindingShareDefault
   createdAt: string
-  role?: NuphosTeamRole
+  role?: CerinTeamRole
   billing: TeamBillingSummary
 }
 
@@ -34,12 +34,12 @@ export type TeamUpdateInput = {
 }
 
 export type TeamMembership = {
-  role: NuphosTeamRole
-  team: NuphosTeam
+  role: CerinTeamRole
+  team: CerinTeam
 }
 
-export type NuphosTeamMember = NuphosUser & {
-  role: NuphosTeamRole
+export type CerinTeamMember = CerinUser & {
+  role: CerinTeamRole
   joinedAt: string
   // Set only for members surfaced via `includeRemoved` — the ISO time the
   // member was removed (soft-deleted) from the team. Absent for active members.
@@ -47,9 +47,9 @@ export type NuphosTeamMember = NuphosUser & {
 }
 
 export type AuthenticatedIdentity = {
-  user: NuphosUser
+  user: CerinUser
   cacheHit: boolean
-  provider: 'nuphos'
+  provider: 'cerin'
   /** Set when the token is a sign-in session rather than an agent-run JWT. */
   sessionId?: string
   /** A JWT minted for an agent run, not a sign-in. */

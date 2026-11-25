@@ -9,7 +9,7 @@ import type { LinearWorkspaceVariables } from '@/middleware/auth'
 import type { Hono } from 'hono'
 
 const ISSUE_DETAIL_QUERY = `
-  query NuphosIssueDetail($id: String!) {
+  query CerinIssueDetail($id: String!) {
     issue(id: $id) {
       identifier
       title

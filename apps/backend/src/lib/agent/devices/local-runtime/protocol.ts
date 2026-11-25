@@ -163,7 +163,7 @@ export const localRuntimeStatusSchema = z.object({
   localBrowserView: z.boolean().optional(),
   /** This computer opens a conversation's desktop on request (`method: 'desktop'`). */
   desktopOpen: z.boolean().optional(),
-  /** The `nuphos` CLI running this host; a Box updates by installing a newer one. */
+  /** The `cerin` CLI running this host; a Box updates by installing a newer one. */
   cliVersion: z.string().max(50).optional(),
   /** The Cerin Desktop running this host, and an update it found: downloading, or staged for
    *  the restart its owner may ask for from another computer (`method: 'update'`). Never fatal. */

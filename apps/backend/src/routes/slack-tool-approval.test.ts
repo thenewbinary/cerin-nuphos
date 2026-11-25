@@ -11,13 +11,13 @@ import { useSlackInstallations } from '@/lib/test/doubles/slack-installations'
 const WORKSPACE = 'T1'
 const CHANNEL = 'C1'
 const SLACK_USER = 'USLACK'
-const NUPHOS_USER = '62e6289482f5f9d9408f1a79'
+const CERIN_USER = '62e6289482f5f9d9408f1a79'
 const OTHER_USER = '69f3f2cb3a343b67cf568765'
 const TEAM = '64b5f1c2e4b0a1d2c3e4f5a6'
 const SESSION = 'session-1'
 const TOOL_CALL = 'tool-1'
 
-const state = { mappedUserId: NUPHOS_USER }
+const state = { mappedUserId: CERIN_USER }
 const responses: Record<string, unknown>[] = []
 
 const thread: SlackAgentThread = {
@@ -25,7 +25,7 @@ const thread: SlackAgentThread = {
   slackChannelId: CHANNEL,
   slackThreadTs: '100.1',
   teamId: TEAM,
-  agentUserId: NUPHOS_USER,
+  agentUserId: CERIN_USER,
   sessionId: SESSION,
   createdBySlackUserId: SLACK_USER,
   origin: 'slack',
@@ -38,7 +38,7 @@ function mapping(): SlackUserMapping {
     slackWorkspaceId: WORKSPACE,
     slackUserId: SLACK_USER,
     teamId: TEAM,
-    nuphosUserId: state.mappedUserId,
+    cerinUserId: state.mappedUserId,
     enabled: true,
     createdBy: 'auto:slack-email',
     createdAt: new Date(),
@@ -50,7 +50,7 @@ useSlackInstallations({
   resolveSlackBotForWorkspace: async () => ({
     botToken: 'xoxb-test',
     botUserId: 'UBOT',
-    nuphosTeamId: TEAM,
+    cerinTeamId: TEAM,
     binding: null,
   }),
 })
@@ -68,7 +68,7 @@ useSlackApi({
 })
 useIdentity({
   getTeamMembership: async (userId, teamId) =>
-    teamId === TEAM && userId === NUPHOS_USER ? { role: 'MEMBER' } : null,
+    teamId === TEAM && userId === CERIN_USER ? { role: 'MEMBER' } : null,
 })
 
 const { registerPreviewWait, resetLocalPreviewWaits, takePreviewDecision } =
@@ -77,13 +77,13 @@ const { handleToolApprovalInteraction } = await import('./slack')
 
 beforeEach(() => {
   resetLocalPreviewWaits()
-  state.mappedUserId = NUPHOS_USER
+  state.mappedUserId = CERIN_USER
   responses.length = 0
 })
 
 async function openWait() {
   return registerPreviewWait({
-    userId: NUPHOS_USER,
+    userId: CERIN_USER,
     sessionId: SESSION,
     kind: 'agent-permission',
     ref: TOOL_CALL,
@@ -108,7 +108,7 @@ describe('Slack OpenAB tool approval', () => {
 
     await click('allow')
 
-    expect(await takePreviewDecision(NUPHOS_USER, SESSION, wait.waitId)).toMatchObject({
+    expect(await takePreviewDecision(CERIN_USER, SESSION, wait.waitId)).toMatchObject({
       payload: { decision: 'approved' },
       kind: 'agent-permission',
     })
@@ -124,7 +124,7 @@ describe('Slack OpenAB tool approval', () => {
 
     await click('allow')
 
-    expect(await takePreviewDecision(NUPHOS_USER, SESSION, wait.waitId)).toBeNull()
+    expect(await takePreviewDecision(CERIN_USER, SESSION, wait.waitId)).toBeNull()
     expect(responses).toEqual([])
   })
 
@@ -133,7 +133,7 @@ describe('Slack OpenAB tool approval', () => {
 
     await click('reject')
 
-    expect(await takePreviewDecision(NUPHOS_USER, SESSION, wait.waitId)).toMatchObject({
+    expect(await takePreviewDecision(CERIN_USER, SESSION, wait.waitId)).toMatchObject({
       payload: { decision: 'rejected' },
     })
     expect(responses).toContainEqual(

@@ -29,7 +29,7 @@ async function respondToSlashCommand(args: {
     } else {
       const botContext = await resolveSlackBotForWorkspace(args.slackWorkspaceId)
 
-      if (!botContext?.nuphosTeamId) {
+      if (!botContext?.cerinTeamId) {
         response = {
           response_type: 'ephemeral',
           text: 'Cerin is not fully installed for this Slack workspace yet.',
@@ -37,7 +37,7 @@ async function respondToSlashCommand(args: {
       } else {
         response = await buildPickupCommandResponse({
           botToken: botContext.botToken,
-          nuphosTeamId: botContext.nuphosTeamId,
+          cerinTeamId: botContext.cerinTeamId,
           slackWorkspaceId: args.slackWorkspaceId,
           slackUserId: args.slackUserId,
         })
@@ -82,12 +82,7 @@ export function registerSlackCommandRoutes(slackRoutes: Hono<{ Variables: AuthVa
     const responseUrl = params.get('response_url')
     const subcommand = (params.get('text') ?? '').trim().split(/\s+/)[0]?.toLowerCase() ?? ''
 
-    if (
-      (command !== '/cerin' && command !== '/nuphos') ||
-      !slackWorkspaceId ||
-      !slackUserId ||
-      !responseUrl
-    ) {
+    if (command !== '/cerin' || !slackWorkspaceId || !slackUserId || !responseUrl) {
       logEvent('info', 'slack.command.unhandled', {
         command: command ?? 'unknown',
         slack_workspace_id: slackWorkspaceId ?? undefined,

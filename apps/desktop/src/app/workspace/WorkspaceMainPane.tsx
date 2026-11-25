@@ -72,7 +72,7 @@ export function WorkspaceMainPane({
     setToolbarPrimaryAction,
     toolbarSlots,
     stableDockAgentToSidebar,
-    stableOpenNuphosLinkFromChat,
+    stableOpenCerinLinkFromChat,
     stableOpenNodeLink,
     stableOpenPlanInChat,
     stableOpenConversationHere,
@@ -186,7 +186,7 @@ export function WorkspaceMainPane({
                               : null
                           }
                           onChatPromptConsumed={consumeChatPrompt}
-                          onOpenNuphosLink={stableOpenNuphosLinkFromChat}
+                          onOpenCerinLink={stableOpenCerinLinkFromChat}
                           onOpenNodeLink={stableOpenNodeLink}
                           onOpenPlanInChat={stableOpenPlanInChat}
                           onOpenConversation={stableOpenConversationHere}

@@ -1,7 +1,7 @@
 import { readLocalStorage, writeLocalStorage } from '../../app/localStorage.ts'
 
 export function morningPaperLastSeenKey(userId: string, teamId: string): string {
-  return `nuphos.morningPaperLastSeen.${JSON.stringify([userId, teamId])}`
+  return `cerin.morningPaperLastSeen.${JSON.stringify([userId, teamId])}`
 }
 
 export function readMorningPaperLastSeen(userId: string, teamId: string): number | null {

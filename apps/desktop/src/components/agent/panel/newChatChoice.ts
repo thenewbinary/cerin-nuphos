@@ -5,7 +5,7 @@ export type NewChatChoice = { runtimeId: string; pick?: SessionConfigPick }
 type Storage = Pick<globalThis.Storage, 'getItem' | 'setItem'>
 
 export const newChatChoiceKey = (teamId?: string) =>
-  `nuphos.agent.runtimeInstance.${teamId ?? 'personal'}`
+  `cerin.agent.runtimeInstance.${teamId ?? 'personal'}`
 
 // The choice in memory is authoritative and shared by every panel; storage only
 // carries it across restarts, so a storage failure never loses a selection.

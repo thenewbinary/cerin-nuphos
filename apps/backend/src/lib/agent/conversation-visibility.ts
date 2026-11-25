@@ -1,4 +1,4 @@
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 
 /**
  * Whether `viewer` may see this conversation's name (its title, or the Bot's or Task's name)
@@ -8,7 +8,7 @@ import type { NuphosTeamRole } from '@/lib/identity/types'
  */
 export function canSeeConversationName(
   conversation: { userId: string; generalAccess?: string },
-  viewer: { userId: string; teamRole: NuphosTeamRole },
+  viewer: { userId: string; teamRole: CerinTeamRole },
 ): boolean {
   if (conversation.userId === viewer.userId) return true
 

@@ -16,7 +16,7 @@
     <string name="my_chats">我的任務</string>
     <string name="team_chats">團隊任務</string>
     <string name="show_dismissed">顯示已略過的項目</string>
-    <string name="ask_nuphos">問 Cerin 任何事…</string>
+    <string name="ask_cerin">問 Cerin 任何事…</string>
     <string name="queue_message">排入一則訊息…</string>
     <string name="send">傳送</string>
     <string name="stop">停止</string>

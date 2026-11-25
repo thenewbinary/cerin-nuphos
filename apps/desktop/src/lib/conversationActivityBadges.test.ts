@@ -7,7 +7,7 @@ import {
 } from './conversationActivityBadges.ts'
 
 test('ordinary Cerin conversations have no badge', () => {
-  assert.deepEqual(conversationActivityBadges({ origin: 'nuphos', linkedSlackThread: false }), [])
+  assert.deepEqual(conversationActivityBadges({ origin: 'cerin', linkedSlackThread: false }), [])
 })
 
 test('Slack-originated conversations have a Slack badge', () => {
@@ -68,7 +68,7 @@ test('read-only copy does not promise a Slack action without a thread link', () 
 
 test('read-only copy falls back safely for ordinary shared conversations', () => {
   assert.equal(
-    conversationReadOnlyLabel({ origin: 'nuphos', linkedSlackThread: false }, false),
+    conversationReadOnlyLabel({ origin: 'cerin', linkedSlackThread: false }, false),
     'Shared · view-only',
   )
 })

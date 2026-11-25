@@ -27,7 +27,7 @@
     <string name="shell_server_custom_settings">%1$s · サーバー設定</string>
     <string name="shell_server_body">Cerin Cloud を使うか、セルフホストのバックエンドの HTTPS アドレスを入力してください。</string>
     <string name="shell_server_address">サーバーアドレス</string>
-    <string name="shell_use_nuphos_cloud">Cerin Cloud を使用</string>
+    <string name="shell_use_cerin_cloud">Cerin Cloud を使用</string>
     <string name="shell_server_save_failed">サーバーを保存できませんでした。もう一度お試しください。</string>
     <string name="shell_cancel_adding_account">アカウントの追加をキャンセル</string>
     <string name="shell_retry_sign_in_options">サインイン方法を再読み込み</string>

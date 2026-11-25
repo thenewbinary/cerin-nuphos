@@ -7,7 +7,7 @@ auth_source=${NUPHOS_CODEX_AUTH_SOURCE:-/runtime-auth/auth.json}
 mkdir -p "$auth_directory"
 # A newly created runtime boots before the user completes device login.
 if [ "$NUPHOS_AUTH_REVISION" = 'pending-login' ]; then exit 0; fi
-previous_revision=$(cat "$auth_directory/.nuphos-auth-revision" 2>/dev/null || true)
+previous_revision=$(cat "$auth_directory/.cerin-auth-revision" 2>/dev/null || true)
 # A refreshed auth.json belongs to the same binding. Never overwrite it on
 # ordinary restarts; only a different bound credential resets the login.
 if [ ! -s "$auth_directory/auth.json" ] || [ "$previous_revision" != "$NUPHOS_AUTH_REVISION" ]; then
@@ -22,5 +22,5 @@ if [ ! -s "$auth_directory/auth.json" ] || [ "$previous_revision" != "$NUPHOS_AU
     exit 1
   fi
   mv "$auth_directory/auth.json.new" "$auth_directory/auth.json"
-  printf '%s' "$NUPHOS_AUTH_REVISION" > "$auth_directory/.nuphos-auth-revision"
+  printf '%s' "$NUPHOS_AUTH_REVISION" > "$auth_directory/.cerin-auth-revision"
 fi

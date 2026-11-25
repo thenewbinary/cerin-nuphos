@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">ข้อมูลรับรอง · %1$d</string>
     <string name="composer_computers_count">คอมพิวเตอร์ · %1$d</string>
     <string name="composer_queue_a_message">เพิ่มข้อความเข้าคิว</string>
-    <string name="composer_ask_nuphos">ถาม Cerin ได้ทุกเรื่อง</string>
+    <string name="composer_ask_cerin">ถาม Cerin ได้ทุกเรื่อง</string>
     <string name="composer_remove_attachment_failed">นำไฟล์แนบที่บันทึกไว้นี้ออกไม่ได้ โปรดตรวจสอบพื้นที่เก็บข้อมูลแล้วลองอีกครั้ง</string>
     <string name="composer_photos">รูปภาพ</string>
     <string name="composer_files">ไฟล์</string>

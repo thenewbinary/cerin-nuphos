@@ -90,7 +90,7 @@ export async function addReactionSafe(
   }
 }
 
-export function normalizeNuphosUserId(value: unknown, field = 'nuphosUserId'): string {
+export function normalizeCerinUserId(value: unknown, field = 'cerinUserId'): string {
   if (typeof value !== 'string' || !/^[a-f0-9]{24}$/i.test(value.trim())) {
     throw new AppError(400, 'invalid_request', `${field} must be a Cerin user id`)
   }
@@ -164,7 +164,7 @@ export async function postSenderNotice(
 // in the thread's own replies, which is the only place the notice can exist.
 const UNBOUND_THREAD_MARKER = 'not attached to a Cerin conversation'
 
-export async function explainUnboundNuphosThread(
+export async function explainUnboundCerinThread(
   runtime: SlackRuntime,
   channel: string,
   threadTs: string,

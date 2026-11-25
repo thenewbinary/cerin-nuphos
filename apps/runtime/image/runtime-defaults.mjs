@@ -1,5 +1,5 @@
-import { nuphosStreamReplyImages } from './reply-image-stream.mjs'
-import { nuphosReplyImages, nuphosUploadReplyImages } from './reply-images.mjs'
+import { cerinStreamReplyImages } from './reply-image-stream.mjs'
+import { cerinReplyImages, cerinUploadReplyImages } from './reply-images.mjs'
 
 // Pull the team's skill bundle into the workspace, and the owner's personal skills into
 // the conversation's own home.
@@ -14,11 +14,11 @@ import { nuphosReplyImages, nuphosUploadReplyImages } from './reply-images.mjs'
 // read (#1923), so the wait is one round trip. Never fatal either — skills are an
 // enrichment, not a precondition. The script allows itself two minutes, so the timeout
 // here is the real budget and the kill is what enforces it.
-export async function nuphosSyncRuntimeSkills(params, run) {
+export async function cerinSyncRuntimeSkills(params, run) {
   const env =
     params?._meta?.claudeCode?.options?.env ??
-    params?._meta?.['ai.nuphos/codex']?.env ??
-    params?._meta?.['ai.nuphos/session']?.env ??
+    params?._meta?.['ai.cerin/codex']?.env ??
+    params?._meta?.['ai.cerin/session']?.env ??
     {}
   const url = env.NUPHOS_RUNTIME_SKILLS_URL
   const token = env.NUPHOS_RUNTIME_SKILLS_TOKEN
@@ -33,7 +33,7 @@ export async function nuphosSyncRuntimeSkills(params, run) {
   const { createHash } = await import('node:crypto')
   const sync = (extra, timeoutMs = run?.timeoutMs ?? 20_000) =>
     new Promise((resolve) => {
-      const child = spawn(run?.script ?? '/usr/local/bin/nuphos-sync-skills', {
+      const child = spawn(run?.script ?? '/usr/local/bin/cerin-sync-skills', {
         // The bundle credential is the only thing this child needs from us; it must not
         // inherit the agent's account or the runtime's transport keys.
         // Deliberately not NUPHOS_RUNTIME_WORKSPACE. The script mkdirs under it,
@@ -92,17 +92,17 @@ export async function nuphosSyncRuntimeSkills(params, run) {
   // The owner's personal skills go to this conversation's own home and are offered to
   // Claude Code as an additional directory, so no other conversation on the runtime
   // loads them. The home is derived from the conversation id, never taken from the
-  // session. Only the Claude adapter carries `nuphosSessionHomeEnv` and the option.
+  // session. Only the Claude adapter carries `cerinSessionHomeEnv` and the option.
   const options = params?._meta?.claudeCode?.options
   const home = !options
     ? undefined
     : (run?.sessionHome ??
-      (typeof nuphosSessionHomeEnv === 'function' ? nuphosSessionHomeEnv(env).HOME : undefined))
+      (typeof cerinSessionHomeEnv === 'function' ? cerinSessionHomeEnv(env).HOME : undefined))
 
   // A live session reads skill files as they change on disk, so a prompt re-syncs the
   // team bundle too (#3365): one round trip, answered 304 when nothing changed.
   if (!home) {
-    globalThis.nuphosRefreshSkills = () => syncTeam(5_000).catch(() => {})
+    globalThis.cerinRefreshSkills = () => syncTeam(5_000).catch(() => {})
 
     return { synced: Promise.resolve(await syncTeam()) }
   }
@@ -196,7 +196,7 @@ export async function nuphosSyncRuntimeSkills(params, run) {
   // through its own file watcher, and a new process reads it on start. Rebuilding the
   // session here meant tearing it down before resuming it, and a failed resume left
   // the runtime holding a connection with no session (#2612).
-  globalThis.nuphosRefreshSkills = () =>
+  globalThis.cerinRefreshSkills = () =>
     Promise.all([syncTeam(5_000), syncPersonal(5_000, true)]).catch(() => {})
   // A session reads its skills when it starts, and the fetch runs behind it. So skills
   // left here for anyone but the member opening it are cleared first; that is local.
@@ -233,10 +233,10 @@ export async function nuphosSyncRuntimeSkills(params, run) {
   // OpenAB runs one agent process per session, so a wrapper goes when its process
   // exits, and one whose process is gone without that (killed, crashed) is swept by
   // the next session to start.
-  const prefix = 'nuphos-skill-plugins-'
+  const prefix = 'cerin-skill-plugins-'
 
   for (const entry of await fs.readdir(os.tmpdir()).catch(() => [])) {
-    const owner = Number(/^nuphos-skill-plugins-(\d+)-/u.exec(entry)?.[1])
+    const owner = Number(/^cerin-skill-plugins-(\d+)-/u.exec(entry)?.[1])
 
     if (!owner || owner === process.pid) continue
     try {
@@ -275,8 +275,8 @@ export async function nuphosSyncRuntimeSkills(params, run) {
 // session is loaded or resumed. The backend sends the conversation's own
 // settings (those it started with, then every change it confirmed), which the
 // agent's restored state can lag: a change no turn followed is not on record.
-export async function nuphosApplyRuntimeDefaults(agent, params, response, reopened = false) {
-  const defaults = params._meta?.['ai.nuphos/runtimeDefaults']
+export async function cerinApplyRuntimeDefaults(agent, params, response, reopened = false) {
+  const defaults = params._meta?.['ai.cerin/runtimeDefaults']
   if (!defaults || Object.keys(defaults).length === 0) return response
   let options = response.configOptions
   const kindOf = (option) => {
@@ -326,11 +326,11 @@ export async function nuphosApplyRuntimeDefaults(agent, params, response, reopen
 // One bounded snapshot per conversation, in its persistent CLI home. A killed
 // adapter cannot report failure, so an unfinished phase is deliberately left
 // as running rather than being mislabelled as a timeout or a successful restore.
-export async function nuphosTraceRestore(params, operation, restore) {
+export async function cerinTraceRestore(params, operation, restore) {
   const env =
     params?._meta?.claudeCode?.options?.env ??
-    params?._meta?.['ai.nuphos/codex']?.env ??
-    params?._meta?.['ai.nuphos/session']?.env ??
+    params?._meta?.['ai.cerin/codex']?.env ??
+    params?._meta?.['ai.cerin/session']?.env ??
     {}
   const sessionId = env.NUPHOS_SESSION_ID
   let record = () => {}
@@ -343,7 +343,7 @@ export async function nuphosTraceRestore(params, operation, restore) {
       const { createHash, randomUUID } = await import('node:crypto')
       const dir = join(
         process.env.HOME || process.env.USERPROFILE || homedir(),
-        '.nuphos',
+        '.cerin',
         'session-homes',
         createHash('sha256').update(sessionId).digest('hex'),
       )
@@ -423,31 +423,31 @@ export function patchRuntimeDefaults(source) {
   let body = source.slice(shebang.length).replace(
     anchor,
     `async newSession(params) {
-    await nuphosSyncRuntimeSkills(params);
-    return nuphosReplyImages(this, params, await nuphosApplyRuntimeDefaults(this, params, await this.nuphosNewSession(params)));
+    await cerinSyncRuntimeSkills(params);
+    return cerinReplyImages(this, params, await cerinApplyRuntimeDefaults(this, params, await this.cerinNewSession(params)));
   }
-  async nuphosNewSession(params) {`,
+  async cerinNewSession(params) {`,
   )
   for (const handler of reopenAnchors) {
     const method = handler.includes('loadSession') ? 'loadSession' : 'resumeSession'
     body = body.replace(
       handler,
       `${handler}
-        return nuphosTraceRestore(params, '${method}', async (nuphosRestorePhase) => {
-            await nuphosSyncRuntimeSkills(params);
-            nuphosRestorePhase('adapter-restore');
-            nuphosReplyImages(this, params, { sessionId: params.sessionId });
+        return cerinTraceRestore(params, '${method}', async (cerinRestorePhase) => {
+            await cerinSyncRuntimeSkills(params);
+            cerinRestorePhase('adapter-restore');
+            cerinReplyImages(this, params, { sessionId: params.sessionId });
             try {
-                return await nuphosApplyRuntimeDefaults(this, params, await this.nuphos_${method}(params, nuphosRestorePhase), true);
+                return await cerinApplyRuntimeDefaults(this, params, await this.cerin_${method}(params, cerinRestorePhase), true);
             } finally {
-                await this.nuphosFlushReplyImages?.(params.sessionId);
+                await this.cerinFlushReplyImages?.(params.sessionId);
             }
         });
     }
-    async nuphos_${method}(params, nuphosRestorePhase) {`,
+    async cerin_${method}(params, cerinRestorePhase) {`,
     )
   }
-  return `${shebang}${nuphosStreamReplyImages.toString()}\n${nuphosReplyImages.toString()}\n${nuphosUploadReplyImages.toString()}\n${nuphosSyncRuntimeSkills.toString()}\n${nuphosApplyRuntimeDefaults.toString()}\n${nuphosTraceRestore.toString()}\n${body}`
+  return `${shebang}${cerinStreamReplyImages.toString()}\n${cerinReplyImages.toString()}\n${cerinUploadReplyImages.toString()}\n${cerinSyncRuntimeSkills.toString()}\n${cerinApplyRuntimeDefaults.toString()}\n${cerinTraceRestore.toString()}\n${body}`
 }
 
 // Before every prompt of a live session, the team skills are re-synced, and for Claude
@@ -462,6 +462,6 @@ export function patchSkillsRefresh(source) {
 
   return source.replace(
     anchors[0],
-    `${anchors[0]}\n        await globalThis.nuphosRefreshSkills?.(this, params);`,
+    `${anchors[0]}\n        await globalThis.cerinRefreshSkills?.(this, params);`,
   )
 }

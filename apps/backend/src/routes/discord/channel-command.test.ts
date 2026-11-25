@@ -28,7 +28,7 @@ function dependencies(overrides: Partial<DiscordChannelCommandDependencies> = {}
   const calls = { enabled: [] as unknown[], disabled: [] as unknown[] }
   const value: DiscordChannelCommandDependencies = {
     findInstallation: async () => ({ teamId: 'team-1' }),
-    findUserMapping: async () => ({ nuphosUserId: 'nuphos-user-1' }),
+    findUserMapping: async () => ({ cerinUserId: 'cerin-user-1' }),
     findMembership: async () => ({ role: 'ADMINISTRATOR' }),
     getChannel: async () => ({
       id: 'thread-1',
@@ -55,7 +55,7 @@ describe('Discord channel management command admission', () => {
     try {
       for (const configured of ['cerin', 'assistant']) {
         config.discord.commandName = configured
-        for (const name of [configured, 'nuphos']) {
+        for (const name of [configured, 'cerin']) {
           for (const command of ['enable', 'disable'] as const) {
             expect(
               parseDiscordChannelCommand({ data: { name, options: [{ type: 1, name: command }] } }),
@@ -110,7 +110,7 @@ describe('Discord channel management command admission', () => {
         teamId: 'team-1',
         guildId: 'guild-1',
         channelId: 'channel-1',
-        nuphosUserId: 'nuphos-user-1',
+        cerinUserId: 'cerin-user-1',
       },
     ])
     expect(deps.calls.disabled).toEqual([])
@@ -199,7 +199,7 @@ describe('Discord channel verification errors', () => {
       config.discord.commandName = 'assistant'
       const request = interaction('enable')
 
-      request.data = { name: 'nuphos', options: [{ type: 1, name: 'enable' }] }
+      request.data = { name: 'cerin', options: [{ type: 1, name: 'enable' }] }
       expect(await handleDiscordChannelCommand(request, deps.value)).toContain('/assistant enable')
     } finally {
       config.discord.commandName = saved

@@ -23,7 +23,7 @@ export {
   getCrossWorkspaceChannelMapping,
   getSlackChannelMapping,
   getSlackUserMapping,
-  getSlackUserMappingForNuphosUser,
+  getSlackUserMappingForCerinUser,
   listSlackChannelMappings,
   listSlackUserMappings,
   upsertSlackChannelMapping,

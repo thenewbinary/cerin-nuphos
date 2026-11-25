@@ -224,7 +224,7 @@ it. Until a maintainer sets the App up, the job is skipped:
    `cerin-renovate`), with webhooks off and these repository permissions:
    Contents, Pull requests, Issues and Workflows: read and write; Checks,
    Commit statuses and Dependabot alerts: read; Metadata: read.
-2. Install it on `thenewbinary/cerin-nuphos` only.
+2. Install it on `thenewbinary/cerin-platform` only.
 3. Generate a private key.
 4. In the repository settings, create the environment `renovate` (deployment
    branches: `main` only), add the secret `RENOVATE_APP_PRIVATE_KEY` (the key)

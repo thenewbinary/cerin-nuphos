@@ -82,7 +82,7 @@ useConversationChatRoute({
 })
 useIdentity({
   getTeamMembership: async () => (member ? { role: 'MEMBER' } : null),
-  signNuphosToken: () => 'test-token',
+  signCerinToken: () => 'test-token',
 })
 const bypass = new Map<string, Record<string, unknown>>()
 const events: { conversationId: string; event: string }[] = []

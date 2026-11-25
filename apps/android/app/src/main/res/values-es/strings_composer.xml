@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">Credenciales · %1$d</string>
     <string name="composer_computers_count">Computadoras · %1$d</string>
     <string name="composer_queue_a_message">Poner un mensaje en cola</string>
-    <string name="composer_ask_nuphos">Pregunta lo que quieras a Cerin</string>
+    <string name="composer_ask_cerin">Pregunta lo que quieras a Cerin</string>
     <string name="composer_remove_attachment_failed">No se pudo quitar este adjunto guardado. Revisa el almacenamiento e inténtalo de nuevo.</string>
     <string name="composer_photos">Fotos</string>
     <string name="composer_files">Archivos</string>

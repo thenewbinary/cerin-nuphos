@@ -11,15 +11,15 @@ import {
 } from './runtime-backend-url'
 
 const inCluster = {
-  podNamespace: 'nuphos',
+  podNamespace: 'cerin',
   port: 3000,
-  backendUrl: 'http://nuphos-backend.nuphos.svc.cluster.local:3000',
+  backendUrl: 'http://cerin-backend.cerin.svc.cluster.local:3000',
   publicBackendUrl: 'https://platform.cerin.ai',
 }
 
 describe('runtime backend url', () => {
   test('keeps a managed runtime on the in-cluster Service', async () => {
-    expect(pickRuntimeBackendUrl(false, inCluster)).toBe('http://nuphos-backend.nuphos.svc:3000')
+    expect(pickRuntimeBackendUrl(false, inCluster)).toBe('http://cerin-backend.cerin.svc:3000')
   })
 
   test('hands an external runtime the public base, trailing slash trimmed', async () => {
@@ -78,7 +78,7 @@ describe('isAllowedRemoteOpenAbUrl', () => {
   test('accepts wss anywhere and cleartext ws only inside the cluster', async () => {
     expect(isAllowedRemoteOpenAbUrl('wss://openab.example/acp')).toBe(true)
     expect(isAllowedRemoteOpenAbUrl('ws://openab-team-x.openab-runtimes.svc:8080/acp')).toBe(true)
-    expect(isAllowedRemoteOpenAbUrl('ws://openab.nuphos.svc.cluster.local:8080/acp')).toBe(true)
+    expect(isAllowedRemoteOpenAbUrl('ws://openab.cerin.svc.cluster.local:8080/acp')).toBe(true)
     expect(isAllowedRemoteOpenAbUrl('ws://openab.example/acp')).toBe(false)
     expect(isAllowedRemoteOpenAbUrl('http://openab.example/acp')).toBe(false)
     expect(isAllowedRemoteOpenAbUrl('not a url')).toBe(false)
@@ -101,7 +101,7 @@ describe('isAllowedRemoteOpenAbUrl', () => {
     expect(isAllowedRemoteOpenAbUrl('ws://runtime:8080/acp')).toBe(false)
     expect(isAllowedRemoteOpenAbUrl('ws://localhost:18180/acp')).toBe(false)
     expect(isInternalRuntimeUrl('ws://runtime:8080/acp')).toBe(false)
-    expect(isInternalRuntimeUrl('ws://openab.nuphos.svc:8080/acp')).toBe(true)
+    expect(isInternalRuntimeUrl('ws://openab.cerin.svc:8080/acp')).toBe(true)
     expect(isAllowedRemoteOpenAbUrl('wss://runtime:8080/acp')).toBe(true)
   })
 })

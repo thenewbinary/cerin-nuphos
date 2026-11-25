@@ -26,7 +26,7 @@ export default defineRailway(() => {
       GLIBC_TUNABLES: 'glibc.pthread.rseq=1',
       // Stable replica identity across container replacement; clients use directConnection.
       NUPHOS_MONGO_HOST: 'localhost',
-      MONGO_INITDB_ROOT_USERNAME: 'nuphos',
+      MONGO_INITDB_ROOT_USERNAME: 'cerin',
       MONGO_INITDB_ROOT_PASSWORD: mongoPassword,
     },
   })
@@ -43,12 +43,12 @@ export default defineRailway(() => {
       RUSTFS_ADDRESS: '[::]:9000',
       // Railway volumes are root-owned; the agent remains non-root in its own project.
       RAILWAY_RUN_UID: '0',
-      RUSTFS_ACCESS_KEY: 'nuphos',
+      RUSTFS_ACCESS_KEY: 'cerin',
       RUSTFS_SECRET_KEY: storageSecret,
-      S3_ACCESS_KEY: 'nuphos',
+      S3_ACCESS_KEY: 'cerin',
       S3_SECRET_KEY: storageSecret,
       S3_ENDPOINT: 'http://127.0.0.1:9000',
-      BUCKETS: 'nuphos-file-transfers nuphos-skills',
+      BUCKETS: 'cerin-file-transfers cerin-skills',
     },
   })
   const backend = service('backend', {
@@ -62,7 +62,7 @@ export default defineRailway(() => {
       NODE_ENV: 'production',
       PORT: '3000',
       MONGODB_URI: `mongodb://nuphos:${encodeURIComponent(mongoPassword)}@\${{mongo.RAILWAY_PRIVATE_DOMAIN}}:27017/nuphos?authSource=admin&replicaSet=rs0&directConnection=true`,
-      MONGODB_DB: 'nuphos',
+      MONGODB_DB: 'cerin',
       NUPHOS_JWT_SECRET: required('JWT_SECRET'),
       NUPHOS_AUTH_BASE_URL: `https://${apiDomain}`,
       NUPHOS_BACKEND_URL: `https://${apiDomain}`,
@@ -73,17 +73,17 @@ export default defineRailway(() => {
         NUPHOS_EMAIL_FROM: required('NUPHOS_EMAIL_FROM'),
       }),
       ATLAS_REDIS_ENABLED: 'false',
-      NUPHOS_FILE_TRANSFER_S3_BUCKET: 'nuphos-file-transfers',
+      NUPHOS_FILE_TRANSFER_S3_BUCKET: 'cerin-file-transfers',
       NUPHOS_FILE_TRANSFER_S3_REGION: 'us-east-1',
       NUPHOS_FILE_TRANSFER_S3_ENDPOINT: `https://${storageDomain}`,
-      NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: 'nuphos',
+      NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: 'cerin',
       NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: storageSecret,
-      ATLAS_SKILLS_BUCKET: 'nuphos-skills',
+      ATLAS_SKILLS_BUCKET: 'cerin-skills',
       ATLAS_SKILLS_S3_REGION: 'us-east-1',
       ATLAS_SKILLS_S3_ENDPOINT: `https://${storageDomain}`,
-      ATLAS_SKILLS_S3_ACCESS_KEY_ID: 'nuphos',
+      ATLAS_SKILLS_S3_ACCESS_KEY_ID: 'cerin',
       ATLAS_SKILLS_S3_SECRET_ACCESS_KEY: storageSecret,
     },
   })
-  return project('nuphos-data', { resources: [mongo, storage, backend, mongoData, storageData] })
+  return project('cerin-data', { resources: [mongo, storage, backend, mongoData, storageData] })
 })

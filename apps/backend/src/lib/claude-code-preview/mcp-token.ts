@@ -20,7 +20,7 @@ import {
 } from '@/lib/internal-token'
 import { logEvent } from '@/lib/observability'
 
-const AUDIENCE = 'nuphos-preview-mcp'
+const AUDIENCE = 'cerin-preview-mcp'
 const DEFAULT_TTL_SEC = 24 * 60 * 60
 
 /** RFC 8693 actor chain: the current actor, and whoever delegated to it. */
@@ -33,7 +33,7 @@ export type TokenActor = { sub: string; act?: TokenActor }
 export type CredentialLimit = Readonly<Record<string, readonly string[]>>
 
 export type PreviewMcpClaims = {
-  /** `nuphos-preview-mcp`, followed by `credential:<provider>/<id>` resources on exchanged tokens. */
+  /** `cerin-preview-mcp`, followed by `credential:<provider>/<id>` resources on exchanged tokens. */
   aud: typeof AUDIENCE | [typeof AUDIENCE, ...string[]]
   /** Execution actor. */
   sub: string
@@ -193,7 +193,7 @@ export function scopedPathAllowed(
 }
 
 const SIGNED_TOKEN = /\beyJ[\w-]*\.[\w-]+\.[\w-]+/gu
-const SKILLS_TOKEN = /\bnuphos-runtime-skills-v1\.[^\s"'\\]+/gu
+const SKILLS_TOKEN = /\bcerin-runtime-skills-v1\.[^\s"'\\]+/gu
 
 /**
  * Replaces every token this backend signed (conversation, plan, skills) in

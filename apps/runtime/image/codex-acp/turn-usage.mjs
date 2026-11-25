@@ -11,7 +11,7 @@ const QUOTA_COUNT = '        token_count: sessionState.lastTokenUsage,\n'
 const TO_COUNT = 'function toTokenCount(usage) {'
 
 const delta = `// Each counter of one Codex token count less another's.
-function nuphosTokenDelta(to, from) {
+function cerinTokenDelta(to, from) {
   const since = (key) => Math.max(0, (to[key] ?? 0) - (from[key] ?? 0));
   return {
     totalTokens: since("totalTokens"),
@@ -21,10 +21,10 @@ function nuphosTokenDelta(to, from) {
     reasoningOutputTokens: since("reasoningOutputTokens")
   };
 }
-function nuphosTurnTokenUsage(sessionState) {
-  const start = sessionState.nuphosTurnStartUsage;
+function cerinTurnTokenUsage(sessionState) {
+  const start = sessionState.cerinTurnStartUsage;
   if (!sessionState.totalTokenUsage || !start) return sessionState.lastTokenUsage;
-  const turn = nuphosTokenDelta(sessionState.totalTokenUsage, start);
+  const turn = cerinTokenDelta(sessionState.totalTokenUsage, start);
   // A turn that made no model request reports no usage, not zeros.
   return turn.totalTokens > 0 ? turn : null;
 }
@@ -45,16 +45,16 @@ export function patchCodexTurnUsage(source) {
     source
       .replace(
         PROMPT_START,
-        `${PROMPT_START}    sessionState.nuphosTurnStartUsage = sessionState.totalTokenUsage;\n`,
+        `${PROMPT_START}    sessionState.cerinTurnStartUsage = sessionState.totalTokenUsage;\n`,
       )
       // With no total before the turn (a new or just-loaded session), the first
       // request's own count tells where the total stood when the turn started.
       .replace(
         UPDATED,
-        `${UPDATED}    this.sessionState.nuphosTurnStartUsage ??= nuphosTokenDelta(toTokenCount(params.tokenUsage.total), toTokenCount(params.tokenUsage.last));\n`,
+        `${UPDATED}    this.sessionState.cerinTurnStartUsage ??= cerinTokenDelta(toTokenCount(params.tokenUsage.total), toTokenCount(params.tokenUsage.last));\n`,
       )
-      .replaceAll(USAGE, 'this.buildPromptUsage(nuphosTurnTokenUsage(sessionState))')
-      .replace(QUOTA, '    const lastTokenUsage = nuphosTurnTokenUsage(sessionState);\n')
+      .replaceAll(USAGE, 'this.buildPromptUsage(cerinTurnTokenUsage(sessionState))')
+      .replace(QUOTA, '    const lastTokenUsage = cerinTurnTokenUsage(sessionState);\n')
       .replace(QUOTA_COUNT, '        token_count: lastTokenUsage,\n')
       .replace(TO_COUNT, `${delta}${TO_COUNT}`)
   )

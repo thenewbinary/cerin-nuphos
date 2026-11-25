@@ -43,7 +43,7 @@ describe('vendored prompt files', () => {
   it('defers to the Bot identity and carries the research rules', async () => {
     const { prompt } = await getSystemPrompt('en')
 
-    expect(prompt).toContain('its identity block (`<nuphos_bot_identity>`) sets your role')
+    expect(prompt).toContain('its identity block (`<cerin_bot_identity>`) sets your role')
     expect(prompt).toContain('# Research and reports')
     expect(prompt).toContain('Never make up numbers.')
     expect(prompt).toContain('`render_artifact`')

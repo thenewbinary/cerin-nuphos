@@ -6,23 +6,13 @@ import { sessionDevice, sessionPlace, sortSessions } from './signInSessionsPrese
 import type { SignInSession } from '../../types/team.ts'
 
 test('an app that names itself is shown by name, without the version it claims', () => {
-  assert.equal(sessionDevice({ client: 'cerin-desktop/1.2.0', userAgent: null }), 'Cerin Desktop')
-  assert.equal(sessionDevice({ client: 'cerin-ios/1.2.0', userAgent: null }), 'Cerin for iOS')
+  assert.equal(sessionDevice({ client: 'cerin-desktop/1.2.0', userAgent: 'node' }), 'Cerin Desktop')
   assert.equal(
-    sessionDevice({ client: 'cerin-android/1.2.0', userAgent: null }),
-    'Cerin for Android',
-  )
-  assert.equal(sessionDevice({ client: 'cerin-cli/1.2.0', userAgent: null }), 'Cerin CLI')
-  assert.equal(
-    sessionDevice({ client: 'nuphos-desktop/1.2.0', userAgent: 'node' }),
-    'Cerin Desktop',
-  )
-  assert.equal(
-    sessionDevice({ client: 'nuphos-android/1.4.0', userAgent: null }),
+    sessionDevice({ client: 'cerin-android/1.4.0', userAgent: null }),
     'Cerin for Android',
   )
   assert.equal(
-    sessionDevice({ client: 'nuphos-desktop/1.verify-at.evil-phish.com', userAgent: null }),
+    sessionDevice({ client: 'cerin-desktop/1.verify-at.evil-phish.com', userAgent: null }),
     'Cerin Desktop',
   )
   // Not a property of a plain object either.

@@ -20,7 +20,7 @@ const standIn = { value: 'default', name: 'Default (recommended)', description: 
 const behind = join(dirname(process.env.E2E_ACP_LOG ?? ''), 'behind')
 const unlistedFor = (sessionId) =>
   toolsServer(sessionId) && existsSync(behind) && readFileSync(behind, 'utf8')
-const meta = 'ai.nuphos/runtimeDefaults'
+const meta = 'ai.cerin/runtimeDefaults'
 
 /** A new session's params, with no model to start on when it stays on the unlisted one. */
 export function heldDefaults(sessionId, params) {

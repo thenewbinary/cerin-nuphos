@@ -45,7 +45,7 @@ base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}${path}"
 
-cache_dir="$HOME/.kube/nuphos-cred-cache"
+cache_dir="$HOME/.kube/cerin-cred-cache"
 mkdir -p "$cache_dir"
 chmod 700 "$cache_dir"
 # Region belongs in the key: two clusters in one account can share a name

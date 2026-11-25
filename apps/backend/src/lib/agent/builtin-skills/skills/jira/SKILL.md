@@ -31,7 +31,7 @@ ac /teams/$TEAM/jira-sites | python3 -m json.tool
 BINDING=<id from step 1>
 # Only source on success — a failed fetch (403/404/401) leaves no fresh env
 # file, and sourcing a stale one would point later calls at the wrong site.
-bash skills/jira/scripts/setup-credentials.sh "$TEAM" "$BINDING" && source ~/.jira/nuphos.env
+bash skills/jira/scripts/setup-credentials.sh "$TEAM" "$BINDING" && source ~/.jira/cerin.env
 
 # 3. Helper for Jira REST v3 calls (all scoped to the bound site's cloudId).
 jira() {

@@ -31,7 +31,7 @@ run its `setupCommand` verbatim:
 ```bash
 # 1. Load the integration's token into the env.
 bash skills/notion/scripts/setup-credentials.sh <teamId> <integrationId>
-source ~/.notion/nuphos.env
+source ~/.notion/cerin.env
 
 # 2. Helper for Notion REST calls. Notion requires the Notion-Version header.
 notion() {

@@ -97,7 +97,7 @@ export function githubInstallStartUrl(signedState: string): string | null {
 }
 
 /** The browser that opened the flow holds its nonce; another browser cannot finish it. */
-export const INSTALL_FLOW_COOKIE = 'nuphos_github_install'
+export const INSTALL_FLOW_COOKIE = 'cerin_github_install'
 
 /** The team's name when the user still administers it. */
 export async function administeredTeamName(userId: string, teamId: string): Promise<string | null> {

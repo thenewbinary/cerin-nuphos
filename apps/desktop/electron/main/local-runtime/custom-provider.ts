@@ -28,7 +28,6 @@ export type KeyStore = {
 
 /** The credential store's service the keys are kept under, one item per account and agent. */
 export const PROVIDER_KEYCHAIN_SERVICE = 'ai.cerin.desktop.provider'
-export const LEGACY_PROVIDER_KEYCHAIN_SERVICE = 'ai.nuphos.desktop.provider'
 
 /** Claude Code's gateway token, and the variable Codex's provider names as its `env_key`. */
 export const PROVIDER_KEY_ENV: Record<CustomProviderAgent, string> = {
@@ -227,20 +226,19 @@ export function claudeProviderSettings(userDir: string) {
 
 const BEGIN = '# Cerin custom provider (begin)'
 const END = '# Cerin custom provider (end)'
-// Blocks written before the rename; stripped too, so the provider is never written twice.
-const LEGACY_MARKERS: Markers[] = [
-  ['# Nuphos custom provider (begin)', '# Nuphos custom provider (end)'], // rebrand:keep
-]
-const CODEX_PROVIDER_ID = 'nuphos-custom'
-
-type Markers = [open: string, close: string]
+const CODEX_PROVIDER_ID = 'cerin-custom'
 
 /**
  * Codex's own `model_providers` entry, as root keys at the top of its config.toml: an inline
  * table needs no table header, so the block is one span that is easy to replace.
  */
 export function codexProviderConfig(contents: string, provider: CustomProvider | undefined) {
-  const rest = [[BEGIN, END] as Markers, ...LEGACY_MARKERS].reduce(withoutBlock, contents)
+  const begin = contents.indexOf(BEGIN)
+  const end = contents.indexOf(END)
+  const rest =
+    begin === -1 || end < begin
+      ? contents
+      : contents.slice(0, begin) + contents.slice(end + END.length).replace(/^\n/u, '')
 
   if (!provider) return rest
   const table = [
@@ -257,15 +255,6 @@ export function codexProviderConfig(contents: string, provider: CustomProvider |
     END,
     rest,
   ].join('\n')
-}
-
-function withoutBlock(contents: string, [open, close]: Markers) {
-  const begin = contents.indexOf(open)
-  const end = contents.indexOf(close)
-
-  return begin === -1 || end < begin
-    ? contents
-    : contents.slice(0, begin) + contents.slice(end + close.length).replace(/^\n/u, '')
 }
 
 /** Brings a Codex home's config.toml in line with the provider saved beside it, or the one given. */

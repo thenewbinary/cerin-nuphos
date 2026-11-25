@@ -78,7 +78,7 @@ useRedis({
 })
 
 useIdentity({
-  signNuphosToken: () => 'test-token',
+  signCerinToken: () => 'test-token',
   getTeamMembership: async () => (member ? ({ role: 'MEMBER' } as never) : null),
 })
 useAgentDb({
@@ -339,7 +339,7 @@ test("a sender who left the conversation's team is not spoken for, and the send 
   expect(kept[0]?.messages.map((message) => message.role)).toEqual(['user', 'user'])
   expect(kept[0]?.messages[1]?.metadata).toMatchObject({
     source: 'agent.resource',
-    sender: { type: 'system', id: 'nuphos' },
+    sender: { type: 'system', id: 'cerin' },
   })
   expect(kept[0]?.messages[0]?.id).toBe('ui-gone')
   expect(JSON.stringify(kept[0]?.messages[1]?.parts)).toContain('can no longer reply')

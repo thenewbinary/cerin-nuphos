@@ -8,7 +8,7 @@ import type { OpenAbProvider } from './runtime-provider'
 export const ACP_INITIALIZE_PARAMS = {
   protocolVersion: 1,
   clientCapabilities: { _meta: { 'dev.openab/sessionSnapshots': true } },
-  clientInfo: { name: 'nuphos', version: 'poc' },
+  clientInfo: { name: 'cerin', version: 'poc' },
 }
 
 export type PendingCall = {
@@ -166,10 +166,10 @@ export function sessionMeta(
     return {
       _meta: {
         'dev.openab/permissionPolicy': 'relay',
-        'ai.nuphos/runtimeAuthority': 2,
+        'ai.cerin/runtimeAuthority': 2,
         ...openabMeta(runtime),
-        ...(runtime.defaults ? { 'ai.nuphos/runtimeDefaults': runtime.defaults } : {}),
-        'ai.nuphos/codex': {
+        ...(runtime.defaults ? { 'ai.cerin/runtimeDefaults': runtime.defaults } : {}),
+        'ai.cerin/codex': {
           ...(systemPrompt ? { developerInstructions: systemPrompt } : {}),
           ...(runtime.env ? { env: runtime.env } : {}),
         },
@@ -182,10 +182,10 @@ export function sessionMeta(
     return {
       _meta: {
         'dev.openab/permissionPolicy': 'relay',
-        'ai.nuphos/runtimeAuthority': 2,
+        'ai.cerin/runtimeAuthority': 2,
         ...openabMeta(runtime),
-        ...(runtime.defaults ? { 'ai.nuphos/runtimeDefaults': runtime.defaults } : {}),
-        'ai.nuphos/session': {
+        ...(runtime.defaults ? { 'ai.cerin/runtimeDefaults': runtime.defaults } : {}),
+        'ai.cerin/session': {
           ...(systemPrompt ? { systemPrompt } : {}),
           ...(runtime.env ? { env: runtime.env } : {}),
         },
@@ -194,9 +194,9 @@ export function sessionMeta(
   }
   const meta = {
     'dev.openab/permissionPolicy': 'relay',
-    'ai.nuphos/runtimeAuthority': 2,
+    'ai.cerin/runtimeAuthority': 2,
     ...openabMeta(runtime),
-    ...(runtime?.defaults ? { 'ai.nuphos/runtimeDefaults': runtime.defaults } : {}),
+    ...(runtime?.defaults ? { 'ai.cerin/runtimeDefaults': runtime.defaults } : {}),
     ...(systemPrompt ? { systemPrompt: { append: systemPrompt } } : {}),
     ...claudeCodeOptions(runtime),
   }
@@ -217,7 +217,7 @@ export function promptMeta(
   context: PromptSessionContext | undefined,
 ): Record<string, unknown> {
   const meta = {
-    ...(acknowledge ? { 'ai.nuphos/acknowledgePrompt': true } : {}),
+    ...(acknowledge ? { 'ai.cerin/acknowledgePrompt': true } : {}),
     ...(context
       ? {
           'dev.openab/sessionMeta': sessionMeta(context.systemPrompt, context.runtime)._meta,

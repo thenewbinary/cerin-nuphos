@@ -110,5 +110,5 @@ test('a Box on a team account that paused when idle is resumed, host and all, wh
   expect(checked).toEqual([])
   expect(sandboxId).toBe('m_idle')
   expect(options).toMatchObject({ resume: true })
-  expect(ran.some((command) => command.includes('nuphos agent'))).toBe(true)
+  expect(ran.some((command) => command.includes('cerin agent'))).toBe(true)
 })

@@ -1,7 +1,7 @@
 import { AppError } from '@/lib/errors'
 import { getTeamMembers } from '@/lib/identity'
 import { logEvent } from '@/lib/observability'
-import { claimSlackUserMapping, getSlackUserMappingForNuphosUser } from '@/lib/slack/agent-bot'
+import { claimSlackUserMapping, getSlackUserMappingForCerinUser } from '@/lib/slack/agent-bot'
 import { slackApiGet } from '@/lib/slack/api'
 
 import type { SlackUserMapping } from '@/lib/slack/agent-bot'
@@ -10,7 +10,7 @@ export type SlackSelfMappingDependencies = {
   getExisting: (
     slackWorkspaceId: string,
     teamId: string,
-    nuphosUserId: string,
+    cerinUserId: string,
   ) => Promise<SlackUserMapping | null>
   getMembers: (teamId: string) => Promise<{ id: string; email: string }[]>
   lookupByEmail: (botToken: string, email: string) => Promise<string | null>
@@ -37,7 +37,7 @@ async function lookupSlackUserByEmail(botToken: string, email: string): Promise<
 }
 
 const defaultDependencies: SlackSelfMappingDependencies = {
-  getExisting: getSlackUserMappingForNuphosUser,
+  getExisting: getSlackUserMappingForCerinUser,
   getMembers: getTeamMembers,
   lookupByEmail: lookupSlackUserByEmail,
   claim: claimSlackUserMapping,
@@ -54,20 +54,20 @@ export async function resolveSlackSelfMapping(
     botToken: string
     slackWorkspaceId: string
     teamId: string
-    nuphosUserId: string
+    cerinUserId: string
   },
   dependencies: SlackSelfMappingDependencies = defaultDependencies,
 ): Promise<SlackUserMapping | null> {
   const existing = await dependencies.getExisting(
     args.slackWorkspaceId,
     args.teamId,
-    args.nuphosUserId,
+    args.cerinUserId,
   )
 
   if (existing) return existing
 
   const member = (await dependencies.getMembers(args.teamId)).find(
-    (candidate) => candidate.id === args.nuphosUserId,
+    (candidate) => candidate.id === args.cerinUserId,
   )
   const email = member?.email.trim().toLowerCase()
 
@@ -81,8 +81,8 @@ export async function resolveSlackSelfMapping(
     slackWorkspaceId: args.slackWorkspaceId,
     slackUserId,
     teamId: args.teamId,
-    nuphosUserId: args.nuphosUserId,
-    createdBy: 'auto:nuphos-email',
+    cerinUserId: args.cerinUserId,
+    createdBy: 'auto:cerin-email',
   })
 
   if (!mapping) {
@@ -90,7 +90,7 @@ export async function resolveSlackSelfMapping(
       team_id: args.teamId,
       slack_workspace_id: args.slackWorkspaceId,
       slack_user_id: slackUserId,
-      nuphos_user_id: args.nuphosUserId,
+      cerin_user_id: args.cerinUserId,
     })
 
     return null
@@ -99,8 +99,8 @@ export async function resolveSlackSelfMapping(
     team_id: args.teamId,
     slack_workspace_id: args.slackWorkspaceId,
     slack_user_id: slackUserId,
-    nuphos_user_id: args.nuphosUserId,
-    direction: 'nuphos_to_slack',
+    cerin_user_id: args.cerinUserId,
+    direction: 'cerin_to_slack',
   })
 
   return mapping

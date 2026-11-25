@@ -15,7 +15,7 @@ Object.assign(globalThis, {
 const { readAccountStorage, setStorageAccount, writeAccountStorage } =
   await import('./accountStorage.ts')
 
-const KEY = 'nuphos.workspace.lastTeamId'
+const KEY = 'cerin.workspace.lastTeamId'
 
 beforeEach(() => store.clear())
 

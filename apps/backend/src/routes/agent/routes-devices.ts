@@ -171,7 +171,7 @@ export function createAgentDeviceRoutes(deps: AgentDeviceRouteDependencies = def
     return c.json({ ok: true })
   })
 
-  // One-time token for `nuphos agent --join`: the machine that uses it becomes
+  // One-time token for `cerin agent --join`: the machine that uses it becomes
   // this user's device, as if they had signed in there.
   routes.post('/devices/join-tokens', zv('json', joinTokenSchema), async (c) => {
     const { label, expiresInSec } = c.req.valid('json')

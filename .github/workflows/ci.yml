@@ -226,7 +226,7 @@ jobs:
         working-directory: apps/ios
         run: |
           set -euo pipefail
-          xcodebuild -project nuphos-ios.xcodeproj -scheme nuphos-ios -configuration Debug \
+          xcodebuild -project cerin-ios.xcodeproj -scheme cerin-ios -configuration Debug \
             -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO build -quiet
       # A string added in code without a catalog entry would ship untranslated.
@@ -576,7 +576,7 @@ jobs:
         run: pnpm exec vite build
       # `cerin agent` runs this bundle under plain Node. An `electron` import
       # that reaches it only fails when the host loads (#2749), so load it.
-      - name: Load the nuphos agent host bundle
+      - name: Load the cerin agent host bundle
         working-directory: apps/desktop
         run: |
           bun build electron/main/local-runtime/cli-host.ts --target=node --format=esm --external @napi-rs/keyring --outfile "$RUNNER_TEMP/host.mjs"
@@ -745,6 +745,16 @@ jobs:
       # path patterns stop matching.
       - name: Test the lint-config write guard
         run: bash .claude/hooks/guard-lint-config.test.sh
+
+  former-name:
+    name: Former product name
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Fails on the former name in any case, in contents or file names; see the script for what is allowed.
+      - run: python3 scripts/check-brand.py
 
   lint-config-integrity:
     name: Lint config integrity

@@ -1,4 +1,4 @@
-//! Sign-in and preferences on disk. The CLI's sign-in is `~/.config/nuphos/cli.yaml`
+//! Sign-in and preferences on disk. The CLI's sign-in is `~/.config/cerin/cli.yaml`
 //! and the desktop app's is `desktop.yaml` beside it; each signs in and out on
 //! its own, and `cerin login` starts from the desktop's sign-in when there is
 //! one. The token itself is in the keychain where there is one (`secret.rs`);
@@ -102,9 +102,9 @@ fn home() -> PathBuf {
     std::env::var_os("HOME").map(PathBuf::from).unwrap_or_default()
 }
 
-/// `NUPHOS_CLI_CONFIG` or `~/.config/nuphos/cli.yaml`, as on the desktop.
+/// `NUPHOS_CLI_CONFIG` or `~/.config/cerin/cli.yaml`, as on the desktop.
 pub fn session_path() -> PathBuf {
-    std::env::var_os("NUPHOS_CLI_CONFIG").map(PathBuf::from).unwrap_or_else(|| home().join(".config/nuphos/cli.yaml"))
+    std::env::var_os("NUPHOS_CLI_CONFIG").map(PathBuf::from).unwrap_or_else(|| home().join(".config/cerin/cli.yaml"))
 }
 
 /// The desktop app's sign-in beside this one: `cli.yaml` → `desktop.yaml`,
@@ -431,8 +431,8 @@ mod tests {
     #[test]
     fn the_desktop_sign_in_sits_beside_the_cli_one() {
         assert_eq!(
-            sibling(Path::new("/h/.config/nuphos/cli.yaml"), "desktop"),
-            Path::new("/h/.config/nuphos/desktop.yaml")
+            sibling(Path::new("/h/.config/cerin/cli.yaml"), "desktop"),
+            Path::new("/h/.config/cerin/desktop.yaml")
         );
         assert_eq!(sibling(Path::new("/d/cli.dev.yaml"), "desktop"), Path::new("/d/desktop.dev.yaml"));
         assert_eq!(sibling(Path::new("/d/session.yaml"), "desktop"), Path::new("/d/session.desktop.yaml"));
@@ -459,7 +459,7 @@ mod tests {
 
     #[test]
     fn a_rejected_env_token_keeps_the_saved_sign_in() {
-        let dir = std::env::temp_dir().join(format!("nuphos-cli-test-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("cerin-cli-test-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         std::env::set_var("NUPHOS_CLI_CONFIG", dir.join("cli.yaml"));
         write_private(&dir.join("cli.yaml"), b"token: saved\nkeychainAccount: u1@x\n").unwrap();

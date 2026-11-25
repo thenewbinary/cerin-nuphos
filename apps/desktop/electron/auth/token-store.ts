@@ -7,9 +7,8 @@
 // write (locked, or a Linux without a Secret Service) leaves the token in the
 // file (mode 0600).
 
-/** This app's item; the account names the user and backend. The CLI's is `ai.nuphos.cli.session`. */
+/** This app's item; the account names the user and backend. The CLI's is `ai.cerin.cli.session`. */
 export const KEYCHAIN_SERVICE = 'ai.cerin.desktop.session'
-export const LEGACY_KEYCHAIN_SERVICE = 'ai.nuphos.desktop.session'
 
 export type TokenStore = {
   get: (account: string) => Promise<string | null>
@@ -52,7 +51,8 @@ async function entry(service: string, account: string) {
   return new AsyncEntry(service, account, ENTRY_OPTIONS)
 }
 
-function directKeychainFor(service: string): TokenStore {
+/** The items of one service in the credential store. */
+export function keychainFor(service: string): TokenStore {
   return {
     get: async (account) => (await entry(service, account)).getPassword(),
     set: async (account, token) => {
@@ -64,39 +64,4 @@ function directKeychainFor(service: string): TokenStore {
   }
 }
 
-/**
- * Reads fall back to the pre-rename item and copy it forward. The old item stays: the
- * previous app and CLI 0.28.1 and older read only it. A copy the store refuses (an
- * unsigned build, a locked keychain) still returns the old token. Signing out removes both.
- */
-export function withLegacyKeychain(current: TokenStore, legacy: TokenStore): TokenStore {
-  return {
-    ...current,
-    get: async (account) => {
-      const token = await current.get(account)
-
-      if (token !== null) return token
-      const legacyToken = await legacy.get(account)
-
-      if (legacyToken === null) return null
-      await current.set(account, legacyToken).catch(() => undefined)
-
-      return legacyToken
-    },
-    delete: async (account) => {
-      const results = await Promise.allSettled([current.delete(account), legacy.delete(account)])
-      const failed = results.find((result) => result.status === 'rejected')
-
-      if (failed) throw failed.reason
-    },
-  }
-}
-
-/** The items of one service in the credential store. */
-export function keychainFor(service: string, legacyService?: string): TokenStore {
-  const store = directKeychainFor(service)
-
-  return legacyService ? withLegacyKeychain(store, directKeychainFor(legacyService)) : store
-}
-
-export const keychainStore: TokenStore = keychainFor(KEYCHAIN_SERVICE, LEGACY_KEYCHAIN_SERVICE)
+export const keychainStore: TokenStore = keychainFor(KEYCHAIN_SERVICE)

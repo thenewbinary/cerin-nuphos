@@ -10,7 +10,7 @@ set -euo pipefail
 id="${1:?usage: git-as <sender-id> <git args...>}"
 shift
 [[ "$id" =~ ^[A-Za-z0-9_-]+$ ]] || { echo "git-as: invalid sender id" >&2; exit 2; }
-config="$HOME/.config/nuphos-git-identities/$id/gitconfig"
+config="$HOME/.config/cerin-git-identities/$id/gitconfig"
 [[ -f "$config" ]] || { echo "git-as: no git identity configured for participant $id" >&2; exit 1; }
 
 # Identity variables in the environment would override the participant's config.

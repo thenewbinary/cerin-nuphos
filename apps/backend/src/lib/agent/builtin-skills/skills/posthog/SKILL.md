@@ -23,10 +23,10 @@ The credential selector lists the enabled integrations with their
 `setupCommand`. Run it exactly:
 
 ```bash
-bash skills/posthog/scripts/setup-credentials.sh "$TEAM" "<integrationId>" && source ~/.posthog/nuphos.env
+bash skills/posthog/scripts/setup-credentials.sh "$TEAM" "<integrationId>" && source ~/.posthog/cerin.env
 ```
 
-It writes `~/.posthog/nuphos.env` (mode 600) and prints the enabled projects:
+It writes `~/.posthog/cerin.env` (mode 600) and prints the enabled projects:
 
 | Variable | Meaning |
 | --- | --- |

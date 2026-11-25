@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test'
 
 import { renderRelayInstallManifest } from '@/lib/byos/relay-install-manifest'
 
-const REFERENCE_MANIFEST = '../kube-relay-agent/deploy/nuphos-relay-agent.yaml'
+const REFERENCE_MANIFEST = '../kube-relay-agent/deploy/cerin-relay-agent.yaml'
 
 describe('renderRelayInstallManifest', () => {
   it('stays byte-identical to the manifest customers can also apply by hand', async () => {

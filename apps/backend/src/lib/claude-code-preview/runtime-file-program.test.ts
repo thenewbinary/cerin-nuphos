@@ -139,7 +139,7 @@ test('directory browsing stays inside the workspace and omits symlinks', async (
 test("the conversation owner's session home is readable, except its dot-entries", async () => {
   const root = await mkdtemp(join(tmpdir(), 'runtime-home-'))
   const workspace = join(root, 'workspace')
-  const homes = join(root, '.nuphos', 'session-homes')
+  const homes = join(root, '.cerin', 'session-homes')
   const home = join(homes, createHash('sha256').update('s1').digest('hex'))
   const other = join(homes, createHash('sha256').update('s2').digest('hex'))
 
@@ -248,9 +248,9 @@ test('a file too large to preview is sized, then uploaded whole to the given URL
 test('a saved secret under /tmp is read only when the read asks for one', async () => {
   const root = await mkdtemp(join(tmpdir(), 'runtime-secret-workspace-'))
   // eslint-disable-next-line sonarjs/publicly-writable-directories -- The fixed place a cloud runtime keeps them; mkdtemp makes a private directory.
-  const dir = await mkdtemp('/tmp/nuphos-secret-')
+  const dir = await mkdtemp('/tmp/cerin-secret-')
   // eslint-disable-next-line sonarjs/publicly-writable-directories -- A sibling the program must refuse; mkdtemp makes a private directory.
-  const other = await mkdtemp('/tmp/nuphos-attachments-')
+  const other = await mkdtemp('/tmp/cerin-attachments-')
 
   try {
     await mkdir(join(dir, '0'))

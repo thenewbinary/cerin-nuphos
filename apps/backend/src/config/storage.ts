@@ -49,7 +49,7 @@ export function storageConfig() {
         secretAccessKey: optional('ATLAS_SKILLS_S3_SECRET_ACCESS_KEY'),
         endpoint: optional('ATLAS_SKILLS_S3_ENDPOINT'),
       },
-      cacheDir: optional('ATLAS_SKILLS_CACHE_DIR') ?? `${tmpdir()}/nuphos-skills-cache`,
+      cacheDir: optional('ATLAS_SKILLS_CACHE_DIR') ?? `${tmpdir()}/cerin-skills-cache`,
     },
     journal: {
       // HMAC key fingerprinting redacted-away originals in the audit journal.

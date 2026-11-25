@@ -23,12 +23,12 @@ a ready-to-run `setupCommand`. Pick the matching account and run its `setupComma
 bash skills/cloudflare/scripts/setup-credentials.sh <teamId> <accountId>
 ```
 
-The script calls `GET /teams/$TEAM/cloudflare-accounts/$ACCOUNT_ID/credentials` on Cerin backend with the user's `NUPHOS_TOKEN`. When running inside an Cerin agent sandbox, it prefers the agent-session path automatically. It writes a private env file at `~/.cloudflare/nuphos.env`.
+The script calls `GET /teams/$TEAM/cloudflare-accounts/$ACCOUNT_ID/credentials` on Cerin backend with the user's `NUPHOS_TOKEN`. When running inside an Cerin agent sandbox, it prefers the agent-session path automatically. It writes a private env file at `~/.cloudflare/cerin.env`.
 
 Then call Cloudflare with curl:
 
 ```bash
-source ~/.cloudflare/nuphos.env
+source ~/.cloudflare/cerin.env
 
 curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CLOUDFLARE_API_KEY") \
   "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID"
@@ -42,7 +42,7 @@ Only if the credential section is missing or looks stale. `$TEAM` is exported in
 environment.
 
 ```bash
-# Reuse the helper from the nuphos-api skill (loads it if needed):
+# Reuse the helper from the cerin-api skill (loads it if needed):
 ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 ac /teams/$TEAM/cloudflare-accounts | python3 -m json.tool

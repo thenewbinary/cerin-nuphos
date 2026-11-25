@@ -3,7 +3,7 @@
 ## 概述
 
 讓團隊和 AI 在 Cerin 裡，把一個產品的所有畫面攤在同一張畫布上，一起看、一起改、一路點完流程，不用再離開 Cerin。
-行為以 Claude Design 為參考（只參考互動方式，不照搬程式碼、圖示、文案與樣式）。對應 issue：thenewbinary/cerin-nuphos#954。
+行為以 Claude Design 為參考（只參考互動方式，不照搬程式碼、圖示、文案與樣式）。對應 issue：thenewbinary/cerin-platform#954。
 
 名詞：
 

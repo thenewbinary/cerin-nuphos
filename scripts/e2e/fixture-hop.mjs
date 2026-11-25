@@ -12,7 +12,7 @@ async function shown({ call, send, sessionId }, name, args) {
 
   update({
     sessionUpdate: 'tool_call',
-    title: `mcp__nuphos-tools__${name}`,
+    title: `mcp__cerin-tools__${name}`,
     status: 'in_progress',
     rawInput: args,
   })

@@ -11,7 +11,7 @@ const RUNTIME_ID_PREFIX = 'local_'
 // Claude Code's ids predate the others and carry no provider.
 const DEFAULT_PROVIDER = 'claude-code'
 const INSTANCE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu
-const URL_SCHEME = 'nuphos-device:'
+const URL_SCHEME = 'cerin-device:'
 const SEGMENT = /^[A-Za-z0-9-]{1,128}$/u
 
 /** A local agent's id in a team's runtime list: owner, device and provider, never a team. */

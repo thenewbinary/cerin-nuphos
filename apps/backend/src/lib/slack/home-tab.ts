@@ -26,14 +26,14 @@ export type { SlackHomeCredentialGroup, SlackHomeViewModel } from '@/lib/slack/h
 // team-wide by default.
 export async function listAccessibleTeamCredentials(
   teamId: string,
-  nuphosUserId: string,
+  cerinUserId: string,
 ): Promise<SlackHomeCredentialGroup[]> {
   if (!ObjectId.isValid(teamId)) return []
   const doc = await teamByosBindings().findOne({ _id: new ObjectId(teamId) })
 
   if (!doc) return []
 
-  const can = (access?: BindingAccess) => canUseAllowList(access?.memberAllowList, nuphosUserId)
+  const can = (access?: BindingAccess) => canUseAllowList(access?.memberAllowList, cerinUserId)
   const groups: SlackHomeCredentialGroup[] = []
   const add = (provider: string, entries: string[]) => {
     if (entries.length) groups.push({ provider, entries })
@@ -129,22 +129,22 @@ export async function buildConnectedSlackHomeView(args: {
   slackWorkspaceId: string
   slackTeamName: string
   botUserId: string
-  nuphosTeamId: string
+  cerinTeamId: string
   // Null when the viewer has no user mapping yet.
-  nuphosUserId: string | null
+  cerinUserId: string | null
 }): Promise<Record<string, unknown>> {
   const [teams, members, channelMappings, credentials] = await Promise.all([
-    getTeamsByIds([args.nuphosTeamId]),
-    args.nuphosUserId ? getTeamMembers(args.nuphosTeamId) : Promise.resolve([]),
-    listSlackChannelMappings(args.nuphosTeamId),
-    args.nuphosUserId
-      ? listAccessibleTeamCredentials(args.nuphosTeamId, args.nuphosUserId)
+    getTeamsByIds([args.cerinTeamId]),
+    args.cerinUserId ? getTeamMembers(args.cerinTeamId) : Promise.resolve([]),
+    listSlackChannelMappings(args.cerinTeamId),
+    args.cerinUserId
+      ? listAccessibleTeamCredentials(args.cerinTeamId, args.cerinUserId)
       : Promise.resolve([]),
   ])
   // A mapping can outlive team membership; a viewer whose Cerin user is no
   // longer a member renders as unlinked (same gate the message handlers apply).
-  const member = args.nuphosUserId
-    ? (members.find((entry) => entry.id === args.nuphosUserId) ?? null)
+  const member = args.cerinUserId
+    ? (members.find((entry) => entry.id === args.cerinUserId) ?? null)
     : null
 
   return buildSlackHomeViewFromModel({

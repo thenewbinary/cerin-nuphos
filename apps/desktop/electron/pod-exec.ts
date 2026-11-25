@@ -167,7 +167,7 @@ export async function startNodeExecSession(
   // The session id is now the caller's tab-scoped key, which is neither unique
   // per attempt nor a legal object name — hash it into something Kubernetes
   // accepts and that two shells on the same node cannot collide on.
-  const podName = `nuphos-node-shell-${createHash('sha1').update(session.id).digest('hex').slice(0, 8)}`
+  const podName = `cerin-node-shell-${createHash('sha1').update(session.id).digest('hex').slice(0, 8)}`
   const ns = NODE_SHELL_NAMESPACE
 
   const deletePod = () => {

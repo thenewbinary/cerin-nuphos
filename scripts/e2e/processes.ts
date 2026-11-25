@@ -8,7 +8,7 @@ import { join } from 'node:path'
 
 import type { ChildProcess } from 'node:child_process'
 
-export const artifacts = process.env.E2E_ARTIFACTS ?? mkdtempSync(join(tmpdir(), 'nuphos-e2e-'))
+export const artifacts = process.env.E2E_ARTIFACTS ?? mkdtempSync(join(tmpdir(), 'cerin-e2e-'))
 const children: ChildProcess[] = []
 
 export function logPath(name: string): string {

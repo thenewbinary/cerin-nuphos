@@ -88,7 +88,7 @@ export const agentWordScenarios: Scenario[] = [
         const lines = (await main.innerText())
           .split('\n')
           .filter((line) =>
-            /\bagents?\b/i.test(line.replace(/ssh-agent|AGENTS\.md|nuphos-agent\.log/g, '')),
+            /\bagents?\b/i.test(line.replace(/ssh-agent|AGENTS\.md|cerin-agent\.log/g, '')),
           )
 
         said.push(...lines.map((line) => `${section!}: ${line}`))

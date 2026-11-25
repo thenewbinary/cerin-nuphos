@@ -17,7 +17,7 @@ const ACCOUNT = 'u1@https://platform.cerin.ai'
 const API = 'https://platform.cerin.ai'
 
 async function harness({ secure = true, failSet = false, gated = false } = {}) {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-config-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-config-'))
   const file = path.join(dir, 'desktop.yaml')
   const legacy = path.join(dir, 'cli.yaml')
   const items = new Map<string, string>()

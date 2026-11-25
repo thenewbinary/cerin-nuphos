@@ -6,16 +6,16 @@
 # one, so a missing file must unset the stale value. Nested shells re-read it
 # too.
 if [ -n "${OPENAB_CREDENTIALS_DIR:-}" ]; then
-  for nuphos_credential in NUPHOS_TOKEN NUPHOS_PLAN_API_TOKEN; do
-    nuphos_credential_value=
-    if [ -r "$OPENAB_CREDENTIALS_DIR/$nuphos_credential" ]; then
-      IFS= read -r nuphos_credential_value <"$OPENAB_CREDENTIALS_DIR/$nuphos_credential" || true
+  for cerin_credential in NUPHOS_TOKEN NUPHOS_PLAN_API_TOKEN; do
+    cerin_credential_value=
+    if [ -r "$OPENAB_CREDENTIALS_DIR/$cerin_credential" ]; then
+      IFS= read -r cerin_credential_value <"$OPENAB_CREDENTIALS_DIR/$cerin_credential" || true
     fi
-    if [ -n "$nuphos_credential_value" ]; then
-      export "$nuphos_credential=$nuphos_credential_value"
+    if [ -n "$cerin_credential_value" ]; then
+      export "$cerin_credential=$cerin_credential_value"
     else
-      unset "$nuphos_credential"
+      unset "$cerin_credential"
     fi
   done
-  unset nuphos_credential nuphos_credential_value
+  unset cerin_credential cerin_credential_value
 fi

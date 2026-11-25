@@ -4,8 +4,8 @@ import { truncatePlain } from '@/routes/slack/shared'
 
 import type { SlackRuntime } from '@/routes/slack/types'
 
-export const TOOL_APPROVAL_ALLOW_ACTION = 'nuphos_tool_approval_allow'
-export const TOOL_APPROVAL_REJECT_ACTION = 'nuphos_tool_approval_reject'
+export const TOOL_APPROVAL_ALLOW_ACTION = 'cerin_tool_approval_allow'
+export const TOOL_APPROVAL_REJECT_ACTION = 'cerin_tool_approval_reject'
 
 type ToolApprovalOption = { optionId: string; name: string; kind: string }
 

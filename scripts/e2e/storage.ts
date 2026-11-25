@@ -5,7 +5,7 @@ import { spawn, until } from './processes.ts'
 
 // Keep the tag in step with deploy/compose/docker-compose.yml and the e2e workflow's pull.
 export const STORAGE_IMAGE = 'rustfs/rustfs:1.0.0'
-const BUCKET = 'nuphos-e2e-transfers'
+const BUCKET = 'cerin-e2e-transfers'
 const ACCESS_KEY = 'local-e2e-storage-access-key'
 const SECRET_KEY = 'local-e2e-storage-secret-key-not-a-production-credential'
 

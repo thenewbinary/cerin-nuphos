@@ -19,7 +19,7 @@ to the user's Cerin team.
 Every shell tool call starts in a fresh process. Shell functions, sourced env
 files, and exported variables from an earlier call do **not** persist. Never
 define a `lin()` function or probe guessed token variable names. The helpers in
-`skills/linear/scripts/` load `~/.linear/nuphos.env` on every invocation.
+`skills/linear/scripts/` load `~/.linear/cerin.env` on every invocation.
 
 ## Setup
 

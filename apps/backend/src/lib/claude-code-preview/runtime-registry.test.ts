@@ -49,19 +49,19 @@ describe('runtime registry', () => {
     const runtime = await registerTeamRuntime({
       teamId: 'team-1',
       userId: 'user-1',
-      url: 'ws://openab-team-1.nuphos.svc:8080/acp',
+      url: 'ws://openab-team-1.cerin.svc:8080/acp',
       authKey: 'transport-key-1',
       label: 'primary',
     })
 
-    expect(runtime.url).toBe('ws://openab-team-1.nuphos.svc:8080/acp')
+    expect(runtime.url).toBe('ws://openab-team-1.cerin.svc:8080/acp')
     expect(JSON.stringify(runtime)).not.toContain('transport-key-1')
 
     const endpoints = await resolveTeamRuntimeEndpoints('team-1')
 
     expect(endpoints).toEqual([
       {
-        url: 'ws://openab-team-1.nuphos.svc:8080/acp',
+        url: 'ws://openab-team-1.cerin.svc:8080/acp',
         authKey: 'transport-key-1',
         runtimeId: runtime.id,
       },

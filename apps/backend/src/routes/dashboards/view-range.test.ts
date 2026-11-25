@@ -13,10 +13,10 @@ import { dashboardForView, dashboardViewSchema } from './view-range'
 
 import type { serializePanel } from './serialize'
 import type { TeamAuthVariables } from '@/middleware/auth'
-import type { NuphosDashboard, DashboardPanel, DashboardPanelSnapshot } from '@/models'
+import type { CerinDashboard, DashboardPanel, DashboardPanelSnapshot } from '@/models'
 
 const teamId = new ObjectId()
-const dashboard: NuphosDashboard = {
+const dashboard: CerinDashboard = {
   _id: new ObjectId(),
   teamId,
   name: 'Costs',
@@ -68,7 +68,7 @@ useDb({
       },
       findOneAndUpdate: (
         _filter: unknown,
-        update: { $set: Partial<NuphosDashboard>; $unset?: Record<string, string> },
+        update: { $set: Partial<CerinDashboard>; $unset?: Record<string, string> },
       ) => {
         if (name !== 'cost_dashboards') throw new Error('Unexpected write')
         dashboardWrites++

@@ -6,7 +6,7 @@ import { endsInboxAnswer, replyTo } from './channelReply.ts'
 const metadata = {
   version: 1,
   sender: { type: 'user', id: 'u1', displayName: 'Mei' },
-  source: 'nuphos',
+  source: 'cerin',
   sentAt: '2026-11-07T00:00:00Z',
 }
 

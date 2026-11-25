@@ -9,7 +9,7 @@ import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from './aws-oidc'
 import { verifyTeamSpecificTrust } from './huawei-trust-policy'
 
@@ -116,10 +116,10 @@ async function assumeAgencyWithOidc(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        agency_session_name: `nuphos-${teamId}`,
+        agency_session_name: `cerin-${teamId}`,
         agency_urn: agencyUrn(identity),
         provider_urn: providerUrn(identity),
-        id_token: mintNuphosOidcToken(teamId, config.byos.huawei.oidc.audience),
+        id_token: mintCerinOidcToken(teamId, config.byos.huawei.oidc.audience),
         duration_seconds: durationSec,
       }),
       signal: AbortSignal.timeout(SWEEP_READ_TIMEOUT_MS),

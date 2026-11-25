@@ -13,7 +13,7 @@ import { AppError } from '@/lib/errors'
 import { parseObjectId } from '@/lib/objectid'
 import { zv } from '@/lib/validate'
 import {
-  nuphosDashboards,
+  cerinDashboards,
   dashboardPanelAlerts,
   dashboardPanels,
   dashboardPanelSnapshots,
@@ -29,7 +29,7 @@ import { appendScriptVersion, serializePanel, serializeSnapshot } from './serial
 import type { AgentCredentialAccess } from '@/lib/agent/db'
 import type { AgentRef } from '@/lib/agents/identity'
 import type { TeamAuthVariables } from '@/middleware/auth'
-import type { NuphosDashboard, DashboardPanel, DashboardPanelScriptVersion } from '@/models'
+import type { CerinDashboard, DashboardPanel, DashboardPanelScriptVersion } from '@/models'
 import type { Hono } from 'hono'
 
 const panelKindSchema = z.enum(['chart', 'scalar', 'table'])
@@ -94,9 +94,9 @@ const updatePanelSchema = z.object({
 const snapshotListSchema = z.object({ limit: z.coerce.number().int().min(1).max(200).default(50) })
 
 export function registerDashboardPanelRoutes(
-  nuphosDashboardsRoutes: Hono<{ Variables: TeamAuthVariables }>,
+  cerinDashboardsRoutes: Hono<{ Variables: TeamAuthVariables }>,
 ): void {
-  nuphosDashboardsRoutes.post('/:dashboardId/panels', zv('json', createPanelSchema), async (c) => {
+  cerinDashboardsRoutes.post('/:dashboardId/panels', zv('json', createPanelSchema), async (c) => {
     const { teamId, dashboard } = await loadDashboard(
       c.get('teamId'),
       c.req.param('dashboardId'),
@@ -133,7 +133,7 @@ export function registerDashboardPanelRoutes(
     // placement; the client can rearrange via PUT /:dashboardId.
     const cadence = input.cadence ? dashboardCadenceUpdate(dashboard, input.cadence, now).set : {}
 
-    await nuphosDashboards().updateOne(
+    await cerinDashboards().updateOne(
       { _id: dashboard._id, teamId },
       {
         $push: { layout: { panelId: doc._id, x: 0, y: dashboard.layout.length, w: 12, h: 8 } },
@@ -148,7 +148,7 @@ export function registerDashboardPanelRoutes(
     return c.json(serializePanel(doc, { ...dashboard, ...cadence }, snapshot), 201)
   })
 
-  nuphosDashboardsRoutes.put(
+  cerinDashboardsRoutes.put(
     '/:dashboardId/panels/:panelId',
     zv('json', updatePanelSchema),
     async (c) => {
@@ -218,7 +218,7 @@ export function registerDashboardPanelRoutes(
     },
   )
 
-  nuphosDashboardsRoutes.delete('/:dashboardId/panels/:panelId', async (c) => {
+  cerinDashboardsRoutes.delete('/:dashboardId/panels/:panelId', async (c) => {
     const { teamId, panel } = await loadPanel(
       c.get('teamId'),
       c.req.param('dashboardId'),
@@ -232,7 +232,7 @@ export function registerDashboardPanelRoutes(
       dashboardPanelAlerts().deleteMany({ teamId, panelId: panel._id }),
     ])
     await dashboardPanels().deleteOne({ _id: panel._id, teamId })
-    await nuphosDashboards().updateOne(
+    await cerinDashboards().updateOne(
       { _id: panel.dashboardId, teamId },
       { $pull: { layout: { panelId: panel._id } }, $set: { updatedAt: new Date() } },
     )
@@ -240,7 +240,7 @@ export function registerDashboardPanelRoutes(
     return c.body(null, 204)
   })
 
-  nuphosDashboardsRoutes.get(
+  cerinDashboardsRoutes.get(
     '/:dashboardId/panels/:panelId/snapshots',
     zv('query', snapshotListSchema),
     async (c) => {
@@ -262,7 +262,7 @@ export function registerDashboardPanelRoutes(
     },
   )
 
-  nuphosDashboardsRoutes.get('/:dashboardId/panels/:panelId/snapshots/:snapshotId', async (c) => {
+  cerinDashboardsRoutes.get('/:dashboardId/panels/:panelId/snapshots/:snapshotId', async (c) => {
     const { teamId, panel } = await loadPanel(
       c.get('teamId'),
       c.req.param('dashboardId'),

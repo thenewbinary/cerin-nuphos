@@ -222,7 +222,6 @@ struct DesktopTests {
         } catch is RFBByteStream.Closed {}
         precondition(recorder.name.map(RFBClient.fitsWindows) == true, "The Mac host's name says it fits windows")
         precondition(recorder.resized.map { $0 == (32, 20) } == true && recorder.video.count == 1, "The frame fits the new size")
-        precondition(RFBClient.fitsWindows("Nuphos Mac"), "an older Mac host still fits windows") // rebrand:keep
         precondition(!RFBClient.fitsWindows("Box"))
         let fit = RFBClient.setDesktopSize(width: 600, height: 400, window: true)
         precondition(fit == [251, 0] + be16(600) + be16(400) + [1, 0] + be32(1) + be16(0) + be16(0) + be16(600) + be16(400) + be32(0))

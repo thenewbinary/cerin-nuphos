@@ -37,7 +37,7 @@ beforeEach(async () => {
     metadata: {
       version: 1,
       sender: { type: 'user', id: 'mei', displayName: 'Mei' },
-      source: 'nuphos',
+      source: 'cerin',
       sentAt: new Date().toISOString(),
     },
   } as never)

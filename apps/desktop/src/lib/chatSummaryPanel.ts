@@ -138,7 +138,7 @@ export function useRegisterPaneSession(paneId: string, sessionId: string | null)
 /** Which pull requests and issues the panel's Changes list shows. */
 export type ChangesFilter = 'all' | ChangeStatus
 
-const FILTER_KEY = 'nuphos.chatSummaryChangesFilter'
+const FILTER_KEY = 'cerin.chatSummaryChangesFilter'
 const FILTERS: readonly ChangesFilter[] = ['all', 'open', 'merged', 'closed']
 
 function storedFilter(): ChangesFilter {
@@ -158,7 +158,7 @@ export function setChangesFilter(next: ChangesFilter): void {
 /** Which of this chat's sub-agents the panel lists. */
 export type SubAgentsFilter = 'all' | 'active' | 'done'
 
-const SUB_AGENTS_FILTER_KEY = 'nuphos.chatSummarySubAgentsFilter'
+const SUB_AGENTS_FILTER_KEY = 'cerin.chatSummarySubAgentsFilter'
 const SUB_AGENTS_FILTERS: readonly SubAgentsFilter[] = ['all', 'active', 'done']
 
 // Active until a pill is chosen: a chat with nothing active shows All instead.

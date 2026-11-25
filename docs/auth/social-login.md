@@ -1,6 +1,6 @@
 # Google and Apple sign-in across clients
 
-Tracks https://github.com/thenewbinary/cerin-nuphos/issues/700.
+Tracks https://github.com/thenewbinary/cerin-platform/issues/700.
 
 ## Clients and contract
 
@@ -15,9 +15,9 @@ The process that registered the attempt redeems the code with its in-memory
 verifier. Session tokens never appear in native callback URLs.
 
 The browser-only entry point (no handle) authenticates using a Secure, HttpOnly,
-SameSite=Lax `__Host-nuphos-social` cookie. `/auth/social/session` returns the
+SameSite=Lax `__Host-cerin-social` cookie. `/auth/social/session` returns the
 current browser user, never the session token. This does not change the separate
-`nuphos-landingpage` repository or its existing session cookie contract. That
+`cerin-landingpage` repository or its existing session cookie contract. That
 website must integrate this endpoint before its own UI can offer Apple login.
 No cross-origin redirects or arbitrary return URLs are accepted.
 

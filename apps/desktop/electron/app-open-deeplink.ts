@@ -1,11 +1,11 @@
-import { ALLOWED_WEB_HOSTS, WEB_BASE_URL, isAppWebUrl } from './web-base-url.ts'
+import { ALLOWED_WEB_HOSTS, WEB_BASE_URL } from './web-base-url'
 
 export type AppOpenDeepLinkPayload = {
   url: string
   path: string
 }
 
-const PROTOCOLS = new Set(['cerin:', 'nuphos:'])
+const PROTOCOL = 'cerin:'
 const HOST = 'open'
 
 function normalizePath(value: string | null): string | null {
@@ -20,8 +20,7 @@ function parseAllowedWebUrl(value: string | null): URL | null {
   try {
     const url = new URL(value)
 
-    if (url.protocol !== 'https:' || (!ALLOWED_WEB_HOSTS.has(url.hostname) && !isAppWebUrl(value)))
-      return null
+    if (url.protocol !== 'https:' || !ALLOWED_WEB_HOSTS.has(url.hostname)) return null
 
     return url
   } catch {
@@ -33,7 +32,7 @@ export function isAppOpenUrl(rawUrl: string): boolean {
   try {
     const url = new URL(rawUrl)
 
-    return PROTOCOLS.has(url.protocol) && url.hostname === HOST
+    return url.protocol === PROTOCOL && url.hostname === HOST
   } catch {
     return false
   }
@@ -47,7 +46,7 @@ export function parseAppOpenUrl(rawUrl: string): AppOpenDeepLinkPayload | null {
   } catch {
     return null
   }
-  if (!PROTOCOLS.has(url.protocol) || url.hostname !== HOST) return null
+  if (url.protocol !== PROTOCOL || url.hostname !== HOST) return null
 
   const webUrl = parseAllowedWebUrl(url.searchParams.get('url'))
   const rawPath = normalizePath(url.searchParams.get('path'))

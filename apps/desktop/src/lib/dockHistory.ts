@@ -4,13 +4,13 @@ import { readLocalStorage, writeLocalStorage } from '../app/localStorage.ts'
 export type DockHistoryEntry = { href: string; title: string; count: number; openedAt: number }
 
 const MAX_ENTRIES = 500
-const CHANGE_EVENT = 'nuphos:dock-history'
+const CHANGE_EVENT = 'cerin:dock-history'
 const HALF_LIFE_MS = 7 * 24 * 60 * 60 * 1000
 /** A session's display: it opens as its conversation's own tab, not from history. */
 const SESSION_DESKTOP = /^\/teams\/[^/]+\/desktop\/\d+$/u
 
 export function dockHistoryKey(userId: string, teamId: string): string {
-  return `nuphos.dockHistory.${encodeURIComponent(userId)}.${encodeURIComponent(teamId)}`
+  return `cerin.dockHistory.${encodeURIComponent(userId)}.${encodeURIComponent(teamId)}`
 }
 
 /** How often and how recently a page was opened; each open counts half after a week. */

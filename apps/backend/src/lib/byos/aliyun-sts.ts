@@ -9,7 +9,7 @@ import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from './aws-oidc'
 
 import type { AliyunSite } from './types'
@@ -77,7 +77,7 @@ export function aliyunOidcInfo(teamId: string): {
 
 /** RoleSessionName must be 2–64 chars of [\w+=,.@-]; sanitize defensively. */
 function sanitizeSessionName(name: string): string {
-  return (name || 'nuphos').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
+  return (name || 'cerin').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
 }
 
 /**
@@ -112,8 +112,8 @@ export async function assumeRoleWithOidc(
     SignatureNonce: crypto.randomUUID(),
     RoleArn: roleArn,
     OIDCProviderArn: oidcProviderArn,
-    OIDCToken: mintNuphosOidcToken(teamId, config.byos.aliyun.oidc.audience),
-    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'nuphos'),
+    OIDCToken: mintCerinOidcToken(teamId, config.byos.aliyun.oidc.audience),
+    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'cerin'),
     DurationSeconds: String(opts.durationSec ?? config.byos.aliyun.oidc.sessionDurationSec),
   })
   let resp: {
@@ -174,7 +174,7 @@ export async function verifyAliyunRole(
   try {
     await assumeRoleWithOidc(roleArn, oidcProviderArn, teamId, {
       site,
-      sessionName: 'nuphos-bind-verify',
+      sessionName: 'cerin-bind-verify',
       durationSec: 900,
     })
   } catch (e) {

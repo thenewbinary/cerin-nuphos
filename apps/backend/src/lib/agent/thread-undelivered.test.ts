@@ -57,7 +57,7 @@ const runs: Parameters<TurnRunner['runAgentForTrigger']>[0][] = []
 
 useIdentity({
   getTeamMembership: async () => ({ role: 'MEMBER' }),
-  signNuphosToken: () => 'test-token',
+  signCerinToken: () => 'test-token',
 })
 useConversationChatRoute({
   resolveConversationChatRuntime: async () => {
@@ -208,7 +208,7 @@ test('a started turn that fails tells its sender, once', async () => {
   expect(notices()[0]?.messages.at(-1)?.metadata).toMatchObject({
     source: 'agent.resource',
     resourceUrl: '/teams/team/agent/target',
-    sender: { type: 'system', id: 'nuphos' },
+    sender: { type: 'system', id: 'cerin' },
   })
   // An attribution the parser rejects renders as the owner's own message.
   expect(parseMessageMetadata(notices()[0]?.messages.at(-1)?.metadata)).toBeDefined()
@@ -363,7 +363,7 @@ test('a notice that does not run is not reported back', async () => {
     { ...base, sessionId: 'target' },
     'Your message to thread other did not run.',
     'agent.resource',
-    systemSender('nuphos', 'Cerin'),
+    systemSender('cerin', 'Cerin'),
   )
 
   await expect(run).rejects.toThrow('Thread run failed')
@@ -378,7 +378,7 @@ test('an answer its offline agent never gets waits for it, and the question stay
       renderedText: 'Your question (requestId q1) was answered from the Inbox.',
       source: 'agent.resource',
       actorUserId: 'owner',
-      metadata: systemSender('nuphos:decision', 'Cerin'),
+      metadata: systemSender('cerin:decision', 'Cerin'),
     }),
     offlineSince: new Date(Date.now() - 61_000).toISOString(),
     answers: {
@@ -423,7 +423,7 @@ test('an answer that can never run reopens the question with one plain line', as
     { ...base, sessionId: 'target' },
     'Your question (requestId q2) was answered from the Inbox.',
     'agent.resource',
-    systemSender('nuphos:decision', 'Cerin'),
+    systemSender('cerin:decision', 'Cerin'),
   )
 
   await expect(run).rejects.toThrow('something broke')

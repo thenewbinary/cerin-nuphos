@@ -27,7 +27,7 @@
     <string name="shell_server_custom_settings">%1$s · 伺服器設定</string>
     <string name="shell_server_body">使用 Cerin Cloud，或輸入自架後端的 HTTPS 位址。</string>
     <string name="shell_server_address">伺服器位址</string>
-    <string name="shell_use_nuphos_cloud">使用 Cerin Cloud</string>
+    <string name="shell_use_cerin_cloud">使用 Cerin Cloud</string>
     <string name="shell_server_save_failed">無法儲存伺服器。請再試一次。</string>
     <string name="shell_cancel_adding_account">取消新增帳號</string>
     <string name="shell_retry_sign_in_options">重新載入登入選項</string>

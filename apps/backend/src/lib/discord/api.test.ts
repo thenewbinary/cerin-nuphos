@@ -4,7 +4,7 @@ import { config } from '@/config'
 import { messagingConfig } from '@/config/messaging'
 
 import {
-  NUPHOS_DISCORD_COMMAND,
+  CERIN_DISCORD_COMMAND,
   registerDiscordCommands,
   sendDiscordApproval,
   splitDiscordText,
@@ -41,8 +41,8 @@ describe('Cerin Discord command', () => {
       expect(url).toBe('https://discord.com/api/v10/applications/test-app/commands')
       expect(init?.method).toBe('PUT')
       if (typeof init?.body !== 'string') throw new Error('Expected a JSON request body')
-      expect(JSON.parse(init.body)).toEqual([NUPHOS_DISCORD_COMMAND])
-      expect(NUPHOS_DISCORD_COMMAND.name).toBe(config.discord.commandName)
+      expect(JSON.parse(init.body)).toEqual([CERIN_DISCORD_COMMAND])
+      expect(CERIN_DISCORD_COMMAND.name).toBe(config.discord.commandName)
     } finally {
       fetchSpy.mockRestore()
       Object.assign(config.discord, saved)
@@ -74,9 +74,9 @@ describe('Cerin Discord command', () => {
   })
 
   test('allows members to use mode commands while handlers guard channel administration', () => {
-    expect(NUPHOS_DISCORD_COMMAND.default_member_permissions).toBeNull()
-    expect(NUPHOS_DISCORD_COMMAND.dm_permission).toBe(false)
-    expect(NUPHOS_DISCORD_COMMAND.options.map((option) => option.name)).toEqual([
+    expect(CERIN_DISCORD_COMMAND.default_member_permissions).toBeNull()
+    expect(CERIN_DISCORD_COMMAND.dm_permission).toBe(false)
+    expect(CERIN_DISCORD_COMMAND.options.map((option) => option.name)).toEqual([
       'full-access',
       'auto',
       'enable',

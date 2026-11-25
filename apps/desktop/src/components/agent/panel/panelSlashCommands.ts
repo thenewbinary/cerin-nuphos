@@ -13,7 +13,7 @@ import type { PanelViewCtx } from './ctx'
  * when it has a model control.
  */
 export function usePanelSlashCommands(c: PanelViewCtx): SlashCommand[] {
-  const { activeTab, forkConversation, onOpenNuphosLink, startNewChat, teamId } = c
+  const { activeTab, forkConversation, onOpenCerinLink, startNewChat, teamId } = c
   const forkableSessionId = activeTab && !activeTab.unsaved ? activeTab.sessionId : undefined
 
   return useMemo(
@@ -30,14 +30,14 @@ export function usePanelSlashCommands(c: PanelViewCtx): SlashCommand[] {
             },
           ]
         : []),
-      ...(teamId && onOpenNuphosLink
+      ...(teamId && onOpenCerinLink
         ? [
             {
               id: 'memories',
               title: t('Memories'),
               description: t("Open your team's memories"),
               run: () => {
-                onOpenNuphosLink(
+                onOpenCerinLink(
                   `${ATLAS_WEB_BASE_URL}/teams/${encodeURIComponent(teamId)}/agent/memories`,
                 )
               },
@@ -45,6 +45,6 @@ export function usePanelSlashCommands(c: PanelViewCtx): SlashCommand[] {
           ]
         : []),
     ],
-    [forkConversation, forkableSessionId, onOpenNuphosLink, startNewChat, teamId],
+    [forkConversation, forkableSessionId, onOpenCerinLink, startNewChat, teamId],
   )
 }

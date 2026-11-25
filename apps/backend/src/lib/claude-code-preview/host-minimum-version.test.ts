@@ -17,19 +17,15 @@ describe('the oldest Cerin a computer may run', () => {
   test('a Desktop below the floor is out of date, one at it is not', () => {
     // #3829: before 0.127.0 a downloaded update waits for a manual restart.
     expect(MINIMUM_HOST_VERSION.desktop).toBe('0.127.0')
-    expect(hostOutdated({ client: 'nuphos-desktop/0.119.2' })).toBe('desktop')
-    expect(hostOutdated({ client: 'nuphos-desktop/0.124.0' })).toBe('desktop')
-    expect(hostOutdated({ client: 'nuphos-desktop/0.126.0' })).toBe('desktop')
-    expect(hostOutdated({ client: 'nuphos-desktop/0.127.0' })).toBeUndefined()
-    expect(hostOutdated({ client: 'nuphos-desktop/0.130.1' })).toBeUndefined()
     expect(hostOutdated({ client: 'cerin-desktop/0.119.2' })).toBe('desktop')
+    expect(hostOutdated({ client: 'cerin-desktop/0.124.0' })).toBe('desktop')
+    expect(hostOutdated({ client: 'cerin-desktop/0.126.0' })).toBe('desktop')
     expect(hostOutdated({ client: 'cerin-desktop/0.127.0' })).toBeUndefined()
+    expect(hostOutdated({ client: 'cerin-desktop/0.130.1' })).toBeUndefined()
   })
 
   test('a CLI host is held to the CLI’s own floor', () => {
     expect(MINIMUM_HOST_VERSION.cli).toBe('0.20.0')
-    expect(hostOutdated({ client: 'nuphos-cli/0.19.4' })).toBe('cli')
-    expect(hostOutdated({ client: 'nuphos-cli/0.20.0' })).toBeUndefined()
     expect(hostOutdated({ client: 'cerin-cli/0.19.4' })).toBe('cli')
     expect(hostOutdated({ client: 'cerin-cli/0.20.0' })).toBeUndefined()
     // A Box's host names its CLI in its status; an older one sends no client header.
@@ -40,14 +36,14 @@ describe('the oldest Cerin a computer may run', () => {
   test('the version a host reports in its status wins over the one it connected with', () => {
     const status = { agents, app: { version: '0.118.0' } }
 
-    expect(hostOutdated({ client: 'nuphos-desktop/0.125.0', status })).toBe('desktop')
+    expect(hostOutdated({ client: 'cerin-desktop/0.125.0', status })).toBe('desktop')
   })
 
   test('a computer whose version is unknown is never called out of date', () => {
     expect(hostOutdated(null)).toBeUndefined()
     expect(hostOutdated({})).toBeUndefined()
-    expect(hostOutdated({ client: 'nuphos-cli/dev' })).toBeUndefined()
-    expect(hostOutdated({ client: 'nuphos-desktop/0.125.0-beta.1' })).toBeUndefined()
+    expect(hostOutdated({ client: 'cerin-cli/dev' })).toBeUndefined()
+    expect(hostOutdated({ client: 'cerin-desktop/0.125.0-beta.1' })).toBeUndefined()
     expect(hostOutdated({ client: 'curl/8.0.0' })).toBeUndefined()
   })
 })

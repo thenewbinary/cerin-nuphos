@@ -1,6 +1,6 @@
 //! `cerin agent` runs the host as a service, so it keeps running after the terminal
 //! closes and starts again after a crash or a reboot: the systemd user service
-//! `nuphos-agent` on Linux, the LaunchAgent `ai.nuphos.agent` on macOS. Run by a
+//! `cerin-agent` on Linux, the LaunchAgent `ai.cerin.agent` on macOS. Run by a
 //! service manager, or on Linux without one, the host runs in the foreground.
 
 use std::path::{Path, PathBuf};
@@ -11,10 +11,10 @@ use anyhow::{bail, Context, Result};
 
 use crate::agent;
 
-pub const UNIT: &str = "nuphos-agent.service";
+pub const UNIT: &str = "cerin-agent.service";
 
 /// The LaunchAgent's label; launchd hands it to the job as XPC_SERVICE_NAME.
-const LABEL: &str = "ai.nuphos.agent";
+const LABEL: &str = "ai.cerin.agent";
 
 /// What the service needs from the shell that installed it. HOME keeps the agent's data
 /// where that shell keeps it: launchd and systemd would start the service in the
@@ -93,7 +93,7 @@ pub fn install(join: Option<&str>) -> Result<i32> {
     }
     let config = config_home()?;
     let unit_path = config.join("systemd/user").join(UNIT);
-    let env_path = config.join("nuphos/agent.env");
+    let env_path = config.join("cerin/agent.env");
     let forwarded = service_env(|key| std::env::var(key).ok());
     write(&env_path, &env_file(&forwarded, join))?;
     write(&unit_path, &unit(&std::env::current_exe()?, &env_path))?;
@@ -109,13 +109,13 @@ pub fn install(join: Option<&str>) -> Result<i32> {
             // restart may still need it.
             write(&env_path, &env_file(&forwarded, None))?;
         } else {
-            eprintln!("The agent did not join Cerin. Its log: journalctl --user -u nuphos-agent");
+            eprintln!("The agent did not join Cerin. Its log: journalctl --user -u cerin-agent");
             let _ = Command::new("journalctl").args(["--user", "-u", UNIT, "-n", "20", "--no-pager"]).status();
             return Ok(1);
         }
     }
-    println!("The agent runs as the systemd user service nuphos-agent and starts again after a restart.");
-    println!("Log: journalctl --user -u nuphos-agent -f    Stop: systemctl --user disable --now nuphos-agent");
+    println!("The agent runs as the systemd user service cerin-agent and starts again after a restart.");
+    println!("Log: journalctl --user -u cerin-agent -f    Stop: systemctl --user disable --now cerin-agent");
     if !lingering() {
         eprintln!(
             "It starts at boot only once you sign in to this computer. To start it at boot, run: sudo loginctl enable-linger {}",
@@ -136,7 +136,7 @@ pub fn restart_if_active() {
         return;
     }
     if cfg!(target_os = "linux") && systemctl(&["is-active", "--quiet", UNIT]).status().is_ok_and(|s| s.success()) {
-        println!("Restarting the nuphos-agent service on the new version.");
+        println!("Restarting the cerin-agent service on the new version.");
         let _ = systemctl(&["restart", UNIT]).status();
     }
 }
@@ -147,7 +147,7 @@ pub fn restart_if_active() {
 fn install_launch_agent(join: Option<&str>) -> Result<i32> {
     let home = PathBuf::from(std::env::var_os("HOME").context("HOME is not set")?);
     let plist_path = home.join("Library/LaunchAgents").join(format!("{LABEL}.plist"));
-    let log = home.join("Library/Logs/nuphos-agent.log");
+    let log = home.join("Library/Logs/cerin-agent.log");
     let forwarded = service_env(|key| std::env::var(key).ok());
     let exe = std::env::current_exe()?;
     write(&plist_path, &plist(&exe, &forwarded, join, &log))?;
@@ -316,9 +316,9 @@ mod tests {
 
     #[test]
     fn unit_restarts_until_the_computer_is_revoked() {
-        let text = unit(Path::new("/home/a b/.local/bin/cerin"), Path::new("/home/a b/.config/nuphos/agent.env"));
+        let text = unit(Path::new("/home/a b/.local/bin/cerin"), Path::new("/home/a b/.config/cerin/agent.env"));
         assert!(text.contains("ExecStart=\"/home/a b/.local/bin/cerin\" agent\n"));
-        assert!(text.contains("EnvironmentFile=-/home/a b/.config/nuphos/agent.env\n"));
+        assert!(text.contains("EnvironmentFile=-/home/a b/.config/cerin/agent.env\n"));
         assert!(text.contains("Restart=always\n"));
         assert!(text.contains("RestartPreventExitStatus=78\n"));
         assert!(text.contains("WantedBy=default.target\n"));
@@ -326,12 +326,12 @@ mod tests {
 
     #[test]
     fn unit_escapes_specifiers() {
-        assert!(unit(Path::new("/opt/100%/nuphos"), Path::new("/e")).contains("\"/opt/100%%/nuphos\""));
+        assert!(unit(Path::new("/opt/100%/cerin"), Path::new("/e")).contains("\"/opt/100%%/cerin\""));
     }
 
     #[test]
     fn unit_escapes_variables_in_exec_start() {
-        assert!(unit(Path::new("/opt/$x/nuphos"), Path::new("/e")).contains("\"/opt/$$x/nuphos\""));
+        assert!(unit(Path::new("/opt/$x/cerin"), Path::new("/e")).contains("\"/opt/$$x/cerin\""));
     }
 
     #[test]
@@ -345,10 +345,10 @@ mod tests {
     #[test]
     fn plist_keeps_the_agent_alive_with_the_token_only_when_given() {
         let vars = [("PATH", "/usr/bin:/bin".to_owned()), ("NUPHOS_API_URL", "https://a.dev/?x=1&y=<2>".to_owned())];
-        let log = Path::new("/Users/a/Library/Logs/nuphos-agent.log");
-        let text = plist(Path::new("/Users/a b/.local/bin/nuphos"), &vars, Some("nbj_1"), log);
-        assert!(text.contains("<key>Label</key><string>ai.nuphos.agent</string>"));
-        assert!(text.contains("<array><string>/Users/a b/.local/bin/nuphos</string><string>agent</string></array>"));
+        let log = Path::new("/Users/a/Library/Logs/cerin-agent.log");
+        let text = plist(Path::new("/Users/a b/.local/bin/cerin"), &vars, Some("nbj_1"), log);
+        assert!(text.contains("<key>Label</key><string>ai.cerin.agent</string>"));
+        assert!(text.contains("<array><string>/Users/a b/.local/bin/cerin</string><string>agent</string></array>"));
         assert!(text.contains("<key>NUPHOS_API_URL</key><string>https://a.dev/?x=1&amp;y=&lt;2&gt;</string>"));
         assert!(text.contains("<key>NUPHOS_JOIN_TOKEN</key><string>nbj_1</string>"));
         assert!(text.contains("<key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>"));
@@ -361,7 +361,7 @@ mod tests {
         // another HOME, the agent's data has to stay there.
         let env = service_env(|key| (key == "HOME").then(|| "/tmp/isolated".to_owned()));
         assert_eq!(env, [("HOME", "/tmp/isolated".to_owned())]);
-        let log = Path::new("/tmp/isolated/Library/Logs/nuphos-agent.log");
+        let log = Path::new("/tmp/isolated/Library/Logs/cerin-agent.log");
         assert!(plist(Path::new("/n"), &env, None, log).contains("<key>HOME</key><string>/tmp/isolated</string>"));
         assert!(env_file(&env, None).contains("HOME=/tmp/isolated\n"));
     }

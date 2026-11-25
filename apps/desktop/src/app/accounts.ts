@@ -127,7 +127,7 @@ function origin(api: string): string {
 const sameBackend = (a: string, b: string) => origin(a) === origin(b)
 
 // Survives the reload a move to another backend takes.
-const NOTICE_KEY = 'nuphos.signInAgain.notice'
+const NOTICE_KEY = 'cerin.signInAgain.notice'
 
 /** The notice left for the sign-in screen by `switchToAccount`, once. */
 export function takeSignInNotice(): string | undefined {

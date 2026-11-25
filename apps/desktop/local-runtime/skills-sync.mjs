@@ -5,11 +5,11 @@
 // has them. Later turns re-sync before each prompt, and the running agent reads the
 // change from disk. A runtime that already holds the current bundle is
 // answered 304 without a file being read (#1923), so the wait is one round trip.
-export async function nuphosLocalSyncSkills(params, options = {}) {
+export async function cerinLocalSyncSkills(params, options = {}) {
   const env =
     params?._meta?.claudeCode?.options?.env ??
-    params?._meta?.['ai.nuphos/codex']?.env ??
-    params?._meta?.['ai.nuphos/session']?.env ??
+    params?._meta?.['ai.cerin/codex']?.env ??
+    params?._meta?.['ai.cerin/session']?.env ??
     {}
   const url = env.NUPHOS_RUNTIME_SKILLS_URL
   const token = env.NUPHOS_RUNTIME_SKILLS_TOKEN
@@ -30,7 +30,7 @@ export async function nuphosLocalSyncSkills(params, options = {}) {
   const sessionHome = !claudeOptions
     ? undefined
     : (options.sessionHome ??
-      (typeof nuphosSessionHomeEnv === 'function' ? nuphosSessionHomeEnv(env).HOME : undefined))
+      (typeof cerinSessionHomeEnv === 'function' ? cerinSessionHomeEnv(env).HOME : undefined))
   const personal = sessionHome && path.join(sessionHome, 'personal-skills')
   const install = async (claudeDir, bundleUrl, shared, bearer = token, timeoutMs) => {
     const skillsDir = path.join(claudeDir, 'skills')
@@ -185,7 +185,7 @@ export async function nuphosLocalSyncSkills(params, options = {}) {
   const syncTeam = (timeoutMs) => install(teamClaude, url, true, token, timeoutMs)
 
   if (!personal) {
-    globalThis.nuphosRefreshSkills = () => syncTeam(5_000).catch(() => {})
+    globalThis.cerinRefreshSkills = () => syncTeam(5_000).catch(() => {})
 
     return { synced: Promise.resolve(await syncTeam()) }
   }
@@ -276,7 +276,7 @@ export async function nuphosLocalSyncSkills(params, options = {}) {
   // and resuming it, and a new conversation's first turn has nothing saved to resume:
   // the turn failed with -32002 and every later one with "Session not found". The
   // runtime image dropped the same rebuild in #2618.
-  globalThis.nuphosRefreshSkills = () =>
+  globalThis.cerinRefreshSkills = () =>
     Promise.all([syncTeam(5_000), syncPersonal(5_000, true)]).catch(() => {})
   // A session reads its skills when it starts, and the fetch runs behind it. So skills
   // left here for anyone but the member opening it are cleared first; that is local.
@@ -312,10 +312,10 @@ export async function nuphosLocalSyncSkills(params, options = {}) {
   // OpenAB runs one agent process per session, so a wrapper goes when its process
   // exits, and one whose process is gone without that (killed, crashed) is swept by
   // the next session to start.
-  const prefix = 'nuphos-skill-plugins-'
+  const prefix = 'cerin-skill-plugins-'
 
   for (const entry of await fs.readdir(os.tmpdir()).catch(() => [])) {
-    const owner = Number(/^nuphos-skill-plugins-(\d+)-/u.exec(entry)?.[1])
+    const owner = Number(/^cerin-skill-plugins-(\d+)-/u.exec(entry)?.[1])
 
     if (!owner || owner === process.pid) continue
     try {

@@ -24,7 +24,7 @@ function counters(stack: Stack, mode: 'fill' | 'restore', hours: number[], saved
     import { MongoClient } from 'mongodb'
     const [uri, teamId, mode, hours, saved, limit] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const admissions = client.db('nuphos_e2e').collection('file_transfer_admissions')
+    const admissions = client.db('cerin_e2e').collection('file_transfer_admissions')
     const before = []
     for (const hour of JSON.parse(hours)) {
       const _id = teamId + ':' + hour

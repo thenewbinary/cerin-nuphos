@@ -30,7 +30,7 @@ useIdentity({
     const user =
       token === 'valid-admin-token' ? ADMIN : token === 'valid-non-admin-token' ? NON_ADMIN : null
 
-    return user ? { user, cacheHit: false, provider: 'nuphos' as const } : null
+    return user ? { user, cacheHit: false, provider: 'cerin' as const } : null
   }) as typeof identityActual.authenticateToken,
   getTeamMembership: (async (userId: string) =>
     userId === ADMIN.id
@@ -52,7 +52,7 @@ function app() {
 describe('GET /admin/session', () => {
   test('returns the authenticated admin identity', async () => {
     const response = await app().request('/admin/session', {
-      headers: { Cookie: 'nuphos_token=valid-admin-token' },
+      headers: { Cookie: 'cerin_token=valid-admin-token' },
     })
 
     expect(response.status).toBe(200)
@@ -67,7 +67,7 @@ describe('GET /admin/session', () => {
 
   test('rejects an authenticated user outside the admin team', async () => {
     const response = await app().request('/admin/session', {
-      headers: { Cookie: 'nuphos_token=valid-non-admin-token' },
+      headers: { Cookie: 'cerin_token=valid-non-admin-token' },
     })
 
     expect(response.status).toBe(403)

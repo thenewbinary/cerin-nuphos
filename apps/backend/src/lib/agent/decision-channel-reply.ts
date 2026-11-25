@@ -72,7 +72,7 @@ export async function recordInChannel(
       metadata: {
         version: 1,
         sender,
-        source: 'nuphos',
+        source: 'cerin',
         sentAt,
         replyTo: { authorName: asker.title || 'Cerin agent', text: entry.question },
         requestId: request.id,

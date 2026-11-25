@@ -17,11 +17,11 @@ async function load(api: unknown) {
 }
 
 test('takes the origin the main process resolved', async () => {
-  const m = await load({ webBaseUrl: 'https://nuphos.acme.internal' })
+  const m = await load({ webBaseUrl: 'https://cerin.acme.internal' })
 
-  assert.equal(m.WEB_BASE_URL, 'https://nuphos.acme.internal')
+  assert.equal(m.WEB_BASE_URL, 'https://cerin.acme.internal')
   assert.ok(m.isAppWebUrl('/teams/x'))
-  assert.ok(m.isAppWebUrl('https://nuphos.acme.internal/teams/x'))
+  assert.ok(m.isAppWebUrl('https://cerin.acme.internal/teams/x'))
   assert.equal(m.isAppWebUrl('https://platform.cerin.ai/teams/x'), null)
 })
 
@@ -39,23 +39,6 @@ test('subdomains are not app pages', async () => {
   // pathname — so a docs link opened whatever app page shared that path.
   assert.equal(m.isAppWebUrl('https://docs.platform.cerin.ai/connectors/capabilities'), null)
   assert.equal(m.isAppWebUrl('https://api.platform.cerin.ai/teams/x'), null)
-})
-
-test('accepts only the exact legacy host for the default cloud deployment', async () => {
-  const m = await load(undefined)
-  const legacy = 'https://nuphos.ai/teams/x'
-
-  assert.ok(m.isAppWebUrl(legacy))
-  for (const url of [
-    legacy.replace('https:', 'http:'),
-    legacy.replace('nuphos.ai', 'www.nuphos.ai'),
-    legacy.replace('nuphos.ai', 'app.nuphos.ai'),
-    legacy.replace('nuphos.ai', 'nuphos.ai:443'),
-    legacy.replace('nuphos.ai', 'user@nuphos.ai'),
-    legacy.replace('nuphos.ai', 'nuphos.ai.evil.example'),
-  ])
-    assert.equal(m.isAppWebUrl(url), null, url)
-  assert.equal((await load({ webBaseUrl: 'https://example.com' })).isAppWebUrl(legacy), null)
 })
 
 test('a same-host URL on another scheme or port is not ours', async () => {

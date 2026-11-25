@@ -1,9 +1,9 @@
-import { nuphosBoxDesktopMcpServers } from './box-desktop-mcp.mjs'
-import { nuphosAuthorizeComputerUse } from './computer-use-permission.mjs'
-import { nuphosDesktopClaudeEnv } from './claude-session-env.mjs'
-import { nuphosLocalSyncSkills } from './skills-sync.mjs'
+import { cerinBoxDesktopMcpServers } from './box-desktop-mcp.mjs'
+import { cerinAuthorizeComputerUse } from './computer-use-permission.mjs'
+import { cerinDesktopClaudeEnv } from './claude-session-env.mjs'
+import { cerinLocalSyncSkills } from './skills-sync.mjs'
 
-const CODEX_HANDOFF = /nuphosBridgeMcpServers\(request\.mcpServers( \?\? \[\])?\)/gu
+const CODEX_HANDOFF = /cerinBridgeMcpServers\(request\.mcpServers( \?\? \[\])?\)/gu
 
 function replaceOnce(source, anchor, replacement) {
   if (source.split(anchor).length !== 2)
@@ -13,7 +13,7 @@ function replaceOnce(source, anchor, replacement) {
 }
 
 /**
- * Runs after nuphos-runtime's own patch. The image keeps its MCP bridge and
+ * Runs after cerin-runtime's own patch. The image keeps its MCP bridge and
  * skills sync at fixed Linux paths; on a desktop both live beside the adapter,
  * and the bridge runs on Electron's own Node.
  */
@@ -21,8 +21,8 @@ function replaceOnce(source, anchor, replacement) {
 export function patchDesktopBridge(source) {
   const patched = replaceOnce(
     source,
-    "args: ['/opt/nuphos-runtime/mcp-http-bridge.mjs', server.url],",
-    "args: [env.NUPHOS_MCP_BRIDGE ?? '/opt/nuphos-runtime/mcp-http-bridge.mjs', server.url],",
+    "args: ['/opt/cerin-runtime/mcp-http-bridge.mjs', server.url],",
+    "args: [env.NUPHOS_MCP_BRIDGE ?? '/opt/cerin-runtime/mcp-http-bridge.mjs', server.url],",
   )
 
   return replaceOnce(
@@ -39,70 +39,70 @@ export function patchDesktopBridge(source) {
 export function patchDesktopShim(source) {
   const patched = replaceOnce(
     source,
-    'await nuphosSyncRuntimeSkills(message.params)',
-    'await nuphosLocalSyncSkills(message.params)',
+    'await cerinSyncRuntimeSkills(message.params)',
+    'await cerinLocalSyncSkills(message.params)',
   )
 
   // Appended: a declaration hoists, and the shim's #! line has to stay first.
-  return `${patched}\n${nuphosLocalSyncSkills.toString()}\n`
+  return `${patched}\n${cerinLocalSyncSkills.toString()}\n`
 }
 
 export function patchDesktopAdapter(source, provider) {
   let patched = patchDesktopBridge(source)
-  if (!patched.includes('await nuphosSyncRuntimeSkills(params);'))
+  if (!patched.includes('await cerinSyncRuntimeSkills(params);'))
     throw new Error('Desktop adapter patch anchor moved: skills sync')
   patched = patched.replaceAll(
-    'await nuphosSyncRuntimeSkills(params);',
-    'await nuphosLocalSyncSkills(params);',
+    'await cerinSyncRuntimeSkills(params);',
+    'await cerinLocalSyncSkills(params);',
   )
   if (provider === 'claude-code') {
-    // A Linux Box gives every session a `nuphos-desktop` server on its own desktop.
+    // A Linux Box gives every session a `cerin-desktop` server on its own desktop.
     patched = replaceOnce(
       patched,
-      'for (const server of nuphosBridgeMcpServers(params.mcpServers)) {',
-      'for (const server of nuphosBoxDesktopMcpServers(nuphosBridgeMcpServers(params.mcpServers), params._meta?.claudeCode?.options?.env, process.env)) {',
+      'for (const server of cerinBridgeMcpServers(params.mcpServers)) {',
+      'for (const server of cerinBoxDesktopMcpServers(cerinBridgeMcpServers(params.mcpServers), params._meta?.claudeCode?.options?.env, process.env)) {',
     )
     patched = replaceOnce(
       patched,
-      'const isolated = nuphosSessionHomeEnv(sessionEnv, runtimeEnv)',
-      'const isolated = nuphosDesktopClaudeEnv(nuphosSessionHomeEnv(sessionEnv, runtimeEnv), runtimeEnv)',
+      'const isolated = cerinSessionHomeEnv(sessionEnv, runtimeEnv)',
+      'const isolated = cerinDesktopClaudeEnv(cerinSessionHomeEnv(sessionEnv, runtimeEnv), runtimeEnv)',
     )
     patched = replaceOnce(
       patched,
-      '...nuphosSessionHomeEnv(userProvidedOptions?.env),',
-      '...nuphosDesktopClaudeEnv(nuphosSessionHomeEnv(userProvidedOptions?.env)),',
+      '...cerinSessionHomeEnv(userProvidedOptions?.env),',
+      '...cerinDesktopClaudeEnv(cerinSessionHomeEnv(userProvidedOptions?.env)),',
     )
   }
   if (provider === 'codex') {
     patched = replaceOnce(
       patched,
       'async handleElicitation(params) {\n    try {',
-      'async handleElicitation(params) {\n    try {\n      await nuphosAuthorizeComputerUse(params, this.cancellationSignal);',
+      'async handleElicitation(params) {\n    try {\n      await cerinAuthorizeComputerUse(params, this.cancellationSignal);',
     )
     // The same per-session desktop as Claude's, at each of Codex's three session handoffs.
     const handoffs = patched.match(CODEX_HANDOFF)?.length ?? 0
 
     if (handoffs !== 3) throw new Error('Desktop adapter patch anchor moved: Codex MCP servers')
     // The injected server takes the session's HOME from the runtime patch's inlined helper.
-    if (!patched.includes('function nuphosSessionHomeEnv('))
-      throw new Error('Desktop adapter patch anchor moved: Codex nuphosSessionHomeEnv')
+    if (!patched.includes('function cerinSessionHomeEnv('))
+      throw new Error('Desktop adapter patch anchor moved: Codex cerinSessionHomeEnv')
     patched = patched.replace(
       CODEX_HANDOFF,
       (_, fallback = '') =>
-        `nuphosBoxDesktopMcpServers(nuphosBridgeMcpServers(request.mcpServers${fallback}), request._meta?.['ai.nuphos/codex']?.env, process.env)`,
+        `cerinBoxDesktopMcpServers(cerinBridgeMcpServers(request.mcpServers${fallback}), request._meta?.['ai.cerin/codex']?.env, process.env)`,
     )
   }
   const shebang = /^#![^\n]*\n/u.exec(patched)?.[0] ?? ''
 
   const claudeEnv =
     provider === 'claude-code'
-      ? `import { constants as nuphosDesktopFs, mkdirSync as nuphosDesktopMkdir, writeFileSync as nuphosDesktopWrite } from 'node:fs';\nimport { join as nuphosDesktopJoin } from 'node:path';\n${nuphosDesktopClaudeEnv.toString()}\n${nuphosBoxDesktopMcpServers.toString()}\n`
+      ? `import { constants as cerinDesktopFs, mkdirSync as cerinDesktopMkdir, writeFileSync as cerinDesktopWrite } from 'node:fs';\nimport { join as cerinDesktopJoin } from 'node:path';\n${cerinDesktopClaudeEnv.toString()}\n${cerinBoxDesktopMcpServers.toString()}\n`
       : ''
 
   const computerUse =
     provider === 'codex'
-      ? `${nuphosAuthorizeComputerUse.toString()}\n${nuphosBoxDesktopMcpServers.toString()}\n`
+      ? `${cerinAuthorizeComputerUse.toString()}\n${cerinBoxDesktopMcpServers.toString()}\n`
       : ''
 
-  return `${shebang}${computerUse}${claudeEnv}${nuphosLocalSyncSkills.toString()}\n${patched.slice(shebang.length)}`
+  return `${shebang}${computerUse}${claudeEnv}${cerinLocalSyncSkills.toString()}\n${patched.slice(shebang.length)}`
 }

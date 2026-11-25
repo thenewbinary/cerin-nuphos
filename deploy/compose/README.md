@@ -15,7 +15,7 @@ Mongo sits only on the internal `data` network, reachable by services on that ne
 
 The runtime is connected the same way as any self-hosted agent: from its console, which hands Cerin a single-use pairing code. The runtime signs in to Claude itself, once; the login lives on its `runtime-home` volume.
 
-This page covers the full stack with no dev server. `bun run dev` at the repository root reuses the same service definitions through `docker-compose.dev.yml`: it starts only `mongo`, `rustfs` and `runtime` (compose project `nuphos-dev`, with volumes separate from this stack), publishes Mongo and the runtime on `127.0.0.1`, runs the backend on the host with hot reload, and never connects the runtime to a team: add it in Settings with the address `ws://localhost:18180/acp` and the password from `bun run dev:runtime-password`. Stop one stack before starting the other, since both bind RustFS to port 9000 (`bun run dev:stop` stops the dev one). See the root README.
+This page covers the full stack with no dev server. `bun run dev` at the repository root reuses the same service definitions through `docker-compose.dev.yml`: it starts only `mongo`, `rustfs` and `runtime` (compose project `cerin-dev`, with volumes separate from this stack), publishes Mongo and the runtime on `127.0.0.1`, runs the backend on the host with hot reload, and never connects the runtime to a team: add it in Settings with the address `ws://localhost:18180/acp` and the password from `bun run dev:runtime-password`. Stop one stack before starting the other, since both bind RustFS to port 9000 (`bun run dev:stop` stops the dev one). See the root README.
 
 ## Prerequisites
 
@@ -93,7 +93,7 @@ For development from source, run `bun run dev` from the repository root.
 The development launcher starts and connects its own complete local stack;
 it does not attach Desktop to this separately started compose stack.
 
-The desktop app's sign-in is stored in `~/.config/nuphos/desktop.yaml` (on macOS the token itself is in the login keychain), which the local stack shares with production. After signing in locally, you need to sign in again when switching back to production.
+The desktop app's sign-in is stored in `~/.config/cerin/desktop.yaml` (on macOS the token itself is in the login keychain), which the local stack shares with production. After signing in locally, you need to sign in again when switching back to production.
 
 ## Connect the runtime
 
@@ -102,7 +102,7 @@ The desktop app's sign-in is stored in `~/.config/nuphos/desktop.yaml` (on macOS
    ```sh
    docker compose logs runtime | grep 'runtime password'
    # or, at any time:
-   docker compose exec -T runtime cat /home/node/.nuphos-runtime/auth-key
+   docker compose exec -T runtime cat /home/node/.cerin-runtime/auth-key
    ```
 
 2. Open the runtime console and sign in with that password. Both stacks publish it at <http://127.0.0.1:18180> by default (`RUNTIME_PORT` in `.env`).
@@ -165,13 +165,13 @@ File uploads and downloads use presigned URLs that Desktop and the runtime fetch
 echo '127.0.0.1 rustfs' | sudo tee -a /etc/hosts
 ```
 
-When Desktop runs on another machine, set `RUSTFS_PUBLIC_URL` in `.env` to an origin it can reach, for example `http://nuphos-host.lan:9000`, and run `docker compose up -d backend`. Presigned URLs then use that origin. RustFS must be reachable there by Desktop and by the runtime container, so publish it beyond `127.0.0.1` (edit the `rustfs` port mapping or put a proxy in front of it). Presigned URLs carry their own short-lived signature, but the port is then open, so serve it over TLS or limit it to the networks Desktop and the runtime use.
+When Desktop runs on another machine, set `RUSTFS_PUBLIC_URL` in `.env` to an origin it can reach, for example `http://cerin-host.lan:9000`, and run `docker compose up -d backend`. Presigned URLs then use that origin. RustFS must be reachable there by Desktop and by the runtime container, so publish it beyond `127.0.0.1` (edit the `rustfs` port mapping or put a proxy in front of it). Presigned URLs carry their own short-lived signature, but the port is then open, so serve it over TLS or limit it to the networks Desktop and the runtime use.
 
 To check, replace the example origin with yours and run both commands. Each should print `200`:
 
 ```sh
-curl -s -o /dev/null -w '%{http_code}\n' http://nuphos-host.lan:9000/health   # on the Desktop machine
-docker compose exec runtime curl -s -o /dev/null -w '%{http_code}\n' http://nuphos-host.lan:9000/health   # on the stack's host
+curl -s -o /dev/null -w '%{http_code}\n' http://cerin-host.lan:9000/health   # on the Desktop machine
+docker compose exec runtime curl -s -o /dev/null -w '%{http_code}\n' http://cerin-host.lan:9000/health   # on the stack's host
 ```
 
 ## Health telemetry (optional, off by default)
@@ -179,7 +179,7 @@ docker compose exec runtime curl -s -o /dev/null -w '%{http_code}\n' http://nuph
 An instance can send Cerin a small health report every 5 minutes, so we learn
 when a self-hosted install breaks. Nothing is collected or sent unless
 `NUPHOS_TELEMETRY_KEY` is set; leave it unset and the instance never contacts
-`telemetry.nuphos.ai`.
+`telemetry.cerin.ai`.
 
 **What is sent** (numbers only; the full allowlist is `REPORT_FIELDS` in
 [`apps/backend/src/lib/telemetry/report.ts`](../../apps/backend/src/lib/telemetry/report.ts)):
