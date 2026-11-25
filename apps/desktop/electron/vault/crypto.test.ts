@@ -19,8 +19,8 @@ const CLI = {
   publicKey: 'e06Qm75//kTEZaIgA31gjuNYl9Me+XLwf3SJLLD3PxM=',
   fingerprint: 'D19B-F3F0-8278-2C87-B783',
   wrapped:
-    'DLhrFkE1hgChQy3jTc0W87HZBTGOjG0c/oUm4cAgBlvHWhJ3SaCq9zIcBSUFkR0fMWfD84axVHZj+0jveXqArLuWR5oTnwXsJd+rUT5M3Zo=',
-  sealed: '62kjfgR0VtLvMfSScbFoakfj5xH1qgtso2+Ads8wl1bbsnejc3W1',
+    'tvDD749l/OdSn/gamYHZaHArYRCjlv5E6EviAvXW5ym2qfnwrLJeTTJjNMCJhhDFSa8b7Jjs/99LGGlGxlQlDat2XpSKx0HNAoHVFss00M0=',
+  sealed: '+dy9BEbrFQTWxqUHm9rxYPYSjSUh2pQfUaPtDihuW9qMw76kNsw8',
 }
 
 test('opens what the CLI wrapped and sealed', () => {

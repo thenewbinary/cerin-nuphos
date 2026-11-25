@@ -424,10 +424,10 @@ mod tests {
     #[test]
     fn opens_what_desktop_wrapped_and_sealed() {
         let key = PrivateKey::from_bytes(&[0x11u8; 32]).unwrap();
-        let wrapped = "t+xL8fwNZ2wtS3K9/3xHowoAHbiQwAQFhMjYuZ2NLQ3wLbnSZj2UqvcrDYKMbFJma6Lg//iSmYiAcVHFc6L2NAcrITpAnRFkWeIXaB2cn7Q=";
+        let wrapped = "Ov/MVVtkcsUp8q6Kg2oFl22gnd69BtjKI3xG4QliZG0rsfW6N1R5Nk85ybIJ/NbF9Ov7hTCSMY4Q1/OLyfp4zwp4O10TQ033A9Yf8qFIdYU=";
         let item_key = unwrap(wrapped, "github-token", &key).unwrap();
         assert_eq!(item_key, [0x22u8; 32]);
-        let sealed = "ydWnj73hmkELeBsotFkEkxEQcIkvwyxYro/Md9+mMlIbMvZSHuXi";
+        let sealed = "PFpYVtFn7hlvAoY+7ZHC0Y050kIi485tGtYgzLEHEghb8YUHkEr5";
         assert_eq!(open(&item_key, "github-token", sealed).unwrap(), b"ghp_example");
     }
 

@@ -48,10 +48,9 @@ export const mcpArchiveScenarios: Scenario[] = [
       const teammate = await joinTeam(stack, 'mcp-archive-teammate')
 
       for (const other of [outsider, teammate]) {
-        const refused = await mcp(client(stack.apiUrl, other.token)).tool(
-          'cerin_archive_session',
-          { session_id: task },
-        )
+        const refused = await mcp(client(stack.apiUrl, other.token)).tool('cerin_archive_session', {
+          session_id: task,
+        })
 
         must(
           refused.isError === true && refused.content[0].text.includes('not found'),
