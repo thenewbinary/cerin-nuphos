@@ -247,13 +247,8 @@ jobs:
             (env -u NUPHOS_AGENT_HOME node "$dir/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'NUPHOS_AGENT_HOME is not set'
             ASSET="cerin-agent-$target.tar.gz"
             tar -czf "$ASSET" -C "$dir" .
-            # Also under the old name, for anything that still downloads it by that name.
-            LEGACY="cerin-agent-$target.tar.gz"
-            cp "$ASSET" "$LEGACY"
-            for file in "$ASSET" "$LEGACY"; do
-              if command -v sha256sum >/dev/null; then sha256sum "$file" > "$file.sha256"; else shasum -a 256 "$file" > "$file.sha256"; fi
-            done
-            gh release upload "$TAG" "$ASSET" "$ASSET.sha256" "$LEGACY" "$LEGACY.sha256" --repo "$GITHUB_REPOSITORY" --clobber
+            if command -v sha256sum >/dev/null; then sha256sum "$ASSET" > "$ASSET.sha256"; else shasum -a 256 "$ASSET" > "$ASSET.sha256"; fi
+            gh release upload "$TAG" "$ASSET" "$ASSET.sha256" --repo "$GITHUB_REPOSITORY" --clobber
           done
 
   publish:

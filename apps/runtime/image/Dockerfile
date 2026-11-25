@@ -201,9 +201,6 @@ COPY --from=openab /usr/local/bin/openab /usr/local/bin/openab
 
 # The `cerin agent` host from that CLI release. A container given NUPHOS_JOIN_TOKEN runs
 # it instead of openab and joins Cerin as a device, the way a Box does (runtime-start.sh).
-# The bundle is cerin-agent-linux-<arch>.tar.gz; releases before the rename only have
-# cerin-agent-linux-<arch>.tar.gz, so that name is the fallback. /opt/cerin-agent
-# stays as a link for anything that still uses the old path.
 ARG NUPHOS_AGENT_VERSION=0.28.1
 ARG CERIN_AGENT_RELEASES=https://github.com/thenewbinary/cerin-platform/releases/download
 RUN arch=$(case "$(dpkg --print-architecture)" in amd64) echo x64 ;; *) dpkg --print-architecture ;; esac) \
@@ -215,8 +212,7 @@ RUN arch=$(case "$(dpkg --print-architecture)" in amd64) echo x64 ;; *) dpkg --p
  && install -d -m 755 /opt/cerin-agent \
  && tar -xzf "${asset}" -C /opt/cerin-agent \
  && rm -f "${asset}" "${asset}.sha256" \
- && chmod -R a+rX /opt/cerin-agent \
- && ln -s /opt/cerin-agent /opt/cerin-agent
+ && chmod -R a+rX /opt/cerin-agent
 ENV NUPHOS_LOCAL_RUNTIME_DIR=/opt/cerin-agent \
     NUPHOS_CLI_VERSION="${NUPHOS_AGENT_VERSION}"
 
