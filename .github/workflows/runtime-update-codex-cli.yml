@@ -84,6 +84,5 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(node -e 'const fs=require("fs");const p=JSON.parse(fs.readFileSync("package.json"));if(!/^\d+\.\d+\.\d+$/.test(p.version))throw Error("Invalid runtime version");const v=p.version.split(".").map(Number);v[2]++;p.version=v.join(".");fs.writeFileSync("package.json",JSON.stringify(p,null,2)+"\n");console.log(p.version)')
-          node scripts/check-legacy-version.mjs "$VERSION"
           bash scripts/open-update-pr.sh runtime/update-codex-cli "fix(runtime): update Codex CLI to ${CLI} (runtime-v${VERSION})" \
             apps/runtime/image/codex-acp/package.json apps/runtime/image/codex-acp/package-lock.json apps/runtime/README.md apps/runtime/package.json

@@ -9,8 +9,7 @@ backend does not run the agent itself; it opens an ACP session against a
 runtime and streams the conversation through it. This repository builds the
 image those runtimes run.
 
-New images are published to `ghcr.io/thenewbinary/cerin-runtime`. Historical versions remain
-available from `ghcr.io/zeabur/nuphos-runtime`.
+Images are published to `ghcr.io/thenewbinary/cerin-runtime`.
 
 ## Shared with the desktop local runtime
 
@@ -213,17 +212,15 @@ reaches users through a rebuild of both.
 
 ## Running one
 
-The following example uses an existing historical release. For a newly published
-monorepo version, use `ghcr.io/thenewbinary/cerin-runtime:<version>-codex` instead.
-Give it a persistent home and start it:
+Give a published runtime a persistent home and start it:
 
 ```sh
 docker run -d --name cerin-runtime -p 8080:8080 \
   -v cerin-runtime-home:/home/node \
-  ghcr.io/zeabur/nuphos-runtime:0.0.12-codex
+  ghcr.io/thenewbinary/cerin-runtime:<version>-codex
 ```
 
-Use `0.0.12-claude-code` for a Claude Code runtime.
+Use `<version>-claude-code` for a Claude Code runtime.
 
 Then open its base URL in a browser (`http://<host>:8080/`, or its `https://`
 address once TLS is in front). A fresh volume shows a setup page: choose a console
@@ -561,10 +558,6 @@ ghcr.io/thenewbinary/cerin-runtime@sha256:...
 Publishing an image rolls nothing out. Each runtime is moved to a new digest
 deliberately.
 
-Images published before this repository existed live under the earlier package
-name `ghcr.io/zeabur/nuphos-openab-runtime`. That package is retained, read
-only, so runtimes pinned to one of its digests keep resolving; everything new
-is published here.
 
 ## Relationship to openabdev/openab
 
@@ -703,18 +696,13 @@ is `true`. Before enabling it:
    Deploying those images to existing runtimes is a separate operation.
 
 Backend update discovery filters stable `runtime-vX.Y.Z` releases and follows
-pagination past other components' releases. Until the first such release exists,
-it uses the old repository's latest release. Existing image references and
-self-hosted Compose installs keep their existing pinned legacy images. New
-monorepo releases resolve only from `ghcr.io/thenewbinary/cerin-runtime`; explicit historical
-version pins can still resolve from the legacy package. CI and candidate builds
-retain their existing published gateway base until a new base is available.
-Desktop's local adapter bundle retains its existing pinned source commit during
-this migration; changing that bundle is a separate runtime upgrade.
+pagination past other components' releases, and resolves images only from
+`ghcr.io/thenewbinary/cerin-runtime`. There is no fallback to the upstream
+project's releases or registry.
 
 The initial source snapshot is imported from
-[`zeabur/nuphos-runtime@ce0cfc0`](https://github.com/zeabur/nuphos-runtime/commit/ce0cfc06112cacff63365d7cd0953f8ebc32e64c); its original
-history remains available there. Preserve this directory's LICENSE and NOTICE.
+the upstream runtime repository at commit `ce0cfc06112cacff63365d7cd0953f8ebc32e64c`
+(see NOTICE); its original history remains available upstream. Preserve this directory's LICENSE and NOTICE.
 
 ## Reply images
 

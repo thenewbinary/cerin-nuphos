@@ -40,6 +40,7 @@ import { setupTokenRevocationIndexes } from '@/lib/internal-token/revocation'
 import { setupLarkAgentIndexes } from '@/lib/lark/agent-bot'
 import { setupNativeAuthIndexes } from '@/lib/native-auth'
 import { logEvent } from '@/lib/observability'
+import { migrateStoredProductValues } from '@/lib/product-name-migration'
 import { setupPushDeviceIndexes } from '@/lib/push/devices'
 import { setupLiveActivityIndexes } from '@/lib/push/live-activity-store'
 import { setupSlackAgentIndexes } from '@/lib/slack/agent-bot'
@@ -75,6 +76,10 @@ export async function tolerateIndexConflict(
 }
 
 export async function setupIndexes(): Promise<void> {
+  // Rename bridge keys before their unique indexes are built: old rows otherwise
+  // all look like duplicate missing-key rows to those indexes.
+  await tolerateIndexConflict(migrateStoredProductValues, 'product-name-values')
+
   const groups: [string, () => Promise<unknown>][] = [
     ['core', setupCoreIndexes],
     ['identity', setupIdentityIndexes],

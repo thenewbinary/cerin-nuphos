@@ -96,7 +96,7 @@ test('a session carrying a bundle credential syncs, and one without it does not'
         .filter((name) => !['PWD', 'SHLVL', '_'].includes(name))
         .filter((name) => !name.startsWith('CERIN_TEST'))
         .sort(),
-      ['HOME', 'CERIN_RUNTIME_SKILLS_TOKEN', 'CERIN_RUNTIME_SKILLS_URL', 'PATH'],
+      ['CERIN_RUNTIME_SKILLS_TOKEN', 'CERIN_RUNTIME_SKILLS_URL', 'HOME', 'PATH'],
     )
   })
 })

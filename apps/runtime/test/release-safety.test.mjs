@@ -4,16 +4,6 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
-import { checkLegacyVersion } from '../scripts/check-legacy-version.mjs'
-
-const refs = 'abc\trefs/tags/v0.1.9\ndef\trefs/tags/v0.1.10\n'
-test('legacy image versions cannot be reused or downgraded', () => {
-  for (const version of ['0.1.9', '0.1.10', '0.0.99']) {
-    assert.throws(() => checkLegacyVersion(version, refs), /must be newer/)
-  }
-  for (const version of ['0.1.11', '0.2.0', '1.0.0']) checkLegacyVersion(version, refs)
-  assert.throws(() => checkLegacyVersion('0.1.11-rc.1', refs), /Invalid/)
-})
 
 test('untagged builds cannot overwrite semantic image tags', () => {
   const workflow = readFileSync(

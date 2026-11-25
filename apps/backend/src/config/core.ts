@@ -26,7 +26,7 @@ export function coreConfig() {
     // derive a stable replica identity for the redis pub/sub channel.
     hostname: optional('HOSTNAME'),
     mongoUri: required('MONGODB_URI'),
-    mongoDb: process.env.MONGODB_DB ?? 'atlas',
+    mongoDb: optional('MONGODB_DB') ?? 'cerin',
     admin: {
       // Admin access = membership in this team. No default: unset denies admin
       // access rather than handing it to whichever team a hardcoded id named.

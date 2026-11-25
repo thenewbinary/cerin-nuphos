@@ -1,3 +1,5 @@
+import { isDeepStrictEqual } from 'node:util'
+
 // Small Mongo fixture for the lifecycle state machine, including positional
 // updates (by `placements.id` or a top-level $elemMatch) and duplicate-key
 // behavior used by the placement lease.
@@ -30,21 +32,52 @@ function matches(doc: Doc, query: Doc): boolean {
       if ('$gt' in expected) return actual > expected.$gt
       if ('$ne' in expected)
         return Array.isArray(actual) ? !actual.includes(expected.$ne) : actual !== expected.$ne
+      if ('$regex' in expected) {
+        const match = (value: unknown) =>
+          typeof value === 'string' && new RegExp(expected.$regex, expected.$options).test(value)
+
+        return Array.isArray(actual) ? actual.some(match) : match(actual)
+      }
       if ('$in' in expected)
         return Array.isArray(actual)
           ? actual.some((value) => expected.$in.includes(value))
           : expected.$in.includes(actual)
     }
 
+    if (Array.isArray(expected)) return isDeepStrictEqual(actual, expected)
+
     return Array.isArray(actual) ? actual.includes(expected) : actual === expected
   })
 }
+
+function setDottedValue(doc: Doc, parts: string[], value: unknown): void {
+  const [head = '', ...rest] = parts
+
+  if (Array.isArray(doc)) {
+    for (const entry of doc) setDottedValue(entry, parts, value)
+
+    return
+  }
+  if (rest.length === 0) {
+    doc[head] = value
+
+    return
+  }
+  doc[head] ??= {}
+  setDottedValue(doc[head], rest, value)
+}
+
 function update(doc: Doc, query: Doc, mutation: Doc) {
   // Like Mongo, `$` names the element the query matched, before any $set changes it.
   const positional = new Map<string, Doc>()
 
   for (const [key, value] of Object.entries(mutation.$set ?? {})) {
     const parts = key.split('.')
+
+    if (!parts.includes('$')) {
+      setDottedValue(doc, parts, value)
+      continue
+    }
     let parent = doc
     let arrayKey = ''
 

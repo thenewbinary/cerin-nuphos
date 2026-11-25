@@ -257,6 +257,5 @@ before the details are public.
 ## Licence and naming
 
 Contributions are under Apache-2.0, the same as the rest of the repository. The
-Cerin name and logo are trademarks and are handled separately — see
-[TRADEMARK.md](TRADEMARK.md). In short: fork freely, rename if you ship it as
-your own product.
+upstream project's name and logo are trademarks of Zeabur Inc. and are not
+licensed by Apache-2.0; see [NOTICE](NOTICE).
