@@ -24,7 +24,7 @@ fn update_asks_the_configured_backend_for_the_release() {
             std::thread::sleep(Duration::from_millis(10));
         }
     });
-    let home = std::env::temp_dir().join(format!("nuphos-update-test-{}", std::process::id()));
+    let home = std::env::temp_dir().join(format!("cerin-update-test-{}", std::process::id()));
     std::fs::create_dir_all(&home).unwrap();
     let output = Command::new(env!("CARGO_BIN_EXE_cerin"))
         .arg("update")

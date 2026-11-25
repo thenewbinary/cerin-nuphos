@@ -89,7 +89,7 @@ beforeEach(() => {
 
 test('a change and its record land in one transaction, without the webhook secret', async () => {
   const created = trigger('owners-task')
-  const by = { actorId: 'owner', via: 'request' as const, client: 'nuphos-desktop/1.0' }
+  const by = { actorId: 'owner', via: 'request' as const, client: 'cerin-desktop/1.0' }
 
   expect(await writeTrigger({ after: created, by }, async () => true)).toBe(true)
   expect(transactions).toEqual(['begin', 'agent_trigger_history session', 'commit'])
@@ -97,7 +97,7 @@ test('a change and its record land in one transaction, without the webhook secre
     action: 'created',
     actorId: 'owner',
     via: 'request',
-    client: 'nuphos-desktop/1.0',
+    client: 'cerin-desktop/1.0',
     triggerId: created._id!.toHexString(),
     after: { name: 'Deploy hook', enabled: true, targetSessionId: 'owners-task' },
   })

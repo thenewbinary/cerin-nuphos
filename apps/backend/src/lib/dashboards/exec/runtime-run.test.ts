@@ -63,7 +63,7 @@ function run(target: PanelRuntime) {
   return runOnRuntime({
     runtime: target,
     jobId: 'job-1',
-    nuphosToken: token,
+    cerinToken: token,
     code: 'emit(1)',
     params: { teamId: 't' },
     panel,

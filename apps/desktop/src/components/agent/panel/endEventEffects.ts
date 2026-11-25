@@ -12,7 +12,7 @@ import type { EndDecision, ResumePayload } from './endEventDecision'
 import type { Tab } from './model'
 import type { StallDetail } from './stall'
 
-const SUCCESSFUL_TURNS_KEY = 'nuphos.agent.successfulTurns'
+const SUCCESSFUL_TURNS_KEY = 'cerin.agent.successfulTurns'
 
 export function successfulTurns(): number {
   try {

@@ -14,7 +14,7 @@ import { patchCodexUltrafast } from './ultrafast.mjs'
 
 export function patchAdapter(source, helper) {
   const sessionHome = readFileSync(new URL('../session-home.mjs', import.meta.url), 'utf8')
-  helper = helper.replace("import { nuphosSessionHomeEnv } from '../session-home.mjs'", '')
+  helper = helper.replace("import { cerinSessionHomeEnv } from '../session-home.mjs'", '')
   const digest = createHash('sha256').update(source).digest('hex')
   if (digest !== '7534a0ad3cc4c9affd0b2da5007fa53ea0f1d6fcd71b2c5ef202e2056a976a97')
     throw new Error(
@@ -25,7 +25,7 @@ export function patchAdapter(source, helper) {
   let count = 0
   const patched = source.replace(pattern, (_, fallback = '') => {
     count++
-    return `config: nuphosCodexSessionConfig(await this.createSessionConfig(request.cwd, additionalDirectories, nuphosBridgeMcpServers(request.mcpServers${fallback})), request._meta),`
+    return `config: cerinCodexSessionConfig(await this.createSessionConfig(request.cwd, additionalDirectories, cerinBridgeMcpServers(request.mcpServers${fallback})), request._meta),`
   })
   if (count !== 3) throw new Error('Expected exactly three Codex session config handoffs.')
 
@@ -46,7 +46,7 @@ export function patchAdapter(source, helper) {
     .replace(
       routeAnchor,
       routeAnchor +
-        '.onRequest("_session/steering", { parse: (params) => params }, (ctx) => nuphosSteerCodex(getAgent(), ctx.params, buildPromptItems))',
+        '.onRequest("_session/steering", { parse: (params) => params }, (ctx) => cerinSteerCodex(getAgent(), ctx.params, buildPromptItems))',
     )
     .replace(
       initializeAnchor,
@@ -54,7 +54,7 @@ export function patchAdapter(source, helper) {
     )
 
   // A teammate's load must reach a thread this process already holds; see
-  // nuphosReleaseMovedThread. New threads record the home they started in.
+  // cerinReleaseMovedThread. New threads record the home they started in.
   const resumeCall = '    const response = await this.codexClient.threadResume({'
   const startCall = '    const response = await this.codexClient.threadStart({'
   const startAnchor =
@@ -82,14 +82,14 @@ export function patchAdapter(source, helper) {
     .replace(historyResult, '      thread: response.thread,')
     .replaceAll(
       resumeCall,
-      '    await nuphosReleaseMovedThread(this.codexClient, request.sessionId, request._meta);\n' +
+      '    await cerinReleaseMovedThread(this.codexClient, request.sessionId, request._meta);\n' +
         resumeCall,
     )
     .replace(
       startAnchor,
       startAnchor.replace(
         '    });\n',
-        '    });\n    nuphosRememberThreadHome(response.thread.id, request._meta);\n',
+        '    });\n    cerinRememberThreadHome(response.thread.id, request._meta);\n',
       ),
     )
 
@@ -109,14 +109,14 @@ export function patchAdapter(source, helper) {
   const withRestore = (
     resubscribing.slice(0, start) +
     readerStart +
-    '\n      return nuphosListenJsonLines(readable, callback);\n    },' +
+    '\n      return cerinListenJsonLines(readable, callback);\n    },' +
     resubscribing.slice(end)
   )
     .replace(
       '      thread: response.thread,',
-      '      thread: nuphosOmitRestoreImages(response.thread),',
+      '      thread: cerinOmitRestoreImages(response.thread),',
     )
-    .replace(fallback, '    const record2 = nuphosOmitRestoreImages(parseJsonRecord(line));')
+    .replace(fallback, '    const record2 = cerinOmitRestoreImages(parseJsonRecord(line));')
 
   // When App Server dies, upstream only disposes its connection: the turn waits
   // for a turn/completed that never comes and the adapter keeps running, so
@@ -130,17 +130,17 @@ export function patchAdapter(source, helper) {
   const withDeath = withRestore
     .replace(
       exitHandler,
-      '  codex.on("exit", (code, signal) => {\n    connection.dispose();\n    if (!codex.killed) nuphosCodexDied(code, signal);\n',
+      '  codex.on("exit", (code, signal) => {\n    connection.dispose();\n    if (!codex.killed) cerinCodexDied(code, signal);\n',
     )
     .replace(
       turnWait,
       turnWait
-        .replace('await new Promise(', 'await Promise.race([nuphosCodexDeath, new Promise(')
+        .replace('await new Promise(', 'await Promise.race([cerinCodexDeath, new Promise(')
         .replace(/\}\);$/, '})]);'),
     )
   // App Server warns in chat once per process when a batch of its own
   // diagnostic logs fails to reach SQLite. The turn is unaffected and the advice
-  // (/feedback, codex doctor) does not apply in Nuphos, so keep it out of chat.
+  // (/feedback, codex doctor) does not apply in Cerin, so keep it out of chat.
   const warning = '  createWarningEvent(event) {\n'
   if (withDeath.split(warning).length !== 2)
     throw new Error('Expected one Codex warning event handler')
@@ -149,7 +149,7 @@ export function patchAdapter(source, helper) {
     warning +
       '    if (event.message.startsWith("Codex couldn\'t save diagnostic logs")) return null;\n',
   )
-  // request_user_input asks through Nuphos; see native-question.mjs.
+  // request_user_input asks through Cerin; see native-question.mjs.
   const asking = patchCodexTurnUsage(patchCodexUltrafast(patchCodexUserInput(quiet)))
   const nativeQuestion = readFileSync(
     new URL('../native-question.mjs', import.meta.url),

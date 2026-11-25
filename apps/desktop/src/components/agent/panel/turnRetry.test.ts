@@ -60,7 +60,7 @@ test('someone else’s prompt in a shared chat is not resent by the viewer', () 
     metadata: {
       version: 1,
       sender: { type: 'user', id: 'teammate', displayName: 'Teammate' },
-      source: 'nuphos',
+      source: 'cerin',
       sentAt: '',
     } as Message['metadata'],
   }
@@ -76,7 +76,7 @@ test('a resend keeps the teammates the prompt mentioned', () => {
     metadata: {
       version: 1,
       sender: { type: 'user', id: 'me', displayName: 'Me' },
-      source: 'nuphos',
+      source: 'cerin',
       sentAt: '',
       mentions,
     } as Message['metadata'],

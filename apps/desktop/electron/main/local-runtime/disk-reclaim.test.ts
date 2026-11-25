@@ -58,7 +58,7 @@ function decision(overrides: Partial<SessionWorkspaceEntry> = {}) {
 
 /** A throwaway workspace root, removed whether or not the test throws. */
 function tempRoot(t: TestContext): string {
-  const root = mkdtempSync(path.join(os.tmpdir(), 'nuphos-disk-reclaim-'))
+  const root = mkdtempSync(path.join(os.tmpdir(), 'cerin-disk-reclaim-'))
 
   t.after(() => rmSync(root, { recursive: true, force: true }))
 
@@ -314,7 +314,7 @@ test('a marker that cannot be removed is logged, and does not throw', async (t) 
 })
 
 test('a workspace root that cannot be read is not an error', async () => {
-  const missing = path.join(os.tmpdir(), 'nuphos-workspace-that-is-not-there', NAME)
+  const missing = path.join(os.tmpdir(), 'cerin-workspace-that-is-not-there', NAME)
 
   assert.deepEqual(await reclaimSessionWorkspaces(missing), [])
 })

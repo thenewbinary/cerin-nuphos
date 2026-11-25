@@ -20,7 +20,8 @@ import type { AddIntegrationKey, CatalogCategory } from './addIntegrationCatalog
 // here; the definition moved to addIntegrationCatalog with the catalog data.
 export type { AddIntegrationKey } from './addIntegrationCatalog'
 
-const CONNECTOR_CAPABILITIES_URL = 'https://docs.nuphos.ai/connectors/capabilities'
+// Empty until Cerin has its own docs; the link is hidden while it is.
+const CONNECTOR_CAPABILITIES_URL = ''
 
 // CloudLogo covers every provider except Linear, which ships its own
 // (deliberately monochrome) brand mark.
@@ -111,18 +112,20 @@ export function AddIntegrationModal({
           {t(
             'Connect a cloud, observability, networking, compliance, source-control, project, document, or messaging tool to this team.',
           )}{' '}
-          <button
-            type="button"
-            className="inline-flex items-center gap-1 rounded-sm text-secondary underline decoration-tertiary underline-offset-2 transition-colors hover:text-main focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-line-focus"
-            onClick={() => {
-              void api.appOpenExternal(CONNECTOR_CAPABILITIES_URL).catch((err: unknown) => {
-                toast.apiError(t('Could not open connector capabilities'), err)
-              })
-            }}
-          >
-            {t('View capabilities')}
-            <ExternalLink className="h-3 w-3" strokeWidth={1.8} />
-          </button>
+          {CONNECTOR_CAPABILITIES_URL && (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded-sm text-secondary underline decoration-tertiary underline-offset-2 transition-colors hover:text-main focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-line-focus"
+              onClick={() => {
+                void api.appOpenExternal(CONNECTOR_CAPABILITIES_URL).catch((err: unknown) => {
+                  toast.apiError(t('Could not open connector capabilities'), err)
+                })
+              }}
+            >
+              {t('View capabilities')}
+              <ExternalLink className="h-3 w-3" strokeWidth={1.8} />
+            </button>
+          )}
         </>
       }
       width={720}

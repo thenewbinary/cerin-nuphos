@@ -34,7 +34,7 @@ on non-2xx responses. Put request bodies in files.
   enabled for Cerin, plus the public threads under them. Anything else,
   private threads included, answers
   `403 discord_channel_not_enabled`; that is a boundary, not an error to work
-  around. An administrator enables a channel with `/nuphos enable` there.
+  around. An administrator enables a channel with `/cerin enable` there.
 - `thread` is the Discord thread this conversation lives in, or `null` when the
   conversation did not start in Discord. `parentChannelId` is the channel the
   user was in when they mentioned you; `rootMessageId` is that mention.

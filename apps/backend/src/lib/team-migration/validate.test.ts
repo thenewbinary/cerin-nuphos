@@ -13,7 +13,7 @@ const source = '000000000000000000000001'
 
 function archive(extra: Record<string, unknown[]> = {}) {
   const archive = createMigrationArchive({
-    format: 'nuphos-team',
+    format: 'cerin-team',
     formatVersion: 1,
     backendVersion: 'test',
     sourceTeamId: source,

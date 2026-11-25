@@ -216,7 +216,7 @@ describe('usage notes', () => {
       id: ID,
       label: 'L (Web)',
       credentialPath: `posthog-integrations/${ID}/credentials`,
-      hint: `Use the posthog skill: bash skills/posthog/scripts/setup-credentials.sh $TEAM ${ID} && source ~/.posthog/nuphos.env; see skills/posthog/SKILL.md.`,
+      hint: `Use the posthog skill: bash skills/posthog/scripts/setup-credentials.sh $TEAM ${ID} && source ~/.posthog/cerin.env; see skills/posthog/SKILL.md.`,
     })
     expect(flattenSelectedCredentials({}, oneOfEach()).map((e) => e.provider)).not.toContain(
       'posthog',

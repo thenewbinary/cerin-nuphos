@@ -3,7 +3,7 @@ import SwiftUI
 
 enum BotAvatarTests {
     private static func sharedPreferenceSurvivesLegacyConflicts() {
-        let prefix = "ai.nuphos.avatar-tests." + UUID().uuidString
+        let prefix = "ai.cerin.avatar-tests." + UUID().uuidString
         let legacyName = prefix + ".legacy", sharedName = prefix + ".shared"
         let legacy = UserDefaults(suiteName: legacyName)!, shared = UserDefaults(suiteName: sharedName)!
         defer {

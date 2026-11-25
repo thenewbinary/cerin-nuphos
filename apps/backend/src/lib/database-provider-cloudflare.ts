@@ -72,7 +72,7 @@ function candidateName(databaseName: string, attempt: number): string {
 }
 
 /**
- * Materialize a provider-owned D1 database as a lightweight Nuphos database
+ * Materialize a provider-owned D1 database as a lightweight Cerin database
  * resource. The connector binding is referenced, never copied. Reopening the
  * same provider resource is idempotent and explicitly rebinds it to the active
  * Cloudflare integration after a connector rotation.

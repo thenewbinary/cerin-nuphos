@@ -84,7 +84,7 @@ export function pickRuntimeBackendUrl(
 ): string | undefined {
   if (external) return pickPublicBackendUrl(sources)
   if (sources.podNamespace)
-    return `http://nuphos-backend.${sources.podNamespace}.svc:${String(sources.port)}`
+    return `http://cerin-backend.${sources.podNamespace}.svc:${String(sources.port)}`
 
   return sources.backendUrl
 }

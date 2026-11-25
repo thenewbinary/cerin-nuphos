@@ -73,7 +73,7 @@ export function initWebviewGuard() {
   )
   // Google sign-in also rejects a page whose `window.chrome` lacks Chrome's own members.
   browserSession.registerPreloadScript({
-    id: 'nuphos-browser-chrome-object',
+    id: 'cerin-browser-chrome-object',
     type: 'frame',
     // Built next to the app's own preload in dist-electron.
     filePath: path.join(path.dirname(fileURLToPath(import.meta.url)), 'browser-preload.cjs'),

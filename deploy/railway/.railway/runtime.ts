@@ -6,7 +6,7 @@ export default defineRailway(() => {
   if (password.length < 32) throw new Error('RUNTIME_PASSWORD must contain at least 32 characters')
   const home = volume('runtime-home', { region: 'us-west2', sizeMB: 10240 })
   const runtime = service('runtime', {
-    source: github(process.env.NUPHOS_GITHUB_REPO || 'nuphos/nuphos', {
+    source: github(process.env.NUPHOS_GITHUB_REPO || 'thenewbinary/cerin-platform', {
       branch: process.env.NUPHOS_GITHUB_BRANCH || 'main',
       rootDirectory: 'deploy/railway/runtime',
     }),
@@ -19,5 +19,5 @@ export default defineRailway(() => {
     volumeMounts: { '/home/node': home },
     env: { PORT: '8080', OPENAB_ACP_AUTH_KEY: password, OPENAB_STREAM_EDIT_INTERVAL_MS: '300' },
   })
-  return project('nuphos-runtime', { resources: [runtime, home] })
+  return project('cerin-runtime', { resources: [runtime, home] })
 })

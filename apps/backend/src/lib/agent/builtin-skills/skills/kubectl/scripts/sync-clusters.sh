@@ -64,7 +64,7 @@ mkdir -p "$HOME/.kube"
 # Distinguishes "this session has no clusters" from "the sync never ran", so the
 # backend's per-turn repair poke doesn't re-fire forever on a session that has
 # nothing to sync (there is no kubeconfig to find in that case).
-no_clusters_marker="$HOME/.kube/.nuphos-no-clusters"
+no_clusters_marker="$HOME/.kube/.cerin-no-clusters"
 
 if [ "$http_code" = "204" ]; then
   : > "$no_clusters_marker"

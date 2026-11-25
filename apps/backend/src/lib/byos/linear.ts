@@ -94,7 +94,7 @@ export async function getViewer(accessToken: string): Promise<LinearViewerInfo> 
     organization: { id: string; name: string; urlKey: string | null } | null
   }>(
     accessToken,
-    `query NuphosViewer {
+    `query CerinViewer {
       viewer { id name }
       organization { id name urlKey }
     }`,

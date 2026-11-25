@@ -155,8 +155,6 @@ async function main() {
 
   globalThis.params = params
   globalThis.cerin = cerin
-  // Deprecated: scripts written before the rename still use `nuphos`.
-  globalThis.nuphos = cerin
   globalThis.emit = emit
 
   const scriptUrl = pathToFileURL(resolve(runDir, 'script.mjs')).href

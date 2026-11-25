@@ -13,7 +13,7 @@ type Passkey = NonNullable<MfaStatus['passkeys']>[number]
 
 /**
  * Passkeys, another way to answer once two-factor authentication is on. Adding
- * one runs in the browser, where the passkey belongs to nuphos.ai.
+ * one runs in the browser, where the passkey belongs to platform.cerin.ai.
  */
 export function PasskeyList({
   passkeys,

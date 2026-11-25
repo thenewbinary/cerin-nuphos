@@ -108,16 +108,15 @@ async function threadState(thread: DiscordSessionScope, ownerUserId: string, dep
         enabled: true,
       })
       // Same bar as the addressed path: a linked account that is still on the team.
-      const member = mapping && (await deps.getTeamMembership(mapping.nuphosUserId, scope.teamId))
+      const member = mapping && (await deps.getTeamMembership(mapping.cerinUserId, scope.teamId))
 
       authors.set(
         entry.authorDiscordUserId,
         mapping && member
-          ? await deps.createMessageMetadata(mapping.nuphosUserId, 'discord')
+          ? await deps.createMessageMetadata(mapping.cerinUserId, 'discord')
           : undefined,
       )
-      if (mapping && member && mapping.nuphosUserId !== ownerUserId)
-        joined.push(mapping.nuphosUserId)
+      if (mapping && member && mapping.cerinUserId !== ownerUserId) joined.push(mapping.cerinUserId)
     }
     const author = authors.get(entry.authorDiscordUserId)
 

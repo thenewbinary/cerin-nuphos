@@ -24,7 +24,7 @@ import { betterStackIntegrationsRoutes } from '@/routes/betterstack-integrations
 import { cloudflareAccountsRoutes } from '@/routes/cloudflare-accounts'
 import { teamClusters } from '@/routes/clusters'
 import { connectorOAuthRoutes } from '@/routes/connector-oauth'
-import { nuphosDashboardsRoutes } from '@/routes/dashboards'
+import { cerinDashboardsRoutes } from '@/routes/dashboards'
 import { databaseConnectionsRoutes } from '@/routes/database-connections'
 import { designsRoutes } from '@/routes/designs'
 import { discordAgentRoutes } from '@/routes/discord-agent'
@@ -254,9 +254,9 @@ teamScoped.route('/huawei-accounts', huaweiAccountsRoutes)
 teamScoped.route('/grafana-instances', grafanaInstancesRoutes)
 teamScoped.route('/architecture-diagrams', architectureDiagramsRoutes)
 teamScoped.route('/designs', designsRoutes)
-teamScoped.route('/dashboards', nuphosDashboardsRoutes)
+teamScoped.route('/dashboards', cerinDashboardsRoutes)
 // Alias for desktop builds that predate the Dashboards rename.
-teamScoped.route('/cost-dashboards', nuphosDashboardsRoutes)
+teamScoped.route('/cost-dashboards', cerinDashboardsRoutes)
 teamScoped.route('/agent-triggers', agentTriggersRoutes)
 teamScoped.route('/knowledge', knowledgeRoutes)
 teamScoped.route('/github-installations', githubInstallationsRoutes)

@@ -432,7 +432,7 @@ pub async fn exec(
         println!();
     }
     if ctx.json {
-        println!("{}", json!({ "type": "nuphos-session", "sessionId": session_id, "teamId": team }));
+        println!("{}", json!({ "type": "cerin-session", "sessionId": session_id, "teamId": team }));
     } else {
         eprintln!("task {session_id}");
     }

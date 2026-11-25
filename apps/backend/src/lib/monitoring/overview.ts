@@ -1,5 +1,5 @@
 // Read-only monitoring aggregation across the team's bound observability
-// providers. This is a VIEW over provider APIs — no Nuphos storage, no
+// providers. This is a VIEW over provider APIs — no Cerin storage, no
 // reconciliation, no mutations.
 //
 // Per-provider failures degrade to an entry in `providerErrors` so one

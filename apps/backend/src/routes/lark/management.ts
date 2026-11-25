@@ -177,7 +177,7 @@ export function registerLarkManagementRoutes(larkRoutes: Hono<{ Variables: AuthV
     if (!membership) throw new AppError(403, 'forbidden', 'You are not a member of this team')
     // Fail if Lark isn't connected — there'd be no bot to DM the code to.
     await resolveAppIdForTeam(teamId)
-    const { code, expiresAt } = await createLarkPairCode({ teamId, nuphosUserId: c.get('userId') })
+    const { code, expiresAt } = await createLarkPairCode({ teamId, cerinUserId: c.get('userId') })
 
     return c.json({ code, expiresAt: expiresAt.toISOString() })
   })

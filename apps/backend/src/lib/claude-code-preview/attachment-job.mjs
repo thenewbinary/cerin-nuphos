@@ -32,15 +32,15 @@ if (localRoot) {
 const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000
 for (const entry of await readdir(root, { withFileTypes: true })) {
   const expirable =
-    entry.name.startsWith('nuphos-secret-') ||
-    (localRoot && entry.name.startsWith('nuphos-attachments-'))
+    entry.name.startsWith('cerin-secret-') ||
+    (localRoot && entry.name.startsWith('cerin-attachments-'))
   if (!entry.isDirectory() || !expirable) continue
   const path = join(root, entry.name)
   const info = await lstat(path).catch(() => undefined)
   if (info?.isDirectory() && info.mtimeMs < cutoff)
     await rm(path, { recursive: true, force: true }).catch(() => {})
 }
-const dir = await mkdtemp(join(root, secret === true ? 'nuphos-secret-' : 'nuphos-attachments-'))
+const dir = await mkdtemp(join(root, secret === true ? 'cerin-secret-' : 'cerin-attachments-'))
 const paths = []
 try {
   for (const [index, file] of files.entries()) {

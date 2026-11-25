@@ -1,7 +1,7 @@
 import { lintSource } from '@secretlint/core'
 import { describe, expect, test } from 'bun:test'
 
-import { NUPHOS_RULE_ID, nuphosSecretRule } from './nuphos-rule'
+import { CERIN_RULE_ID, cerinSecretRule } from './cerin-rule'
 import {
   findEmbeddedSecret,
   findSecrets,
@@ -95,7 +95,7 @@ describe('redactSecrets', () => {
     expect(matches.some((m) => m.kind === 'jwt')).toBe(true)
   })
 
-  test('Nuphos session and CLI tokens anywhere in the text', async () => {
+  test('Cerin session and CLI tokens anywhere in the text', async () => {
     const session = 'nus_Q2hhbmdlTWVQbGVhc2VJdElzTm90QVJlYWxUb2tlbjAx'
     const cli = 'nup_Q2hhbmdlTWVQbGVhc2VJdElzTm90QVJlYWxUb2tlbjAy'
     const { redacted } = await redactSecrets(`NUPHOS_TOKEN=${session} other=${cli}`)
@@ -251,7 +251,7 @@ describe('findSecrets', () => {
     const text = `Authorization: Bearer ${token}`
     const findings = await findSecrets(text)
 
-    expect(findings).toEqual([{ kind: 'nuphos-token', range: [22, text.length] }])
+    expect(findings).toEqual([{ kind: 'cerin-token', range: [22, text.length] }])
   })
 
   test('token shapes only skips assignments and entropy', async () => {
@@ -399,19 +399,19 @@ describe('scanner regressions', () => {
   })
 })
 
-describe('nuphosSecretRule', () => {
+describe('cerinSecretRule', () => {
   test('reports through secretlint like any other rule', async () => {
     const token = `nus_${randomAlnum(32)}`
     const result = await lintSource({
       source: { content: `t ${token}`, filePath: 'a.txt', ext: '.txt', contentType: 'text' },
       options: {
-        config: { rules: [{ id: NUPHOS_RULE_ID, rule: nuphosSecretRule, options: {} }] },
+        config: { rules: [{ id: CERIN_RULE_ID, rule: cerinSecretRule, options: {} }] },
         noPhysicFilePath: true,
       },
     })
 
     expect(result.messages.map((m) => [m.ruleId, m.range, m.data])).toEqual([
-      [NUPHOS_RULE_ID, [2, 2 + token.length], { kind: 'nuphos-token' }],
+      [CERIN_RULE_ID, [2, 2 + token.length], { kind: 'cerin-token' }],
     ])
   })
 })
@@ -442,7 +442,7 @@ describe('redactSecretsSync', () => {
     for (const text of benign) expect(redactSecretsSync(text)).toBe(text)
   })
 
-  test('matches the async scanner on the shapes the Nuphos rule owns', async () => {
+  test('matches the async scanner on the shapes the Cerin rule owns', async () => {
     const input = `Bearer ${FAKE_KEY}0000 and ghp_${'a1'.repeat(18)}`
 
     expect(redactSecretsSync(input)).toBe((await redactSecrets(input)).redacted)

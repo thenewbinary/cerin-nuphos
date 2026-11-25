@@ -5,7 +5,7 @@ import path from 'node:path'
 import {
   openInCerinHelperScript,
   openInCerinSkillBody,
-} from './agent-chat-skill/content-open-in-nuphos.ts'
+} from './agent-chat-skill/content-open-in-cerin.ts'
 
 import type {
   AgentChatSkillId,
@@ -18,11 +18,11 @@ import type {
 
 export type * from './agent-chat-skill/types.ts'
 
-const LEGACY_SKILL_NAME = 'nuphos-agent-chat'
-// Removed skills Desktop may have installed earlier. get-short-lived-creds-from-nuphos
+const LEGACY_SKILL_NAME = 'cerin-agent-chat'
+// Removed skills Desktop may have installed earlier. get-short-lived-creds-from-cerin
 // read the full session token, which now lives in the OS credential store, so it could
-// no longer work; agents that need credentials run in a Nuphos runtime instead (#1039).
-const RETIRED_SKILL_IDS = ['get-short-lived-creds-from-nuphos']
+// no longer work; agents that need credentials run in a Cerin runtime instead (#1039).
+const RETIRED_SKILL_IDS = ['get-short-lived-creds-from-cerin']
 const TARGET_LABELS: Record<AgentChatSkillTarget, string> = {
   claude: 'Claude Code',
   codex: 'Codex',
@@ -64,10 +64,10 @@ function legacyHelperPath(target: AgentChatSkillTarget, skill: SkillDefinition):
 
 const SKILLS: SkillDefinition[] = [
   {
-    id: 'open-in-nuphos',
+    id: 'open-in-cerin',
     name: 'Open in Cerin',
     description: 'Open a Cerin Agent chat with bug context, prompts, and local files.',
-    helperName: 'open-in-nuphos',
+    helperName: 'open-in-cerin',
     legacyName: LEGACY_SKILL_NAME,
     legacyHelperName: 'open-agent-chat.sh',
     skillBody: openInCerinSkillBody,

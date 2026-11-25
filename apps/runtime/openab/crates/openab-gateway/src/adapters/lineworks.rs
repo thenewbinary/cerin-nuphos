@@ -1930,7 +1930,7 @@ mod tests {
             .and(path("/bots/12345"))
             .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({
                 "botId": 12345,
-                "botName": "Nuphos (Dev)"
+                "botName": "Cerin (Dev)"
             })))
             .expect(1)
             .mount_as_scoped(&server)
@@ -1941,7 +1941,7 @@ mod tests {
         let adapter = LineWorksAdapter::new(config);
         let client = reqwest::Client::new();
 
-        let mut ev = channel_text_event("@Nuphos (Dev) hi").await;
+        let mut ev = channel_text_event("@Cerin (Dev) hi").await;
         assert!(passes_mention_gate(&adapter, &client, &mut ev).await);
         assert_eq!(ev.content.text, "hi");
         // Second call served from cache (expect(1) enforces a single fetch).
@@ -1975,7 +1975,7 @@ mod tests {
         );
         // Names with spaces/parens work as literal strings.
         assert_eq!(
-            strip_boundary_mention("@Nuphos (Dev) hi", "@Nuphos (Dev)").as_deref(),
+            strip_boundary_mention("@Cerin (Dev) hi", "@Cerin (Dev)").as_deref(),
             Some("hi")
         );
     }

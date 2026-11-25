@@ -34,7 +34,7 @@ function turnRows(stack: Stack): TurnRow[] | null {
     import { MongoClient } from 'mongodb'
     const [uri, teamId] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const rows = await client.db('nuphos_e2e').collection('agent_token_usage')
+    const rows = await client.db('cerin_e2e').collection('agent_token_usage')
       .find({ teamId, source: 'agent-runtime', kind: 'step_total' }).toArray()
     await client.close()
     console.log(JSON.stringify(rows.length ? rows : null))`

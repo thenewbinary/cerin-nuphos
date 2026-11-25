@@ -9,7 +9,7 @@ import type { ChangelogEntry, ChangelogState } from '../types/team'
 // Inject a fake feed straight from devtools:
 //   changelogNotify([{ slug: 's1', title: 'Feature one', summary: 'Short pitch.',
 //     date: '2026-08-12', coverUrl: 'https://placehold.co/264x120/png',
-//     url: 'https://nuphos.ai/changelog/s1' }])
+//     url: 'https://platform.cerin.ai/changelog/s1' }])
 //   changelogNotify()  // clear the override
 type DevListener = (entries: ChangelogEntry[] | null) => void
 const devListeners = new Set<DevListener>()

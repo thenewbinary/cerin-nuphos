@@ -62,7 +62,7 @@
     <string name="agent_working">処理中…</string>
     <string name="agent_ok">OK</string>
     <string name="agent_first_runtime_title">最初のランタイムを接続</string>
-    <string name="agent_first_runtime_body">コンピュータで Nuphos を開いて Box を追加するか自分のコンピュータを接続してください。または、ワークスペースの管理者に接続を依頼してください。</string>
+    <string name="agent_first_runtime_body">コンピュータで Cerin を開いて Box を追加するか自分のコンピュータを接続してください。または、ワークスペースの管理者に接続を依頼してください。</string>
     <string name="agent_cloud">クラウド</string>
     <plurals name="agent_runtime_count">
         <item quantity="other">%1$d 個のランタイム</item>
@@ -85,7 +85,7 @@
     <string name="agent_percent">%1$d%%</string>
     <string name="agent_couldnt_load_runtimes">ランタイムを読み込めませんでした</string>
     <string name="agent_no_runtimes">ランタイムはありません</string>
-    <string name="agent_no_runtimes_body">コンピュータで Nuphos を開いて接続し、ランタイムを追加してください。</string>
+    <string name="agent_no_runtimes_body">コンピュータで Cerin を開いて接続し、ランタイムを追加してください。</string>
     <string name="agent_deleting">削除中</string>
     <string name="agent_disabled">無効</string>
     <string name="agent_offline">オフライン</string>
@@ -103,9 +103,9 @@
     <string name="agent_ask_admin_sign_in">管理者にサインインを依頼してください</string>
     <string name="agent_runtime_gone_body">このランタイムは現在のワークスペースにありません。続行する前にランタイムを更新してください。</string>
     <string name="agent_runtime_disabled_body">このランタイムは無効になっているか、削除中です。保存済みの状態を確認するよう管理者に依頼してください。</string>
-    <string name="agent_teammate_sign_in_body">%1$s はチームメンバーのものなので、その人だけがサインインできます。そのコンピュータで Nuphos を開き、ランタイムページで「サインイン」を選ぶよう依頼してください。</string>
-    <string name="agent_host_sign_in_body">%1$s で Nuphos を開き、ランタイムページでこのランタイムの「サインイン」を選択してください。</string>
-    <string name="agent_admin_sign_in_body">ワークスペースの管理者が、自分のコンピュータの Nuphos のランタイムページからサインインできます。</string>
+    <string name="agent_teammate_sign_in_body">%1$s はチームメンバーのものなので、その人だけがサインインできます。そのコンピュータで Cerin を開き、ランタイムページで「サインイン」を選ぶよう依頼してください。</string>
+    <string name="agent_host_sign_in_body">%1$s で Cerin を開き、ランタイムページでこのランタイムの「サインイン」を選択してください。</string>
+    <string name="agent_admin_sign_in_body">ワークスペースの管理者が、自分のコンピュータの Cerin のランタイムページからサインインできます。</string>
     <string name="agent_back_to_runtimes">ランタイムに戻る</string>
     <string name="agent_runtime">ランタイム</string>
     <string name="agent_runtime_removed">このランタイムは削除されました。</string>
@@ -125,8 +125,8 @@
     <string name="agent_unreconciled">リクエストがサーバーに届いている可能性があります。別の変更を行う前に、保存済みの状態を更新してください。</string>
     <string name="agent_refresh_runtime">ランタイムを更新</string>
     <string name="agent_remove_named">%1$s を削除しますか？</string>
-    <string name="agent_remove_managed_body">ランタイムを停止し、そのファイルとサインイン情報を完全に削除します。タスクの履歴は Nuphos に残ります。</string>
-    <string name="agent_remove_body">ランタイムの接続を解除します。タスクは Nuphos に残ります。</string>
+    <string name="agent_remove_managed_body">ランタイムを停止し、そのファイルとサインイン情報を完全に削除します。タスクの履歴は Cerin に残ります。</string>
+    <string name="agent_remove_body">ランタイムの接続を解除します。タスクは Cerin に残ります。</string>
     <string name="agent_runtime_details">ランタイムの詳細</string>
     <string name="agent_manage_runtimes">ランタイムを管理</string>
     <string name="agent_for_new_tasks">新しいタスク用です。既存のタスクは現在のランタイムのままです。</string>

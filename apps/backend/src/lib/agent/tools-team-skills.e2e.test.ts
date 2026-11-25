@@ -14,7 +14,7 @@ import { useSkillStoreMetadata } from '@/lib/test/doubles/skill-store-metadata'
 import { useSkillStoreService } from '@/lib/test/doubles/skill-store-service'
 import { useSkillStoreSync } from '@/lib/test/doubles/skill-store-sync'
 
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 
 const e2eCacheRoot = mkdtempSync(path.join(tmpdir(), 'e2e-skills-test-'))
 
@@ -111,7 +111,7 @@ const fakeS3Client = {
   },
 }
 
-let membershipRole: NuphosTeamRole | null = 'EDITOR'
+let membershipRole: CerinTeamRole | null = 'EDITOR'
 
 useIdentity({
   getTeamMembership: async (_userId: string, _teamId: string) => {

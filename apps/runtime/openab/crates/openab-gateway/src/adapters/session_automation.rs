@@ -489,7 +489,7 @@ mod tests {
         state.acp_session_automation.configure(
             channel,
             vec![],
-            Some(json!({"ai.nuphos/runtimeAuthority":2})),
+            Some(json!({"ai.cerin/runtimeAuthority":2})),
         );
         let update = json!({"sessionUpdate":"async_task_state_update","asyncTaskId":"t","state":"completed"});
         spawn_task(&state.acp_session_automation, channel, "t");

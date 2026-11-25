@@ -8,12 +8,12 @@ import { t } from '../../i18n'
 
 import { CADENCE_LABELS, describeCadence, describeNextRefresh } from './cadence'
 
-import type { DashboardCadence, NuphosDashboard, NuphosDashboardDetail } from '../schema'
+import type { DashboardCadence, CerinDashboard, CerinDashboardDetail } from '../schema'
 
 type Props = {
   teamId: string
-  detail: NuphosDashboardDetail | null
-  onSaved: (dashboard: NuphosDashboard) => void
+  detail: CerinDashboardDetail | null
+  onSaved: (dashboard: CerinDashboard) => void
 }
 
 const CADENCES = Object.keys(CADENCE_LABELS) as DashboardCadence[]

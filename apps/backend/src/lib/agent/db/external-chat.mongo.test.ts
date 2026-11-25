@@ -1,5 +1,5 @@
 // A Slack channel is an external chat (#3702): its backing record holds what the Bots read and
-// post there, and no person ever sees it in Nuphos. Runs when TEST_MONGODB_URI is set, with
+// post there, and no person ever sees it in Cerin. Runs when TEST_MONGODB_URI is set, with
 // MONGODB_URI pointing at the same server.
 import { afterAll, beforeAll, describe, expect, test } from 'bun:test'
 import { ObjectId } from 'mongodb'

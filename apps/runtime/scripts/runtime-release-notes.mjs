@@ -19,7 +19,7 @@ let previous
 try {
   previous = git('describe', '--tags', '--abbrev=0', '--match', 'runtime-v[0-9]*', `${tag}^`)
 } catch {}
-const repo = 'https://github.com/nuphos/nuphos'
+const repo = 'https://github.com/thenewbinary/cerin-platform'
 const range = previous ? `${previous}..${tag}` : tag
 const commits = git(
   'log',

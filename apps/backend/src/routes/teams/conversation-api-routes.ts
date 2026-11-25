@@ -94,7 +94,7 @@ const CANONICAL_ROUTES: { method: string; path: RegExp }[] = [
 // below, before this broader GET capability is considered.
 function conversationConnectorApiPathAllowed(method: string, path: string): boolean {
   // Grafana is the one connector whose native skill performs both reads and
-  // writes through Nuphos's server-side proxy. Binding management remains
+  // writes through Cerin's server-side proxy. Binding management remains
   // denied; only the already-bound instance's proxy subtree is exposed.
   if (/^\/grafana-instances\/[^/]+\/proxy\//u.test(path)) return true
   if (method !== 'GET') return false
@@ -106,7 +106,7 @@ function conversationConnectorApiPathAllowed(method: string, path: string): bool
   if (collection === undefined || !CONNECTOR_COLLECTIONS.has(collection)) return false
   // Every connector can be listed and its non-secret binding metadata read.
   if (!rest?.includes('/')) return true
-  // These native skills use Nuphos as their API/token proxy. Other connector
+  // These native skills use Cerin as their API/token proxy. Other connector
   // skills receive selected credentials through ROUTES and call the provider
   // directly, so their deeper canonical subtrees stay denied.
   if (CONNECTOR_DEEP_READ_COLLECTIONS.has(collection)) return true

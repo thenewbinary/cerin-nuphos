@@ -55,7 +55,7 @@ async function desktopTunnel(
 }
 
 test('a Desktop that cannot take a value inline is refused as outdated, not as a failure', async () => {
-  const desktop = await desktopTunnel('nuphos-desktop/0.94.0')
+  const desktop = await desktopTunnel('cerin-desktop/0.94.0')
   const files = [
     {
       name: 'API_KEY',
@@ -83,7 +83,7 @@ test('a Desktop that cannot take a value inline is refused as outdated, not as a
 })
 
 test('the first Desktop that takes an inline value saves it, and later ones still work', async () => {
-  for (const client of ['nuphos-desktop/0.95.0', 'nuphos-desktop/0.99.0']) {
+  for (const client of ['cerin-desktop/0.95.0', 'cerin-desktop/0.99.0']) {
     const desktop = await desktopTunnel(client)
     const files = [
       {
@@ -110,7 +110,7 @@ test('the first Desktop that takes an inline value saves it, and later ones stil
 test('an old Desktop keeps carrying ordinary attachments, and an unknown host is never guessed at', async () => {
   const files = [{ name: 'image.png', url: 'https://store.example/signed', size: 5 }]
 
-  for (const client of ['nuphos-desktop/0.94.0', undefined, 'nuphos-cli/0.3.0', 'other/0.94.0']) {
+  for (const client of ['cerin-desktop/0.94.0', undefined, 'cerin-cli/0.3.0', 'other/0.94.0']) {
     const desktop = await desktopTunnel(client)
 
     try {
@@ -128,7 +128,7 @@ test('an old Desktop keeps carrying ordinary attachments, and an unknown host is
 })
 
 test('a version that is not a stable release is left alone', async () => {
-  for (const client of ['nuphos-desktop/0.94.0-beta.1', 'nuphos-desktop/dev', 'nuphos-desktop/']) {
+  for (const client of ['cerin-desktop/0.94.0-beta.1', 'cerin-desktop/dev', 'cerin-desktop/']) {
     const desktop = await desktopTunnel(client)
     const files = [{ name: 'API_KEY', url: 'data:application/octet-stream;base64,AAAA', size: 3 }]
 

@@ -77,7 +77,7 @@ useAgentDb({
   },
 })
 
-const { nuphosUpdateCredentials } = await import('./credentials')
+const { cerinUpdateCredentials } = await import('./credentials')
 
 beforeEach(() => {
   stored = {
@@ -88,10 +88,10 @@ beforeEach(() => {
 
 const run = async () =>
   JSON.stringify(
-    await nuphosUpdateCredentials({ team_id: 't1', session_id: 's1' }, { userId: 'u1' } as never),
+    await cerinUpdateCredentials({ team_id: 't1', session_id: 's1' }, { userId: 'u1' } as never),
   )
 
-describe('nuphos_update_credentials', () => {
+describe('cerin_update_credentials', () => {
   test('replaces the categories it can name and keeps devices and the rest', async () => {
     expect(await run()).not.toContain('isError":true')
     expect(stored.credentialAccess).toMatchObject({
@@ -115,7 +115,7 @@ describe('nuphos_update_credentials', () => {
 })
 
 test('updates GitHub selection and identity through the shared credential resolver', async () => {
-  const result = await nuphosUpdateCredentials(
+  const result = await cerinUpdateCredentials(
     {
       team_id: 't1',
       session_id: 's1',
@@ -153,7 +153,7 @@ test('omitted GitHub fields preserve the selection and explicit empty lists clea
     personalCredentialIds: ['github'],
     teamIdentity: ['github'],
   })
-  await nuphosUpdateCredentials(
+  await cerinUpdateCredentials(
     {
       team_id: 't1',
       session_id: 's1',
@@ -174,7 +174,7 @@ test.each(['github_installation_ids', 'personal_credential_ids', 'team_identity'
   'malformed %s is rejected by the existing validator without writing',
   async (field) => {
     const before = structuredClone(stored.credentialAccess)
-    const result = await nuphosUpdateCredentials(
+    const result = await cerinUpdateCredentials(
       {
         team_id: 't1',
         session_id: 's1',

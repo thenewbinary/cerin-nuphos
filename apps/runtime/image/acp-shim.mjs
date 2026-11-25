@@ -1,16 +1,16 @@
 #!/usr/bin/env node
-// The Nuphos layer for agents that ship their own ACP server (Grok Build, Google
+// The Cerin layer for agents that ship their own ACP server (Grok Build, Google
 // Antigravity, OpenCode, Hermes Agent, DeepSeek Harness), and for Pi behind the pi-acp
 // adapter. Claude Code and Codex get this layer by patching their Node adapters;
 // a native binary cannot be patched, so this process sits in front of it instead and
-// passes every frame through, except where a Nuphos session needs something:
+// passes every frame through, except where a Cerin session needs something:
 //
 // - The conversation's environment. OpenAB starts one agent process per session, so
 //   the agent is respawned once with the session's env and CLI home before its first
 //   session/new, load or resume. The agent's own login stays in the runtime home.
 // - The team's skills, the runtime defaults and the MCP credential bridge, exactly as
 //   the patched adapters apply them.
-// - Nuphos's instructions, in whatever form the agent accepts them.
+// - Cerin's instructions, in whatever form the agent accepts them.
 import { spawn } from 'node:child_process'
 import { lstatSync, mkdirSync, symlinkSync } from 'node:fs'
 import { homedir } from 'node:os'
@@ -19,13 +19,13 @@ import { createInterface } from 'node:readline'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { hermesProfile } from './hermes-session.mjs'
-import { nuphosBridgeMcpServers } from './mcp-bridge-config.mjs'
+import { cerinBridgeMcpServers } from './mcp-bridge-config.mjs'
 import { openCodeRefusal } from './opencode-session.mjs'
 import { piAgentDir, piTurnError, writePiMcpServers } from './pi-session.mjs'
-import { nuphosApplyRuntimeDefaults, nuphosSyncRuntimeSkills } from './runtime-defaults.mjs'
-import { nuphosSessionHomeEnv } from './session-home.mjs'
+import { cerinApplyRuntimeDefaults, cerinSyncRuntimeSkills } from './runtime-defaults.mjs'
+import { cerinSessionHomeEnv } from './session-home.mjs'
 
-export const SESSION_META = 'ai.nuphos/session'
+export const SESSION_META = 'ai.cerin/session'
 
 // Same principal-scoped keys the Codex adapter forwards; nothing else in the
 // session's env reaches the agent.
@@ -71,7 +71,7 @@ export const PROVIDERS = {
     home: (runtimeHome) => ({ NUPHOS_AGENT_HOME: runtimeHome }),
     // Reuse the existing first-prompt instruction path.
     instruct: null,
-    // Keep separate Nuphos turns separate: native ACP treats overlapping prompts as steering.
+    // Keep separate Cerin turns separate: native ACP treats overlapping prompts as steering.
     serialPrompts: true,
   },
   opencode: {
@@ -147,7 +147,7 @@ export function agentEnv(provider, context, runtimeEnv = process.env) {
       ([key, value]) => SESSION_ENV.has(key) && typeof value === 'string',
     ),
   )
-  const sessionHome = nuphosSessionHomeEnv(env, runtimeEnv)
+  const sessionHome = cerinSessionHomeEnv(env, runtimeEnv)
   if (sessionHome.NUPHOS_SESSION_HOME)
     for (const path of PROVIDERS[provider].shared ?? [])
       shareFromRuntimeHome(path, sessionHome.NUPHOS_SESSION_HOME, runtimeHome)
@@ -174,9 +174,7 @@ function shareFromRuntimeHome(path, sessionHome, runtimeHome) {
     symlinkSync(join(runtimeHome, path), link, 'junction')
   } catch (error) {
     // Unshared, the agent starts without the runtime's login there; the turn still runs.
-    process.stderr.write(
-      `nuphos: could not share ${path} with the runtime home: ${error.message}\n`,
-    )
+    process.stderr.write(`cerin: could not share ${path} with the runtime home: ${error.message}\n`)
   }
 }
 
@@ -198,7 +196,7 @@ export function sessionState(sessionId, state) {
       sessionId,
       update: {
         sessionUpdate: 'session_info_update',
-        _meta: { 'ai.nuphos/sessionState': { state } },
+        _meta: { 'ai.cerin/sessionState': { state } },
       },
     },
   }
@@ -216,7 +214,7 @@ function toolUpdate(sessionId, toolCallId, status, meta) {
 }
 
 export function instructionsBlock(text) {
-  return { type: 'text', text: `<nuphos-instructions>\n${text}\n</nuphos-instructions>` }
+  return { type: 'text', text: `<cerin-instructions>\n${text}\n</cerin-instructions>` }
 }
 
 export function runShim({
@@ -429,7 +427,7 @@ export function runShim({
   }
   const request = (method, params) =>
     new Promise((resolve, reject) => {
-      const id = `nuphos-shim-${String(++nextId)}`
+      const id = `cerin-shim-${String(++nextId)}`
       internal.set(id, (message) =>
         message.error ? reject(new Error(message.error.message)) : resolve(message.result),
       )
@@ -447,14 +445,14 @@ export function runShim({
       start(env)
       if (initialize) await request('initialize', initialize.params)
     }
-    await nuphosSyncRuntimeSkills(message.params)
+    await cerinSyncRuntimeSkills(message.params)
     let meta = message.params?._meta ?? {}
     const text = typeof context?.systemPrompt === 'string' ? context.systemPrompt : ''
     if (text && spec.instruct) meta = spec.instruct(meta, text)
     const params = {
       ...message.params,
       _meta: meta,
-      mcpServers: nuphosBridgeMcpServers(message.params?.mcpServers ?? [], runtimeEnv),
+      mcpServers: cerinBridgeMcpServers(message.params?.mcpServers ?? [], runtimeEnv),
     }
     spec.mcpServers?.(agentEnvironment, params.mcpServers)
     if (params.sessionId) opening.add(params.sessionId)
@@ -469,7 +467,7 @@ export function runShim({
       }
       return {
         ...reply,
-        result: await nuphosApplyRuntimeDefaults(
+        result: await cerinApplyRuntimeDefaults(
           agentApi,
           { ...params, sessionId },
           reply.result,

@@ -101,7 +101,7 @@ async function onRuntime(
  * What a new session starts on: the agent (`runtime_id`) and its model and
  * effort, Full Access, or a Bot (`parent_session_id`) whose agent, model and
  * effort it starts on and whose credentials and mode it uses. An existing
- * session keeps its own; change those with nuphos_update_session.
+ * session keeps its own; change those with cerin_update_session.
  */
 export async function startChoice(
   args: Record<string, unknown>,
@@ -121,11 +121,11 @@ export async function startChoice(
       }
     if (pick)
       return {
-        refused: 'model and effort apply to a new session; change them with nuphos_update_session.',
+        refused: 'model and effort apply to a new session; change them with cerin_update_session.',
       }
     if (fullAccess !== undefined)
       return {
-        refused: 'full_access applies to a new session; change it with nuphos_update_session.',
+        refused: 'full_access applies to a new session; change it with cerin_update_session.',
       }
     if (parentId) return { refused: 'parent_session_id applies to a new session only.' }
 
@@ -135,7 +135,7 @@ export async function startChoice(
 
   if (bot === null)
     return {
-      refused: `parent_session_id must be one of your Bots in this team; ${parentId} is not. See nuphos_list_sessions (bot: true).`,
+      refused: `parent_session_id must be one of your Bots in this team; ${parentId} is not. See cerin_list_sessions (bot: true).`,
     }
   if (bot && fullAccess !== undefined)
     return {

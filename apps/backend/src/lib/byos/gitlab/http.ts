@@ -1,6 +1,6 @@
 import { blockedUrlReason, OutboundBlockedError, pinnedFetch } from '@/lib/net/safe-outbound'
 
-export const USER_AGENT = 'nuphos-backend'
+export const USER_AGENT = 'cerin-backend'
 export const GITLAB_FETCH_TIMEOUT_MS = 30_000
 
 export class GitlabApiError extends Error {

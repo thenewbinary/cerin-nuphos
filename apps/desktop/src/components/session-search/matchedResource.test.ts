@@ -9,9 +9,9 @@ const pr = (number: number, title: string): SessionResource => ({
   id: String(number),
   provider: 'github',
   title,
-  url: `https://github.com/nuphos/nuphos/pull/${String(number)}`,
+  url: `https://github.com/thenewbinary/cerin-platform/pull/${String(number)}`,
   state: 'open',
-  repository: 'nuphos/nuphos',
+  repository: 'thenewbinary/cerin-platform',
   number,
   linkedAt: '2026-11-11T00:00:00.000Z',
 })

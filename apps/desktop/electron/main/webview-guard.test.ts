@@ -17,7 +17,7 @@ const browserSession = {
     >(),
   setDevicePermissionHandler: mock.fn<(handler: (...args: unknown[]) => boolean) => void>(),
   getUserAgent: () =>
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Nuphos/0.98.0 Chrome/146.0.7680.65 Electron/43.8.3 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Cerin/0.98.0 Chrome/146.0.7680.65 Electron/43.8.3 Safari/537.36',
   setUserAgent: mock.fn<(userAgent: string) => void>(),
   registerPreloadScript: mock.fn<(script: Record<string, unknown>) => string>(),
   on: mock.fn<(event: string, listener: (...args: unknown[]) => void) => void>(),
@@ -98,7 +98,7 @@ test('only the browser partition accepts arbitrary HTTP pages and every guest is
     ['http://localhost:3000', 'persist:browser', true],
     ['file:///etc/passwd', 'persist:browser', false],
     ['https://example.com', '', false],
-    ['https://nuphos.ai/changelog/entry', '', true],
+    ['https://platform.cerin.ai/changelog/entry', '', true],
   ] as const) {
     const preventDefault = mock.fn()
     const preferences = {
@@ -212,10 +212,15 @@ test('sign-in popups open as real windows that keep their opener; links still lo
   assert.deepEqual(loaded, [])
 
   // target=_blank links and non-HTTP popups keep today's behaviour.
-  assert.deepEqual(open('https://github.com/nuphos/nuphos', 'foreground-tab'), { action: 'deny' })
+  assert.deepEqual(open('https://github.com/thenewbinary/cerin-platform', 'foreground-tab'), {
+    action: 'deny',
+  })
   assert.deepEqual(open('https://example.com/docs', 'background-tab'), { action: 'deny' })
   assert.deepEqual(open('file:///etc/passwd', 'new-window'), { action: 'deny' })
-  assert.deepEqual(loaded, ['https://github.com/nuphos/nuphos', 'https://example.com/docs'])
+  assert.deepEqual(loaded, [
+    'https://github.com/thenewbinary/cerin-platform',
+    'https://example.com/docs',
+  ])
 })
 
 test('a browser popup window gets the same guard, and closes with the tab that opened it', () => {

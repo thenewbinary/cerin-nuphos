@@ -8,7 +8,7 @@ enum MarkdownImagesTests {
         print("Markdown images passed")
     }
 
-    private static let shot = URL(string: "https://raw.githubusercontent.com/nuphos/pr-assets/abc/before.png")!
+    private static let shot = URL(string: "https://raw.githubusercontent.com/cerin/pr-assets/abc/before.png")!
 
     private static func leavesTextWithoutImagesWhole() {
         let text = "Plain **answer** with a [link](https://example.com)."

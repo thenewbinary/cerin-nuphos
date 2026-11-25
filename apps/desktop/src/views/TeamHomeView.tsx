@@ -48,7 +48,7 @@ export function TeamHomeView({
           revealAt={0}
           replayKey={0}
           onOpenConversation={onOpenConversation}
-          onOpenNuphosLink={(href) => {
+          onOpenCerinLink={(href) => {
             onOpenLink(href)
 
             return true

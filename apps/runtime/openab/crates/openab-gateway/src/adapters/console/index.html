@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nuphos agent</title>
+<title>Cerin agent</title>
 <link rel="stylesheet" href="/_openab/console/assets/console.css">
 <script src="/_openab/console/assets/console.js" defer></script>
 </head>
 <body>
 <main class="page">
   <header class="card">
-    <h1>Nuphos agent</h1>
+    <h1>Cerin agent</h1>
     <p class="status">&#9679; This agent is running</p>
     <dl class="facts">{{status_rows}}</dl>
     <p class="muted" id="initialized" hidden></p>
@@ -25,7 +25,7 @@
 
   <section class="card" id="view-setup" hidden>
     <h2>Set up this agent</h2>
-    <p>Choose the password that protects this console. You need it to connect the agent to Nuphos and to manage it later.</p>
+    <p>Choose the password that protects this console. You need it to connect the agent to Cerin and to manage it later.</p>
     <p class="muted" id="setup-window"></p>
     <form id="setup-form" class="stack">
       <label>Password <input type="password" id="setup-password" autocomplete="new-password" minlength="12" required></label>
@@ -54,14 +54,14 @@
       <label>Console password <input type="password" id="login-password" autocomplete="current-password" required></label>
       <button type="submit">Sign in</button>
     </form>
-    <p class="muted">Forgot it? Delete <code>console.json</code> (and <code>auth-key</code>, if present) from the agent's state directory and restart the agent to set it up again. Existing Nuphos connections keep working.</p>
+    <p class="muted">Forgot it? Delete <code>console.json</code> (and <code>auth-key</code>, if present) from the agent's state directory and restart the agent to set it up again. Existing Cerin connections keep working.</p>
   </section>
 
   <div id="view-console" hidden>
     <section class="card">
-      <h2>Connect to Nuphos</h2>
-      <p>Opens Nuphos Desktop so you can pick the team this agent should join. The pairing code works once and expires after 10 minutes.</p>
-      <button type="button" id="connect">Connect to Nuphos</button>
+      <h2>Connect to Cerin</h2>
+      <p>Opens Cerin Desktop so you can pick the team this agent should join. The pairing code works once and expires after 10 minutes.</p>
+      <button type="button" id="connect">Connect to Cerin</button>
       <div id="pairing" class="stack" hidden>
         <p class="muted" id="pairing-hint"></p>
         <div class="row"><span class="label">Agent URL</span><code id="pairing-url"></code><button type="button" class="secondary" data-copy="pairing-url">Copy</button></div>
@@ -69,7 +69,7 @@
         <p class="muted" id="pairing-expiry"></p>
       </div>
       <details>
-        <summary>Agent URL Nuphos connects to</summary>
+        <summary>Agent URL Cerin connects to</summary>
         <form id="url-form" class="stack">
           <p class="muted" id="url-source"></p>
           <label>Public URL <input type="text" id="public-url" placeholder="wss://agent.example.com/acp" autocomplete="off"></label>
@@ -82,7 +82,7 @@
     </section>
 
     <section class="card">
-      <h2>Connected Nuphos teams</h2>
+      <h2>Connected Cerin teams</h2>
       <ul class="list" id="bindings"></ul>
       <p class="muted">Every connected team uses this same agent: its files, its sessions and its provider account.</p>
     </section>
@@ -116,7 +116,7 @@
         <label>New password <input type="password" id="password-next" autocomplete="new-password" minlength="12" required></label>
         <button type="submit" class="secondary">Change password</button>
       </form>
-      <p class="muted">Changing it signs out other browsers. Nuphos connections are not affected.</p>
+      <p class="muted">Changing it signs out other browsers. Cerin connections are not affected.</p>
     </section>
   </div>
 

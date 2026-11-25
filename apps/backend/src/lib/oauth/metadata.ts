@@ -1,4 +1,4 @@
-// OAuth 2.1 discovery metadata for the Nuphos MCP server.
+// OAuth 2.1 discovery metadata for the Cerin MCP server.
 //
 // MCP clients (Claude Code, Codex) bootstrap auth by fetching these documents:
 //   1. Protected Resource Metadata (RFC 9728) — pointed to by the 401
@@ -27,7 +27,7 @@ export function buildProtectedResourceMetadata(baseUrl: string): unknown {
 }
 
 // `authorizeBaseUrl` lets the browser-facing authorize endpoint live on the
-// root domain (nuphos.ai proxies /oauth/authorize* to the API, the same way it
+// root domain (platform.cerin.ai proxies /oauth/authorize* to the API, the same way it
 // proxies /.well-known for the OIDC issuer) so the consent page shares the
 // site's first-party login context and the user sees the brand domain in the
 // URL bar. Machine-to-machine endpoints (token, register) stay on the API host.

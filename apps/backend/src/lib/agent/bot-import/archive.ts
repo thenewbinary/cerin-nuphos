@@ -18,7 +18,7 @@ function invalid(reason: string): never {
   throw new Error(`Cannot import bundle: ${reason}`)
 }
 
-// Known key shapes (secretlint's preset plus the Nuphos token rule) refuse an export
+// Known key shapes (secretlint's preset plus the Cerin token rule) refuse an export
 // anywhere. Its keyword and entropy rules match ordinary prose, code, links and
 // compressed bytes, so text instead refuses a secret keyword followed by a
 // key-shaped value (20+ characters, letters and digits).
@@ -225,7 +225,7 @@ export async function readBotBundle(input: Uint8Array): Promise<BotBundleArchive
   const parsed: unknown = JSON.parse(text)
   const result = botBundleSchema.safeParse(parsed)
 
-  if (!result.success) invalid('manifest does not match nuphos-bot-bundle version 1')
+  if (!result.success) invalid('manifest does not match cerin-bot-bundle version 1')
   // Walk parsed strings separately: JSON escaping must not conceal a secret from the scanner.
   const strings: string[] = []
   const scan = (value: unknown): void => {

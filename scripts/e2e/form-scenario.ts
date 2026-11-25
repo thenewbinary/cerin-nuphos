@@ -99,7 +99,7 @@ export const formScenario = {
       await until('the asking turn to end', async () =>
         agentEvents(stack).includes('finish E2E_DELIVERY:form'),
       )
-      // The Nuphos browser runs on this computer, so the person lets the Task use it.
+      // The Cerin browser runs on this computer, so the person lets the Task use it.
       // An earlier scenario's Task keeps its own composer, inert, behind this one.
       await page.locator('button[title^="Computers"]:not([inert])').last().click()
       const selectAll = page.getByRole('button', { name: 'Select all' }).last()

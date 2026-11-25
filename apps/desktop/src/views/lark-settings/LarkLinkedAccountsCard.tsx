@@ -35,13 +35,13 @@ export function LarkLinkedAccountsCard({
       ) : (
         <div className="divide-y divide-line-control/60">
           {userMappings.map((mapping) => {
-            const member = memberById.get(mapping.nuphosUserId)
+            const member = memberById.get(mapping.cerinUserId)
 
             return (
               <div key={mapping.id} className="flex items-center gap-3 px-4 py-3">
                 <div className="min-w-0 flex-1">
                   <div className="text-[13px] text-main truncate">
-                    {member ? member.name || member.email : mapping.nuphosUserId}
+                    {member ? member.name || member.email : mapping.cerinUserId}
                   </div>
                   <div className="flex items-center gap-1.5 font-mono text-[11.5px] text-tertiary truncate">
                     {mapping.larkOpenId}

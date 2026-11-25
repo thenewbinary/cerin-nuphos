@@ -8,7 +8,7 @@ import {
   credentialsMcpTools,
 } from '@/lib/claude-code-preview/credentials-mcp'
 import { scopedPathAllowed, verifyPreviewMcpToken } from '@/lib/claude-code-preview/mcp-token'
-import { nuphosToolsMcp } from '@/lib/claude-code-preview/nuphos-tools-mcp'
+import { cerinToolsMcp } from '@/lib/claude-code-preview/cerin-tools-mcp'
 import { resolvePreviewToolContext } from '@/lib/claude-code-preview/preview-tool-context-resolve'
 import {
   dashboardPanelAgent,
@@ -163,11 +163,11 @@ teamScoped.post('/mcp', async (c) => {
   return serveMcp(c, credentialsMcpTools(agent, teamId, vend), CREDENTIALS_MCP_SURFACE)
 })
 
-// Nuphos's native tools (memory, dashboards, diagrams, triggers, …) as a second MCP
+// Cerin's native tools (memory, dashboards, diagrams, triggers, …) as a second MCP
 // server; their results render as cards through the run-frame bridge.
 teamScoped.post('/mcp-tools', async (c) => {
   const agent = c.get('agent')
-  const { surface, tools } = await nuphosToolsMcp(
+  const { surface, tools } = await cerinToolsMcp(
     await resolvePreviewToolContext({
       userId: agent.userId,
       conversationOwnerUserId: agent.conversationOwnerUserId,

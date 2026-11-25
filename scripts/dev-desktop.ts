@@ -26,7 +26,7 @@ export async function claimDesktopPorts(): Promise<void> {
 }
 
 type ElectronBackendHealth = {
-  event: 'nuphos.dev.electron_backend_health'
+  event: 'cerin.dev.electron_backend_health'
   status: 'healthy' | 'unhealthy'
   consecutiveFailures: number
   latencyMs: number
@@ -45,7 +45,7 @@ export function parseElectronBackendHealth(line: string): ElectronBackendHealth 
   const event = value as Partial<ElectronBackendHealth>
 
   if (
-    event.event !== 'nuphos.dev.electron_backend_health' ||
+    event.event !== 'cerin.dev.electron_backend_health' ||
     (event.status !== 'healthy' && event.status !== 'unhealthy') ||
     typeof event.consecutiveFailures !== 'number' ||
     typeof event.latencyMs !== 'number'
@@ -114,7 +114,7 @@ export function parseDesktop(raw: string) {
     if (p) desktop.port = Number(p[1])
     markDirty()
   }
-  if (line.includes('[nuphos-dev] electron window opened') && desktop.health.electron !== '✓') {
+  if (line.includes('[cerin-dev] electron window opened') && desktop.health.electron !== '✓') {
     desktop.status = desktop.health.backend?.startsWith('✕') ? 'degraded' : 'ready'
     desktop.health.electron = '✓'
     desktop.readyMs = desktop.startedAt ? Date.now() - desktop.startedAt : null

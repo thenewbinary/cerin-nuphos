@@ -105,7 +105,7 @@ export async function startSshSession(
       })
     }
 
-    const knownHostsDir = path.join(os.homedir(), '.config', 'nuphos')
+    const knownHostsDir = path.join(os.homedir(), '.config', 'cerin')
 
     await fs.mkdir(knownHostsDir, { recursive: true })
     const knownHostsPath = path.join(knownHostsDir, 'atlas_known_hosts')

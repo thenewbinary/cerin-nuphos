@@ -140,7 +140,7 @@ export function registerTailscaleClientScopedRoutes(
   )
 
   // The customer's half of the setup, rendered for them to review and commit.
-  // Nuphos never writes the tailnet policy file itself.
+  // Cerin never writes the tailnet policy file itself.
   clientScoped.post(
     '/acl-snippet',
     requireTailscaleMemberAccess(),

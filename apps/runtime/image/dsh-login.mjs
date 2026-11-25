@@ -40,7 +40,7 @@ class LoginError extends Error {}
 /** The overlay that turns the `acp` profile into a one-shot sign-in. */
 export function signInPatch({ plugin, port }) {
   const server = port
-    ? `    - id: nuphos-sign-in-server
+    ? `    - id: cerin-sign-in-server
       name: '@deepseek-ai/dsh-host-webserver'
       config:
         host: 127.0.0.1
@@ -50,7 +50,7 @@ export function signInPatch({ plugin, port }) {
   return `- id: acp
   disabled: true
 - insert:
-${server}    - id: nuphos-sign-in
+${server}    - id: cerin-sign-in
       name: ${JSON.stringify(plugin)}
 `
 }
@@ -86,7 +86,7 @@ function dshVersion() {
 /** DSH with the sign-in overlay; resolves its frames, its stdin and a stop. */
 export async function startSignIn({ method }) {
   const port = method === 'account' ? await freePort() : undefined
-  const dir = await mkdtemp(join(tmpdir(), 'nuphos-dsh-sign-in-'))
+  const dir = await mkdtemp(join(tmpdir(), 'cerin-dsh-sign-in-'))
   const patch = join(dir, 'sign-in.patch.yml')
   await writeFile(patch, signInPatch({ plugin: PLUGIN, port }), { mode: 0o600 })
   const version = await dshVersion()

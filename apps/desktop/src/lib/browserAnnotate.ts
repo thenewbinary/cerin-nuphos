@@ -20,7 +20,7 @@ const TEXT_LIMIT = 80
  */
 export function commentModeScript(pin?: number): string {
   return `(() => {
-  let s = window.__nuphosComments
+  let s = window.__cerinComments
   if (!s) {
     const host = document.createElement('div')
     const root = host.attachShadow({ mode: 'closed' })
@@ -84,7 +84,7 @@ export function commentModeScript(pin?: number): string {
       s.exit()
     }
     const events = [['mousemove', move], ['mousedown', swallow], ['mouseup', swallow], ['click', click], ['keydown', key]]
-    s = window.__nuphosComments = {
+    s = window.__cerinComments = {
       waiter: null,
       arm: () => {
         locked = null
@@ -104,7 +104,7 @@ export function commentModeScript(pin?: number): string {
         for (const [type, fn] of events) removeEventListener(type, fn, true)
         cancelAnimationFrame(frame)
         host.remove()
-        delete window.__nuphosComments
+        delete window.__cerinComments
         s.waiter?.(null)
       },
     }
@@ -116,7 +116,7 @@ export function commentModeScript(pin?: number): string {
 })()`
 }
 
-export const EXIT_COMMENT_MODE_SCRIPT = 'window.__nuphosComments?.exit()'
+export const EXIT_COMMENT_MODE_SCRIPT = 'window.__cerinComments?.exit()'
 
 /** Validates the page's pick result; anything malformed is dropped. */
 export function parsePick(raw: unknown): PickedElement | null {

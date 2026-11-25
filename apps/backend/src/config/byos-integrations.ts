@@ -54,7 +54,7 @@ export function byosIntegrationsConfig() {
       // Self-managed OAuth client (https://developers.cloudflare.com/fundamentals/oauth/).
       // Confidential client: backend holds the secret and runs the auth-code
       // exchange. setupRedirect is the backend callback registered on the client
-      // (e.g. https://api.nuphos.ai/cloudflare-app/setup).
+      // (e.g. https://platform.cerin.ai/cloudflare-app/setup).
       oauth: {
         clientId: optional('CLOUDFLARE_OAUTH_CLIENT_ID'),
         clientSecret: optional('CLOUDFLARE_OAUTH_CLIENT_SECRET'),

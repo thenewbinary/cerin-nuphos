@@ -75,14 +75,14 @@ export async function runClaudeCodePreviewPrompt(args: {
   /** Durable conversation owner, when it differs from the turn's actor. */
   conversationOwnerUserId?: string
   locale: string
-  /** What Nuphos adds to the turn, sent in the blocks before the user's own text. */
+  /** What Cerin adds to the turn, sent in the blocks before the user's own text. */
   message: string
   /** The user's own words, sent last so a leading slash command reaches the agent. */
   text: string
   attachments?: RuntimeAttachment[]
   endpoint: TeamRuntimeEndpoint
   mcpServers?: AcpHttpMcpServer[]
-  /** Nuphos context appended to Claude Code's system prompt (session-scoped). */
+  /** Cerin context appended to Claude Code's system prompt (session-scoped). */
   systemPrompt?: string
   /** Session-scoped environment and native skills materialized before discovery. */
   runtime?: OpenAbSessionRuntime

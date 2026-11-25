@@ -22,7 +22,7 @@ const personal: GithubInstallation = {
 const org: GithubInstallation = {
   id: 'b',
   installationId: 202,
-  accountLogin: 'nuphos',
+  accountLogin: 'cerin',
   accountType: 'Organization',
   accountId: 2,
   targetType: 'selected',
@@ -47,7 +47,7 @@ test('settings URL links organizations only', () => {
   assert.equal(githubInstallationSettingsUrl(personal), null)
   assert.equal(
     githubInstallationSettingsUrl(org),
-    'https://github.com/organizations/nuphos/settings/installations/202',
+    'https://github.com/organizations/cerin/settings/installations/202',
   )
 })
 

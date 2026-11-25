@@ -4,11 +4,11 @@ import { Button } from '../../components/ui/button'
 import { t } from '../../i18n'
 import { PanelCard } from '../PanelCard'
 
-import type { NuphosDashboardDetail, DashboardPanel, OpenAgentChat } from '../schema'
+import type { CerinDashboardDetail, DashboardPanel, OpenAgentChat } from '../schema'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 type Props = {
-  detail: NuphosDashboardDetail | null
+  detail: CerinDashboardDetail | null
   detailError: boolean
   loading: boolean
   selectedId: string

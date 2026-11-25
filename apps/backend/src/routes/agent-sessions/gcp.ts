@@ -24,7 +24,7 @@ projectScoped.route('/firebase', firebaseRoutes)
 
 /**
  * The connector can't be used until the team fixes it: its service account is gone,
- * or Nuphos may not mint its tokens. A 503 would tell an agent to retry, which never helps.
+ * or Cerin may not mint its tokens. A 503 would tell an agent to retry, which never helps.
  */
 function connectorUnusable(error: unknown, serviceAccountEmail: string): AppError | undefined {
   const message = error instanceof Error ? error.message : ''

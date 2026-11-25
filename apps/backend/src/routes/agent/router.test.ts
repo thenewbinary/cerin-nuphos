@@ -6,13 +6,13 @@ import { errorHandler } from '@/lib/errors'
 import { requireAuthOrDeviceCredential } from '@/routes/agent/router'
 
 import type { AgentDevice } from '@/lib/agent/devices/store'
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 import type { AuthVariables } from '@/middleware/auth'
 
 const CREDENTIAL = 'nbx_secret'
-const USER = { id: 'owner', email: 'o@example.com', name: 'Owner' } as NuphosUser
+const USER = { id: 'owner', email: 'o@example.com', name: 'Owner' } as CerinUser
 
-function app(user: NuphosUser | null = USER, box = false) {
+function app(user: CerinUser | null = USER, box = false) {
   const routes = new Hono<{ Variables: AuthVariables }>()
 
   routes.use(

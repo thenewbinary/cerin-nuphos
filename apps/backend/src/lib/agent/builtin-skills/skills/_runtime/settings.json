@@ -4,9 +4,9 @@
   "disableArtifact": true,
   "permissions": {
     "allow": [
-      "mcp__nuphos-tools__memory_get",
-      "mcp__nuphos-tools__channel_read",
-      "mcp__nuphos-tools__channel_post"
+      "mcp__cerin-tools__memory_get",
+      "mcp__cerin-tools__channel_read",
+      "mcp__cerin-tools__channel_post"
     ]
   },
   "hooks": {

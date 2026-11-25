@@ -1,5 +1,5 @@
 // The backend this app talks to: a launch-time NUPHOS_API_URL (e.g. from
-// `bun run dev`), else the endpoint saved on the sign-in screen, else Nuphos
+// `bun run dev`), else the endpoint saved on the sign-in screen, else Cerin
 // Cloud. It is part of the account context (auth-session.ts), so a request's
 // backend and token are always read together, and is mirrored in process.env
 // so spawned helpers inherit it.
@@ -13,12 +13,12 @@ import { CLI_CONFIG_PATH } from './cli-config-path.ts'
 
 const DEFAULT_API_URL = 'https://platform.cerin.ai'
 
-// Nuphos's hosted backend. Auto-update, the changelog feed and usage analytics
-// are Nuphos services, so they stay on only for this host, never for the default.
-const NUPHOS_CLOUD_API_URL = 'https://api.nuphos.ai'
+// Cerin's hosted backend. Auto-update, the changelog feed and usage analytics
+// stay on only for this host.
+const CERIN_CLOUD_API_URL = 'https://platform.cerin.ai'
 
 // What this process was launched with; resetting the switch returns here, so a
-// `bun run dev` build never falls through to Nuphos Cloud.
+// `bun run dev` build never falls through to Cerin Cloud.
 const LAUNCH_API_URL = process.env.NUPHOS_API_URL || process.env.ATLAS_API_URL || ''
 
 // Paired with the sign-in file (cli.yaml → cli.api-url), so `bun run dev`'s
@@ -45,18 +45,18 @@ export function apiUrl(): string {
   return authSession.context().api
 }
 
-/** Whether the backend is Nuphos Cloud rather than a self-hosted one. */
-export function isNuphosCloud(): boolean {
-  return new URL(apiUrl()).hostname.replace(/\.$/u, '') === new URL(NUPHOS_CLOUD_API_URL).hostname
+/** Whether the backend is Cerin Cloud rather than a self-hosted one. */
+export function isCerinCloud(): boolean {
+  return new URL(apiUrl()).hostname.replace(/\.$/u, '') === new URL(CERIN_CLOUD_API_URL).hostname
 }
 
 /** A dev window may use Cloud, but must not advertise this computer there. */
 export function deviceRegistrationAllowed(dev: boolean): boolean {
-  return !dev || !isNuphosCloud()
+  return !dev || !isCerinCloud()
 }
 
 /**
- * Saves the endpoint (`null` restores the launch-time one, else Nuphos Cloud)
+ * Saves the endpoint (`null` restores the launch-time one, else Cerin Cloud)
  * and returns the new one. A different backend ends the session in memory.
  */
 export function setApiUrl(raw: string | null): string {

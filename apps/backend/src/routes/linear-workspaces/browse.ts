@@ -9,7 +9,7 @@ import type { LinearWorkspaceVariables } from '@/middleware/auth'
 import type { Hono } from 'hono'
 
 const TEAMS_QUERY = `
-  query NuphosTeams {
+  query CerinTeams {
     teams(first: 250) {
       nodes { id key name color }
     }
@@ -17,7 +17,7 @@ const TEAMS_QUERY = `
 `
 
 const TEAM_ISSUES_QUERY = `
-  query NuphosTeamIssues($teamId: String!, $first: Int!, $after: String, $filter: IssueFilter) {
+  query CerinTeamIssues($teamId: String!, $first: Int!, $after: String, $filter: IssueFilter) {
     team(id: $teamId) {
       id
       key

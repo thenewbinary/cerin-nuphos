@@ -12,7 +12,7 @@ export function tooManyModels(stack: Stack, add: boolean) {
     import { MongoClient } from 'mongodb'
     const [uri, teamId, add] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const usage = client.db('nuphos_e2e').collection('agent_token_usage')
+    const usage = client.db('cerin_e2e').collection('agent_token_usage')
     if (add === 'true')
       await usage.insertMany(Array.from({ length: 5001 }, (_, n) => ({
         recordId: 'e2e-many-' + n, sessionId: 'e2e-many', userId: 'e2e-many', teamId,
@@ -37,7 +37,7 @@ export function seedUsage(stack: Stack, sessionId: string, owner: string, seeds:
     import { MongoClient, ObjectId } from 'mongodb'
     const [uri, teamId, sessionId, owner, seeds] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const usage = client.db('nuphos_e2e').collection('agent_token_usage')
+    const usage = client.db('cerin_e2e').collection('agent_token_usage')
     const parsed = JSON.parse(seeds)
     if (parsed.length === 0) await usage.deleteMany({ teamId, operation: 'e2e.seed' })
     else
@@ -72,7 +72,7 @@ export function privateConversation(stack: Stack, sessionId: string, owner: stri
     import { MongoClient } from 'mongodb'
     const [uri, teamId, sessionId, owner, add] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const conversations = client.db('nuphos_e2e').collection('agent_conversations')
+    const conversations = client.db('cerin_e2e').collection('agent_conversations')
     if (add === 'true')
       await conversations.insertOne({
         sessionId, teamId, userId: owner, title: 'Private plan', generalAccess: 'none',
@@ -117,7 +117,7 @@ export function seedCaptureExtras(
     import { MongoClient, ObjectId } from 'mongodb'
     const [uri, teamId, member, owner, ownerSession] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const device = await db.collection('agent_devices').findOne({ userId: owner })
     const sessionId = 'e2e-member-private'
     await db.collection('agent_conversations').updateOne(

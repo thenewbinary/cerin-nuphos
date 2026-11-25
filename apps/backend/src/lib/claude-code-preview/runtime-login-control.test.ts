@@ -290,7 +290,7 @@ describe('an added agent whose CLI is missing', () => {
     expect(error?.message).toBe(
       "OpenCode isn't installed on this runtime's computer. Update Cerin there so it can install OpenCode, then try again.",
     )
-    // No shell command to paste: a computer whose Nuphos is up to date installs it on add.
+    // No shell command to paste: a computer whose Cerin is up to date installs it on add.
     expect(error?.message).not.toMatch(/`|curl|npm/u)
   })
 

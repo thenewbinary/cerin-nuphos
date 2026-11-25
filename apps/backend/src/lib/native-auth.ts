@@ -1,9 +1,9 @@
 import { db } from '@/lib/db'
 import { AppError } from '@/lib/errors'
-import { getNuphosUserById } from '@/lib/identity'
+import { getCerinUserById } from '@/lib/identity'
 import { generateOpaqueToken, hashToken, safeEqualStr, verifyPkceS256 } from '@/lib/oauth/tokens'
 
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 import type { Collection } from 'mongodb'
 
 /**
@@ -115,9 +115,7 @@ export async function registerNativeSession(input: {
 
   if (
     typeof redirectUri !== 'string' ||
-    (!isLoopbackRedirectUri(redirectUri) &&
-      redirectUri !== 'cerin://google-callback' &&
-      redirectUri !== 'nuphos://google-callback')
+    (!isLoopbackRedirectUri(redirectUri) && redirectUri !== 'cerin://google-callback')
   ) {
     throw new AppError(
       400,
@@ -248,7 +246,7 @@ export async function redeemNativeSession(
   handle: unknown,
   codeVerifier: unknown,
   deliveryCode: unknown,
-): Promise<NuphosUser> {
+): Promise<CerinUser> {
   const invalid = new AppError(400, 'invalid_handle', 'This sign-in request is no longer valid')
 
   if (typeof handle !== 'string' || handle === '') throw invalid
@@ -283,7 +281,7 @@ export async function redeemNativeSession(
 
   if (!consumed) throw invalid
 
-  const user = await getNuphosUserById(consumed.userId!)
+  const user = await getCerinUserById(consumed.userId!)
 
   if (!user) throw invalid
 

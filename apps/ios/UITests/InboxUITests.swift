@@ -339,7 +339,7 @@ final class InboxUITests: XCTestCase {
     /// A secret a Task under the Bot asks for is given in the Bot's chat, with the task's masked
     /// card: saved on the asking conversation, never sent to the task to be answered there.
     func testABotChatAsksForASecretWithTheSecureInputCard() throws {
-        responses["POST /agent/conversations/agent-ops/secrets"] = ["status": 200, "body": ["path": "/tmp/nuphos-secret-a1/0/DEPLOY_TOKEN"]]
+        responses["POST /agent/conversations/agent-ops/secrets"] = ["status": 200, "body": ["path": "/tmp/cerin-secret-a1/0/DEPLOY_TOKEN"]]
         responses["POST /agent/conversations/agent-ops/decisions/q-token/resolve"] = ["status": 200, "body": ["ok": true]]
         var task = InboxUITests.row("agent-ops", "Release ops", [
             "id": "q-token", "category": "credential", "question": "The rollout needs a deploy token.",
@@ -370,7 +370,7 @@ final class InboxUITests: XCTestCase {
 
     /// The Inbox asks for a secret with the same masked card, saved on the conversation that asked.
     func testTheInboxAsksForASecretWithTheSecureInputCard() throws {
-        responses["POST /agent/conversations/agent-ops/secrets"] = ["status": 200, "body": ["path": "/tmp/nuphos-secret-a1/0/DEPLOY_TOKEN"]]
+        responses["POST /agent/conversations/agent-ops/secrets"] = ["status": 200, "body": ["path": "/tmp/cerin-secret-a1/0/DEPLOY_TOKEN"]]
         responses["POST /agent/conversations/agent-ops/decisions/q-token/resolve"] = ["status": 200, "body": ["ok": true]]
         try listQuestions([InboxUITests.row("agent-ops", "Release ops", [
             "id": "q-token", "category": "credential", "question": "The rollout needs a deploy token.",

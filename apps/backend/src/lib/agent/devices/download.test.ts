@@ -243,7 +243,7 @@ test('a missing folder and a relative path are refused before anything is fetche
   }
 })
 
-test('a computer on an older Nuphos is told to update, without opening a stream', async () => {
+test('a computer on an older Cerin is told to update, without opening a stream', async () => {
   const dir = await folder()
   const { deps, streams } = await computer(false)
   const { groupId, transfers } = storage('x')

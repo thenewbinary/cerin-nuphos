@@ -37,7 +37,7 @@ Cerin. Pick one (most teams have exactly one) and run its `setupCommand` verbati
 ```bash
 # 1. Load the account's key into the env.
 bash skills/upstash/scripts/setup-credentials.sh <teamId> <accountId>
-source ~/.upstash/nuphos.env
+source ~/.upstash/cerin.env
 
 # The official CLI reuses UPSTASH_EMAIL + UPSTASH_API_KEY. It is the shortest
 # path for common operations and avoids hand-authoring URLs and auth headers.

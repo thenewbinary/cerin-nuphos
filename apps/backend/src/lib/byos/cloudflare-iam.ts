@@ -82,7 +82,7 @@ export type CloudflareIamPermissions = {
   tokenId: string | null
   /** "active", "disabled", or "expired" per the verify endpoint. */
   tokenStatus: string | null
-  /** Token name (often "Nuphos BYOC") if discoverable. */
+  /** Token name (often "Cerin BYOC") if discoverable. */
   tokenName: string | null
   /** ISO timestamp when the token expires, or null if never. */
   expiresOn: string | null

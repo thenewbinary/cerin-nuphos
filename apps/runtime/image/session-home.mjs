@@ -1,15 +1,15 @@
-import { spawn as nuphosSpawn } from 'node:child_process'
-import { createHash as nuphosHomeHash } from 'node:crypto'
+import { spawn as cerinSpawn } from 'node:child_process'
+import { createHash as cerinHomeHash } from 'node:crypto'
 import {
-  mkdirSync as nuphosMkdir,
-  readFileSync as nuphosReadFile,
-  lstatSync as nuphosLstat,
-  symlinkSync as nuphosSymlink,
-  utimesSync as nuphosUtimes,
-  writeFileSync as nuphosWriteFile,
+  mkdirSync as cerinMkdir,
+  readFileSync as cerinReadFile,
+  lstatSync as cerinLstat,
+  symlinkSync as cerinSymlink,
+  utimesSync as cerinUtimes,
+  writeFileSync as cerinWriteFile,
 } from 'node:fs'
-import { homedir as nuphosHostHome, userInfo as nuphosAccount } from 'node:os'
-import { join as nuphosJoin, delimiter as nuphosPathDelimiter } from 'node:path'
+import { homedir as cerinHostHome, userInfo as cerinAccount } from 'node:os'
+import { join as cerinJoin, delimiter as cerinPathDelimiter } from 'node:path'
 
 // Configuration isolation, not a filesystem security boundary: sessions still
 // run as the same OS user. Never mutate process.env or copy ambient credentials.
@@ -17,122 +17,117 @@ import { join as nuphosJoin, delimiter as nuphosPathDelimiter } from 'node:path'
 // refresh keep the same home. Hash it so metadata cannot supply a filesystem path.
 // A teammate's turns in someone else's conversation (NUPHOS_SESSION_ACTOR) get a
 // home of their own, so neither side picks up the other's CLI logins.
-export function nuphosSessionHomeEnv(sessionEnv = {}, runtimeEnv = process.env) {
+export function cerinSessionHomeEnv(sessionEnv = {}, runtimeEnv = process.env) {
   const id = sessionEnv.NUPHOS_SESSION_ID
   if (typeof id !== 'string' || !id.trim()) {
     if (sessionEnv.NUPHOS_TOKEN || sessionEnv.NUPHOS_TEAM_ID)
       throw new Error('Cerin sessions require NUPHOS_SESSION_ID for CLI configuration isolation')
-    return {} // Ordinary ACP clients without a Nuphos conversation keep their defaults.
+    return {} // Ordinary ACP clients without a Cerin conversation keep their defaults.
   }
-  const runtimeHome = runtimeEnv.HOME || runtimeEnv.USERPROFILE || nuphosHostHome()
-  const root = nuphosJoin(runtimeHome, '.nuphos', 'session-homes')
-  const hash = (value) => nuphosHomeHash('sha256').update(value).digest('hex')
+  const runtimeHome = runtimeEnv.HOME || runtimeEnv.USERPROFILE || cerinHostHome()
+  const root = cerinJoin(runtimeHome, '.cerin', 'session-homes')
+  const hash = (value) => cerinHomeHash('sha256').update(value).digest('hex')
   // <conversation> for the owner, <conversation>.<actor> for a teammate, so
   // reclaiming a conversation finds every home it left from its ID alone.
   const actor = sessionEnv.NUPHOS_SESSION_ACTOR
   const name = typeof actor === 'string' && actor ? `${hash(id)}.${hash(actor)}` : hash(id)
-  const home = nuphosJoin(root, name)
+  const home = cerinJoin(root, name)
   for (const dir of [root, home]) {
-    nuphosMkdir(dir, { recursive: true, mode: 0o700 })
-    if (!nuphosLstat(dir).isDirectory()) throw new Error('Session home must be a directory')
+    cerinMkdir(dir, { recursive: true, mode: 0o700 })
+    if (!cerinLstat(dir).isDirectory()) throw new Error('Session home must be a directory')
   }
-  nuphosKeepSessionHome(root, home)
+  cerinKeepSessionHome(root, home)
   // macOS finds the login Keychain through HOME, so without this a session has
   // none and every Keychain user (Chrome, for one) raises "Keychain Not Found".
   // OS credential stores stay shared. Link the account's own Keychains, which is
   // where they live whatever HOME the runtime itself was given.
   if (process.platform === 'darwin') {
-    nuphosMkdir(nuphosJoin(home, 'Library'), { recursive: true, mode: 0o700 })
+    cerinMkdir(cerinJoin(home, 'Library'), { recursive: true, mode: 0o700 })
     try {
-      nuphosSymlink(
-        nuphosJoin(nuphosAccount().homedir, 'Library', 'Keychains'),
-        nuphosJoin(home, 'Library', 'Keychains'),
+      cerinSymlink(
+        cerinJoin(cerinAccount().homedir, 'Library', 'Keychains'),
+        cerinJoin(home, 'Library', 'Keychains'),
       )
     } catch (error) {
       if (error.code !== 'EEXIST') throw error // Already linked, or a Keychain made here.
     }
   }
-  const config = nuphosJoin(home, '.config')
+  const config = cerinJoin(home, '.config')
   // pnpm 9 and 10 read the store from this rc, pnpm 11 from pnpm_config_store_dir.
   // npm_config_store_dir would reach 9 and 10 too, but npm 11 warns about it on every command.
-  const pnpmStore = nuphosJoin(runtimeHome, '.local', 'share', 'pnpm', 'store')
+  const pnpmStore = cerinJoin(runtimeHome, '.local', 'share', 'pnpm', 'store')
   try {
-    nuphosMkdir(nuphosJoin(config, 'pnpm'), { recursive: true, mode: 0o700 })
-    nuphosWriteFile(nuphosJoin(config, 'pnpm', 'rc'), `store-dir=${pnpmStore}\n`, {
+    cerinMkdir(cerinJoin(config, 'pnpm'), { recursive: true, mode: 0o700 })
+    cerinWriteFile(cerinJoin(config, 'pnpm', 'rc'), `store-dir=${pnpmStore}\n`, {
       flag: 'wx',
       mode: 0o600,
     })
   } catch (error) {
     // A session's own rc wins, and a cache setting never stops a session from starting.
     if (error.code !== 'EEXIST')
-      process.stderr.write(`nuphos: could not share the pnpm store: ${error.message}\n`)
+      process.stderr.write(`cerin: could not share the pnpm store: ${error.message}\n`)
   }
   // Gradle has no setting for its caches alone, and gradle.properties beside them can
   // hold repository credentials, so only caches/ is linked. Gradle locks inside it.
   try {
-    const gradleCaches = nuphosJoin(runtimeHome, '.gradle', 'caches')
-    nuphosMkdir(gradleCaches, { recursive: true, mode: 0o700 })
-    nuphosMkdir(nuphosJoin(home, '.gradle'), { recursive: true, mode: 0o700 })
-    nuphosSymlink(gradleCaches, nuphosJoin(home, '.gradle', 'caches'), 'junction')
+    const gradleCaches = cerinJoin(runtimeHome, '.gradle', 'caches')
+    cerinMkdir(gradleCaches, { recursive: true, mode: 0o700 })
+    cerinMkdir(cerinJoin(home, '.gradle'), { recursive: true, mode: 0o700 })
+    cerinSymlink(gradleCaches, cerinJoin(home, '.gradle', 'caches'), 'junction')
   } catch (error) {
     // Already linked, or caches this home made before they were shared.
     if (error.code !== 'EEXIST')
-      process.stderr.write(`nuphos: could not share the Gradle caches: ${error.message}\n`)
+      process.stderr.write(`cerin: could not share the Gradle caches: ${error.message}\n`)
   }
   return {
     HOME: home,
     USERPROFILE: home,
-    APPDATA: nuphosJoin(home, 'AppData', 'Roaming'),
-    LOCALAPPDATA: nuphosJoin(home, 'AppData', 'Local'),
+    APPDATA: cerinJoin(home, 'AppData', 'Roaming'),
+    LOCALAPPDATA: cerinJoin(home, 'AppData', 'Local'),
     XDG_CONFIG_HOME: config,
-    XDG_CACHE_HOME: nuphosJoin(home, '.cache'),
+    XDG_CACHE_HOME: cerinJoin(home, '.cache'),
     // Only these content-addressed, concurrency-safe caches are shared, so each
     // conversation stops re-downloading and rebuilding the same artifacts. Other
     // tools keep login state under XDG_CACHE_HOME, so that stays per conversation.
-    GOCACHE: nuphosJoin(runtimeHome, '.cache', 'go-build'),
-    GOMODCACHE: nuphosJoin(runtimeHome, 'go', 'pkg', 'mod'),
-    BUN_INSTALL_CACHE_DIR: nuphosJoin(runtimeHome, '.bun', 'install', 'cache'),
-    PLAYWRIGHT_BROWSERS_PATH: nuphosJoin(runtimeHome, '.cache', 'ms-playwright', 'browsers'),
-    PIP_CACHE_DIR: nuphosJoin(runtimeHome, '.cache', 'pip'),
-    UV_CACHE_DIR: nuphosJoin(runtimeHome, '.cache', 'uv'),
-    npm_config_cache: nuphosJoin(runtimeHome, '.npm'),
+    GOCACHE: cerinJoin(runtimeHome, '.cache', 'go-build'),
+    GOMODCACHE: cerinJoin(runtimeHome, 'go', 'pkg', 'mod'),
+    BUN_INSTALL_CACHE_DIR: cerinJoin(runtimeHome, '.bun', 'install', 'cache'),
+    PLAYWRIGHT_BROWSERS_PATH: cerinJoin(runtimeHome, '.cache', 'ms-playwright', 'browsers'),
+    PIP_CACHE_DIR: cerinJoin(runtimeHome, '.cache', 'pip'),
+    UV_CACHE_DIR: cerinJoin(runtimeHome, '.cache', 'uv'),
+    npm_config_cache: cerinJoin(runtimeHome, '.npm'),
     pnpm_config_store_dir: pnpmStore,
-    XDG_DATA_HOME: nuphosJoin(home, '.local', 'share'),
-    XDG_STATE_HOME: nuphosJoin(home, '.local', 'state'),
-    CLOUDSDK_CONFIG: nuphosJoin(config, 'gcloud'),
-    GH_CONFIG_DIR: nuphosJoin(config, 'gh'),
-    AWS_SHARED_CREDENTIALS_FILE: nuphosJoin(home, '.aws', 'credentials'),
-    AWS_CONFIG_FILE: nuphosJoin(home, '.aws', 'config'),
-    KUBECONFIG: nuphosJoin(home, '.kube', 'config'),
-    AZURE_CONFIG_DIR: nuphosJoin(home, '.azure'),
-    DOCKER_CONFIG: nuphosJoin(home, '.docker'),
-    GIT_CONFIG_GLOBAL: nuphosJoin(home, '.gitconfig'),
+    XDG_DATA_HOME: cerinJoin(home, '.local', 'share'),
+    XDG_STATE_HOME: cerinJoin(home, '.local', 'state'),
+    CLOUDSDK_CONFIG: cerinJoin(config, 'gcloud'),
+    GH_CONFIG_DIR: cerinJoin(config, 'gh'),
+    AWS_SHARED_CREDENTIALS_FILE: cerinJoin(home, '.aws', 'credentials'),
+    AWS_CONFIG_FILE: cerinJoin(home, '.aws', 'config'),
+    KUBECONFIG: cerinJoin(home, '.kube', 'config'),
+    AZURE_CONFIG_DIR: cerinJoin(home, '.azure'),
+    DOCKER_CONFIG: cerinJoin(home, '.docker'),
+    GIT_CONFIG_GLOBAL: cerinJoin(home, '.gitconfig'),
     GIT_CONFIG_NOSYSTEM: '1',
-    NPM_CONFIG_USERCONFIG: nuphosJoin(home, '.npmrc'),
-    GNUPGHOME: nuphosJoin(home, '.gnupg'),
-    PATH: [nuphosJoin(home, '.local', 'bin'), runtimeEnv.PATH]
+    NPM_CONFIG_USERCONFIG: cerinJoin(home, '.npmrc'),
+    GNUPGHOME: cerinJoin(home, '.gnupg'),
+    PATH: [cerinJoin(home, '.local', 'bin'), runtimeEnv.PATH]
       .filter(Boolean)
-      .join(nuphosPathDelimiter),
+      .join(cerinPathDelimiter),
     NUPHOS_SESSION_HOME: home,
   }
 }
 
 // Claude's own login/session store belongs to the runtime. Pin its location
 // before giving the SDK child (and its shell tools) the conversation's HOME.
-export function nuphosClaudeSessionEnv(
-  env,
-  sessionEnv,
-  runtimeEnv = process.env,
-  now = Date.now(),
-) {
+export function cerinClaudeSessionEnv(env, sessionEnv, runtimeEnv = process.env, now = Date.now()) {
   const configDir =
     runtimeEnv.CLAUDE_CONFIG_DIR ||
-    nuphosJoin(runtimeEnv.HOME || runtimeEnv.USERPROFILE || nuphosHostHome(), '.claude')
+    cerinJoin(runtimeEnv.HOME || runtimeEnv.USERPROFILE || cerinHostHome(), '.claude')
   // A token already in the environment was set on purpose and wins. Every spawn gets
   // it, a session-less one (the model probe) too, or that one would refresh the old login.
-  const token = runtimeEnv.CLAUDE_CODE_OAUTH_TOKEN ? null : nuphosLongLivedToken(configDir, now)
+  const token = runtimeEnv.CLAUDE_CODE_OAUTH_TOKEN ? null : cerinLongLivedToken(configDir, now)
   const withToken = token ? { ...env, CLAUDE_CODE_OAUTH_TOKEN: token } : env
-  const isolated = nuphosSessionHomeEnv(sessionEnv, runtimeEnv)
+  const isolated = cerinSessionHomeEnv(sessionEnv, runtimeEnv)
   if (!isolated.HOME) return withToken
   return { ...withToken, CLAUDE_CONFIG_DIR: configDir, ...isolated }
 }
@@ -141,10 +136,10 @@ export function nuphosClaudeSessionEnv(
 // sessions starting together cannot spend a refresh token another one still holds.
 // Read at every session start: a new sign-in reaches the next session, and a lapsed
 // token falls back to the runtime's ordinary login, if it still has one.
-export function nuphosLongLivedToken(configDir, now = Date.now()) {
+export function cerinLongLivedToken(configDir, now = Date.now()) {
   try {
     const record = JSON.parse(
-      nuphosReadFile(nuphosJoin(configDir, '.nuphos-oauth-token.json'), 'utf8'),
+      cerinReadFile(cerinJoin(configDir, '.cerin-oauth-token.json'), 'utf8'),
     )
     if (typeof record.token !== 'string' || !record.token) return null
     return Date.parse(record.expiresAt) > now ? record.token : null
@@ -157,52 +152,52 @@ export function nuphosLongLivedToken(configDir, now = Date.now()) {
 // ones nobody has used for a week. It runs here because creating homes is what
 // fills the disk, and every runtime (cloud image, Desktop, CLI host) creates
 // them through this module. A woken conversation whose home was swept gets a
-// fresh one from nuphosSessionHomeEnv, without its old CLI logins.
-const NUPHOS_SWEEP_EVERY_MS = 60 * 60 * 1000
-const nuphosLiveHomes = new Set()
-let nuphosHomeHeartbeat
-let nuphosSweepCheckedAt = 0
+// fresh one from cerinSessionHomeEnv, without its old CLI logins.
+const CERIN_SWEEP_EVERY_MS = 60 * 60 * 1000
+const cerinLiveHomes = new Set()
+let cerinHomeHeartbeat
+let cerinSweepCheckedAt = 0
 
-function nuphosTouchHome(home) {
+function cerinTouchHome(home) {
   const now = new Date()
   try {
-    nuphosUtimes(home, now, now)
+    cerinUtimes(home, now, now)
   } catch {
     /* Gone or unwritable; the sweep keeps a home it cannot judge. */
   }
 }
 
 // The lease: while this process lives, the homes it handed out stay fresh.
-function nuphosKeepSessionHome(root, home) {
-  nuphosTouchHome(home)
-  nuphosLiveHomes.add(home)
-  nuphosHomeHeartbeat ??= setInterval(
-    () => nuphosLiveHomes.forEach(nuphosTouchHome),
-    NUPHOS_SWEEP_EVERY_MS,
+function cerinKeepSessionHome(root, home) {
+  cerinTouchHome(home)
+  cerinLiveHomes.add(home)
+  cerinHomeHeartbeat ??= setInterval(
+    () => cerinLiveHomes.forEach(cerinTouchHome),
+    CERIN_SWEEP_EVERY_MS,
   )
-  nuphosHomeHeartbeat.unref?.()
-  if (Date.now() - nuphosSweepCheckedAt < NUPHOS_SWEEP_EVERY_MS) return
-  nuphosSweepCheckedAt = Date.now()
+  cerinHomeHeartbeat.unref?.()
+  if (Date.now() - cerinSweepCheckedAt < CERIN_SWEEP_EVERY_MS) return
+  cerinSweepCheckedAt = Date.now()
   // Without /proc, ps or lsof nothing can tell a home is in use, so Windows keeps them.
   if (process.platform !== 'linux' && process.platform !== 'darwin') return
-  const stamp = nuphosJoin(root, '.sweep')
+  const stamp = cerinJoin(root, '.sweep')
   try {
-    if (Date.now() - nuphosLstat(stamp).mtimeMs < NUPHOS_SWEEP_EVERY_MS) return
+    if (Date.now() - cerinLstat(stamp).mtimeMs < CERIN_SWEEP_EVERY_MS) return
   } catch {
     /* First sweep on this runtime. */
   }
   try {
-    nuphosWriteFile(stamp, '')
+    cerinWriteFile(stamp, '')
   } catch {
     return
   }
   // Its own process at the lowest CPU and IO priority, so a shared machine does
   // not slow down. Only PATH (and Electron's run-as-Node switch) is passed on.
-  const node = [process.execPath, '-e', `(${nuphosSweepSessionHomes})(process.argv[1])`, root]
+  const node = [process.execPath, '-e', `(${cerinSweepSessionHomes})(process.argv[1])`, root]
   const env = { PATH: process.env.PATH ?? '/usr/bin:/bin' }
   if (process.env.ELECTRON_RUN_AS_NODE) env.ELECTRON_RUN_AS_NODE = process.env.ELECTRON_RUN_AS_NODE
   const start = (argv, fallback) => {
-    const child = nuphosSpawn(argv[0], argv.slice(1), { env, detached: true, stdio: 'ignore' })
+    const child = cerinSpawn(argv[0], argv.slice(1), { env, detached: true, stdio: 'ignore' })
     child.once('error', () => fallback && start(fallback))
     child.unref()
   }
@@ -214,7 +209,7 @@ function nuphosKeepSessionHome(root, home) {
 // Self-contained (its source is run as the sweep process): removes the direct
 // children of `root` named like a session home that no process uses and
 // where nothing in the tree changed within `idleMs`.
-export async function nuphosSweepSessionHomes(root, options = {}) {
+export async function cerinSweepSessionHomes(root, options = {}) {
   const fs = await import('node:fs/promises')
   const path = await import('node:path')
   const os = await import('node:os')

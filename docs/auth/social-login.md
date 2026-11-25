@@ -1,6 +1,6 @@
 # Google and Apple sign-in across clients
 
-Tracks https://github.com/nuphos/nuphos/issues/700.
+Tracks https://github.com/thenewbinary/cerin-platform/issues/700.
 
 ## Clients and contract
 
@@ -9,15 +9,15 @@ system browser, so the same provider flow works on desktop (macOS, Windows,
 Linux), iOS, Android and CLI. The native apps register
 `POST /auth/native/session` with an S256 challenge and open the chooser with the
 returned opaque `handle`. Desktop, Android and CLI retain their loopback listener;
-iOS uses the exact `nuphos://google-callback` URI with ASWebAuthenticationSession.
+iOS uses the exact `cerin://google-callback` URI with ASWebAuthenticationSession.
 Only a one-time delivery code and the original client state reach the callback.
 The process that registered the attempt redeems the code with its in-memory
 verifier. Session tokens never appear in native callback URLs.
 
 The browser-only entry point (no handle) authenticates using a Secure, HttpOnly,
-SameSite=Lax `__Host-nuphos-social` cookie. `/auth/social/session` returns the
+SameSite=Lax `__Host-cerin-social` cookie. `/auth/social/session` returns the
 current browser user, never the session token. This does not change the separate
-`nuphos-landingpage` repository or its existing session cookie contract. That
+`cerin-landingpage` repository or its existing session cookie contract. That
 website must integrate this endpoint before its own UI can offer Apple login.
 No cross-origin redirects or arbitrary return URLs are accepted.
 

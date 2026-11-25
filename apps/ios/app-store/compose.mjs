@@ -67,7 +67,7 @@ const shots = {
       <div class="tile" style="left:584px;top:1250px;width:640px;height:190px;transform:rotate(2.5deg)"></div>
       <div style="position:absolute;left:584px;top:1250px;width:640px;height:190px;transform:rotate(2.5deg);display:flex;align-items:center;gap:28px;padding:0 40px">
         ${mark.codex(86, '#fff')}<div style="flex:1"><div style="font-size:40px;font-weight:600;letter-spacing:-.6px">Your ChatGPT plan</div><div style="font-size:28px;color:rgba(255,255,255,.62);margin-top:6px">Signed in as you</div></div>${sym('checkmark.circle.fill', 'regular', 46, '#34C759')}</div>
-      <div style="position:absolute;left:330px;top:1490px;width:660px;height:76px;border-radius:38px;background:#fff;color:#18181B;display:grid;place-items:center;font-size:32px;font-weight:600;letter-spacing:-.4px;box-shadow:0 20px 60px rgba(0,0,0,.5)">No extra model charge from Nuphos</div>` },
+      <div style="position:absolute;left:330px;top:1490px;width:660px;height:76px;border-radius:38px;background:#fff;color:#18181B;display:grid;place-items:center;font-size:32px;font-weight:600;letter-spacing:-.4px;box-shadow:0 20px 60px rgba(0,0,0,.5)">No extra model charge from Cerin</div>` },
 };
 
 // iPad 13": the same headlines and lifted elements around the iPad port (ui.ipad()), whose screen
@@ -106,7 +106,7 @@ const ipadShots = () => {
     '04-agents': { ...shots['04-agents'], body: `${ipadFrame(ui.runtimes())}
       ${tile(130, PY(470), -3, mark.claude(104), 'Your Claude plan')}
       ${tile(1150, PY(760), 2.5, mark.codex(104, '#fff'), 'Your ChatGPT plan')}
-      <div style="position:absolute;left:592px;top:${PY(1010)}px;width:880px;height:96px;border-radius:48px;background:#fff;color:#18181B;display:grid;place-items:center;font-size:42px;font-weight:600;letter-spacing:-.5px;box-shadow:0 20px 60px rgba(0,0,0,.5)">No extra model charge from Nuphos</div>` },
+      <div style="position:absolute;left:592px;top:${PY(1010)}px;width:880px;height:96px;border-radius:48px;background:#fff;color:#18181B;display:grid;place-items:center;font-size:42px;font-weight:600;letter-spacing:-.5px;box-shadow:0 20px 60px rgba(0,0,0,.5)">No extra model charge from Cerin</div>` },
   };
 };
 // Lines each lifted message up with the right edge and middle of the hidden one it replaces,

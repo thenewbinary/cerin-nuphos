@@ -55,7 +55,7 @@ The customer account needs (a) an IAM OIDC identity provider for the issuer
       "Condition": {
         "StringEquals": {
           "<issuer-host>:aud": "sts.amazonaws.com",
-          "<issuer-host>:sub": "nuphos:team:<team-id>"
+          "<issuer-host>:sub": "cerin:team:<team-id>"
         }
       }
     }
@@ -102,7 +102,7 @@ aws iam create-open-id-connect-provider \
   --url https://<issuer-host> \
   --client-id-list sts.amazonaws.com
 
-cat > /tmp/nuphos-trust.json <<JSON
+cat > /tmp/cerin-trust.json <<JSON
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -115,7 +115,7 @@ cat > /tmp/nuphos-trust.json <<JSON
       "Condition": {
         "StringEquals": {
           "<issuer-host>:aud": "sts.amazonaws.com",
-          "<issuer-host>:sub": "nuphos:team:<team-id>"
+          "<issuer-host>:sub": "cerin:team:<team-id>"
         }
       }
     }
@@ -124,13 +124,13 @@ cat > /tmp/nuphos-trust.json <<JSON
 JSON
 
 aws iam create-role \
-  --role-name nuphos-connector \
-  --assume-role-policy-document file:///tmp/nuphos-trust.json \
+  --role-name cerin-connector \
+  --assume-role-policy-document file:///tmp/cerin-trust.json \
   --description "Assumed by the Cerin BYOS connector (OIDC web identity)"
 
 # Attach whatever permissions Cerin should have. Scope to least privilege;
 # confirm the policy set with the user before attaching. Example (read-only):
-aws iam attach-role-policy --role-name nuphos-connector \
+aws iam attach-role-policy --role-name cerin-connector \
   --policy-arn arn:aws:iam::aws:policy/ReadOnlyAccess
 ```
 
@@ -144,7 +144,7 @@ that this widens who can assume that role.
 After either option, capture the role ARN:
 
 ```bash
-aws iam get-role --role-name nuphos-connector --query 'Role.Arn' --output text
+aws iam get-role --role-name cerin-connector --query 'Role.Arn' --output text
 ```
 
 ### 4. Finish the connection (`create_connector` MCP)
@@ -155,7 +155,7 @@ Once the requested role is ready, call `create_connector` with a short `label` a
 {
   "connector": {
     "provider": "aws",
-    "roleArn": "arn:aws:iam::<account>:role/nuphos-connector"
+    "roleArn": "arn:aws:iam::<account>:role/cerin-connector"
   }
 }
 ```
@@ -170,7 +170,7 @@ binding** using OIDC web identity — the only way Cerin assumes an AWS role.
 It retries briefly for IAM propagation. If it returns `400 role_not_assumable`, the trust
 policy from step 3 hasn't propagated or is wrong — wait a few seconds and retry,
 or re-check the trust document; the `sub` must be exactly
-`nuphos:team:<team-id>` for the binding team. A successful tool result means the binding is live
+`cerin:team:<team-id>` for the binding team. A successful tool result means the binding is live
 and already assume-verified.
 
 ### 5. Confirm it works

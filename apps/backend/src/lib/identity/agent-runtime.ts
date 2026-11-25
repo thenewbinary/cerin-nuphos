@@ -5,7 +5,7 @@ import { runtimeProvider } from '@/lib/claude-code-preview/runtime-provider'
 import { mapTeam, teams } from '@/lib/identity/shared'
 
 import type { OpenAbProvider } from '@/lib/claude-code-preview/runtime-provider'
-import type { NuphosTeam } from '@/lib/identity/types'
+import type { CerinTeam } from '@/lib/identity/types'
 
 export type TeamAgentRuntime = OpenAbProvider
 
@@ -14,7 +14,7 @@ export const DEFAULT_TEAM_AGENT_RUNTIME: TeamAgentRuntime = 'claude-code'
 export async function setTeamAgentRuntime(
   teamId: string,
   runtime: TeamAgentRuntime,
-): Promise<NuphosTeam | null> {
+): Promise<CerinTeam | null> {
   if (!MongoObjectId.isValid(teamId)) return null
   const result = await teams().findOneAndUpdate(
     { _id: new MongoObjectId(teamId), deletedAt: { $exists: false } },

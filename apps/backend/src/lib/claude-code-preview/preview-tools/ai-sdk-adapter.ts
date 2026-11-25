@@ -116,7 +116,7 @@ function adaptExecute(
 }
 
 /**
- * Runs a Nuphos tool whose card is the runtime's own ACP call, the one the
+ * Runs a Cerin tool whose card is the runtime's own ACP call, the one the
  * transcript stores, so a live turn and a reload show the same single card.
  */
 export async function presentedByRuntime(
@@ -126,7 +126,7 @@ export async function presentedByRuntime(
   args: unknown,
   run: (toolCallId: string) => unknown,
 ) {
-  const toolCallId = `nuphos-${randomUUID()}`
+  const toolCallId = `cerin-${randomUUID()}`
   const emit = (frame: Record<string, unknown>) =>
     publish(ctx, frame).catch(() => {
       // Frames are best-effort UI; the tool result itself still reaches the agent.

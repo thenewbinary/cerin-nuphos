@@ -32,7 +32,7 @@ export const MESSAGES: Record<Exclude<Locale, 'en'>, Messages> = {
   es,
 }
 
-const KEY = 'nuphos.locale'
+const KEY = 'cerin.locale'
 
 function detectLocale(): Locale {
   const saved = readLocalStorage(KEY)

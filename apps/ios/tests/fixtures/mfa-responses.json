@@ -94,7 +94,7 @@
     "status": 200,
     "body": {
       "secret": "JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP",
-      "otpauthUrl": "otpauth://totp/Nuphos%3Aalex%40example.com?secret=JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP&issuer=Nuphos&algorithm=SHA1&digits=6&period=30"
+      "otpauthUrl": "otpauth://totp/Cerin%3Aalex%40example.com?secret=JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP&issuer=Cerin&algorithm=SHA1&digits=6&period=30"
     }
   },
   "POST /auth/mfa/totp/confirm": {

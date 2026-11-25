@@ -1,7 +1,7 @@
 import { createMessageMetadata } from '@/lib/agent/message-attribution'
 import { buildPendingUserMessage } from '@/lib/agent/pending-messages'
 import { turnRunner } from '@/lib/agent/turn-runner'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import {
   claimLarkEvent,
   consumeLarkPairCode,
@@ -46,7 +46,7 @@ export async function handleLarkMessage(
 ): Promise<void> {
   const { ctx, binding } = app
   const appId = binding.appId
-  const teamId = app.nuphosTeamId
+  const teamId = app.cerinTeamId
   const eventId = body.header?.event_id
   const message = body.event?.message
   const openId = body.event?.sender?.sender_id?.open_id
@@ -111,24 +111,24 @@ export async function handleLarkMessage(
 
         if (pending) {
           // Redeeming a code rebinds this openId. If it was already linked to a
-          // *different* Nuphos user, that user silently loses the mapping — leave
+          // *different* Cerin user, that user silently loses the mapping — leave
           // an audit trail rather than overwriting without a trace.
           const prior = await getLarkUserMapping(appId, teamId, openId)
 
-          if (prior && prior.nuphosUserId !== pending.nuphosUserId) {
+          if (prior && prior.cerinUserId !== pending.cerinUserId) {
             logEvent('warn', 'lark.agent.user_mapping.rebind', {
               team_id: teamId,
               lark_app_id: appId,
               lark_open_id: openId,
-              prior_nuphos_user_id: prior.nuphosUserId,
-              new_nuphos_user_id: pending.nuphosUserId,
+              prior_cerin_user_id: prior.cerinUserId,
+              new_cerin_user_id: pending.cerinUserId,
             })
           }
           await upsertLarkUserMapping({
             appId,
             larkOpenId: openId,
             teamId,
-            nuphosUserId: pending.nuphosUserId,
+            cerinUserId: pending.cerinUserId,
             createdBy: 'pair-code',
           })
           logEvent('info', 'lark.agent.user_mapping.pair_code_link', {
@@ -179,12 +179,12 @@ export async function handleLarkMessage(
       chatId,
       threadId,
       teamId,
-      agentUserId: userMapping.nuphosUserId,
+      agentUserId: userMapping.cerinUserId,
       createdByLarkOpenId: openId,
       lastLarkEventId: eventId,
     })
 
-    // A thread's session is bound to its creator's Nuphos identity; never let a
+    // A thread's session is bound to its creator's Cerin identity; never let a
     // different participant drive it (they would act as the creator).
     if (thread.createdByLarkOpenId !== openId) {
       await replyNotice(
@@ -257,7 +257,7 @@ export async function handleLarkMessage(
         agentUserId: thread.agentUserId,
         sessionId: thread.sessionId,
         // Act as the mapped user, run-scoped token (same shape as trigger fires).
-        nuphosToken: signNuphosToken(thread.agentUserId, 60 * 60 * 8),
+        cerinToken: signCerinToken(thread.agentUserId, 60 * 60 * 8),
         messages,
         firstMessage: text,
         sender: { openId, displayName: senderName },

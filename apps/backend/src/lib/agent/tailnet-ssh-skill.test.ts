@@ -1,4 +1,4 @@
-// The connect script carries the promises Nuphos makes to a customer's
+// The connect script carries the promises Cerin makes to a customer's
 // security review. They are one careless edit away from silently going away,
 // and nothing else in CI would notice, so pin them here.
 import { readFileSync } from 'node:fs'
@@ -57,7 +57,7 @@ describe('tailnet-ssh connect.sh', () => {
 
     expect(connect).toContain('SSH_CONFIG_MARKER=')
     expect(connect).toContain('SSH_CONFIG_END=')
-    expect(disconnect).toContain('>>> nuphos-tailnet-ssh >>>')
-    expect(disconnect).toContain('<<< nuphos-tailnet-ssh <<<')
+    expect(disconnect).toContain('>>> cerin-tailnet-ssh >>>')
+    expect(disconnect).toContain('<<< cerin-tailnet-ssh <<<')
   })
 })

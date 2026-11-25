@@ -21,10 +21,10 @@ test('preset and custom view ranges survive URL round trips', () => {
   for (const query of queries) {
     const first = navigationFromAppPath(`${base}?${new URLSearchParams(query)}`)!
 
-    assert.deepEqual(first.nuphosDashboard?.viewRange, query)
+    assert.deepEqual(first.cerinDashboard?.viewRange, query)
     const produced = pageLocationForNavigation(first).href
 
-    assert.deepEqual(navigationFromAppPath(produced)?.nuphosDashboard?.viewRange, query)
+    assert.deepEqual(navigationFromAppPath(produced)?.cerinDashboard?.viewRange, query)
   }
 })
 

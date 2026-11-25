@@ -16,7 +16,7 @@ test(
     skip: process.platform === 'win32',
   },
   async (t) => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-cli-probe-'))
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-cli-probe-'))
 
     t.after(() => rmSync(dir, { recursive: true, force: true }))
     // A shebang cannot contain the spaces in the macOS session Node path.
@@ -61,7 +61,7 @@ test(
   'update runs the CLI on PATH with its own update command',
   { skip: process.platform === 'win32' },
   async (t) => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-cli-update-'))
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-cli-update-'))
 
     t.after(() => rmSync(dir, { recursive: true, force: true }))
     writeFileSync(
@@ -85,7 +85,7 @@ test(
   'a Claude login is read from its credential, never by running claude auth status',
   { skip: process.platform === 'win32' },
   async (t) => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-cli-tokens-'))
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-cli-tokens-'))
 
     t.after(() => rmSync(dir, { recursive: true, force: true }))
     const node = `'${process.execPath.replaceAll("'", "'\\''")}'`
@@ -138,7 +138,7 @@ test(
   'Grok Build and DSH are signed in once their credential file is in the agent home',
   { skip: process.platform === 'win32' },
   async (t) => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-cli-credential-'))
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-cli-credential-'))
     const home = path.join(dir, 'home')
 
     t.after(() => rmSync(dir, { recursive: true, force: true }))
@@ -177,7 +177,7 @@ test(
   'OpenCode with no provider connected is signed in, as its free models need no sign-in (#3598)',
   { skip: process.platform === 'win32' },
   async (t) => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-cli-opencode1-'))
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-cli-opencode1-'))
     const home = path.join(dir, 'home')
 
     t.after(() => rmSync(dir, { recursive: true, force: true }))
@@ -201,7 +201,7 @@ test(
   'OpenCode 2.x is signed in with nothing connected, and a connection names the account',
   { skip: process.platform === 'win32' },
   async (t) => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-cli-opencode2-'))
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-cli-opencode2-'))
     const home = path.join(dir, 'home')
     const listing = path.join(dir, 'listing.json')
     const ran = path.join(dir, 'args')
@@ -271,7 +271,7 @@ test(
   'Antigravity status uses its CLI in the prepared home, never an OAuth file',
   { skip: process.platform === 'win32' },
   async (t) => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-agy-cli-'))
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-agy-cli-'))
     const home = path.join(dir, 'runtime')
 
     t.after(() => rmSync(dir, { recursive: true, force: true }))

@@ -4,7 +4,7 @@ import { t } from '../../i18n'
 import { CadenceMenu } from './CadenceMenu'
 import { refreshAge } from './helpers'
 
-import type { NuphosDashboard, NuphosDashboardDetail } from '../schema'
+import type { CerinDashboard, CerinDashboardDetail } from '../schema'
 
 /** The open dashboard's header controls: last refresh, auto-refresh, refresh. */
 export function DashboardHeaderControls({
@@ -16,11 +16,11 @@ export function DashboardHeaderControls({
   onSaved,
 }: {
   teamId: string
-  detail: NuphosDashboardDetail | null
+  detail: CerinDashboardDetail | null
   lastRefreshAt: string | null
   refreshing: boolean
   onRefresh: () => void
-  onSaved: (dashboard: NuphosDashboard) => void
+  onSaved: (dashboard: CerinDashboard) => void
 }) {
   return (
     <>

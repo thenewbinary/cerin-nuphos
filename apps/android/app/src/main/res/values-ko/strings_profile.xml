@@ -66,7 +66,7 @@
     <string name="profile_two_factor_remove">제거</string>
     <string name="profile_two_factor_add_passkey">패스키 추가</string>
     <string name="profile_two_factor_turn_on">켜기</string>
-    <string name="profile_two_factor_setup_step_add">1. 인증 앱에 Nuphos를 추가하세요</string>
+    <string name="profile_two_factor_setup_step_add">1. 인증 앱에 Cerin를 추가하세요</string>
     <string name="profile_two_factor_open_authenticator">인증 앱에서 열기</string>
     <string name="profile_two_factor_enter_key">또는 이 키를 입력하세요:</string>
     <string name="profile_two_factor_setup_step_code">2. 앱에 표시된 6자리 코드를 입력하세요</string>

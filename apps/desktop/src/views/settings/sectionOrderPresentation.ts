@@ -11,7 +11,7 @@ export const AGENT_SECTION_LABELS: Record<AgentSectionId, string> = {
   agents: t('Runtimes'),
 }
 
-const STORAGE_PREFIX = 'nuphos.agentsPageOrder.v1:'
+const STORAGE_PREFIX = 'cerin.agentsPageOrder.v1:'
 
 /** One saved order per person and team, so a shared computer keeps them apart. */
 export function sectionOrderStorageKey(userId: string, teamId: string): string {

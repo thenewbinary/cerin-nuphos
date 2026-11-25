@@ -112,7 +112,7 @@ after(async () => {
 })
 
 test('Cloud sign-in stays usable without registering a dev device or opening its tunnel', async () => {
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   authSession.set(token, 'alice')
   initLocalRuntime()
   await settle()
@@ -133,7 +133,7 @@ test('switching endpoints ends the session, so hosting stops until a sign-in on 
   assert.equal(getLocalRuntimeState().userId, 'alice')
   assert.deepEqual(requests, ['/agent/devices'])
   assert.deepEqual(sockets, ['ws://127.0.0.1:3718/agent/devices/dev-device/runtime-tunnel'])
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   await settle()
   assert.equal(getLocalRuntimeState().userId, null)
   assert.ok(stopped > 0)

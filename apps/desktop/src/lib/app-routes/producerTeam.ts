@@ -146,10 +146,10 @@ export function teamPageLocation(
     const base = `/teams/${pathSegment(scope.teamId)}/dashboards`
 
     return pageLocation(
-      navigation.nuphosDashboard
-        ? `${base}/${pathSegment(navigation.nuphosDashboard.dashboardId)}`
+      navigation.cerinDashboard
+        ? `${base}/${pathSegment(navigation.cerinDashboard.dashboardId)}`
         : base,
-      navigation.nuphosDashboard?.viewRange,
+      navigation.cerinDashboard?.viewRange,
     )
   }
   if (active === 'team.plans') {

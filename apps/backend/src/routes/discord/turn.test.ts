@@ -19,7 +19,7 @@ const message = {
   metadata: {
     version: 1,
     sender: { type: 'user', id: 'alice', displayName: 'Alice' },
-    source: 'nuphos',
+    source: 'cerin',
     sentAt: '2026-01-01T00:00:00.000Z',
   },
   parts: [{ type: 'text', text: 'ship it?' }],

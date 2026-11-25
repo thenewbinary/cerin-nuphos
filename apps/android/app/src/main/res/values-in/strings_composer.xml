@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">Kredensial · %1$d</string>
     <string name="composer_computers_count">Komputer · %1$d</string>
     <string name="composer_queue_a_message">Antrekan pesan</string>
-    <string name="composer_ask_nuphos">Tanyakan apa saja ke Nuphos</string>
+    <string name="composer_ask_cerin">Tanyakan apa saja ke Cerin</string>
     <string name="composer_remove_attachment_failed">Tidak dapat menghapus lampiran tersimpan ini. Periksa penyimpanan lalu coba lagi.</string>
     <string name="composer_photos">Foto</string>
     <string name="composer_files">File</string>
@@ -55,8 +55,8 @@
     <string name="composer_clear">Hapus</string>
     <string name="composer_retry">Coba lagi</string>
     <string name="composer_loading_iam">Memuat IAM…</string>
-    <string name="composer_no_computers">Tidak ada komputer yang tersedia. Hubungkan komputer di Nuphos untuk menggunakannya di sini.</string>
-    <string name="composer_no_computers_or_iam">Tidak ada komputer atau IAM yang tersedia. Hubungkan komputer atau akun cloud di Nuphos untuk menggunakannya di sini.</string>
+    <string name="composer_no_computers">Tidak ada komputer yang tersedia. Hubungkan komputer di Cerin untuk menggunakannya di sini.</string>
+    <string name="composer_no_computers_or_iam">Tidak ada komputer atau IAM yang tersedia. Hubungkan komputer atau akun cloud di Cerin untuk menggunakannya di sini.</string>
     <string name="composer_allow_computers">Izinkan agen ini mengoperasikan komputer yang Anda pilih.</string>
     <string name="composer_permission_mode">Mode izin</string>
     <string name="composer_load_runtimes_failed">Tidak dapat memuat runtime.</string>
@@ -66,7 +66,7 @@
     <string name="composer_runtime_wait">Tunggu hingga respons saat ini atau pesan tertunda selesai sebelum beralih runtime.</string>
     <string name="composer_loading_runtimes">Memuat runtime…</string>
     <string name="composer_no_runtimes">Tidak ada runtime yang tersedia.</string>
-    <string name="composer_no_runtimes_body">Buka Nuphos di komputer Anda untuk menambahkan Box atau menghubungkan komputer Anda sendiri.</string>
+    <string name="composer_no_runtimes_body">Buka Cerin di komputer Anda untuk menambahkan Box atau menghubungkan komputer Anda sendiri.</string>
     <string name="composer_manage_runtimes">Kelola komputer dan runtime</string>
     <string name="composer_refresh_runtimes">Muat ulang runtime</string>
     <string name="composer_move_to">Pindahkan ke %1$s?</string>

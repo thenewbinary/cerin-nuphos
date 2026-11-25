@@ -11,7 +11,7 @@ import { t } from '../../i18n'
 import { SectionHeading } from './SectionHeading'
 
 import type { Column } from '../../components/Table'
-import type { NuphosDashboard } from '../schema'
+import type { CerinDashboard } from '../schema'
 import type { Dispatch, SetStateAction } from 'react'
 
 /**
@@ -27,14 +27,14 @@ export function FormerMembersSection({
   onOpen,
 }: {
   teamId: string
-  columns: Column<NuphosDashboard>[]
-  setDashboards: Dispatch<SetStateAction<NuphosDashboard[]>>
-  onOpen: (dashboard: NuphosDashboard) => void
+  columns: Column<CerinDashboard>[]
+  setDashboards: Dispatch<SetStateAction<CerinDashboard[]>>
+  onOpen: (dashboard: CerinDashboard) => void
 }) {
-  const [left, setLeft] = useState<NuphosDashboard[]>([])
+  const [left, setLeft] = useState<CerinDashboard[]>([])
   const [names, setNames] = useState<Map<string, string>>(new Map())
-  const [menu, setMenu] = useState<{ row: NuphosDashboard; x: number; y: number } | null>(null)
-  const [toDelete, setToDelete] = useState<NuphosDashboard | null>(null)
+  const [menu, setMenu] = useState<{ row: CerinDashboard; x: number; y: number } | null>(null)
+  const [toDelete, setToDelete] = useState<CerinDashboard | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -56,8 +56,8 @@ export function FormerMembersSection({
 
   if (left.length === 0) return null
 
-  const creatorName = (d: NuphosDashboard) => names.get(d.createdBy) ?? t('Former member')
-  const creator: Column<NuphosDashboard> = {
+  const creatorName = (d: CerinDashboard) => names.get(d.createdBy) ?? t('Former member')
+  const creator: Column<CerinDashboard> = {
     key: 'createdBy',
     header: t('Created by'),
     width: 160,
@@ -66,7 +66,7 @@ export function FormerMembersSection({
   }
   const withCreator = [...columns.slice(0, 1), creator, ...columns.slice(1)]
 
-  const moveToTeam = async (dashboard: NuphosDashboard) => {
+  const moveToTeam = async (dashboard: CerinDashboard) => {
     try {
       const saved = await api.dashboardsUpdate(teamId, dashboard.id, { visibility: 'team' })
 
@@ -108,7 +108,7 @@ export function FormerMembersSection({
           ]}
         />
       )}
-      <Table<NuphosDashboard>
+      <Table<CerinDashboard>
         columns={withCreator}
         rows={left}
         rowKey={(d) => d.id}

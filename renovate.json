@@ -130,7 +130,7 @@
     {
       "description": "Our own images are versioned by the release process.",
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/nuphos/**", "nuphos-backend"],
+      "matchPackageNames": ["ghcr.io/nuphos/**", "cerin-backend"],
       "enabled": false
     }
   ]

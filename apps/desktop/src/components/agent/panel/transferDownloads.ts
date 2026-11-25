@@ -42,7 +42,7 @@ export function anchorDownloadGroups(
         message.parts.some(
           (part) =>
             part.type === 'text' &&
-            part.text.includes(`https://nuphos.ai/_reply-images/${group.groupId}`),
+            part.text.includes(`https://platform.cerin.ai/_reply-images/${group.groupId}`),
         ),
       )
     )

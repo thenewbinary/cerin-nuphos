@@ -3,7 +3,7 @@
  * level Claude Code will actually send — get_settings' applied.effort — in that
  * choice's description, so a client can show "High" instead of "Default".
  */
-export async function nuphosDescribeDefaultEffort(query, configOptions, timeoutMs = 2000) {
+export async function cerinDescribeDefaultEffort(query, configOptions, timeoutMs = 2000) {
   const effort = configOptions?.find((option) => option.category === 'thought_level')
   const inherited = effort?.options?.find((choice) => choice.value === 'default')
 
@@ -41,14 +41,14 @@ export function patchClaudeDefaultEffort(source) {
   let patched = replaceOnce(
     source,
     created,
-    `${created}            await nuphosDescribeDefaultEffort(q, configOptions);\n`,
+    `${created}            await cerinDescribeDefaultEffort(q, configOptions);\n`,
   )
 
   patched = replaceOnce(
     patched,
     changed,
-    `${changed.slice(0, -6)}        await nuphosDescribeDefaultEffort(session.query, session.configOptions);\n    }\n`,
+    `${changed.slice(0, -6)}        await cerinDescribeDefaultEffort(session.query, session.configOptions);\n    }\n`,
   )
 
-  return `${nuphosDescribeDefaultEffort.toString()}\n${patched}`
+  return `${cerinDescribeDefaultEffort.toString()}\n${patched}`
 }

@@ -171,7 +171,7 @@ export function createAgentDeviceRoutes(deps: AgentDeviceRouteDependencies = def
     return c.json({ ok: true })
   })
 
-  // One-time token for `nuphos agent --join`: the machine that uses it becomes
+  // One-time token for `cerin agent --join`: the machine that uses it becomes
   // this user's device, as if they had signed in there.
   routes.post('/devices/join-tokens', zv('json', joinTokenSchema), async (c) => {
     const { label, expiresInSec } = c.req.valid('json')
@@ -209,7 +209,7 @@ export function createAgentDeviceRoutes(deps: AgentDeviceRouteDependencies = def
     },
   )
 
-  // Forgets a computer, online or not, credential and agents with it; opening Nuphos there again
+  // Forgets a computer, online or not, credential and agents with it; opening Cerin there again
   // registers it again. A Box has its own delete.
   routes.delete(
     '/devices/:deviceId',

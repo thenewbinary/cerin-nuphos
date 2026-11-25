@@ -11,7 +11,7 @@ import {
   Users,
 } from 'lucide-react'
 
-import { NuphosDashboardsView } from '../../dashboards/NuphosDashboardsView'
+import { CerinDashboardsView } from '../../dashboards/CerinDashboardsView'
 import { dashboardsPageTitle } from '../../dashboards/view/pageTitle'
 import { t } from '../../i18n'
 import { emptyNavigation, pageLocationForNavigation } from '../../lib/appRoutes'
@@ -49,11 +49,11 @@ export function renderTeamToolPages(ctx: ScopeRenderContext): React.ReactNode | 
     setArchitectureDetail,
     designDetail,
     setDesignDetail,
-    nuphosDashboard,
-    nuphosDashboards,
+    cerinDashboard,
+    cerinDashboards,
     restoredTitle,
-    setNuphosDashboard,
-    setNuphosDashboards,
+    setCerinDashboard,
+    setCerinDashboards,
     onCount,
     onLoading,
     onOpenAgentChat,
@@ -62,7 +62,7 @@ export function renderTeamToolPages(ctx: ScopeRenderContext): React.ReactNode | 
     onOpenAuditConversation,
     onOpenConversation,
     onOpenNodeLink,
-    onOpenNuphosLink,
+    onOpenCerinLink,
     onSelectActive,
     renderPage,
   } = ctx
@@ -179,7 +179,7 @@ export function renderTeamToolPages(ctx: ScopeRenderContext): React.ReactNode | 
         onCount={onCount}
         onLoading={onLoading}
         onOpenConversation={onOpenConversation}
-        onOpenLink={onOpenNuphosLink}
+        onOpenLink={onOpenCerinLink}
       />,
     )
   }
@@ -209,19 +209,19 @@ export function renderTeamToolPages(ctx: ScopeRenderContext): React.ReactNode | 
   if (active === 'team.dashboards') {
     return renderPage(
       'team.dashboards',
-      dashboardsPageTitle({ nuphosDashboard, nuphosDashboards, restoredTitle }),
+      dashboardsPageTitle({ cerinDashboard, cerinDashboards, restoredTitle }),
       <ChartLine className="w-3.5 h-3.5 text-tertiary" strokeWidth={1.8} />,
-      <NuphosDashboardsView
+      <CerinDashboardsView
         teamId={scope.teamId}
         refreshKey={refreshKey}
         filter={filter}
         onCount={onCount}
         onLoading={onLoading}
         onOpenAgentChat={onOpenAgentChat}
-        openDashboardId={nuphosDashboard?.dashboardId ?? null}
-        viewRange={nuphosDashboard?.viewRange}
-        onDashboardOpened={setNuphosDashboard}
-        onDashboardsChange={setNuphosDashboards}
+        openDashboardId={cerinDashboard?.dashboardId ?? null}
+        viewRange={cerinDashboard?.viewRange}
+        onDashboardOpened={setCerinDashboard}
+        onDashboardsChange={setCerinDashboards}
       />,
     )
   }

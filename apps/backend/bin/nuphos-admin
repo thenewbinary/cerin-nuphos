@@ -1,3 +1,0 @@
-#!/bin/sh
-# Operator commands for this backend; see scripts/nuphos-admin.ts.
-exec bun /app/scripts/nuphos-admin.ts "$@"

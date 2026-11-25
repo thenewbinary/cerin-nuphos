@@ -48,11 +48,11 @@ export function useBotRuntimeControl(
         .catch((error: unknown) => console.warn('[bot-chat] could not load runtime', error))
 
     load()
-    window.addEventListener('nuphos:conversation-runtime-moved', load)
+    window.addEventListener('cerin:conversation-runtime-moved', load)
 
     return () => {
       alive = false
-      window.removeEventListener('nuphos:conversation-runtime-moved', load)
+      window.removeEventListener('cerin:conversation-runtime-moved', load)
     }
   }, [teamId, botId, owned])
 

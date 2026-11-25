@@ -13,7 +13,7 @@ export type TailscaleBindingAuth = Pick<
 
 /**
  * Resolve how this binding authenticates to Tailscale. Federation is preferred
- * wherever the customer has set it up, because it leaves Nuphos holding nothing
+ * wherever the customer has set it up, because it leaves Cerin holding nothing
  * that can be stolen; the stored-secret path stays for bindings created before
  * federation existed.
  */

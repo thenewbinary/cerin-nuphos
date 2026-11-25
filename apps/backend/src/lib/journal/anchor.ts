@@ -83,7 +83,7 @@ export async function anchorOnce(deps: AnchorDeps): Promise<AnchorResult> {
     lastSegmentHash: headHash,
     // The digest actually anchored: binds the date to the head hash so one
     // token cannot be replayed for a different day.
-    anchoredDigest: sha256Hex(`nuphos-journal|${date}|${headHash}`),
+    anchoredDigest: sha256Hex(`cerin-journal|${date}|${headHash}`),
   }
 
   let tsa = false

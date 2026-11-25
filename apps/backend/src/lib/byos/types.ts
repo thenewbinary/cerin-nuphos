@@ -13,19 +13,19 @@ export type ClusterResult = {
   gcpServiceAccountEmail?: string
   gcpProjectId?: string
   gcpResourceName?: string
-  /** Nuphos Tencent account binding id — maps the cluster back to its creds. */
+  /** Cerin Tencent account binding id — maps the cluster back to its creds. */
   tencentAccountId?: string
   /** TKE cluster id (cls-xxxx) — the handle every TKE API call needs. */
   tencentClusterId?: string
-  /** Nuphos Aliyun account binding id — maps the cluster back to its creds. */
+  /** Cerin Aliyun account binding id — maps the cluster back to its creds. */
   aliyunAccountId?: string
   /** ACK cluster id — the handle every ACK API call needs. */
   aliyunClusterId?: string
-  /** Nuphos Volcengine account binding id — maps the cluster back to its creds. */
+  /** Cerin Volcengine account binding id — maps the cluster back to its creds. */
   volcengineAccountId?: string
   /** VKE cluster id — the handle every VKE API call needs. */
   volcengineClusterId?: string
-  /** Nuphos Azure account binding id — maps the cluster back to its creds. */
+  /** Cerin Azure account binding id — maps the cluster back to its creds. */
   azureAccountId?: string
   /** ARM resource group the AKS managed cluster lives in (needed for kubeconfig). */
   azureResourceGroup?: string

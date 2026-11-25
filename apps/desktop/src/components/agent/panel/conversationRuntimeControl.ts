@@ -122,7 +122,7 @@ export function useSessionRuntimeControl(c: SessionRuntimeContext): RuntimeContr
           ...(detail ? { timelineEvents: detail.timelineEvents } : {}),
           movingTo: undefined,
         })
-        window.dispatchEvent(new Event('nuphos:conversation-runtime-moved'))
+        window.dispatchEvent(new Event('cerin:conversation-runtime-moved'))
         void refreshHistory()
       } catch (cause) {
         setTab({ movingTo: undefined })

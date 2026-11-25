@@ -6,7 +6,7 @@ import { parseFirstTouch, recordSignupSource } from '@/lib/identity/signup-sourc
 import { useDb } from '@/lib/test/doubles/db'
 import { usePosthog } from '@/lib/test/doubles/posthog'
 
-import type { NuphosUser } from '@/lib/identity/types'
+import type { CerinUser } from '@/lib/identity/types'
 
 let stored: Record<string, unknown> | undefined
 let setOnce: { distinctId: string; properties: Record<string, unknown> }[] = []
@@ -33,7 +33,7 @@ beforeEach(() => {
   setOnce = []
 })
 
-const user = (createdAt = new Date()): NuphosUser => ({
+const user = (createdAt = new Date()): CerinUser => ({
   id: new ObjectId().toHexString(),
   email: 'a@example.com',
   name: 'A',

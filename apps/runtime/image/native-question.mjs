@@ -2,58 +2,58 @@
 // client as form elicitations, which OpenAB does not render: the Claude adapter
 // then disables the tool and the Codex adapter answers it with nothing, so the
 // person never sees the question. Both adapters ask it through the session's own
-// nuphos-tools request_user_decision instead, which registers the pending
+// cerin-tools request_user_decision instead, which registers the pending
 // question Inbox and the session panel show. As with that tool, the reply comes
 // back as a new message, so the agent is told not to wait for it here.
 // Inlined into both adapter bundles: no imports.
 
-export const NUPHOS_QUESTION_ASKED =
+export const CERIN_QUESTION_ASKED =
   'The question is now shown to the user in Cerin. Do not choose for them; continue only with work that does not depend on it, or end your turn. Their answer arrives as a new message.'
-export const NUPHOS_QUESTION_FAILED =
-  'Cerin could not show this question to the user. Ask it with the nuphos-tools request_user_decision tool instead.'
+export const CERIN_QUESTION_FAILED =
+  'Cerin could not show this question to the user. Ask it with the cerin-tools request_user_decision tool instead.'
 // A hung tools server must not hold the agent's turn.
-export const NUPHOS_QUESTION_TIMEOUT_MS = 15_000
+export const CERIN_QUESTION_TIMEOUT_MS = 15_000
 
 // OpenAB runs one adapter process per conversation, so the latest session's
 // server is this conversation's. A load that names no servers keeps it.
-let nuphosDecisionServer
+let cerinDecisionServer
 
-function nuphosToolsServer(servers) {
+function cerinToolsServer(servers) {
   return Array.isArray(servers)
     ? servers.find(
         (entry) =>
-          entry?.type === 'http' && entry.name === 'nuphos-tools' && typeof entry.url === 'string',
+          entry?.type === 'http' && entry.name === 'cerin-tools' && typeof entry.url === 'string',
       )
     : undefined
 }
 
-/** Whether a session can ask through Nuphos at all. */
-export function nuphosOffersDecisions(servers) {
-  return Boolean(nuphosToolsServer(servers))
+/** Whether a session can ask through Cerin at all. */
+export function cerinOffersDecisions(servers) {
+  return Boolean(cerinToolsServer(servers))
 }
 
-export function nuphosRememberDecisionServer(servers) {
-  const server = nuphosToolsServer(servers)
+export function cerinRememberDecisionServer(servers) {
+  const server = cerinToolsServer(servers)
   if (!server) return
   const header = (Array.isArray(server.headers) ? server.headers : []).find(
     (entry) => entry?.name?.toLowerCase() === 'authorization',
   )
-  nuphosDecisionServer = { url: server.url, authorization: header?.value }
+  cerinDecisionServer = { url: server.url, authorization: header?.value }
 }
 
 // request_user_decision keeps a question to one line of 120 characters and
 // wants what to decide from in its body: the full text goes there.
-const NUPHOS_QUESTION_MAX = 120
+const CERIN_QUESTION_MAX = 120
 
-function nuphosHeadline(text) {
-  return text.length <= NUPHOS_QUESTION_MAX ? text : `${text.slice(0, NUPHOS_QUESTION_MAX - 1)}…`
+function cerinHeadline(text) {
+  return text.length <= CERIN_QUESTION_MAX ? text : `${text.slice(0, CERIN_QUESTION_MAX - 1)}…`
 }
 
 /** request_user_decision arguments for `questions`: [{ header?, question, options?: string[] }]. */
-export function nuphosDecisionArguments(questions) {
+export function cerinDecisionArguments(questions) {
   const [first] = questions
   const label = String(first.header || first.question).slice(0, 80)
-  const question = nuphosHeadline(first.question)
+  const question = cerinHeadline(first.question)
   if (questions.length === 1) {
     const options = (first.options ?? []).slice(0, 5).map((option) => option.slice(0, 300))
     return {
@@ -77,7 +77,7 @@ export function nuphosDecisionArguments(questions) {
 // Where OpenAB keeps the conversation token, its file is the credential, as in
 // mcp-http-bridge.mjs: a missing or empty file means OpenAB revoked it, and the
 // session's (possibly stale) header is never used in its place.
-async function nuphosAuthorization(server, env) {
+async function cerinAuthorization(server, env) {
   if (!env.OPENAB_CREDENTIALS_DIR) return server.authorization
   try {
     const { readFile } = await import('node:fs/promises')
@@ -88,16 +88,16 @@ async function nuphosAuthorization(server, env) {
   }
 }
 
-/** Registers the questions as a pending decision; true once Nuphos accepted it. */
-export async function nuphosAskInNuphos(
+/** Registers the questions as a pending decision; true once Cerin accepted it. */
+export async function cerinAskInCerin(
   questions,
   env = process.env,
   request = fetch,
-  timeoutMs = NUPHOS_QUESTION_TIMEOUT_MS,
+  timeoutMs = CERIN_QUESTION_TIMEOUT_MS,
 ) {
-  const server = nuphosDecisionServer
+  const server = cerinDecisionServer
   if (!server || !questions.length) return false
-  const authorization = await nuphosAuthorization(server, env)
+  const authorization = await cerinAuthorization(server, env)
   if (!authorization) return false
   try {
     const response = await request(server.url, {
@@ -112,7 +112,7 @@ export async function nuphosAskInNuphos(
         jsonrpc: '2.0',
         id: 1,
         method: 'tools/call',
-        params: { name: 'request_user_decision', arguments: nuphosDecisionArguments(questions) },
+        params: { name: 'request_user_decision', arguments: cerinDecisionArguments(questions) },
       }),
     })
     const body = await response.json()
@@ -122,23 +122,23 @@ export async function nuphosAskInNuphos(
   }
 }
 
-function nuphosQuestionText(value) {
+function cerinQuestionText(value) {
   return typeof value === 'string' ? value.trim() : ''
 }
 
 /** Claude's canUseTool answer for AskUserQuestion: the tool never runs, the reason reaches Claude. */
-export async function nuphosAskClaudeQuestion(toolInput, env = process.env, request = fetch) {
+export async function cerinAskClaudeQuestion(toolInput, env = process.env, request = fetch) {
   const questions = (Array.isArray(toolInput?.questions) ? toolInput.questions : [])
     .map((entry) => ({
-      header: nuphosQuestionText(entry?.header),
-      question: nuphosQuestionText(entry?.question),
+      header: cerinQuestionText(entry?.header),
+      question: cerinQuestionText(entry?.question),
       options: (Array.isArray(entry?.options) ? entry.options : [])
-        .map((option) => nuphosQuestionText(option?.label))
+        .map((option) => cerinQuestionText(option?.label))
         .filter(Boolean),
     }))
     .filter((entry) => entry.question)
-  const asked = await nuphosAskInNuphos(questions, env, request)
-  return { behavior: 'deny', message: asked ? NUPHOS_QUESTION_ASKED : NUPHOS_QUESTION_FAILED }
+  const asked = await cerinAskInCerin(questions, env, request)
+  return { behavior: 'deny', message: asked ? CERIN_QUESTION_ASKED : CERIN_QUESTION_FAILED }
 }
 
 /**
@@ -146,21 +146,21 @@ export async function nuphosAskClaudeQuestion(toolInput, env = process.env, requ
  * next. A secret is never asked this way, since the answer would arrive as a
  * chat message the model reads; request_user_decision has a secure card for it.
  */
-export async function nuphosAskCodexQuestion(params, env = process.env, request = fetch) {
+export async function cerinAskCodexQuestion(params, env = process.env, request = fetch) {
   const asked = (Array.isArray(params?.questions) ? params.questions : []).filter(
-    (entry) => typeof entry?.id === 'string' && nuphosQuestionText(entry.question),
+    (entry) => typeof entry?.id === 'string' && cerinQuestionText(entry.question),
   )
   const secret = asked.some((entry) => entry.isSecret === true)
   const questions = asked.map((entry) => ({
-    header: nuphosQuestionText(entry.header),
-    question: nuphosQuestionText(entry.question),
+    header: cerinQuestionText(entry.header),
+    question: cerinQuestionText(entry.question),
     options: (Array.isArray(entry.options) ? entry.options : [])
-      .map((option) => nuphosQuestionText(option?.label))
+      .map((option) => cerinQuestionText(option?.label))
       .filter(Boolean),
   }))
   const reply =
-    !secret && (await nuphosAskInNuphos(questions, env, request))
-      ? NUPHOS_QUESTION_ASKED
-      : NUPHOS_QUESTION_FAILED
+    !secret && (await cerinAskInCerin(questions, env, request))
+      ? CERIN_QUESTION_ASKED
+      : CERIN_QUESTION_FAILED
   return { answers: Object.fromEntries(asked.map((entry) => [entry.id, { answers: [reply] }])) }
 }

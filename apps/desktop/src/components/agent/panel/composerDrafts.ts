@@ -8,7 +8,7 @@ type StoredDraft = ComposerDraft & { updatedAt: number }
 type DraftStore = { owner: string | null; drafts: Record<string, StoredDraft> }
 type Storage = Pick<globalThis.Storage, 'getItem' | 'setItem' | 'removeItem'>
 
-const STORAGE_KEY = 'nuphos.agent.composerDrafts.v1'
+const STORAGE_KEY = 'cerin.agent.composerDrafts.v1'
 const MAX_DRAFTS = 50
 const MAX_TEXT_LENGTH = 100_000
 

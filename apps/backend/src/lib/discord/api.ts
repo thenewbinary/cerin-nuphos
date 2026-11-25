@@ -52,7 +52,7 @@ export type DiscordChannel = {
 }
 export type DiscordGuild = { id: string; name: string }
 
-export const NUPHOS_DISCORD_COMMAND = {
+export const CERIN_DISCORD_COMMAND = {
   name: config.discord.commandName,
   description: 'Manage Cerin in this Discord channel',
   // Channel administration is enforced in the handler; members may change their own mode.
@@ -88,7 +88,7 @@ export async function registerDiscordCommands(): Promise<void> {
   if (!clientId) throw new Error('DISCORD_CLIENT_ID is not configured')
   await discordApi(`/applications/${encodeURIComponent(clientId)}/commands`, {
     method: 'PUT',
-    body: JSON.stringify([NUPHOS_DISCORD_COMMAND]),
+    body: JSON.stringify([CERIN_DISCORD_COMMAND]),
   })
 }
 

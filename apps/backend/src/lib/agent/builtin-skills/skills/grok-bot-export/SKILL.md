@@ -53,7 +53,7 @@ not use account IDs, destination session IDs or credentials as keys.
 
 ```json
 {
-  "format": "nuphos-bot-bundle",
+  "format": "cerin-bot-bundle",
   "version": 1,
   "source": {
     "application": "grok-bot",

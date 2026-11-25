@@ -93,7 +93,7 @@ if (flag === '--legacy') {
 
 const page = await call('GET', '/')
 assert.equal(page.status, 200)
-assert.match(page.text, /Nuphos agent/)
+assert.match(page.text, /Cerin agent/)
 assert.equal(page.headers.get('x-frame-options'), 'DENY')
 
 let state = (await call('GET', '/_openab/console/state')).json
@@ -121,14 +121,14 @@ csrf = state.csrfToken
 const minted = await call('POST', '/_openab/console/pairing-codes')
 assert.equal(minted.status, 200, minted.text)
 assert.match(minted.json.code, /^[A-Z2-7]{26}$/)
-if (minted.json.deepLink) assert.match(minted.json.deepLink, /^nuphos:\/\/connect-runtime\?url=/)
+if (minted.json.deepLink) assert.match(minted.json.deepLink, /^cerin:\/\/connect-runtime\?url=/)
 
 const exchange = await fetch(`${base}/_openab/pairing/exchange`, {
   method: 'POST',
   headers: { 'content-type': 'application/json' },
   body: JSON.stringify({
     code: minted.json.code,
-    client: { teamName: 'Smoke team', pairedBy: 'Smoke', backendOrigin: 'https://nuphos.test' },
+    client: { teamName: 'Smoke team', pairedBy: 'Smoke', backendOrigin: 'https://cerin.test' },
   }),
 })
 assert.equal(exchange.status, 200)

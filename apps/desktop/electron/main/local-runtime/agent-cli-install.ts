@@ -14,7 +14,7 @@ const INSTALL_TIMEOUT_MS = 10 * 60_000
 
 type Command = { file: string; args: string[]; shell?: boolean }
 
-/** Every agent Nuphos can install: all but Antigravity, which comes only as a desktop app. */
+/** Every agent Cerin can install: all but Antigravity, which comes only as a desktop app. */
 export const INSTALLABLE = [
   'claude-code',
   'codex',

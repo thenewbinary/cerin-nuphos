@@ -225,15 +225,15 @@ test("parseSecretRequest reads a form's fields and site, and falls back to the o
 
 test('a card with several fields replies as a saved secret, one file per field', () => {
   const reply = secretFieldsSavedReply('CLINIC_LOOKUP', [
-    { name: 'NATIONAL_ID', path: '/runtime/nuphos-secret-a/0/NATIONAL_ID' },
-    { name: 'BIRTH_DATE', path: '/runtime/nuphos-secret-b/0/BIRTH_DATE' },
+    { name: 'NATIONAL_ID', path: '/runtime/cerin-secret-a/0/NATIONAL_ID' },
+    { name: 'BIRTH_DATE', path: '/runtime/cerin-secret-b/0/BIRTH_DATE' },
   ])
 
   // Every client reads a reply that opens this way as the request's saved answer.
   assert.ok(reply.startsWith(secretSavedReply('CLINIC_LOOKUP')))
   assert.deepEqual(reply.split('\n').slice(1), [
-    'NATIONAL_ID: /runtime/nuphos-secret-a/0/NATIONAL_ID',
-    'BIRTH_DATE: /runtime/nuphos-secret-b/0/BIRTH_DATE',
+    'NATIONAL_ID: /runtime/cerin-secret-a/0/NATIONAL_ID',
+    'BIRTH_DATE: /runtime/cerin-secret-b/0/BIRTH_DATE',
   ])
 })
 

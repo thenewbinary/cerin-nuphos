@@ -27,7 +27,7 @@ function isDiagnosticNoise(line: string): boolean {
     /DeprecationWarning:/.test(line) ||
     /^\(Use .+--trace-deprecation .+\)$/.test(line) ||
     /^>\s/.test(line) ||
-    /^\[nuphos-dev\]\s/.test(line) ||
+    /^\[cerin-dev\]\s/.test(line) ||
     /^\s*local:\s+https?:\/\//i.test(line) ||
     /vite\s+v?[\d.]+\s+ready/i.test(line) ||
     /press h \+ enter to show help/i.test(line)

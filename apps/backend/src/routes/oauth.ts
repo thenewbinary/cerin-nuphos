@@ -1,4 +1,4 @@
-// OAuth 2.1 Authorization Server for the Nuphos MCP server.
+// OAuth 2.1 Authorization Server for the Cerin MCP server.
 //
 // Implements exactly the subset MCP clients (Claude Code, Codex) need to run
 // their native "open a browser, authorize, done" flow against a remote MCP

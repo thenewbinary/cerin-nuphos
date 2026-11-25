@@ -92,7 +92,7 @@ useAgentRunStore({
   },
 })
 
-const { nuphosListRuntimes, nuphosStop, nuphosListQueue, nuphosRemoveQueued, nuphosEvents } =
+const { cerinListRuntimes, cerinStop, cerinListQueue, cerinRemoveQueued, cerinEvents } =
   await import('./control')
 const body = (result: { structuredContent?: unknown }) =>
   result.structuredContent as Record<string, any>
@@ -120,9 +120,9 @@ beforeEach(() => {
   agentRuns.clear()
 })
 
-describe('nuphos_list_runtimes', () => {
+describe('cerin_list_runtimes', () => {
   test('lists the agents of a team the caller belongs to, with availability', async () => {
-    const result = await nuphosListRuntimes({ team_id: 't1' }, ctx)
+    const result = await cerinListRuntimes({ team_id: 't1' }, ctx)
 
     expect(body(result).runtimes).toEqual([
       {
@@ -147,13 +147,13 @@ describe('nuphos_list_runtimes', () => {
   test('refuses a team the caller is not a member of', async () => {
     member = false
 
-    expect(errorText(await nuphosListRuntimes({ team_id: 't9' }, ctx))).toContain('not a member')
+    expect(errorText(await cerinListRuntimes({ team_id: 't9' }, ctx))).toContain('not a member')
   })
 })
 
-describe('nuphos_stop', () => {
+describe('cerin_stop', () => {
   test('stops a session the caller may reply in', async () => {
-    const result = await nuphosStop({ session_id: 's1' }, ctx)
+    const result = await cerinStop({ session_id: 's1' }, ctx)
 
     expect(body(result)).toEqual({ session_id: 's1', status: 'requested' })
     expect(stopped).toEqual(['s1'])
@@ -162,23 +162,23 @@ describe('nuphos_stop', () => {
   test('a viewer who cannot reply cannot stop it', async () => {
     canReply = false
 
-    expect(errorText(await nuphosStop({ session_id: 's1' }, ctx))).toContain('only view')
+    expect(errorText(await cerinStop({ session_id: 's1' }, ctx))).toContain('only view')
     expect(stopped).toEqual([])
   })
 
   test('a session the caller cannot read is not found', async () => {
     readable = null
 
-    expect(errorText(await nuphosStop({ session_id: 's1' }, ctx))).toBe('Session not found: s1')
+    expect(errorText(await cerinStop({ session_id: 's1' }, ctx))).toBe('Session not found: s1')
     expect(stopped).toEqual([])
   })
 })
 
-describe('nuphos_list_queue and nuphos_remove_queued', () => {
+describe('cerin_list_queue and cerin_remove_queued', () => {
   test('lists the waiting messages in order, marking the caller’s own', async () => {
     queue = [waiting('m1', ME), waiting('m2', TEAMMATE, 'app'), waiting('m3', ME, 'slack.agent')]
 
-    expect(body(await nuphosListQueue({ session_id: 's1' }, ctx)).queued).toEqual([
+    expect(body(await cerinListQueue({ session_id: 's1' }, ctx)).queued).toEqual([
       { queued_id: 'm1', text: 'msg m1', mine: true, received_at: '2026-11-18T00:00:00.000Z' },
       { queued_id: 'm2', text: 'msg m2', mine: false, received_at: '2026-11-18T00:00:00.000Z' },
     ])
@@ -187,7 +187,7 @@ describe('nuphos_list_queue and nuphos_remove_queued', () => {
   test('the caller takes back their own MCP message', async () => {
     queue = [waiting('m1', ME)]
 
-    expect(body(await nuphosRemoveQueued({ session_id: 's1', queued_id: 'm1' }, ctx))).toEqual({
+    expect(body(await cerinRemoveQueued({ session_id: 's1', queued_id: 'm1' }, ctx))).toEqual({
       session_id: 's1',
       removed: true,
       text: 'msg m1',
@@ -199,7 +199,7 @@ describe('nuphos_list_queue and nuphos_remove_queued', () => {
     queue = [waiting('m2', TEAMMATE, 'app')]
 
     expect(
-      errorText(await nuphosRemoveQueued({ session_id: 's1', queued_id: 'm2' }, ctx)),
+      errorText(await cerinRemoveQueued({ session_id: 's1', queued_id: 'm2' }, ctx)),
     ).toContain('Only the person who sent')
     expect(queue).toHaveLength(1)
   })
@@ -208,13 +208,11 @@ describe('nuphos_list_queue and nuphos_remove_queued', () => {
     readable = null
     queue = [waiting('m1', TEAMMATE)]
 
-    expect(errorText(await nuphosListQueue({ session_id: 's1' }, ctx))).toBe(
-      'Session not found: s1',
-    )
+    expect(errorText(await cerinListQueue({ session_id: 's1' }, ctx))).toBe('Session not found: s1')
   })
 })
 
-describe('nuphos_events', () => {
+describe('cerin_events', () => {
   test('reads the running turn from its start, then only what came since', async () => {
     active = { streamId: 'st1' }
     frames.st1 = [
@@ -223,14 +221,14 @@ describe('nuphos_events', () => {
       { id: '3-0', frame: frame({ type: 'text-delta', id: 't', delta: 'Hel' }) },
     ]
 
-    const first = body(await nuphosEvents({ session_id: 's1' }, ctx))
+    const first = body(await cerinEvents({ session_id: 's1' }, ctx))
 
     expect(first.events).toEqual([{ type: 'start' }, { type: 'text-delta', id: 't', delta: 'Hel' }])
     expect(first.cursor).toBe('st1/3-0')
     expect(first.running).toBe(true)
 
     frames.st1.push({ id: '4-0', frame: frame({ type: 'text-delta', id: 't', delta: 'lo' }) })
-    const next = body(await nuphosEvents({ session_id: 's1', cursor: first.cursor }, ctx))
+    const next = body(await cerinEvents({ session_id: 's1', cursor: first.cursor }, ctx))
 
     expect(next.events).toEqual([{ type: 'text-delta', id: 't', delta: 'lo' }])
     expect(next.cursor).toBe('st1/4-0')
@@ -241,7 +239,7 @@ describe('nuphos_events', () => {
     frames.st2 = [{ id: '9-0', frame: frame({ type: 'start' }) }]
     active = { streamId: 'st2' }
 
-    const next = body(await nuphosEvents({ session_id: 's1', cursor: 'st1/0-1' }, ctx))
+    const next = body(await cerinEvents({ session_id: 's1', cursor: 'st1/0-1' }, ctx))
 
     // The finished turn is read from the transcript; its frames are not served here.
     expect(next).toMatchObject({ turn_ended: true, running: true, cursor: 'st2/9-0' })
@@ -254,13 +252,13 @@ describe('nuphos_events', () => {
     frames.st1 = [{ id: '5-0', frame: frame({ type: 'start' }) }]
     active = { streamId: 'st1' }
 
-    const read = body(await nuphosEvents({ session_id: 's1', cursor: 'other/0-1' }, ctx))
+    const read = body(await cerinEvents({ session_id: 's1', cursor: 'other/0-1' }, ctx))
 
     expect(read.events).toEqual([{ type: 'start' }])
     expect(read.cursor).toBe('st1/5-0')
 
     active = null
-    const idle = body(await nuphosEvents({ session_id: 's1', cursor: 'other/0-1' }, ctx))
+    const idle = body(await cerinEvents({ session_id: 's1', cursor: 'other/0-1' }, ctx))
 
     expect(idle).toMatchObject({ events: [], turn_ended: true, running: false })
   })
@@ -278,21 +276,21 @@ describe('nuphos_events', () => {
     }
 
     agentRuns.set('k', run as never)
-    const first = body(await nuphosEvents({ session_id: 's1' }, ctx))
+    const first = body(await cerinEvents({ session_id: 's1' }, ctx))
 
     expect(first.running).toBe(true)
     expect(first.events).toHaveLength(2)
     expect(first.cursor).toBe('st1/2')
 
     run.frames.push(frame({ type: 'text-delta', id: 't', delta: '!' }))
-    const more = body(await nuphosEvents({ session_id: 's1', cursor: first.cursor }, ctx))
+    const more = body(await cerinEvents({ session_id: 's1', cursor: first.cursor }, ctx))
 
     expect(more.events).toEqual([{ type: 'text-delta', id: 't', delta: '!' }])
     expect(more.cursor).toBe('st1/3')
 
     run.done = true
     // Kept as the place to resume: the next turn is picked up from it.
-    expect(body(await nuphosEvents({ session_id: 's1', cursor: more.cursor }, ctx))).toMatchObject({
+    expect(body(await cerinEvents({ session_id: 's1', cursor: more.cursor }, ctx))).toMatchObject({
       events: [],
       running: false,
       turn_ended: true,
@@ -301,7 +299,7 @@ describe('nuphos_events', () => {
   })
 
   test('with nothing running there is nothing to read', async () => {
-    expect(body(await nuphosEvents({ session_id: 's1' }, ctx))).toEqual({
+    expect(body(await cerinEvents({ session_id: 's1' }, ctx))).toEqual({
       session_id: 's1',
       running: false,
       message_count: 6,
@@ -311,7 +309,7 @@ describe('nuphos_events', () => {
   })
 
   test('rejects a cursor it did not issue', async () => {
-    expect(errorText(await nuphosEvents({ session_id: 's1', cursor: 'nonsense' }, ctx))).toContain(
+    expect(errorText(await cerinEvents({ session_id: 's1', cursor: 'nonsense' }, ctx))).toContain(
       'cursor',
     )
   })
@@ -321,6 +319,6 @@ describe('nuphos_events', () => {
     active = { streamId: 'st1' }
     frames.st1 = [{ id: '1-0', frame: frame({ type: 'start' }) }]
 
-    expect(errorText(await nuphosEvents({ session_id: 's1' }, ctx))).toBe('Session not found: s1')
+    expect(errorText(await cerinEvents({ session_id: 's1' }, ctx))).toBe('Session not found: s1')
   })
 })

@@ -25,7 +25,7 @@
     <string name="convtext_delivery_unconfirmed">無法確認訊息是否送達。請恢復原本的連線。</string>
     <string name="convtext_task_reloaded">此任務已在其他地方變更並重新載入。請重試傳送你的訊息。</string>
     <string name="convtext_connection_quiet">連線一直沒有回應，請再試一次。</string>
-    <string name="convtext_connection_lost">與 Nuphos 的連線中斷。</string>
+    <string name="convtext_connection_lost">與 Cerin 的連線中斷。</string>
     <string name="convtext_agent_error">Agent 發生錯誤。</string>
     <string name="convtext_phase_waiting_runtime">正在等待執行環境就緒…</string>
     <string name="convtext_phase_reconnecting">重新連線中…</string>
@@ -55,14 +55,14 @@
     <string name="convtext_conflict_not_resumable">已無法繼續先前的回覆。</string>
     <string name="convtext_conflict_stream">該串流屬於另一個任務。</string>
     <string name="convtext_conflict_busy">此任務正忙於另一個回覆。</string>
-    <string name="convtext_runtime_signed_out">此執行環境已登出。請在執行它的電腦上從 Nuphos 登入，或切換到其他執行環境。</string>
+    <string name="convtext_runtime_signed_out">此執行環境已登出。請在執行它的電腦上從 Cerin 登入，或切換到其他執行環境。</string>
     <string name="convtext_runtime_disabled">此任務的執行環境已停用。請切換到其他執行環境以繼續。</string>
     <string name="convtext_runtime_not_found">此執行環境已無法在這個工作區使用。請切換到其他執行環境以繼續。</string>
-    <string name="convtext_runtime_offline">執行此執行環境的電腦已離線。請在該電腦上開啟 Nuphos，或切換到其他執行環境。</string>
+    <string name="convtext_runtime_offline">執行此執行環境的電腦已離線。請在該電腦上開啟 Cerin，或切換到其他執行環境。</string>
     <string name="convtext_runtime_paused">%1$s 已暫停，傳送訊息後會自動恢復。</string>
     <string name="convtext_ask_owner">請擁有者處理</string>
     <string name="convtext_ask_admin">請管理員處理</string>
-    <string name="convtext_server_status">Nuphos 傳回狀態 %1$d。</string>
+    <string name="convtext_server_status">Cerin 傳回狀態 %1$d。</string>
     <string name="convtext_attachments_count">請選擇 1 到 %1$d 個附件。</string>
     <string name="convtext_attachment_name_length">附件檔名必須為 1 到 512 個字元。</string>
     <string name="convtext_attachment_size">%1$s 必須介於 1 到 %2$d 位元組。</string>

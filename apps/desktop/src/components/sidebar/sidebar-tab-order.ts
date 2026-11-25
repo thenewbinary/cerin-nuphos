@@ -7,7 +7,7 @@ export type SidebarTabOrder = readonly SidebarPage[]
 
 export const DEFAULT_TAB_ORDER: SidebarTabOrder = [0, 1, 2]
 
-const STORAGE_KEY = 'nuphos.sidebar.tabOrder.v1'
+const STORAGE_KEY = 'cerin.sidebar.tabOrder.v1'
 
 /** Anything that is not exactly one of each page falls back to the default. */
 export function parseTabOrder(raw: unknown): SidebarTabOrder {

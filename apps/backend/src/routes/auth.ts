@@ -165,7 +165,7 @@ auth.post('/native/session/redeem', async (c) => {
   return c.json(await startSession(c, user))
 })
 
-// `nuphos agent --join`: a one-time token from the device's owner becomes a
+// `cerin agent --join`: a one-time token from the device's owner becomes a
 // credential for this device alone. No session is involved, so this stays public.
 const deviceJoinSchema = z.object({
   token: z.string().min(1).max(200),
@@ -238,7 +238,7 @@ auth.post('/google/sign-in', async (c) => {
   try {
     const user = await signInWithGoogleCode(code, redirectUri)
 
-    // nuphos.ai's server makes this call, so it forwards the browser's cookie.
+    // platform.cerin.ai's server makes this call, so it forwards the browser's cookie.
     await recordSignupSource(user, 'google', body?.firstTouch)
 
     if (handle && delivery) {
@@ -267,14 +267,14 @@ auth.post('/google/sign-in', async (c) => {
       // proves the redeemer is the machine that just authenticated.
       return c.json({
         // The browser still never sees a credential, but the public user id is
-        // needed by nuphos.ai to merge the anonymous download visitor into the
+        // needed by platform.cerin.ai to merge the anonymous download visitor into the
         // same PostHog person the desktop app identifies after redemption.
         data: { googleSignIn: { user: { id: user.id } } },
         nativeDelivery: { ...delivery, code: completed.deliveryCode },
       })
     }
 
-    // Without a handle, only the nuphos.ai website's server calls this.
+    // Without a handle, only the platform.cerin.ai website's server calls this.
     return c.json({ data: { googleSignIn: await startSession(c, user, true) } })
   } catch (e) {
     if (handle) await abandonNativeSession(handle)

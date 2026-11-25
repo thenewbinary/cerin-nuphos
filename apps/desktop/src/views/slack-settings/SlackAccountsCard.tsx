@@ -46,8 +46,8 @@ export function SlackAccountsCard({
       ) : (
         <div className="divide-y divide-line-control/60">
           {linkedAccountRows.map((mapping) => {
-            const member = memberById.get(mapping.nuphosUserId)
-            const isSelf = mapping.nuphosUserId === currentUserId
+            const member = memberById.get(mapping.cerinUserId)
+            const isSelf = mapping.cerinUserId === currentUserId
 
             return (
               <div key={mapping.id} className="flex items-center gap-3 px-4 py-3">
@@ -60,7 +60,7 @@ export function SlackAccountsCard({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 text-[13px] text-main">
                     <span className="truncate">
-                      {member ? member.name || member.email : mapping.nuphosUserId}
+                      {member ? member.name || member.email : mapping.cerinUserId}
                     </span>
                     {isSelf && (
                       <span className="flex-shrink-0 rounded border border-line-control px-1.5 py-0.5 text-[11px] text-tertiary">

@@ -16,7 +16,7 @@ export type DiagramNode = {
   // this rect), not stored. Absent => a regular node (default 200x72).
   size?: { width: number; height: number }
   // Present => CONCRETE node bound to a real resource/page; absent => ABSTRACT.
-  // Aligns with the app's page URL schema (https://nuphos.ai/teams/<id>/infra/…)
+  // Aligns with the app's page URL schema (https://platform.cerin.ai/teams/<id>/infra/…)
   // so a double-click navigates in-app; any other URL opens in the browser. The
   // url also drives the node's kind/colour — concrete nodes have no resource tag.
   url?: string

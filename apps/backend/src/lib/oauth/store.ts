@@ -1,4 +1,4 @@
-// Storage for the Nuphos MCP OAuth server: dynamically-registered clients,
+// Storage for the Cerin MCP OAuth server: dynamically-registered clients,
 // single-use authorization codes, and refresh tokens. Codes and refresh tokens
 // are keyed by their SHA-256 hash (the _id), so the stored value is never a
 // usable credential and single-use consumption is an indexed deleteOne.

@@ -19,7 +19,7 @@ export function optimisticSenderMetadata(
       displayName: user.name || user.username || user.id,
       ...(avatarURL ? { avatarURL } : {}),
     },
-    source: 'nuphos',
+    source: 'cerin',
     sentAt: new Date(createdAt).toISOString(),
   }
 }

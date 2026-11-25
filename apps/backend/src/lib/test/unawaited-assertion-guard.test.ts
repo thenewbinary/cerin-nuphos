@@ -2,7 +2,7 @@
 //
 // bun's `expect()` types declare every matcher as returning `void`, so
 // `@typescript-eslint/no-floating-promises` sees no thenable and cannot report
-// this shape under any option. `nuphos/no-unawaited-async-assertion` reports it
+// this shape under any option. `cerin/no-unawaited-async-assertion` reports it
 // in the editor, but `bun run lint` is non-blocking in CI, so this test is what
 // holds the line.
 //

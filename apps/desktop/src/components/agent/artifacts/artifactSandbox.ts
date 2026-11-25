@@ -31,18 +31,18 @@ function bootstrap(channel: string): string {
   // Kept ES5 and self-contained: it runs before any of the artifact's own code.
   const script = `(function(){
 var channel=${JSON.stringify(channel)};
-function send(message){try{parent.postMessage({nuphosArtifact:channel,type:'error',message:String(message).slice(0,2000)},'*')}catch(e){}}
+function send(message){try{parent.postMessage({cerinArtifact:channel,type:'error',message:String(message).slice(0,2000)},'*')}catch(e){}}
 window.addEventListener('error',function(event){
 var target=event.target;
 if(target&&target!==window&&(target.tagName==='SCRIPT'||target.tagName==='LINK')){send('Could not load '+(target.src||target.href));return}
 if(event.message)send(event.message+(event.lineno?' (line '+event.lineno+')':''))
 },true);
 window.addEventListener('unhandledrejection',function(event){var reason=event.reason;send('Unhandled rejection: '+(reason&&reason.message?reason.message:reason))});
-window.addEventListener('keydown',function(event){if(event.key==='Escape'){try{parent.postMessage({nuphosArtifact:channel,type:'escape',message:''},'*')}catch(e){}}},true);
+window.addEventListener('keydown',function(event){if(event.key==='Escape'){try{parent.postMessage({cerinArtifact:channel,type:'escape',message:''},'*')}catch(e){}}},true);
 window.addEventListener('keydown',function(event){
 if(event.defaultPrevented||event.altKey||event.ctrlKey||event.metaKey||(event.key!=='ArrowLeft'&&event.key!=='ArrowRight'))return;
 var t=event.target;if(t&&t.closest&&t.closest('input,textarea,select,[contenteditable]:not([contenteditable=false])'))return;
-try{parent.postMessage({nuphosArtifact:channel,type:'arrow',message:event.key==='ArrowLeft'?'left':'right'},'*')}catch(e){}
+try{parent.postMessage({cerinArtifact:channel,type:'arrow',message:event.key==='ArrowLeft'?'left':'right'},'*')}catch(e){}
 });
 document.addEventListener('click',function(event){
 var link=event.target&&event.target.closest?event.target.closest('a[href]'):null;
@@ -55,7 +55,7 @@ var t=event.target;if(!t||!t.closest)return;
 var go=t.closest('[data-goto]');var c=go||t.closest('a,button,[role=button],[onclick],input,select,label,summary');
 if(!c){for(var n=t,i=0;n&&n.nodeType===1&&i<8;i++,n=n.parentElement){if(getComputedStyle(n).cursor==='pointer'){c=n;break}}}
 var el=c||t;var text=(el.innerText||el.value||el.getAttribute('aria-label')||'').replace(/\\s+/g,' ').trim().slice(0,200);
-try{parent.postMessage({nuphosArtifact:channel,type:'click',message:JSON.stringify({goto:go?go.getAttribute('data-goto'):null,text:text,clickable:!!c,declared:!!document.querySelector('[data-goto]')})},'*')}catch(e){}
+try{parent.postMessage({cerinArtifact:channel,type:'click',message:JSON.stringify({goto:go?go.getAttribute('data-goto'):null,text:text,clickable:!!c,declared:!!document.querySelector('[data-goto]')})},'*')}catch(e){}
 },true);
 })();`
 
@@ -110,9 +110,9 @@ export function readArtifactFrameMessage(
   channel: string,
 ): ArtifactFrameMessage | null {
   if (!data || typeof data !== 'object') return null
-  const { nuphosArtifact, type, message } = data as Record<string, unknown>
+  const { cerinArtifact, type, message } = data as Record<string, unknown>
 
-  if (nuphosArtifact !== channel || typeof message !== 'string') return null
+  if (cerinArtifact !== channel || typeof message !== 'string') return null
   if (type !== 'error' && type !== 'escape' && type !== 'click' && type !== 'arrow') return null
 
   return { channel, type, message }

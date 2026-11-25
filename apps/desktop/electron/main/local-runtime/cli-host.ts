@@ -1,4 +1,4 @@
-// `nuphos agent`: local agents on Node beside the staged openab, without Electron.
+// `cerin agent`: local agents on Node beside the staged openab, without Electron.
 
 import { randomUUID } from 'node:crypto'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -91,7 +91,7 @@ let lastSummary = ''
 let stopping = false
 let tunnel: RuntimeTunnelClient | undefined
 
-// From `nuphos agent` (the keychain trusts the CLI, not node); kept from the agents.
+// From `cerin agent` (the keychain trusts the CLI, not node); kept from the agents.
 const launchToken = process.env.NUPHOS_SESSION_TOKEN || null
 
 delete process.env.NUPHOS_SESSION_TOKEN

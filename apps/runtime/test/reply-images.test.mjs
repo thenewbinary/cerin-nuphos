@@ -4,14 +4,14 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { test } from 'node:test'
-import { nuphosReplyImages, nuphosUploadReplyImages } from '../image/reply-images.mjs'
+import { cerinReplyImages, cerinUploadReplyImages } from '../image/reply-images.mjs'
 
 const png = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1kAAAAASUVORK5CYII=',
   'base64',
 )
 const groupId = '0123456789abcdef01234567'
-const marker = `https://nuphos.ai/_reply-images/${groupId}`
+const marker = `https://platform.cerin.ai/_reply-images/${groupId}`
 const env = {
   NUPHOS_TOKEN: 'test-only',
   NUPHOS_SESSION_ID: 'session',
@@ -43,7 +43,7 @@ async function fixture(t) {
 test('uploads a Unicode/spaced path, file URL and relative path once; leaves remote URLs and code untouched', async (t) => {
   const { cwd, calls, state } = await fixture(t)
   const source = `![one](<${join(cwd, '畫面 preview.png')}>)\n![two](<${pathToFileURL(join(cwd, '畫面 preview.png'))}>)\n![three](%E7%95%AB%E9%9D%A2%20preview.png)\n![remote](https://example.com/img.png)\n\`![code](missing.png)\`\n\`\`\`md\n![example](missing.png)\n\`\`\``
-  const output = await nuphosUploadReplyImages(source, state)
+  const output = await cerinUploadReplyImages(source, state)
   assert.equal(output.split(marker).length, 4)
   assert.ok(output.includes('![example](missing.png)'))
   assert.ok(output.includes('![remote](https://example.com/img.png)'))
@@ -67,7 +67,7 @@ test('rejects traversal, symlinks, oversized, missing and disguised non-images w
     'big.png',
     'missing.png',
   ]) {
-    const output = await nuphosUploadReplyImages(`![x](<${file}>)`, state)
+    const output = await cerinUploadReplyImages(`![x](<${file}>)`, state)
     assert.match(output, /Image unavailable/)
     assert.ok(!output.includes(cwd))
   }
@@ -78,8 +78,8 @@ test('upload failures are visible and retried on a later reply', async (t) => {
   const { state, calls } = await fixture(t)
   globalThis.fetch.mock.mockImplementationOnce(async () => ({ ok: false }))
   const source = '![x](%E7%95%AB%E9%9D%A2%20preview.png)'
-  assert.match(await nuphosUploadReplyImages(source, state), /could not be uploaded/)
-  assert.match(await nuphosUploadReplyImages(source, state), /_reply-images/)
+  assert.match(await cerinUploadReplyImages(source, state), /could not be uploaded/)
+  assert.match(await cerinUploadReplyImages(source, state), /_reply-images/)
   assert.equal(calls.length, 3)
 })
 
@@ -110,10 +110,10 @@ for (const provider of ['claude-code', 'codex'])
       agent.connection = { notify: async (method, value) => sent.push(value) }
     else agent.client = { sessionUpdate: async (value) => sent.push(value) }
     const meta =
-      provider === 'codex' ? { 'ai.nuphos/codex': { env } } : { claudeCode: { options: { env } } }
-    nuphosReplyImages(agent, { cwd, _meta: meta }, { sessionId: 'native' })
+      provider === 'codex' ? { 'ai.cerin/codex': { env } } : { claudeCode: { options: { env } } }
+    cerinReplyImages(agent, { cwd, _meta: meta }, { sessionId: 'native' })
     // Production refreshes credentials at upload time; this isolated fixture uses its fake principal.
-    agent.nuphosReplyImageState.get('native').credentialsDir = undefined
+    agent.cerinReplyImageState.get('native').credentialsDir = undefined
     await agent.prompt({ sessionId: 'native' })
     assert.equal(sent.length, 2)
     assert.match(sent[1].update.content.text, /_reply-images/)
@@ -128,8 +128,8 @@ for (const provider of ['claude-code', 'codex'])
       agent.connection = { notify: async (_method, value) => sent.push(value.update.content.text) }
     else agent.client = { sessionUpdate: async (value) => sent.push(value.update.content.text) }
     const meta =
-      provider === 'codex' ? { 'ai.nuphos/codex': { env } } : { claudeCode: { options: { env } } }
-    nuphosReplyImages(agent, { cwd: '/tmp', _meta: meta }, { sessionId: 'native' })
+      provider === 'codex' ? { 'ai.cerin/codex': { env } } : { claudeCode: { options: { env } } }
+    cerinReplyImages(agent, { cwd: '/tmp', _meta: meta }, { sessionId: 'native' })
     const notify = async (text) => {
       const update = {
         sessionId: 'native',

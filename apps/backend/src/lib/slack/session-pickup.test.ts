@@ -14,7 +14,7 @@ const bot = (slackTeamId = 'T1'): ResolvedSlackBot =>
   ({
     botToken: 'xoxb-token',
     botUserId: 'B1',
-    nuphosTeamId: TEAM_ID,
+    cerinTeamId: TEAM_ID,
     binding: { slackTeamId },
   }) as ResolvedSlackBot
 
@@ -22,7 +22,7 @@ const mapping = (): SlackUserMapping => ({
   slackWorkspaceId: 'T1',
   slackUserId: 'U1',
   teamId: TEAM_ID,
-  nuphosUserId: 'user-1',
+  cerinUserId: 'user-1',
   enabled: true,
   createdBy: 'test',
   createdAt: now,
@@ -161,7 +161,7 @@ describe('pickUpConversationInSlack', () => {
   })
 
   test('a lost bind race resolves to the winner’s thread', async () => {
-    bindError = new Error('This Nuphos conversation is already bound to a Slack thread')
+    bindError = new Error('This Cerin conversation is already bound to a Slack thread')
     racedThread = thread({ slackThreadTs: '1600.001' })
     const result = await pickUpConversationInSlack(args, dependencies)
 

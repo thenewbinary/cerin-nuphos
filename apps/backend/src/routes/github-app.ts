@@ -55,7 +55,7 @@ function normalizeSetupRedirect(target: string): URL {
       'GITHUB_APP_SETUP_REDIRECT must be a valid absolute URL',
     )
   }
-  if (url.protocol === 'zeabur-atlas:' || url.protocol === 'nuphos:') url.protocol = 'cerin:'
+  if (url.protocol === 'zeabur-atlas:' || url.protocol === 'cerin:') url.protocol = 'cerin:'
 
   return url
 }

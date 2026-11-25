@@ -38,7 +38,7 @@ ac /teams/$TEAM/asana-accounts | python3 -m json.tool
 BINDING=""  # set to the "id" of an account from step 1
 # Only source on success — a failed fetch (403/404/401) leaves no fresh env
 # file, and sourcing a stale one would point later calls at a revoked token.
-bash skills/asana/scripts/setup-credentials.sh "$TEAM" "$BINDING" && source ~/.asana/nuphos.env
+bash skills/asana/scripts/setup-credentials.sh "$TEAM" "$BINDING" && source ~/.asana/cerin.env
 
 # 3. Helper for Asana API calls (all responses wrap the payload in {"data":...}).
 # --fail-with-body makes curl exit non-zero on 4xx/5xx while still printing

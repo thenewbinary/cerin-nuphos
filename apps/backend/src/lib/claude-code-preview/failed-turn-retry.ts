@@ -33,7 +33,7 @@ export function failedPrompt(
   if (parts.length !== 1 || only?.type !== 'turn-interrupted' || !only.cause) return null
   const metadata = parseMessageMetadata(asked.metadata)
 
-  // Nuphos's own message (an answer, a trigger, an event) is not resent: an
+  // Cerin's own message (an answer, a trigger, an event) is not resent: an
   // answer's question is open again, and the person decides what runs.
   if (!metadata || metadata.source === 'agent.resource') return null
   if (metadata.sender.type === 'user' && metadata.sender.id !== ownerId) return null

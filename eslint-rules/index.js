@@ -5,7 +5,7 @@ import noOrphanedDocComment from './no-orphaned-doc-comment.js'
 import noUnawaitedAsyncAssertion from './no-unawaited-async-assertion.js'
 
 export default {
-  meta: { name: 'nuphos', version: '1.0.0' },
+  meta: { name: 'cerin', version: '1.0.0' },
   rules: {
     'no-large-comment-block': noLargeCommentBlock,
     'no-duplicate-comment': noDuplicateComment,

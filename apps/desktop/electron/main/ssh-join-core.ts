@@ -158,7 +158,7 @@ export function sshJoinScript({ token, apiUrl }: { token: string; apiUrl: string
     'test -x "$HOME/.local/bin/cerin" || { echo "The Cerin CLI did not install." >&2; exit 1; }',
     `${env} nohup "$HOME/.local/bin/cerin" agent >"$HOME/.cerin-agent.log" 2>&1 </dev/null &`,
     'agent=$!',
-    'cred="$HOME/.local/share/nuphos/agent/device-credential.json"',
+    'cred="$HOME/.local/share/cerin/agent/device-credential.json"',
     // An agent that cannot start (no Node.js, a refused token) exits at once: say why now.
     'sleep 5',
     'i=0; while [ $i -lt 60 ] && [ ! -s "$cred" ] && kill -0 $agent 2>/dev/null; do sleep 1; i=$((i+1)); done',

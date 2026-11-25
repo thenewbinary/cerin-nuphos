@@ -37,7 +37,7 @@
     <string name="composer_credentials_count">認証情報 · %1$d</string>
     <string name="composer_computers_count">コンピュータ · %1$d</string>
     <string name="composer_queue_a_message">メッセージをキューに追加</string>
-    <string name="composer_ask_nuphos">Nuphos に何でも聞いてください</string>
+    <string name="composer_ask_cerin">Cerin に何でも聞いてください</string>
     <string name="composer_remove_attachment_failed">保存済みのこの添付ファイルを削除できませんでした。ストレージを確認してから、もう一度お試しください。</string>
     <string name="composer_photos">写真</string>
     <string name="composer_files">ファイル</string>
@@ -55,8 +55,8 @@
     <string name="composer_clear">クリア</string>
     <string name="composer_retry">再試行</string>
     <string name="composer_loading_iam">IAM を読み込み中…</string>
-    <string name="composer_no_computers">利用できるコンピュータがありません。ここで使うには、Nuphos でコンピュータを接続してください。</string>
-    <string name="composer_no_computers_or_iam">利用できるコンピュータや IAM がありません。ここで使うには、Nuphos でコンピュータまたはクラウドアカウントを接続してください。</string>
+    <string name="composer_no_computers">利用できるコンピュータがありません。ここで使うには、Cerin でコンピュータを接続してください。</string>
+    <string name="composer_no_computers_or_iam">利用できるコンピュータや IAM がありません。ここで使うには、Cerin でコンピュータまたはクラウドアカウントを接続してください。</string>
     <string name="composer_allow_computers">選択したコンピュータの操作をこのエージェントに許可します。</string>
     <string name="composer_permission_mode">権限モード</string>
     <string name="composer_load_runtimes_failed">ランタイムを読み込めませんでした。</string>
@@ -66,7 +66,7 @@
     <string name="composer_runtime_wait">現在の応答または保留中のメッセージが完了してから、ランタイムを切り替えてください。</string>
     <string name="composer_loading_runtimes">ランタイムを読み込み中…</string>
     <string name="composer_no_runtimes">利用できるランタイムがありません。</string>
-    <string name="composer_no_runtimes_body">コンピュータで Nuphos を開いて、Box を追加するか自分のコンピュータを接続してください。</string>
+    <string name="composer_no_runtimes_body">コンピュータで Cerin を開いて、Box を追加するか自分のコンピュータを接続してください。</string>
     <string name="composer_manage_runtimes">コンピュータとランタイムを管理</string>
     <string name="composer_refresh_runtimes">ランタイムを更新</string>
     <string name="composer_move_to">%1$s に移動しますか？</string>

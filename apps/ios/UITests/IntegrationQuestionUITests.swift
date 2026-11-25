@@ -29,7 +29,7 @@ final class IntegrationQuestionUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
         app.launch()
         let entry = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Request a Trello connection")).firstMatch

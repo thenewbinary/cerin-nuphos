@@ -7,7 +7,7 @@ import type { Collection } from 'mongodb'
 export { isActiveTeamMember } from './team-membership'
 
 /**
- * A machine Nuphos created for this device; absent for a person's own computer. Its state is
+ * A machine Cerin created for this device; absent for a person's own computer. Its state is
  * never stored: instabox and presence know it. A `k8s` Box is the pod of a managed runtime,
  * which the team reaches through that runtime, so it is never listed as one of the team's Boxes.
  */

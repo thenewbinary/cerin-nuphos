@@ -23,7 +23,7 @@ export function assertTailnetTag(tag: string): string {
 
 /**
  * Sandbox node names are what ties a line in the customer's Tailscale audit log
- * back to a Nuphos conversation, so the session id has to survive into the
+ * back to a Cerin conversation, so the session id has to survive into the
  * hostname. Tailscale rejects anything outside the DNS-label grammar, hence the
  * truncated hex rather than the raw ids.
  */
@@ -34,7 +34,7 @@ export function tailnetSandboxHostname(teamId: ObjectId, sessionId: string): str
       .toLowerCase()
       .slice(-8) || 'session'
 
-  return `nuphos-${teamId.toHexString().slice(-6)}-${session}`
+  return `cerin-${teamId.toHexString().slice(-6)}-${session}`
 }
 
 export function requireTailnetSandboxTag(access: TailscaleSandboxAccess | undefined): string {
@@ -59,7 +59,7 @@ export type TailnetAclSnippetOptions = {
 
 /**
  * The copy-pasteable half of the customer's side of the setup. Deliberately
- * emitted as text for them to review and commit themselves: Nuphos never writes
+ * emitted as text for them to review and commit themselves: Cerin never writes
  * to the tailnet policy file, because "you own the authorization boundary" stops
  * being true the moment we do.
  *
@@ -67,7 +67,7 @@ export type TailnetAclSnippetOptions = {
  * when `src` is a tag — the action needs a user identity to attribute the
  * browser approval to, and a tagged sandbox node has none. Verified against the
  * live API: `[ssh] "check" action does not support tags in src`. The per-session
- * human gate therefore lives in Nuphos's own approval flow, and the customer's
+ * human gate therefore lives in Cerin's own approval flow, and the customer's
  * enforceable control is session recording, which fails the connection closed
  * when the recorder is unreachable.
  */

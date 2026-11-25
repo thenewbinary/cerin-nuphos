@@ -6,18 +6,18 @@ compares their names, order and checksums before submitting the version for revi
 
 ## Approved iPhone set — October 20, 2026
 
-The approved light-appearance set uses the new Nuphos hero artwork, larger descriptions,
+The approved light-appearance set uses the new Cerin hero artwork, larger descriptions,
 no top wordmark or eyebrow label, and a complete phone frame for the agent picker.
 All four images are 1320 × 2868, opaque RGB PNGs. The existing iPad set remains unchanged.
 
 | Image                                                                                                          | Message                                  |
 | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| [01-workspace.png](https://cdn.zeabur.com/nuphos/app-store/ios/en-US/2026-10-20-light-v3/01-workspace.png)     | Your team. In your pocket.               |
-| [02-keep-going.png](https://cdn.zeabur.com/nuphos/app-store/ios/en-US/2026-10-20-light-v3/02-keep-going.png)   | Away from your desk. Not from your work. |
-| [03-together.png](https://cdn.zeabur.com/nuphos/app-store/ios/en-US/2026-10-20-light-v3/03-together.png)       | Great work. Made together.               |
-| [04-your-agents.png](https://cdn.zeabur.com/nuphos/app-store/ios/en-US/2026-10-20-light-v3/04-your-agents.png) | Your agents. Your subscriptions.         |
+| [01-workspace.png](https://cdn.zeabur.com/cerin/app-store/ios/en-US/2026-10-20-light-v3/01-workspace.png)     | Your team. In your pocket.               |
+| [02-keep-going.png](https://cdn.zeabur.com/cerin/app-store/ios/en-US/2026-10-20-light-v3/02-keep-going.png)   | Away from your desk. Not from your work. |
+| [03-together.png](https://cdn.zeabur.com/cerin/app-store/ios/en-US/2026-10-20-light-v3/03-together.png)       | Great work. Made together.               |
+| [04-your-agents.png](https://cdn.zeabur.com/cerin/app-store/ios/en-US/2026-10-20-light-v3/04-your-agents.png) | Your agents. Your subscriptions.         |
 
-[Contact sheet](https://cdn.zeabur.com/nuphos/app-store/ios/en-US/2026-10-20-light-v3/preview-light-v3.png) · [Source archive](https://cdn.zeabur.com/nuphos/app-store/ios/en-US/2026-10-20-light-v3/nuphos-ios-light-v3.zip)
+[Contact sheet](https://cdn.zeabur.com/cerin/app-store/ios/en-US/2026-10-20-light-v3/preview-light-v3.png) · [Source archive](https://cdn.zeabur.com/cerin/app-store/ios/en-US/2026-10-20-light-v3/cerin-ios-light-v3.zip)
 
 The source archive contains the renderer, HTML UI port, assets, finished PNGs and validation
 results. It requires Chromium, Node.js and Apple SF Pro Text (not redistributed; obtain from
@@ -31,14 +31,14 @@ sit outside the app UI. All conversation data is fictional.
 The `compose.mjs`, `ui.js`, `data.js`, `symbols.swift`, `hero.mjs` and `faces/` files in this
 directory remain the earlier dark-appearance renderer. They do not reproduce the new iPhone
 set; use the dated source archive above for that set. The existing iPad images remain under
-`https://cdn.zeabur.com/nuphos/app-store/ios/en-US/ipad/`, except the first one.
+`https://cdn.zeabur.com/cerin/app-store/ios/en-US/ipad/`, except the first one.
 
 The first iPad image was re-rendered on November 11, 2026 with the headline and description of
 the approved iPhone set ("Your team. In your pocket."), and lives under
-`https://cdn.zeabur.com/nuphos/app-store/ios/en-US/ipad-2026-11-11/`. Its layout and app content
+`https://cdn.zeabur.com/cerin/app-store/ios/en-US/ipad-2026-11-11/`. Its layout and app content
 are unchanged.
 
-`hero.mjs` captures the background from the shader hero that nuphos.ai had in October. The site
+`hero.mjs` captures the background from the shader hero that platform.cerin.ai had in October. The site
 no longer has it, so `setup.sh` stops at that step. For the November 11 image the background
 frame came from a local run of the October website; put such a frame at
 `build/hero-ipad-<n>.png` and run the remaining `setup.sh` steps by hand.

@@ -42,7 +42,7 @@ test('results a client renders a card from are stored', () => {
       type: 'tool',
       toolCallId: 'q',
       toolName: 'request_user_decision',
-      output: { status: 'awaiting_user_decision', requestId: 'nuphos-1' },
+      output: { status: 'awaiting_user_decision', requestId: 'cerin-1' },
     },
     // A thread card names the agent each message ran on, from its receipt.
     {

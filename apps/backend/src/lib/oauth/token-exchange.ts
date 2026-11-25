@@ -22,7 +22,7 @@ const SUBJECT_TOKEN_TYPES = new Set([
   JWT_TOKEN_TYPE,
   'urn:ietf:params:oauth:token-type:access_token',
 ])
-const CONVERSATION_AUDIENCE = 'nuphos-preview-mcp'
+const CONVERSATION_AUDIENCE = 'cerin-preview-mcp'
 
 /** Exchanged tokens live at most this long, and never past their subject. */
 export const EXCHANGED_TOKEN_MAX_TTL_SEC = 30 * 60

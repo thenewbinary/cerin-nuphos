@@ -34,7 +34,7 @@ async function expectVisibility(stack: Stack, name: string, visibility: string) 
 
 /** Opens the Dashboards page the way a link in a chat does. */
 async function openDashboardsPage(page: Page, stack: Stack) {
-  const url = `https://nuphos.ai/teams/${stack.teamId}/dashboards`
+  const url = `https://platform.cerin.ai/teams/${stack.teamId}/dashboards`
 
   await newTask(page)
   await send(page, `Open ${url} E2E_DELIVERY:dashboards`)

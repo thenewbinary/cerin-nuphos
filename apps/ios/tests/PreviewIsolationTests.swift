@@ -22,7 +22,7 @@ struct PreviewIsolationTests {
     static func main() async {
         let route = PreviewIsolation.route
         check(route(URL(string: "https://api.preview.invalid/teams")) == .fixture, "the preview API is the fixture")
-        for url in ["https://api.nuphos.ai/agent/chat", "wss://api.nuphos.ai/x", "http://nuphos.ai/",
+        for url in ["https://platform.cerin.ai/agent/chat", "wss://platform.cerin.ai/x", "http://platform.cerin.ai/",
                     "https://lh3.googleusercontent.com/a", "https://127.0.0.1.example.com/", "https://example.com/"] {
             check(route(URL(string: url)) == .blocked, "\(url) is blocked")
         }
@@ -47,7 +47,7 @@ struct PreviewIsolationTests {
         // A normal launch changes nothing.
         PreviewIsolation.installIfPreview(arguments: ["app"], fixture: nil)
         check(!PreviewIsolation.isActive, "a normal launch stays inactive")
-        check(NuphosAPI.baseURL == NuphosAPI.defaultBaseURL, "a normal launch keeps the backend")
+        check(CerinAPI.baseURL == CerinAPI.defaultBaseURL, "a normal launch keeps the backend")
         check(!(URLSessionConfiguration.default.protocolClasses ?? []).contains { $0 == PreviewTransport.self },
               "a normal launch leaves sessions alone")
 
@@ -59,24 +59,24 @@ struct PreviewIsolationTests {
 
         PreviewIsolation.installIfPreview(arguments: ["-preview-home"], fixture: fixture.path)
         check(PreviewIsolation.isActive, "preview is active")
-        check(NuphosAPI.baseURL == PreviewIsolation.apiBase, "the API moves to the reserved host")
+        check(CerinAPI.baseURL == PreviewIsolation.apiBase, "the API moves to the reserved host")
 
         for (name, session) in [
             ("shared", URLSession.shared),
             ("default", URLSession(configuration: .default)),
             ("ephemeral", URLSession(configuration: .ephemeral)),
         ] {
-            for url in ["https://api.nuphos.ai/avatars/a.webp", "https://lh3.googleusercontent.com/a", "https://example.com/"] {
+            for url in ["https://platform.cerin.ai/avatars/a.webp", "https://lh3.googleusercontent.com/a", "https://example.com/"] {
                 let message = await failure(session, url)
                 check(message?.contains(blocked) == true, "\(name) blocks \(url), got \(message ?? "a response")")
             }
-            let (data, response) = try! await session.data(from: NuphosAPI.baseURL.appending(path: "teams"))
+            let (data, response) = try! await session.data(from: CerinAPI.baseURL.appending(path: "teams"))
             check((response as? HTTPURLResponse)?.statusCode == 200, "\(name) answers from the fixture")
             check(String(data: data, encoding: .utf8)?.contains("teams") == true, "\(name) returns the fixture body")
         }
 
         // What an `activeRun` fixture starts.
-        var request = URLRequest(url: NuphosAPI.defaultBaseURL.appending(path: "agent/chat"))
+        var request = URLRequest(url: CerinAPI.defaultBaseURL.appending(path: "agent/chat"))
         request.httpMethod = "POST"
         do {
             for try await _ in SSEClient.events(for: request) { check(false, "a blocked stream sent an event") }

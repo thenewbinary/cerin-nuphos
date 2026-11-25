@@ -1,0 +1,378 @@
+package ai.cerin.android
+
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputContentInfo
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
+import android.net.Uri
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import ai.cerin.android.session.ComposerDrafts
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import ai.cerin.android.model.ComposerAttachment
+import ai.cerin.android.model.ComposerSubmission
+import ai.cerin.android.session.AgentStore
+import ai.cerin.android.ui.LocalAgentStore
+import ai.cerin.android.ui.chat.ChatComposer
+import ai.cerin.android.ui.theme.CerinTheme
+import org.junit.Assert.*
+import org.junit.Assume.assumeTrue
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@RunWith(AndroidJUnit4::class)
+class ContentInputFixtureDeviceTest {
+    @get:Rule val compose = createComposeRule()
+    private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
+    private val lease = mutableStateOf<ComposerDrafts.Lease?>(null)
+    private val sendAllowed = mutableStateOf(true)
+    private val editAllowed = mutableStateOf(true)
+    private val focusRequest = mutableStateOf(0)
+    private var filesRequest: Int? = null
+    private val pickerRegistry = object : androidx.activity.result.ActivityResultRegistry() {
+        override fun <I, O> onLaunch(requestCode: Int, contract: androidx.activity.result.contract.ActivityResultContract<I, O>,
+            input: I, options: androidx.core.app.ActivityOptionsCompat?) {
+            check(contract is androidx.activity.result.contract.ActivityResultContracts.GetMultipleContents)
+            filesRequest = requestCode
+        }
+    }
+    private val pickerOwner = object : androidx.activity.result.ActivityResultRegistryOwner {
+        override val activityResultRegistry get() = pickerRegistry
+    }
+    private var sendCount = 0
+    private var sent: ComposerSubmission? = null
+    private var stoppable = false
+    private var inputDescription = "Ask Cerin anything"
+
+    private fun render(streaming: Boolean = false, controlledPicker: Boolean = false) {
+        inputDescription = if (streaming) "Queue a message" else "Ask Cerin anything"
+        lease.value?.key?.accountId?.let { account ->
+            kotlinx.coroutines.runBlocking { (context.applicationContext as CerinApplication).incomingShares.bindAccount(account) }
+        }
+        compose.setContent {
+            val appContext = LocalContext.current
+            val store = remember {
+                AgentStore("synthetic-no-credentials", appContext).also { store ->
+                    lease.value?.key?.teamId?.let { team ->
+                        @Suppress("UNCHECKED_CAST")
+                        val selected = AgentStore::class.java.getDeclaredField("selectedTeam\$delegate")
+                            .also { it.isAccessible = true }.get(store) as androidx.compose.runtime.MutableState<ai.cerin.android.model.Team?>
+                        selected.value = ai.cerin.android.model.Team(team, "Synthetic workspace")
+                    }
+                }
+            }
+            CerinTheme { CompositionLocalProvider(LocalAgentStore provides store, ai.cerin.android.ui.LocalAuthSession provides (androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as ai.cerin.android.CerinApplication).authSession) {
+                val composer = @androidx.compose.runtime.Composable {
+                    ChatComposer(isStreaming = streaming, onStop = if (stoppable) ({ }) else null, draft = lease.value, canSubmit = sendAllowed.value,
+                        draftingEnabled = editAllowed.value, onSend = { sendCount++; sent = it; true }, focusRequest = focusRequest.value)
+                }
+                if (controlledPicker) CompositionLocalProvider(
+                    androidx.activity.compose.LocalActivityResultRegistryOwner provides pickerOwner, content = composer)
+                else composer()
+            } }
+        }
+    }
+    private fun paste(clip: ClipData) {
+        compose.onNodeWithContentDescription(inputDescription).performClick()
+        compose.runOnIdle { context.getSystemService(ClipboardManager::class.java).setPrimaryClip(clip) }
+        compose.onNodeWithContentDescription(inputDescription).performKeyInput {
+            keyDown(Key.CtrlLeft); pressKey(Key.V); keyUp(Key.CtrlLeft)
+        }
+        compose.waitForIdle()
+    }
+    private fun uri(name: String) = Uri.parse("content://ai.cerin.content-input-fixture/$name")
+    private fun clip(name: String) = ClipData.newUri(context.contentResolver, "Synthetic", uri(name))
+
+    private fun openFiles() {
+        compose.onNodeWithContentDescription(inputDescription).performClick()
+        compose.onNodeWithContentDescription("Files").performClick()
+        compose.waitUntil(10_000) { filesRequest != null }
+    }
+    private fun returnFile(name: String? = "fixture.txt") {
+        val request = requireNotNull(filesRequest)
+        compose.runOnIdle {
+            pickerRegistry.dispatchResult(request, if (name == null) android.app.Activity.RESULT_CANCELED else android.app.Activity.RESULT_OK,
+                name?.let { android.content.Intent().setData(uri(it)) })
+        }
+    }
+    @Test fun aReplyRequestFocusesOnlyWhenItChanges() {
+        // A chat reopened after earlier replies: its session's count is already above zero.
+        focusRequest.value = 2
+        render()
+        compose.onNodeWithContentDescription(inputDescription).assertIsNotFocused()
+        focusRequest.value = 3
+        compose.onNodeWithContentDescription(inputDescription).assertIsFocused()
+    }
+
+    @Test fun filesResultSurvivesTemporarySendUnavailabilityAndSubmitsOnceAfterRecovery() {
+        render(controlledPicker = true)
+        openFiles()
+        compose.runOnIdle { sendAllowed.value = false }
+        compose.waitForIdle()
+        returnFile()
+        compose.waitUntil(10_000) { compose.onAllNodesWithContentDescription("Remove").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+        assertNull(sent)
+        compose.runOnIdle { sendAllowed.value = true }
+        compose.onNodeWithContentDescription("Send").performClick()
+        compose.waitUntil(10_000) { sent != null }
+        val attachment = sent!!.attachments.single()
+        try {
+            assertEquals("fixture.txt", attachment.name)
+            assertEquals(1, sendCount)
+            val retained = attachment.kind as ComposerAttachment.Kind.RetainedFile
+            assertArrayEquals("Synthetic attachment bytes".toByteArray(), retained.source.open().use { it.readBytes() })
+            compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+        } finally { attachment.releaseOwnedCopy() }
+    }
+    @Test fun filesRemainEditableWhenSendIsAlreadyUnavailable() {
+        sendAllowed.value = false
+        render(controlledPicker = true); openFiles(); returnFile()
+        compose.waitUntil(10_000) { compose.onAllNodesWithContentDescription("Remove").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+        assertNull(sent)
+        compose.onNodeWithContentDescription("Remove").performClick()
+    }
+    @Test fun cancelledFilesResultKeepsTextAndAddsNoAttachment() {
+        render(controlledPicker = true)
+        compose.onNodeWithContentDescription(inputDescription).performTextInput("Keep this draft")
+        openFiles(); returnFile(null)
+        compose.onAllNodesWithContentDescription("Remove").assertCountEquals(0)
+        compose.onNodeWithContentDescription(inputDescription).assertTextContains("Keep this draft")
+        assertNull(sent)
+    }
+    @Test fun filesReadFailureIsVisibleAndKeepsText() {
+        render(controlledPicker = true)
+        compose.onNodeWithContentDescription(inputDescription).performTextInput("Keep this draft")
+        openFiles(); returnFile("denied.txt")
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Synthetic read denied").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription(inputDescription).assertTextContains("Keep this draft")
+        assertNull(sent)
+    }
+    @Test fun filesResultCannotEnterAReadOnlyOrRevokedDraft() {
+        render(controlledPicker = true); openFiles()
+        compose.runOnIdle { editAllowed.value = false }; compose.waitForIdle(); returnFile()
+        compose.onAllNodesWithContentDescription("Remove").assertCountEquals(0)
+        assertNull(sent)
+    }
+
+    private fun changedPickerOwner(accountChange: Boolean) {
+        val drafts = ComposerDrafts()
+        lease.value = drafts.bind("fixture", "team", ComposerDrafts.Destination.Chat("first"))!!
+        render(controlledPicker = true); openFiles()
+        val next = if (accountChange) {
+            val other = ComposerDrafts()
+            other.bind("other", "team", ComposerDrafts.Destination.Chat("first"))!!
+        } else drafts.bind("fixture", "other-team", ComposerDrafts.Destination.Chat("first"))!!
+        compose.runOnIdle { lease.value = next }
+        compose.waitForIdle(); returnFile()
+        compose.onNodeWithText("The draft changed while choosing files. Select the files again.").assertExists()
+        compose.onAllNodesWithContentDescription("Remove").assertCountEquals(0)
+        assertNull(sent)
+    }
+    @Test fun filesResultCannotCrossAccounts() = changedPickerOwner(true)
+    @Test fun filesResultCannotCrossWorkspaces() = changedPickerOwner(false)
+    @Test fun restoredDraftAccessDoesNotReviveAnEarlierPicker() {
+        render(controlledPicker = true); openFiles()
+        compose.runOnIdle { editAllowed.value = false }; compose.waitForIdle()
+        compose.runOnIdle { editAllowed.value = true }; compose.waitForIdle()
+        returnFile()
+        compose.onNodeWithText("The draft changed while choosing files. Select the files again.").assertExists()
+        compose.onAllNodesWithContentDescription("Remove").assertCountEquals(0)
+        assertNull(sent)
+    }
+    @Test fun consentRevisionInvalidatesAnEarlierPicker() {
+        val access = ai.cerin.android.session.AiAccess
+        access.activate("synthetic-picker-consent"); access.grant("synthetic-picker-consent")
+        try {
+            render(controlledPicker = true); openFiles()
+            compose.runOnIdle { access.revoke() }; compose.waitForIdle()
+            returnFile()
+            compose.onNodeWithText("The draft changed while choosing files. Select the files again.").assertExists()
+            compose.onAllNodesWithContentDescription("Remove").assertCountEquals(0)
+            assertNull(sent)
+        } finally { access.clear() }
+    }
+    @Test fun sendBecomingUnavailableDuringAFileReadDoesNotCancelLocalEditing() {
+        render(controlledPicker = true); openFiles(); returnFile("delay.txt")
+        compose.onNodeWithText("Reading files…").assertExists()
+        compose.runOnIdle { sendAllowed.value = false }
+        compose.waitUntil(10_000) { compose.onAllNodesWithContentDescription("Remove").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+        assertNull(sent)
+        compose.onNodeWithContentDescription("Remove").performClick()
+    }
+
+    @Test fun plainTextPasteRemainsTextAtSelection() {
+        render()
+        paste(ClipData.newPlainText("Synthetic", "ordinary text"))
+        compose.onNodeWithContentDescription("Send").performClick()
+        assertEquals("ordinary text", sent?.text)
+        assertTrue(sent!!.attachments.isEmpty())
+    }
+    @Test fun pastedDocumentUsesOwnedCopyAndExactBytes() {
+        render()
+        paste(clip("fixture.txt"))
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Reading files…").fetchSemanticsNodes().isEmpty() }
+        compose.onNodeWithContentDescription("Send").performClick()
+        val attachment = sent!!.attachments.single()
+        try {
+            assertEquals("fixture.txt", attachment.name)
+            val file = attachment.kind as ComposerAttachment.Kind.RetainedFile
+            assertArrayEquals("Synthetic attachment bytes".toByteArray(), file.source.open().use { it.readBytes() })
+        } finally { attachment.releaseOwnedCopy() }
+    }
+    @Test fun photoPickerVideoKeepsOriginalMimeAndBytesWithoutBitmapDecode() {
+        val input = ai.cerin.android.ui.chat.selectionInput(context, uri("clip.mp4"), images = true)
+        assertEquals("video/mp4", input.mime)
+        assertFalse(input.isImage)
+        val directory = java.io.File(context.cacheDir, "video-retention-" + java.util.UUID.randomUUID())
+        val attachment = ai.cerin.android.data.AttachmentRetention(directory).retain(emptyList(), listOf(input),
+            prepareImage = { _, _ -> error("Video must not be decoded as a bitmap") }).single()
+        try {
+            val retained = attachment.kind as ComposerAttachment.Kind.RetainedFile
+            assertEquals("video/mp4", retained.mime)
+            assertArrayEquals("Synthetic attachment bytes".toByteArray(), retained.source.open().use { it.readBytes() })
+        } finally { attachment.releaseOwnedCopy(); directory.deleteRecursively() }
+    }
+
+    @Test fun photoPickerResultCanSubmitRetainedVideo() {
+        render()
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val pickerIntent = androidx.activity.result.contract.ActivityResultContracts.PickMultipleVisualMedia(20).createIntent(
+            context, androidx.activity.result.PickVisualMediaRequest(androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+        val monitor = instrumentation.addMonitor(android.content.IntentFilter(requireNotNull(pickerIntent.action)).apply {
+            pickerIntent.type?.let { addDataType(it) }
+            pickerIntent.categories.orEmpty().forEach { addCategory(it) }
+        }, android.app.Instrumentation.ActivityResult(android.app.Activity.RESULT_OK,
+            android.content.Intent().setData(uri("clip.mp4"))), true)
+        try {
+            compose.onNodeWithContentDescription(inputDescription).performClick()
+            compose.onNodeWithContentDescription("Photos").performClick()
+            compose.waitUntil(10_000) { compose.onAllNodesWithContentDescription("Remove").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithContentDescription("Send").performClick()
+            compose.waitUntil(10_000) { sent != null }
+            val attachment = sent!!.attachments.single()
+            try {
+                val file = attachment.kind as ComposerAttachment.Kind.RetainedFile
+                assertEquals("video/mp4", file.mime)
+                assertArrayEquals("Synthetic attachment bytes".toByteArray(), file.source.open().use { it.readBytes() })
+                assertEquals(1, monitor.hits)
+            } finally { attachment.releaseOwnedCopy() }
+        } finally { instrumentation.removeMonitor(monitor) }
+    }
+
+    @Test fun pastedPngUsesExistingImageConversion() {
+        render()
+        paste(clip("image.png"))
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Reading files…").fetchSemanticsNodes().isEmpty() }
+        compose.onNodeWithContentDescription("Send").performClick()
+        val attachment = sent!!.attachments.single()
+        assertEquals("image.jpg", attachment.name)
+        assertTrue((attachment.kind as ComposerAttachment.Kind.Image).jpeg.isNotEmpty())
+    }
+    @Test fun rejectedReadKeepsDraftAndDoesNotEnableAttachmentSend() {
+        render()
+        paste(clip("denied.txt"))
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Synthetic read denied").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+        paste(ClipData.newPlainText("Synthetic", "retry text"))
+        compose.onNodeWithContentDescription("Send").performClick()
+        assertEquals("retry text", sent?.text)
+        assertTrue(sent!!.attachments.isEmpty())
+    }
+    @Test fun mixedTextAndDocumentPasteCanQueueWhileStreaming() {
+        render(streaming = true)
+        val mixed = clip("fixture.txt").apply { addItem(ClipData.Item("queued text")) }
+        paste(mixed)
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Reading files…").fetchSemanticsNodes().isEmpty() }
+        compose.onNodeWithContentDescription("Queue message").performClick()
+        try {
+            assertEquals("queued text", sent?.text)
+            assertEquals("fixture.txt", sent!!.attachments.single().name)
+        } finally { sent?.attachments?.forEach { it.releaseOwnedCopy() } }
+    }
+    @Test fun aFileOnlyDraftPutsStopLeftOfQueue() {
+        stoppable = true
+        render(streaming = true)
+        paste(clip("fixture.txt"))
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Reading files…").fetchSemanticsNodes().isEmpty() }
+        val stop = compose.onNodeWithContentDescription("Stop").assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        val queue = compose.onNodeWithContentDescription("Queue message").assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        assertTrue(stop.right <= queue.left)
+    }
+    @Test fun imeCommitContentReachesTheSameAttachmentPipeline() {
+        render()
+        compose.onNodeWithContentDescription(inputDescription).performClick()
+        compose.runOnIdle {
+            val activity = ActivityLifecycleMonitorRegistry.getInstance()
+                .getActivitiesInStage(Stage.RESUMED).single()
+            val connection = requireNotNull(activity.window.decorView.findFocus())
+                .onCreateInputConnection(EditorInfo()) ?: error("No active input connection")
+            val info = InputContentInfo(uri("fixture.txt"), android.content.ClipDescription("Synthetic", arrayOf("text/plain")), null)
+            assertTrue(connection.commitContent(info, 0, null))
+        }
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Reading files…").fetchSemanticsNodes().isEmpty() }
+        compose.onNodeWithContentDescription("Send").performClick()
+        try { assertEquals("fixture.txt", sent!!.attachments.single().name) }
+        finally { sent?.attachments?.forEach { it.releaseOwnedCopy() } }
+    }
+    @Test fun invalidImageAndOversizeMetadataReportErrorsWithoutAttachments() {
+        render()
+        paste(clip("invalid.png"))
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("This image cannot be read.").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+        paste(clip("oversize.txt"))
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("The selected file is empty or exceeds the file size limit.").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+    }
+
+    @Test fun switchingDraftDuringDelayedReadCancelsItsOwnedCopy() {
+        val drafts = ComposerDrafts()
+        val first = drafts.bind("fixture", "team", ComposerDrafts.Destination.Chat("first"))!!
+        val second = drafts.bind("fixture", "team", ComposerDrafts.Destination.Chat("second"))!!
+        first.write("first draft"); second.write("second draft")
+        lease.value = first
+        render()
+        paste(clip("delay.txt"))
+        compose.onNodeWithText("Reading files…").assertExists()
+        compose.runOnIdle { lease.value = second }
+        android.os.SystemClock.sleep(1600)
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription("Remove").assertDoesNotExist()
+        compose.onNodeWithContentDescription("Send").performClick()
+        compose.waitUntil(10_000) { sent != null }
+        assertEquals("second draft", sent?.text)
+        assertTrue(sent!!.attachments.isEmpty())
+        assertEquals("first draft", first.text)
+        // The composer clears the draft after the send callback returns and the sent state is saved.
+        compose.waitUntil(10_000) { second.text.isEmpty() }
+        assertTrue(java.io.File(context.filesDir, "chat-attachments").listFiles().orEmpty().isEmpty())
+    }
+
+    @Test fun tooManyClipboardFilesFailAtomically() {
+        render()
+        val many = clip("fixture.txt").apply { repeat(20) { addItem(ClipData.Item(uri("fixture.txt"))) } }
+        paste(many)
+        compose.onNodeWithText("Select at most 20 files.").assertExists()
+        compose.onNodeWithContentDescription("Remove").assertDoesNotExist()
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+    }
+    @Test fun emptyClipboardFileCannotBeSubmitted() {
+        render()
+        paste(clip("empty.txt"))
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("The selected file is empty.").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("Remove").assertDoesNotExist()
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+    }
+
+}

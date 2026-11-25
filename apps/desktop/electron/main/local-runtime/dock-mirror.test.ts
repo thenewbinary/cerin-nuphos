@@ -27,20 +27,20 @@ function appWindow(docks: Record<string, Tab[]>) {
         const session = String(args[0])
 
         asked.push(fn)
-        if (fn === 'nuphosDockMirror')
+        if (fn === 'cerinDockMirror')
           return {
             tabs: docks[session] ?? [],
             activeTabId: docks[session]?.[0]?.id ?? null,
             recent: [{ href: '/teams/t/runtimes', title: 'Runtimes' }],
           }
-        if (fn === 'nuphosCloseDockTab') {
+        if (fn === 'cerinCloseDockTab') {
           const before = docks[session]?.length ?? 0
 
           docks[session] = (docks[session] ?? []).filter((tab) => tab.id !== args[1])
 
           return docks[session].length < before
         }
-        if (fn === 'nuphosOpenDockTab') return 'new-tab'
+        if (fn === 'cerinOpenDockTab') return 'new-tab'
 
         return null
       },

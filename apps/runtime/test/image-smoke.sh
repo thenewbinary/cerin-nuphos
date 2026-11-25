@@ -32,11 +32,11 @@ for tool in git gh jq rg curl python3 kubectl zeabur bwrap socat tini flock; do
   command -v "$tool" >/dev/null || fail "$tool missing"
 done
 python3 -m venv /tmp/venv-check && rm -rf /tmp/venv-check
-nuphos-tools list
+cerin-tools list
 
 [ "${1:-}" = --tools ] || exit 0
 
-export NUPHOS_TOOLS_DIR=${NUPHOS_TOOLS_DIR:-/home/node/.nuphos-runtime/tools}
+export NUPHOS_TOOLS_DIR=${NUPHOS_TOOLS_DIR:-/home/node/.cerin-runtime/tools}
 
 timed() {
   local started=$SECONDS

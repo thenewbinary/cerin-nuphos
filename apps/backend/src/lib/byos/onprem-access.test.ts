@@ -10,7 +10,7 @@ clusters:
       server: https://10.0.0.1:6443
       certificate-authority-data: ${Buffer.from('-----BEGIN CERTIFICATE-----\nca\n-----END CERTIFICATE-----').toString('base64')}
 users:
-  - name: nuphos
+  - name: cerin
     user:
       token: sa-token
 `
@@ -126,7 +126,7 @@ describe('readOnpremAccess', () => {
       if (url.includes('selfsubjectreviews')) {
         return json({
           status: {
-            userInfo: { username: 'system:serviceaccount:nuphos-relay:nuphos', groups: ['view'] },
+            userInfo: { username: 'system:serviceaccount:cerin-relay:cerin', groups: ['view'] },
           },
         })
       }
@@ -158,13 +158,13 @@ describe('readOnpremAccess', () => {
 
     const readout = await readOnpremAccess({
       kubeconfig: KUBECONFIG,
-      proxyUrl: 'https://nr1_token:x@relay.nuphos.ai:8443',
+      proxyUrl: 'https://nr1_token:x@relay.platform.cerin.ai:8443',
       teamId: 'team-1',
     })
 
     expect(readout.reachable).toBe(true)
     expect(readout.serverVersion).toBe('v1.31.2')
-    expect(readout.identity?.username).toBe('system:serviceaccount:nuphos-relay:nuphos')
+    expect(readout.identity?.username).toBe('system:serviceaccount:cerin-relay:cerin')
     expect(readout.permissions).toMatchObject({ canWrite: false, namespace: 'default' })
     expect(readout.namespaces).toMatchObject({ denied: false, count: 2 })
 
@@ -172,7 +172,7 @@ describe('readOnpremAccess', () => {
     // reach the API server address directly.
     expect(calls).toHaveLength(4)
     for (const call of calls) {
-      expect(call.proxy).toBe('https://nr1_token:x@relay.nuphos.ai:8443')
+      expect(call.proxy).toBe('https://nr1_token:x@relay.platform.cerin.ai:8443')
       expect(call.auth).toBe('Bearer sa-token')
       expect(call.url.startsWith('https://10.0.0.1:6443')).toBe(true)
     }

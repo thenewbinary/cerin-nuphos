@@ -5,7 +5,7 @@ import { AppError } from '@/lib/errors'
 
 import { runtimeBackendUrl } from './runtime-backend-url'
 
-const PREFIX = 'nuphos-runtime-skills-v1'
+const PREFIX = 'cerin-runtime-skills-v1'
 
 export function runtimeSkillsUrl(teamId: string, external?: boolean, backendUrl?: string): string {
   const base = backendUrl ?? runtimeBackendUrl(external)

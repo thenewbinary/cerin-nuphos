@@ -21,12 +21,12 @@ export async function publishHomeTabForUser(args: {
   if (!botContext) return
   let view: Record<string, unknown>
 
-  if (!botContext.nuphosTeamId) {
+  if (!botContext.cerinTeamId) {
     view = buildDisconnectedSlackHomeView()
   } else {
     const { mapping } = await resolveSlackUserMapping(
       args.slackWorkspaceId,
-      botContext.nuphosTeamId,
+      botContext.cerinTeamId,
       args.slackUserId,
       botContext.botToken,
     )
@@ -35,8 +35,8 @@ export async function publishHomeTabForUser(args: {
       slackWorkspaceId: args.slackWorkspaceId,
       slackTeamName: botContext.binding.slackTeamName,
       botUserId: botContext.botUserId,
-      nuphosTeamId: botContext.nuphosTeamId,
-      nuphosUserId: mapping?.nuphosUserId ?? null,
+      cerinTeamId: botContext.cerinTeamId,
+      cerinUserId: mapping?.cerinUserId ?? null,
     })
   }
   await publishSlackHomeView({

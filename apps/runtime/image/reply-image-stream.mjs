@@ -1,5 +1,5 @@
 // Stream ordinary text immediately; retain only an ambiguous Markdown token tail.
-export async function nuphosStreamReplyImages(chunk, state, upload, final = false) {
+export async function cerinStreamReplyImages(chunk, state, upload, final = false) {
   const scan = (state.scan ??= {
     tail: '',
     column: 0,

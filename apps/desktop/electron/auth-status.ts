@@ -18,7 +18,7 @@ export type AuthStatus = { loggedIn: false } | { loggedIn: true; user: UserInfo;
 //   invalid   -> the backend said the credential itself is dead (a 401 with its
 //                own `unauthorized` code). The one outcome that clears the sign-in.
 //   refused   -> a refusal that does not say the credential is dead: a 403, or a
-//                401 no Nuphos backend wrote (a proxy, a WAF, a mid-deploy server).
+//                401 no Cerin backend wrote (a proxy, a WAF, a mid-deploy server).
 //   transient -> nothing was learned: offline, DNS, timeout, 5xx, 429, unparseable.
 export type MeProbeFailure = 'invalid' | 'refused' | 'transient'
 

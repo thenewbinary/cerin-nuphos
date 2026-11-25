@@ -48,7 +48,7 @@ export async function reauthMfa(code: string): Promise<void> {
   await call('POST', '/auth/mfa/reauth', { code }, { retry: false })
 }
 
-/** Step-up with a passkey, through nuphos.ai in the browser. */
+/** Step-up with a passkey, through platform.cerin.ai in the browser. */
 export async function reauthWithPasskey(): Promise<void> {
   const options = await call('POST', '/auth/mfa/passkey-options', undefined, { retry: false })
   const passkey = await runPasskeyCeremony('get', options)

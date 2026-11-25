@@ -3,10 +3,10 @@ import { ObjectId as MongoObjectId } from 'mongodb'
 import { teams } from '@/lib/identity/shared'
 import { getTeamMembers } from '@/lib/identity/teams'
 
-import type { NuphosTeamMember, NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamMember, CerinTeamRole } from '@/lib/identity/types'
 
 export type UpdateTeamMemberRoleResult =
-  | { kind: 'updated'; member: NuphosTeamMember }
+  | { kind: 'updated'; member: CerinTeamMember }
   | { kind: 'team_not_found' }
   | { kind: 'member_not_found' }
   | { kind: 'owner' }
@@ -17,7 +17,7 @@ export type UpdateTeamMemberRoleResult =
 export async function updateTeamMemberRole(
   teamId: string,
   userId: string,
-  role: NuphosTeamRole,
+  role: CerinTeamRole,
   actorUserId: string,
 ): Promise<UpdateTeamMemberRoleResult> {
   if (

@@ -1,4 +1,4 @@
-import { isToolSearchTitle, nuphosToolName } from '@/lib/claude-code-preview/preview-agent-update'
+import { isToolSearchTitle, cerinToolName } from '@/lib/claude-code-preview/preview-agent-update'
 import {
   TOOL_PRESENTATION,
   TOOL_PRESENTATION_FRAME,
@@ -61,7 +61,7 @@ export function handlePreviewToolUpdate(
   const known = log.states.get(update.toolCallId)
   const title = oneLineTitle(update.title)
   const name = title === '' ? (known?.name ?? 'tool') : title
-  const classic = nuphosToolName(update.mcpToolId) ?? known?.mcpToolName
+  const classic = cerinToolName(update.mcpToolId) ?? known?.mcpToolName
   const result = classic ? runtimeToolResult(update.rawOutput) : null
 
   const runtimeOwned =

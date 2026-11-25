@@ -42,7 +42,7 @@ useModels({
           { id: new ObjectId(), roleArn: 'arn:aws:iam::123456789012:role/Deploy', access },
         ],
         tencentAccounts: [
-          { id: new ObjectId(), roleArn: 'qcs::cam::uin/100001:roleName/Nuphos', access },
+          { id: new ObjectId(), roleArn: 'qcs::cam::uin/100001:roleName/Cerin', access },
           { id: new ObjectId(), roleArn: 'qcs::cam::uin/200002:role/4611686018427387905', access },
         ],
         azureAccounts: [
@@ -112,8 +112,8 @@ test("an admin cannot bind another member's private AWS role spelled in another 
 test("an admin cannot bind another member's private Tencent role spelled in another case", async () => {
   const response = await post(tencentAccountsRoutes, {
     label: 'mine',
-    roleArn: 'qcs::cam::uin/100001:roleName/NUPHOS',
-    providerId: 'nuphos',
+    roleArn: 'qcs::cam::uin/100001:roleName/CERIN',
+    providerId: 'cerin',
   })
 
   expect(response.status).toBe(403)
@@ -123,7 +123,7 @@ test('a Tencent role is bound by its roleName form only', async () => {
   const response = await post(tencentAccountsRoutes, {
     label: 'mine',
     roleArn: 'qcs::cam::uin/100001:role/4611686018427387904',
-    providerId: 'nuphos',
+    providerId: 'cerin',
   })
 
   expect(response.status).toBe(400)
@@ -133,7 +133,7 @@ test("a role can't be bound by name in an account where someone holds one privat
   const response = await post(tencentAccountsRoutes, {
     label: 'mine',
     roleArn: 'qcs::cam::uin/200002:roleName/Anything',
-    providerId: 'nuphos',
+    providerId: 'cerin',
   })
 
   expect(response.status).toBe(403)

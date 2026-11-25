@@ -10,7 +10,7 @@ if [ "$#" -lt 2 ]; then
 Usage: setup-credentials.sh <teamId> <clientId>
 
 Fetches a short-lived Tailscale OAuth access token from Cerin backend and
-writes ~/.tailscale/nuphos.env for later Tailscale API calls.
+writes ~/.tailscale/cerin.env for later Tailscale API calls.
 USAGE
   exit 2
 fi
@@ -51,7 +51,7 @@ fi
 mkdir -p "$HOME/.tailscale"
 chmod 700 "$HOME/.tailscale"
 
-python3 - "$tmp" "$HOME/.tailscale/nuphos.env" <<'PY'
+python3 - "$tmp" "$HOME/.tailscale/cerin.env" <<'PY'
 import json
 import shlex
 import sys
@@ -79,7 +79,7 @@ with open(dest, "w", encoding="utf-8") as f:
     f.write("\n".join(lines))
 PY
 
-chmod 600 "$HOME/.tailscale/nuphos.env"
+chmod 600 "$HOME/.tailscale/cerin.env"
 
-echo "Wrote Tailscale credentials to ~/.tailscale/nuphos.env"
-echo "Run: source ~/.tailscale/nuphos.env"
+echo "Wrote Tailscale credentials to ~/.tailscale/cerin.env"
+echo "Run: source ~/.tailscale/cerin.env"

@@ -17,11 +17,11 @@ async function load(api: unknown) {
 }
 
 test('takes the origin the main process resolved', async () => {
-  const m = await load({ webBaseUrl: 'https://nuphos.acme.internal' })
+  const m = await load({ webBaseUrl: 'https://cerin.acme.internal' })
 
-  assert.equal(m.WEB_BASE_URL, 'https://nuphos.acme.internal')
+  assert.equal(m.WEB_BASE_URL, 'https://cerin.acme.internal')
   assert.ok(m.isAppWebUrl('/teams/x'))
-  assert.ok(m.isAppWebUrl('https://nuphos.acme.internal/teams/x'))
+  assert.ok(m.isAppWebUrl('https://cerin.acme.internal/teams/x'))
   assert.equal(m.isAppWebUrl('https://platform.cerin.ai/teams/x'), null)
 })
 

@@ -34,7 +34,7 @@ export type InstanceRecord = {
   groups: number[]
 }
 
-const DIR = join(homedir(), '.cache', 'nuphos-dev', 'instances')
+const DIR = join(homedir(), '.cache', 'cerin-dev', 'instances')
 
 function leasePort(key: string): number {
   const hash = createHash('sha256').update(key).digest('hex')
@@ -42,7 +42,7 @@ function leasePort(key: string): number {
   return 49_152 + (Number.parseInt(hash.slice(0, 8), 16) % 15_000)
 }
 
-const leaseIdentity = (key: string) => `nuphos-dev:${key}`
+const leaseIdentity = (key: string) => `cerin-dev:${key}`
 
 async function leaseOwner(port: number): Promise<string> {
   return new Promise((resolve) => {
@@ -98,7 +98,7 @@ export async function acquireDevInstance(key: string): Promise<() => void> {
   }
 }
 
-/** Where Electron keeps the profile of `Nuphos Dev (<suffix>)`. */
+/** Where Electron keeps the profile of `Cerin Dev (<suffix>)`. */
 export function electronAppData(name: string): string {
   const base =
     process.platform === 'darwin'

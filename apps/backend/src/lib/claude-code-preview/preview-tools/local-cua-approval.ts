@@ -36,7 +36,7 @@ export async function approveAppForComputerUse(
   deps: AppApprovalDeps = defaultDeps,
 ): Promise<boolean> {
   // Its own card: one call can ask for several apps, and each answer resumes the turn.
-  const toolCallId = `nuphos-${randomUUID()}`
+  const toolCallId = `cerin-${randomUUID()}`
   const publish = (frame: Record<string, unknown>) =>
     deps.publish(ctx, { toolCallId, ...frame }).catch(() => {})
 

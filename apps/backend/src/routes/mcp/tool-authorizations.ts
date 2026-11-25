@@ -100,7 +100,7 @@ export async function answerToolAuthorization(
     status: 'running',
     session_id: sessionId,
     progress: {
-      message: `The tool call was ${decision === 'approved' ? 'approved' : 'denied'} and the Cerin Agent carries on. Poll nuphos_check.`,
+      message: `The tool call was ${decision === 'approved' ? 'approved' : 'denied'} and the Cerin Agent carries on. Poll cerin_check.`,
     },
   })
 }

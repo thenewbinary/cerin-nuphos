@@ -221,7 +221,7 @@ test('a reply about a different agent is rejected', async () => {
 // #2947: a Mac that cannot be controlled refuses its screen, and the viewer is told why.
 test('opening a desktop surfaces the host refusal word for word', async () => {
   const reason =
-    'Accessibility is not allowed for Nuphos yet. Allow it on this Mac in System Settings > Privacy & Security > Accessibility.'
+    'Accessibility is not allowed for Cerin yet. Allow it on this Mac in System Settings > Privacy & Security > Accessibility.'
   const { deps, requests } = await answering(() => ({ ok: false, error: reason }))
 
   await expect(openLocalDesktop(target, 'runtime:mac', { deps })).rejects.toMatchObject({

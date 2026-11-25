@@ -262,7 +262,7 @@ export function createDeviceAgentRoutes(
     if ('provider' in agent) {
       const { device, deviceId } = await authorized(c, 'manage')
 
-      // A person's own computer's default agent is their CLI login: Nuphos only forgets it,
+      // A person's own computer's default agent is their CLI login: Cerin only forgets it,
       // online or not, and it is listed again while that CLI is signed in.
       if (!device.box) {
         await deps.forgetAgent(device.userId, deviceId, agent)

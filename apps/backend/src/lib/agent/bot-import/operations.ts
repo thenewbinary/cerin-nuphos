@@ -83,7 +83,7 @@ async function schedules(
               ? importedFileReferences(routine.prompt, source.files, item.sessionId)
               : routine.prompt,
           enabled:
-            batch.manifest.source.application !== 'nuphos-template' &&
+            batch.manifest.source.application !== 'cerin-template' &&
             enabled &&
             routine.requestedEnabled,
           dedupeKey: `bot-import:${batch.id}:${item.kind}:${item.key}:${routine.key}`,

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 
 export const INSTRUCTION_LIMITS = {
   titleChars: 120,
@@ -40,10 +40,10 @@ export type UpdateInstructionInput = z.infer<typeof updateInstructionSchema>
 export type InstructionActor = {
   teamId: string
   userId: string
-  role: NuphosTeamRole
+  role: CerinTeamRole
 }
 
 /** Editors write team instructions as they write team skills and memories (#2394). */
-export function canManageTeamInstructions(role: NuphosTeamRole): boolean {
+export function canManageTeamInstructions(role: CerinTeamRole): boolean {
   return role !== 'VIEWER'
 }

@@ -125,7 +125,7 @@ esac
       'Signed-off-by: Octo Cat <octo@example.invalid>\n',
     )
     const log = readFileSync(calls, 'utf8').trim().split('\n')
-    const probe = /refs\/heads\/(nuphos\/signoff-probe-\S+)/.exec(log[2] ?? '')?.[1]
+    const probe = /refs\/heads\/(cerin\/signoff-probe-\S+)/.exec(log[2] ?? '')?.[1]
     expect(probe).toBeDefined()
     expect(log.at(-1)).toBe(`api -X DELETE repos/octo/repo/git/refs/heads/${probe}`)
 

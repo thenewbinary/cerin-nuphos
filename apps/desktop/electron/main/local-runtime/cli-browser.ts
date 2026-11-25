@@ -1,4 +1,4 @@
-// `local_browser` under `nuphos agent`, with no Desktop: each tab is a page of a headless
+// `local_browser` under `cerin agent`, with no Desktop: each tab is a page of a headless
 // Chromium on the computer, driven over its debugging pipe, so no debugging port is opened.
 
 import { join } from 'node:path'

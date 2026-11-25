@@ -24,7 +24,7 @@ import type { EncryptedSecret } from '@/lib/byos/secrets'
 import type { AuthVariables } from '@/middleware/auth'
 import type { Context, Next } from 'hono'
 
-// Gmail and Google Drive through Nuphos's Composio project, for teams without
+// Gmail and Google Drive through Cerin's Composio project, for teams without
 // their own Google OAuth client. Composio's API is mocked: no key is used.
 useTokenRevocation({ isTokenRevoked: async () => false, inheritRevocation: async () => false })
 
@@ -113,7 +113,7 @@ const authConfigSpy = spyOn(composioClient, 'composioAuthConfigId').mockImplemen
   async (toolkit) => `ac_${toolkit}`,
 )
 
-Object.assign(config.agent, { publicBackendUrl: 'https://api.nuphos.test/' })
+Object.assign(config.agent, { publicBackendUrl: 'https://api.cerin.test/' })
 // Seals a team-client grant's PKCE verifier.
 Object.assign(config.byos.linear, { encryptionKey: 'k' })
 afterAll(() => {
@@ -252,7 +252,7 @@ describe('connecting through Composio', () => {
       body: {
         auth_config_id: 'ac_gmail',
         user_id: `${TEAM}:alice`,
-        callback_url: `https://api.nuphos.test/personal-credentials/gmail/callback?state=${state}`,
+        callback_url: `https://api.cerin.test/personal-credentials/gmail/callback?state=${state}`,
       },
     })
 

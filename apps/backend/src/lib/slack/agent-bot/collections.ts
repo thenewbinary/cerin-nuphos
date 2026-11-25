@@ -25,7 +25,7 @@ export type SlackUserMapping = {
   slackWorkspaceId: string
   slackUserId: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   enabled: boolean
   createdBy: string
   createdAt: Date

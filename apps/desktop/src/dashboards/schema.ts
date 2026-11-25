@@ -109,7 +109,7 @@ export type DashboardPanel = {
   updatedAt: string
 }
 
-export type NuphosDashboardLayoutItem = {
+export type CerinDashboardLayoutItem = {
   panelId: string
   x: number
   y: number
@@ -120,11 +120,11 @@ export type NuphosDashboardLayoutItem = {
 /** Who sees a dashboard: only its creator, or the whole team. */
 export type DashboardVisibility = 'personal' | 'team'
 
-export type NuphosDashboard = {
+export type CerinDashboard = {
   id: string
   teamId: string
   name: string
-  layout: NuphosDashboardLayoutItem[]
+  layout: CerinDashboardLayoutItem[]
   // Saved default / scheduled range. Browsing uses request-local view parameters.
   timeRange: { periodStart: string; periodEnd: string; granularity: DashboardGranularity | null }
   // When set, the range rolls: the server recomputes + advances it on refresh.
@@ -139,10 +139,10 @@ export type NuphosDashboard = {
   updatedAt: string
 }
 
-export type NuphosDashboardDetail = {
+export type CerinDashboardDetail = {
   canEdit?: boolean
-  dashboard: NuphosDashboard
-  viewTimeRange?: NuphosDashboard['timeRange']
+  dashboard: CerinDashboard
+  viewTimeRange?: CerinDashboard['timeRange']
   panels: DashboardPanel[]
 }
 
@@ -190,7 +190,7 @@ export type UpdateDashboardInput = {
   timeRange?: DashboardTimeRangeInput
   // A preset makes the range roll; null switches back to the fixed timeRange.
   rangePreset?: DashboardRangePreset | null
-  layout?: NuphosDashboardLayoutItem[]
+  layout?: CerinDashboardLayoutItem[]
   cadence?: DashboardCadence | null
   visibility?: DashboardVisibility
 }

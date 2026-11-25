@@ -1,4 +1,4 @@
-# Nuphos Android
+# Cerin Android
 
 Native Android client built with Kotlin and Jetpack Compose. This contribution
 contains the app, Gradle wrapper, JVM tests, and isolated device fixture tests.
@@ -81,10 +81,10 @@ review. To ship a reviewed language set, add the translations, remove
 
 ## Service support
 
-The app defaults to Nuphos Cloud (`api.nuphos.ai`). On the welcome screen,
+The app defaults to Cerin Cloud (`platform.cerin.ai`). On the welcome screen,
 **Server settings** accepts the HTTPS origin of a self-hosted backend, including
 an optional port. Paths, credentials, queries, fragments and cleartext HTTP are
-not accepted. Use **Use Nuphos Cloud** to return to the default server.
+not accepted. Use **Use Cerin Cloud** to return to the default server.
 
 Sign out before changing servers. Changing servers clears the previous local
 session and sign-in form; session tokens remain pinned to their issuing server.
@@ -166,7 +166,7 @@ It does not exercise a successful mutation against a real account.
 
 ### Conversation App Links
 
-The app accepts `https://nuphos.ai/teams/{teamId}/agent/{conversationId}` with
+The app accepts `https://platform.cerin.ai/teams/{teamId}/agent/{conversationId}` with
 an optional single trailing slash. Team IDs must be 24 hexadecimal characters;
 conversation IDs contain 1–128 ASCII letters, digits, `_` or `-`, starting with a
 letter or digit. Queries, fragments, explicit ports, encoded paths and other
@@ -178,7 +178,7 @@ switches to the authorized workspace. It never submits a message or approves a
 computer permission from a link. Invalid links are ignored. Inaccessible destinations show
 a generic unavailable/access-denied state without displaying another account's data.
 
-The website verification endpoint is maintained by `zeabur/nuphos-landingpage`.
+The website verification endpoint is maintained by `zeabur/cerin-landingpage`.
 Its approved certificate list must match the actual installed APK signer; the
 Play app-signing certificate is distinct from the upload certificate. An empty
 `assetlinks.json` document trusts no signer and cannot verify the domain.
@@ -190,8 +190,8 @@ devices and is disabled unless explicitly opted in:
 ```sh
 adb -s EMULATOR_SERIAL shell am instrument -w \
   -e isolatedConversationLinks true \
-  -e class ai.nuphos.android.ConversationLinksFixtureDeviceTest \
-  ai.nuphos.android.test/androidx.test.runner.AndroidJUnitRunner
+  -e class ai.cerin.android.ConversationLinksFixtureDeviceTest \
+  ai.cerin.android.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
 These tests verify intent handling, screens and navigation. Explicit Activity
@@ -268,7 +268,7 @@ For signed AAB artifact CI, version inputs and administrator prerequisites, see
 ### Android push development
 
 Place your Firebase Android client configuration at `app/google-services.json` (ignored by Git).
-The package must be `ai.nuphos.android`. Without this file contributor and fixture builds remain
+The package must be `ai.cerin.android`. Without this file contributor and fixture builds remain
 available with push disabled. Only Firebase Messaging is included; Analytics is not enabled.
 
 Backend: set `FCM_PROJECT_ID` to the matching Firebase project and provide Application Default
@@ -284,17 +284,17 @@ After sign-in and AI consent, the app asks once for notification permission. A d
 can be changed in Android's app notification settings; the app does not repeatedly prompt.
 
 For local push acceptance, a debug build can use
-`-PnuphosDebugPushBaseUrl=http://127.0.0.1:18767` with `adb reverse tcp:18767 tcp:18767`.
+`-PcerinDebugPushBaseUrl=http://127.0.0.1:18767` with `adb reverse tcp:18767 tcp:18767`.
 Only the exact registration/unregistration routes can carry credentials to that loopback port;
 all other APIs retain the production endpoint. Release builds always use the production push
 endpoint. The local test service must verify the signed-in account and keep tokens out of logs.
 This tests the push transport independently; it does not make the entire app use a local backend.
 
 For the full isolated backend path, debug builds accept
-`-PnuphosDebugApiBaseUrl=http://127.0.0.1:18768` and `adb reverse tcp:18768 tcp:18768`.
+`-PcerinDebugApiBaseUrl=http://127.0.0.1:18768` and `adb reverse tcp:18768 tcp:18768`.
 The push endpoint defaults to this API origin. Release builds cannot use this override.
 Use a clean dedicated test installation and a local fixture account; do not restore a cloud
-login into this build. The browser sign-in page still targets Nuphos Cloud, so local acceptance
+login into this build. The browser sign-in page still targets Cerin Cloud, so local acceptance
 must bootstrap a local account through the isolated backend's authentication APIs.
 `LocalPushBootstrapDeviceTest` is disabled unless `localPushBootstrap=true`, requires a loopback
 debug build and an `@example.test` account, verifies `/auth/me`, and refuses a different saved
@@ -353,7 +353,7 @@ A failed load permits sending with the current selection, matching iOS, and a
 later successful retry still supplies defaults. A successful empty catalog counts
 as loaded. Subsequent refreshes only prune IDs no longer offered, preserving
 manual deselection, explicit Resend opt-in, and selected computers that went
-offline. Old `nuphos.credentialSelection.<teamId>` preferences are no longer read
+offline. Old `cerin.credentialSelection.<teamId>` preferences are no longer read
 or written. Existing conversations retain their server-provided credential access.
 
 `CredentialDraftTest` covers defaults, all provider identifiers, refresh and failure
@@ -367,7 +367,7 @@ kinds supported by iOS, including the eight connector kinds absent from Android'
 legacy catalog.
 
 `CredentialDefaultsFixtureDeviceTest` requires the separate
-`ai.nuphos.android.credentialfixture` installation. It intercepts every API read,
+`ai.cerin.android.credentialfixture` installation. It intercepts every API read,
 uses a separate preference file, restores consent state and callbacks, and checks
 old preferences, new/stored sessions, exact catalog GETs, failed/empty catalogs,
 and late results after team, account or consent invalidation. It never opens an
@@ -403,7 +403,7 @@ permission, accept AI consent, or bypass active-chat suppression.
 
 `ConversationWatchFixtureDeviceTest` intercepts every HTTP request and uses
 synthetic identities. It requires both `isolatedWatch=true` and a separately
-built `ai.nuphos.android.watchfixture` installation; it refuses the production
+built `ai.cerin.android.watchfixture` installation; it refuses the production
 package. Never replace, uninstall or clear a Play installation to run it.
 Its API/UI/cascade checks and screenshots do not establish real subscription
 changes or FCM delivery. JVM tests cover optional model decoding, scoped
@@ -508,14 +508,14 @@ unavailable; they are never sent to another app as a fallback.
 Sharing uses a read-only FileProvider URI and Android's chooser. Only the
 `image-exports` cache directory is exposed; copies expire after 24 hours and are
 pruned on a later export, with at most 20 pending copies. Saving uses a pending
-MediaStore Images entry under Pictures/Nuphos and deletes it on write failure.
+MediaStore Images entry under Pictures/Cerin and deletes it on write failure.
 No storage permission is requested. Existing transfer Save file remains available.
 
 `ImageExportsFixtureDeviceTest` uses synthetic images to check original SHA-256, detected
 MIME, MediaStore publication, URI grants, expiry and failed downloads. It deletes
 its own saved images and never launches a share receiver or reads account data.
 
-Enable only one `nuphosIsolated*` flag (the share fixtures) per build; configuration rejects multiple
+Enable only one `cerinIsolated*` flag (the share fixtures) per build; configuration rejects multiple
 true flags before selecting a suffix. Before installing a fixture, inspect the
 built application and androidTest APK manifests and record their SHA-256, actual
 package IDs, instrumentation runner, targetPackage and signing certificate in the
@@ -523,7 +523,7 @@ validation evidence; build properties alone are not proof.
 
 ### Receive from the Android Sharesheet
 
-Share text, URLs, images or files to Nuphos, choose a workspace and a new or
+Share text, URLs, images or files to Cerin, choose a workspace and a new or
 existing agent, then review the editable draft. Sharing never sends a message.
 Existing text is preserved and shared text is appended. Binary inputs must be
 content-provider URIs; at most 20 attachments, 100 MiB per file and 500 MiB total
@@ -590,9 +590,9 @@ death; this journal is a draft store, not a durable message outbox. All restored
 content remains editable and nothing sends automatically.
 
 Build the isolated persistence fixture with
-`-PnuphosIsolatedPersistentShareFixture=true` (receiver
-`ai.nuphos.android.sharepersist1359`, test package with `.test`, sender
-`ai.nuphos.sharepersist1359.sender`). Preserve installed Play/preview apps.
+`-PcerinIsolatedPersistentShareFixture=true` (receiver
+`ai.cerin.android.sharepersist1359`, test package with `.test`, sender
+`ai.cerin.sharepersist1359.sender`). Preserve installed Play/preview apps.
 `IncomingShareFixtureDeviceTest` still covers cold/warm receive and Activity
 recreation. `PersistentShareProcessDeviceTest` is explicitly phase-driven; run
 one phase per instrumentation invocation with `-e persistentSharePhase PHASE`,
@@ -640,7 +640,7 @@ app's external files directory. Never install it over the Play application.
 
 ### Website conversation handoff
 
-Android accepts the website's `nuphos://open?url=<encoded HTTPS URL>&path=<encoded path>`
+Android accepts the website's `cerin://open?url=<encoded HTTPS URL>&path=<encoded path>`
 conversation handoff as well as verified HTTPS conversation links. The optional `path`
 must agree with the inner URL. Only one `url` and at most one `path` are accepted;
 unknown or duplicate fields, nested envelopes, fragments, external hosts and encoded

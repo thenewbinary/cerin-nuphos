@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto'
 const threadIdOf = (message) =>
   /threadId[\\"]*:[\\"]*([0-9a-f-]{36})/.exec(JSON.stringify(message))?.[1]
 
-/** Calls a Nuphos tool and reports it to the client as Claude Code does, so its card shows. */
+/** Calls a Cerin tool and reports it to the client as Claude Code does, so its card shows. */
 async function shown({ call, send, sessionId }, name, args) {
   const toolCallId = randomUUID()
   const update = (fields) =>
@@ -12,7 +12,7 @@ async function shown({ call, send, sessionId }, name, args) {
 
   update({
     sessionUpdate: 'tool_call',
-    title: `mcp__nuphos-tools__${name}`,
+    title: `mcp__cerin-tools__${name}`,
     status: 'in_progress',
     rawInput: args,
   })

@@ -13,7 +13,7 @@ import type { LocalRuntimeControllerDeps } from './controller-types.ts'
 import type { OpenabProcessOptions } from './openab-process.ts'
 
 test('same-provider instances persist and isolate homes, processes, usage and routing', async (t) => {
-  const root = mkdtempSync(path.join(os.tmpdir(), 'nuphos-instances-'))
+  const root = mkdtempSync(path.join(os.tmpdir(), 'cerin-instances-'))
 
   t.after(() => rmSync(root, { recursive: true, force: true }))
   const starts: OpenabProcessOptions[] = []

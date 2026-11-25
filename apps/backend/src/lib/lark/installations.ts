@@ -8,7 +8,7 @@ import type { ObjectId } from 'mongodb'
 
 export type ResolvedLarkApp = {
   binding: LarkAppBinding
-  nuphosTeamId: string
+  cerinTeamId: string
   ctx: LarkAppContext
   encryptKey: string
 }
@@ -21,7 +21,7 @@ export async function getLarkBindingForTeam(teamId: ObjectId): Promise<LarkAppBi
 
 export async function getLarkBindingByAppId(
   appId: string,
-): Promise<{ nuphosTeamId: ObjectId; binding: LarkAppBinding } | null> {
+): Promise<{ cerinTeamId: ObjectId; binding: LarkAppBinding } | null> {
   const doc = await teamByosBindings().findOne(
     { 'larkApps.appId': appId },
     { projection: { larkApps: 1 } },
@@ -32,7 +32,7 @@ export async function getLarkBindingByAppId(
 
   if (!binding) return null
 
-  return { nuphosTeamId: doc._id, binding }
+  return { cerinTeamId: doc._id, binding }
 }
 
 // Build the decrypted credential context used for every API call to this app.
@@ -44,7 +44,7 @@ export function larkAppContext(binding: LarkAppBinding): LarkAppContext {
   }
 }
 
-// Resolves an inbound event's app_id (from the request URL) to the Nuphos team
+// Resolves an inbound event's app_id (from the request URL) to the Cerin team
 // that registered the app, with its decrypted credentials + Encrypt Key.
 export async function resolveLarkApp(appId: string): Promise<ResolvedLarkApp | null> {
   const installed = await getLarkBindingByAppId(appId)
@@ -53,7 +53,7 @@ export async function resolveLarkApp(appId: string): Promise<ResolvedLarkApp | n
 
   return {
     binding: installed.binding,
-    nuphosTeamId: installed.nuphosTeamId.toHexString(),
+    cerinTeamId: installed.cerinTeamId.toHexString(),
     ctx: larkAppContext(installed.binding),
     encryptKey: decryptLarkSecret(installed.binding.encryptedEncryptKey),
   }
@@ -72,7 +72,7 @@ export function publicLarkInstallationView(binding: LarkAppBinding) {
 export async function assertLarkAppAvailable(appId: string, teamId: ObjectId): Promise<void> {
   const existing = await getLarkBindingByAppId(appId)
 
-  if (existing && !existing.nuphosTeamId.equals(teamId)) {
+  if (existing && !existing.cerinTeamId.equals(teamId)) {
     throw new AppError(
       409,
       'lark_app_taken',

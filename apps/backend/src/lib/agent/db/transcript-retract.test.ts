@@ -7,7 +7,7 @@ import type { MessageMetadata } from '@/lib/agent/message-metadata'
 const sentBy = (id: string): MessageMetadata => ({
   version: 1,
   sender: { type: 'user', id, displayName: id },
-  source: 'nuphos',
+  source: 'cerin',
   sentAt: '2026-10-16T00:00:00.000Z',
 })
 const user = (messageId: string, sender = 'alice') => ({

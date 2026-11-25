@@ -32,9 +32,9 @@ function harness() {
   }
   const start = (id: string) =>
     update(id, {
-      title: 'mcp.nuphos-tools.local_exec',
+      title: 'mcp.cerin-tools.local_exec',
       status: 'in_progress',
-      rawInput: { server: 'nuphos-tools', tool: 'local_exec', arguments: input },
+      rawInput: { server: 'cerin-tools', tool: 'local_exec', arguments: input },
     })
   const publish = async (_: unknown, frame: Record<string, unknown>) => {
     if (!consumePreviewToolPresentation(emit, log, frame)) emit(frame)
@@ -145,9 +145,9 @@ describe('runtime-owned MCP presentation', () => {
     const h = harness()
 
     h.update('chart-call', {
-      title: 'mcp.nuphos-tools.render_chart',
+      title: 'mcp.cerin-tools.render_chart',
       status: 'in_progress',
-      rawInput: { server: 'nuphos-tools', tool: 'render_chart', arguments: input },
+      rawInput: { server: 'cerin-tools', tool: 'render_chart', arguments: input },
     })
     handlePreviewToolUpdate(h.emit, h.log, {
       kind: 'tool',
@@ -219,9 +219,9 @@ describe('runtime-owned MCP presentation', () => {
     }
 
     h.update('artifact-call', {
-      title: 'mcp.nuphos-tools.render_artifact',
+      title: 'mcp.cerin-tools.render_artifact',
       status: 'in_progress',
-      rawInput: { server: 'nuphos-tools', tool: 'render_artifact', arguments: artifact },
+      rawInput: { server: 'cerin-tools', tool: 'render_artifact', arguments: artifact },
     })
     const module = toolModuleFromAiSdkTools(
       { render_artifact: createArtifactTool() },
@@ -380,9 +380,9 @@ describe('runtime-owned MCP presentation', () => {
     fresh.start('new-run')
     expect(fresh.frames).toEqual([])
     h.update('native-card', {
-      title: 'mcp.nuphos-tools.request_user_decision',
+      title: 'mcp.cerin-tools.request_user_decision',
       status: 'in_progress',
-      rawInput: { server: 'nuphos-tools', tool: 'request_user_decision', arguments: input },
+      rawInput: { server: 'cerin-tools', tool: 'request_user_decision', arguments: input },
     })
     expect(h.frames).toEqual([])
     h.update('foreign', {
@@ -490,14 +490,14 @@ describe('approval lifecycle with one runtime card', () => {
 })
 
 describe('Full Access permission requests', () => {
-  test('a Nuphos question card is not shown again for its runtime call', async () => {
+  test('a Cerin question card is not shown again for its runtime call', async () => {
     const h = harness()
     const question = { category: 'approval', question: 'Send it?', options: ['Send', 'Wait'] }
 
     h.update('native-question', {
-      title: 'mcp.nuphos-tools.request_user_decision',
+      title: 'mcp.cerin-tools.request_user_decision',
       status: 'in_progress',
-      rawInput: { server: 'nuphos-tools', tool: 'request_user_decision', arguments: question },
+      rawInput: { server: 'cerin-tools', tool: 'request_user_decision', arguments: question },
     })
     await handleOpenAbPermissionRequest(
       {

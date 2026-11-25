@@ -21,9 +21,9 @@ PY
 }
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-# shellcheck source=../../_runtime/scripts/nuphos-token.sh
-source "$script_dir/../../_runtime/scripts/nuphos-token.sh"
-auth_token="$(nuphos_token)" || exit 1
+# shellcheck source=../../_runtime/scripts/cerin-token.sh
+source "$script_dir/../../_runtime/scripts/cerin-token.sh"
+auth_token="$(cerin_token)" || exit 1
 
 team_enc="$(urlencode "$team_id")"
 binding_enc="$(urlencode "$binding_id")"
@@ -50,7 +50,7 @@ curl -fsSL \
 mkdir -p "$HOME/.linear"
 chmod 700 "$HOME/.linear"
 
-python3 - "$tmp" "$HOME/.linear/nuphos.env" "$team_id" <<'PY'
+python3 - "$tmp" "$HOME/.linear/cerin.env" "$team_id" <<'PY'
 import json, shlex, sys
 src, dst = sys.argv[1], sys.argv[2]
 data = json.load(open(src))
@@ -69,5 +69,5 @@ actor = data.get("actor") or {}
 print(f"Acting as {actor['login']} (Personal Credential)" if actor.get("kind") == "personal" else "Acting as the team's Linear app")
 PY
 
-chmod 600 "$HOME/.linear/nuphos.env"
-echo "Wrote Linear credentials to ~/.linear/nuphos.env"
+chmod 600 "$HOME/.linear/cerin.env"
+echo "Wrote Linear credentials to ~/.linear/cerin.env"

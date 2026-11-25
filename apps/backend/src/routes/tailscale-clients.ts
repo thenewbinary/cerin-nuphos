@@ -27,7 +27,7 @@ export { publicView } from '@/routes/tailscale-clients/shared'
 export const tailscaleClientsRoutes = new Hono<{ Variables: TeamAuthVariables }>()
 
 // Either a stored client secret, or a federation trust the customer set up on
-// their tailnet. Federated bindings leave Nuphos holding nothing.
+// their tailnet. Federated bindings leave Cerin holding nothing.
 const bindSchema = z
   .object({
     label: z.string().trim().min(1).max(100),

@@ -38,7 +38,7 @@
     <string name="composer_credentials_count">Credentials · %1$d</string>
     <string name="composer_computers_count">Computers · %1$d</string>
     <string name="composer_queue_a_message">Queue a message</string>
-    <string name="composer_ask_nuphos">Ask Nuphos anything</string>
+    <string name="composer_ask_cerin">Ask Cerin anything</string>
     <string name="composer_remove_attachment_failed">Could not remove this saved attachment. Check storage and try again.</string>
     <string name="composer_photos">Photos</string>
     <string name="composer_files">Files</string>
@@ -58,8 +58,8 @@
     <string name="composer_clear">Clear</string>
     <string name="composer_retry">Retry</string>
     <string name="composer_loading_iam">Loading IAM…</string>
-    <string name="composer_no_computers">No computers available. Connect a computer in Nuphos to use it here.</string>
-    <string name="composer_no_computers_or_iam">No computers or IAM available. Connect a computer or cloud account in Nuphos to use it here.</string>
+    <string name="composer_no_computers">No computers available. Connect a computer in Cerin to use it here.</string>
+    <string name="composer_no_computers_or_iam">No computers or IAM available. Connect a computer or cloud account in Cerin to use it here.</string>
     <string name="composer_allow_computers">Allow this agent to operate the computers you select.</string>
     <string name="composer_permission_mode">Permission mode</string>
 
@@ -71,7 +71,7 @@
     <string name="composer_runtime_wait">Wait for the current response or pending message to finish before switching runtimes.</string>
     <string name="composer_loading_runtimes">Loading runtimes…</string>
     <string name="composer_no_runtimes">No available runtimes.</string>
-    <string name="composer_no_runtimes_body">Open Nuphos on your computer to add a Box or connect your own computer.</string>
+    <string name="composer_no_runtimes_body">Open Cerin on your computer to add a Box or connect your own computer.</string>
     <string name="composer_manage_runtimes">Manage computers and runtimes</string>
     <string name="composer_refresh_runtimes">Refresh runtimes</string>
     <string name="composer_move_to">Move to %1$s?</string>

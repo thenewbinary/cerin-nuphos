@@ -33,13 +33,13 @@ const grafana = (id: string, grafanaUrl: string): GrafanaInstance => ({
 const awsAccount = (accountId: string): AwsAccount => ({
   roleId: `role-${accountId}`,
   accountId,
-  roleArn: `arn:aws:iam::${accountId}:role/nuphos`,
+  roleArn: `arn:aws:iam::${accountId}:role/cerin`,
 })
 
 const gcpProject = (projectId: string): GcpProject => ({
   serviceAccountId: `sa-${projectId}`,
   projectId,
-  serviceAccountEmail: `nuphos@${projectId}.iam.gserviceaccount.com`,
+  serviceAccountEmail: `cerin@${projectId}.iam.gserviceaccount.com`,
 })
 
 const cloudflareAccount = (accountId: string): CloudflareAccount => ({
@@ -63,7 +63,7 @@ const bound = (extra: Partial<BoundResources> = {}): BoundResources => ({
   github: [installation(7, 'Zeabur')],
   grafana: [grafana('graf-1', 'https://metrics.example.test/grafana')],
   aws: [awsAccount('123456789012')],
-  gcp: [gcpProject('nuphos-prod')],
+  gcp: [gcpProject('cerin-prod')],
   cloudflare: [cloudflareAccount('cf-account-1')],
   linear: [linearWorkspace('linear-1', 'example')],
   ...extra,
@@ -74,23 +74,23 @@ const resolve = (href: string, resources: BoundResources = bound()): string | nu
 
 test('maps GitHub links to the bound installation, and only pages the app has', () => {
   assert.equal(
-    resolve('https://github.com/zeabur/nuphos/pull/42/files?diff=split'),
-    '/teams/team-1/repository/installations/7/repos/Zeabur/nuphos/pull-requests/42?state=all',
+    resolve('https://github.com/zeabur/cerin/pull/42/files?diff=split'),
+    '/teams/team-1/repository/installations/7/repos/Zeabur/cerin/pull-requests/42?state=all',
   )
   assert.equal(
-    resolve('https://github.com/Zeabur/nuphos'),
-    '/teams/team-1/repository/installations/7/repos/Zeabur/nuphos',
+    resolve('https://github.com/Zeabur/cerin'),
+    '/teams/team-1/repository/installations/7/repos/Zeabur/cerin',
   )
   assert.equal(
-    resolve('https://github.com/Zeabur/nuphos/actions/runs/123'),
-    '/teams/team-1/repository/installations/7/repos/Zeabur/nuphos/workflows',
+    resolve('https://github.com/Zeabur/cerin/actions/runs/123'),
+    '/teams/team-1/repository/installations/7/repos/Zeabur/cerin/workflows',
   )
   // An unbound owner, and pages with no in-app twin, stay in the browser.
   assert.equal(resolve('https://github.com/someone-else/repo/pull/1'), null)
-  assert.equal(resolve('https://github.com/Zeabur/nuphos/issues/42'), null)
-  assert.equal(resolve('https://github.com.evil.test/Zeabur/nuphos/pull/42'), null)
+  assert.equal(resolve('https://github.com/Zeabur/cerin/issues/42'), null)
+  assert.equal(resolve('https://github.com.evil.test/Zeabur/cerin/pull/42'), null)
   // eslint-disable-next-line sonarjs/no-clear-text-protocols -- an insecure URL is the input under test
-  assert.equal(resolve('http://github.com/Zeabur/nuphos/pull/42'), null)
+  assert.equal(resolve('http://github.com/Zeabur/cerin/pull/42'), null)
 })
 
 test('matches Grafana by bound URL, sub-path and all', () => {
@@ -171,22 +171,22 @@ test('names the AWS account from the link, or from a sole binding', () => {
 
 test('names the GCP project from ?project=', () => {
   assert.equal(
-    resolve('https://console.cloud.google.com/compute/instances?project=nuphos-prod'),
-    '/teams/team-1/infra/gcp/nuphos-prod/gce-instances',
+    resolve('https://console.cloud.google.com/compute/instances?project=cerin-prod'),
+    '/teams/team-1/infra/gcp/cerin-prod/gce-instances',
   )
   assert.equal(
-    resolve('https://console.cloud.google.com/monitoring/dashboards?project=nuphos-prod'),
-    '/teams/team-1/infra/gcp/nuphos-prod/dashboards',
+    resolve('https://console.cloud.google.com/monitoring/dashboards?project=cerin-prod'),
+    '/teams/team-1/infra/gcp/cerin-prod/dashboards',
   )
   assert.equal(
     resolve('https://console.cloud.google.com/kubernetes/list/overview'),
-    '/teams/team-1/infra/gcp/nuphos-prod/gke-clusters',
+    '/teams/team-1/infra/gcp/cerin-prod/gke-clusters',
   )
   assert.equal(
     resolve('https://console.cloud.google.com/compute/instances?project=someone-elses'),
     null,
   )
-  assert.equal(resolve('https://console.cloud.google.com/billing?project=nuphos-prod'), null)
+  assert.equal(resolve('https://console.cloud.google.com/billing?project=cerin-prod'), null)
 })
 
 test('matches Cloudflare by the account id in the dash URL', () => {
@@ -205,13 +205,13 @@ test('matches Cloudflare by the account id in the dash URL', () => {
 
 test('every produced path parses back into a navigation', () => {
   for (const href of [
-    'https://github.com/Zeabur/nuphos/pull/42',
-    'https://github.com/Zeabur/nuphos/actions',
+    'https://github.com/Zeabur/cerin/pull/42',
+    'https://github.com/Zeabur/cerin/actions',
     'https://metrics.example.test/grafana/d/abc123/cluster-overview',
     'https://metrics.example.test/grafana/alerting/list',
     'https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/checkout',
     'https://s3.console.aws.amazon.com/s3/buckets/assets?prefix=images/',
-    'https://console.cloud.google.com/run?project=nuphos-prod',
+    'https://console.cloud.google.com/run?project=cerin-prod',
     'https://dash.cloudflare.com/cf-account-1/workers/services/view/api-gateway',
     'https://dash.cloudflare.com/cf-account-1/r2/default/buckets/uploads',
     'https://linear.app/example/issue/EX-42/some-title',
@@ -224,8 +224,8 @@ test('every produced path parses back into a navigation', () => {
 })
 
 test('isBindableGithubLink covers the pages the resolver can host', () => {
-  assert.equal(isBindableGithubLink('https://github.com/Zeabur/nuphos/pull/42'), true)
-  assert.equal(isBindableGithubLink('https://github.com/Zeabur/nuphos/issues/42'), false)
+  assert.equal(isBindableGithubLink('https://github.com/Zeabur/cerin/pull/42'), true)
+  assert.equal(isBindableGithubLink('https://github.com/Zeabur/cerin/issues/42'), false)
   assert.equal(isBindableGithubLink('not a url'), false)
 })
 

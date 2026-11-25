@@ -77,7 +77,7 @@ tailscaleScoped.post('/tailnet-sessions', async (c) => {
   })
 
   // The hostname is what lets the customer line a row in their own tailnet
-  // audit log up against a Nuphos conversation, so it has to be greppable on
+  // audit log up against a Cerin conversation, so it has to be greppable on
   // our side too.
   logEvent('info', 'agent.tailnet.joined', {
     team_id: teamId.toHexString(),

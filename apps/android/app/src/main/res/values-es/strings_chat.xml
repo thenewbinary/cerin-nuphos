@@ -43,7 +43,7 @@
     <string name="chat_triggers_refresh">Actualizar</string>
     <string name="chat_image_preparing">Preparando imagen…</string>
     <string name="chat_image_share">Compartir imagen</string>
-    <string name="chat_image_saved">Guardado en Pictures/Nuphos</string>
+    <string name="chat_image_saved">Guardado en Pictures/Cerin</string>
     <string name="chat_image_export_failed">No se pudo exportar la imagen. Puede que haya caducado. Inténtalo de nuevo.</string>
     <string name="chat_image_save">Guardar imagen</string>
     <string name="chat_plan_loading">Cargando plan…</string>

@@ -1,17 +1,17 @@
-import type { NuphosTeamRole } from '@/lib/identity/types'
-import type { DashboardVisibility, NuphosDashboard } from '@/models'
+import type { CerinTeamRole } from '@/lib/identity/types'
+import type { DashboardVisibility, CerinDashboard } from '@/models'
 
 /** Who is asking: the member and their role in the dashboard's team. */
-export type DashboardViewer = { userId: string; role: NuphosTeamRole }
+export type DashboardViewer = { userId: string; role: CerinTeamRole }
 
 /** What the caller needs to do with a dashboard. */
 export type DashboardNeed = 'read' | 'edit' | 'delete'
 
-type Owned = Pick<NuphosDashboard, 'createdBy' | 'visibility'>
+type Owned = Pick<CerinDashboard, 'createdBy' | 'visibility'>
 
-const writesTeam = (role: NuphosTeamRole) => role === 'ADMINISTRATOR' || role === 'EDITOR'
+const writesTeam = (role: CerinTeamRole) => role === 'ADMINISTRATOR' || role === 'EDITOR'
 
-export function isPersonal(dashboard: Pick<NuphosDashboard, 'visibility'>): boolean {
+export function isPersonal(dashboard: Pick<CerinDashboard, 'visibility'>): boolean {
   return dashboard.visibility === 'personal'
 }
 

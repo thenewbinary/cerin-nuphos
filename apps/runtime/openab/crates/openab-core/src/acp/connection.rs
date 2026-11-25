@@ -265,9 +265,9 @@ pub fn with_recent_stderr(mut msg: JsonRpcMessage, activity: &SessionActivity) -
     msg
 }
 
-/// Stderr line prefix the Nuphos adapter patches (apps/runtime/image/process-death.mjs)
+/// Stderr line prefix the Cerin adapter patches (apps/runtime/image/process-death.mjs)
 /// write once, right before exiting, with the reason their CLI died.
-const PROCESS_DEATH_PREFIX: &str = "nuphos-process-death: ";
+const PROCESS_DEATH_PREFIX: &str = "cerin-process-death: ";
 
 impl Default for SessionActivity {
     fn default() -> Self {
@@ -1609,7 +1609,7 @@ mod tests {
     #[test]
     fn session_new_params_carry_the_passed_mcp_servers_verbatim() {
         let servers = vec![json!({
-            "name": "nuphos-credentials",
+            "name": "cerin-credentials",
             "type": "http",
             "url": "https://x.example/mcp",
             "headers": [{"name": "Authorization", "value": "Bearer t"}]
@@ -2248,7 +2248,7 @@ mod reader_loop_tests {
         let activity = SessionActivity::new();
         activity.note_stderr("Session x: Claude Agent process died: terminated by signal SIGKILL");
         assert_eq!(activity.process_death(), None);
-        activity.note_stderr("nuphos-process-death: Claude Code ran out of memory.");
+        activity.note_stderr("cerin-process-death: Claude Code ran out of memory.");
         assert_eq!(
             activity.process_death().as_deref(),
             Some("Claude Code ran out of memory.")
@@ -2324,7 +2324,7 @@ mod reader_loop_tests {
 
         // The cause survives; the opaque session-home hash in its path does not.
         let enospc = redact_stderr_line(
-            "Error: ENOSPC: no space left on device, mkdir '/home/node/.nuphos/session-homes/3f9a2b7c1d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061728394a5b6c7d8e'",
+            "Error: ENOSPC: no space left on device, mkdir '/home/node/.cerin/session-homes/3f9a2b7c1d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061728394a5b6c7d8e'",
         )
         .unwrap();
         assert!(enospc.contains("ENOSPC: no space left on device"));

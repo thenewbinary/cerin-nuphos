@@ -103,7 +103,10 @@ test('changes keep pull requests and issues, newest link first', () => {
 })
 
 test('a pull request reads repo and number; an issue reads its key under its title', () => {
-  assert.equal(changeSubtitle(resource({ repository: 'nuphos/nuphos', number: 12 })), 'nuphos #12')
+  assert.equal(
+    changeSubtitle(resource({ repository: 'thenewbinary/cerin-platform', number: 12 })),
+    'cerin-platform #12',
+  )
   assert.equal(
     changeSubtitle(resource({ provider: 'gitlab', repository: 'group/sub/app', number: 3 })),
     'app !3',

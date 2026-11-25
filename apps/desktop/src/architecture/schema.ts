@@ -27,7 +27,7 @@ export type DiagramNode = {
   /**
    * Present => this is a CONCRETE node bound to a real resource/page; absent =>
    * an ABSTRACT node. Aligns with the app's own page URL schema (e.g.
-   * https://nuphos.ai/teams/<id>/infra/aws/.../resources/deployment/<name>) so a
+   * https://platform.cerin.ai/teams/<id>/infra/aws/.../resources/deployment/<name>) so a
    * double-click navigates straight to that resource inside the app; any other
    * URL opens in the external browser. The url also drives the node's kind/colour.
    */

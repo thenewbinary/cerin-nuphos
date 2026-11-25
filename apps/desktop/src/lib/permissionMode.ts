@@ -3,7 +3,7 @@ export type PermissionMode = 'auto' | 'bypass'
 // The mode new conversations start in — follows the user's most recent pick in
 // any composer. Nothing stored yet means Full Access; anything unreadable
 // fails safe to Auto Mode.
-export const PERMISSION_MODE_KEY = 'nuphos.agentPermissionMode'
+export const PERMISSION_MODE_KEY = 'cerin.agentPermissionMode'
 
 type ModeStorage = Pick<Storage, 'getItem' | 'setItem'>
 

@@ -60,7 +60,7 @@ fi
 config_dir="$HOME/.config"
 config_path="$config_dir/linode-cli"
 env_dir="$HOME/.linode"
-env_path="$env_dir/nuphos.env"
+env_path="$env_dir/cerin.env"
 mkdir -p "$config_dir" "$env_dir"
 chmod 700 "$env_dir"
 
@@ -77,7 +77,7 @@ label = d.get("label") or d["accountId"]
 # [DEFAULT]. Pointing default-user at a section that doesn't exist makes
 # get_token() return "" -> "401 Invalid Token". Mirror the layout that
 # `linode-cli configure` writes: token under a named user section.
-user = "nuphos"
+user = "cerin"
 with open(config_path, "w") as f:
     f.write("[DEFAULT]\n")
     f.write(f"default-user = {user}\n\n")

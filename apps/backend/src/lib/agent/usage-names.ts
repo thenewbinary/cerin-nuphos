@@ -8,9 +8,9 @@ import { agentTriggers } from '@/lib/agent/trigger-db'
 import { getTeamMembers } from '@/lib/identity'
 
 import type { UsageDimension, UsageQueryRow } from '@/lib/agent/usage-query'
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 
-type Viewer = { userId: string; teamRole: NuphosTeamRole }
+type Viewer = { userId: string; teamRole: CerinTeamRole }
 /** A name, or null where the viewer may not see it. */
 type ReadNames = (
   teamId: string,

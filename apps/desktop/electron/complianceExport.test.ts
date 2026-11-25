@@ -154,7 +154,7 @@ test('bundled verifier accepts intact files and rejects a modified CSV', async (
 
   exportBundle.sessions[0]!.integrity.headHash = exportBundle.sessions[0]!.events[0]!.entryHash
   const files = buildComplianceExportFiles(exportBundle)
-  const directory = await mkdtemp(path.join(tmpdir(), 'nuphos-compliance-'))
+  const directory = await mkdtemp(path.join(tmpdir(), 'cerin-compliance-'))
 
   try {
     for (const file of files) {
@@ -182,7 +182,7 @@ test('bundled verifier rejects missing or unexpected inventory files', async () 
 
   exportBundle.sessions[0]!.integrity.headHash = exportBundle.sessions[0]!.events[0]!.entryHash
   const files = buildComplianceExportFiles(exportBundle)
-  const directory = await mkdtemp(path.join(tmpdir(), 'nuphos-compliance-inventory-'))
+  const directory = await mkdtemp(path.join(tmpdir(), 'cerin-compliance-inventory-'))
 
   try {
     for (const file of files) {
@@ -215,7 +215,7 @@ test('bundled verifier never reads checksum paths outside the declared inventory
 
   exportBundle.sessions[0]!.integrity.headHash = exportBundle.sessions[0]!.events[0]!.entryHash
   const files = buildComplianceExportFiles(exportBundle)
-  const directory = await mkdtemp(path.join(tmpdir(), 'nuphos-compliance-paths-'))
+  const directory = await mkdtemp(path.join(tmpdir(), 'cerin-compliance-paths-'))
   const outsideName = `${path.basename(directory)}-outside.txt`
   const outsidePath = path.join(path.dirname(directory), outsideName)
 

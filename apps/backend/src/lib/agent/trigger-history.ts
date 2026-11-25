@@ -28,7 +28,7 @@ export type TriggerConfig = Partial<Pick<AgentTrigger, (typeof TRIGGER_CONFIG)[n
 /**
  * Where a change came from. `request`: a call to the API, from an app, an
  * agent (`agentSessionId`) or a script (`client` names the app when it said).
- * The rest are Nuphos's own: undoing a write the scheduler could not follow
+ * The rest are Cerin's own: undoing a write the scheduler could not follow
  * (`rollback`), and pausing a Trigger that expired, lost the right to run or
  * kept failing.
  */
@@ -65,7 +65,7 @@ export type TriggerChange = TriggerChangeBy & {
   userId: string
   targetSessionId?: string
   action: 'created' | 'updated' | 'deleted'
-  /** Why Nuphos paused it. */
+  /** Why Cerin paused it. */
   reason?: string
   before?: TriggerConfig
   after?: TriggerConfig

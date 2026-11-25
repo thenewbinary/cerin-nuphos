@@ -53,7 +53,7 @@ test('data project keeps Mongo private, persistent, authenticated and Redis-free
 
 test('runtime is a separate project with only runtime variables and a home volume', async () => {
   const result = await runtimeTemplate(context, project)
-  assert.equal(result.name, 'nuphos-runtime')
+  assert.equal(result.name, 'cerin-runtime')
   const [runtime] = result.resources
   assert.deepEqual(Object.keys(runtime.variables).sort(), [
     'OPENAB_ACP_AUTH_KEY',

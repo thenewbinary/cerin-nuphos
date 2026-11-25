@@ -6,12 +6,12 @@ name: Build runtime image
 #      The gateway base: only the `openab` binary, which the runtime image
 #      takes, so an ACP or pool fix in apps/runtime/openab ships once this is
 #      rebuilt.
-#   2. image/Dockerfile (the Nuphos runtime image)
+#   2. image/Dockerfile (the Cerin runtime image)
 #
 # Each provider builds for linux/amd64 and linux/arm64 on native runners; the
 # publish job tags the two as one multi-architecture image and signs it.
 #
-# ⚠️ Publishing does NOT roll anything out. A Nuphos workspace administrator
+# ⚠️ Publishing does NOT roll anything out. A Cerin workspace administrator
 # must point each runtime at the new digest in Settings → Agent.
 #
 # The base layer is always pushed: the toolset build is a separate Buildx
@@ -197,35 +197,35 @@ jobs:
           if [[ "$PROVIDER" == "claude" ]]; then VARIANT=claude-code; else VARIANT="$PROVIDER"; fi
           # Each provider signs itself in and keeps the credential in its own home.
           if [[ "$VARIANT" == "codex" ]]; then
-            LOGIN_COMMAND='node /opt/nuphos-runtime/codex-login.mjs --install'
+            LOGIN_COMMAND='node /opt/cerin-runtime/codex-login.mjs --install'
             AUTH_FILE='/home/node/.codex/auth.json'
             LABEL='Codex'
           elif [[ "$VARIANT" == "grok" ]]; then
-            LOGIN_COMMAND='node /opt/nuphos-runtime/grok-login.mjs'
+            LOGIN_COMMAND='node /opt/cerin-runtime/grok-login.mjs'
             AUTH_FILE='/home/node/.grok/auth.json'
             LABEL='Grok Build'
           elif [[ "$VARIANT" == "antigravity" ]]; then
-            LOGIN_COMMAND='node /opt/nuphos-runtime/antigravity-login.mjs'
+            LOGIN_COMMAND='node /opt/cerin-runtime/antigravity-login.mjs'
             # The official CLI owns a keyring; the image probes it through agy models.
             AUTH_FILE=''
             LABEL='Antigravity'
           elif [[ "$VARIANT" == "opencode" ]]; then
-            LOGIN_COMMAND='node /opt/nuphos-runtime/opencode-login.mjs'
+            LOGIN_COMMAND='node /opt/cerin-runtime/opencode-login.mjs'
             AUTH_FILE='/home/node/.local/share/opencode/auth.json'
             LABEL='OpenCode'
           elif [[ "$VARIANT" == "hermes" ]]; then
-            LOGIN_COMMAND='node /opt/nuphos-runtime/hermes-login.mjs'
+            LOGIN_COMMAND='node /opt/cerin-runtime/hermes-login.mjs'
             AUTH_FILE='/home/node/.hermes/auth.json'
             LABEL='Hermes Agent'
           elif [[ "$VARIANT" == "dsh" ]]; then
-            LOGIN_COMMAND='node /opt/nuphos-runtime/dsh-login.mjs'
+            LOGIN_COMMAND='node /opt/cerin-runtime/dsh-login.mjs'
             AUTH_FILE='/home/node/.dsh/.credentials.yaml'
             LABEL='DeepSeek Harness'
           else
             # An API key in Claude's own settings outranks a one-year token that never
             # refreshes, then the ordinary login it replaces.
-            LOGIN_COMMAND='node /opt/nuphos-runtime/claude-login.mjs --long-lived'
-            AUTH_FILE='/home/node/.claude/settings.json#/env/ANTHROPIC_API_KEY:/home/node/.claude/.nuphos-oauth-token.json:/home/node/.claude/.credentials.json'
+            LOGIN_COMMAND='node /opt/cerin-runtime/claude-login.mjs --long-lived'
+            AUTH_FILE='/home/node/.claude/settings.json#/env/ANTHROPIC_API_KEY:/home/node/.claude/.cerin-oauth-token.json:/home/node/.claude/.credentials.json'
             LABEL='Claude Code'
           fi
 
@@ -265,7 +265,7 @@ jobs:
           provenance: false
 
       # Pushed by digest only; publish tags the multi-architecture index.
-      - name: Build and push the Nuphos runtime image
+      - name: Build and push the Cerin runtime image
         id: runtime
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:

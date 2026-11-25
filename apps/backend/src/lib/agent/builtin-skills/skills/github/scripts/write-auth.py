@@ -55,7 +55,7 @@ else:
     output += "github.com: " + json.dumps(entry) + "\n"
 
 # Replace atomically; concurrent readers see either the previous or fresh token.
-fd, temporary = tempfile.mkstemp(prefix=".nuphos-auth-", dir=target.parent)
+fd, temporary = tempfile.mkstemp(prefix=".cerin-auth-", dir=target.parent)
 try:
     with os.fdopen(fd, "w") as stream:
         stream.write(output)

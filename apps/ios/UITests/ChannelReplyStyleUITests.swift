@@ -55,16 +55,16 @@ final class ChannelReplyStyleUITests: XCTestCase {
     func testInboxAnswersAreTheAnswerersBubbles() throws {
         let inbox = { (request: String, question: String) -> [String: Any] in
             // As #3548 specifies: written by the server, from the person who answered.
-            ["source": "nuphos", "replyTo": ["authorName": "Preview Bot", "text": question], "answeredIn": "inbox", "requestId": request]
+            ["source": "cerin", "replyTo": ["authorName": "Preview Bot", "text": question], "answeredIn": "inbox", "requestId": request]
         }
         let app = try launch([
             // An answer recorded before answers were posts keeps its line.
             ["id": "record", "role": "user", "parts": [["type": "text", "text": "Diana Prince answered: Rotate the key? → Yes"]],
-             "metadata": ["version": 1, "sender": ["type": "system", "id": "nuphos:decision", "displayName": "Nuphos"],
+             "metadata": ["version": 1, "sender": ["type": "system", "id": "cerin:decision", "displayName": "Cerin"],
                           "sentAt": "2026-11-03T09:00:00.000Z"],
              "createdAt": "2026-11-03T09:00:00.000Z"],
             // Answered on the card in the chat: an answer post without the Inbox's line.
-            post("c0", "Tuesday", me, at: "09:10", extra: ["source": "nuphos", "requestId": "req-0",
+            post("c0", "Tuesday", me, at: "09:10", extra: ["source": "cerin", "requestId": "req-0",
                                                            "replyTo": ["authorName": "Preview Bot", "text": "Which day is the review?"]]),
             post("a1", "Friday", diana, at: "09:20", extra: inbox("req-1", "Which day works for the move?")),
             post("a2", "Staging first", diana, at: "09:20", extra: inbox("req-1", "Where should it go first?")),
@@ -128,7 +128,7 @@ final class ChannelReplyStyleUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: live)
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release"]
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release"]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
         app.launch()
         return app

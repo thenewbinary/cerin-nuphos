@@ -15,15 +15,15 @@ export function instanceKey(explicit: string | undefined, root: string): string 
 }
 export const INSTANCE = instanceKey(process.env.NUPHOS_DEV_INSTANCE, ROOT)
 // Desktop's sign-in for this instance, apart from the installed app's cli.yaml.
-export const CLI_CONFIG_DIR = join(homedir(), '.config/nuphos')
+export const CLI_CONFIG_DIR = join(homedir(), '.config/cerin')
 export const DEV_CLI_CONFIG = join(CLI_CONFIG_DIR, `cli.dev.${INSTANCE}.yaml`)
-// Electron's profile and single-instance lock: `Nuphos Dev (<suffix>)`. " local"
+// Electron's profile and single-instance lock: `Cerin Dev (<suffix>)`. " local"
 // keeps it apart from a Desktop that once ran against another backend.
 export const DESKTOP_SUFFIX = `${INSTANCE} local`
 // Start at 3718 so ports line up with the named-tunnel hostnames (3718→api-dev-example-1
 // … 3722→api-dev-example-5); worktrees beyond those fall back to a quick tunnel.
 export const BASE_BACKEND_PORT = 3718
-export const LOG_ROOT = join(tmpdir(), 'nuphos-dev-logs')
+export const LOG_ROOT = join(tmpdir(), 'cerin-dev-logs')
 export const LOG_DIR = join(LOG_ROOT, INSTANCE)
 
 /** The main checkout: linked worktrees share its .env files and compose secrets. */

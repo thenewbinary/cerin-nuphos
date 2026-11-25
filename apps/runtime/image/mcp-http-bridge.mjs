@@ -1,4 +1,4 @@
-// Stdio MCP server that forwards each JSON-RPC message to one Nuphos MCP
+// Stdio MCP server that forwards each JSON-RPC message to one Cerin MCP
 // endpoint (Streamable HTTP, JSON-response mode) and authorizes every request
 // with the conversation token OpenAB keeps current in OPENAB_CREDENTIALS_DIR.
 import { readFileSync } from 'node:fs'

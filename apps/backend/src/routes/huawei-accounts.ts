@@ -18,7 +18,7 @@ import type { HuaweiAccountBinding } from '@/models'
 
 export const huaweiAccountsRoutes = new Hono<{ Variables: TeamAuthVariables }>()
 
-// OIDC federation details the customer needs to register Nuphos as an IAM
+// OIDC federation details the customer needs to register Cerin as an IAM
 // identity provider: issuer URL, audience (client id), and this team's
 // subject claim to condition the assigned trust agency's trust policy on.
 // Team-scoped; safe to expose (all values are meant to be shared with the

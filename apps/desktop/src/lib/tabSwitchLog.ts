@@ -4,12 +4,12 @@
  * so the pair reads as "how long the click took to land".
  *
  * On in the dev build. In a packaged app, turn it on with
- *   localStorage.setItem('nuphos.debug.tabSwitch', '1')
+ *   localStorage.setItem('cerin.debug.tabSwitch', '1')
  * and reload.
  */
 function enabled(): boolean {
   try {
-    if (localStorage.getItem('nuphos.debug.tabSwitch') === '1') return true
+    if (localStorage.getItem('cerin.debug.tabSwitch') === '1') return true
   } catch {
     // localStorage can throw in a locked-down context; fall through to DEV.
   }

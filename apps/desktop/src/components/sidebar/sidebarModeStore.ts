@@ -2,7 +2,7 @@ import type { SidebarPage } from './swipe-gesture'
 
 const modes = new Map<string, SidebarPage>()
 const listeners = new Set<() => void>()
-const key = (teamId: string) => `nuphos.sidebar.mode.v2.${teamId}`
+const key = (teamId: string) => `cerin.sidebar.mode.v2.${teamId}`
 
 export function sidebarMode(teamId: string, fallback: SidebarPage): SidebarPage {
   const current = modes.get(teamId)

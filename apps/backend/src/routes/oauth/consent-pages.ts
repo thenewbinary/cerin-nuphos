@@ -90,7 +90,7 @@ export function consentPage(
 </div></body></html>`
 }
 
-// Consent page for a browser that already has a valid Nuphos session cookie:
+// Consent page for a browser that already has a valid Cerin session cookie:
 // no OTP, just an Authorize button. The hidden consent_token is the CSRF guard
 // — see signConsentToken.
 export function oneClickConsentPage(

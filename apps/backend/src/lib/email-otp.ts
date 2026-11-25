@@ -2,7 +2,7 @@ import { createHash, createHmac, hkdfSync, randomInt, timingSafeEqual } from 'no
 
 import { MongoServerError } from 'mongodb'
 
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 import type { SignInSource } from '@/lib/request-origin'
 import type { Collection, ObjectId } from 'mongodb'
 
@@ -54,7 +54,7 @@ export async function requestEmailOtp(
   const normalized = normalizeEmail(email)
 
   if (!config.email.devLogOtp && !isEmailConfigured()) {
-    // Nothing can be sent, but a code an operator issued (`nuphos-admin sign-in-code`) can be entered.
+    // Nothing can be sent, but a code an operator issued (`cerin-admin sign-in-code`) can be entered.
     if (await otps().findOne({ email: normalized, expiresAt: { $gt: new Date() } })) return
     throw new AppError(503, 'email_not_configured', 'Email sign-in is not available on this server')
   }
@@ -167,7 +167,7 @@ export async function issueEmailOtpCode(email: string): Promise<string> {
   return code
 }
 
-export async function verifyEmailOtp(email: string, code: string): Promise<NuphosUser> {
+export async function verifyEmailOtp(email: string, code: string): Promise<CerinUser> {
   const normalized = normalizeEmail(email)
 
   if (!/^\d{6}$/.test(code)) {
@@ -250,7 +250,7 @@ function hashCode(email: string, code: string): string {
     if (!secret) {
       throw new Error('NUPHOS_JWT_SECRET or JWT_SECRET_KEY is required for email OTP sign-in')
     }
-    otpHmacKey = Buffer.from(hkdfSync('sha256', secret, '', 'nuphos-email-otp-v1', 32))
+    otpHmacKey = Buffer.from(hkdfSync('sha256', secret, '', 'cerin-email-otp-v1', 32))
   }
 
   return createHmac('sha256', otpHmacKey).update(`${email}:${code}`).digest('hex')

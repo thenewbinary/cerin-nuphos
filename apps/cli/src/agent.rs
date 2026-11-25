@@ -37,7 +37,7 @@ fn agent_home() -> Result<PathBuf> {
         return Ok(PathBuf::from(dir));
     }
     let home = std::env::var_os("HOME").context("HOME is not set")?;
-    Ok(PathBuf::from(home).join(".local/share/nuphos/agent"))
+    Ok(PathBuf::from(home).join(".local/share/cerin/agent"))
 }
 
 /// Whether an earlier `--join` left this computer a credential. The host checks
@@ -87,7 +87,7 @@ pub async fn run(join: Option<String>) -> Result<i32> {
 const NODE_DIST: &str = "https://nodejs.org/dist/latest-v22.x";
 
 /// The Node.js on PATH when it is new enough. Otherwise Node.js 22 LTS kept in
-/// `~/.local/share/nuphos/node`, fetched once and checked against the release's
+/// `~/.local/share/cerin/node`, fetched once and checked against the release's
 /// SHASUMS256.txt, with its bin directory to put first on the host's PATH.
 async fn node() -> Result<(PathBuf, Option<PathBuf>)> {
     let Err(missing) = system_node() else {
@@ -155,10 +155,10 @@ fn platform() -> Result<&'static str> {
 
 fn data_dir() -> Result<PathBuf> {
     let home = std::env::var_os("HOME").map(PathBuf::from).ok_or_else(|| anyhow!("HOME is not set"))?;
-    Ok(home.join(".local/share/nuphos"))
+    Ok(home.join(".local/share/cerin"))
 }
 
-/// `~/.local/share/nuphos/runtime/<version>-<platform>`, downloaded once per
+/// `~/.local/share/cerin/runtime/<version>-<platform>`, downloaded once per
 /// CLI version; older ones are removed once the new one is in place.
 async fn fetch() -> Result<PathBuf> {
     let platform = platform()?;
@@ -169,14 +169,14 @@ async fn fetch() -> Result<PathBuf> {
     }
 
     let base = std::env::var("NUPHOS_DOWNLOAD_URL")
-        .unwrap_or_else(|_| format!("https://github.com/thenewbinary/cerin-nuphos/releases/download/cli-v{VERSION}"));
+        .unwrap_or_else(|_| format!("https://github.com/thenewbinary/cerin-platform/releases/download/cli-v{VERSION}"));
     eprintln!("Downloading the local runtime for {platform}…");
     // Releases before the rename, and mirrors of them, have only the old name.
     let mut asset = format!("cerin-agent-{platform}.tar.gz");
     let checksum = match get(format!("{base}/{asset}.sha256")).await {
         Ok(checksum) => checksum,
         Err(_) => {
-            asset = format!("nuphos-agent-{platform}.tar.gz");
+            asset = format!("cerin-agent-{platform}.tar.gz");
             get(format!("{base}/{asset}.sha256")).await?
         }
     };
@@ -244,7 +244,7 @@ mod tests {
 
     #[test]
     fn skips_a_staging_folder_a_stopped_download_left() {
-        let root = std::env::temp_dir().join(format!("nuphos-node-test-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("cerin-node-test-{}", std::process::id()));
         let staging = root.join(".node-v22.21.1-linux-x64.123");
         std::fs::create_dir_all(staging.join("bin")).unwrap();
         std::fs::write(staging.join("bin/node"), "").unwrap();

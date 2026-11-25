@@ -55,7 +55,7 @@ test('the default page is the leftmost chat list, never the Inbox', () => {
 })
 
 test('the order is remembered in storage and changes notify listeners once', () => {
-  const saved: Record<string, string> = { 'nuphos.sidebar.tabOrder.v1': 'tasks,bots,inbox' }
+  const saved: Record<string, string> = { 'cerin.sidebar.tabOrder.v1': 'tasks,bots,inbox' }
 
   Object.defineProperty(globalThis, 'localStorage', {
     value: {
@@ -74,7 +74,7 @@ test('the order is remembered in storage and changes notify listeners once', () 
   assert.deepEqual(sidebarTabOrder(), [1, 0, 2])
   setSidebarTabOrder([2, 1, 0])
   setSidebarTabOrder([2, 1, 0])
-  assert.equal(saved['nuphos.sidebar.tabOrder.v1'], 'inbox,tasks,bots')
+  assert.equal(saved['cerin.sidebar.tabOrder.v1'], 'inbox,tasks,bots')
   assert.equal(calls, 1, 'saving the same order again is a no-op')
   off()
 })

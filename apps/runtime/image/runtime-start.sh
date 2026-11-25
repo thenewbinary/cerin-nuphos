@@ -39,7 +39,7 @@ memory_watch &
 # host joins with the token once, keeps the credential it gets on the home volume, dials
 # out to Cerin and runs the agent itself, so nothing below applies. A saved credential
 # wins over the token on every later start. Without a token the runtime starts as before.
-agent_home=${NUPHOS_AGENT_HOME:-${HOME:-}/.local/share/nuphos/agent}
+agent_home=${NUPHOS_AGENT_HOME:-${HOME:-}/.local/share/cerin/agent}
 if [ -n "${NUPHOS_JOIN_TOKEN:-}" ]; then
   export NUPHOS_AGENT_HOME="$agent_home"
   exec node "${NUPHOS_LOCAL_RUNTIME_DIR:-/opt/cerin-agent}/host.mjs"
@@ -50,7 +50,7 @@ rm -f "$agent_home/device-credential.json"
 min_password_length=32
 
 fail() {
-  printf 'nuphos-runtime-start: %s\n' "$1" >&2
+  printf 'cerin-runtime-start: %s\n' "$1" >&2
   exit 1
 }
 
@@ -115,7 +115,7 @@ enabled() {
 # NUPHOS_RUNTIME_AUTOGEN_PASSWORD asks for the old behaviour. With the console off, the
 # runtime keeps its own password on the home volume, generated on first boot.
 if enabled "${OPENAB_ACP_ENABLED:-}"; then
-  default_key_file=/home/node/.nuphos-runtime/auth-key
+  default_key_file=/home/node/.cerin-runtime/auth-key
   key_file=${OPENAB_ACP_AUTH_KEY_FILE:-$default_key_file}
   if [ -n "${OPENAB_ACP_AUTH_KEY:-}" ]; then
     check_password OPENAB_ACP_AUTH_KEY
@@ -198,7 +198,7 @@ if [ -n "${NUPHOS_RUNTIME_PREINSTALL:-}" ]; then
   # Progress stays quiet; a failure is logged, or a blocked download would surface
   # only later as a sign-in or chat that cannot start.
   (
-    output=$(nuphos-tools install $NUPHOS_RUNTIME_PREINSTALL 2>&1) \
+    output=$(cerin-tools install $NUPHOS_RUNTIME_PREINSTALL 2>&1) \
       || printf 'runtime-start: preinstalling %s failed; it is retried on first use: %s\n' \
         "$NUPHOS_RUNTIME_PREINSTALL" "$(printf '%s' "$output" | tail -n 3)" >&2
   ) &

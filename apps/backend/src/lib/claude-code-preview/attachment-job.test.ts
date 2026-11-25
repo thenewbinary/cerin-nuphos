@@ -15,8 +15,8 @@ const exists = (path: string) =>
 
 test('a cloud run expires week-old secrets in the shared /tmp, never other attachments', async () => {
   const tag = crypto.randomUUID()
-  const oldSecret = join('/tmp', `nuphos-secret-${tag}`)
-  const oldAttachment = join('/tmp', `nuphos-attachments-${tag}`)
+  const oldSecret = join('/tmp', `cerin-secret-${tag}`)
+  const oldAttachment = join('/tmp', `cerin-attachments-${tag}`)
   const run = await mkdtemp(join('/tmp', 'attachment-job-run-'))
   const value = Buffer.from('sk-test-value')
   let written: string | undefined
@@ -44,7 +44,7 @@ test('a cloud run expires week-old secrets in the shared /tmp, never other attac
     const { paths } = JSON.parse(result.stdout) as { paths: string[] }
 
     written = paths[0]
-    expect(written).toMatch(/^\/tmp\/nuphos-secret-[^/]+\/0\/OPENAI_API_KEY$/)
+    expect(written).toMatch(/^\/tmp\/cerin-secret-[^/]+\/0\/OPENAI_API_KEY$/)
     expect((await stat(written!)).mode & 0o777).toBe(0o600)
     expect((await stat(dirname(dirname(written!)))).mode & 0o777).toBe(0o700)
     expect(await exists(oldSecret)).toBe(false)

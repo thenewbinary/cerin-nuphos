@@ -12,7 +12,7 @@ import { createInterface } from 'node:readline'
 const binary = process.argv[2]
 
 if (!binary) throw new Error('Usage: node test/codex-resume-env-smoke.mjs <codex binary>')
-const base = mkdtempSync(join(tmpdir(), 'nuphos-codex-resume-smoke-'))
+const base = mkdtempSync(join(tmpdir(), 'cerin-codex-resume-smoke-'))
 
 mkdirSync(join(base, '.codex'))
 const child = spawn(resolve(binary), ['app-server'], {
@@ -74,7 +74,7 @@ const actorOf = async (threadId) => {
 }
 
 try {
-  await rpc('initialize', { clientInfo: { name: 'nuphos-resume-smoke', version: '1' } })
+  await rpc('initialize', { clientInfo: { name: 'cerin-resume-smoke', version: '1' } })
   const { thread } = await rpc('thread/start', { cwd: base, config: config('owner') })
 
   assert.equal(await actorOf(thread.id), 'owner')

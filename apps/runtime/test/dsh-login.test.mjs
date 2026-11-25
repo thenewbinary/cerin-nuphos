@@ -32,7 +32,7 @@ function fakeDsh(frames) {
 }
 
 async function withHome(run) {
-  const home = await mkdtemp(join(tmpdir(), 'nuphos-dsh-login-'))
+  const home = await mkdtemp(join(tmpdir(), 'cerin-dsh-login-'))
   try {
     await run(home)
   } finally {
@@ -124,10 +124,10 @@ test('an attempt DSH ends first fails the sign-in', async () => {
 })
 
 test('the overlay switches ACP off and mounts the web server only for an account', () => {
-  const account = signInPatch({ plugin: '/opt/nuphos-runtime/dsh-sign-in.mjs', port: 4100 })
+  const account = signInPatch({ plugin: '/opt/cerin-runtime/dsh-sign-in.mjs', port: 4100 })
   assert.match(account, /- id: acp\n {2}disabled: true/)
   assert.match(account, /@deepseek-ai\/dsh-host-webserver/)
   assert.match(account, /port: 4100/)
-  assert.match(account, /name: "\/opt\/nuphos-runtime\/dsh-sign-in.mjs"/)
+  assert.match(account, /name: "\/opt\/cerin-runtime\/dsh-sign-in.mjs"/)
   assert.doesNotMatch(signInPatch({ plugin: '/p.mjs' }), /webserver/)
 })

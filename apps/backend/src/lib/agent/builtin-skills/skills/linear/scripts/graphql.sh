@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-env_path="${LINEAR_ENV_PATH:-$HOME/.linear/nuphos.env}"
+env_path="${LINEAR_ENV_PATH:-$HOME/.linear/cerin.env}"
 graphql_url="https://api.linear.app/graphql"
 payload_path="${1:--}"
 

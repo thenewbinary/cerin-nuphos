@@ -30,7 +30,7 @@ rl.on('line', (line) => {
 `
 
 async function withShim(provider, run, agentScript = FAKE_AGENT) {
-  const home = await mkdtemp(join(tmpdir(), 'nuphos-shim-test-'))
+  const home = await mkdtemp(join(tmpdir(), 'cerin-shim-test-'))
   const input = new PassThrough()
   const output = new PassThrough()
   const children = []
@@ -99,7 +99,7 @@ test('grok opens the session under its own env and takes the instructions as rul
       terminal: false,
       fs: { readTextFile: true },
     })
-    const reply = await call('session/new', session('Be Nuphos.'))
+    const reply = await call('session/new', session('Be Cerin.'))
     const { seen } = reply.result
 
     // Respawned once, and the replayed initialize never reached the client.
@@ -108,9 +108,9 @@ test('grok opens the session under its own env and takes the instructions as rul
     assert.notEqual(seen.pid, init.result.seen.pid)
     assert.equal(seen.env.NUPHOS_TOKEN, 'token')
     assert.equal(seen.env.EXTRA, undefined)
-    assert.match(seen.env.HOME, /\.nuphos\/session-homes\/[0-9a-f]{64}$/)
+    assert.match(seen.env.HOME, /\.cerin\/session-homes\/[0-9a-f]{64}$/)
     assert.equal(seen.env.GROK_HOME, join(home, '.grok'))
-    assert.equal(seen.params._meta.rules, 'Be Nuphos.')
+    assert.equal(seen.params._meta.rules, 'Be Cerin.')
 
     const prompt = await call('session/prompt', {
       sessionId: 's1',
@@ -123,7 +123,7 @@ test('grok opens the session under its own env and takes the instructions as rul
 test('a teammate reloading the session restarts the agent in their own home, and back', async () => {
   await withShim('grok', async ({ call, children }) => {
     const load = (actor) => {
-      const params = session('Be Nuphos.')
+      const params = session('Be Cerin.')
       const env = {
         ...params._meta[SESSION_META].env,
         ...(actor ? { NUPHOS_SESSION_ACTOR: actor } : {}),
@@ -153,10 +153,10 @@ test('a teammate reloading the session restarts the agent in their own home, and
 test('opencode shares only its own data directory with the runtime home', async () => {
   await withShim('opencode', async ({ call, children, home }) => {
     await call('initialize', { protocolVersion: 1 })
-    const { seen } = (await call('session/new', session('Be Nuphos.'))).result
+    const { seen } = (await call('session/new', session('Be Cerin.'))).result
 
     assert.deepEqual(children[1].command, ['opencode', 'acp'])
-    assert.match(seen.env.HOME, /\.nuphos\/session-homes\/[0-9a-f]{64}$/)
+    assert.match(seen.env.HOME, /\.cerin\/session-homes\/[0-9a-f]{64}$/)
     // The rest of XDG_DATA_HOME stays the conversation's own.
     assert.equal(seen.env.XDG_DATA_HOME, join(seen.env.HOME, '.local', 'share'))
     assert.equal(
@@ -186,11 +186,11 @@ test('a link the OS refuses never fails the turn, and Windows gets a junction', 
     await withShim('opencode', async ({ call }) => {
       await call('initialize', { protocolVersion: 1 })
       const reply = await Promise.race([
-        call('session/new', session('Be Nuphos.')),
+        call('session/new', session('Be Cerin.')),
         new Promise((resolve) => setTimeout(() => resolve({ timedOut: true }), 5000)),
       ])
 
-      assert.match(reply.result?.seen?.env.HOME ?? '', /\.nuphos\/session-homes\/[0-9a-f]{64}$/)
+      assert.match(reply.result?.seen?.env.HOME ?? '', /\.cerin\/session-homes\/[0-9a-f]{64}$/)
       // OpenCode's two links and Gradle's caches.
       assert.equal(links.length, 3)
       // Node makes a junction from this on Windows and ignores it elsewhere.
@@ -224,7 +224,7 @@ test('dsh keeps its home in the runtime home and resumes the sessions OpenAB loa
       assert.equal(init.result.agentCapabilities.loadSession, true)
       assert.deepEqual(init.result.agentCapabilities.sessionCapabilities, { resume: {} })
 
-      const reply = await call('session/load', { ...session('Be Nuphos.'), sessionId: 's1' })
+      const reply = await call('session/load', { ...session('Be Cerin.'), sessionId: 's1' })
       assert.deepEqual(children[1].command, ['dsh', '--profile', 'acp'])
       assert.equal(reply.result.method, 'session/resume')
       assert.equal(reply.result.sessionId, 's1')
@@ -253,10 +253,10 @@ test('history replayed while a session loads does not open a turn', async () => 
     'opencode',
     async ({ call, notifications }) => {
       await call('initialize', { protocolVersion: 1 })
-      await call('session/load', { ...session('Be Nuphos.'), sessionId: 's1' })
+      await call('session/load', { ...session('Be Cerin.'), sessionId: 's1' })
 
       assert.ok(notifications.some((m) => m.params?.update?.content?.text === 'old'))
-      assert.ok(!notifications.some((m) => m.params?.update?._meta?.['ai.nuphos/sessionState']))
+      assert.ok(!notifications.some((m) => m.params?.update?._meta?.['ai.cerin/sessionState']))
     },
     REPLAYING_AGENT,
   )
@@ -265,7 +265,7 @@ test('history replayed while a session loads does not open a turn', async () => 
 test('antigravity takes the instructions on the first prompt only', async () => {
   await withShim('antigravity', async ({ call, children, home }) => {
     await call('initialize', { protocolVersion: 1 })
-    const reply = await call('session/new', session('Be Nuphos.'))
+    const reply = await call('session/new', session('Be Cerin.'))
     assert.deepEqual(children[1].command, [
       'agy',
       'acp',
@@ -281,7 +281,7 @@ test('antigravity takes the instructions on the first prompt only', async () => 
       prompt: [{ type: 'text', text: 'hi' }],
     })
     assert.deepEqual(first.result.seen.params.prompt, [
-      { type: 'text', text: '<nuphos-instructions>\nBe Nuphos.\n</nuphos-instructions>' },
+      { type: 'text', text: '<cerin-instructions>\nBe Cerin.\n</cerin-instructions>' },
       { type: 'text', text: 'hi' },
     ])
     const second = await call('session/prompt', {
@@ -297,7 +297,7 @@ test('antigravity takes refreshed instructions after a load or resume', async ()
     call('session/prompt', { sessionId: 's1', prompt: [{ type: 'text', text }] })
   const block = (text) => ({
     type: 'text',
-    text: `<nuphos-instructions>\n${text}\n</nuphos-instructions>`,
+    text: `<cerin-instructions>\n${text}\n</cerin-instructions>`,
   })
 
   // Same process: new with A, then load with B.
@@ -319,7 +319,7 @@ test('antigravity takes refreshed instructions after a load or resume', async ()
   })
 })
 
-test('a session without Nuphos context keeps the first agent', async () => {
+test('a session without Cerin context keeps the first agent', async () => {
   await withShim('grok', async ({ call, children }) => {
     await call('initialize', { protocolVersion: 1 })
     await call('session/new', { cwd: '/workspace', mcpServers: [] })
@@ -357,12 +357,12 @@ test('a turn grok starts on its own ends with the marker the backend reads', asy
     'grok',
     async ({ call, notifications, outputs }) => {
       await call('initialize', { protocolVersion: 1 })
-      await call('session/new', session('Be Nuphos.'))
+      await call('session/new', session('Be Cerin.'))
       const answerId = 3
       await call('session/prompt', { sessionId: 's1', prompt: [{ type: 'text', text: 'hi' }] })
       await new Promise((resolve) => setTimeout(resolve, 200))
 
-      const states = (m) => m.params?.update?._meta?.['ai.nuphos/sessionState']?.state
+      const states = (m) => m.params?.update?._meta?.['ai.cerin/sessionState']?.state
       // The prompt's turn, then the wakeup's: each opens active and closes idle,
       // and the wakeup's message sits inside its own.
       const order = outputs
@@ -441,7 +441,7 @@ test('a grok background command stays a running terminal until it ends', async (
     'grok',
     async ({ call, outputs }) => {
       await call('initialize', { protocolVersion: 1 })
-      await call('session/new', session('Be Nuphos.'))
+      await call('session/new', session('Be Cerin.'))
       await call('session/prompt', { sessionId: 's1', prompt: [{ type: 'text', text: 'run it' }] })
       await new Promise((resolve) => setTimeout(resolve, 100))
 
@@ -453,7 +453,7 @@ test('a grok background command stays a running terminal until it ends', async (
         ['in_progress', 'in_progress', 'completed'],
       )
       assert.deepEqual(tool[0]._meta.terminal_info, { terminalId: 't1', command: 'sleep 1' })
-      const states = (m) => m.params?.update?._meta?.['ai.nuphos/sessionState']?.state
+      const states = (m) => m.params?.update?._meta?.['ai.cerin/sessionState']?.state
       // The command's end is a background update; the wakeup that reports it is a turn.
       const order = outputs
         .map(
@@ -528,7 +528,7 @@ test('a reopened session takes the stored settings; only a value no longer offer
           sessionId: 's1',
           cwd: '/workspace',
           mcpServers: [],
-          _meta: { 'ai.nuphos/runtimeDefaults': { model } },
+          _meta: { 'ai.cerin/runtimeDefaults': { model } },
         })
 
       assert.equal((await load('b')).result.configOptions[0].currentValue, 'b')
@@ -567,18 +567,18 @@ test('Antigravity forwards advertised capabilities, errors and process exit', as
 test('pi runs through the pi-acp adapter and gets the session MCP servers as its mcp.json', async () => {
   await withShim('pi', async ({ call, children, home }) => {
     await call('initialize', { protocolVersion: 1 })
-    const servers = [{ name: 'nuphos', command: 'node', args: ['bridge.mjs'], env: [] }]
-    await call('session/new', { ...session('Be Nuphos.'), mcpServers: servers })
+    const servers = [{ name: 'cerin', command: 'node', args: ['bridge.mjs'], env: [] }]
+    await call('session/new', { ...session('Be Cerin.'), mcpServers: servers })
     const [executable, adapter] = children.at(-1).command
     assert.equal(executable, process.execPath)
     assert.match(adapter, /node_modules[\\/]pi-acp[\\/]dist[\\/]index\.js$/u)
     const { readdir, readFile } = await import('node:fs/promises')
-    const sessions = join(home, '.nuphos', 'session-homes')
+    const sessions = join(home, '.cerin', 'session-homes')
     const [sessionHome] = await readdir(sessions)
     const mcp = JSON.parse(
       await readFile(join(sessions, sessionHome, '.pi', 'agent', 'mcp.json'), 'utf8'),
     )
-    assert.deepEqual(Object.keys(mcp.mcpServers), ['nuphos'])
+    assert.deepEqual(Object.keys(mcp.mcpServers), ['cerin'])
   })
 })
 
@@ -613,7 +613,7 @@ test("a provider's refusal fails Pi's turn with the provider's words", async () 
     'pi',
     async ({ call, notifications }) => {
       await call('initialize', { protocolVersion: 1, clientCapabilities: {} })
-      await call('session/new', session('Be Nuphos.'))
+      await call('session/new', session('Be Cerin.'))
       const prompt = (text) =>
         call('session/prompt', { sessionId: 's1', prompt: [{ type: 'text', text }] })
 
@@ -664,7 +664,7 @@ test('an opencode turn its provider refuses fails with OpenCode’s own error in
     'opencode',
     async ({ call, home, notifications }) => {
       await call('initialize', { protocolVersion: 1 })
-      await call('session/new', session('Be Nuphos.'))
+      await call('session/new', session('Be Cerin.'))
       const { appendFile, mkdir } = await import('node:fs/promises')
       await mkdir(join(home, '.local', 'share', 'opencode', 'log'), { recursive: true })
       // An earlier turn's error, and the title request's, end nothing.
@@ -707,7 +707,7 @@ test('an opencode turn its provider refuses fails with OpenCode’s own error in
 test('an opencode turn that answers is left alone, whatever another session logged', async () => {
   await withShim('opencode', async ({ call, home, notifications }) => {
     await call('initialize', { protocolVersion: 1 })
-    await call('session/new', session('Be Nuphos.'))
+    await call('session/new', session('Be Cerin.'))
     const { appendFile, mkdir } = await import('node:fs/promises')
     await mkdir(join(home, '.local', 'share', 'opencode', 'log'), { recursive: true })
     await appendFile(
@@ -747,7 +747,7 @@ rl.on('line', (line) => {
     'opencode',
     async ({ call, home, notifications, children }) => {
       await call('initialize', { protocolVersion: 1 })
-      await call('session/new', session('Be Nuphos.'))
+      await call('session/new', session('Be Cerin.'))
       const { appendFile, mkdir } = await import('node:fs/promises')
       await mkdir(join(home, '.local', 'share', 'opencode', 'log'), { recursive: true })
       await appendFile(

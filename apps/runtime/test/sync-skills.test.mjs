@@ -62,7 +62,7 @@ const gnuBin = [
 const workspaceEnv = (url) => ({
   ...process.env,
   PATH: gnuBin ? `${gnuBin}:${process.env.PATH}` : process.env.PATH,
-  NUPHOS_RUNTIME_WORKSPACE: mkdtempSync(join(tmpdir(), 'nuphos-runtime-skills-')),
+  NUPHOS_RUNTIME_WORKSPACE: mkdtempSync(join(tmpdir(), 'cerin-runtime-skills-')),
   NUPHOS_RUNTIME_SKILLS_URL: url,
   NUPHOS_RUNTIME_SKILLS_TOKEN: 'narrow-token',
 })
@@ -75,9 +75,9 @@ test('installs the authenticated bundle with executable scripts', async () => {
     return {
       revision: 'rev-1',
       files: [
-        { path: 'nuphos-plan/SKILL.md', contentBase64: encode('# Plan'), executable: false },
+        { path: 'cerin-plan/SKILL.md', contentBase64: encode('# Plan'), executable: false },
         {
-          path: 'nuphos-plan/scripts/create.sh',
+          path: 'cerin-plan/scripts/create.sh',
           contentBase64: encode('#!/bin/sh\n'),
           executable: true,
         },
@@ -103,8 +103,8 @@ test('installs the authenticated bundle with executable scripts', async () => {
     assert.equal(code, 0)
     assert.equal(stderr, '')
     assert.equal(observed.authorization, 'Bearer narrow-token')
-    assert.equal(readFileSync(join(skills, 'nuphos-plan/SKILL.md'), 'utf8'), '# Plan')
-    assert.notEqual(statSync(join(skills, 'nuphos-plan/scripts/create.sh')).mode & 0o111, 0)
+    assert.equal(readFileSync(join(skills, 'cerin-plan/SKILL.md'), 'utf8'), '# Plan')
+    assert.notEqual(statSync(join(skills, 'cerin-plan/scripts/create.sh')).mode & 0o111, 0)
     assert.equal(
       readFileSync(join(skills, 'architecture-diagram/SKILL.md'), 'utf8'),
       '# Architecture',
@@ -559,7 +559,7 @@ test('a personal run installs in the conversation directory and leaves the works
 
   try {
     const env = workspaceEnv(server.url)
-    const personal = mkdtempSync(join(tmpdir(), 'nuphos-personal-skills-'))
+    const personal = mkdtempSync(join(tmpdir(), 'cerin-personal-skills-'))
     const { code, stderr } = await sync({ ...env, NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR: personal })
 
     assert.equal(code, 0)
@@ -582,7 +582,7 @@ test('a backend that answers a personal run with the team bundle installs nothin
   }))
 
   try {
-    const personal = mkdtempSync(join(tmpdir(), 'nuphos-personal-skills-'))
+    const personal = mkdtempSync(join(tmpdir(), 'cerin-personal-skills-'))
     const { code } = await sync({
       ...workspaceEnv(server.url),
       NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR: personal,

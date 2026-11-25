@@ -14,7 +14,7 @@ import {
 import { githubInstallStartUrl, signInstallFlowState } from '@/lib/byos/github-install-flow'
 import { bindingShareSchema } from '@/lib/byos/initial-access'
 import { AppError } from '@/lib/errors'
-import { getNuphosUserById } from '@/lib/identity'
+import { getCerinUserById } from '@/lib/identity'
 import { parseObjectId } from '@/lib/objectid'
 import { personalCredentialSubjectFor, personalGithubToken } from '@/lib/personal-credentials'
 import { zv } from '@/lib/validate'
@@ -194,7 +194,7 @@ installationScoped.get('/token', requireTeamRole('ADMINISTRATOR', 'EDITOR'), asy
     const { token, expiresAt } = personal ?? (await getInstallationToken(installationId))
 
     // Conversation auth sets userId to the current actor, not the runtime owner.
-    const actor = await getNuphosUserById(c.get('userId'))
+    const actor = await getCerinUserById(c.get('userId'))
 
     if (expiresAt) c.header('X-Credentials-Expires-At', expiresAt.toISOString())
 

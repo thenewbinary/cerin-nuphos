@@ -81,7 +81,7 @@ export const connectorScenarios: Scenario[] = [
     },
   },
   {
-    // #2918: Cloudflare's rejection reached only the nuphos:// deep link; when the app did
+    // #2918: Cloudflare's rejection reached only the cerin:// deep link; when the app did
     // not receive it, the dialog waited ten minutes and people retried.
     name: 'Cloudflare rejecting the authorization shows its reason in the app',
     run: async (page, stack) => {

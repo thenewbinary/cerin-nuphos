@@ -63,7 +63,7 @@ function pad(n: number): string {
 }
 
 // Series colors — palette inspired by Grafana's classic, restricted to colors
-// that read well on the Nuphos dark background.
+// that read well on the Cerin dark background.
 const PALETTE = [
   '#73bf69',
   '#f2cc0c',

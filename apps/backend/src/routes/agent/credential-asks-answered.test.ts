@@ -10,7 +10,7 @@ import { useCredentialOptions } from '@/lib/test/doubles/credential-options'
 import { useDb } from '@/lib/test/doubles/db'
 import { useIdentity } from '@/lib/test/doubles/identity'
 import { emptyConnectorCredentialOptions } from '@/routes/agent/credential-options-connectors'
-import { nuphosUpdateCredentials } from '@/routes/mcp/credentials'
+import { cerinUpdateCredentials } from '@/routes/mcp/credentials'
 
 import { agent } from './router'
 
@@ -146,7 +146,7 @@ test('the picker responds with the question it answered already closed', async (
 })
 
 test('update_credentials responds with the question it answered already closed', async () => {
-  const result = await nuphosUpdateCredentials(
+  const result = await cerinUpdateCredentials(
     { team_id: teamId, session_id: 's1', aws_role_ids: ['cccccccccccccccccccccccc'] },
     { userId: caller } as never,
   )

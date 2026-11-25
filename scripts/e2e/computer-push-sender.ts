@@ -13,7 +13,7 @@ mock.module(modulePath, () => ({
   apnsCredentials: () => ({
     keyId: 'e2e',
     teamId: 'e2e',
-    bundleId: 'ai.nuphos.ios',
+    bundleId: 'ai.cerin.ios',
     privateKey: 'unused',
     environment: 'sandbox',
   }),

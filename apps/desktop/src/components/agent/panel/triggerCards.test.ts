@@ -44,7 +44,7 @@ test('webhooks, sub-routes, reads and other commands are not trigger cards', () 
 })
 
 test('bound trigger tools are read from their output', () => {
-  const part = { ...call('', created, 'mcp__nuphos__trigger_update'), input: {} }
+  const part = { ...call('', created, 'mcp__cerin__trigger_update'), input: {} }
 
   assert.deepEqual(triggerCardInfo(part), { triggerId: ID, action: 'updated' })
 })
@@ -59,7 +59,7 @@ test('untilRun counts hours up close and calendar days further out', () => {
   assert.equal(untilRun(new Date(2026, 9, 14, 20, 0), new Date(2026, 9, 14, 0, 0)), 'later today')
 })
 
-test('the Nuphos local_exec tool counts, and other tools never read their output', () => {
+test('the Cerin local_exec tool counts, and other tools never read their output', () => {
   const command = `bash skills/triggers/scripts/trigger-api.sh "$TEAM" POST '' @/tmp/trigger.json`
   const output = {
     toJSON() {
@@ -67,7 +67,7 @@ test('the Nuphos local_exec tool counts, and other tools never read their output
     },
   }
 
-  assert.deepEqual(triggerCardInfo(call(command, created, 'mcp__nuphos-tools__local_exec')), {
+  assert.deepEqual(triggerCardInfo(call(command, created, 'mcp__cerin-tools__local_exec')), {
     triggerId: ID,
     action: 'created',
   })

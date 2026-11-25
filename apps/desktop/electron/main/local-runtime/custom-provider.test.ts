@@ -133,11 +133,11 @@ test('Codex gets its own provider entry at the top of config.toml, replaced in p
   assert.equal(
     once,
     [
-      '# Nuphos custom provider (begin)',
-      'model_provider = "nuphos-custom"',
+      '# Cerin custom provider (begin)',
+      'model_provider = "cerin-custom"',
       'model = "glm-4.6"',
-      'model_providers.nuphos-custom = { name = "Custom provider", base_url = "https://gw.example.com/anthropic", env_key = "NUPHOS_CODEX_PROVIDER_KEY" }',
-      '# Nuphos custom provider (end)',
+      'model_providers.cerin-custom = { name = "Custom provider", base_url = "https://gw.example.com/anthropic", env_key = "NUPHOS_CODEX_PROVIDER_KEY" }',
+      '# Cerin custom provider (end)',
       base,
     ].join('\n'),
   )

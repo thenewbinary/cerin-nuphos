@@ -226,12 +226,12 @@ impl SessionState {
             match update["sessionUpdate"].as_str() {
                 Some("session_info_update") => {
                     let provider = update
-                        .pointer("/_meta/ai.nuphos~1sessionState/state")
+                        .pointer("/_meta/ai.cerin~1sessionState/state")
                         .or_else(|| update.pointer("/_meta/codex/threadStatus/type"))
                         .and_then(Value::as_str);
                     if let Some(details) = update
                         .pointer("/_meta/codex/threadStatus")
-                        .or_else(|| update.pointer("/_meta/ai.nuphos~1sessionState"))
+                        .or_else(|| update.pointer("/_meta/ai.cerin~1sessionState"))
                     {
                         snapshot["providerDetails"] = details.clone();
                     }
@@ -415,7 +415,7 @@ mod tests {
         state.set("active");
         state.observe(Some(&json!({"update":{"sessionUpdate":"tool_call","toolCallId":"abandoned","status":"pending","title":"Terminal","content":[{"type":"terminal","terminalId":"abandoned"}]}})));
         state.observe(Some(&json!({"update":{"sessionUpdate":"tool_call","toolCallId":"bg","status":"in_progress"}})));
-        state.observe(Some(&json!({"update":{"sessionUpdate":"session_info_update","_meta":{"ai.nuphos/sessionState":{"state":"idle"}}}})));
+        state.observe(Some(&json!({"update":{"sessionUpdate":"session_info_update","_meta":{"ai.cerin/sessionState":{"state":"idle"}}}})));
         let tools = state.snapshot()["tools"].clone();
         assert_eq!(
             tools.as_object().unwrap().keys().collect::<Vec<_>>(),
@@ -430,7 +430,7 @@ mod tests {
             let state = SessionState::default();
             state.set("active");
             state.observe(Some(&pending));
-            state.observe(Some(&json!({"update":{"sessionUpdate":"session_info_update","_meta":{"ai.nuphos/sessionState":{"state":provider}}}})));
+            state.observe(Some(&json!({"update":{"sessionUpdate":"session_info_update","_meta":{"ai.cerin/sessionState":{"state":provider}}}})));
             assert!(
                 state.snapshot()["tools"].as_object().unwrap().is_empty(),
                 "{provider}"
@@ -455,7 +455,7 @@ mod tests {
         state.observe(Some(&json!({"update":{"sessionUpdate":"tool_call","toolCallId":"bg","status":"in_progress"}})));
         state.operation("none");
         state.set("idle");
-        state.observe(Some(&json!({"update":{"sessionUpdate":"session_info_update","_meta":{"ai.nuphos/sessionState":{"state":"idle"}}}})));
+        state.observe(Some(&json!({"update":{"sessionUpdate":"session_info_update","_meta":{"ai.cerin/sessionState":{"state":"idle"}}}})));
         state.operation("prompt");
         state.observe(Some(
             &json!({"update":{"sessionUpdate":"tool_call","toolCallId":"t","status":"pending"}}),
@@ -483,7 +483,7 @@ mod tests {
         state.operation("prompt");
         state.observe(Some(&running));
         state.operation("cancelling");
-        state.observe(Some(&json!({"update":{"sessionUpdate":"session_info_update","_meta":{"ai.nuphos/sessionState":{"state":"idle"}}}})));
+        state.observe(Some(&json!({"update":{"sessionUpdate":"session_info_update","_meta":{"ai.cerin/sessionState":{"state":"idle"}}}})));
         assert!(state.snapshot()["tools"].as_object().unwrap().is_empty());
         assert_eq!(state.snapshot()["operation"], "none");
     }

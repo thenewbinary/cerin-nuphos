@@ -23,13 +23,13 @@ export function AgentEventMessage({
   metadata,
   text,
   teamId,
-  onOpenNuphosLink,
+  onOpenCerinLink,
   renderLink,
 }: {
   metadata: AgentMessageMetadata
   text: string
   teamId?: string
-  onOpenNuphosLink?: (href: string) => boolean
+  onOpenCerinLink?: (href: string) => boolean
   renderLink?: (href: string, children: ReactNode) => ReactNode
 }) {
   const [open, setOpen] = useState(false)
@@ -90,12 +90,12 @@ export function AgentEventMessage({
 
     return (
       <Rule title={new Date(metadata.sentAt).toLocaleString()}>
-        {channelUrl && onOpenNuphosLink ? (
+        {channelUrl && onOpenCerinLink ? (
           <button
             type="button"
             onClick={() => {
               if (post) openChannelAtPost(channelId, post.id)
-              onOpenNuphosLink(channelUrl)
+              onOpenCerinLink(channelUrl)
             }}
             className={`group/wake flex min-w-0 items-center text-left ${post ? 'flex-1 gap-1.5 text-[12px] leading-[18px]' : 'gap-1 hover:text-secondary'}`}
           >
@@ -132,11 +132,11 @@ export function AgentEventMessage({
         <div className="min-w-0" title={new Date(metadata.sentAt).toLocaleString()}>
           <div className="flex min-w-0 items-center gap-2">
             {icon}
-            {sessionUrl && onOpenNuphosLink ? (
+            {sessionUrl && onOpenCerinLink ? (
               <button
                 type="button"
                 title={displayName}
-                onClick={() => onOpenNuphosLink(sessionUrl)}
+                onClick={() => onOpenCerinLink(sessionUrl)}
                 className="min-w-0 flex-1 truncate text-left text-[12px] font-medium text-secondary hover:underline"
               >
                 {displayName}
@@ -182,10 +182,10 @@ export function AgentEventMessage({
       ) : (
         <Rule title={new Date(metadata.sentAt).toLocaleString()}>
           {icon}
-          {sessionUrl && onOpenNuphosLink ? (
+          {sessionUrl && onOpenCerinLink ? (
             <button
               type="button"
-              onClick={() => onOpenNuphosLink(sessionUrl)}
+              onClick={() => onOpenCerinLink(sessionUrl)}
               className="min-w-0 truncate font-medium text-secondary hover:underline"
             >
               {displayName}
@@ -215,7 +215,7 @@ export function AgentEventMessage({
           <MessageResponse
             className="[&_p]:whitespace-pre-wrap [&_li]:whitespace-pre-wrap"
             renderLink={renderLink}
-            onLinkClick={onOpenNuphosLink}
+            onLinkClick={onOpenCerinLink}
           >
             {text}
           </MessageResponse>

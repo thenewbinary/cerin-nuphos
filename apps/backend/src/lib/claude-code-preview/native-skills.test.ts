@@ -19,13 +19,13 @@ describe('nativeSkillFiles', () => {
   test('materializes merged skills while omitting reserved plan', () => {
     const files = nativeSkillFiles([
       { relPath: 'plan/SKILL.md', content: Buffer.from('# reserved') },
-      { relPath: 'nuphos-api/SKILL.md', content: Buffer.from('# unified api') },
+      { relPath: 'cerin-api/SKILL.md', content: Buffer.from('# unified api') },
       {
-        relPath: 'nuphos-api/scripts/openapi.sh',
+        relPath: 'cerin-api/scripts/openapi.sh',
         content: Buffer.from('#!/bin/sh'),
       },
       { relPath: 'architecture-diagram/SKILL.md', content: Buffer.from('# architecture') },
-      { relPath: 'nuphos-dashboards/SKILL.md', content: Buffer.from('# dashboards') },
+      { relPath: 'cerin-dashboards/SKILL.md', content: Buffer.from('# dashboards') },
       { relPath: 'demo/SKILL.md', content: Buffer.from('# demo') },
       { relPath: '_runtime/settings.json', content: Buffer.from('{}') },
       {
@@ -39,10 +39,10 @@ describe('nativeSkillFiles', () => {
         '_runtime/scripts/oom-hint.sh',
         '_runtime/settings.json',
         'architecture-diagram/SKILL.md',
-        'nuphos-dashboards/SKILL.md',
+        'cerin-dashboards/SKILL.md',
         'demo/SKILL.md',
-        'nuphos-api/SKILL.md',
-        'nuphos-api/scripts/openapi.sh',
+        'cerin-api/SKILL.md',
+        'cerin-api/scripts/openapi.sh',
       ]),
     )
     expect(files.find((file) => file.path.endsWith('openapi.sh'))?.executable).toBe(true)

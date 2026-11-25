@@ -47,17 +47,17 @@ test('anything else prints usage', () => {
 })
 
 test('stack secrets keep a running stack S3 keys, else the main checkout, else fresh ones', () => {
-  const example = 'NUPHOS_JWT_SECRET=\nS3_ACCESS_KEY=nuphos-local\nS3_SECRET_KEY=\n'
-  const existing = 'NUPHOS_JWT_SECRET=jwt\nS3_ACCESS_KEY=nuphos-local\nS3_SECRET_KEY=old\n'
-  const running = { access: 'nuphos-local', secret: 'live' }
+  const example = 'NUPHOS_JWT_SECRET=\nS3_ACCESS_KEY=cerin-local\nS3_SECRET_KEY=\n'
+  const existing = 'NUPHOS_JWT_SECRET=jwt\nS3_ACCESS_KEY=cerin-local\nS3_SECRET_KEY=old\n'
+  const running = { access: 'cerin-local', secret: 'live' }
 
   assert.equal(stackEnvText(example, existing, null), existing)
   assert.equal(
     stackEnvText(example, existing, running),
-    'NUPHOS_JWT_SECRET=jwt\nS3_ACCESS_KEY=nuphos-local\nS3_SECRET_KEY=live\n',
+    'NUPHOS_JWT_SECRET=jwt\nS3_ACCESS_KEY=cerin-local\nS3_SECRET_KEY=live\n',
   )
   assert.match(
     stackEnvText(example, null, null),
-    /^NUPHOS_JWT_SECRET=[\da-f]{64}\nS3_ACCESS_KEY=nuphos-local\nS3_SECRET_KEY=[\da-f]{64}\n$/,
+    /^NUPHOS_JWT_SECRET=[\da-f]{64}\nS3_ACCESS_KEY=cerin-local\nS3_SECRET_KEY=[\da-f]{64}\n$/,
   )
 })

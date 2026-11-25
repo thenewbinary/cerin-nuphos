@@ -22,7 +22,7 @@ On macOS, Cmd+D splits the workspace; Ctrl+D remains available to the terminal.
 GitLab merge requests and Linear issues are navigation links: their state is
 captured when linked and rechecked while the conversation is open, but their
 events do not wake the session. A GitLab MR shows as a pull-request tag labelled
-with GitLab's own `!iid`. This does not replace the Linear issue's `Nuphos session`
+with GitLab's own `!iid`. This does not replace the Linear issue's `Cerin session`
 attachment.
 
 A session's Slack or Discord thread appears as a tag too. It is not stored on the
@@ -31,13 +31,13 @@ conversation: the thread routing rows (`slack_agent_threads`,
 tag from them. That covers threads started in Slack or Discord, `slack_post`
 notification threads, and Slack pickups. The tag shows the thread's first words: the Slack
 root message while the rolling window still holds it, otherwise the message that
-started the session (which is also what Nuphos names a Discord thread after). Thread tags open in the system's Slack
+started the session (which is also what Cerin names a Discord thread after). Thread tags open in the system's Slack
 or Discord app. Their unlink button, like `unlink_session_resource`, deletes the
-routing row, so the thread is treated like one Nuphos never joined: the session
+routing row, so the thread is treated like one Cerin never joined: the session
 stops posting there and a new mention starts a new session. Other replies are
-ignored, except under a root the bot posted, where Nuphos says once that the
+ignored, except under a root the bot posted, where Cerin says once that the
 thread is not attached to a conversation. A turn already running when the thread
-is unlinked may still post its reply. A Slack thread Nuphos posted as a
+is unlinked may still post its reply. A Slack thread Cerin posted as a
 notification cannot be unlinked (409 `notification_thread`): its trigger keeps
 posting incident updates into it.
 
@@ -61,10 +61,10 @@ routing events. Enable the corresponding events on the installed GitHub App:
 The router matches the installation ID, stable repository ID and PR number.
 Events without an associated PR do not wake sessions. Write access is read from
 GitHub's collaborator permission API, because `author_association` reports
-private org members as outside contributors. Events from the configured Nuphos
+private org members as outside contributors. Events from the configured Cerin
 App bot and bot issue comments are ignored to avoid reply loops, except check
 suite completions: CI results on the agent's own pushes still wake the session. A PR
-closing, merging or reopening updates the linked tag's state even when the Nuphos
+closing, merging or reopening updates the linked tag's state even when the Cerin
 App did it; only the wakeup is skipped. GitHub
 must actually deliver a subscribed event; linking does not alter App subscriptions
 or retroactively replay earlier events.

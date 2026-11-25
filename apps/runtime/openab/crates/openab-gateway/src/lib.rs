@@ -1367,7 +1367,7 @@ pub async fn status_page(acp_enabled: bool) -> axum::response::Html<String> {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nuphos runtime</title>
+<title>Cerin runtime</title>
 <style>
   body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fafafa; color: #1a1a1a; margin: 0; padding: 48px 20px; }}
   .card {{ max-width: 520px; margin: 0 auto; background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 28px 32px; }}
@@ -1381,10 +1381,10 @@ pub async fn status_page(acp_enabled: bool) -> axum::response::Html<String> {
 </head>
 <body>
   <div class="card">
-    <h1>Nuphos runtime</h1>
-    <p class="status">&#9679; Nuphos runtime is running</p>
+    <h1>Cerin runtime</h1>
+    <p class="status">&#9679; Cerin runtime is running</p>
     <dl>{rows}</dl>
-    <p class="hint">Paste this runtime's address into Nuphos &rarr; Settings &rarr; Agent &rarr; Connect your own, along with the admin password you started it with.</p>
+    <p class="hint">Paste this runtime's address into Cerin &rarr; Settings &rarr; Agent &rarr; Connect your own, along with the admin password you started it with.</p>
   </div>
 </body>
 </html>
@@ -1415,7 +1415,7 @@ mod status_page_tests {
     #[tokio::test]
     async fn reports_liveness_and_acp_state() {
         let axum::response::Html(page) = status_page(true).await;
-        assert!(page.contains("Nuphos runtime is running"));
+        assert!(page.contains("Cerin runtime is running"));
         assert!(page.contains("<dt>ACP</dt><dd>enabled</dd>"));
 
         let axum::response::Html(page) = status_page(false).await;

@@ -16,7 +16,7 @@ export type RegisteredAgent = {
   signedIn: boolean | null
 }
 
-/** Who added an agent to a computer through Nuphos, and when; only those agents have one. */
+/** Who added an agent to a computer through Cerin, and when; only those agents have one. */
 export type AgentAddition = { instanceId: string; userId: string; at: Date }
 
 export const registryKey = (agent: Pick<RegisteredAgent, 'provider' | 'instanceId'>) =>

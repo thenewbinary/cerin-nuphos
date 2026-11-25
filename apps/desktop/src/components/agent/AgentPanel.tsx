@@ -97,8 +97,8 @@ type Props = {
   /** Called when AgentPanel changes which session it is showing. */
   /** `unshown`: the chat the panel left without ever showing it (it could not be opened). */
   onSessionChange?: (sessionId: string | null, unshown?: string) => void
-  /** Opens Nuphos markdown links from assistant messages inside the desktop workspace. */
-  onOpenNuphosLink?: (href: string, beside?: boolean) => boolean
+  /** Opens Cerin markdown links from assistant messages inside the desktop workspace. */
+  onOpenCerinLink?: (href: string, beside?: boolean) => boolean
   /** Opens workspace Settings at the Claude Code/OpenAB setup section. */
   onOpenAgentSettings?: () => void
   /** Focus the blank composer when this page-mode panel becomes active. */
@@ -150,7 +150,7 @@ export const AgentPanel = memo(function AgentPanel({
   sessionId: sessionIdProp,
   sessionReadOnly = false,
   onSessionChange,
-  onOpenNuphosLink,
+  onOpenCerinLink,
   onOpenAgentSettings,
   newChatRequest = 0,
   autoFocusComposer = false,
@@ -188,7 +188,7 @@ export const AgentPanel = memo(function AgentPanel({
     onPromptConsumed,
     onTitleChange,
     onSessionChange,
-    onOpenNuphosLink,
+    onOpenCerinLink,
     onOpenAgentSettings,
     newChatRequest,
     autoFocusComposer,

@@ -199,7 +199,7 @@ export function RuntimeInstanceCard({
                   targetVersion: result.version,
                   releaseUrl:
                     previous.runtimeUpdate?.releaseUrl ??
-                    'https://github.com/nuphos/nuphos/releases?q=runtime-v',
+                    'https://github.com/thenewbinary/cerin-platform/releases?q=runtime-v',
                 },
               },
           )

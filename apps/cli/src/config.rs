@@ -1,4 +1,4 @@
-//! Sign-in and preferences on disk. The CLI's sign-in is `~/.config/nuphos/cli.yaml`
+//! Sign-in and preferences on disk. The CLI's sign-in is `~/.config/cerin/cli.yaml`
 //! and the desktop app's is `desktop.yaml` beside it; each signs in and out on
 //! its own, and `cerin login` starts from the desktop's sign-in when there is
 //! one. The token itself is in the keychain where there is one (`secret.rs`);
@@ -102,9 +102,9 @@ fn home() -> PathBuf {
     std::env::var_os("HOME").map(PathBuf::from).unwrap_or_default()
 }
 
-/// `NUPHOS_CLI_CONFIG` or `~/.config/nuphos/cli.yaml`, as on the desktop.
+/// `NUPHOS_CLI_CONFIG` or `~/.config/cerin/cli.yaml`, as on the desktop.
 pub fn session_path() -> PathBuf {
-    std::env::var_os("NUPHOS_CLI_CONFIG").map(PathBuf::from).unwrap_or_else(|| home().join(".config/nuphos/cli.yaml"))
+    std::env::var_os("NUPHOS_CLI_CONFIG").map(PathBuf::from).unwrap_or_else(|| home().join(".config/cerin/cli.yaml"))
 }
 
 /// The desktop app's sign-in beside this one: `cli.yaml` → `desktop.yaml`,
@@ -401,29 +401,29 @@ mod tests {
 
     #[test]
     fn a_desktop_sign_in_is_taken_only_on_the_backend_that_issued_it() {
-        let file = "api: https://nuphos.example.com\ntoken: tok-self\naccounts:\n  - api: https://api.nuphos.ai\n    token: tok-cloud\n";
+        let file = "api: https://cerin.example.com\ntoken: tok-self\naccounts:\n  - api: https://platform.cerin.ai\n    token: tok-cloud\n";
         let on = |backend: &str| desktop_session_for(file, backend).and_then(|s| s.token);
-        assert_eq!(on("https://nuphos.example.com/"), Some("tok-self".into()));
-        assert_eq!(on("https://api.nuphos.ai"), None);
+        assert_eq!(on("https://cerin.example.com/"), Some("tok-self".into()));
+        assert_eq!(on("https://platform.cerin.ai"), None);
         // From before the desktop recorded its backend.
         assert_eq!(
-            desktop_session_for("token: tok-old\n", "https://api.nuphos.ai").and_then(|s| s.token),
+            desktop_session_for("token: tok-old\n", "https://platform.cerin.ai").and_then(|s| s.token),
             Some("tok-old".into())
         );
     }
 
     #[test]
     fn a_desktop_sign_in_with_an_api_that_is_not_a_string_is_not_taken() {
-        assert!(desktop_session_for("api: 42\ntoken: tok\n", "https://api.nuphos.ai").is_none());
-        assert!(desktop_session_for("api: [x]\ntoken: tok\n", "https://api.nuphos.ai").is_none());
+        assert!(desktop_session_for("api: 42\ntoken: tok\n", "https://platform.cerin.ai").is_none());
+        assert!(desktop_session_for("api: [x]\ntoken: tok\n", "https://platform.cerin.ai").is_none());
     }
 
     #[test]
     fn one_backend_spelt_two_ways_is_one_backend() {
         assert!(same_backend("http://localhost:3718", "http://127.0.0.1:3718/"));
-        assert!(same_backend("https://api.nuphos.ai/", " https://api.nuphos.ai"));
+        assert!(same_backend("https://platform.cerin.ai/", " https://platform.cerin.ai"));
         assert!(!same_backend("http://127.0.0.1:3718", "http://127.0.0.1:3719"));
-        assert!(!same_backend("http://nuphos.example.com", "https://nuphos.example.com"));
+        assert!(!same_backend("http://cerin.example.com", "https://cerin.example.com"));
         let file = "api: http://localhost:3718\ntoken: tok-dev\n";
         assert_eq!(desktop_session_for(file, "http://127.0.0.1:3718").and_then(|s| s.token), Some("tok-dev".into()));
     }
@@ -431,8 +431,8 @@ mod tests {
     #[test]
     fn the_desktop_sign_in_sits_beside_the_cli_one() {
         assert_eq!(
-            sibling(Path::new("/h/.config/nuphos/cli.yaml"), "desktop"),
-            Path::new("/h/.config/nuphos/desktop.yaml")
+            sibling(Path::new("/h/.config/cerin/cli.yaml"), "desktop"),
+            Path::new("/h/.config/cerin/desktop.yaml")
         );
         assert_eq!(sibling(Path::new("/d/cli.dev.yaml"), "desktop"), Path::new("/d/desktop.dev.yaml"));
         assert_eq!(sibling(Path::new("/d/session.yaml"), "desktop"), Path::new("/d/session.desktop.yaml"));
@@ -441,12 +441,12 @@ mod tests {
     #[test]
     fn a_keychain_session_names_the_item_and_reads_the_desktop_file() {
         let session = Session {
-            keychain_account: Some("u1@https://api.nuphos.ai".into()),
+            keychain_account: Some("u1@https://platform.cerin.ai".into()),
             user: Some("Bruce".into()),
             ..Session::default()
         };
         let text = serde_yaml::to_string(&session).unwrap();
-        assert!(text.contains("keychainAccount: u1@https://api.nuphos.ai"));
+        assert!(text.contains("keychainAccount: u1@https://platform.cerin.ai"));
         assert!(!text.contains("token:"));
 
         // As the desktop app writes it, or an older version with the token.
@@ -459,7 +459,7 @@ mod tests {
 
     #[test]
     fn a_rejected_env_token_keeps_the_saved_sign_in() {
-        let dir = std::env::temp_dir().join(format!("nuphos-cli-test-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("cerin-cli-test-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         std::env::set_var("NUPHOS_CLI_CONFIG", dir.join("cli.yaml"));
         write_private(&dir.join("cli.yaml"), b"token: saved\nkeychainAccount: u1@x\n").unwrap();

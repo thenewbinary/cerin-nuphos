@@ -80,7 +80,7 @@ const MAX_INFLIGHT_ESTABLISHES: usize = 64;
 ///
 /// Timeout ordering contract (each layer strictly below the next, so the layer that owns the
 /// failure also reports it): gateway idle timeout (this) < pool `prompt_hard_timeout_secs` <
-/// client per-prompt timeout (Nuphos: 15 min).
+/// client per-prompt timeout (Cerin: 15 min).
 pub const ACP_PROMPT_IDLE_TIMEOUT_SECS: u64 = 180;
 
 /// Floor for the env override: below this a single slow chunk boundary would spuriously kill
@@ -719,7 +719,7 @@ fn refresh_session_passthrough(session: &mut AcpSession, params: Option<&Value>)
 
 const PERMISSION_POLICY_META_KEY: &str = "dev.openab/permissionPolicy";
 const PERMISSION_RELAY_TIMEOUT_SECS: u64 = 900;
-/// Covers a client noticing its lost connection and reattaching (Nuphos: up to ~10 s to detect a
+/// Covers a client noticing its lost connection and reattaching (Cerin: up to ~10 s to detect a
 /// moved device tunnel, then resume retries at 0, 1, 2, 5 and 10 s).
 const PERMISSION_REATTACH_GRACE: std::time::Duration = std::time::Duration::from_secs(30);
 
@@ -4228,7 +4228,7 @@ async fn handle_session_prompt(
         .channel
         .session_meta
         .as_ref()
-        .is_some_and(|meta| meta["ai.nuphos/runtimeAuthority"] == 2)
+        .is_some_and(|meta| meta["ai.cerin/runtimeAuthority"] == 2)
         .then(|| {
             (
                 event.channel.mcp_servers.clone(),
@@ -4265,7 +4265,7 @@ async fn handle_session_prompt(
             admitted = true;
             state.acp_session_requests.open(&channel_id);
             state.acp_session_operations.accepted(&channel_id);
-            if params.and_then(|p| p.pointer("/_meta/ai.nuphos~1acknowledgePrompt")).and_then(Value::as_bool) == Some(true) {
+            if params.and_then(|p| p.pointer("/_meta/ai.cerin~1acknowledgePrompt")).and_then(Value::as_bool) == Some(true) {
                 let _ = out_tx.send(json!({"jsonrpc":"2.0","method":"_openab/session/prompt_accepted","params":{"sessionId":session_id,"requestId":id}}).to_string());
             }
             let payload =
@@ -6225,7 +6225,7 @@ mod acp_handlers {
     #[test]
     fn parse_http_mcp_servers_keeps_http_entries_verbatim_and_caps() {
         let http = json!({
-            "name": "nuphos-credentials",
+            "name": "cerin-credentials",
             "type": "http",
             "url": "https://x.example/mcp",
             "headers": [{"name": "Authorization", "value": "Bearer t"}]
@@ -6455,7 +6455,7 @@ mod acp_handlers {
         refresh_session_passthrough(
             session,
             Some(&json!({"_meta": {
-                "ai.nuphos/acknowledgePrompt": true,
+                "ai.cerin/acknowledgePrompt": true,
                 "dev.openab/sessionMeta": fresh,
                 "dev.openab/mcpServers": [http, {"type": "stdio", "name": "x", "command": "sh"}],
             }})),
@@ -7523,7 +7523,7 @@ mod acp_review_fixes {
 
         let sessions = sessions_map();
         let server = json!({
-            "name": "nuphos-credentials",
+            "name": "cerin-credentials",
             "type": "http",
             "url": "https://x.example/mcp",
             "headers": [{"name": "Authorization", "value": "Bearer t"}]
@@ -7547,7 +7547,7 @@ mod acp_review_fixes {
         cancel.notify_one();
 
         let (out_tx, mut out_rx) = mpsc::unbounded_channel::<String>();
-        let params = json!({"sessionId": sid, "prompt": [{"type": "text", "text": "hi"}], "_meta":{"ai.nuphos/acknowledgePrompt":true}});
+        let params = json!({"sessionId": sid, "prompt": [{"type": "text", "text": "hi"}], "_meta":{"ai.cerin/acknowledgePrompt":true}});
         handle_session_prompt(
             &state,
             &sessions,
@@ -8344,7 +8344,7 @@ mod acp_ws_integration {
     #[test]
     fn steering_receipt_is_the_last_text_part() {
         let header =
-            json!({"type":"text","text":"<nuphos_message_metadata>{}</nuphos_message_metadata>"});
+            json!({"type":"text","text":"<cerin_message_metadata>{}</cerin_message_metadata>"});
         let link = json!({"type":"resource_link","uri":"file:///tmp/a.png","name":"a.png"});
         let words = json!({"type":"text","text":"Focus on tests"});
         assert_eq!(

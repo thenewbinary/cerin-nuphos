@@ -56,7 +56,7 @@ export function PanelConversationPage({ c }: { c: PanelViewCtx }) {
     isSidebarMode,
     isTeamAdmin,
     loadEarlierMessages,
-    onOpenNuphosLink,
+    onOpenCerinLink,
     onOpenAgentSettings,
     onPromptConsumed,
     pendingPromptReady,
@@ -179,7 +179,7 @@ export function PanelConversationPage({ c }: { c: PanelViewCtx }) {
                           (await api.agentSaveSecret(activeTab.sessionId, name, value, teamId))
                             .path,
                   openQuestions: c.openQuestions,
-                  onLinkClick: onOpenNuphosLink,
+                  onLinkClick: onOpenCerinLink,
                 }}
               >
                 <TurnSwitchAgentContext.Provider value={turnSwitch}>
@@ -202,7 +202,7 @@ export function PanelConversationPage({ c }: { c: PanelViewCtx }) {
                       onApprovePlan={approvePlan}
                       onRejectPlan={rejectPlan}
                       activePlanCanAct={activePlanCanAct}
-                      onOpenNuphosLink={onOpenNuphosLink}
+                      onOpenCerinLink={onOpenCerinLink}
                       onOpenAgentSettings={onOpenAgentSettings}
                       onEditMessage={editMessage}
                     />

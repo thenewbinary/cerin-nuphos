@@ -18,7 +18,7 @@ Prerequisites: Node 22.18+, the current Railway CLI with `railway config` suppor
 a Railway account with volume capacity, two custom domains whose DNS you control,
 and optionally a Resend API key with a verified sender. Without one, email
 sign-in is off: create the first user and team with
-`railway ssh --service backend -- nuphos-admin bootstrap --email <email> --team <name>`,
+`railway ssh --service backend -- cerin-admin bootstrap --email <email> --team <name>`,
 which also prints their sign-in code (see the
 [Helm README](../helm/README.md#first-user-and-team) for the other commands). The default data volumes are
 10 GiB each in `us-west2`; services are explicitly placed in the same region.
@@ -60,7 +60,7 @@ RustFS uses `RAILWAY_RUN_UID=0` to write Railway's root-owned volume; the isolat
 agent still drops to UID 1000.
 
 Wait for `https://<API_DOMAIN>/health/ready` to return 200. Services restart automatically if backend startup races Mongo initialization. Confirm
-`/health/redis` reports disabled. In Nuphos Desktop select **Self-hosted? Set API
+`/health/redis` reports disabled. In Cerin Desktop select **Self-hosted? Set API
 endpoint**, enter the backend HTTPS origin, sign in by email, and create a team.
 
 ## Deploy the runtime project
@@ -83,7 +83,7 @@ railway config apply --file .railway/runtime.ts
 ```
 
 Verify that the CLI names the **runtime project**, not the data project, before
-applying. The Dockerfile source defaults to `nuphos/nuphos` on `main`. To test an
+applying. The Dockerfile source defaults to `thenewbinary/cerin-platform` on `main`. To test an
 unmerged branch or deploy a fork, set `NUPHOS_GITHUB_REPO` and
 `NUPHOS_GITHUB_BRANCH` in this shell before planning. The source must contain
 `deploy/railway/runtime/Dockerfile`. The spec explicitly selects the Dockerfile
@@ -95,7 +95,7 @@ your team using the single-use code, and sign in to your own Claude account.
 Keep the home volume when redeploying: it contains credentials and workspaces.
 
 The runtime is also published as a one-click marketplace template,
-[Nuphos Agent Runtime](https://railway.com/deploy/nuphos-agent-runtime). It runs the
+[Cerin Agent Runtime](https://railway.com/deploy/cerin-agent-runtime). It runs the
 public `ghcr.io/nuphos/runtime` image directly instead of building this directory:
 `RAILWAY_RUN_UID=0` and a start command do what `runtime/start.sh` does.
 `OPENAB_ACP_AUTH_KEY` is a generated template variable

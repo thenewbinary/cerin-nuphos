@@ -7,7 +7,7 @@ import { t } from '../../i18n/index.ts'
 import type { AgentCredentialSelection } from '../../api'
 import type {
   DashboardViewRange,
-  NuphosDashboardDetail,
+  CerinDashboardDetail,
   DashboardPanel,
   DashboardPanelKind,
 } from '../schema'
@@ -17,8 +17,8 @@ type Args = {
   teamId: string
   viewRange?: DashboardViewRange
   selectedId: string | null
-  detail: NuphosDashboardDetail | null
-  setDetail: Dispatch<SetStateAction<NuphosDashboardDetail | null>>
+  detail: CerinDashboardDetail | null
+  setDetail: Dispatch<SetStateAction<CerinDashboardDetail | null>>
   editor: { panel: DashboardPanel | null } | null
   setEditor: Dispatch<SetStateAction<{ panel: DashboardPanel | null } | null>>
   setPanelToDelete: Dispatch<SetStateAction<DashboardPanel | null>>

@@ -27,7 +27,7 @@ export async function runtimeUpdateStatus(
   }
 }
 
-/** A Nuphos-side runtime's status card, with the release it could update to. */
+/** A Cerin-side runtime's status card, with the release it could update to. */
 export async function runtimeStatusWithUpdate(
   teamId: string,
   userId: string,

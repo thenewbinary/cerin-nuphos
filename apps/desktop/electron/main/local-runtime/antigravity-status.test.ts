@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
 
 test('a bundled Node host imports AGY status without running its CLI entry point', async (t) => {
-  const directory = mkdtempSync(path.join(os.tmpdir(), 'nuphos-agy-status-bundle-'))
+  const directory = mkdtempSync(path.join(os.tmpdir(), 'cerin-agy-status-bundle-'))
 
   t.after(() => rmSync(directory, { recursive: true, force: true }))
   const source = fileURLToPath(

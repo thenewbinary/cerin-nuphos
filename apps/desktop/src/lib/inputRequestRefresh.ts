@@ -22,7 +22,7 @@ export function onInputRequestsRefresh(listener: () => void): () => void {
   }
 }
 
-/** Providers may prefix MCP tools, as in `mcp__nuphos-tools__request_user_decision`. */
+/** Providers may prefix MCP tools, as in `mcp__cerin-tools__request_user_decision`. */
 export function isDecisionToolName(name: unknown): boolean {
   return typeof name === 'string' && /(^|__|\.|\/)request_user_decision$/.test(name)
 }

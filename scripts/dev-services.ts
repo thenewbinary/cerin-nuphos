@@ -159,7 +159,7 @@ export function openLog(svc: Service) {
 // ─── Dependency preflight ─────────────────────────────────────────────────────
 // A fresh worktree has no node_modules, so install with each app's own package
 // manager before spawning — the desktop is pnpm-only (bun install is forbidden).
-const DEPS_STAMP = '.nuphos-deps-stamp'
+const DEPS_STAMP = '.cerin-deps-stamp'
 const LOCKFILES: Record<'bun' | 'pnpm', string> = { bun: 'bun.lock', pnpm: 'pnpm-lock.yaml' }
 
 /** Hash of the workspace lockfile; each app's lockfile is self-contained. */

@@ -62,7 +62,7 @@ test('the real backend tunnel and fixed host downloader deliver bytes into a pri
 
     expect(result.paths).toHaveLength(1)
     expect(await readFile(result.paths[0], 'utf8')).toBe('image')
-    expect(result.paths[0]).toStartWith(join(workspace, '.nuphos-attachments'))
+    expect(result.paths[0]).toStartWith(join(workspace, '.cerin-attachments'))
   } finally {
     for (const stream of streams.values()) stream.close()
     tunnel.closed()

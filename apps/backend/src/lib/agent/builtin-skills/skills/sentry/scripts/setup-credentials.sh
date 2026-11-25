@@ -19,9 +19,9 @@ PY
 }
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-# shellcheck source=../../_runtime/scripts/nuphos-token.sh
-source "$script_dir/../../_runtime/scripts/nuphos-token.sh"
-auth_token="$(nuphos_token)" || exit 1
+# shellcheck source=../../_runtime/scripts/cerin-token.sh
+source "$script_dir/../../_runtime/scripts/cerin-token.sh"
+auth_token="$(cerin_token)" || exit 1
 
 team_enc="$(urlencode "$team_id")"
 binding_enc="$(urlencode "$binding_id")"
@@ -52,7 +52,7 @@ fi
 mkdir -p "$HOME/.sentry"
 chmod 700 "$HOME/.sentry"
 
-python3 - "$tmp" "$HOME/.sentry/nuphos.env" <<'PY'
+python3 - "$tmp" "$HOME/.sentry/cerin.env" <<'PY'
 import json, shlex, sys
 src, dst = sys.argv[1], sys.argv[2]
 data = json.load(open(src))
@@ -70,5 +70,5 @@ with open(dst, "w") as f:
     f.write(f"export SENTRY_BINDING_ID={shlex.quote(str(data.get('bindingId', '')))}\n")
 PY
 
-chmod 600 "$HOME/.sentry/nuphos.env"
-echo "Wrote Sentry credentials to ~/.sentry/nuphos.env"
+chmod 600 "$HOME/.sentry/cerin.env"
+echo "Wrote Sentry credentials to ~/.sentry/cerin.env"

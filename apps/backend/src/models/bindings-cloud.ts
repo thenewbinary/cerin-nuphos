@@ -35,7 +35,7 @@ export type TencentAccountBinding = {
   site?: TencentSite
   /**
    * OIDC web-identity federation (like AWS/Aliyun/Volcengine): the customer
-   * creates a CAM OIDC identity provider trusting the Nuphos issuer and a CAM
+   * creates a CAM OIDC identity provider trusting the Cerin issuer and a CAM
    * role trusting that provider. We store only the role ARN + the OIDC provider
    * name (Tencent references the provider by name, not ARN, in
    * AssumeRoleWithWebIdentity) — no customer secret — and assume the role for
@@ -64,7 +64,7 @@ export type AliyunAccountBinding = {
   site?: AliyunSite
   /**
    * OIDC web-identity federation (like AWS/Volcengine): the customer creates a
-   * RAM OIDC identity provider trusting the Nuphos issuer and a RAM role trusting
+   * RAM OIDC identity provider trusting the Cerin issuer and a RAM role trusting
    * that provider. We store only the role ARN + the OIDC provider ARN (both
    * required by sts:AssumeRoleWithOIDC) — no customer secret — and assume the
    * role for short-lived credentials on demand.
@@ -77,14 +77,14 @@ export type AliyunAccountBinding = {
 
 /**
  * Trust-relationship Volcengine (火山引擎) binding (like AWS role ARNs): the
- * team creates an IAM role whose trust policy allows the Nuphos connector
+ * team creates an IAM role whose trust policy allows the Cerin connector
  * account to sts:AssumeRole. We store only the role TRN — no customer secret —
  * and assume it for short-lived credentials on demand.
  */
 export type VolcengineAccountBinding = {
   id: ObjectId
   label: string
-  /** Volcengine IAM role TRN, e.g. trn:iam::2100000000:role/NuphosRole. */
+  /** Volcengine IAM role TRN, e.g. trn:iam::2100000000:role/CerinRole. */
   roleTrn: string
   createdAt: Date
   access?: BindingAccess
@@ -230,7 +230,7 @@ export type UpstashAccountBinding = {
 /**
  * Microsoft Azure binding via OIDC workload identity federation (like
  * AWS/Tencent/Aliyun/Volcengine): the customer creates an Entra ID app
- * registration with a federated credential trusting the Nuphos issuer and grants
+ * registration with a federated credential trusting the Cerin issuer and grants
  * it an RBAC role on a subscription. We store only the tenant id, the app's
  * client id, and the subscription id — no client secret — mint a per-team token,
  * and exchange it for a short-lived ARM access token on demand.

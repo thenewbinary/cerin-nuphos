@@ -17,7 +17,7 @@ import { panelDisplay, panelNotConnected } from './panelDisplay'
 import { PanelOutputView } from './PanelOutputView'
 import { ScriptErrorModal } from './ScriptErrorModal'
 
-import type { DashboardPanel, DashboardPanelOutput, NuphosDashboard } from './schema'
+import type { DashboardPanel, DashboardPanelOutput, CerinDashboard } from './schema'
 import type { HTMLAttributes } from 'react'
 
 // Users' saved column widths and sort are stored under this key; changing it resets them.
@@ -25,7 +25,7 @@ const tableStorageKey = (panelId: string) => `costPanel.${panelId}`
 
 type Props = {
   panel: DashboardPanel
-  viewTimeRange?: NuphosDashboard['timeRange']
+  viewTimeRange?: CerinDashboard['timeRange']
   loading?: boolean
   onExecute: (panel: DashboardPanel) => void
   onEdit: (panel: DashboardPanel) => void

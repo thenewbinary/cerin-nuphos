@@ -7,9 +7,9 @@ import { ObjectId } from 'mongodb'
 
 import { useDb } from '@/lib/test/doubles/db'
 
-import type { NuphosTeamDoc, NuphosUserDoc } from '@/lib/identity/shared'
+import type { CerinTeamDoc, CerinUserDoc } from '@/lib/identity/shared'
 
-const CREATOR: NuphosUserDoc = {
+const CREATOR: CerinUserDoc = {
   _id: new ObjectId(),
   email: 'member@example.com',
   name: 'Ian',
@@ -20,12 +20,12 @@ const CREATOR: NuphosUserDoc = {
   updatedAt: new Date('2026-08-03T00:00:00.000Z'),
 }
 
-let insertedTeam: NuphosTeamDoc | null = null
+let insertedTeam: CerinTeamDoc | null = null
 
 const collections: Record<string, unknown> = {
   users: { findOne: () => Promise.resolve(CREATOR) },
   teams: {
-    insertOne: (doc: NuphosTeamDoc) => {
+    insertOne: (doc: CerinTeamDoc) => {
       insertedTeam = doc
 
       return Promise.resolve({ insertedId: doc._id })

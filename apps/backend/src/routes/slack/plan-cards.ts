@@ -22,7 +22,7 @@ export function slackPlanLink(teamId: string | undefined, plan: SlackCreatedPlan
 }
 
 // The Approve button on plan review cards (block_actions in /interactions).
-export const PLAN_APPROVE_ACTION = 'nuphos_plan_approve'
+export const PLAN_APPROVE_ACTION = 'cerin_plan_approve'
 
 // task_card titles are plain text; Slack caps them tightly (same 256-char
 // ceiling as Block Kit text fields).
@@ -77,7 +77,7 @@ function buildPlanApprovalBlocks(args: {
   // predates the Agents & AI Apps block types).
   steps?: PlanStep[]
   // False when the plan is missing required sections and can only be reviewed
-  // in Nuphos; the card then carries no Approve button.
+  // in Cerin; the card then carries no Approve button.
   approvable: boolean
 }): unknown[] {
   const url = slackPlanUrl(args.teamId, args.planId)

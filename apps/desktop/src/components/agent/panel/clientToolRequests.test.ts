@@ -6,7 +6,7 @@ import { selectClientToolDispatch } from './clientToolRequests.ts'
 import type { Message } from './model.ts'
 import type { RuntimeRequest } from '../../../lib/runtimeExecution.ts'
 
-const WAIT = 'nuphos-wait-1'
+const WAIT = 'cerin-wait-1'
 const OWN_STREAM = 'stream-mine'
 
 const user: Message = { id: 'u1', role: 'user', parts: [{ type: 'text', text: 'list pods' }] }

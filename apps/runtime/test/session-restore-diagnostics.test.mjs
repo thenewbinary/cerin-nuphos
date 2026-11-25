@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 
-import { nuphosTraceRestore } from '../image/runtime-defaults.mjs'
+import { cerinTraceRestore } from '../image/runtime-defaults.mjs'
 
 const id = '11111111-2222-4333-8444-555555555555'
 const params = {
@@ -32,7 +32,7 @@ test('a stalled restore leaves a private snapshot without request contents', asy
   })
   const file = join(
     home,
-    '.nuphos',
+    '.cerin',
     'session-homes',
     createHash('sha256').update(id).digest('hex'),
     'session-restore.json',
@@ -45,7 +45,7 @@ test('a stalled restore leaves a private snapshot without request contents', asy
   const gate = new Promise((resolve) => {
     release = resolve
   })
-  const restore = nuphosTraceRestore(params, 'loadSession', async (step) => {
+  const restore = cerinTraceRestore(params, 'loadSession', async (step) => {
     step('sdk-session')
     step('history-replay')
     started()
@@ -70,7 +70,7 @@ test('a stalled restore leaves a private snapshot without request contents', asy
 
   const failure = new Error('Bearer secret-error-payload')
   await assert.rejects(
-    nuphosTraceRestore(params, 'loadSession', async (step) => {
+    cerinTraceRestore(params, 'loadSession', async (step) => {
       step('sdk-session')
       throw failure
     }),
@@ -95,10 +95,10 @@ test('unavailable diagnostic storage preserves restore behavior', async (t) => {
     if (previous === undefined) delete process.env.HOME
     else process.env.HOME = previous
   })
-  assert.equal(await nuphosTraceRestore(params, 'resumeSession', async () => 42), 42)
+  assert.equal(await cerinTraceRestore(params, 'resumeSession', async () => 42), 42)
   const failure = new Error('original')
   await assert.rejects(
-    nuphosTraceRestore(params, 'resumeSession', async () => {
+    cerinTraceRestore(params, 'resumeSession', async () => {
       throw failure
     }),
     (error) => error === failure,

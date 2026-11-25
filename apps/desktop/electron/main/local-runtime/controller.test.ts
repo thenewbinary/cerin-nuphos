@@ -126,7 +126,7 @@ function harness(
       tunnelChange?.(connected, superseded, revoked)
     },
     status: () => tunnelStatus?.(),
-    /** What a stream from Nuphos gets when it asks for this agent. */
+    /** What a stream from Cerin gets when it asks for this agent. */
     stream: (provider: LocalAgentProvider) => tunnelRuntime?.(provider) ?? null,
     envReads,
     reportUsage: (value: unknown) => {
@@ -598,7 +598,7 @@ test('reconnecting Codex after login leaves the Claude process running', async (
   await controller.shutdown()
 })
 
-test('a host run by the `nuphos` CLI reports that CLI, which a Box updates by', async () => {
+test('a host run by the `cerin` CLI reports that CLI, which a Box updates by', async () => {
   const { tunnelStatusOf } = await import('./controller-types.ts')
   const agents = {
     'claude-code': { runtime: null },

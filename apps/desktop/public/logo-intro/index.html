@@ -28,7 +28,7 @@
     <div id="stage"></div>
     <script type="module">
       import { mountLogoIntro } from './logo-intro.js'
-      const finish = () => parent.postMessage('nuphos:introFinished', '*')
+      const finish = () => parent.postMessage('cerin:introFinished', '*')
       try {
         const response = await fetch('./cerin.json')
         const brand = await response.json()

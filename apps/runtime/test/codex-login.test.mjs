@@ -123,7 +123,7 @@ test(
       // `seed-codex-auth.sh` compares this marker, so a self-installed credential has to
       // carry the same revision its own bytes would produce.
       assert.match(
-        await readFile(join(codexHome, '.nuphos-auth-revision'), 'utf8'),
+        await readFile(join(codexHome, '.cerin-auth-revision'), 'utf8'),
         /^[0-9a-f]{16}$/u,
       )
       await assert.rejects(readFile(join(codexHome, 'auth.json.new')), { code: 'ENOENT' })

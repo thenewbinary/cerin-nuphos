@@ -62,7 +62,7 @@ export function enterScopeTabUpdate(
     // Scope changes land on a section root — drop any open connector
     // drill-down, and any open dashboard so Dashboards shows its list page.
     connectorDetail: null,
-    nuphosDashboard: null,
+    cerinDashboard: null,
     filter: '',
     refreshKey: tab.refreshKey + 1,
     count: 0,

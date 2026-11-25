@@ -4,11 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 
-import {
-  nuphosOomKills,
-  nuphosOwnCgroup,
-  nuphosProcessDeathMessage,
-} from '../image/process-death.mjs'
+import { cerinOomKills, cerinOwnCgroup, cerinProcessDeathMessage } from '../image/process-death.mjs'
 
 // A real cgroup path is required for the limit walk, which stops at /sys/fs/cgroup.
 function fakeCgroup(oomKill) {
@@ -23,19 +19,19 @@ function fakeCgroup(oomKill) {
 
 test('reads its own cgroup v2 path', () => {
   assert.equal(
-    nuphosOwnCgroup('0::/user.slice/nuphos-agents.slice/openab.scope\n'),
-    '/sys/fs/cgroup/user.slice/nuphos-agents.slice/openab.scope',
+    cerinOwnCgroup('0::/user.slice/cerin-agents.slice/openab.scope\n'),
+    '/sys/fs/cgroup/user.slice/cerin-agents.slice/openab.scope',
   )
-  assert.equal(nuphosOwnCgroup(null), null)
+  assert.equal(cerinOwnCgroup(null), null)
 })
 
 test('counts OOM kills from memory.events', () => {
-  assert.equal(nuphosOomKills(fakeCgroup(3)), 3)
-  assert.equal(nuphosOomKills(null), 0)
+  assert.equal(cerinOomKills(fakeCgroup(3)), 3)
+  assert.equal(cerinOomKills(null), 0)
 })
 
 test('a SIGKILL while the OOM kill count rose names the memory limit', () => {
-  const text = nuphosProcessDeathMessage(
+  const text = cerinProcessDeathMessage(
     'Claude Code',
     'process terminated by signal SIGKILL',
     fakeCgroup(1),
@@ -48,7 +44,7 @@ test('a SIGKILL while the OOM kill count rose names the memory limit', () => {
 })
 
 test('a SIGKILL without an OOM kill keeps its signal', () => {
-  const text = nuphosProcessDeathMessage(
+  const text = cerinProcessDeathMessage(
     'Claude Code',
     'process terminated by signal SIGKILL',
     fakeCgroup(2),
@@ -63,7 +59,7 @@ test('a SIGKILL without an OOM kill keeps its signal', () => {
 
 test('another death keeps its own reason, also outside a cgroup', () => {
   assert.equal(
-    nuphosProcessDeathMessage('Codex', 'process terminated by signal SIGABRT', null, 0),
+    cerinProcessDeathMessage('Codex', 'process terminated by signal SIGABRT', null, 0),
     'Codex stopped unexpectedly (process terminated by signal SIGABRT). Send a message to continue.',
   )
 })
@@ -72,7 +68,7 @@ test('announces the message on stderr for OpenAB', (t) => {
   const written = []
 
   t.mock.method(process.stderr, 'write', (chunk) => written.push(String(chunk)))
-  const text = nuphosProcessDeathMessage('Codex', 'process exited with code 1', null, 0)
+  const text = cerinProcessDeathMessage('Codex', 'process exited with code 1', null, 0)
 
-  assert.deepEqual(written, [`nuphos-process-death: ${text}\n`])
+  assert.deepEqual(written, [`cerin-process-death: ${text}\n`])
 })

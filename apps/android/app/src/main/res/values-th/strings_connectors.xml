@@ -43,7 +43,7 @@
     <string name="connectors_field_integration_token">โทเค็นการผสานรวม</string>
     <string name="connectors_field_account_email">อีเมลบัญชี</string>
     <string name="connectors_field_management_api_key">คีย์ Management API</string>
-    <string name="connectors_note_aws">บทบาทต้องเชื่อถือ Nuphos อยู่แล้ว เซิร์ฟเวอร์จะตรวจสอบสิทธิ์เข้าถึงก่อนบันทึก</string>
+    <string name="connectors_note_aws">บทบาทต้องเชื่อถือ Cerin อยู่แล้ว เซิร์ฟเวอร์จะตรวจสอบสิทธิ์เข้าถึงก่อนบันทึก</string>
     <string name="connectors_note_azure">ตั้งค่าข้อมูลรับรองแบบรวมศูนย์และการกำหนดบทบาทของแอปก่อน</string>
     <string name="connectors_category_infrastructure">โครงสร้างพื้นฐาน</string>
     <string name="connectors_category_observability">การสังเกตการณ์ระบบ</string>

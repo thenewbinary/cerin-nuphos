@@ -33,7 +33,7 @@ enum PastedFileTests {
             provider.suggestedName = name
             for type in types {
                 provider.registerDataRepresentation(for: type, visibility: .all) { done in
-                    done(Data("https://nuphos.ai".utf8), nil)
+                    done(Data("https://platform.cerin.ai".utf8), nil)
                     return nil
                 }
             }

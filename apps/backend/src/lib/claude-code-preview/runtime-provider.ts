@@ -15,7 +15,7 @@ export type OpenAbProvider = (typeof OPENAB_PROVIDERS)[number]
 /** The agents a runtime image is published for: Pi runs only on a computer so far. */
 export const IMAGE_PROVIDERS = OPENAB_PROVIDERS.filter((provider) => provider !== 'pi')
 
-// `shim`: the agent speaks ACP itself and the image's ACP shim adds the Nuphos layer
+// `shim`: the agent speaks ACP itself and the image's ACP shim adds the Cerin layer
 // in front of it (apps/runtime/image/acp-shim.mjs) instead of a patched adapter.
 const PROVIDERS: Record<
   OpenAbProvider,

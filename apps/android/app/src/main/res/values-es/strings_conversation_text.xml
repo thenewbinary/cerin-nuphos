@@ -25,7 +25,7 @@
     <string name="convtext_delivery_unconfirmed">No se confirmó la entrega del mensaje. Reanuda la conexión original.</string>
     <string name="convtext_task_reloaded">Esta tarea cambió en otro lugar y se volvió a cargar. Reintenta enviar tu mensaje.</string>
     <string name="convtext_connection_quiet">La conexión dejó de responder varias veces; inténtalo de nuevo.</string>
-    <string name="convtext_connection_lost">Se perdió la conexión con Nuphos.</string>
+    <string name="convtext_connection_lost">Se perdió la conexión con Cerin.</string>
     <string name="convtext_agent_error">El agente tuvo un error.</string>
     <string name="convtext_phase_waiting_runtime">Esperando a que el entorno de ejecución esté listo…</string>
     <string name="convtext_phase_reconnecting">Reconectando…</string>
@@ -55,14 +55,14 @@
     <string name="convtext_conflict_not_resumable">La respuesta anterior ya no se puede reanudar.</string>
     <string name="convtext_conflict_stream">Ese flujo pertenece a otra tarea.</string>
     <string name="convtext_conflict_busy">Esta tarea está ocupada con otra respuesta.</string>
-    <string name="convtext_runtime_signed_out">Este entorno de ejecución cerró sesión. Inicia sesión desde Nuphos en el ordenador donde se ejecuta o cambia a otro entorno de ejecución.</string>
+    <string name="convtext_runtime_signed_out">Este entorno de ejecución cerró sesión. Inicia sesión desde Cerin en el ordenador donde se ejecuta o cambia a otro entorno de ejecución.</string>
     <string name="convtext_runtime_disabled">El entorno de ejecución de esta tarea está desactivado. Cambia a otro entorno de ejecución para continuar.</string>
     <string name="convtext_runtime_not_found">Este entorno de ejecución ya no está disponible en este espacio de trabajo. Cambia a otro entorno de ejecución para continuar.</string>
-    <string name="convtext_runtime_offline">El ordenador que ejecuta este entorno de ejecución está sin conexión. Abre Nuphos en él o cambia a otro entorno de ejecución.</string>
+    <string name="convtext_runtime_offline">El ordenador que ejecuta este entorno de ejecución está sin conexión. Abre Cerin en él o cambia a otro entorno de ejecución.</string>
     <string name="convtext_runtime_paused">%1$s está en pausa. Se reanudará cuando envíes un mensaje.</string>
     <string name="convtext_ask_owner">Pregunta al propietario</string>
     <string name="convtext_ask_admin">Pregunta a un administrador</string>
-    <string name="convtext_server_status">Nuphos devolvió el estado %1$d.</string>
+    <string name="convtext_server_status">Cerin devolvió el estado %1$d.</string>
     <string name="convtext_attachments_count">Selecciona de 1 a %1$d adjuntos.</string>
     <string name="convtext_attachment_name_length">El nombre del adjunto debe tener de 1 a 512 caracteres.</string>
     <string name="convtext_attachment_size">%1$s debe tener de 1 a %2$d bytes.</string>

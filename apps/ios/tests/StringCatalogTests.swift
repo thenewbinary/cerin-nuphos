@@ -21,7 +21,7 @@ for (key, entry) in strings {
     let text = key + (String(data: try JSONSerialization.data(withJSONObject: entry), encoding: .utf8) ?? "")
     precondition(
         cloudComputer.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) == nil,
-        "\"\(key)\" calls a computer a cloud computer; every machine in Nuphos is a computer")
+        "\"\(key)\" calls a computer a cloud computer; every machine in Cerin is a computer")
     let present = languages.intersection((entry["localizations"] as? [String: Any] ?? [:]).keys)
     if entry["shouldTranslate"] as? Bool == false { continue }
     precondition(present == languages, "\"\(key)\" is missing \(languages.subtracting(present).sorted())")

@@ -383,7 +383,7 @@ describe('a fire its offline computer dropped', () => {
     })
 
     expect(triggerIdOf(from(`trigger:${TRIGGER_ID}`))).toBe(TRIGGER_ID)
-    expect(triggerIdOf(from('nuphos'))).toBeUndefined()
+    expect(triggerIdOf(from('cerin'))).toBeUndefined()
     expect(triggerIdOf(from('trigger:not-an-id'))).toBeUndefined()
     expect(triggerIdOf(from(`trigger:${TRIGGER_ID}`, 'agent.thread'))).toBeUndefined()
   })

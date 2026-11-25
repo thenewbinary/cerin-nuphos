@@ -18,7 +18,7 @@ import {
   revokeUserSession,
 } from './sessions'
 import { mapUser } from './shared'
-import { signNuphosToken } from './token'
+import { signCerinToken } from './token'
 
 import { errorHandler } from '@/lib/errors'
 import { sha256Hex } from '@/lib/journal/hashing'
@@ -29,7 +29,7 @@ import { real as realIdentity, useIdentity } from '@/lib/test/doubles/identity'
 import { requireAuth } from '@/middleware/auth/core'
 
 import type { QuotaWindow } from '@/lib/download-handoff-rate-limit'
-import type { NuphosUserDoc } from './shared'
+import type { CerinUserDoc } from './shared'
 
 type Doc = Record<string, any>
 const testPassword = randomBytes(24).toString('base64url')
@@ -133,7 +133,7 @@ useEmailOtp({
     otpValid = false
     const doc = docs('users').find((doc) => doc.email === email)!
 
-    return mapUser(doc as NuphosUserDoc)
+    return mapUser(doc as CerinUserDoc)
   },
 })
 
@@ -192,7 +192,7 @@ test('consent defaults off, rejects stale notices, and is scoped to the authenti
 })
 
 test('deletion requires email proof and persists one deadline across retries', async () => {
-  const user = mapUser(docs('users')[0] as NuphosUserDoc)
+  const user = mapUser(docs('users')[0] as CerinUserDoc)
 
   await expect(
     requestAccountDeletion(user, { confirmation: 'DELETE', code: '000000' }),
@@ -214,7 +214,7 @@ test('deletion requires email proof and persists one deadline across retries', a
 
 test('a deletion request removes the uploaded photo but no one else’s', async () => {
   docs('user_avatars').push({ userId: USER, hash: 'a' }, { userId: OTHER, hash: 'b' })
-  await requestAccountDeletion(mapUser(docs('users')[0] as NuphosUserDoc), {
+  await requestAccountDeletion(mapUser(docs('users')[0] as CerinUserDoc), {
     confirmation: 'DELETE',
     code: '123456',
   })
@@ -282,7 +282,7 @@ test('password attempts are bounded and deleted identities cannot authenticate',
 useIdentity({
   authenticateToken: async (token: string) =>
     token === 'valid-session'
-      ? { user: mapUser(docs('users')[0] as NuphosUserDoc), provider: 'nuphos', cacheHit: false }
+      ? { user: mapUser(docs('users')[0] as CerinUserDoc), provider: 'cerin', cacheHit: false }
       : null,
 })
 
@@ -323,7 +323,7 @@ test('iOS AI requests require current saved consent, including after withdrawal'
 test('password reset revokes earlier sessions and run tokens', async () => {
   const earlier = Date.now() - 60_000
   const clock = spyOn(Date, 'now').mockReturnValue(earlier)
-  const oldRunToken = signNuphosToken(USER, 60 * 60)
+  const oldRunToken = signCerinToken(USER, 60 * 60)
 
   clock.mockRestore()
   const oldSession = await createUserSession(String(USER))
@@ -355,7 +355,7 @@ test('a session authenticates until it is revoked, and only it carries a session
   expect(signedIn?.user.id).toBe(String(USER))
   expect(signedIn?.sessionId).toBe(String(docs('user_sessions')[0]!._id))
   expect(
-    (await realIdentity.authenticateToken(signNuphosToken(USER, 60)))?.sessionId,
+    (await realIdentity.authenticateToken(signCerinToken(USER, 60)))?.sessionId,
   ).toBeUndefined()
   expect(await revokeUserSession(String(OTHER), signedIn!.sessionId!)).toBe(false)
   expect(await revokeUserSession(String(USER), signedIn!.sessionId!)).toBe(true)
@@ -367,7 +367,7 @@ test('a session remembers where it came from, and signing out the others keeps t
     ip: '203.0.113.9',
     city: 'Taipei',
     country: 'TW',
-    client: 'nuphos-desktop/1.0.0',
+    client: 'cerin-desktop/1.0.0',
   })
 
   await createUserSession(String(USER), { ip: '198.51.100.7' })
@@ -378,7 +378,7 @@ test('a session remembers where it came from, and signing out the others keeps t
     ip: '203.0.113.9',
     city: 'Taipei',
     country: 'TW',
-    client: 'nuphos-desktop/1.0.0',
+    client: 'cerin-desktop/1.0.0',
   })
   expect(await revokeOtherUserSessions(String(USER), current)).toBe(1)
   expect(docs('user_sessions')).toHaveLength(1)
@@ -395,7 +395,7 @@ test('an expired session is refused', async () => {
 test('sign-in JWTs issued before sessions work until they expire; longer ones are refused', async () => {
   // Re-signs a run token with a longer lifetime, as the old sign-in code did.
   const forge = (lifetimeSec: number) => {
-    const [header, payload] = signNuphosToken(USER, 60).split('.')
+    const [header, payload] = signCerinToken(USER, 60).split('.')
     const claims = JSON.parse(Buffer.from(payload!, 'base64url').toString()) as { iat: number }
     const body = Buffer.from(JSON.stringify({ ...claims, exp: claims.iat + lifetimeSec })).toString(
       'base64url',
@@ -411,12 +411,12 @@ test('sign-in JWTs issued before sessions work until they expire; longer ones ar
 
   expect(legacy?.user.id).toBe(String(USER))
   expect(legacy?.agentRun).toBeUndefined()
-  expect((await realIdentity.authenticateToken(signNuphosToken(USER, 8 * 60 * 60)))?.agentRun).toBe(
+  expect((await realIdentity.authenticateToken(signCerinToken(USER, 8 * 60 * 60)))?.agentRun).toBe(
     true,
   )
   expect(await realIdentity.authenticateToken(forge(31 * 24 * 60 * 60))).toBeNull()
   expect((await realIdentity.authenticateToken(forge(8 * 60 * 60)))?.user.id).toBe(String(USER))
-  expect(() => signNuphosToken(USER, 30 * 24 * 60 * 60)).toThrow()
+  expect(() => signCerinToken(USER, 30 * 24 * 60 * 60)).toThrow()
 })
 
 test('deletion can use the account password without access to the email inbox', async () => {
@@ -425,7 +425,7 @@ test('deletion can use the account password without access to the email inbox', 
     password: testPassword,
     code: '123456',
   })
-  const user = mapUser(docs('users')[0] as NuphosUserDoc)
+  const user = mapUser(docs('users')[0] as CerinUserDoc)
 
   await expect(
     requestAccountDeletion(user, { confirmation: 'DELETE', password: wrongPassword }),

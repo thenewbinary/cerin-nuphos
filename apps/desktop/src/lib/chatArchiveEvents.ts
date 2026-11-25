@@ -1,5 +1,5 @@
-const CHAT_UNARCHIVED_EVENT = 'nuphos:chat-unarchived'
-const CHAT_ARCHIVED_EVENT = 'nuphos:chat-archived'
+const CHAT_UNARCHIVED_EVENT = 'cerin:chat-unarchived'
+const CHAT_ARCHIVED_EVENT = 'cerin:chat-archived'
 
 export type ChatArchiveChange = { sessionId: string; teamId: string }
 

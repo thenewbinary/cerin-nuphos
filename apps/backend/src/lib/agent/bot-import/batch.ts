@@ -133,7 +133,7 @@ export type ImportOperations = {
   ): Promise<string[]>
 }
 
-/** Only orchestration lives here; adapters call the existing Nuphos services. */
+/** Only orchestration lives here; adapters call the existing Cerin services. */
 export async function applyImportBatch(
   batch: ImportBatch,
   owner: ImportOwner,
@@ -157,7 +157,7 @@ export async function applyImportBatch(
         item.warnings = await operations.bot(
           source,
           item,
-          batch.manifest.source.application !== 'nuphos-template' && selection.enableSchedules,
+          batch.manifest.source.application !== 'cerin-template' && selection.enableSchedules,
         )
       } else {
         const source = batch.manifest.chats.find((chat) => chat.key === item.key)!

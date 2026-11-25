@@ -28,17 +28,17 @@ final class RentComputerUITests: XCTestCase {
         let add = app.buttons["Add computer"].firstMatch
         XCTAssertTrue(add.waitForExistence(timeout: 10), "Computers & runtimes did not open")
         add.tap()
-        let option = app.staticTexts["Rent a computer from Nuphos"].firstMatch
+        let option = app.staticTexts["Rent a computer from Cerin"].firstMatch
         XCTAssertTrue(option.waitForExistence(timeout: 10), "The Box option is not named as on Desktop")
-        XCTAssertTrue(app.staticTexts["Nuphos runs it for you, with Claude Code, Codex, OpenCode and more."].exists,
+        XCTAssertTrue(app.staticTexts["Cerin runs it for you, with Claude Code, Codex, OpenCode and more."].exists,
                       "The Box option is not described as on Desktop")
         shot("1-add-computer")
         option.tap()
-        XCTAssertTrue(app.navigationBars["Rent a computer from Nuphos"].waitForExistence(timeout: 10), "The form is not titled as on Desktop")
+        XCTAssertTrue(app.navigationBars["Rent a computer from Cerin"].waitForExistence(timeout: 10), "The form is not titled as on Desktop")
         // Too long for a query by label: found by its start, then compared whole.
-        let form = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "A Linux computer Nuphos runs")).firstMatch
+        let form = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "A Linux computer Cerin runs")).firstMatch
         XCTAssertTrue(form.exists, "The form is not described as on Desktop")
-        XCTAssertEqual(form.label, "A Linux computer Nuphos runs, with Claude Code, Codex, OpenCode and more on it. Running computers count against your plan's vCPU; paused ones do not.")
+        XCTAssertEqual(form.label, "A Linux computer Cerin runs, with Claude Code, Codex, OpenCode and more on it. Running computers count against your plan's vCPU; paused ones do not.")
         shot("2-form")
     }
 

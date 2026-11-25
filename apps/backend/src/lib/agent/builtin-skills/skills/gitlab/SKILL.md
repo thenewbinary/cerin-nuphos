@@ -47,7 +47,7 @@ Only if the credential section is missing or looks stale. `$TEAM` is exported in
 environment.
 
 ```bash
-# Reuse the helper from the nuphos-api skill (loads it if needed):
+# Reuse the helper from the cerin-api skill (loads it if needed):
 ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 ac /teams/$TEAM/gitlab-bindings | python3 -m json.tool

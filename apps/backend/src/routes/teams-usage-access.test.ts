@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, test } from 'bun:test'
 import { useDb } from '@/lib/test/doubles/db'
 import { useIdentity } from '@/lib/test/doubles/identity'
 
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 
 const TEAM = '64b5f1c2e4b0a1d2c3e4f5a6'
 const ADMIN = '62e6289482f5f9d9408f1a79'
@@ -14,7 +14,7 @@ const MEMBER = '62e6289482f5f9d9408f1a7a'
 // Stats reads are cached per member for a while, so each role is its own member.
 const MEMBER_BY_ROLE = { EDITOR: MEMBER, VIEWER: '62e6289482f5f9d9408f1a7b' }
 
-let role: NuphosTeamRole = 'VIEWER'
+let role: CerinTeamRole = 'VIEWER'
 let caller = MEMBER
 const asked: { collection: string; query: unknown }[] = []
 
@@ -84,7 +84,7 @@ type Activity = { members: { id: string }[]; sessions: { id: string; title: stri
 const titles = (activity: Activity) =>
   Object.fromEntries(activity.sessions.map((s) => [s.id, s.title]))
 
-const as = (who: string, teamRole: NuphosTeamRole) => {
+const as = (who: string, teamRole: CerinTeamRole) => {
   caller = who
   role = teamRole
 }

@@ -15,7 +15,7 @@
 working_dir = "/workspace"
 
 [agent.env]
-BASH_ENV = "/opt/nuphos-runtime/runtime-guard.sh"
+BASH_ENV = "/opt/cerin-runtime/runtime-guard.sh"
 # The container is the security boundary, so Codex need not ask per tool; an
 # ACP client that answers no permission prompt would otherwise stall the turn.
 # Set here, not as a [pool] config option: openab sends those only after

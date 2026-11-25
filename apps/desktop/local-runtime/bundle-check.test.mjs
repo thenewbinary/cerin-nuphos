@@ -55,18 +55,18 @@ test('a staged bundle carries the guard, and adapters carry session-home and Cod
   }
 
   write('runtime-guard.sh', 'if [ -n "${OPENAB_CREDENTIALS_DIR:-}" ]; then :; fi')
-  write('adapters/claude-code/dist/acp-agent.js', 'function nuphosSessionHomeEnv() {}')
+  write('adapters/claude-code/dist/acp-agent.js', 'function cerinSessionHomeEnv() {}')
   write(
     'adapters/codex/dist/index.js',
-    'function nuphosSessionHomeEnv() {}\nfunction nuphosCodexSessionConfig() {}',
+    'function cerinSessionHomeEnv() {}\nfunction cerinCodexSessionConfig() {}',
   )
-  write('adapters/grok/session-home.mjs', 'export function nuphosSessionHomeEnv() {}')
+  write('adapters/grok/session-home.mjs', 'export function cerinSessionHomeEnv() {}')
   assert.deepEqual(findMissingShared(root, adapters), [])
 
-  write('adapters/codex/dist/index.js', 'function nuphosSessionHomeEnv() {}')
+  write('adapters/codex/dist/index.js', 'function cerinSessionHomeEnv() {}')
   rmSync(join(root, 'runtime-guard.sh'))
   assert.deepEqual(findMissingShared(root, adapters), [
     'runtime-guard.sh: OPENAB_CREDENTIALS_DIR',
-    'adapters/codex/dist/index.js: function nuphosCodexSessionConfig',
+    'adapters/codex/dist/index.js: function cerinCodexSessionConfig',
   ])
 })

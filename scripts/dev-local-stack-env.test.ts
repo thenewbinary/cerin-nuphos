@@ -10,7 +10,7 @@ import {
 
 const composeEnv = parseEnvFile(`
 # comment
-S3_ACCESS_KEY=nuphos-local
+S3_ACCESS_KEY=cerin-local
 S3_SECRET_KEY='secret'
 NUPHOS_JWT_SECRET='local-test-signing-key'
 RUNTIME_PORT=19000
@@ -21,7 +21,7 @@ test('reads the compose .env, defaulting the ports it leaves out', () => {
     mongoPort: 27117,
     rustfsPort: 9000,
     runtimePort: 19000,
-    s3AccessKey: 'nuphos-local',
+    s3AccessKey: 'cerin-local',
     s3SecretKey: 'secret',
     jwtSecret: 'local-test-signing-key',
   })

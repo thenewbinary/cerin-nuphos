@@ -30,7 +30,7 @@ test('a /api/ds/query multi-status body is handed to the caller, not turned into
   )
 })
 
-test('a Nuphos-shaped error body keeps its message', () => {
+test('a Cerin-shaped error body keeps its message', () => {
   const failure = classifyGrafanaFailure(
     502,
     JSON.stringify({

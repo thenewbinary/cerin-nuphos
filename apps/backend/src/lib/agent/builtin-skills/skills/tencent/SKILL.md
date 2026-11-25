@@ -39,7 +39,7 @@ tccli cvm DescribeRegions --region ap-guangzhou \
 
 `tccli` is provided by the runtime image's tool manifest, not baked into it:
 the first call installs the pinned build from its hash-locked requirements and
-can take a while, so let it finish rather than interrupt it. `nuphos-tools list`
+can take a while, so let it finish rather than interrupt it. `cerin-tools list`
 shows the tool and its state. If the command is missing entirely, or that
 install keeps failing, report the runtime mismatch instead of doing an unpinned
 package install during the task.

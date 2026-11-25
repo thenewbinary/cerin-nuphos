@@ -13,7 +13,7 @@ import type { RuntimeInstance } from './runtime-instances'
 
 // Fixed, shell-free program the backend hands to a runtime's `panel` job, which
 // is the generic "run this Node program on the agent" job (dashboards use it for
-// panel scripts). The runtime signs itself in and Nuphos holds no provider
+// panel scripts). The runtime signs itself in and Cerin holds no provider
 // token, so only the runtime can read its own credential — this program reads it
 // in place, asks the provider for the account's usage windows, and prints one
 // sentinel line carrying the provider's response. The credential itself never
@@ -100,7 +100,7 @@ async function lookup() {
       return { error: 'API-key agents have no usage limits' };
     // A one-year token (claude-login.mjs --long-lived) wins over the ordinary login, as it
     // does for the agent. It carries only the inference scope, so usage may be refused.
-    const longLived = await read(join(homedir(), '.claude', '.nuphos-oauth-token.json'));
+    const longLived = await read(join(homedir(), '.claude', '.cerin-oauth-token.json'));
     // A lapsed one is not used, as for the agent (session-home.mjs).
     const useToken = Boolean(longLived && typeof longLived.token === 'string' && longLived.token &&
       Date.parse(longLived.expiresAt) > Date.now());
@@ -230,7 +230,7 @@ export async function reportedQuota(
 }
 
 /** Asks the agent that holds the credential; the same path for self-hosted and
- *  Nuphos-hosted agents, because they are the same runtime. */
+ *  Cerin-hosted agents, because they are the same runtime. */
 export async function probeRuntimeQuota(
   teamId: string,
   instance: RuntimeInstance,

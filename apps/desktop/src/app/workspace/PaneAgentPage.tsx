@@ -23,7 +23,7 @@ type PaneAgentPageProps = {
   onDockAgentToSidebar: (snapshot: AgentSessionSnapshot | null) => void
   updateTab: UpdateWorkspaceTab
   onAgentSessionTitle: (tabId: string, title: string) => void
-  onOpenNuphosLink: (href: string, beside?: boolean) => boolean
+  onOpenCerinLink: (href: string, beside?: boolean) => boolean
   onOpenSettingsSection: (section: string) => void
   onPagePendingImportConsumed: () => void
   onChatPromptConsumed: () => void
@@ -42,7 +42,7 @@ export function PaneAgentPage({
   onDockAgentToSidebar,
   updateTab,
   onAgentSessionTitle,
-  onOpenNuphosLink,
+  onOpenCerinLink,
   onOpenSettingsSection,
   onPagePendingImportConsumed,
   onChatPromptConsumed,
@@ -63,7 +63,7 @@ export function PaneAgentPage({
         user={user}
         dockOpen
         onOpenSession={(sid) => updateTab(tabId, (cur) => ({ ...cur, agentSessionId: sid }))}
-        onOpenNuphosLink={onOpenNuphosLink}
+        onOpenCerinLink={onOpenCerinLink}
         fixes={{
           isTeamAdmin,
           onOpenAgentSettings: () => onOpenSettingsSection('workspace.computers'),
@@ -88,7 +88,7 @@ export function PaneAgentPage({
           newChatDraftId={`tab:${tab.id}`}
           sessionId={tab.agentSessionId}
           onSessionChange={(sid) => updateTab(tabId, (cur) => ({ ...cur, agentSessionId: sid }))}
-          onOpenNuphosLink={onOpenNuphosLink}
+          onOpenCerinLink={onOpenCerinLink}
           onOpenAgentSettings={() => onOpenSettingsSection('workspace.agent')}
           autoFocusComposer={active}
           pendingImport={pendingPageImport?.tabId === tabId ? pendingPageImport.snapshot : null}

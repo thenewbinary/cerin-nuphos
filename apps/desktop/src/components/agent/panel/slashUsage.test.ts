@@ -28,9 +28,9 @@ test('each sent command counts once per message', () => {
 
 test('unreadable or odd stored usage reads as none', () => {
   assert.deepEqual(readSlashUsage(null), {})
-  assert.deepEqual(readSlashUsage(memoryStorage({ 'nuphos.slashCommandUsage.v1': 'nope' })), {})
+  assert.deepEqual(readSlashUsage(memoryStorage({ 'cerin.slashCommandUsage.v1': 'nope' })), {})
   assert.deepEqual(
-    readSlashUsage(memoryStorage({ 'nuphos.slashCommandUsage.v1': '{"a":1,"b":"x"}' })),
+    readSlashUsage(memoryStorage({ 'cerin.slashCommandUsage.v1': '{"a":1,"b":"x"}' })),
     { a: 1 },
   )
 })
@@ -61,14 +61,14 @@ test('a new conversation offers the commands its agent listed last', () => {
 test('unreadable or odd remembered commands read as none', () => {
   assert.deepEqual(readAgentCommands('rt-1', null), [])
   assert.deepEqual(
-    readAgentCommands('rt-1', memoryStorage({ 'nuphos.agentCommands.v1': 'nope' })),
+    readAgentCommands('rt-1', memoryStorage({ 'cerin.agentCommands.v1': 'nope' })),
     [],
   )
   assert.deepEqual(
     readAgentCommands(
       'rt-1',
       memoryStorage({
-        'nuphos.agentCommands.v1': '{"rt-1":[{"name":"ok","description":""},{"name":1}]}',
+        'cerin.agentCommands.v1': '{"rt-1":[{"name":"ok","description":""},{"name":1}]}',
       }),
     ),
     [{ name: 'ok', description: '' }],

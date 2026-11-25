@@ -1,6 +1,6 @@
 export type GcpRoleBinding = {
   role: string
-  /** "principal" or "principalSet" — full member string Nuphos was matched on (e.g.
+  /** "principal" or "principalSet" — full member string Cerin was matched on (e.g.
    *  "serviceAccount:foo@bar.iam.gserviceaccount.com"). */
   member: string
   /** Optional IAM condition expression / title. */
@@ -24,16 +24,16 @@ export type GcpIamPermissions = {
   projectId: string
   serviceAccountEmail: string
   warnings: string[]
-  /** Bindings on the project where Nuphos's SA (directly or via a group) is a
+  /** Bindings on the project where Cerin's SA (directly or via a group) is a
    *  member. Empty array means we successfully read the IAM policy but the SA
    *  isn't bound — that's a real problem to surface in the UI. */
   bindings: GcpRoleBinding[]
   /** Detailed role definitions (permissions list) for each unique role in the
    *  bindings. Looked up via the IAM Roles API. */
   roles: GcpRoleDetails[]
-  /** Fallback when getIamPolicy is denied: the subset of a curated Nuphos
+  /** Fallback when getIamPolicy is denied: the subset of a curated Cerin
    *  permission probe that the SA actually has on the project. Lets the user
-   *  see "what can Nuphos do" even when "which roles" can't be read. */
+   *  see "what can Cerin do" even when "which roles" can't be read. */
   effectivePermissions: string[] | null
   selfCapabilities: SelfCapabilities
   serviceAccountCapabilities: ServiceAccountCapabilities

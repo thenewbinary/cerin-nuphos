@@ -2,11 +2,11 @@ import { currentMemberIds } from '@/lib/dashboards/members'
 import { canDo, canReadDashboard, canSetVisibility, isPersonal } from '@/lib/dashboards/visibility'
 import { AppError } from '@/lib/errors'
 import { parseObjectId } from '@/lib/objectid'
-import { dashboardPanels, nuphosDashboards } from '@/models'
+import { dashboardPanels, cerinDashboards } from '@/models'
 
 import type { DashboardNeed, DashboardViewer } from '@/lib/dashboards/visibility'
 import type { TeamAuthVariables } from '@/middleware/auth'
-import type { DashboardPanel, DashboardVisibility, NuphosDashboard } from '@/models'
+import type { DashboardPanel, DashboardVisibility, CerinDashboard } from '@/models'
 import type { ObjectId } from 'mongodb'
 
 export const WRITE_ROLES = 'Requires one of: ADMINISTRATOR, EDITOR'
@@ -26,7 +26,7 @@ export function viewerOf(c: {
  */
 async function creatorInTeam(
   teamId: ObjectId,
-  dashboard: NuphosDashboard | null,
+  dashboard: CerinDashboard | null,
   viewer: DashboardViewer,
 ) {
   if (!dashboard || !isPersonal(dashboard) || dashboard.createdBy === viewer.userId) return true
@@ -40,11 +40,11 @@ async function creatorInTeam(
  * `viewer` does not hold reads as not found, so its existence is not confirmed.
  */
 export function assertDashboardAccess(
-  dashboard: NuphosDashboard | null,
+  dashboard: CerinDashboard | null,
   viewer: DashboardViewer,
   need: DashboardNeed,
   inTeam = true,
-): asserts dashboard is NuphosDashboard {
+): asserts dashboard is CerinDashboard {
   if (!dashboard || !canReadDashboard(dashboard, viewer, inTeam)) {
     throw new AppError(404, 'dashboard_not_found', 'Dashboard not found')
   }
@@ -56,10 +56,10 @@ export async function loadDashboard(
   dashboardIdRaw: string,
   viewer: DashboardViewer,
   need: DashboardNeed = 'read',
-): Promise<{ teamId: ObjectId; dashboard: NuphosDashboard; inTeam: boolean }> {
+): Promise<{ teamId: ObjectId; dashboard: CerinDashboard; inTeam: boolean }> {
   const teamId = parseObjectId(teamIdRaw, 'teamId')
   const dashboardId = parseObjectId(dashboardIdRaw, 'dashboardId')
-  const dashboard = await nuphosDashboards().findOne({ _id: dashboardId, teamId })
+  const dashboard = await cerinDashboards().findOne({ _id: dashboardId, teamId })
   const inTeam = await creatorInTeam(teamId, dashboard, viewer)
 
   assertDashboardAccess(dashboard, viewer, need, inTeam)
@@ -75,14 +75,14 @@ export async function loadPanel(
   need: DashboardNeed = 'read',
 ): Promise<{
   teamId: ObjectId
-  dashboard: NuphosDashboard
+  dashboard: CerinDashboard
   panel: DashboardPanel
   inTeam: boolean
 }> {
   const teamId = parseObjectId(teamIdRaw, 'teamId')
   const dashboardId = parseObjectId(dashboardIdRaw, 'dashboardId')
   const panelId = parseObjectId(panelIdRaw, 'panelId')
-  const dashboard = await nuphosDashboards().findOne({ _id: dashboardId, teamId })
+  const dashboard = await cerinDashboards().findOne({ _id: dashboardId, teamId })
   const inTeam = await creatorInTeam(teamId, dashboard, viewer)
 
   // A panel is as visible, and as editable, as its dashboard.
@@ -100,7 +100,7 @@ export async function loadPanel(
  * again takes its creator.
  */
 export function visibilityUpdate(
-  dashboard: NuphosDashboard,
+  dashboard: CerinDashboard,
   viewer: DashboardViewer,
   to: DashboardVisibility | undefined,
   inTeam = true,

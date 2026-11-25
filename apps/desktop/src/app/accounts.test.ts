@@ -16,14 +16,14 @@ import {
 import type { AccountSummary } from '../types'
 
 const alice: AccountSummary = {
-  key: 'alice@https://api.nuphos.ai',
-  api: 'https://api.nuphos.ai',
+  key: 'alice@https://platform.cerin.ai',
+  api: 'https://platform.cerin.ai',
   userInfo: { id: 'alice', name: 'Alice', email: 'a@example.com', username: 'alice' },
   active: true,
 }
 const bob: AccountSummary = {
-  key: 'bob@https://nuphos.example.com',
-  api: 'https://nuphos.example.com',
+  key: 'bob@https://cerin.example.com',
+  api: 'https://cerin.example.com',
   active: false,
 }
 
@@ -34,8 +34,7 @@ test('an account is named by its user, else by its id', () => {
 
 test('only a backend other than the default Cerin backend is named', () => {
   assert.equal(backendLabel('https://platform.cerin.ai'), null)
-  assert.equal(backendLabel('https://api.nuphos.ai'), 'api.nuphos.ai')
-  assert.equal(backendLabel('https://nuphos.example.com'), 'nuphos.example.com')
+  assert.equal(backendLabel('https://cerin.example.com'), 'cerin.example.com')
   assert.equal(backendLabel('http://127.0.0.1:3718'), '127.0.0.1:3718')
 })
 
@@ -43,7 +42,7 @@ test('the waiting accounts are every one but the active', () => {
   assert.deepEqual(waitingAccounts([alice, bob]), [bob])
 })
 
-function switchDeps(outcome: 'switched' | 'signInAgain', current = 'https://api.nuphos.ai') {
+function switchDeps(outcome: 'switched' | 'signInAgain', current = 'https://platform.cerin.ai') {
   const events: string[] = []
 
   return {
@@ -70,17 +69,17 @@ test('a switch that worked asks for nothing more', async () => {
 })
 
 test('an account that can no longer be used is asked for again on this backend', async () => {
-  const { events, deps } = switchDeps('signInAgain', 'https://nuphos.example.com/')
+  const { events, deps } = switchDeps('signInAgain', 'https://cerin.example.com/')
 
   assert.equal(await switchToAccount(bob, (n) => `again: ${n}`, deps), 'signInAgain')
   assert.deepEqual(events, [`switch ${bob.key}`, 'sign in: again: bob'])
 })
 
 test('one on another backend moves the app there before asking for it', async () => {
-  const { events, deps } = switchDeps('signInAgain', 'https://api.nuphos.ai')
+  const { events, deps } = switchDeps('signInAgain', 'https://platform.cerin.ai')
 
   await switchToAccount(bob, (n) => `again: ${n}`, deps)
-  assert.deepEqual(events, [`switch ${bob.key}`, 'move https://nuphos.example.com', 'reload'])
+  assert.deepEqual(events, [`switch ${bob.key}`, 'move https://cerin.example.com', 'reload'])
 })
 
 test('an add-account request is held until it is cancelled, and announced', () => {

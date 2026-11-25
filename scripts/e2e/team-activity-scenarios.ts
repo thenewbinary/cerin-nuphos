@@ -25,7 +25,7 @@ function seedSessions(stack: Stack, teamId: string, sessions: Record<string, str
     const [uri, teamId, json] = process.argv.slice(1)
     const ranAt = Date.now() - 60 * 60_000
     const client = await new MongoClient(uri).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     for (const [userId, title] of Object.entries(JSON.parse(json))) {
       const sessionId = 'activity-' + userId
       await db.collection('agent_conversations').insertOne({

@@ -7,15 +7,15 @@ import { join } from 'node:path'
 import { test, after } from 'node:test'
 
 import { patchAdapter } from '../image/codex-acp/patch-adapter.mjs'
-import { nuphosCodexSessionConfig } from '../image/codex-acp/session-config.mjs'
+import { cerinCodexSessionConfig } from '../image/codex-acp/session-config.mjs'
 
-const runtimeHome = mkdtempSync(join(tmpdir(), 'nuphos-runtime-env-'))
+const runtimeHome = mkdtempSync(join(tmpdir(), 'cerin-runtime-env-'))
 const runtimeEnv = { HOME: runtimeHome, PATH: process.env.PATH }
 after(() => rmSync(runtimeHome, { recursive: true, force: true }))
 
 const config = {
   mcp_servers: {
-    nuphos: { url: 'http://test/mcp', http_headers: { Authorization: 'Bearer actor-a' } },
+    cerin: { url: 'http://test/mcp', http_headers: { Authorization: 'Bearer actor-a' } },
   },
   model: 'test',
 }
@@ -31,10 +31,10 @@ function nodeHeapLimit(args, env) {
 }
 
 test('Codex new/resume context keeps instructions, MCP, and shell credentials scoped to each actor', () => {
-  const actorA = nuphosCodexSessionConfig(
+  const actorA = cerinCodexSessionConfig(
     config,
     {
-      'ai.nuphos/codex': {
+      'ai.cerin/codex': {
         developerInstructions: 'context A',
         env: {
           NUPHOS_TOKEN: 'actor-a',
@@ -46,10 +46,10 @@ test('Codex new/resume context keeps instructions, MCP, and shell credentials sc
     },
     runtimeEnv,
   )
-  const actorB = nuphosCodexSessionConfig(
+  const actorB = cerinCodexSessionConfig(
     { ...config, mcp_servers: {} },
     {
-      'ai.nuphos/codex': {
+      'ai.cerin/codex': {
         developerInstructions: 'context B',
         env: { NUPHOS_TOKEN: 'actor-b', NUPHOS_SESSION_ID: 'session-b' },
       },
@@ -65,7 +65,7 @@ test('Codex new/resume context keeps instructions, MCP, and shell credentials sc
   assert.equal(actorA.shell_environment_policy.set.NUPHOS_PLAN_API_TOKEN, 'actor-a')
   assert.equal(actorA.shell_environment_policy.set.OPENAB_ACP_AUTH_KEY, undefined)
   assert.equal(actorA.shell_environment_policy.inherit, 'none')
-  assert.equal(actorA.mcp_servers.nuphos.tool_timeout_sec, 1800)
+  assert.equal(actorA.mcp_servers.cerin.tool_timeout_sec, 1800)
   assert.deepEqual(actorA.plugins, {
     _default: { enabled: true },
     'browser@openai-bundled': { enabled: false },
@@ -74,17 +74,14 @@ test('Codex new/resume context keeps instructions, MCP, and shell credentials sc
   assert.equal(actorB.shell_environment_policy.set.NUPHOS_TOKEN, 'actor-b')
   assert.equal(JSON.stringify(actorB).includes('actor-a'), false)
   assert.equal(config.shell_environment_policy, undefined)
-  assert.equal(nuphosCodexSessionConfig(config, {}).model, 'test')
-  assert.equal(
-    nuphosCodexSessionConfig(actorA, { 'ai.nuphos/codex': {} }).developer_instructions,
-    '',
-  )
+  assert.equal(cerinCodexSessionConfig(config, {}).model, 'test')
+  assert.equal(cerinCodexSessionConfig(actorA, { 'ai.cerin/codex': {} }).developer_instructions, '')
 })
 
 test('Codex keeps an existing plugin default and still disables the Browser plugin', () => {
-  const { plugins } = nuphosCodexSessionConfig(
+  const { plugins } = cerinCodexSessionConfig(
     { plugins: { _default: { enabled: false }, 'sample@test': { enabled: true } } },
-    { 'ai.nuphos/codex': {} },
+    { 'ai.cerin/codex': {} },
     runtimeEnv,
   )
 
@@ -96,11 +93,11 @@ test('Codex keeps an existing plugin default and still disables the Browser plug
   })
 })
 
-test('a Nuphos session gives the skills catalog the whole budget Codex allows', () => {
-  const result = nuphosCodexSessionConfig(
+test('a Cerin session gives the skills catalog the whole budget Codex allows', () => {
+  const result = cerinCodexSessionConfig(
     { skills: { include_instructions: false } },
     {
-      'ai.nuphos/codex': {
+      'ai.cerin/codex': {
         env: { NUPHOS_TOKEN: 'actor-a', NUPHOS_SESSION_ID: 'session-a' },
       },
     },
@@ -111,14 +108,14 @@ test('a Nuphos session gives the skills catalog the whole budget Codex allows', 
   // descriptions to fit it. 10,000 tokens is the ceiling it documents for a configured
   // budget, which holds a team's catalog whole; anything else set there is kept.
   assert.deepEqual(result.skills, { include_instructions: false, max_context_tokens: 10_000 })
-  // A client that is not a Nuphos session keeps Codex's own default.
-  assert.equal(nuphosCodexSessionConfig({}, {}, runtimeEnv).skills, undefined)
+  // A client that is not a Cerin session keeps Codex's own default.
+  assert.equal(cerinCodexSessionConfig({}, {}, runtimeEnv).skills, undefined)
 })
 
 test('Codex shell inherits only baseline variables and explicitly scoped credentials', () => {
-  const result = nuphosCodexSessionConfig(
+  const result = cerinCodexSessionConfig(
     {},
-    { 'ai.nuphos/codex': { env: { NUPHOS_TOKEN: 'scoped', NUPHOS_SESSION_ID: 'scoped-session' } } },
+    { 'ai.cerin/codex': { env: { NUPHOS_TOKEN: 'scoped', NUPHOS_SESSION_ID: 'scoped-session' } } },
     {
       PATH: '/usr/bin:/bin',
       HOME: runtimeHome,
@@ -143,9 +140,9 @@ test('Codex shell keeps the Windows system variables', () => {
     ComSpec: 'C:\\Windows\\system32\\cmd.exe',
     PATHEXT: '.COM;.EXE;.BAT;.CMD',
   }
-  const env = nuphosCodexSessionConfig(
+  const env = cerinCodexSessionConfig(
     {},
-    { 'ai.nuphos/codex': { env: { NUPHOS_SESSION_ID: 'windows-session' } } },
+    { 'ai.cerin/codex': { env: { NUPHOS_SESSION_ID: 'windows-session' } } },
     { PATH: 'C:\\Windows\\system32', HOME: runtimeHome, ...windows },
   ).shell_environment_policy.set
 
@@ -163,10 +160,10 @@ test('Codex new/resume preserves managed memory budgets without trusting actor o
     NODE_OPTIONS: '--max-old-space-size=6144',
     GOFLAGS: '-p=2',
     MAKEFLAGS: '-j2',
-    BASH_ENV: '/opt/nuphos-runtime/runtime-guard.sh',
+    BASH_ENV: '/opt/cerin-runtime/runtime-guard.sh',
   }
   const context = {
-    'ai.nuphos/codex': {
+    'ai.cerin/codex': {
       env: {
         GOMEMLIMIT: 'off',
         NODE_OPTIONS: '--max-old-space-size=8192',
@@ -176,8 +173,8 @@ test('Codex new/resume preserves managed memory budgets without trusting actor o
       },
     },
   }
-  const started = nuphosCodexSessionConfig({}, context, processEnv)
-  const resumed = nuphosCodexSessionConfig(started, context, processEnv)
+  const started = cerinCodexSessionConfig({}, context, processEnv)
+  const resumed = cerinCodexSessionConfig(started, context, processEnv)
 
   for (const session of [started, resumed]) {
     const env = session.shell_environment_policy.set
@@ -189,7 +186,7 @@ test('Codex new/resume preserves managed memory budgets without trusting actor o
     // widen them or point BASH_ENV at a script of its own.
     assert.equal(env.GOFLAGS, '-p=2')
     assert.equal(env.MAKEFLAGS, '-j2')
-    assert.equal(env.BASH_ENV, '/opt/nuphos-runtime/runtime-guard.sh')
+    assert.equal(env.BASH_ENV, '/opt/cerin-runtime/runtime-guard.sh')
     // heap_size_limit includes more than old-space, and its overhead differs
     // across Node/V8 versions and architectures. Compare with an explicit CLI
     // flag on this same binary instead of assuming a fixed total heap size.
@@ -200,13 +197,13 @@ test('Codex new/resume preserves managed memory budgets without trusting actor o
     assert.ok(inherited > nodeHeapLimit(['--max-old-space-size=256'], withoutHeapOption))
   }
   assert.equal(
-    nuphosCodexSessionConfig({}, context, {}).shell_environment_policy.set.NODE_OPTIONS,
+    cerinCodexSessionConfig({}, context, {}).shell_environment_policy.set.NODE_OPTIONS,
     undefined,
   )
 })
 
 test('Codex login seeding preserves refreshes on restart and replaces credentials on rebind', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'nuphos-codex-auth-test-'))
+  const dir = mkdtempSync(join(tmpdir(), 'cerin-codex-auth-test-'))
   const auth = join(dir, 'auth.json')
   const seed = join(dir, 'seed.json')
 
@@ -234,7 +231,7 @@ test('Codex login seeding preserves refreshes on restart and replaces credential
     writeFileSync(seed, '{"tokens":"new-binding"}')
     assert.throws(() => run('mismatched-revision'), /revision changed/)
     assert.equal(readFileSync(auth, 'utf8'), '{"tokens":"refreshed"}')
-    assert.equal(readFileSync(join(dir, '.nuphos-auth-revision'), 'utf8'), first)
+    assert.equal(readFileSync(join(dir, '.cerin-auth-revision'), 'utf8'), first)
     run(revision(readFileSync(seed)))
     assert.equal(readFileSync(auth, 'utf8'), '{"tokens":"new-binding"}')
   } finally {

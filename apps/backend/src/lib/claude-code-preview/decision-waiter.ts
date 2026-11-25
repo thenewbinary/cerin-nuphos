@@ -10,7 +10,7 @@ export type PreviewWaitKind =
   | 'permission-grant'
   | 'client-tool'
   | 'agent-permission'
-  /** An approval card a Nuphos tool shows itself, such as an app Computer Use asks to control. */
+  /** An approval card a Cerin tool shows itself, such as an app Computer Use asks to control. */
   | 'authorization-rule'
 
 export type PreviewWait = {

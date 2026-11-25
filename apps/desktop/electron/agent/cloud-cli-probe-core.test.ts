@@ -9,7 +9,7 @@ import { CLOUD_CLIS } from '../../src/lib/cloudCli.ts'
 import { findCloudCli } from './cloud-cli-probe-core.ts'
 
 test('detects all seven providers without executing the CLI or requiring a login', async () => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), 'nuphos-cli-probe-'))
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'cerin-cli-probe-'))
 
   try {
     for (const [provider, { commands }] of Object.entries(CLOUD_CLIS)) {
@@ -28,7 +28,7 @@ test('detects all seven providers without executing the CLI or requiring a login
 })
 
 test('missing commands, directories and non-executable files do not count as installed', async () => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), 'nuphos-cli-probe-'))
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'cerin-cli-probe-'))
 
   try {
     const missing = { installed: false, command: null, path: null }
@@ -47,7 +47,7 @@ test('missing commands, directories and non-executable files do not count as ins
 })
 
 test('supports the legacy Volcengine executable name', async () => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), 'nuphos-cli-probe-'))
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'cerin-cli-probe-'))
 
   try {
     await writeFile(path.join(dir, 'volcengine-cli'), '', { mode: 0o755 })

@@ -27,7 +27,7 @@ let cachedOwnerId: string | null = null
 
 function nodeShellOwnerId(): string {
   if (cachedOwnerId) return cachedOwnerId
-  const dir = join(homedir(), '.config', 'nuphos')
+  const dir = join(homedir(), '.config', 'cerin')
   const file = join(dir, 'node-shell-owner')
 
   try {
@@ -59,7 +59,7 @@ function nodeShellOwnerId(): string {
 // annotation, not a label value: node names can be 253 chars but label values
 // cap at 63, so a long node name would make pod creation fail.
 function nodeShellLabelSelector(): string {
-  return `app.kubernetes.io/managed-by=nuphos,nuphos.dev/node-shell=true,nuphos.dev/node-shell-owner=${nodeShellOwnerId()}`
+  return `app.kubernetes.io/managed-by=cerin,cerin.dev/node-shell=true,cerin.dev/node-shell-owner=${nodeShellOwnerId()}`
 }
 // Enter PID 1's mount/uts/ipc/net/pid namespaces, then a login shell (host bash,
 // falling back to sh).
@@ -84,12 +84,12 @@ export function nodeShellPod(name: string, nodeName: string): k8s.V1Pod {
       name,
       namespace: NODE_SHELL_NAMESPACE,
       labels: {
-        'app.kubernetes.io/managed-by': 'nuphos',
-        'nuphos.dev/node-shell': 'true',
-        'nuphos.dev/node-shell-owner': nodeShellOwnerId(),
+        'app.kubernetes.io/managed-by': 'cerin',
+        'cerin.dev/node-shell': 'true',
+        'cerin.dev/node-shell-owner': nodeShellOwnerId(),
       },
       // Node name in an annotation (no 63-char limit, unlike label values).
-      annotations: { 'nuphos.dev/node-shell-node': nodeName },
+      annotations: { 'cerin.dev/node-shell-node': nodeName },
     },
     spec: {
       nodeName,

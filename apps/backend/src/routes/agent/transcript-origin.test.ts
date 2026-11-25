@@ -145,7 +145,7 @@ test('verified attribution survives persistence but client sync cannot inject it
   const metadata = {
     version: 1 as const,
     sender: { type: 'user' as const, id: 'u1', displayName: 'Yuan' },
-    source: 'nuphos' as const,
+    source: 'cerin' as const,
     sentAt: '2026-09-27T10:00:00Z',
   }
   const message = {

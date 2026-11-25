@@ -19,14 +19,14 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import test from 'node:test'
 
-import { nuphosSessionHomeEnv, nuphosSweepSessionHomes } from '../image/session-home.mjs'
+import { cerinSessionHomeEnv, cerinSweepSessionHomes } from '../image/session-home.mjs'
 
 const DAY = 24 * 60 * 60 * 1000
 const sha = (value) => createHash('sha256').update(value).digest('hex')
 const sweepable = process.platform === 'linux' || process.platform === 'darwin'
 
 function runtime(t) {
-  const dir = mkdtempSync(join(tmpdir(), 'nuphos-home-sweep-'))
+  const dir = mkdtempSync(join(tmpdir(), 'cerin-home-sweep-'))
   t.after(() => {
     chmodTree(dir)
     rmSync(dir, { recursive: true, force: true })
@@ -36,7 +36,7 @@ function runtime(t) {
   mkdirSync(join(dir, 'real'))
   symlinkSync(join(dir, 'real'), join(dir, 'home'))
   const HOME = join(dir, 'home')
-  return { HOME, PATH: process.env.PATH, root: join(HOME, '.nuphos', 'session-homes') }
+  return { HOME, PATH: process.env.PATH, root: join(HOME, '.cerin', 'session-homes') }
 }
 
 function chmodTree(dir) {
@@ -61,7 +61,7 @@ function age(path, days) {
 }
 
 function home(host, id, ...files) {
-  const { HOME } = nuphosSessionHomeEnv({ NUPHOS_SESSION_ID: id }, host)
+  const { HOME } = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: id }, host)
   for (const file of files) put(join(HOME, file))
   return HOME
 }
@@ -118,7 +118,7 @@ test('only idle, unused, real session homes directly under the root are removed'
   await live(t, { env: { ...process.env, HOME: byHome } })
   await live(t, { cwd: join(byCwd, 'src', 'app') })
 
-  const removed = await nuphosSweepSessionHomes(host.root, { pauseMs: 0 })
+  const removed = await cerinSweepSessionHomes(host.root, { pauseMs: 0 })
 
   assert.deepEqual(
     removed.sort(),
@@ -139,29 +139,29 @@ test('only idle, unused, real session homes directly under the root are removed'
 test('a conversation woken after its home was swept gets a clean one that is kept', async (t) => {
   if (!sweepable) return t.skip('Homes are only swept on Linux and macOS')
   const host = runtime(t)
-  const before = nuphosSessionHomeEnv({ NUPHOS_SESSION_ID: 'woken' }, host)
+  const before = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'woken' }, host)
   put(before.KUBECONFIG, 'old login')
   age(before.HOME, 8)
-  assert.deepEqual(await nuphosSweepSessionHomes(host.root, { pauseMs: 0 }), [sha('woken')])
+  assert.deepEqual(await cerinSweepSessionHomes(host.root, { pauseMs: 0 }), [sha('woken')])
   assert.equal(existsSync(before.HOME), false)
 
-  const after = nuphosSessionHomeEnv({ NUPHOS_SESSION_ID: 'woken' }, host)
+  const after = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'woken' }, host)
   assert.deepEqual(after, before)
   assert.equal(statSync(after.HOME).mode & 0o777, 0o700)
   assert.throws(() => readFileSync(after.KUBECONFIG), { code: 'ENOENT' })
   put(after.KUBECONFIG, 'new login')
   assert.equal(readFileSync(after.KUBECONFIG, 'utf8'), 'new login')
-  assert.deepEqual(await nuphosSweepSessionHomes(host.root, { pauseMs: 0 }), [])
+  assert.deepEqual(await cerinSweepSessionHomes(host.root, { pauseMs: 0 }), [])
 })
 
 test('reopening an idle home renews it, so a resumed conversation keeps its logins', async (t) => {
   if (!sweepable) return t.skip('Homes are only swept on Linux and macOS')
   const host = runtime(t)
-  const { HOME, KUBECONFIG } = nuphosSessionHomeEnv({ NUPHOS_SESSION_ID: 'resumed' }, host)
+  const { HOME, KUBECONFIG } = cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'resumed' }, host)
   put(KUBECONFIG, 'login')
   age(HOME, 8)
-  nuphosSessionHomeEnv({ NUPHOS_SESSION_ID: 'resumed' }, host)
-  assert.deepEqual(await nuphosSweepSessionHomes(host.root, { pauseMs: 0 }), [])
+  cerinSessionHomeEnv({ NUPHOS_SESSION_ID: 'resumed' }, host)
+  assert.deepEqual(await cerinSweepSessionHomes(host.root, { pauseMs: 0 }), [])
   assert.equal(readFileSync(KUBECONFIG, 'utf8'), 'login')
 })
 
@@ -176,14 +176,14 @@ test('a home holding a mount is kept whole, mounted data included', async (t) =>
   const script = `
     import { lutimesSync, writeFileSync, existsSync, readdirSync } from 'node:fs'
     import { execFileSync } from 'node:child_process'
-    import { nuphosSweepSessionHomes } from ${JSON.stringify(new URL('../image/session-home.mjs', import.meta.url).href)}
+    import { cerinSweepSessionHomes } from ${JSON.stringify(new URL('../image/session-home.mjs', import.meta.url).href)}
     const [idle, root] = process.argv.slice(1)
     execFileSync('mount', ['-t', 'tmpfs', 'tmpfs', idle + '/share'])
     writeFileSync(idle + '/share/data', 'outside the home')
     const old = new Date(Date.now() - 8 * 86400000)
     for (const at of ['/share/data', '/share', '/.kube/config', '/.kube', ''])
       lutimesSync(idle + at, old, old)
-    const removed = await nuphosSweepSessionHomes(root, { pauseMs: 0 })
+    const removed = await cerinSweepSessionHomes(root, { pauseMs: 0 })
     console.log(JSON.stringify({ removed, data: existsSync(idle + '/share/data'),
       config: existsSync(idle + '/.kube/config'), names: readdirSync(root) }))
   `

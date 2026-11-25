@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 root = Path(__file__).parent
-name = f'nuphos-railway-test-{secrets.token_hex(4)}'
+name = f'cerin-railway-test-{secrets.token_hex(4)}'
 volume = name + '-home'
 image = name + ':test'
 

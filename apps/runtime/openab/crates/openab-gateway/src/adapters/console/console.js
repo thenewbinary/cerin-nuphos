@@ -97,7 +97,7 @@
 
   function bindingTitle(binding) {
     if (binding.source === 'legacy-password') return 'Connected with the runtime password (before one-click connect)';
-    return binding.client.teamName || binding.label || 'Nuphos team';
+    return binding.client.teamName || binding.label || 'Cerin team';
   }
 
   function renderBindings() {
@@ -117,7 +117,7 @@
       if (binding.lastUsedAt) details.push(`last used ${when(binding.lastUsedAt)}`);
       info.append(el('div', details.join(' · '), 'muted'));
       if (binding.source === 'legacy-password') {
-        info.append(el('div', 'Reconnect from Nuphos with "Connect to Nuphos" to give that team its own key, then revoke this.', 'muted'));
+        info.append(el('div', 'Reconnect from Cerin with "Connect to Cerin" to give that team its own key, then revoke this.', 'muted'));
       }
       const revoke = el('button', 'Revoke', 'danger');
       revoke.type = 'button';
@@ -145,7 +145,7 @@
       item.append(info);
       list.append(item);
     }
-    if (!list.children.length) list.append(el('li', 'No Nuphos team is connected yet.', 'muted'));
+    if (!list.children.length) list.append(el('li', 'No Cerin team is connected yet.', 'muted'));
   }
 
   function renderUrl() {
@@ -153,7 +153,7 @@
     const url = state.publicUrl || '';
     const local = /^wss?:\/\/(localhost|127\.|\[::1\])/.test(url);
     let text = source === 'console' ? 'Set here.' : source === 'environment' ? 'Set by OPENAB_RUNTIME_PUBLIC_URL.' : 'Detected from this page\'s address.';
-    if (local) text += ' Nuphos cannot reach a localhost address unless it runs on this machine; set the address Nuphos uses to reach this agent.';
+    if (local) text += ' Cerin cannot reach a localhost address unless it runs on this machine; set the address Cerin uses to reach this agent.';
     $('url-source').textContent = `${url || 'No URL yet.'} — ${text}`;
     if (document.activeElement !== $('public-url')) $('public-url').value = source === 'console' ? url : '';
   }
@@ -163,7 +163,7 @@
     const label = state.label || 'The agent';
     let text = `${label}: sign-in status unknown.`;
     if (provider.authenticated === true) text = `${label} is signed in.`;
-    if (provider.authenticated === false) text = `${label} is not signed in yet. Sign in here or from Nuphos.`;
+    if (provider.authenticated === false) text = `${label} is not signed in yet. Sign in here or from Cerin.`;
     $('provider-status').textContent = text;
     $('signin-start').hidden = !provider.signInSupported || Boolean(signinAttempt);
     if (provider.authenticated === true) $('signin-start').textContent = 'Sign in again';
@@ -228,8 +228,8 @@
       $('pairing-url').textContent = minted.url || '';
       $('pairing-code').textContent = minted.code;
       $('pairing-hint').textContent = minted.deepLink
-        ? 'Nuphos Desktop should open now. If it does not, go to Settings → Agent → Connect your own in Nuphos and enter this URL and pairing code.'
-        : 'In Nuphos, go to Settings → Agent → Connect your own and enter this URL and pairing code.';
+        ? 'Cerin Desktop should open now. If it does not, go to Settings → Agent → Connect your own in Cerin and enter this URL and pairing code.'
+        : 'In Cerin, go to Settings → Agent → Connect your own and enter this URL and pairing code.';
       startExpiry(minted.expiresAt);
       if (minted.deepLink) window.location.href = minted.deepLink;
     } catch (error) {

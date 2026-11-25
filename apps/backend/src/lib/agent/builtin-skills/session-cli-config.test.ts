@@ -11,7 +11,7 @@ const skills = join(import.meta.dir, 'skills')
 const team = '0123456789abcdef01234567'
 
 test('credential setup respects session config paths and never uses the shared GitHub keychain', () => {
-  const root = mkdtempSync(join(tmpdir(), 'nuphos-skill-isolation-'))
+  const root = mkdtempSync(join(tmpdir(), 'cerin-skill-isolation-'))
   const bin = join(root, 'bin')
 
   mkdirSync(bin)
@@ -125,7 +125,7 @@ else:
 })
 
 test('GitHub token refresh preserves other hosts and writes the entry gh reads', () => {
-  const root = mkdtempSync(join(tmpdir(), 'nuphos-gh-auth-'))
+  const root = mkdtempSync(join(tmpdir(), 'cerin-gh-auth-'))
   const target = join(root, 'hosts.yml')
   const write = (token: string) =>
     execFileSync('python3', [join(skills, 'github/scripts/write-auth.py'), root], {

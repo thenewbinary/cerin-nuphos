@@ -136,7 +136,7 @@ mod unix {
                 .map_err(io::Error::other)?,
         );
         let home = root
-            .join(".nuphos/session-homes")
+            .join(".cerin/session-homes")
             .join(format!("{:x}", Sha256::digest(session.as_bytes())));
         use std::os::unix::fs::PermissionsExt;
         for dir in [home.parent().unwrap(), home.as_path()] {
@@ -387,7 +387,7 @@ mod tests {
         let tx = unix::start("flow", &json!({"sessionId":"conversation"}), out).unwrap();
         use std::os::unix::fs::PermissionsExt;
         assert_eq!(
-            std::fs::metadata(root.join(".nuphos/session-homes"))
+            std::fs::metadata(root.join(".cerin/session-homes"))
                 .unwrap()
                 .permissions()
                 .mode()
@@ -398,7 +398,7 @@ mod tests {
         {
             use sha2::{Digest, Sha256};
             let link = std::fs::read_link(
-                root.join(".nuphos/session-homes")
+                root.join(".cerin/session-homes")
                     .join(format!("{:x}", Sha256::digest(b"conversation")))
                     .join("Library/Keychains"),
             )

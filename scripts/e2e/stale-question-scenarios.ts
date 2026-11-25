@@ -62,8 +62,8 @@ export const staleQuestionScenarios: Scenario[] = [
       }
 
       await callAndWait(page, 'request_user_decision', ask, 'about-ask')
-      // The tool's text pretty-prints its JSON (`"requestId": "nuphos-…"`): match the id itself.
-      const requestId = /(nuphos-[0-9a-f-]{36})/.exec(
+      // The tool's text pretty-prints its JSON (`"requestId": "cerin-…"`): match the id itself.
+      const requestId = /(cerin-[0-9a-f-]{36})/.exec(
         await calledTool(stack, 'request_user_decision'),
       )?.[1]
 

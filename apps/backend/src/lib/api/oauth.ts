@@ -17,7 +17,7 @@ const tokenExchangeRequestSchema = z.object({
         "the subject's credentials. Devices, on-prem clusters and Vanta / Secureframe " +
         'integrations cannot be named: a limited token has no route to use them.',
     ),
-  audience: z.literal('nuphos-preview-mcp').optional(),
+  audience: z.literal('cerin-preview-mcp').optional(),
   team_id: z.string().optional().describe("Must match the subject token's team when given."),
   expires_in: z
     .string()

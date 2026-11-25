@@ -42,7 +42,7 @@ bash skills/git-signing/scripts/setup-signing.sh <sender-id> --name "<name>" --e
 ```
 
 It creates a dedicated, passphrase-less ed25519 key under
-`~/.config/nuphos-git-identities/<sender-id>/`, writes that participant's git
+`~/.config/cerin-git-identities/<sender-id>/`, writes that participant's git
 config there, removes author and signing settings from the shared config and
 sets `user.useConfigOnly=true`, installs `~/.local/bin/git-as`, and signs and
 verifies a probe commit. Running it again keeps the existing key.

@@ -67,7 +67,7 @@ describe('internal tokens with a local key', () => {
     expect(verifiedInternalPayload(token!)).toMatchObject({ sub: 'u' })
 
     // Another issuer's claims, even when signed with the same key.
-    const foreign = await signInternalToken({ iss: 'https://api.nuphos.ai', sub: 'u' })
+    const foreign = await signInternalToken({ iss: 'https://platform.cerin.ai', sub: 'u' })
 
     expect(verifiedInternalPayload(foreign!)).toBeNull()
 
@@ -132,7 +132,7 @@ describe('internal tokens with an AWS KMS key', () => {
       },
     }
     // An alias resolves to an immutable key id, which signing then uses.
-    const signer = kmsSigner('alias/nuphos-internal-token', client as never)
+    const signer = kmsSigner('alias/cerin-internal-token', client as never)
 
     expect(keyIdOf(await signer.publicKey())).toBe(keyIdOf(publicKey))
     const signature = await signer.sign(signingInput)

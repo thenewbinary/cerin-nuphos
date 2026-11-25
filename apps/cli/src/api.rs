@@ -11,7 +11,7 @@ use reqwest::StatusCode;
 use serde_json::{json, Value};
 use tokio::sync::mpsc::UnboundedSender;
 
-const CLIENT: &str = concat!("nuphos-cli/", env!("CARGO_PKG_VERSION"));
+const CLIENT: &str = concat!("cerin-cli/", env!("CARGO_PKG_VERSION"));
 /// The backend heartbeats every ~5 s; this much silence means a dead socket.
 const IDLE_TIMEOUT: Duration = Duration::from_secs(45);
 

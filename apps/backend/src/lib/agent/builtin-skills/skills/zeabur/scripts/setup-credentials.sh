@@ -21,7 +21,7 @@ Arguments:
 Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
 
 After running, source the env file before each GraphQL/CLI call:
-  source ~/.zeabur/nuphos.env
+  source ~/.zeabur/cerin.env
 EOF
   exit 1
 }
@@ -62,7 +62,7 @@ if [ "$http_code" != "200" ]; then
 fi
 
 env_dir="$HOME/.zeabur"
-env_path="$env_dir/nuphos.env"
+env_path="$env_dir/cerin.env"
 mkdir -p "$env_dir"
 chmod 700 "$env_dir"
 
@@ -93,6 +93,6 @@ if command -v zeabur >/dev/null 2>&1; then
     || echo "zeabur CLI present but token login failed; use GraphQL over curl instead" >&2
 fi
 
-echo "Wrote Zeabur credentials to ~/.zeabur/nuphos.env"
+echo "Wrote Zeabur credentials to ~/.zeabur/cerin.env"
 echo "  zeaburId: ${zeabur_id}"
-echo "Next: source ~/.zeabur/nuphos.env  # exports ZEABUR_TOKEN for GraphQL/CLI calls"
+echo "Next: source ~/.zeabur/cerin.env  # exports ZEABUR_TOKEN for GraphQL/CLI calls"

@@ -2,8 +2,8 @@
 
 ## 概述
 
-讓團隊和 AI 在 Nuphos 裡，把一個產品的所有畫面攤在同一張畫布上，一起看、一起改、一路點完流程，不用再離開 Nuphos。
-行為以 Claude Design 為參考（只參考互動方式，不照搬程式碼、圖示、文案與樣式）。對應 issue：nuphos/nuphos#954。
+讓團隊和 AI 在 Cerin 裡，把一個產品的所有畫面攤在同一張畫布上，一起看、一起改、一路點完流程，不用再離開 Cerin。
+行為以 Claude Design 為參考（只參考互動方式，不照搬程式碼、圖示、文案與樣式）。對應 issue：thenewbinary/cerin-platform#954。
 
 名詞：
 
@@ -80,7 +80,7 @@
 
 **Given** 畫布上有物件
 **When** 使用 Select 工具點選、Shift 多選或框選
-**Then** 物件被選取，可拖動、縮放（畫面框與形狀）、Delete 刪除、⌘C/⌘V 複製貼上、⌘⇧V 複製一份（⌘D 在 Nuphos 是分割視窗）
+**Then** 物件被選取，可拖動、縮放（畫面框與形狀）、Delete 刪除、⌘C/⌘V 複製貼上、⌘⇧V 複製一份（⌘D 在 Cerin 是分割視窗）
 **And** ⌘Z / ⌘⇧Z 可以復原與重做
 
 ### 場景 11：流程連線

@@ -22,7 +22,7 @@ import type { TeamAuthVariables } from '@/middleware/auth'
 import type { AwsRoleBinding } from '@/models'
 import type { Hono } from 'hono'
 
-// Confirm the Nuphos connector can actually assume the role before we persist
+// Confirm the Cerin connector can actually assume the role before we persist
 // the binding. Without this, a role with a missing/incorrect trust policy binds
 // successfully (201) and only fails much later when something tries to use it —
 // a confusing, hard-to-trace failure. IAM trust-policy edits can take a few
@@ -31,7 +31,7 @@ import type { Hono } from 'hono'
 // OIDC web identity pins the trust policy to this team's `sub`, making the
 // binding confused-deputy-safe without any long-lived AWS credentials.
 async function verifyRoleAssumable(teamId: ObjectId, roleArn: string): Promise<TempCredentials> {
-  const probe = { sessionName: 'nuphos-bind-verify', durationSec: 900 }
+  const probe = { sessionName: 'cerin-bind-verify', durationSec: 900 }
 
   if (!isAwsOidcConfigured()) {
     throw new AppError(
@@ -60,7 +60,7 @@ async function verifyRoleAssumable(teamId: ObjectId, roleArn: string): Promise<T
   throw new AppError(
     400,
     'role_not_assumable',
-    `Cerin cannot assume ${roleArn}. Its trust policy must trust the Cerin OIDC identity provider for sts:AssumeRoleWithWebIdentity with sub "nuphos:team:${teamId.toHexString()}". (${name}: ${message})`,
+    `Cerin cannot assume ${roleArn}. Its trust policy must trust the Cerin OIDC identity provider for sts:AssumeRoleWithWebIdentity with sub "cerin:team:${teamId.toHexString()}". (${name}: ${message})`,
     { roleArn, awsError: name },
   )
 }

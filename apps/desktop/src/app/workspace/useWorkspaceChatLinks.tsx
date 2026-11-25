@@ -64,7 +64,7 @@ export function useWorkspaceChatLinks(a: Args) {
     openPlanInChat,
     enterCluster,
     openConversationHere,
-    openNuphosLinkInNewTab,
+    openCerinLinkInNewTab,
     openAppOpenDeepLink,
     copyLink,
     teamId,
@@ -97,17 +97,17 @@ export function useWorkspaceChatLinks(a: Args) {
     (url: string, beside = false): boolean => {
       if (!teamId || !/^https?:\/\//i.test(url)) return false
 
-      return openNuphosLinkInNewTab(
+      return openCerinLinkInNewTab(
         pageLocationForNavigation(
           emptyNavigation({ kind: 'team', teamId }, 'team.browser', { browserUrl: url }),
         ).href,
         beside,
       )
     },
-    [openNuphosLinkInNewTab, teamId],
+    [openCerinLinkInNewTab, teamId],
   )
 
-  // A provider link carries the provider's own ids, not Nuphos's: the bound
+  // A provider link carries the provider's own ids, not Cerin's: the bound
   // installation / instance / account the URL points into is what names the
   // in-app page. Anything not bound stays in the browser.
   const openBoundProviderLinkFromChat = useCallback(
@@ -117,7 +117,7 @@ export function useWorkspaceChatLinks(a: Args) {
       const openResolved = (bound: BoundResources): boolean => {
         const path = appPathForExternalLink(href, teamId, bound)
 
-        return path !== null && openNuphosLinkInNewTab(path)
+        return path !== null && openCerinLinkInNewTab(path)
       }
 
       if (openResolved(boundResources)) return true
@@ -157,7 +157,7 @@ export function useWorkspaceChatLinks(a: Args) {
       boundResources,
       openBrowserLink,
       openExternalLink,
-      openNuphosLinkInNewTab,
+      openCerinLinkInNewTab,
       setAccountsByTeam,
       setGithubInstallationsByTeam,
       teamId,
@@ -193,16 +193,16 @@ export function useWorkspaceChatLinks(a: Args) {
   // Chat-link policy: a PR/issue badge and other web links open in the built-in
   // browser; an app URL on our own origin stays in-app (exact path or deep-link
   // fallback); a bare file path opens in Files.
-  const openNuphosLinkFromChat = useCallback(
+  const openCerinLinkFromChat = useCallback(
     (href: string, beside = false): boolean => {
       if (githubRef(href)) return openBrowserLink(href.trim(), beside)
-      if (openNuphosLinkInNewTab(href, beside)) return true
+      if (openCerinLinkInNewTab(href, beside)) return true
       if (beside) return false
       if (openBoundProviderLinkFromChat(href)) return true
       const filePath = runtimeFilePathFromHref(href)
 
       if (filePath && teamId) {
-        return openNuphosLinkInNewTab(
+        return openCerinLinkInNewTab(
           pageLocationForNavigation(
             emptyNavigation({ kind: 'team', teamId }, 'team.files', { filter: filePath }),
           ).href,
@@ -222,7 +222,7 @@ export function useWorkspaceChatLinks(a: Args) {
       openAppOpenDeepLink,
       openBoundProviderLinkFromChat,
       openBrowserLink,
-      openNuphosLinkInNewTab,
+      openCerinLinkInNewTab,
       teamId,
     ],
   )
@@ -247,23 +247,23 @@ export function useWorkspaceChatLinks(a: Args) {
           emptyNavigation({ kind: 'team', teamId }, 'team.browser', { browserUrl: url }),
         ).href
 
-      openNuphosLinkInNewTab(path)
+      openCerinLinkInNewTab(path)
     },
-    [boundResources, openBrowserLink, openExternalLink, openNuphosLinkInNewTab, teamId],
+    [boundResources, openBrowserLink, openExternalLink, openCerinLinkInNewTab, teamId],
   )
 
   const chatLinkMenuActions = useChatLinkMenuActions({
     teamId,
     copyLink,
     openExternalLink,
-    openNuphosLinkFromChat,
-    openNuphosLinkInNewTab,
+    openCerinLinkFromChat,
+    openCerinLinkInNewTab,
   })
 
   // Props rooted in `tabs`/`activeTab` churn every poll; one unstable prop
   // re-renders every memoized pane.
   const stableDockAgentToSidebar = useStableCallback(dockAgentToSidebar)
-  const stableOpenNuphosLinkFromChat = useStableCallback(openNuphosLinkFromChat)
+  const stableOpenCerinLinkFromChat = useStableCallback(openCerinLinkFromChat)
   const stableOpenNodeLink = useStableCallback(openNodeLink)
   const stableOpenSessionResource = useStableCallback(openSessionResource)
   const stableOpenPlanInChat = useStableCallback(openPlanInChat)
@@ -283,9 +283,9 @@ export function useWorkspaceChatLinks(a: Args) {
 
   return {
     chatLinkMenuActions,
-    openNuphosLinkFromChat,
+    openCerinLinkFromChat,
     stableDockAgentToSidebar,
-    stableOpenNuphosLinkFromChat,
+    stableOpenCerinLinkFromChat,
     stableOpenNodeLink,
     stableOpenSessionResource,
     stableOpenPlanInChat,

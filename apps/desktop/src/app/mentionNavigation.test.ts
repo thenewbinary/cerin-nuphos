@@ -13,7 +13,7 @@ const pullTarget = (
   teamId: 'team1',
   installationId: '123',
   owner: 'Zeabur',
-  repo: 'nuphos',
+  repo: 'cerin',
   number,
   ...(prState ? { prState } : {}),
 })
@@ -36,10 +36,10 @@ test('a PR mention opens the PR page, not the list filtered by its number', () =
     },
     repo: {
       id: 0,
-      name: 'nuphos',
-      fullName: 'Zeabur/nuphos',
+      name: 'cerin',
+      fullName: 'Zeabur/cerin',
       private: false,
-      htmlUrl: 'https://github.com/Zeabur/nuphos',
+      htmlUrl: 'https://github.com/Zeabur/cerin',
       description: null,
       defaultBranch: null,
       archived: false,
@@ -75,7 +75,7 @@ test('a repo mention still lands on the open PR list', () => {
     teamId: 'team1',
     installationId: '123',
     owner: 'Zeabur',
-    repo: 'nuphos',
+    repo: 'cerin',
   })
 
   assert.ok(navigation)

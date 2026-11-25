@@ -1,9 +1,9 @@
-import { createInterface as nuphosCreateLines } from 'node:readline'
+import { createInterface as cerinCreateLines } from 'node:readline'
 
 // Decode complete lines once instead of repeatedly scanning an accumulating
 // multi-megabyte JSON response. readline also preserves split UTF-8 characters.
-export function nuphosListenJsonLines(readable, callback) {
-  const lines = nuphosCreateLines({ input: readable, crlfDelay: Infinity })
+export function cerinListenJsonLines(readable, callback) {
+  const lines = cerinCreateLines({ input: readable, crlfDelay: Infinity })
   lines.on('line', (line) => {
     let message
     try {
@@ -19,7 +19,7 @@ export function nuphosListenJsonLines(readable, callback) {
 }
 
 // Only use on UI history snapshots, never on prompts or the persisted rollout.
-export function nuphosOmitRestoreImages(value) {
+export function cerinOmitRestoreImages(value) {
   if (!value || typeof value !== 'object') return value
   if (value.type === 'imageGeneration' || value.type === 'image_generation_call') value.result = ''
   if (value.type === 'image' && typeof value.data === 'string') {
@@ -30,7 +30,7 @@ export function nuphosOmitRestoreImages(value) {
     value[key] =
       typeof item === 'string' && /^data:image\//i.test(item)
         ? '[Image omitted during restore]'
-        : nuphosOmitRestoreImages(item)
+        : cerinOmitRestoreImages(item)
   }
   return value
 }

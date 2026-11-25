@@ -22,7 +22,7 @@ assert.equal(
   fromRuntime.resolve('@openai/codex/bin/codex.js'),
   'The adapter and interactive CLI must use the same pinned Codex installation',
 )
-const base = mkdtempSync(join(tmpdir(), 'nuphos-codex-acp-smoke-'))
+const base = mkdtempSync(join(tmpdir(), 'cerin-codex-acp-smoke-'))
 const helper = readFileSync(
   new URL('../image/codex-acp/session-config.mjs', import.meta.url),
   'utf8',
@@ -79,21 +79,21 @@ const rpc = async (method, params) => {
 try {
   await rpc('initialize', {
     protocolVersion: 1,
-    clientInfo: { name: 'nuphos-smoke', version: '1' },
+    clientInfo: { name: 'cerin-smoke', version: '1' },
     clientCapabilities: {},
   })
   const args = (actor) => ({
     cwd: '/workspace/conv-smoke',
     mcpServers: [
       {
-        name: 'nuphos',
+        name: 'cerin',
         type: 'http',
         url: 'http://fixture.invalid/mcp',
         headers: [{ name: 'Authorization', value: `Bearer ${actor}` }],
       },
     ],
     _meta: {
-      'ai.nuphos/codex': {
+      'ai.cerin/codex': {
         developerInstructions: `context ${actor}`,
         env: { NUPHOS_TOKEN: actor, NUPHOS_SESSION_ID: 'conversation-smoke' },
       },
@@ -129,7 +129,7 @@ try {
   // A teammate's load moves the session home; the owner's reload above did not.
   const teammate = args('actor-c')
 
-  teammate._meta['ai.nuphos/codex'].env.NUPHOS_SESSION_ACTOR = 'teammate'
+  teammate._meta['ai.cerin/codex'].env.NUPHOS_SESSION_ACTOR = 'teammate'
   await rpc('session/load', { ...teammate, sessionId: created.sessionId })
   const config = async (configId, value) =>
     rpc('session/set_config_option', { sessionId: created.sessionId, configId, value })
@@ -234,11 +234,11 @@ try {
   assert.equal(resume.params.config.developer_instructions, 'context actor-b')
   assert.equal(resume.params.config.shell_environment_policy.set.NUPHOS_TOKEN, 'actor-b')
   for (const request of [start, resume]) {
-    const { nuphos } = request.params.config.mcp_servers
+    const { cerin } = request.params.config.mcp_servers
 
-    assert.equal(nuphos.args[1], 'http://fixture.invalid/mcp')
-    assert.deepEqual(nuphos.env, { OPENAB_CREDENTIALS_DIR: base })
-    assert.equal(nuphos.tool_timeout_sec, 1800)
+    assert.equal(cerin.args[1], 'http://fixture.invalid/mcp')
+    assert.deepEqual(cerin.env, { OPENAB_CREDENTIALS_DIR: base })
+    assert.equal(cerin.tool_timeout_sec, 1800)
     assert.equal(request.params.config.shell_environment_policy.set.OPENAB_CREDENTIALS_DIR, base)
     assert.equal(request.params.config.shell_environment_policy.set.GOMEMLIMIT, '6GiB')
     assert.equal(
@@ -314,7 +314,7 @@ try {
   await config('model', 'gpt-6-astra')
   const defaultArgs = args('defaults-actor')
 
-  defaultArgs._meta['ai.nuphos/runtimeDefaults'] = {
+  defaultArgs._meta['ai.cerin/runtimeDefaults'] = {
     model: 'gpt-6-astra',
     fast: 'on',
     effort: 'ultra',

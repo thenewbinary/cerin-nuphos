@@ -58,7 +58,7 @@ const typed = (sessionId: string, index: number, text: string) => ({
   metadata: {
     version: 1,
     sender: { type: 'user', id: 'u', displayName: 'Owner' },
-    source: 'nuphos',
+    source: 'cerin',
     sentAt,
   },
 })

@@ -25,7 +25,7 @@ export function registerAwsCredentialRoutes(
       )
     }
     const temp = await assumeRoleAsConnector(c.get('awsRoleArn'), {
-      sessionName: sanitizeSessionName(`nuphos-user-${c.get('userId')}`),
+      sessionName: sanitizeSessionName(`cerin-user-${c.get('userId')}`),
     })
     const expiresAt = new Date(Date.now() + config.byos.aws.sessionDurationSec * 1000)
 

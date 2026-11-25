@@ -3,20 +3,20 @@ import { AppError } from '@/lib/errors'
 
 // Provider-agnostic sweep timeouts live next to the Aliyun sweep helpers.
 import { SWEEP_READ_TIMEOUT_MS } from './aliyun-sweep'
-// OIDC federation reuses the shared Nuphos issuer (same signing key, JWKS, and
-// per-team subject as the AWS connector — one Nuphos IdP).
+// OIDC federation reuses the shared Cerin issuer (same signing key, JWKS, and
+// per-team subject as the AWS connector — one Cerin IdP).
 import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from './aws-oidc'
 import { verifyTeamSpecificTrust } from './huawei-trust-policy'
 
 // Huawei Cloud IAM5 federates OIDC identity providers through Trust
-// Agencies: the customer registers Nuphos as an IAM5 OIDC provider, then
+// Agencies: the customer registers Cerin as an IAM5 OIDC provider, then
 // assigns a Trust Agency to that audience — the agency's permissions are
-// what Nuphos gets. We store the account (domain) id, the provider name,
+// what Cerin gets. We store the account (domain) id, the provider name,
 // and the agency name; no customer secret.
 //
 // IAM5 providers live in a v5 resource store the legacy Keystone
@@ -45,7 +45,7 @@ export type HuaweiIdentity = {
   domainId: string
   /** IAM5 OIDC provider name — the URN is built from this, not its hex provider_id. */
   idpId: string
-  /** Trust agency name the customer assigned to Nuphos's audience. */
+  /** Trust agency name the customer assigned to Cerin's audience. */
   agencyName: string
 }
 
@@ -58,8 +58,8 @@ function agencyUrn(identity: HuaweiIdentity): string {
 }
 
 /**
- * Whether the Nuphos OIDC issuer is configured (shared with the AWS connector —
- * one Nuphos IdP). Without a signing key we cannot mint ID tokens, so the
+ * Whether the Cerin OIDC issuer is configured (shared with the AWS connector —
+ * one Cerin IdP). Without a signing key we cannot mint ID tokens, so the
  * federation call would have nothing to present.
  */
 export function huaweiOidcConfigured(): boolean {
@@ -67,7 +67,7 @@ export function huaweiOidcConfigured(): boolean {
 }
 
 /**
- * The values a customer needs to register Nuphos as an OIDC identity provider
+ * The values a customer needs to register Cerin as an OIDC identity provider
  * in Huawei Cloud IAM: the issuer URL, the audience (pinned as the token
  * `aud`), and this team's subject claim — the one to condition the assigned
  * trust agency's trust policy on, so a token minted for team A can never
@@ -99,7 +99,7 @@ function upstreamDetail(body: string): string {
 }
 
 /**
- * Exchange the Nuphos ID token for the trust agency's temporary AK/SK in one
+ * Exchange the Cerin ID token for the trust agency's temporary AK/SK in one
  * unsigned call — no X-Idp-Id, no domain scoping, no intermediate token: STS
  * resolves the provider and agency from their URNs and verifies the token
  * against the provider's own JWKS.
@@ -116,10 +116,10 @@ async function assumeAgencyWithOidc(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        agency_session_name: `nuphos-${teamId}`,
+        agency_session_name: `cerin-${teamId}`,
         agency_urn: agencyUrn(identity),
         provider_urn: providerUrn(identity),
-        id_token: mintNuphosOidcToken(teamId, config.byos.huawei.oidc.audience),
+        id_token: mintCerinOidcToken(teamId, config.byos.huawei.oidc.audience),
         duration_seconds: durationSec,
       }),
       signal: AbortSignal.timeout(SWEEP_READ_TIMEOUT_MS),
@@ -174,7 +174,7 @@ async function assumeAgencyWithOidc(
 
 /**
  * Federate into the customer's account via OIDC, returning short-lived
- * credentials. Mirrors AWS `assumeRoleWithWebIdentityForTeam`: Nuphos mints a
+ * credentials. Mirrors AWS `assumeRoleWithWebIdentityForTeam`: Cerin mints a
  * per-team RS256 token and exchanges it at Huawei STS — no static Huawei keys.
  */
 export async function assumeHuaweiIdentity(
@@ -202,7 +202,7 @@ export async function assumeHuaweiIdentity(
  * misconfigured identity provider instead of storing an unusable binding. Also
  * confirms the agency's own trust policy restricts assumption to this team's
  * subject — a successful assumption proves this team can assume it, not that
- * other Nuphos teams (who share the same issuer and audience) cannot.
+ * other Cerin teams (who share the same issuer and audience) cannot.
  */
 export async function verifyHuaweiIdentity(
   identity: HuaweiIdentity,

@@ -441,7 +441,7 @@ test('native: a sign-in finishing after the endpoint moved stores and uses nothi
   // The endpoint field is changed and submitted while the redeem is out.
   redeemQueue = [
     () => {
-      authSession.moveTo('https://nuphos.example.com')
+      authSession.moveTo('https://cerin.example.com')
 
       return readySession()
     },
@@ -484,7 +484,7 @@ test('native: a rejected redemption fails the sign-in and stores nothing', async
 })
 
 const EACCES = () =>
-  Object.assign(new Error("EACCES: permission denied, mkdir '/Users/u/.config/nuphos'"), {
+  Object.assign(new Error("EACCES: permission denied, mkdir '/Users/u/.config/cerin'"), {
     code: 'EACCES',
   })
 const UNSAVED = /Cerin couldn.t save your sign-in to \S+: permission denied\./
@@ -595,7 +595,7 @@ test('native: a backend failure delivered as an error code stops the wait', asyn
   const res = await hitCallback(registeredPort(), {
     state: registrations[0]!.clientState,
     error: 'server_error',
-    error_description: 'Nuphos could not be reached. Please try again.',
+    error_description: 'Cerin could not be reached. Please try again.',
   })
 
   assert.equal(res.status, 400)
@@ -684,7 +684,7 @@ test('a backend that redirects the chooser probe opens no browser', async () => 
   chooserProbe = () =>
     new Response(null, {
       status: 301,
-      headers: { location: 'https://api.nuphos.ai/auth/social/login' },
+      headers: { location: 'https://platform.cerin.ai/auth/social/login' },
     })
 
   await assert.rejects(auth.login('google'), /does not offer Google/)

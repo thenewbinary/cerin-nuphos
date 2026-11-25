@@ -63,14 +63,14 @@ test('frecency weighs opens by recency, halving each week', () => {
 test('search matches title and decoded path terms, most frecent first', () => {
   const now = 100 * DAY
   const entries = [
-    { href: '/teams/t/github/zeabur%2Fnuphos', title: 'nuphos', count: 1, openedAt: now },
+    { href: '/teams/t/github/zeabur%2Fcerin', title: 'cerin', count: 1, openedAt: now },
     { href: '/teams/t/github/zeabur%2Fzeabur', title: 'zeabur', count: 9, openedAt: now },
     { href: '/teams/t/plans', title: 'Plans', count: 50, openedAt: now },
   ]
 
   assert.deepEqual(
     searchDockHistory(entries, 'GITHUB zeabur/', now).map((entry) => entry.title),
-    ['zeabur', 'nuphos'],
+    ['zeabur', 'cerin'],
   )
   assert.equal(searchDockHistory(entries, '  ', now)[0].title, 'Plans')
   assert.deepEqual(searchDockHistory(entries, 'missing', now), [])

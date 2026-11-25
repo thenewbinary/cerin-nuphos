@@ -202,7 +202,7 @@ final class BotsAndTasksListUITests: XCTestCase {
     /// Starts from no stored folds, so earlier runs leave nothing behind.
     private func launch(page: String) {
         app = XCUIApplication()
-        app.launchArguments = ["-preview-home", "-preview-no-push", "-page", page, "-nuphos.agent.foldedThreads", "{}"]
+        app.launchArguments = ["-preview-home", "-preview-no-push", "-page", page, "-cerin.agent.foldedThreads", "{}"]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
         app.launch()
     }

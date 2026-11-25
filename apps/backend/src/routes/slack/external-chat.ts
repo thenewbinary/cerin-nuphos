@@ -144,7 +144,7 @@ function findMember(
   where: { slackWorkspaceId: string; userTeam?: string },
 ): Member | undefined {
   if (link && link.createdBy !== 'auto:slack-email')
-    return members.find((member) => member.id === link.nuphosUserId)
+    return members.find((member) => member.id === link.cerinUserId)
   const ownWorkspace =
     user?.team_id === where.slackWorkspaceId &&
     (!where.userTeam || where.userTeam === where.slackWorkspaceId)

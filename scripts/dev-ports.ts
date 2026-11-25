@@ -18,7 +18,7 @@ async function isPortFree(port: number): Promise<boolean> {
 // The backend binds its port a few seconds after spawn, so probing alone lets
 // two parallel worktrees pick the same "free" port. An exclusive-create lock
 // file reserves a port immediately; stale locks (owner dead) are stolen.
-const LOCK_DIR = join(tmpdir(), 'nuphos-dev-port-locks')
+const LOCK_DIR = join(tmpdir(), 'cerin-dev-port-locks')
 const claimedPorts = new Set<number>()
 const lockPath = (p: number) => join(LOCK_DIR, `port-${p}`)
 

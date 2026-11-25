@@ -45,7 +45,7 @@ function approvalDependencies(
       },
     }),
     discordUserMappings: () => ({
-      findOne: async () => (options.linked === false ? null : { nuphosUserId: 'actor' }),
+      findOne: async () => (options.linked === false ? null : { cerinUserId: 'actor' }),
     }),
     getTeamMembership: async () => ({ role: 'MEMBER' }),
     findPreviewWaitByRef: async () =>
@@ -94,7 +94,7 @@ describe('Discord approvals', () => {
       const { calls, dependencies } = approvalDependencies()
 
       await processDiscordInteraction(
-        { ...interaction, data: { custom_id: `nuphos:tool:${action}:decision` } },
+        { ...interaction, data: { custom_id: `cerin:tool:${action}:decision` } },
         dependencies,
       )
       expect(calls.resolved[0]).toMatchObject({ payload: { decision } })
@@ -183,7 +183,7 @@ describe('Discord thread mode commands', () => {
       }),
       discordInstallations: () => ({ findOne: async () => ({}) }),
       discordChannelMappings: () => ({ findOne: async () => ({}) }),
-      discordUserMappings: () => ({ findOne: async () => ({ nuphosUserId: 'actor' }) }),
+      discordUserMappings: () => ({ findOne: async () => ({ cerinUserId: 'actor' }) }),
       getTeamMembership: async () => ({ role: 'MEMBER' }),
       setSessionBypass: async (...args: unknown[]) => {
         changes.push(args)
@@ -195,7 +195,7 @@ describe('Discord thread mode commands', () => {
     try {
       for (const configured of ['cerin', 'assistant']) {
         config.discord.commandName = configured
-        for (const name of [configured, 'nuphos']) {
+        for (const name of [configured, 'cerin']) {
           for (const [command, bypass] of [
             ['full-access', true],
             ['auto', false],

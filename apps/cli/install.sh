@@ -11,10 +11,10 @@
 # goes (default ~/.local/bin), CERIN_DOWNLOAD_URL points at a mirror of the
 # release assets, CERIN_LATEST_URL at another backend's /cli/latest, and
 # CERIN_NO_MODIFY_PATH=1 leaves your shell profile alone. The NUPHOS_* names
-# of these still work. `nuphos` is kept as a link to `cerin`.
+# of these still work.
 set -eu
 
-REPO=${CERIN_REPO:-thenewbinary/cerin-nuphos}
+REPO=${CERIN_REPO:-thenewbinary/cerin-platform}
 DIR=${CERIN_INSTALL_DIR:-${NUPHOS_INSTALL_DIR:-$HOME/.local/bin}}
 VERSION=${CERIN_VERSION:-${NUPHOS_VERSION:-}}
 JOIN=
@@ -80,10 +80,6 @@ mkdir -p "$DIR"
 mv "$tmp/cerin" "$DIR/cerin.new"
 chmod 755 "$DIR/cerin.new"
 mv -f "$DIR/cerin.new" "$DIR/cerin"
-# The old name, for scripts and services that still run `nuphos`. Swapped in
-# by rename too, so a running nuphos keeps working.
-ln -sf cerin "$DIR/nuphos.new"
-mv -f "$DIR/nuphos.new" "$DIR/nuphos"
 
 echo "Installed $("$DIR/cerin" --version)"
 # Like rustup and bun, put $DIR on PATH for new shells by adding one line to the

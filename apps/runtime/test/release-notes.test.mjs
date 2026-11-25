@@ -80,7 +80,10 @@ test('release notes read the tagged runtime subtree and exclude unrelated monore
     assert.match(notes, /ghcr\.io\/nuphos\/runtime:0\.1\.1-dsh/)
     assert.match(notes, /\| DeepSeek Harness \| 0\.2\.2-rc\.1 \|/)
     assert.match(notes, /\| Grok Build CLI \| 1\.0\.46 \|/)
-    assert.match(notes, /nuphos\/nuphos\/compare\/runtime-v0\.1\.0\.\.\.runtime-v0\.1\.1/)
+    assert.match(
+      notes,
+      /thenewbinary\/cerin-platform\/compare\/runtime-v0\.1\.0\.\.\.runtime-v0\.1\.1/,
+    )
     assert.throws(() =>
       execFileSync(process.execPath, [script, 'v99.0.0', 'all'], { cwd, stdio: 'pipe' }),
     )

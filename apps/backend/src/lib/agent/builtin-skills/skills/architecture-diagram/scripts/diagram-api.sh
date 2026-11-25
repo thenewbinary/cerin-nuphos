@@ -14,7 +14,7 @@ path="/teams/$team_id/architecture-diagrams"
 [[ -z "$diagram_id" ]] || path="$path/$diagram_id"
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-request="$script_dir/../../_runtime/scripts/nuphos-api.sh"
+request="$script_dir/../../_runtime/scripts/cerin-api.sh"
 args=("$method" "$path")
 [[ -z "$body" ]] || args+=("$body")
 exec "$request" "${args[@]}"

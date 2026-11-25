@@ -69,7 +69,7 @@ final class BotMentionUITests: XCTestCase {
         var messages = try XCTUnwrap(chat["messages"] as? [[String: Any]])
         messages.append([
             "id": "u2", "role": "user", "createdAt": "2026-11-08T09:40:00.000Z",
-            "parts": [["type": "text", "text": "Ask https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/bot-box how the login fix went"]],
+            "parts": [["type": "text", "text": "Ask https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/bot-box how the login fix went"]],
             "metadata": ["version": 1, "sentAt": "2026-11-08T09:40:00.000Z",
                          "sender": ["type": "user", "id": "507f1f77bcf86cd799439011", "displayName": "Preview User", "avatarURL": ""]],
         ])

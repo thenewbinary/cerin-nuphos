@@ -44,7 +44,7 @@ function MessageList({
   onApprovePlan,
   onRejectPlan,
   activePlanCanAct,
-  onOpenNuphosLink,
+  onOpenCerinLink,
   onOpenAgentSettings,
   onEditMessage,
   isTeamAdmin,
@@ -59,7 +59,7 @@ function MessageList({
   | 'onApprovePlan'
   | 'onRejectPlan'
   | 'activePlanCanAct'
-  | 'onOpenNuphosLink'
+  | 'onOpenCerinLink'
   | 'onOpenAgentSettings'
   | 'onEditMessage'
   | 'onMessageFeedback'
@@ -77,7 +77,7 @@ function MessageList({
   useReportVisibleError(tab.error, 'agent_conversation_error')
   useSessionDesktops(tab, teamId)
   usePublishSessionArtifacts(tab.sessionId, tab.messages)
-  useOpenRequestedArtifact(tab.sessionId, teamId, onOpenNuphosLink)
+  useOpenRequestedArtifact(tab.sessionId, teamId, onOpenCerinLink)
   const downloadsByMessage = useTransferDownloads(tab, teamId, hasEarlier)
   const messages = useMemo(() => collapseRepeatedFailures(tab.messages), [tab.messages])
   const timeline = placeTimelineEvents(messages, tab.timelineEvents, hasEarlier)
@@ -133,7 +133,7 @@ function MessageList({
           !tab.readOnly
         }
         isTeamAdmin={isTeamAdmin}
-        onOpenNuphosLink={onOpenNuphosLink}
+        onOpenCerinLink={onOpenCerinLink}
         // Feedback is owner-only (backend 403s otherwise); read-only
         // team views get copy + time but no vote buttons.
         onMessageFeedback={tab.readOnly || tab.foreign ? undefined : onMessageFeedback}
@@ -207,7 +207,7 @@ function MessageList({
                       runtimeAllows(tab.runtimeState, 'reply')) &&
                     !tab.readOnly
                   }
-                  onOpenNuphosLink={onOpenNuphosLink}
+                  onOpenCerinLink={onOpenCerinLink}
                   onEdit={onEditMessage?.allowed(m) ? onEditMessage.edit : undefined}
                 />
               </div>
@@ -223,7 +223,7 @@ function MessageList({
                   event={event}
                   reveal={Date.parse(event.at) > openedAt}
                   teamId={teamId}
-                  onOpenNuphosLink={onOpenNuphosLink}
+                  onOpenCerinLink={onOpenCerinLink}
                 />
               ))}
               {activity.before.has(m.id) && (
@@ -253,7 +253,7 @@ function MessageList({
           event={event}
           reveal={Date.parse(event.at) > openedAt}
           teamId={teamId}
-          onOpenNuphosLink={onOpenNuphosLink}
+          onOpenCerinLink={onOpenCerinLink}
         />
       ))}
       <OpenQuestionCards tab={tab} now={now} />

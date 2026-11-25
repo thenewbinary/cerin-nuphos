@@ -12,7 +12,7 @@ import { settleSignInRequests } from './sign-in-settle'
 
 import type { NudgeConversation, NudgeDeps, NudgeKind, SignInRequest } from './sign-in-request'
 import type { DownloadHandoffRateLimitResult } from '@/lib/download-handoff-rate-limit'
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 
 const TEAM = 'team-1'
 const RUNTIME = 'managed-1'
@@ -73,7 +73,7 @@ function deps(): NudgeDeps {
 
 const ask = (
   requesterId = 'shant',
-  role: NuphosTeamRole = 'EDITOR',
+  role: CerinTeamRole = 'EDITOR',
   kind: NudgeKind = 'signInRequest',
   runtimeId = conversation.runtimeId ?? RUNTIME,
 ) => nudge(kind, { teamId: TEAM, runtimeId, sessionId: 's1', requesterId }, role, deps())

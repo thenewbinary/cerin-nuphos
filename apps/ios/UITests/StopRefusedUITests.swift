@@ -91,7 +91,7 @@ final class StopRefusedUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = [
             "-preview-home", "-preview-no-push",
-            "-open-links", "https://nuphos.ai/teams/\(teamId)/agent/\(sessionId)",
+            "-open-links", "https://platform.cerin.ai/teams/\(teamId)/agent/\(sessionId)",
         ]
         app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
         app.launch()

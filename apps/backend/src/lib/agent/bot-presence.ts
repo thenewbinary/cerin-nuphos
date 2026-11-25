@@ -1,4 +1,4 @@
-// Whether a Bot can reply now, from what Nuphos already knows of it: one answer
+// Whether a Bot can reply now, from what Cerin already knows of it: one answer
 // that every surface shows the same way (#3308). Nothing here is stored.
 import { listRuntimeInstances } from '@/lib/claude-code-preview/runtime-catalog'
 import { fetchRuntimeQuota } from '@/lib/claude-code-preview/runtime-quota'

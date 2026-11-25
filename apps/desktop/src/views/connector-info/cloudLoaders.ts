@@ -24,7 +24,7 @@ export const cloudLoaders: ConnectorInfoLoaders = {
         { label: t('Enabled channels'), value: String(connection.channels.length) },
         {
           label: t('Channel access'),
-          value: t('Use /nuphos enable or /nuphos disable in Discord.'),
+          value: t('Use /cerin enable or /cerin disable in Discord.'),
         },
       ],
       externalUrl: `https://discord.com/channels/${encodeURIComponent(installation.guildId)}`,

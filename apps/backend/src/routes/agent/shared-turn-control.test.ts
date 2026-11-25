@@ -66,7 +66,7 @@ useSessionExecutionState({
   putConversationSecret: async () => {
     secretsSaved++
 
-    return '/runtime/nuphos-secret-x/0/KEY'
+    return '/runtime/cerin-secret-x/0/KEY'
   },
   steerConversationRuntime: async (...args) => {
     steered++
@@ -227,7 +227,7 @@ test('only the conversation owner can provide a secret, not a teammate who can r
   try {
     expect(await (await save()).json()).toEqual({
       ok: true,
-      path: '/runtime/nuphos-secret-x/0/KEY',
+      path: '/runtime/cerin-secret-x/0/KEY',
     })
     expect(secretsSaved).toBe(1)
   } finally {
@@ -272,11 +272,7 @@ test("a value saved for a form's field is kept with the site its open request na
     expect((await save('CLINIC_LOOKUP')).status).toBe(200)
     expect((await save('OPENAI_API_KEY')).status).toBe(200)
     expect(recorded).toEqual([
-      [
-        'shared-control',
-        me,
-        { path: '/runtime/nuphos-secret-x/0/KEY', site: 'www.clinic.example' },
-      ],
+      ['shared-control', me, { path: '/runtime/cerin-secret-x/0/KEY', site: 'www.clinic.example' }],
     ])
     expect(JSON.stringify(recorded)).not.toContain('a synthetic value')
   } finally {

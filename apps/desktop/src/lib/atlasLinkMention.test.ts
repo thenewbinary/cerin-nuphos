@@ -23,7 +23,7 @@ const { parseAtlasLink } = await server
     throw err
   })
 
-const BASE = 'https://nuphos.ai/teams/team-1/k8s'
+const BASE = 'https://platform.cerin.ai/teams/team-1/k8s'
 
 test('parses canonical Kubernetes cluster links as cluster mentions', () => {
   assert.deepEqual(parseAtlasLink(`${BASE}/aws/account-1/us-east-1/prod/overview`), {

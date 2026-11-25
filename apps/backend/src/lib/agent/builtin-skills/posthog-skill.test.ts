@@ -25,7 +25,7 @@ printf 200
 }
 
 function runSetup(body: unknown) {
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-posthog-skill-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-posthog-skill-'))
   const bin = join(home, 'bin')
 
   Bun.spawnSync(['mkdir', '-p', bin])
@@ -43,7 +43,7 @@ function runSetup(body: unknown) {
     },
   )
 
-  return { proc, envFile: join(home, '.posthog', 'nuphos.env') }
+  return { proc, envFile: join(home, '.posthog', 'cerin.env') }
 }
 
 describe('posthog skill', () => {

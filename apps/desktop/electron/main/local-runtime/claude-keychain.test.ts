@@ -36,7 +36,7 @@ test(
     for (const storage of ['', '/custom/claude']) {
       assert.deepEqual(
         await readAgentUsage('claude-code', {
-          CLAUDE_CONFIG_DIR: '/isolated/nuphos',
+          CLAUDE_CONFIG_DIR: '/isolated/cerin',
           CLAUDE_SECURESTORAGE_CONFIG_DIR: storage,
         }),
         { seven_day: { utilization: 12 } },

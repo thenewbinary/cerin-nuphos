@@ -21,7 +21,7 @@ import type { ShellPurpose } from '@/lib/agent/devices/manage-access'
 import type { LocalExecDevice } from '@/lib/agent/tools-skilled/local-tools'
 import type { AgentRef } from '@/lib/agents/identity'
 
-/** `box`: a Nuphos computer, whose screen nobody sits at. */
+/** `box`: a Cerin computer, whose screen nobody sits at. */
 export type AvailableDevice = LocalExecDevice & { box?: boolean }
 
 /** Only computers the conversation's owner may open this shell on are offered. */

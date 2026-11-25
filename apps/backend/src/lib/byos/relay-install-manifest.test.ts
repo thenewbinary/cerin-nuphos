@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test'
 
 import { renderRelayInstallManifest } from '@/lib/byos/relay-install-manifest'
 
-const REFERENCE_MANIFEST = '../kube-relay-agent/deploy/nuphos-relay-agent.yaml'
+const REFERENCE_MANIFEST = '../kube-relay-agent/deploy/cerin-relay-agent.yaml'
 
 describe('renderRelayInstallManifest', () => {
   it('stays byte-identical to the manifest customers can also apply by hand', async () => {
@@ -22,13 +22,13 @@ describe('renderRelayInstallManifest', () => {
     }
     const reference = await file.text()
     const expected = reference
-      .replaceAll('RELAY_ENDPOINT_PLACEHOLDER', 'relay.nuphos.ai:8444')
+      .replaceAll('RELAY_ENDPOINT_PLACEHOLDER', 'relay.platform.cerin.ai:8444')
       .replaceAll('RELAY_TOKEN_PLACEHOLDER', 'nr1_token')
       .replaceAll('IMAGE_PLACEHOLDER', 'public.ecr.aws/alias/kube-relay-agent@sha256:abc')
 
     expect(
       renderRelayInstallManifest({
-        agentEndpoint: 'relay.nuphos.ai:8444',
+        agentEndpoint: 'relay.platform.cerin.ai:8444',
         agentToken: 'nr1_token',
         agentImage: 'public.ecr.aws/alias/kube-relay-agent@sha256:abc',
       }),
@@ -37,7 +37,7 @@ describe('renderRelayInstallManifest', () => {
 
   it('leaves no placeholder behind', () => {
     const manifest = renderRelayInstallManifest({
-      agentEndpoint: 'relay.nuphos.ai:8444',
+      agentEndpoint: 'relay.platform.cerin.ai:8444',
       agentToken: 'nr1_token',
       agentImage: 'image@sha256:abc',
     })

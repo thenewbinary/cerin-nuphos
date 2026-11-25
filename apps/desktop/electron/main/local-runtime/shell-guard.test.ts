@@ -11,7 +11,7 @@ test(
   'bash and zsh read the current conversation token, not the spawn-time one',
   { skip: process.platform === 'win32' },
   () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'nuphos-guard-'))
+    const root = mkdtempSync(path.join(tmpdir(), 'cerin-guard-'))
     const credentials = path.join(root, 'credentials')
     const launch = { bundle: { root }, openabHome: path.join(root, 'openab-home') }
     const print = 'printf %s "$NUPHOS_TOKEN"'

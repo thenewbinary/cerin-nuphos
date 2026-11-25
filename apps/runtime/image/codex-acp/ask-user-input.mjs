@@ -1,5 +1,5 @@
 // OpenAB renders no form elicitations, so the adapter answers request_user_input
-// with no answers. Ask through Nuphos instead; see native-question.mjs, which is
+// with no answers. Ask through Cerin instead; see native-question.mjs, which is
 // inlined beside this patch.
 const SERVERS = '    const requestedMcpServers = request.mcpServers ?? [];\n'
 const USER_INPUT =
@@ -11,9 +11,9 @@ export function patchCodexUserInput(source) {
     throw new Error('Expected Codex session server and user input handoffs')
 
   return source
-    .replaceAll(SERVERS, `${SERVERS}    nuphosRememberDecisionServer(request.mcpServers);\n`)
+    .replaceAll(SERVERS, `${SERVERS}    cerinRememberDecisionServer(request.mcpServers);\n`)
     .replace(
       USER_INPUT,
-      USER_INPUT.replace('return { answers: {} };', 'return await nuphosAskCodexQuestion(params);'),
+      USER_INPUT.replace('return { answers: {} };', 'return await cerinAskCodexQuestion(params);'),
     )
 }

@@ -22,7 +22,7 @@ export function boxRow(mongoUri: string, row: Record<string, unknown> | { remove
     import { MongoClient } from 'mongodb'
     const row = JSON.parse(process.argv[2])
     const client = await new MongoClient(process.argv[1]).connect()
-    const devices = client.db('nuphos_e2e').collection('agent_devices')
+    const devices = client.db('cerin_e2e').collection('agent_devices')
     if (row.remove) await devices.deleteOne({ deviceId: row.remove })
     else await devices.insertOne({ ...row, lastSeenAt: new Date(), createdAt: new Date(), updatedAt: new Date() })
     await client.close()`

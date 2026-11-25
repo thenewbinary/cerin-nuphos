@@ -94,7 +94,7 @@ function execFileAsync(command: string, args: string[], options?: { timeout?: nu
 export function uninstallHelmRelease(context: string, namespace: string, name: string) {
   return withAuthRetry(context, async () => {
     const { kc } = getClients(context)
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'nuphos-helm-'))
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'cerin-helm-'))
     const kubeconfigPath = path.join(dir, 'config')
 
     try {

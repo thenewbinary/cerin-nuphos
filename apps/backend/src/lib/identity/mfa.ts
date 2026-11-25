@@ -22,7 +22,7 @@ import { logEvent } from '@/lib/observability'
 
 import type { EncryptedSecret } from '@/lib/byos/secrets'
 import type { StoredPasskey } from '@/lib/identity/mfa-passkeys'
-import type { NuphosUserDoc } from '@/lib/identity/shared'
+import type { CerinUserDoc } from '@/lib/identity/shared'
 
 /**
  * Optional two-factor authentication: a TOTP authenticator (RFC 6238) plus
@@ -53,7 +53,7 @@ const FAILURE_WINDOW_MS = 15 * 60 * 1000
 // ── Account state ──
 
 type MfaFields = Pick<
-  NuphosUserDoc,
+  CerinUserDoc,
   'email' | 'mfa' | 'mfaPending' | 'mfaFailures' | 'passkeyChallenge'
 >
 

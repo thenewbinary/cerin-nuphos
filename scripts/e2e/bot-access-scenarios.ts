@@ -15,7 +15,7 @@ function botAccess(stack: Stack): { sessionId: string; access: unknown } {
   const script = `
     import { MongoClient } from 'mongodb'
     const client = await new MongoClient(process.argv[1]).connect()
-    const bots = client.db('nuphos_e2e').collection('agent_conversations')
+    const bots = client.db('cerin_e2e').collection('agent_conversations')
     const bot = await bots.findOne({ title: 'E2E Bot', avatar: { $exists: true } })
     console.log(JSON.stringify({ sessionId: bot.sessionId, access: bot.credentialAccess ?? null }))
     await client.close()`

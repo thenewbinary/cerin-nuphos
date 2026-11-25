@@ -5,7 +5,7 @@
 import { readLocalStorage, writeLocalStorage } from './localStorage.ts'
 
 // The account that inherits the state stored before it was kept per account.
-const LEGACY_OWNER_KEY = 'nuphos.accountStorage.legacyOwner'
+const LEGACY_OWNER_KEY = 'cerin.accountStorage.legacyOwner'
 
 let account: string | null = null
 

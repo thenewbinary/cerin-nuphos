@@ -73,7 +73,7 @@ function setup() {
     accountsByTeam: {},
     githubInstallationsByTeam: {},
     grafanaInstancesByTeam: {},
-    openNuphosLinkInNewTab: (href: string, beside?: boolean) => {
+    openCerinLinkInNewTab: (href: string, beside?: boolean) => {
       opened.push({ href, beside })
 
       return true
@@ -88,7 +88,7 @@ const url = 'https://github.com/acme/app/pull/42/files#diff-1'
 test('GitHub chat badges open the browser tab and retain deep links', () => {
   const { links, opened, external } = setup()
 
-  assert.equal(links.openNuphosLinkFromChat(url), true)
+  assert.equal(links.openCerinLinkFromChat(url), true)
   assert.deepEqual(opened, [{ href: `team.browser?url=${encodeURIComponent(url)}`, beside: false }])
   assert.deepEqual(external, [])
 })
@@ -97,14 +97,14 @@ test('GitHub repository and workflow links keep their bound pages', () => {
   const { links, opened } = setup()
   const actions = 'https://github.com/acme/app/actions'
 
-  assert.equal(links.openNuphosLinkFromChat(actions), true)
+  assert.equal(links.openCerinLinkFromChat(actions), true)
   assert.deepEqual(opened, [{ href: actions, beside: false }])
 })
 
 test('GitHub modifier click opens its browser tab beside the conversation', () => {
   const { links, opened, external } = setup()
 
-  assert.equal(links.openNuphosLinkFromChat(url, true), true)
+  assert.equal(links.openCerinLinkFromChat(url, true), true)
   assert.equal(opened[0]?.beside, true)
   assert.deepEqual(external, [])
 })

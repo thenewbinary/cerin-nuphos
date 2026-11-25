@@ -81,10 +81,10 @@ Use the exact setup command shown in the Cerin credential prompt. It looks like:
 bash skills/tailscale/scripts/setup-credentials.sh <teamId> <clientId>
 ```
 
-The script calls `GET /teams/:teamId/tailscale-clients/:clientId/credentials` on the Cerin backend with the user's `NUPHOS_TOKEN`. In an Cerin agent sandbox it automatically prefers the agent-session scoped endpoint. It writes `~/.tailscale/nuphos.env` and exports values that later shell commands can source.
+The script calls `GET /teams/:teamId/tailscale-clients/:clientId/credentials` on the Cerin backend with the user's `NUPHOS_TOKEN`. In an Cerin agent sandbox it automatically prefers the agent-session scoped endpoint. It writes `~/.tailscale/cerin.env` and exports values that later shell commands can source.
 
 ```bash
-source ~/.tailscale/nuphos.env
+source ~/.tailscale/cerin.env
 curl -fsS -H @<(printf 'Authorization: Bearer %s\n' "$TAILSCALE_API_TOKEN") \
   "https://api.tailscale.com/api/v2/tailnet/$TAILSCALE_TAILNET/devices" | python3 -m json.tool
 ```
@@ -105,7 +105,7 @@ https://api.tailscale.com/api/v2
 
 ## Safety
 
-- Do not print `TAILSCALE_API_TOKEN`, `TS_API_TOKEN`, or `~/.tailscale/nuphos.env`.
+- Do not print `TAILSCALE_API_TOKEN`, `TS_API_TOKEN`, or `~/.tailscale/cerin.env`.
 - If Tailscale returns 401, the OAuth access token might be expired. Re-run the setup script.
 - If an API call returns a scope/permission error, tell the user which Tailscale OAuth client scope is needed instead of asking for the client secret again.
 - If the requested Tailscale client is not listed in the enabled credentials prompt, ask the user to update this session's credential selection.

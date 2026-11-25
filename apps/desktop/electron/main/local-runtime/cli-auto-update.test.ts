@@ -156,8 +156,8 @@ test('a check that fails is logged, never thrown at the host', async () => {
   assert.equal(await tickCliUpdate(value), null)
 })
 
-test('nuphos update that cannot start says so instead of crashing the host', async () => {
-  assert.equal(await runCliUpdate(path.join(tmpdir(), 'no-such-nuphos')), false)
+test('cerin update that cannot start says so instead of crashing the host', async () => {
+  assert.equal(await runCliUpdate(path.join(tmpdir(), 'no-such-cerin')), false)
   // Node itself starts on every platform (macOS has no /bin/true).
   assert.equal(await runCliUpdate(process.execPath), true)
 })

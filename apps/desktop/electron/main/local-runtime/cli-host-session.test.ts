@@ -3,7 +3,7 @@ import { test } from 'node:test'
 
 import { cliSessionToken, hostOwner } from './cli-host-session.ts'
 
-const launch = { token: 'nup_launch', keychainAccount: 'u1@https://api.nuphos.ai' }
+const launch = { token: 'nup_launch', keychainAccount: 'u1@https://platform.cerin.ai' }
 
 test('a device-login token in cli.yaml is the session, though it is not a JWT', () => {
   assert.equal(cliSessionToken({ token: 'nup_saved' }, launch), 'nup_saved')
@@ -13,7 +13,7 @@ test('the launch token is the session while cli.yaml names its keychain item', (
   assert.equal(cliSessionToken({ keychainAccount: launch.keychainAccount }, launch), 'nup_launch')
   // Signed out, or signed in as someone else since: not any more.
   assert.equal(cliSessionToken({}, launch), null)
-  assert.equal(cliSessionToken({ keychainAccount: 'u2@https://api.nuphos.ai' }, launch), null)
+  assert.equal(cliSessionToken({ keychainAccount: 'u2@https://platform.cerin.ai' }, launch), null)
   assert.equal(cliSessionToken(null, launch), null)
 })
 

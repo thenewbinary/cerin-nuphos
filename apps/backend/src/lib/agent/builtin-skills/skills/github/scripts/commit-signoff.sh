@@ -15,7 +15,7 @@ repo="${1:?usage: commit-signoff.sh <owner/repo>}"
 # 1. Create a temporary branch at the tip of the default branch.
 default_branch="$(gh api "repos/$repo" --jq .default_branch)"
 base="$(gh api "repos/$repo/git/ref/heads/$default_branch" --jq .object.sha)"
-probe="nuphos/signoff-probe-$(date +%s)-$RANDOM"
+probe="cerin/signoff-probe-$(date +%s)-$RANDOM"
 gh api "repos/$repo/git/refs" -f ref="refs/heads/$probe" -f sha="$base" >/dev/null
 trap 'gh api -X DELETE "repos/$repo/git/refs/heads/$probe" >/dev/null' EXIT
 

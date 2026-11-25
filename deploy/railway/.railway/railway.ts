@@ -43,12 +43,12 @@ export default defineRailway(() => {
       RUSTFS_ADDRESS: '[::]:9000',
       // Railway volumes are root-owned; the agent remains non-root in its own project.
       RAILWAY_RUN_UID: '0',
-      RUSTFS_ACCESS_KEY: 'nuphos',
+      RUSTFS_ACCESS_KEY: 'cerin',
       RUSTFS_SECRET_KEY: storageSecret,
-      S3_ACCESS_KEY: 'nuphos',
+      S3_ACCESS_KEY: 'cerin',
       S3_SECRET_KEY: storageSecret,
       S3_ENDPOINT: 'http://127.0.0.1:9000',
-      BUCKETS: 'nuphos-file-transfers nuphos-skills',
+      BUCKETS: 'cerin-file-transfers cerin-skills',
     },
   })
   const backend = service('backend', {
@@ -67,23 +67,23 @@ export default defineRailway(() => {
       NUPHOS_AUTH_BASE_URL: `https://${apiDomain}`,
       NUPHOS_BACKEND_URL: `https://${apiDomain}`,
       NUPHOS_PUBLIC_BACKEND_URL: `https://${apiDomain}`,
-      // Optional: without a key, email sign-in is off and `nuphos-admin` issues codes.
+      // Optional: without a key, email sign-in is off and `cerin-admin` issues codes.
       ...(optional('RESEND_API_KEY') && {
         RESEND_API_KEY: required('RESEND_API_KEY'),
         NUPHOS_EMAIL_FROM: required('NUPHOS_EMAIL_FROM'),
       }),
       ATLAS_REDIS_ENABLED: 'false',
-      NUPHOS_FILE_TRANSFER_S3_BUCKET: 'nuphos-file-transfers',
+      NUPHOS_FILE_TRANSFER_S3_BUCKET: 'cerin-file-transfers',
       NUPHOS_FILE_TRANSFER_S3_REGION: 'us-east-1',
       NUPHOS_FILE_TRANSFER_S3_ENDPOINT: `https://${storageDomain}`,
-      NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: 'nuphos',
+      NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: 'cerin',
       NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: storageSecret,
-      ATLAS_SKILLS_BUCKET: 'nuphos-skills',
+      ATLAS_SKILLS_BUCKET: 'cerin-skills',
       ATLAS_SKILLS_S3_REGION: 'us-east-1',
       ATLAS_SKILLS_S3_ENDPOINT: `https://${storageDomain}`,
-      ATLAS_SKILLS_S3_ACCESS_KEY_ID: 'nuphos',
+      ATLAS_SKILLS_S3_ACCESS_KEY_ID: 'cerin',
       ATLAS_SKILLS_S3_SECRET_ACCESS_KEY: storageSecret,
     },
   })
-  return project('nuphos-data', { resources: [mongo, storage, backend, mongoData, storageData] })
+  return project('cerin-data', { resources: [mongo, storage, backend, mongoData, storageData] })
 })

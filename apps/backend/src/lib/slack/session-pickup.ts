@@ -125,7 +125,7 @@ export async function pickUpConversationInSlack(
     botToken: bot.botToken,
     slackWorkspaceId,
     teamId: args.teamId,
-    nuphosUserId: args.userId,
+    cerinUserId: args.userId,
   })
 
   if (!selfMapping) {

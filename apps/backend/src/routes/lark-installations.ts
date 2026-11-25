@@ -68,7 +68,7 @@ larkInstallationsRoutes.put('/', requireTeamRole('ADMINISTRATOR'), async (c) => 
 
   const webhookUrl = webhookUrlFor(appId)
 
-  // Reject an app already bound to a different Nuphos team before we spend a
+  // Reject an app already bound to a different Cerin team before we spend a
   // round-trip verifying credentials.
   await assertLarkAppAvailable(appId, teamId)
 

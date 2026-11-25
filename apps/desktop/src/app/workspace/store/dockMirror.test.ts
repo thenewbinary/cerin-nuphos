@@ -104,16 +104,16 @@ test("the phone opens and closes pages only in this team and this conversation's
     },
   })
 
-  assert.equal(window.nuphosOpenDockTab?.('chat', TEAM, { href: '/teams/other-team/files' }), null)
-  const id = window.nuphosOpenDockTab?.('chat', TEAM, { href: `/teams/${TEAM}/files` })
+  assert.equal(window.cerinOpenDockTab?.('chat', TEAM, { href: '/teams/other-team/files' }), null)
+  const id = window.cerinOpenDockTab?.('chat', TEAM, { href: `/teams/${TEAM}/files` })
 
   assert.equal(opened[0]?.[0], 'chat')
   assert.equal(opened[0]?.[1].id, id)
   assert.equal(opened[0]?.[1].active, 'team.files')
-  window.nuphosOpenDockTab?.('chat', TEAM, { page: 'team.plans' })
+  window.cerinOpenDockTab?.('chat', TEAM, { page: 'team.plans' })
   assert.equal(opened[1]?.[1].active, 'team.plans')
-  assert.equal(window.nuphosCloseDockTab?.('chat', 'not-here'), false)
-  assert.equal(window.nuphosCloseDockTab?.('chat', 't1'), true)
+  assert.equal(window.cerinCloseDockTab?.('chat', 'not-here'), false)
+  assert.equal(window.cerinCloseDockTab?.('chat', 't1'), true)
   assert.deepEqual(closed, ['t1'])
   unexpose()
 })

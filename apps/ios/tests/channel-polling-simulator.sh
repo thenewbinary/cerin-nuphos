@@ -15,13 +15,13 @@ set -euo pipefail
 device=${1:-booted}
 team=64b5f1c2e4b0a1d2c3e4f5a6
 fixture="$(cd "$(dirname "$0")" && pwd)/fixtures/channel-responses.json"
-chat_a="https://nuphos.ai/teams/$team/agent/chat-release"
-chat_b="https://nuphos.ai/teams/$team/agent/chat-design"
+chat_a="https://platform.cerin.ai/teams/$team/agent/chat-release"
+chat_b="https://platform.cerin.ai/teams/$team/agent/chat-design"
 
 launch() {
   local out
   out=$(SIMCTL_CHILD_NUPHOS_PREVIEW_RESPONSES="$fixture" \
-    xcrun simctl launch --terminate-running-process "$device" ai.nuphos.ios -preview-home -preview-no-push "$@")
+    xcrun simctl launch --terminate-running-process "$device" ai.cerin.ios -preview-home -preview-no-push "$@")
   pid=${out##*: }
 }
 
@@ -40,7 +40,7 @@ launch
 sleep 5
 
 # Links open two seconds apart; a chat polls every four seconds.
-launch -open-links "$chat_a" "$chat_b" "https://nuphos.ai/agent"
+launch -open-links "$chat_a" "$chat_b" "https://platform.cerin.ai/agent"
 sleep 20
 [[ $(requests 30s chat-design) -gt 0 ]] || fail "chat B never loaded, so this run proves nothing"
 for chat in chat-release chat-design; do
@@ -53,7 +53,7 @@ sleep 12
 xcrun simctl launch "$device" com.apple.Preferences >/dev/null
 sleep 12
 [[ $(requests 9s chat-design) -eq 0 ]] || fail "the open chat polls in the background"
-xcrun simctl launch "$device" ai.nuphos.ios >/dev/null
+xcrun simctl launch "$device" ai.cerin.ios >/dev/null
 sleep 10
 [[ $(requests 9s chat-design) -gt 0 ]] || fail "the open chat did not poll again in the foreground"
 echo "Only the open chat polls, and only while active: passed"

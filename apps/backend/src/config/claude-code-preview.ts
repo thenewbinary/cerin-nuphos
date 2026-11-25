@@ -14,7 +14,7 @@ function localStackTokenKey(): string | undefined {
     return undefined
 
   return createHmac('sha256', jwtSecret)
-    .update('nuphos-local-stack-token-encryption')
+    .update('cerin-local-stack-token-encryption')
     .digest('base64')
 }
 

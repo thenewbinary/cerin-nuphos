@@ -5,7 +5,7 @@ import { refreshRuntimeLists, useRuntimeInstancesQuery } from '../lib/query/runt
 
 import type { RuntimeInstance } from '../types/runtime'
 
-export const RUNTIME_INSTANCES_CHANGED = 'nuphos:runtime-instances-changed'
+export const RUNTIME_INSTANCES_CHANGED = 'cerin:runtime-instances-changed'
 
 const NO_INSTANCES: RuntimeInstance[] = []
 

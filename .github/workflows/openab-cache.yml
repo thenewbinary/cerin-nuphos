@@ -67,15 +67,15 @@ jobs:
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: |
-            ~/.cache/nuphos/openab-*/target/*/release/openab
-            ~/.cache/nuphos/openab-*/target/*/release/openab.exe
+            ~/.cache/cerin/openab-*/target/*/release/openab
+            ~/.cache/cerin/openab-*/target/*/release/openab.exe
       - if: steps.openab.outputs.hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: ${{ steps.openab.outputs.key }}
           path: |
-            ~/.cache/nuphos/openab-*/target/*/release/openab
-            ~/.cache/nuphos/openab-*/target/*/release/openab.exe
+            ~/.cache/cerin/openab-*/target/*/release/openab
+            ~/.cache/cerin/openab-*/target/*/release/openab.exe
       # A rejected entry keeps its key, so saving cannot replace it and every
       # release would compile without anyone noticing.
       - name: Fail on a rejected cache entry

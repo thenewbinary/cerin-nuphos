@@ -120,7 +120,7 @@ describe('get-credential.sh', () => {
 
     const expFile = path.join(
       home,
-      '.kube/nuphos-cred-cache/gcp-my-project-staging-us-central1.expires',
+      '.kube/cerin-cred-cache/gcp-my-project-staging-us-central1.expires',
     )
     writeFileSync(expFile, `${Math.floor(Date.now() / 1000) + 30}\n`)
     run(getCredential, ['gcp', 'team1', 'my-project', 'staging', 'us-central1'])
@@ -135,7 +135,7 @@ describe('get-credential.sh', () => {
     run(getCredential, ['aws', 'team1', '123456789012', 'web', 'us-east-1'])
     run(getCredential, ['aws', 'team1', '123456789012', 'web', 'eu-west-1'])
     expect(callCount()).toBe(2)
-    const dir = path.join(home, '.kube/nuphos-cred-cache')
+    const dir = path.join(home, '.kube/cerin-cred-cache')
     expect(existsSync(path.join(dir, 'aws-123456789012-web-us-east-1.json'))).toBe(true)
     expect(existsSync(path.join(dir, 'aws-123456789012-web-eu-west-1.json'))).toBe(true)
   })
@@ -146,7 +146,7 @@ describe('get-credential.sh', () => {
     expect(result.exitCode).not.toBe(0)
     expect(result.stderr).toContain('Do NOT retry')
     expect(
-      existsSync(path.join(home, '.kube/nuphos-cred-cache/aws-123456789012-prod-us-east-1.json')),
+      existsSync(path.join(home, '.kube/cerin-cred-cache/aws-123456789012-prod-us-east-1.json')),
     ).toBe(false)
   })
 })
@@ -215,17 +215,17 @@ describe('sync-clusters.sh', () => {
     expect(existsSync(path.join(home, '.kube/config'))).toBe(false)
     // The marker is what stops the backend's per-turn repair poke from
     // re-firing forever on a session that has nothing to sync.
-    expect(existsSync(path.join(home, '.kube/.nuphos-no-clusters'))).toBe(true)
+    expect(existsSync(path.join(home, '.kube/.cerin-no-clusters'))).toBe(true)
   })
 
   test('a later successful sync clears the cluster-less marker', () => {
     writeCurlShim('', '204')
     run(syncClusters, [])
-    expect(existsSync(path.join(home, '.kube/.nuphos-no-clusters'))).toBe(true)
+    expect(existsSync(path.join(home, '.kube/.cerin-no-clusters'))).toBe(true)
 
     writeCurlShim('apiVersion: v1\nkind: Config', '200')
     expect(run(syncClusters, []).exitCode).toBe(0)
-    expect(existsSync(path.join(home, '.kube/.nuphos-no-clusters'))).toBe(false)
+    expect(existsSync(path.join(home, '.kube/.cerin-no-clusters'))).toBe(false)
     expect(existsSync(path.join(home, '.kube/config'))).toBe(true)
   })
 })

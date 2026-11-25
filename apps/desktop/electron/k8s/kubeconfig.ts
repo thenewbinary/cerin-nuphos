@@ -13,7 +13,7 @@ import type { RefreshedCredential } from './context-refreshers'
 
 export function listContexts() {
   // Union of (a) contexts declared in the on-disk kubeconfig and (b) contexts
-  // registered at runtime via loadKubeconfigYaml (Nuphos-fetched ephemeral
+  // registered at runtime via loadKubeconfigYaml (Cerin-fetched ephemeral
   // clusters). The deduplicated result is what the renderer presents in the
   // cluster picker.
   const defaultKc = loadDefaultKubeconfig()
@@ -54,7 +54,7 @@ export function listContexts() {
 
 /**
  * Register a kubeconfig YAML into the per-context cache and return its context
- * name. Nuphos's cluster IPC handlers call this after fetching short-lived
+ * name. Cerin's cluster IPC handlers call this after fetching short-lived
  * credentials. If the context is already loaded the YAML is merged in place
  * (KubeConfig identity preserved) so live informers and port-forwards keep
  * working under refreshed credentials.

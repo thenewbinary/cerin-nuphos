@@ -74,7 +74,7 @@ async function dismiss(
   reason: string | undefined,
 ) {
   if (!conversation.teamId) throw new AppError(404, 'not_found', 'Conversation not found')
-  const { sender } = await createMessageMetadata(userId, 'nuphos')
+  const { sender } = await createMessageMetadata(userId, 'cerin')
 
   await dismissDecision({
     conversation,
@@ -128,7 +128,7 @@ agent.post('/conversations/:sessionId/decisions/:requestId/answer', async (c) =>
 
   if (!answer.success || requestId.length > 200)
     throw new AppError(400, 'invalid_request', 'An answer needs choices, text or questions')
-  const { sender } = await createMessageMetadata(userId, 'nuphos')
+  const { sender } = await createMessageMetadata(userId, 'cerin')
 
   await answerDecision({
     conversation,

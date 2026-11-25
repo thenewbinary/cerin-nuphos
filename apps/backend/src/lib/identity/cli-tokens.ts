@@ -2,13 +2,13 @@ import { ObjectId } from 'mongodb'
 
 import { db } from '@/lib/db'
 import { AppError } from '@/lib/errors'
-import { getNuphosUserForCredential } from '@/lib/identity'
+import { getCerinUserForCredential } from '@/lib/identity'
 import { deleteUserAvatars, pruneAvatars, storeAvatar } from '@/lib/identity/avatar-upload'
 import { generateOpaqueToken, hashToken } from '@/lib/oauth/tokens'
 import { logEvent } from '@/lib/observability'
 import { publicWebUrl } from '@/lib/public-urls'
 
-import type { NuphosUser } from '@/lib/identity/types'
+import type { CerinUser } from '@/lib/identity/types'
 
 /**
  * Stored bearer tokens for terminals and bots, unlike the stateless session
@@ -22,7 +22,7 @@ import type { NuphosUser } from '@/lib/identity/types'
  *     the account, team membership, or billing (see `cliTokenDenied`).
  *
  * Only the SHA-256 of the secret is stored. A password reset revokes these
- * too, as it does session tokens (`getNuphosUserForCredential`). A personal
+ * too, as it does session tokens (`getCerinUserForCredential`). A personal
  * token lapses after PERSONAL_TTL_MS without use; an agent token is a bot its
  * user made on purpose and lasts until revoked.
  */
@@ -126,13 +126,13 @@ export async function mintCliToken(input: {
 
 export async function authenticateCliToken(
   token: string,
-): Promise<{ user: NuphosUser; cliToken: CliTokenPrincipal } | null> {
+): Promise<{ user: CerinUser; cliToken: CliTokenPrincipal } | null> {
   const doc = await cliTokens().findOne({ secretHash: hashToken(token) })
   const now = new Date()
 
   // The TTL reaper runs about once a minute, so expiry is checked here too.
   if (!doc || (doc.expiresAt && doc.expiresAt <= now)) return null
-  const user = await getNuphosUserForCredential(doc.userId, doc.createdAt)
+  const user = await getCerinUserForCredential(doc.userId, doc.createdAt)
 
   if (!user) return null
 
@@ -262,7 +262,7 @@ const AGENT_DENIED: [RegExp, RegExp][] = [
   [/^(PUT|PATCH|DELETE)$/, /^\/auth\/(me|ai-consent)(\/|$)/],
   [/./, /^\/push\//],
   [/./, /^\/agent\/devices(\/|$)/],
-  // Restarting a computer's Nuphos Desktop ends every agent on it: its person only.
+  // Restarting a computer's Cerin Desktop ends every agent on it: its person only.
   [/./, /^\/teams\/[^/]+\/computers(\/|$)/],
   [/./, /^\/invitations(\/|$)/],
   [/./, /^\/personal-credentials(\/|$)/],

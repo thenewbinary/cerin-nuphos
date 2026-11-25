@@ -6,7 +6,7 @@ import { useDetailSidebarTransition } from '../../hooks/useDetailSidebarTransiti
 import { t } from '../../i18n'
 import { useResetOnKey } from '../useResetOnKey'
 
-const DETAIL_PANE_WIDTH_KEY = 'nuphos.iam-detail-pane-width'
+const DETAIL_PANE_WIDTH_KEY = 'cerin.iam-detail-pane-width'
 const DETAIL_PANE_DEFAULT_WIDTH = 560
 const DETAIL_PANE_MIN_WIDTH = 420
 const DETAIL_PANE_MAX_WIDTH = 900

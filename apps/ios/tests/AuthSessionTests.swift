@@ -22,9 +22,9 @@ import Foundation
     private static func newIdentityWaitsForPushCleanup() async {
         Keychain.items = [:]
         var readBob = false
-        NuphosAPI.me = { token in
+        CerinAPI.me = { token in
             if token == "bob" { readBob = true }
-            return NuphosUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "")
+            return CerinUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "")
         }
         let session = AuthSession()
         await signIn(session, as: "alice")
@@ -49,7 +49,7 @@ import Foundation
 
     private static func aLateConsentCannotGrantAnotherAccount() async {
         Keychain.items = [:]
-        NuphosAPI.me = { token in NuphosUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
+        CerinAPI.me = { token in CerinUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
         let session = AuthSession()
         await signIn(session, as: "alice")
         let alice = session.savedAccounts.active!.id
@@ -75,7 +75,7 @@ import Foundation
 
     private static func aSignInWithTwoFactorWaitsForTheCode() async {
         Keychain.items = [:]
-        NuphosAPI.me = { token in NuphosUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
+        CerinAPI.me = { token in CerinUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
         let session = AuthSession()
         AccountAPI.mfaChallenge = "challenge"
         await signIn(session, as: "carol")
@@ -100,7 +100,7 @@ import Foundation
 
     private static func aLateRefreshCannotOverwriteAnotherAccount() async {
         Keychain.items = [:]
-        NuphosAPI.me = { token in NuphosUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
+        CerinAPI.me = { token in CerinUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
         let session = AuthSession()
         await signIn(session, as: "alice")
         let alice = session.savedAccounts.active!.id
@@ -108,15 +108,15 @@ import Foundation
         await signIn(session, as: "bob")
         let bob = session.savedAccounts.active!.id
         await session.selectAccount(alice)
-        var answer: CheckedContinuation<NuphosUser, Error>?
-        NuphosAPI.me = { token in
+        var answer: CheckedContinuation<CerinUser, Error>?
+        CerinAPI.me = { token in
             if token == "alice" { return try await withCheckedThrowingContinuation { answer = $0 } }
-            return NuphosUser(id: "u-bob", email: "", name: "", username: "", avatarURL: "")
+            return CerinUser(id: "u-bob", email: "", name: "", username: "", avatarURL: "")
         }
         let pending = Task { await session.refreshUser() }
         while answer == nil { await Task.yield() }
         await session.selectAccount(bob)
-        answer?.resume(returning: NuphosUser(id: "u-alice", email: "", name: "Late Alice", username: "", avatarURL: ""))
+        answer?.resume(returning: CerinUser(id: "u-alice", email: "", name: "Late Alice", username: "", avatarURL: ""))
         await pending.value
         precondition(session.user?.id == "u-bob")
         precondition(session.savedAccounts.active?.id == bob)
@@ -124,16 +124,16 @@ import Foundation
 
     private static func expiredSelectionKeepsOtherAccounts() async {
         Keychain.items = [:]
-        NuphosAPI.me = { token in NuphosUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
+        CerinAPI.me = { token in CerinUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
         let session = AuthSession()
         await signIn(session, as: "alice")
         let alice = session.savedAccounts.active!.id
         session.addAccount()
         await signIn(session, as: "bob")
         let bob = session.savedAccounts.active!.id
-        NuphosAPI.me = { token in
-            if token == "alice" { throw NuphosAPI.Failure.unauthorized }
-            return NuphosUser(id: "u-bob", email: "", name: "", username: "", avatarURL: "")
+        CerinAPI.me = { token in
+            if token == "alice" { throw CerinAPI.Failure.unauthorized }
+            return CerinUser(id: "u-bob", email: "", name: "", username: "", avatarURL: "")
         }
         await session.selectAccount(alice)
         precondition(session.token == nil)
@@ -148,7 +148,7 @@ import Foundation
 
     private static func addingAndCancelingPreservesTheOriginalSession() async {
         Keychain.items = [:]
-        NuphosAPI.me = { token in NuphosUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
+        CerinAPI.me = { token in CerinUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
         Keychain.items = [:]
         let session = AuthSession()
         AccountAPI.signInToken = "alice"
@@ -173,17 +173,17 @@ import Foundation
         precondition(SharedShareSession.publishedToken == nil)
     }
 
-    private static let cached = NuphosUser(id: "u-old", email: "", name: "Old", username: "", avatarURL: "")
+    private static let cached = CerinUser(id: "u-old", email: "", name: "Old", username: "", avatarURL: "")
 
     /// Starts a launch with a saved token and a cached user; the returned
     /// closure answers its `/auth/me`.
-    private static func launch(_ session: AuthSession) async -> (Result<NuphosUser, Error>) async -> Void {
+    private static func launch(_ session: AuthSession) async -> (Result<CerinUser, Error>) async -> Void {
         SharedShareSession.publishedToken = nil
         Keychain.items = [AuthSession.tokenKey: "old"]
         LaunchCache.user = .init(user: cached, aiConsentVersion: AccountAPI.aiConsentVersion)
-        var answer: CheckedContinuation<NuphosUser, Error>?
-        NuphosAPI.me = { token in
-            guard token == "old" else { return NuphosUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
+        var answer: CheckedContinuation<CerinUser, Error>?
+        CerinAPI.me = { token in
+            guard token == "old" else { return CerinUser(id: "u-\(token)", email: "", name: "", username: "", avatarURL: "") }
             return try await withCheckedThrowingContinuation { answer = $0 }
         }
         let restoring = Task { await session.restore() }
@@ -214,7 +214,7 @@ import Foundation
         AccountAPI.signInToken = "new"
         try? await session.emailSignIn(email: "a@example.com", credential: "123456", password: false)
         precondition(session.token == "new")
-        await reply(.failure(NuphosAPI.Failure.unauthorized))
+        await reply(.failure(CerinAPI.Failure.unauthorized))
         precondition(session.token == "new")
         precondition(session.savedAccounts.active?.token == "new")
         precondition(session.user?.id == "u-new")
@@ -243,7 +243,7 @@ import Foundation
         session.signOut()
         precondition(LaunchCache.user == nil)
         precondition(TransferFiles.clears == clears + 1, "sign-out drops downloaded attachments")
-        await reply(.failure(NuphosAPI.Failure.unauthorized))
+        await reply(.failure(CerinAPI.Failure.unauthorized))
         precondition(session.state == .signedOut(error: nil))
     }
 

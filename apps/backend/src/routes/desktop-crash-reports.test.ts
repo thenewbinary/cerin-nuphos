@@ -48,7 +48,7 @@ function crashForm(dump: Uint8Array = new Uint8Array([0x4d, 0x44, 0x4d, 0x50])) 
   form.set('heap_limit_mb', '4096')
   form.set('uptime_s', '1293')
   form.set('device', DEVICE)
-  form.set('_productName', 'Nuphos')
+  form.set('_productName', 'Cerin')
   form.set('email', 'someone@example.com')
 
   return form

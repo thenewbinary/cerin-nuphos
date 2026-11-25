@@ -83,7 +83,7 @@ const request = (method = 'GET', suffix = `?teamId=${teamId}`, value: unknown = 
       ? {
           headers: {
             'Content-Type': 'application/json',
-            'x-atlas-client': 'nuphos-desktop/0.129.0',
+            'x-atlas-client': 'cerin-desktop/0.129.0',
           },
           body: JSON.stringify({ configId: 'model', value }),
         }

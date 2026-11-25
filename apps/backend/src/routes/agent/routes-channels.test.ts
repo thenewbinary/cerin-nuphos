@@ -293,7 +293,7 @@ describe('posting to a channel', () => {
           id: 'm1',
           role: 'user',
           parts: [{ type: 'text', text: 'hello' }],
-          metadata: { sender: { type: 'user', id: OWNER }, source: 'nuphos' },
+          metadata: { sender: { type: 'user', id: OWNER }, source: 'cerin' },
         },
       ],
     })

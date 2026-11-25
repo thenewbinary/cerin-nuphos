@@ -16293,7 +16293,7 @@
                   "audience": {
                     "type": "string",
                     "enum": [
-                      "nuphos-preview-mcp"
+                      "cerin-preview-mcp"
                     ]
                   },
                   "team_id": {

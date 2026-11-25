@@ -67,7 +67,7 @@ export function WorkspaceAgentPane({
     selectedSessionReadOnly,
     setAgentSidebarPendingFork,
     workspaceActions,
-    stableOpenNuphosLinkFromChat,
+    stableOpenCerinLinkFromChat,
     stableOpenSessionResource,
   } = ws
   const { currentHeading, handleTitleChange } = useSessionHeading(selectedSessionId)
@@ -259,7 +259,7 @@ export function WorkspaceAgentPane({
               sessionReadOnly={selectedSessionReadOnly}
               openQuestions={openQuestions}
               onSessionChange={handleSessionChange}
-              onOpenNuphosLink={stableOpenNuphosLinkFromChat}
+              onOpenCerinLink={stableOpenCerinLinkFromChat}
               onOpenAgentSettings={handleOpenAgentSettings}
               pendingImport={foreground ? agentSidebarPendingImport : null}
               onImportConsumed={handleImportConsumed}

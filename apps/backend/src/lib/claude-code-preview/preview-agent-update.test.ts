@@ -4,11 +4,11 @@ import { isToolSearchTitle, parseToolUpdate, prettifyToolTitle } from './preview
 
 describe('prettifyToolTitle', () => {
   test('renders MCP tool ids as "server: tool"', () => {
-    expect(prettifyToolTitle('mcp__nuphos-credentials__list_credentials')).toBe(
-      'nuphos-credentials: list_credentials',
+    expect(prettifyToolTitle('mcp__cerin-credentials__list_credentials')).toBe(
+      'cerin-credentials: list_credentials',
     )
-    expect(prettifyToolTitle('select:mcp__nuphos-credentials__get_credential')).toBe(
-      'nuphos-credentials: get_credential',
+    expect(prettifyToolTitle('select:mcp__cerin-credentials__get_credential')).toBe(
+      'cerin-credentials: get_credential',
     )
   })
 
@@ -22,7 +22,7 @@ describe('prettifyToolTitle', () => {
 
   test('prefers the MCP input description over the tool name', () => {
     const update = parseToolUpdate('tc-2', {
-      title: 'mcp__nuphos-credentials__get_credential',
+      title: 'mcp__cerin-credentials__get_credential',
       status: 'pending',
       rawInput: { provider: 'aws', id: 'role-1', description: '取得 AWS 帳單查詢用的憑證' },
     })
@@ -41,17 +41,17 @@ describe('prettifyToolTitle', () => {
   })
 
   test('flags deferred-tool lookups as plumbing', () => {
-    expect(isToolSearchTitle('select:mcp__nuphos-credentials__get_credential')).toBe(true)
-    expect(isToolSearchTitle('nuphos-credentials: get_credential')).toBe(false)
+    expect(isToolSearchTitle('select:mcp__cerin-credentials__get_credential')).toBe(true)
+    expect(isToolSearchTitle('cerin-credentials: get_credential')).toBe(false)
   })
 
   test('parseToolUpdate applies the prettified title', () => {
     const update = parseToolUpdate('tc-1', {
-      title: 'mcp__nuphos-credentials__get_credential',
+      title: 'mcp__cerin-credentials__get_credential',
       status: 'completed',
     })
 
-    expect(update).toMatchObject({ title: 'nuphos-credentials: get_credential' })
+    expect(update).toMatchObject({ title: 'cerin-credentials: get_credential' })
   })
 
   test("parseToolUpdate surfaces a terminal embed's terminalId", () => {

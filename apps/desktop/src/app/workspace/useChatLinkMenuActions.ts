@@ -13,8 +13,8 @@ export function useChatLinkMenuActions({
   resolveExternalLink = resolveExternalLinkFromApi,
   copyLink,
   openExternalLink,
-  openNuphosLinkFromChat,
-  openNuphosLinkInNewTab,
+  openCerinLinkFromChat,
+  openCerinLinkInNewTab,
 }: ChatLinkMenuDeps): ChatLinkMenuActions {
   return useMemo(
     () =>
@@ -23,14 +23,14 @@ export function useChatLinkMenuActions({
         resolveExternalLink,
         copyLink,
         openExternalLink,
-        openNuphosLinkFromChat,
-        openNuphosLinkInNewTab,
+        openCerinLinkFromChat,
+        openCerinLinkInNewTab,
       }),
     [
       copyLink,
       openExternalLink,
-      openNuphosLinkFromChat,
-      openNuphosLinkInNewTab,
+      openCerinLinkFromChat,
+      openCerinLinkInNewTab,
       resolveExternalLink,
       teamId,
     ],

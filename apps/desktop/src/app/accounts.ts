@@ -12,7 +12,7 @@ export function accountName(account: AccountSummary): string {
   return user?.name || user?.username || user?.email || account.key.split('@')[0] || account.key
 }
 
-/** The backend to name beside an account: none for Nuphos Cloud. */
+/** The backend to name beside an account: none for Cerin Cloud. */
 export function backendLabel(api: string): string | null {
   try {
     const url = new URL(api)
@@ -127,7 +127,7 @@ function origin(api: string): string {
 const sameBackend = (a: string, b: string) => origin(a) === origin(b)
 
 // Survives the reload a move to another backend takes.
-const NOTICE_KEY = 'nuphos.signInAgain.notice'
+const NOTICE_KEY = 'cerin.signInAgain.notice'
 
 /** The notice left for the sign-in screen by `switchToAccount`, once. */
 export function takeSignInNotice(): string | undefined {

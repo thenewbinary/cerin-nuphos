@@ -291,7 +291,7 @@ test(
             CLAUDE_CODE_EXECUTABLE: executable,
             CLAUDE_CONFIG_DIR: configDir,
             CLAUDE_SECURESTORAGE_CONFIG_DIR: configDir,
-            USER: 'nuphos-test-user',
+            USER: 'cerin-test-user',
           },
           stdio: ['pipe', 'pipe', 'inherit'],
         },
@@ -311,7 +311,7 @@ test(
       assert.equal(stored.configDir, configDir)
       assert.ok(stored.env.includes('CLAUDE_SECURESTORAGE_CONFIG_DIR'))
       // The login is stored for the account the agent's own status check looks under.
-      assert.equal(stored.user, 'nuphos-test-user')
+      assert.equal(stored.user, 'cerin-test-user')
     } finally {
       await rm(home, { recursive: true, force: true })
     }

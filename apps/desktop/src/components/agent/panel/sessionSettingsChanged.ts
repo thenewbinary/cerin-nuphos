@@ -1,4 +1,4 @@
-const EVENT = 'nuphos:session-settings-changed'
+const EVENT = 'cerin:session-settings-changed'
 
 /** Tells every open composer that a conversation's model or permission mode was saved. */
 export function announceSettingsChanged(sessionId: string) {

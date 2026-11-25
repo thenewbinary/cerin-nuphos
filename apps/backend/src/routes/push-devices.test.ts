@@ -71,7 +71,7 @@ describe('push device routes', () => {
       token: TOKEN,
       deviceId: 'vendor-id',
       environment: 'sandbox',
-      bundleId: 'ai.nuphos.ios',
+      bundleId: 'ai.cerin.ios',
       platform: 'ios',
     })
 
@@ -83,7 +83,7 @@ describe('push device routes', () => {
           token: TOKEN.toLowerCase(),
           deviceId: 'vendor-id',
           environment: 'sandbox',
-          bundleId: 'ai.nuphos.ios',
+          bundleId: 'ai.cerin.ios',
           platform: 'ios',
         },
       },
@@ -113,13 +113,13 @@ describe('Android FCM device registration', () => {
       deviceId: 'android-1',
       platform: 'android',
       environment: 'production',
-      bundleId: 'ai.nuphos.android',
-      projectId: 'nuphos-android',
+      bundleId: 'ai.cerin.android',
+      projectId: 'cerin-android',
     })
 
     expect(response.status).toBe(200)
     expect(registered[0]?.device.token).toBe(token)
-    expect(registered[0]?.device.projectId).toBe('nuphos-android')
+    expect(registered[0]?.device.projectId).toBe('cerin-android')
   })
   test('unregisters Android tokens without changing their case', async () => {
     const response = await app.request(
@@ -139,8 +139,8 @@ describe('Android FCM device registration', () => {
           deviceId: 'd',
           platform: 'android',
           environment: 'production',
-          bundleId: 'ai.nuphos.android',
-          projectId: 'nuphos-android',
+          bundleId: 'ai.cerin.android',
+          projectId: 'cerin-android',
         })
       ).status,
     ).toBe(400)

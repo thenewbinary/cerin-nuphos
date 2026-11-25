@@ -27,7 +27,7 @@ export type LarkUserMapping = {
   appId: string
   larkOpenId: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   enabled: boolean
   createdBy: string
   createdAt: string
