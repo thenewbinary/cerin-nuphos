@@ -11,6 +11,8 @@ import { db } from '@/lib/db'
 // - slack_user_mappings: createdBy and the bridge user-id key
 // - discord_user_mappings, lark_user_mappings, lark_pair_codes: bridge user-id keys
 // - discord_installations: installer bridge user-id key
+// - file_transfer_items: bucket (the old file-transfer bucket name)
+// - user_sessions, agent_trigger_history: client (old app-name prefix of x-atlas-client)
 
 // OLD exists only to rewrite stored data; it is never a runtime compatibility alias.
 // eslint-disable-next-line no-useless-concat
@@ -224,6 +226,19 @@ export async function migrateStoredProductValues(): Promise<number> {
     `auto:${OLD}-email`,
     'auto:cerin-email',
   )
+
+  modified += await rewriteExact(
+    'file_transfer_items',
+    'bucket',
+    `${OLD}-file-transfers`,
+    'cerin-file-transfers',
+  )
+
+  for (const app of ['desktop', 'ios', 'android', 'cli'])
+    for (const name of ['user_sessions', 'agent_trigger_history']) {
+      modified += await rewriteExact(name, 'client', `${OLD}-${app}`, `cerin-${app}`)
+      modified += await rewritePrefix(name, 'client', `${OLD}-${app}/`, `cerin-${app}/`)
+    }
 
   for (const name of [
     'slack_user_mappings',
