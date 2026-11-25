@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cerin master path from apps/desktop/public/logo-dark-bg.svg; default themed-icon layer. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.515625"
+        android:scaleY="0.515625"
+        android:translateX="21"
+        android:translateY="21">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M114.34 24.71L66.98 24.71A13.56 13.56 0 0 0 57.39 28.68L29.3 56.77A16.86 16.86 0 0 0 29.3 80.61A16.86 16.86 0 0 0 53.14 80.61L74.91 58.84L90.06 58.84L60.72 88.18A27.57 27.57 0 0 1 21.73 88.18A27.57 27.57 0 0 1 21.73 49.2L49.82 21.11A24.27 24.27 0 0 1 66.98 14L103.63 14A10.71 10.71 0 0 1 114.34 24.71ZM101.75 45.93L71.4 45.93A4.36 4.36 0 0 0 68.31 47.21L40.97 74.55A0.39 0.39 0 0 1 40.42 74.55L35.64 69.78A3.4 3.4 0 0 1 35.64 64.96L60.86 39.75A14.91 14.91 0 0 1 71.4 35.38L112.3 35.38ZM106.29 72.88L72.47 106.71A24.9 24.9 0 0 1 36.43 105.85L53.09 105.85A14.86 14.86 0 0 0 63.6 101.49L99.25 65.84Z" />
+    </group>
+</vector>

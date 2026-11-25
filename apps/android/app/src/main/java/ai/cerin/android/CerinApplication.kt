@@ -36,6 +36,7 @@ class CerinApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        ai.cerin.android.ui.profile.reconcileAppIcon(this)
         botAvatarsEnabled = appearancePreferences.getBoolean("botAvatars", true)
         ai.cerin.android.model.Words.context = this
         getSharedPreferences("cerin.backend", MODE_PRIVATE).getString("origin", null)?.let {

@@ -2,22 +2,30 @@
 import SwiftUI
 import UIKit
 
-/// The Home Screen icon. The icons are rendered by apps/desktop/scripts/render-app-icons.mjs;
-/// B2 is the primary AppIcon, every other one (A is the original mark) is the alternate
-/// icon set `AppIcon-<id>`.
+/// The Home Screen icon. Icon A (the original mark) is the primary AppIcon; every other
+/// selectable icon is the alternate icon set `AppIcon-<id>`.
 struct AppIconPicker: View {
-    private static let characters = ["Napoleon", "Pearl Earring", "Van Gogh", "The Scream", "Son of Man"]
+    private static let characters = ["Pearl Earring", "Van Gogh", "The Scream", "Son of Man"]
     private static let layouts = ["Classic", "Bleed", "Peek"]
     static let icons: [(id: String, name: String)] = [("A", "Cerin")]
-        + zip("BCDEF", characters).flatMap { letter, character in
+        + zip("CDEF", characters).flatMap { letter, character in
             layouts.enumerated().map { ("\(letter)\($0.offset + 1)", "\(character), \($0.element)") }
         }
 
     static var current: String {
         #if CERIN_SHARE_EXTENSION
-        return "B2"
+        return "A"
         #else
-        return UIApplication.shared.alternateIconName.map { String($0.dropFirst("AppIcon-".count)) } ?? "B2"
+        guard let alternate = UIApplication.shared.alternateIconName else { return "A" }
+        if alternate.hasPrefix("AppIcon-B") { return "A" }
+        return String(alternate.dropFirst("AppIcon-".count))
+        #endif
+    }
+
+    private static func resetRemovedAlternateIconIfNeeded() {
+        #if !CERIN_SHARE_EXTENSION
+        guard UIApplication.shared.alternateIconName?.hasPrefix("AppIcon-B") == true else { return }
+        UIApplication.shared.setAlternateIconName(nil) { _ in }
         #endif
     }
 
@@ -30,7 +38,7 @@ struct AppIconPicker: View {
                     Button {
                         selected = icon.id
                         #if !CERIN_SHARE_EXTENSION
-                        UIApplication.shared.setAlternateIconName(icon.id == "B2" ? nil : "AppIcon-\(icon.id)") { error in
+                        UIApplication.shared.setAlternateIconName(icon.id == "A" ? nil : "AppIcon-\(icon.id)") { error in
                             if error != nil { selected = Self.current }
                         }
                         #endif
@@ -55,6 +63,7 @@ struct AppIconPicker: View {
         .background(Theme.canvas)
         .navigationTitle("App icon")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: Self.resetRemovedAlternateIconIfNeeded)
     }
 }
 #endif

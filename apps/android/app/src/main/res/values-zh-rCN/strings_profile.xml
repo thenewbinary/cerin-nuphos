@@ -91,7 +91,6 @@
     <string name="profile_edit_image_unreadable">无法读取这张图片。</string>
     <string name="profile_edit_photo_failed">无法更新你的照片，请重试。</string>
     <string name="profile_edit_save_failed">无法保存你的个人资料，请重试。</string>
-    <string name="profile_app_icon_napoleon">拿破仑</string>
     <string name="profile_app_icon_pearl_earring">戴珍珠耳环的少女</string>
     <string name="profile_app_icon_van_gogh">梵高</string>
     <string name="profile_app_icon_the_scream">呐喊</string>

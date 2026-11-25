@@ -91,7 +91,6 @@
     <string name="profile_edit_image_unreadable">ไม่สามารถอ่านรูปภาพนี้</string>
     <string name="profile_edit_photo_failed">เราอัปเดตรูปภาพของคุณไม่ได้ โปรดลองอีกครั้ง</string>
     <string name="profile_edit_save_failed">เราบันทึกโปรไฟล์ของคุณไม่ได้ โปรดลองอีกครั้ง</string>
-    <string name="profile_app_icon_napoleon">นโปเลียน</string>
     <string name="profile_app_icon_pearl_earring">หญิงสาวกับต่างหูมุก</string>
     <string name="profile_app_icon_van_gogh">แวนโก๊ะ</string>
     <string name="profile_app_icon_the_scream">เสียงกรีดร้อง</string>

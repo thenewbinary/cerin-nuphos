@@ -48,18 +48,15 @@ initials fallback. It is not represented by another provider’s logo.
 # Cerin mark sources
 
 `app/src/main/res/drawable/ic_notification.xml` (notification small icon) and
-`app/src/main/res/drawable/app_icon_b2_monochrome.xml` (themed-icon layer of the default
-app icon B2) share one traced path, not the brand master vector. The single-color mark on
-[platform.cerin.ai/brand](https://platform.cerin.ai/brand), `cerin-icon-mono-white.svg`, wraps a
-1254 × 1254 PNG. The PNG's alpha channel was thresholded at 128 and traced with Potrace
-1.16 (`--turdsize 20 --alphamax 1.0 --opttolerance 0.4`). Both drawables keep Potrace's
-coordinates and place them with a group transform:
+`app/src/main/res/drawable/ic_launcher_monochrome.xml` (the default themed-icon layer) use
+the exact path from `apps/desktop/public/logo-dark-bg.svg`, the white Cerin master mark.
+They are single-color vectors, not traces of a rendered PNG.
 
-- `ic_notification.xml`: the PNG's full canvas spans the 24 dp viewport. The mark itself
-  covers about 19.3 dp, leaving about 2.4 dp on each side.
-- `app_icon_b2_monochrome.xml`: the PNG's canvas spans the middle 72 dp of the 108 dp
-  adaptive layer, so the mark (about 58 dp) sits inside the 66 dp safe zone.
+- `ic_notification.xml` scales the master path to about 20 × 20 dp in its 24 dp viewport,
+  leaving about 2 dp of transparent padding on each side.
+- `ic_launcher_monochrome.xml` uses the same transform as `ic_launcher_foreground.xml`.
+  The 128-unit master canvas occupies 66 dp of the 108 dp adaptive layer, placing the mark
+  inside the launcher's 66 dp safe zone.
 
-Replace both with the master path if one becomes available.
-`apps/desktop/scripts/render-app-icons.mjs` references the B2 monochrome layer but does
-not generate it.
+Both `mipmap-anydpi/ic_launcher.xml` and `mipmap-anydpi/ic_launcher_round.xml` reference
+`ic_launcher_monochrome.xml`.

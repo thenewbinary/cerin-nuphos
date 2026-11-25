@@ -91,7 +91,6 @@
     <string name="profile_edit_image_unreadable">No se pudo leer esta imagen.</string>
     <string name="profile_edit_photo_failed">No pudimos actualizar tu foto. Inténtalo de nuevo.</string>
     <string name="profile_edit_save_failed">No pudimos guardar tu perfil. Inténtalo de nuevo.</string>
-    <string name="profile_app_icon_napoleon">Napoleón</string>
     <string name="profile_app_icon_pearl_earring">La joven de la perla</string>
     <string name="profile_app_icon_van_gogh">Van Gogh</string>
     <string name="profile_app_icon_the_scream">El grito</string>

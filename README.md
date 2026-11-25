@@ -1,5 +1,3 @@
-<img alt="Cerin, the open source Grok Bot alternative" src="assets/cerin-banner.jpg" width="1200">
-
 # Cerin
 
 **The open source Grok Bot alternative for teams.**
