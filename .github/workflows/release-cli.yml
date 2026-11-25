@@ -13,9 +13,9 @@ on:
         type: string
         required: true
       platforms:
-        description: all, or linux alone (macOS needs the Developer ID signing secrets)
+        description: all, or linux or macos alone (macOS needs the Developer ID signing secrets)
         type: choice
-        options: [linux, all]
+        options: [linux, macos, all]
         default: linux
 
 concurrency:
@@ -84,7 +84,11 @@ jobs:
               build=$(jq -c 'map(select(.target | contains("apple-darwin") | not))' <<< "$build")
               agent=$(jq -c 'map(select(.runner | startswith("macos") | not))' <<< "$agent")
               ;;
-            *) echo "::error::platforms must be all or linux"; exit 1 ;;
+            macos)
+              build=$(jq -c 'map(select(.target | contains("apple-darwin")))' <<< "$build")
+              agent=$(jq -c 'map(select(.runner | startswith("macos")))' <<< "$agent")
+              ;;
+            *) echo "::error::platforms must be all, linux, or macos"; exit 1 ;;
           esac
           echo "build=$(jq -c '{include: .}' <<< "$build")" >> "$GITHUB_OUTPUT"
           echo "agent=$(jq -c '{include: .}' <<< "$agent")" >> "$GITHUB_OUTPUT"
