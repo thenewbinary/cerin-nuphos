@@ -43,14 +43,32 @@ jobs:
           bun install --frozen-lockfile
           (cd apps/desktop && pnpm install --frozen-lockfile)
       - name: Download the previous release
+        id: previous-release
         run: |
           set -euo pipefail
           base=https://cerin-releases.s3.amazonaws.com/desktop
-          previous=$(curl -fsSL "$base/latest-linux.yml" | sed -n 's/^version: //p')
+          manifest="$RUNNER_TEMP/latest-linux.yml"
+          status=$(curl -sS -o "$manifest" -w '%{http_code}' "$base/latest-linux.yml")
+          if [[ "$status" == 404 ]]; then
+            echo "No previous Cerin desktop release yet; skipping the update test."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ "$status" != 200 ]]; then
+            echo "::error::Downloading the previous release manifest returned HTTP $status."
+            exit 1
+          fi
+          previous=$(sed -n 's/^version: //p' "$manifest")
+          if [[ -z "$previous" ]]; then
+            echo "::error::The previous release manifest has no version."
+            exit 1
+          fi
+          echo "skipped=false" >> "$GITHUB_OUTPUT"
           curl -fsSL -o "$RUNNER_TEMP/previous.AppImage" "$base/Cerin-$previous-x86_64.AppImage"
           # Any version above the release, so the old app takes the build as its update.
           echo "E2E_NEW_VERSION=${previous%.*}.$(( ${previous##*.} + 1 ))" >> "$GITHUB_ENV"
       - name: Package the build under test
+        if: steps.previous-release.outputs.skipped != 'true'
         working-directory: apps/desktop
         run: |
           set -euo pipefail
@@ -61,6 +79,7 @@ jobs:
             --config.extraMetadata.version="$E2E_NEW_VERSION"
           echo "E2E_NEW_APPIMAGE=$PWD/release/Cerin-$E2E_NEW_VERSION-x86_64.AppImage" >> "$GITHUB_ENV"
       - name: Update the previous release to the build under test
+        if: steps.previous-release.outputs.skipped != 'true'
         env:
           E2E_ARTIFACTS: ${{ runner.temp }}/desktop-update
           E2E_OLD_APPIMAGE: ${{ runner.temp }}/previous.AppImage
@@ -71,7 +90,7 @@ jobs:
             'ip link set lo up && exec setpriv --reuid="$1" --regid="$2" --init-groups xvfb-run --auto-servernum bun scripts/e2e/run-desktop-update.ts' \
             sh "$(id -u)" "$(id -g)"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        if: always()
+        if: always() && steps.previous-release.outputs.skipped != 'true'
         with:
           name: desktop-update
           path: |
