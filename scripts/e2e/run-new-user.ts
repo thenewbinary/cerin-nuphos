@@ -37,7 +37,8 @@ try {
   // No Claude Code or Codex on this computer: setting them up waits.
   await page.getByRole('button', { name: 'Set up later' }).click()
   await page.getByRole('button', { name: 'Open workspace' }).click()
-  // their first Bot,
+  // their first Bot, from the Bots page (sign-in opens Home),
+  await page.getByRole('tab', { name: 'Bots' }).click()
   await page.getByRole('button', { name: 'New Bot', exact: true }).click()
   await page.getByRole('textbox', { name: 'Bot name' }).fill('E2E Bot')
   await page.getByRole('button', { name: 'Create', exact: true }).click()
