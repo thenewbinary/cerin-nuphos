@@ -78,6 +78,7 @@ jobs:
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
+          DCO_HEAD_REF: ${{ github.head_ref }}
         # Run the base branch's checker so a PR cannot loosen its own check;
         # the PR's copy is used only until the base has one.
         run: |

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Fails if any non-merge commit in the range lacks a DCO sign-off that matches
-# its author exactly. See DCO and CONTRIBUTING.md.
+# its author exactly, except upstream commits rewritten by the sync automation.
+# See DCO and CONTRIBUTING.md.
 #
 #   scripts/check-dco.sh <base-rev> <head-rev>
 set -euo pipefail
@@ -18,11 +19,29 @@ dependabot_signoff="dependabot[bot] <support@github.com>"
 # checking nothing.
 commits="$(git rev-list --no-merges "$1..$2")"
 
+head_ref="${DCO_HEAD_REF:-${GITHUB_HEAD_REF:-}}"
+sync_committer="thenewbinary <isaac.efik@gmail.com>"
+
 status=0
 checked=0
+skipped=0
 for sha in $commits; do
+  author_name="$(git log -1 --format='%an' "$sha")"
+  author_email="$(git log -1 --format='%ae' "$sha")"
+  author="$author_name <$author_email>"
+  if ! committer="$(git log -1 --format='%cn <%ce>' "$sha")"; then
+    committer=
+  fi
+
+  if [[ "$head_ref" == sync/upstream-* &&
+    "$author_name" != "thenewbinary" &&
+    "$author_email" != "isaac.efik@gmail.com" &&
+    "$committer" == "$sync_committer" ]]; then
+    skipped=$((skipped + 1))
+    continue
+  fi
+
   checked=$((checked + 1))
-  author="$(git log -1 --format='%an <%ae>' "$sha")"
   signoff="$author"
   if [[ "$author" == "$dependabot" ]]; then
     signoff="$dependabot_signoff"
@@ -36,5 +55,8 @@ done
 
 if [[ $status -eq 0 ]]; then
   echo "All $checked commit(s) carry a sign-off matching their author."
+  if [[ $skipped -gt 0 ]]; then
+    echo "Skipped $skipped commit(s) from upstream authors on $head_ref."
+  fi
 fi
 exit $status

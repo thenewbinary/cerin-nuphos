@@ -689,9 +689,26 @@ nonisolated final class Viewer: NSObject, SCStreamOutput, @unchecked Sendable {
         encoder.encode(frame.image, at: frame.time, keyframe: key) { [self] data in
             if let data {
                 // DesktopSize first when the picture changed size, then the frame (flags 1: a new stream).
-                let size: [UInt8] = announce ? be16(0) + be16(0) + be16(w) + be16(h) + be32(-223) : []
-                connection.send([0, 0] + be16(announce ? 2 : 1) + size + be16(0) + be16(0) + be16(w) + be16(h) + be32(50)
-                                + be32(data.count) + be32(announce ? 1 : 0) + data)
+                var packet: [UInt8] = []
+                packet.reserveCapacity(24 + data.count + (announce ? 12 : 0))
+                packet.append(contentsOf: [0, 0])
+                packet.append(contentsOf: be16(announce ? 2 : 1))
+                if announce {
+                    packet.append(contentsOf: be16(0))
+                    packet.append(contentsOf: be16(0))
+                    packet.append(contentsOf: be16(w))
+                    packet.append(contentsOf: be16(h))
+                    packet.append(contentsOf: be32(-223))
+                }
+                packet.append(contentsOf: be16(0))
+                packet.append(contentsOf: be16(0))
+                packet.append(contentsOf: be16(w))
+                packet.append(contentsOf: be16(h))
+                packet.append(contentsOf: be32(50))
+                packet.append(contentsOf: be32(data.count))
+                packet.append(contentsOf: be32(announce ? 1 : 0))
+                packet.append(contentsOf: data)
+                connection.send(packet)
             } else if announce {
                 lock.lock()
                 resized = true

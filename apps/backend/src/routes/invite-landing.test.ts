@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
+import { afterEach, describe, expect, test } from 'bun:test'
 
 import { config } from '@/config'
 
@@ -6,9 +6,6 @@ import { inviteLandingPage } from './invite-landing'
 
 const originalWebUrl = config.auth.publicWebUrl
 
-beforeEach(() => {
-  config.auth.publicWebUrl = 'https://cerin.ai'
-})
 afterEach(() => {
   config.auth.publicWebUrl = originalWebUrl
 })
@@ -22,6 +19,12 @@ describe('inviteLandingPage', () => {
     expect(html).toContain('href="https://cerin.ai/download"')
     // The auto-launch script fires the same deep link the button offers.
     expect(html).toContain('location.href = "cerin://open"')
+  })
+
+  test('uses the public download URL with a different web host', () => {
+    config.auth.publicWebUrl = 'https://platform.cerin.ai'
+
+    expect(inviteLandingPage('Acme')).toContain('href="https://cerin.ai/download"')
   })
 
   test('falls back to a generic heading without a team name', () => {
