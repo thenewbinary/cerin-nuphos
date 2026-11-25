@@ -213,8 +213,8 @@ will not pull or will not match an older image:
   published Cerin images. Runtime
   `ghcr.io/thenewbinary/cerin-runtime:commit-45f3647f283b1c6d54d8b942ae0a02d456f67472-claude-code`
   (`sha256:4d6e77e6ec01aaa39f0c1ca0fe5315f5fab267427c4ce5521a05a00cdca0656c`), backend
-  `ghcr.io/thenewbinary/cerin-backend:v0.145.7`
-  (`sha256:059beab3a3fd09cfad9d0d4f4d5d5a58d5f369bef443131188567a7fede70f5c`).
+  `ghcr.io/thenewbinary/cerin-backend:v0.145.8`
+  (`sha256:96f570a1519c3593217a60ce70ed920fafd26df7991db1d48f4e0e9385033e1a`).
 - `deploy/railway/runtime/start.sh`, `deploy/compose/smoke.py`,
   `scripts/dev-compose.ts`: the `cerin-runtime-start` entrypoint and
   `.cerin-runtime/auth-key` path exist only in the new image.
