@@ -55,6 +55,7 @@ const decisionToolModule = (options: Parameters<typeof createDecisionToolModule>
   createDecisionToolModule({ runStreamId: async () => undefined, ...options })
 const { unansweredInstruction } = await import('./decision-specs')
 const { awaitDecisionOnce } = await import('./decision-wait')
+const { COMPUTER_CARDS } = await import('@/lib/agent/tools-skilled/decision-tools')
 const { relatedQuestionsNote, siteAskedFor } = await import('@/lib/agent/db/pending-decision')
 
 const ctx = { userId: 'u1', teamId: 't1', sessionId: 'conv-1', locale: 'zh-TW', localTools: true }
@@ -98,6 +99,35 @@ describe('decision tool module', () => {
     // Nothing polls: a wait lives and dies inside the call that opened it.
     expect(names).not.toContain('check_decision')
   })
+
+  test('agents are offered a computer card, now that its live view ships', () => {
+    const definition = decisionToolModule({ publish: async () => {} }).definitions.find(
+      (tool) => (tool as { name: string }).name === 'request_user_decision',
+    ) as { description: string; inputSchema: { properties: { category: { enum: string[] } } } }
+
+    expect(COMPUTER_CARDS).toBe(true)
+    expect(definition.inputSchema.properties.category.enum).toContain('computer')
+    expect(definition.description).toContain('`computer`')
+  })
+
+  test.skipIf(!COMPUTER_CARDS)(
+    'a computer card needs a desktop to hand over, and opens no card without one',
+    async () => {
+      const tools = decisionToolModule({ publish: async () => undefined }).handlers(ctx)
+      const result = await tools.request_user_decision!({
+        label: 'Hand over the sign-in',
+        category: 'computer',
+        question: 'Sign in to the console',
+        body: 'Type your password on the open page.',
+      })
+
+      expect(result.isError).toBe(true)
+      expect(JSON.stringify(result.content)).toContain('no desktop to hand over')
+      expect(
+        conversationUpdates.flat().some((arg) => JSON.stringify(arg).includes('computer')),
+      ).toBe(false)
+    },
+  )
 
   test('request_user_decision returns at once; the answer arrives as a new message', async () => {
     const frames: Record<string, unknown>[] = []
@@ -191,6 +221,27 @@ describe('decision tool module', () => {
     expect(JSON.stringify(conversationUpdates.at(-1))).not.toContain('channelId')
   })
 
+  test('a question a Slack channel woke is never recorded in that channel', async () => {
+    const tools = decisionToolModule({ publish: () => Promise.resolve() }).handlers(ctx)
+
+    storedConversation = {
+      metadata: {
+        version: 1,
+        sender: { type: 'system', id: 'slack-channel:slack-1', displayName: '#shared' },
+        source: 'agent.resource',
+        sentAt: '2026-11-12T00:00:00Z',
+      },
+    }
+    foundConversations = []
+    await tools.request_user_decision!({
+      label: 'Ask',
+      category: 'approval',
+      question: 'Change the patrol?',
+      body: 'Internal.',
+    })
+    expect(JSON.stringify(conversationUpdates.at(-1))).not.toContain('slack-1')
+  })
+
   test("a question no channel woke is asked in the Bot's one chat with its owner", async () => {
     const tools = decisionToolModule({ publish: () => Promise.resolve() }).handlers(ctx)
     const ask = () =>
@@ -220,6 +271,7 @@ describe('decision tool module', () => {
       userId: 'u1',
       kind: 'channel',
       agentSessionIds: ['conv-1'],
+      external: { $exists: false },
       archivedAt: { $exists: false },
     })
     expect(conversationUpdates.at(-1)?.[1]).toMatchObject({
@@ -515,19 +567,35 @@ describe('decision tool module', () => {
     })
   })
 
-  test('withdraw_user_decision takes the open request off the list', async () => {
+  test('withdraw_user_decision takes an open request this conversation asked, or one about it, off the list', async () => {
     const tools = decisionToolModule({ publish: async () => {} }).handlers(ctx)
     const result = await tools.withdraw_user_decision!({ label: 'Withdraw', requestId: 'cerin-1' })
 
     expect(result.structuredContent).toMatchObject({ status: 'withdrawn' })
     expect(conversationUpdates.at(-1)).toEqual([
       {
-        sessionId: 'conv-1',
         userId: 'u1',
         'inputRequests.id': 'cerin-1',
+        $or: [
+          { sessionId: 'conv-1' },
+          { inputRequests: { $elemMatch: { id: 'cerin-1', about: 'conv-1' } } },
+        ],
       },
       { $pull: { inputRequests: { id: 'cerin-1' } } },
     ])
+  })
+
+  test('update_user_decision corrects only a request this conversation asked, never one about it', async () => {
+    const tools = decisionToolModule({ publish: async () => {} }).handlers(ctx)
+
+    await tools.update_user_decision!({
+      label: 'Correct',
+      requestId: 'cerin-1',
+      question: 'Approve the new plan?',
+    })
+
+    expect(conversationUpdates.at(-1)?.[0]).toMatchObject({ sessionId: 'conv-1', userId: 'u1' })
+    expect(JSON.stringify(conversationUpdates.at(-1)?.[0])).not.toContain('about')
   })
 
   test('several related questions and a multi-select go out as one card, kept for the Inbox', async () => {
@@ -1005,6 +1073,68 @@ describe('decision tool module', () => {
         { requestId: 'r2', category: 'approval', question: 'Ship?', askedAt: at('2026-01-02') },
       ],
     })
+  })
+
+  test('a question answered while the turn runs gives its answer to list, update and withdraw', async () => {
+    const { localQueues, pendingKey } = await import('@/lib/agent/pending-messages')
+    const key = pendingKey(ctx.userId, ctx.sessionId)
+    const notice =
+      'Your question (requestId r1) was answered.\nAnswer:\n- Post it? → Yes, without the mention'
+    const request = {
+      id: 'r1',
+      category: 'approval',
+      question: 'Post it?',
+      askedAt: new Date('2026-01-01'),
+      status: 'open',
+    } as const
+
+    // The answer took the question off the conversation and waits behind the running turn.
+    storedConversation = { inputRequests: [] }
+    localQueues.set(key, [
+      {
+        id: 'm1',
+        renderedText: notice,
+        source: 'agent.resource',
+        receivedAt: new Date().toISOString(),
+        answers: request,
+      },
+    ])
+    try {
+      const tools = decisionToolModule({ publish: async () => {} }).handlers(ctx)
+      const closed = { requestId: 'r1', status: 'closed', notice }
+
+      expect(
+        (await tools.list_user_decisions!({ label: 'List my questions' })).structuredContent,
+      ).toMatchObject({ requests: [], closed: [{ requestId: 'r1', notice }] })
+      const before = conversationUpdates.length
+      const updated = await tools.update_user_decision!({
+        label: 'Fix it',
+        requestId: 'r1',
+        body: 'New draft',
+      })
+
+      expect(updated.isError).toBeFalsy()
+      expect(updated.structuredContent).toMatchObject(closed)
+      const withdrawn = await tools.withdraw_user_decision!({
+        label: 'Withdraw it',
+        requestId: 'r1',
+      })
+
+      expect(withdrawn.isError).toBeFalsy()
+      expect(withdrawn.structuredContent).toMatchObject(closed)
+      expect(conversationUpdates).toHaveLength(before)
+    } finally {
+      localQueues.delete(key)
+    }
+  })
+
+  test('a question that is no longer open, with nothing queued, is not to be asked again', async () => {
+    matchedCount = 0
+    const tools = decisionToolModule({ publish: async () => {} }).handlers(ctx)
+    const result = await tools.withdraw_user_decision!({ label: 'Withdraw it', requestId: 'gone' })
+
+    expect(result.isError).toBe(true)
+    expect(JSON.stringify(result.content)).toContain('Do not ask it again')
   })
 
   test('a question names what it is about: a linked resource, never an unknown ref', async () => {

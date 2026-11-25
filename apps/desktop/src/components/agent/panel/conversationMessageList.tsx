@@ -12,6 +12,7 @@ import {
 import { conversationActivity } from './activity'
 import { AssistantMessage } from './AssistantMessage'
 import { toolAnchorIds } from './chatTarget'
+import { CardConversationContext } from './connectCardContext'
 import { DecisionCardsProvider } from './DecisionCardsProvider'
 import { AgentHomeAnimation } from './homeAnimation'
 import { OpenQuestionCards } from './OpenQuestionCards'
@@ -40,9 +41,6 @@ function MessageList({
   hasEarlier,
   captureEarlierAnchor,
   onLoadEarlier,
-  onStop,
-  onApprovePlan,
-  onRejectPlan,
   activePlanCanAct,
   onOpenCerinLink,
   onOpenAgentSettings,
@@ -55,9 +53,6 @@ function MessageList({
   | 'teamId'
   | 'currentUrl'
   | 'onLoadEarlier'
-  | 'onStop'
-  | 'onApprovePlan'
-  | 'onRejectPlan'
   | 'activePlanCanAct'
   | 'onOpenCerinLink'
   | 'onOpenAgentSettings'
@@ -123,9 +118,6 @@ function MessageList({
         downloadGroups={downloadsByMessage.get(m.id)}
         prevCreatedAt={m.turnOrigin === 'autonomous' ? undefined : prevCreatedAt}
         isLatestReply={isLast}
-        onStop={onStop}
-        onApprovePlan={onApprovePlan}
-        onRejectPlan={onRejectPlan}
         activePlanCanAct={activePlanCanAct ?? null}
         canReplyToQuestions={!tab.readOnly}
         canActOnPlans={
@@ -200,13 +192,6 @@ function MessageList({
                 <UserMessage
                   message={m}
                   teamId={teamId}
-                  onApprovePlan={onApprovePlan}
-                  onRejectPlan={onRejectPlan}
-                  canActOnPlans={
-                    (runtimeAllows(tab.runtimeState, 'send') ||
-                      runtimeAllows(tab.runtimeState, 'reply')) &&
-                    !tab.readOnly
-                  }
                   onOpenCerinLink={onOpenCerinLink}
                   onEdit={onEditMessage?.allowed(m) ? onEditMessage.edit : undefined}
                 />
@@ -290,9 +275,18 @@ function MessageList({
 
 /** The transcript; each choice card reads its answer from the replies after it. */
 export function ConversationMessageList(props: Parameters<typeof MessageList>[0]) {
+  const { teamId } = props
+  const { sessionId, title: name } = props.tab
+  const conversation = useMemo(
+    () => (teamId && sessionId ? { teamId, sessionId, name } : null),
+    [teamId, sessionId, name],
+  )
+
   return (
     <DecisionCardsProvider messages={props.tab.messages} waiting={props.tab.waitingAnswers}>
-      <MessageList {...props} />
+      <CardConversationContext.Provider value={conversation}>
+        <MessageList {...props} />
+      </CardConversationContext.Provider>
     </DecisionCardsProvider>
   )
 }

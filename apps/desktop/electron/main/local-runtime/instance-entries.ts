@@ -9,6 +9,8 @@ export type Controller = {
   setUser(userId: string | null): Promise<void>
   shutdown(): Promise<void>
   refresh(restart: boolean): Promise<LocalRuntimeState>
+  /** Runs `work` with the agent stopped; the next refresh starts it. */
+  whileStopped<T>(provider: LocalAgentProvider, work: () => Promise<T>): Promise<T | undefined>
   state(): LocalRuntimeState
   runtime(provider: LocalAgentProvider): RunningRuntime | null
   /** `runtime`, for a stream that asks for the agent. */
@@ -52,6 +54,7 @@ export function instanceStatus(
         loggedIn: cli?.installed ? cli.loggedIn : false,
         ...(cli?.installed && cli.apiKey ? { apiKey: true as const } : {}),
         ...(install?.installing ? { installing: true as const } : {}),
+        ...(!cli?.installed && cli?.error ? { probeError: cli.error } : {}),
         ...(!cli?.installed && install?.error ? { installError: install.error } : {}),
       },
     }

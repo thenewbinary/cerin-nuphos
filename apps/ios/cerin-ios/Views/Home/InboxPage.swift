@@ -27,7 +27,7 @@ struct InboxPage: View {
     @ViewBuilder
     private var content: some View {
         if store.phase == .loaded, store.selectedTeam == nil {
-            SetupEmptyState(title: "No workspace yet", message: "Your Inbox will show requests from your team once you join a workspace.", actionTitle: "Set up workspace") { showWorkspaceSetup = true }
+            SetupEmptyState(title: "No team yet", message: "Your Inbox will show requests from your team once you join one.", actionTitle: "Set up a team") { showWorkspaceSetup = true }
         } else if let inbox, inbox.loaded {
             if inbox.list.isEmpty {
                 VStack(spacing: 16) {
@@ -36,13 +36,11 @@ struct InboxPage: View {
                         .accessibilityHidden(true)
                     Text("You're all caught up")
                         .font(.title3.weight(.semibold)).foregroundStyle(Theme.heading)
-                    Text("When an agent needs you to decide something, it shows up here. Answer it and it leaves the Inbox.")
+                    Text("When a Bot or task needs you to decide something, it shows up here. Answer it and it leaves the Inbox.")
                         .font(.callout).foregroundStyle(Theme.body).multilineTextAlignment(.center)
                 }
                 .padding(24).frame(maxWidth: 400)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                // The last question answered or dismissed still offers its Undo here.
-                .overlay(alignment: .bottom) { InboxToast(inbox: inbox).padding(.bottom, 24) }
 
             } else {
                 // On iPhone the list's selection pushes the question. Wide, a tap opens it beside the
@@ -96,10 +94,6 @@ struct InboxPage: View {
                 // Wide, a question is always open beside the list.
                 .onChange(of: wide ? inbox.selected == nil : false, initial: true) { _, empty in
                     if empty { inbox.selected = inbox.groups.first?.first?.id }
-                }
-                // On iPhone the last answer goes back to the list: it says so here.
-                .overlay(alignment: .bottom) {
-                    if !wide, inbox.selected == nil { InboxToast(inbox: inbox).padding(.bottom, 24) }
                 }
             }
         } else {
@@ -179,36 +173,5 @@ struct InboxSource: View {
                 .lineLimit(1)
         }
         .textCase(nil)
-    }
-}
-
-/// "Answered "…"" or "Dismissed" with Undo, while the reply is held.
-struct InboxToast: View {
-    let inbox: OpenQuestions
-
-    var body: some View {
-        if let message = inbox.toast {
-            HStack(spacing: 12) {
-                Text(verbatim: message)
-                    .font(.system(size: 14))
-                    .lineLimit(1)
-                Button("Undo") { withAnimation(.snappy) { inbox.undo() } }
-                    .font(.system(size: 14, weight: .semibold))
-                    .padding(.horizontal, 12)
-                    .frame(height: 32)
-                    .background(Theme.surface.opacity(0.16), in: Capsule())
-                    .buttonStyle(.plain)
-            }
-            .foregroundStyle(Theme.surface)
-            .padding(.leading, 18)
-            .padding(.trailing, 6)
-            .frame(height: 44)
-            .background(Theme.heading, in: Capsule())
-            .shadow(color: .black.opacity(0.25), radius: 12, y: 8)
-            .padding(.horizontal, 20)
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("inbox.toast")
-            .transition(.opacity.combined(with: .move(edge: .bottom)))
-        }
     }
 }

@@ -17,6 +17,13 @@ describe('conversationAccess', () => {
     expect(conversationAccess({ ...base, generalAccess: 'none' }, 'owner', false)).toBe('owner')
   })
 
+  test("a Slack channel's hidden record opens for no one, not even who connected it (#4936)", () => {
+    const record = { ...base, kind: 'channel', external: 'slack', generalAccess: 'none' as const }
+
+    expect(conversationAccess(record, 'owner', false)).toBeNull()
+    expect(conversationAccess({ ...record, generalAccess: 'reply' }, 'teammate', true)).toBeNull()
+  })
+
   test('older sessions without general access stay open to the team to read', () => {
     expect(conversationAccess(base, 'teammate', false)).toBe('view')
     expect(conversationAccess({ ...base, generalAccess: 'reply' }, 'teammate', false)).toBe('view')
@@ -37,6 +44,20 @@ describe('conversationAccess', () => {
         ),
       ).toBe('reply')
     }
+  })
+
+  test('a Bot is its owner’s alone, invited, team-wide or on a shared computer', () => {
+    const bot = {
+      ...base,
+      avatar: '07-ada',
+      generalAccess: 'view' as const,
+      participantIds: ['teammate'],
+    }
+
+    expect(conversationAccess(bot, 'owner')).toBe('owner')
+    expect(conversationAccess(bot, 'teammate', true)).toBeNull()
+    expect(conversationAccess(bot, 'teammate')).toBeNull()
+    expect(conversationAccess(bot, 'other')).toBeNull()
   })
 
   test('an invitee without the computer reads only', () => {
@@ -119,6 +140,7 @@ describe('readableConversationScope', () => {
     expect(readableConversationScope({ sessionId: 's' }, 'viewer', 'team')).toEqual({
       sessionId: 's',
       teamId: 'team',
+      external: { $exists: false },
       ...readableByFilter('viewer'),
     })
   })
@@ -132,7 +154,13 @@ function mongoMatches(doc: Record<string, unknown>, filter: Record<string, unkno
     if (key === '$or') {
       return (expected as Record<string, unknown>[]).some((clause) => mongoMatches(doc, clause))
     }
+    if (key === '$nor') {
+      return !(expected as Record<string, unknown>[]).some((clause) => mongoMatches(doc, clause))
+    }
     const actual = doc[key]
+
+    if (expected && typeof expected === 'object' && '$exists' in expected)
+      return (actual !== undefined) === expected.$exists
 
     if (expected && typeof expected === 'object' && '$ne' in expected) {
       // $ne also matches a missing field, like Mongo.
@@ -145,23 +173,35 @@ function mongoMatches(doc: Record<string, unknown>, filter: Record<string, unkno
   })
 }
 
-test('readableByFilter admits exactly the viewers readsConversation admits', () => {
+test('the readable scope admits exactly the viewers readsConversation admits', () => {
   const generals = [undefined, 'none', 'view', 'reply'] as const
   const memberships = [{}, { participantIds: ['viewer'] }, { participantIds: ['someone-else'] }]
   let checked = 0
 
+  const kinds = [
+    {},
+    { avatar: '07-ada' },
+    { kind: 'channel' },
+    { kind: 'channel', avatar: 'x' },
+    { kind: 'channel', external: 'slack' },
+  ]
+
   for (const owner of ['owner', 'viewer'])
     for (const generalAccess of generals)
-      for (const membership of memberships) {
-        const doc = {
-          userId: owner,
-          teamId: 'team',
-          ...(generalAccess ? { generalAccess } : {}),
-          ...membership,
-        }
+      for (const membership of memberships)
+        for (const kind of kinds) {
+          const doc = {
+            userId: owner,
+            teamId: 'team',
+            ...(generalAccess ? { generalAccess } : {}),
+            ...membership,
+            ...kind,
+          }
 
-        expect(mongoMatches(doc, readableByFilter('viewer'))).toBe(readsConversation(doc, 'viewer'))
-        checked++
-      }
-  expect(checked).toBe(24)
+          expect(mongoMatches(doc, readableConversationScope({}, 'viewer', 'team'))).toBe(
+            readsConversation(doc, 'viewer'),
+          )
+          checked++
+        }
+  expect(checked).toBe(120)
 })

@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { z } from 'zod'
 
+import { forgetOwnSignIn } from '@/lib/agent/devices/agent-sign-ins'
 import {
   conversationTitlesFor,
   decodeAuditCursor,
@@ -11,14 +12,13 @@ import {
   requireDeviceAccess,
   revokeBoxStreams,
 } from '@/lib/agent/devices/box-access'
+import { deleteBox } from '@/lib/agent/devices/box-delete'
 import {
   boxBackendUrl,
-  boxDesktopUrl,
   boxPausedBy,
   boxState,
   boxesAvailable,
   createBox,
-  destroyBox,
   healBox,
   pauseBox,
   resumeBox,
@@ -50,6 +50,7 @@ import { zv } from '@/lib/validate'
 
 import { agent } from './router'
 import { createDeviceAgentRoutes } from './routes-device-agents'
+import { createDeviceSignInRoutes } from './routes-device-sign-in'
 import { createAgentDeviceBoxRoutes } from './routes-devices-box'
 import { readTeamIdCandidate } from './team-scope'
 
@@ -107,6 +108,7 @@ export type AgentDeviceRouteDependencies = {
   deleteDevice: (userId: string, deviceId: string) => Promise<boolean>
   /** Forgets every team's answers and trusts about a computer that is going away. */
   forgetDeviceShares: typeof forgetDeviceShares
+  forgetOwnSignIn: typeof forgetOwnSignIn
   renameDevice: (userId: string, deviceId: string, label: string) => Promise<boolean>
   /** Where a joining machine dials: this deployment's public URL, if it has one. */
   publicUrl: () => string | undefined
@@ -138,6 +140,7 @@ const defaultDependencies: AgentDeviceRouteDependencies = {
   isOnline: isDevicePresent,
   deleteDevice: deleteAgentDevice,
   forgetDeviceShares,
+  forgetOwnSignIn,
   renameDevice: renameAgentDevice,
   publicUrl: boxBackendUrl,
   // Always on: a team may bring its own instabox account when the deployment has none.
@@ -145,8 +148,7 @@ const defaultDependencies: AgentDeviceRouteDependencies = {
     create: createBox,
     pause: pauseBox,
     resume: resumeBox,
-    destroy: destroyBox,
-    desktop: boxDesktopUrl,
+    delete: deleteBox,
     heal: healBox,
     available: boxesAvailable,
     state: boxState,
@@ -159,6 +161,7 @@ export function createAgentDeviceRoutes(deps: AgentDeviceRouteDependencies = def
 
   routes.route('/', createAgentDeviceBoxRoutes(deps))
   routes.route('/', createDeviceAgentRoutes())
+  routes.route('/', createDeviceSignInRoutes(deps))
 
   // A computer registers itself; a Box's row is written only by the Box routes.
   routes.put('/devices', zv('json', deviceRegistrationSchema), async (c) => {
@@ -210,7 +213,7 @@ export function createAgentDeviceRoutes(deps: AgentDeviceRouteDependencies = def
   )
 
   // Forgets a computer, online or not, credential and agents with it; opening Cerin there again
-  // registers it again. A Box has its own delete.
+  // registers it again, with who signed its agents in kept (store). A Box has its own delete.
   routes.delete(
     '/devices/:deviceId',
     zv('param', z.object({ deviceId: z.string().trim().min(1).max(128) })),

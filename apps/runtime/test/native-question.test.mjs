@@ -189,7 +189,7 @@ test('the Claude patch keeps AskUserQuestion and asks through Cerin', () => {
   )
   assert.match(
     patched,
-    /const disallowedTools = elicitationSupport\.form \|\| cerinOffersDecisions\(params\.mcpServers\) \? \[\] : \["AskUserQuestion"\];/,
+    /const disallowedTools = \[\.\.\.\(elicitationSupport\.form \|\| cerinOffersDecisions\(params\.mcpServers\) \? \[\] : \["AskUserQuestion"\]\), "Workflow", "ScheduleWakeup", "ReportFindings"\];/,
   )
   assert.match(
     patched,

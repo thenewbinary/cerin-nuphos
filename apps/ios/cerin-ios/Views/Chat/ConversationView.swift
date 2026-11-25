@@ -61,7 +61,7 @@ struct ConversationView: View {
                     Label("Work tools", image: "lucide-monitor")
                 }
             }
-            if session.loaded && !session.isBot {
+            if session.loaded && session.shareable {
                 Button { showShare = true } label: { Label("Share", image: "lucide-user-plus") }
             }
             if let watching = session.isWatching {
@@ -165,13 +165,12 @@ struct ConversationView: View {
             #endif
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .agentSummary(isPresented: $summaryOpen) {
+        .sheet(isPresented: $summaryOpen) {
             AgentSummaryPanel(session: session, close: { summaryOpen = false }, archive: archiveTask) { row in
                 summaryOpen = false
                 summaryTarget = row
             }
             .environment(store)
-            .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
         }
@@ -250,7 +249,7 @@ struct ConversationView: View {
             if session.loaded && (initialPrompt == nil || !session.isNew) {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: toggleSummary) { LucideIcon("panel-right") }
-                        .accessibilityLabel("Agent summary")
+                        .accessibilityLabel("Task summary")
                         .accessibilityIdentifier("agent-summary-button")
                 }
             }
@@ -272,7 +271,7 @@ struct ConversationView: View {
             Text(archiveError ?? "")
         }
         // Wherever the reader is in the transcript, a refused Stop is answered.
-        .alert("Couldn't stop the agent", isPresented: Binding(get: { session.stopRefusal != nil }, set: { if !$0 { session.stopRefusal = nil } })) {
+        .alert("Could not stop the turn on the server", isPresented: Binding(get: { session.stopRefusal != nil }, set: { if !$0 { session.stopRefusal = nil } })) {
             Button("OK") { session.stopRefusal = nil }
         } message: {
             Text(session.stopRefusal ?? "")
@@ -281,9 +280,10 @@ struct ConversationView: View {
             Button("OK") { session.stopNotice = nil }
         }
         .sheet(item: $toolDetail) { ToolDetailSheet(part: $0, session: session) }
-        .sheet(isPresented: $showTriggers) { ConversationTriggers(teamId: session.teamId, sessionId: session.sessionId, token: store.token).presentationDetents([.large]) }
+        .sheet(isPresented: $showTriggers) { ConversationTriggers(teamId: session.teamId, sessionId: session.sessionId, token: store.token,
+                                 onEdit: { draft = $0 }).presentationDetents([.large]) }
         .sheet(isPresented: $showShare) {
-            if !session.isBot { ShareSessionSheet(session: session).presentationDetents([.medium, .large]) }
+            if session.shareable { ShareSessionSheet(session: session).presentationDetents([.medium, .large]) }
         }
         .sheet(isPresented: $showRuntimes) {
             RuntimePickerSheet(session: session) { runtime in
@@ -308,7 +308,7 @@ struct ConversationView: View {
                     await store.loadAgentDevices(metrics: false)
                 }
                 try? await Task.sleep(for: .seconds(15))
-                await store.loadRuntimes(force: true)
+                await store.loadRuntimes()
             }
         }
         .task {
@@ -410,6 +410,7 @@ struct ConversationView: View {
                 QueuedStrip(
                     items: session.queued.enumerated().map { .init(id: "local.\($0.offset)", text: $0.element, steering: false) }
                         + session.serverQueued.map { .init(id: $0.id, text: $0.text, steering: session.steeringQueued.contains($0.id)) },
+                    hold: session.serverQueued.isEmpty ? nil : session.queueHold,
                     canSteer: session.canSteer,
                     onEdit: { id in
                         Task {
@@ -454,7 +455,7 @@ struct ConversationView: View {
             ) {
                 if session.canManage { ComposerControls(
                     selection: Binding(
-                        get: { session.credentialAccess ?? CredentialSelection() },
+                        get: { (session.credentialAccess ?? CredentialSelection()).reaching(store.credentialCatalog) },
                         set: { session.setCredentials($0) }
                     ),
                     mode: Binding(get: { session.permissionMode }, set: { session.setPermissionMode($0) }),
@@ -534,7 +535,8 @@ struct ConversationView: View {
         case .user(_, _, let text, let images, let sender, let transfers):
             UserBubble(text: text, images: images, sender: sender, transfers: transfers, session: session)
         case .assistantText(_, _, let text, let streaming):
-            AssistantMarkdown(text: text, streaming: streaming, onLink: open(link:))
+            AssistantMarkdown(text: text, streaming: streaming, onLink: open(link:),
+                              resolveTransfer: { try await session.transferGroup($0) })
                 .frame(maxWidth: .infinity, alignment: .leading)
         case .reasoning(_, let part):
             ReasoningTile(part: part)
@@ -690,15 +692,24 @@ struct SendingBubble: View {
                     .background(Theme.bubble, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
             HStack(spacing: 10) {
-                // Progress is read, not stored: the bubble re-reads it twice a second.
-                TimelineView(.periodic(from: .now, by: 0.5)) { _ in
-                    Text(label).font(Theme.Text.label).foregroundStyle(Theme.muted).monospacedDigit()
-                }
+                UploadProgressLabel(progress: progress)
                 Button("Cancel", action: onCancel).font(Theme.Text.label)
             }
         }
         .frame(maxWidth: .infinity, alignment: .trailing)
         .padding(.leading, 56)
+    }
+}
+
+/// How far a message's attachments have uploaded.
+struct UploadProgressLabel: View {
+    let progress: Progress
+
+    var body: some View {
+        // Progress is read, not stored: the label re-reads it twice a second.
+        TimelineView(.periodic(from: .now, by: 0.5)) { _ in
+            Text(label).font(Theme.Text.label).foregroundStyle(Theme.muted).monospacedDigit()
+        }
     }
 
     private var label: String {
@@ -1150,6 +1161,8 @@ struct QueuedStrip: View {
         let steering: Bool
     }
     let items: [Item]
+    /// The usage limit holding the queue: the status line says so in place of the turn ahead.
+    var hold: AgentChatAPI.QueueHold? = nil
     var canSteer = false
     var onEdit: (String) -> Void
     var onSteer: (String) -> Void
@@ -1157,7 +1170,9 @@ struct QueuedStrip: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Queued messages · run after the turn ahead")
+            Group {
+                if let hold { Text(hold.notice()) } else { Text("Queued messages · run after the turn ahead") }
+            }
                 .font(Theme.Text.micro)
                 .foregroundStyle(Theme.muted)
                 .padding(.horizontal, 4)

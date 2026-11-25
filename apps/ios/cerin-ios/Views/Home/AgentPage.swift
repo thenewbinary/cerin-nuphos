@@ -3,6 +3,7 @@ import SwiftUI
 /// Conversation history for the selected team. Task creation lives in a sheet.
 struct AgentPage: View {
     @Environment(AgentStore.self) private var store
+    @Environment(\.scenePhase) private var scenePhase
     @Binding var page: HomePage
     /// True once the large header has scrolled under the bar.
     @Binding var titleCollapsed: Bool
@@ -16,6 +17,7 @@ struct AgentPage: View {
     @State private var showWorkspaceSetup = false
     @State private var renaming: AgentConversation?
     @State private var archivingBot: AgentConversation?
+    @State private var showArchived = false
     @State private var renamedTitle = ""
     @State private var refreshing = false
     @State private var pulling = false
@@ -49,7 +51,9 @@ struct AgentPage: View {
                 refreshing = true
                 pulling = true
                 defer { pulling = false }
-                if store.selectedTeam == nil { await store.loadTeams() } else { await store.reload() }
+                // Its own task: a read that redraws this page (an empty state does) hands SwiftUI
+                // a new refresh action, and SwiftUI cancels the pull it replaces.
+                await Task { if store.selectedTeam == nil { await store.loadTeams() } else { await store.reload() } }.value
             }
             // SwiftUI ends the pull only after its task returns, and this runs only when the
             // phase changes, so the first idle after `pulling` ends follows that end at any speed.
@@ -57,6 +61,12 @@ struct AgentPage: View {
                 if phase == .idle, !pulling { refreshing = false }
             }
             .sheet(isPresented: $showRuntimeSetup) { RuntimeSetupGuide().environment(store) }
+            .sheet(isPresented: $showArchived) {
+                ArchivedList { row in
+                    showArchived = false
+                    openChat = OpenChat(session: store.session(for: row))
+                }
+            }
             .sheet(isPresented: $showWorkspaceSetup) { WorkspaceSetupSheet() }
             .sheet(isPresented: $showNewBot) {
                 NewBotSheet(hasRuntime: { store.newConversationRuntime != nil }) { title, avatar in
@@ -104,6 +114,8 @@ struct AgentPage: View {
             .ignoresSafeArea(ownsKeyboard ? [] : .keyboard, edges: .bottom)
             .onPreferenceChange(ComposerOwnsKeyboard.self) { ownsKeyboard = $0 }
             .task(id: store.selectedTeam?.id) { await store.loadCredentialOptions() }
+            // A runtime that joined while the app was away shows when it comes back.
+            .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await store.loadRuntimes() } } }
             .onChange(of: store.teamsPhase) { _, phase in if phase == .loaded { openPushTarget() } }
             .onChange(of: PushNotifications.shared.pendingTarget) { _, _ in openPushTarget() }
             .task {
@@ -235,9 +247,15 @@ struct AgentPage: View {
     private var status: some View {
         switch store.phase {
         case .loaded where store.selectedTeam == nil:
-            SetupEmptyState(title: "Welcome to Cerin", message: "Create or join a workspace to start working with your team.", actionTitle: "Set up workspace") { showWorkspaceSetup = true }
+            SetupEmptyState(title: "Welcome to Cerin", message: "Create or join a team to get started.", actionTitle: "Set up a team") { showWorkspaceSetup = true }
         case .loaded where store.runtimesLoaded && store.runtimes.isEmpty:
-            SetupEmptyState(title: "Connect your first runtime", message: "Connect a computer so your Bots and tasks have a place to work.", actionTitle: "Set up a computer") { showRuntimeSetup = true }
+            if let box = store.agentDevices.first(where: \.isStarting) {
+                BoxStartingState(label: box.label)
+            } else {
+                SetupEmptyState(title: "Connect your first runtime", message: "Connect a computer so your Bots and tasks have a place to work.", actionTitle: "Set up a computer") { showRuntimeSetup = true }
+                    // An empty workspace may already have a Box on its way, as a new account's free one is.
+                    .task(id: store.selectedTeam?.id) { await store.loadAgentDevices(metrics: false) }
+            }
         case .idle, .loading:
             ProgressView("Loading tasks…")
                 .tint(Theme.muted)
@@ -260,6 +278,16 @@ struct AgentPage: View {
                 Label(store.search.isEmpty ? "No tasks yet" : "No matches", image: "lucide-message-circle")
             } description: {
                 if !store.search.isEmpty { Text("No tasks match your search.") }
+            } actions: {
+                // With no live Tasks the list, and its Archived row, is gone.
+                if page != .chats, store.search.isEmpty, !store.archived.isEmpty || store.archivedFailed {
+                    Button { showArchived = true } label: {
+                        Label { Text("Archived") } icon: { LucideIcon("archive") }
+                            .font(Theme.Text.label.weight(.medium))
+                            .foregroundStyle(Theme.muted)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         case .loaded:
             EmptyView()
@@ -269,6 +297,22 @@ struct AgentPage: View {
     /// One row: a Task with the threads it opened under it, or on Bots a chat or a Bot.
     @ViewBuilder
     private func agentRow(_ item: NestedConversation) -> some View {
+        if item.conversation.isProject {
+            // A folder, not a conversation: the whole row folds what it holds.
+            Button { store.toggleFolded(item.id) } label: {
+                treeRow(item) {
+                    Label { Text(item.conversation.title) } icon: { LucideIcon(item.id == ConversationNesting.noProject ? "circle-dashed" : "folder") }
+                        .font(Theme.Text.label.weight(.medium))
+                        .foregroundStyle(Theme.muted)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 16))
+            .listRowSeparator(.hidden)
+        } else {
                 let conversation = item.conversation
                 // A Bot's chat acts for the Bot, as on Desktop; a group chat has no actions here.
                 let acted = conversation.isChannel ? store.bot(of: conversation) : conversation
@@ -277,8 +321,18 @@ struct AgentPage: View {
                         NavigationLink(value: conversation.sessionId) { treeRow(item) { ChannelRow(channel: conversation) } }
                     } else if conversation.isBot {
                         // A Bot with no 1:1 chat yet: the list stays while it is made.
+                        // A Button, not a link: picking a link would show the chat before it exists, and
+                        // hide the list that reports a failure (#1738). It ends with the links' chevron (#3614).
                         Button { Task { await openBotChat(conversation.sessionId) } } label: {
-                            treeRow(item) { ChannelRow(channel: conversation) }.contentShape(Rectangle())
+                            HStack(spacing: 0) {
+                                treeRow(item) { ChannelRow(channel: conversation) }
+                                Image(systemName: "chevron.forward")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundStyle(.tertiary)
+                                    .padding(.leading, 11)
+                                    .opacity(store.creatingBot ? 0 : 1)
+                            }
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
                         .disabled(store.creatingBot)
@@ -301,7 +355,7 @@ struct AgentPage: View {
                         pinAction(conversation)
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        if let acted, acted.canManage {
+                        if let acted, acted.canArchive {
                             Button {
                                 if acted.isBot { archivingBot = acted }
                                 else { Task { await store.archive(sessionId: acted.sessionId, teamId: acted.teamId) } }
@@ -316,7 +370,7 @@ struct AgentPage: View {
                     }
                 } else {
                     row.swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        if let acted, acted.canManage {
+                        if let acted, acted.canArchive {
                             Button {
                                 if acted.isBot { archivingBot = acted }
                                 else { Task { await store.archive(sessionId: acted.sessionId, teamId: acted.teamId) } }
@@ -325,6 +379,7 @@ struct AgentPage: View {
                     }
                     .contextMenu { if let acted { rowActions(acted, tinted: false) } }
                 }
+        }
     }
 
     /// A row's content with its thread count, indented on the tree's lines.
@@ -350,7 +405,7 @@ struct AgentPage: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.borderless)
-                .accessibilityLabel(folded ? "Show \(item.threads) sub-agents" : "Hide \(item.threads) sub-agents")
+                .accessibilityLabel(folded ? "Show sub-tasks" : "Hide sub-tasks")
             }
         }
         // Insets live here, not on the row, so the tree lines span the whole row.
@@ -389,7 +444,7 @@ struct AgentPage: View {
 
     @ViewBuilder
     private func rowActions(_ conversation: AgentConversation, tinted: Bool = true) -> some View {
-        if conversation.canManage { Button {
+        if conversation.canArchive { Button {
             if conversation.isBot { archivingBot = conversation; return }
             Task { await store.archive(sessionId: conversation.sessionId, teamId: conversation.teamId) }
         } label: {
@@ -472,21 +527,36 @@ struct AgentPage: View {
                 }
             } else {
                 Section {
-                    ForEach(store.nestedConversations) { item in agentRow(item) }
-
-                    if store.hasMore {
-                        HStack {
-                            Spacer()
-                            ProgressView().tint(Theme.muted)
-                            Spacer()
+                    ForEach(store.nestedConversations) { item in
+                        // Tasks that need the viewer sit above this line, as on Desktop.
+                        if item.divider {
+                            Theme.separator
+                                .frame(height: 1)
+                                .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 16))
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
                         }
+                        agentRow(item)
+                    }
+                    if !store.archived.isEmpty || store.archivedFailed {
+                        Button { showArchived = true } label: {
+                            Label { Text("Archived") } icon: { LucideIcon("archive") }
+                                .font(Theme.Text.label.weight(.medium))
+                                .foregroundStyle(Theme.muted)
+                                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
                         .listRowBackground(Color.clear)
-                        .task { await store.loadMore() }
+                        .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 16))
+                        .listRowSeparator(.hidden)
                     }
                 }
             }
         }
         .listStyle(.plain)
+        // Rows set their own height; the line between Tasks is one point.
+        .environment(\.defaultMinListRowHeight, 1)
         .onScrollGeometryChange(for: Bool.self) { geometry in
             geometry.contentOffset.y + geometry.contentInsets.top > PageTitleHeader.collapseThreshold
         } action: { _, collapsed in
@@ -501,9 +571,9 @@ struct AgentPage: View {
 
 /// A row under Bots: a chat, or a Bot with no chat yet, by its face. A Bot's
 /// chat is named after the Bot. A chat shows its newest post (`lastMessage`),
-/// and when it last moved. A question from the Bot or a thread it dispatched
-/// comes first; otherwise the row shows the chat's typing dots exactly while
-/// the chat shows them (#3522). A Bot at work adds nothing else here.
+/// on up to two lines, and when it last moved. The row shows the chat's typing
+/// dots exactly while the chat shows them (#3522). A question from the Bot stays
+/// in the Inbox (#4508), and a Bot at work adds nothing else here.
 struct ChannelRow: View {
     let channel: AgentConversation
     @Environment(AgentStore.self) private var store
@@ -511,9 +581,6 @@ struct ChannelRow: View {
     var body: some View {
         let team = channel.teamId ?? store.selectedTeam?.id ?? ""
         let title = store.title(of: channel)
-        let bot = channel.isChannel ? store.bot(of: channel) : nil
-        let runs = bot.map { [$0] + store.threads(of: $0) } ?? []
-        let question = runs.lazy.compactMap { $0.attentionInputRequests.first?.question }.first
         HStack(spacing: 12) {
             if channel.isChannel {
                 ChatIcon(faces: channel.faces ?? [], title: title, size: 36)
@@ -532,12 +599,7 @@ struct ChannelRow: View {
                         .foregroundStyle(Theme.muted)
                         .lineLimit(1)
                 }
-                if let question {
-                    Text("Needs your input: \(question)")
-                        .font(Theme.Text.label)
-                        .foregroundStyle(Theme.body)
-                        .lineLimit(1)
-                } else if channel.botTyping(in: store.observations, team: team) {
+                if channel.botTyping(in: store.observations, team: team) {
                     // As iMessage does: the dots stand in for the newest post until the reply lands.
                     TypingDots(size: 5)
                         .frame(height: 16)
@@ -546,7 +608,7 @@ struct ChannelRow: View {
                     Text(preview)
                         .font(Theme.Text.label)
                         .foregroundStyle(Theme.muted)
-                        .lineLimit(1)
+                        .lineLimit(2)
                 }
             }
             if store.unread.contains(team: team, session: channel.sessionId) {
@@ -642,4 +704,27 @@ private func endEditing() {
     #if canImport(UIKit) && !CERIN_SHARE_EXTENSION
     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     #endif
+}
+
+/// Shown for a Box still coming up while the workspace has no runtime, in place of advice to
+/// connect a computer. It re-reads both lists every 5 s until the Box's runtimes are listed,
+/// which takes this view off screen and ends the loop.
+private struct BoxStartingState: View {
+    @Environment(AgentStore.self) private var store
+    let label: String
+    var body: some View {
+        VStack(spacing: 16) {
+            ProgressView().tint(Theme.muted)
+            Text("\(label) is getting ready").font(.title3.weight(.semibold)).foregroundStyle(Theme.heading).multilineTextAlignment(.center)
+            Text("It will show up here as soon as it is online. This can take a minute or two.").font(.callout).foregroundStyle(Theme.body).multilineTextAlignment(.center)
+        }
+        .padding(24).frame(maxWidth: 400).frame(maxWidth: .infinity, maxHeight: .infinity)
+        .task {
+            while true {
+                do { try await Task.sleep(for: .seconds(5)) } catch { return }
+                await store.loadRuntimes()
+                await store.loadAgentDevices(metrics: false)
+            }
+        }
+    }
 }

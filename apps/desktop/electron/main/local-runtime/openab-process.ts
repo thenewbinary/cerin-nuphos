@@ -1,5 +1,5 @@
-import { execFile, execFileSync, spawn } from 'node:child_process'
-import { randomBytes } from 'node:crypto'
+import { execFile, spawn } from 'node:child_process'
+import { createHash, randomBytes } from 'node:crypto'
 import { createWriteStream, mkdirSync, writeFileSync } from 'node:fs'
 import net from 'node:net'
 import path from 'node:path'
@@ -61,16 +61,17 @@ async function waitUntilListening(port: number, child: ChildProcess): Promise<vo
 
 type ProcessEntry = { pid: number; args: string }
 
-function listProcesses(): ProcessEntry[] {
-  try {
-    return execFileSync('/bin/ps', ['-axo', 'pid=,args='], { encoding: 'utf8' })
-      .split('\n')
-      .map((line) => /^\s*(\d+) (.*)$/u.exec(line))
-      .filter((match) => match !== null)
-      .map((match) => ({ pid: Number(match[1]), args: match[2] ?? '' }))
-  } catch {
-    return []
-  }
+/** Async: a slow `ps` must not block the host, and with it the tunnel (#5019). */
+function listProcesses(): Promise<ProcessEntry[]> {
+  return new Promise((resolve) => {
+    execFile('/bin/ps', ['-axo', 'pid=,args='], { encoding: 'utf8' }, (error, stdout) => {
+      const matches = (error ? '' : stdout).split('\n').map((line) => /^\s*(\d+) (.*)$/u.exec(line))
+
+      resolve(
+        matches.filter((m) => m !== null).map((m) => ({ pid: Number(m[1]), args: m[2] ?? '' })),
+      )
+    })
+  })
 }
 
 /** Sends `sig` if the process still exists; signal 0 only asks whether it does. */
@@ -91,12 +92,9 @@ const alive = (pid: number) => signal(pid, 0)
  * it serving this config, with every agent it spawned. openab reaps its agents on
  * SIGTERM, so the next start stops that earlier run instead of adding another.
  */
-export async function stopStaleOpenab(
-  configPath: string,
-  list: () => ProcessEntry[] = listProcesses,
-): Promise<void> {
+export async function stopStaleOpenab(configPath: string): Promise<void> {
   if (process.platform === 'win32') return
-  const stale = list()
+  const stale = (await listProcesses())
     .filter(({ pid, args }) => pid !== process.pid && args.endsWith(`openab run -c ${configPath}`))
     .map(({ pid }) => pid)
 
@@ -148,7 +146,37 @@ async function capAgentMemory(): Promise<boolean> {
   return capped
 }
 
-const AGENT_SCOPE = ['--user', '--scope', '--quiet', '--collect', `--slice=${AGENT_SLICE}`]
+/**
+ * OOMPolicy=continue: the kernel kills only the process that ran the slice out of memory;
+ * the default `stop` then stops the scope with openab and every session in it.
+ * TimeoutStopSec: a leftover ignoring SIGTERM is killed after openab's grace, not 90 s.
+ */
+const AGENT_SCOPE = [
+  '--user',
+  '--scope',
+  '--quiet',
+  '--collect',
+  `--slice=${AGENT_SLICE}`,
+  '--property=OOMPolicy=continue',
+  `--property=TimeoutStopSec=${String(STOP_GRACE_MS / 1000)}`,
+]
+
+/**
+ * One scope per config. A daemon a tool started (`ssh-agent -s`, a `--fork`ed dbus)
+ * escapes openab's own reaping and outlives it in the scope; stopping the scope kills
+ * everything still in it. The fixed name also finds the scope a dead host left behind.
+ */
+export const agentScope = (configPath: string): string =>
+  `cerin-openab-${createHash('sha256').update(configPath).digest('hex').slice(0, 12)}`
+
+const stopAgentScope = (configPath: string): Promise<void> =>
+  new Promise((resolve) => {
+    const stop = ['--user', 'stop', `${agentScope(configPath)}.scope`]
+
+    execFile('/usr/bin/systemctl', stop, { timeout: 15_000, env: systemdUserEnv() }, () => {
+      resolve()
+    })
+  })
 
 /** `systemd-run --scope` execs openab in the same process, inside the agents' cgroup. */
 export function openabCommand(
@@ -157,8 +185,9 @@ export function openabCommand(
   capped: boolean,
 ): [string, string[]] {
   const args = ['run', '-c', configPath]
+  const scope = [...AGENT_SCOPE, `--unit=${agentScope(configPath)}`]
 
-  return capped ? ['/usr/bin/systemd-run', [...AGENT_SCOPE, '--', openab, ...args]] : [openab, args]
+  return capped ? ['/usr/bin/systemd-run', [...scope, '--', openab, ...args]] : [openab, args]
 }
 
 /** One openab + adapter process tree on a fresh loopback port and a fresh key. */
@@ -171,6 +200,8 @@ export class OpenabProcess {
   }
 
   private child: ChildProcess | undefined
+  /** Stopping the scope of the openab that last exited, which the next start waits for. */
+  private reaped: Promise<void> = Promise.resolve()
   private exitListeners = new Set<(code: number | null) => void>()
 
   onExit(listener: (code: number | null) => void): () => void {
@@ -181,6 +212,7 @@ export class OpenabProcess {
 
   async start(options: OpenabProcessOptions): Promise<RunningRuntime> {
     await this.stop()
+    await this.reaped
     const port = await freeLoopbackPort()
     const authKey = randomBytes(32).toString('hex')
     const launch: LocalRuntimeLaunch = { ...options, ...this.machine, port, authKey }
@@ -196,6 +228,8 @@ export class OpenabProcess {
     log.write(`\n=== ${new Date().toISOString()} openab on 127.0.0.1:${String(port)} ===\n`)
     const capped =
       process.platform === 'linux' && this.machine.ownsMachine === true && (await capAgentMemory())
+
+    if (capped) await stopAgentScope(configPath)
     const [command, args] = openabCommand(options.bundle.openab, configPath, capped)
     const child = spawn(command, args, {
       env: { ...openabEnv(launch), ...(capped ? systemdUserEnv() : {}) },
@@ -215,6 +249,7 @@ export class OpenabProcess {
     })
     child.once('exit', (code, signal) => {
       log.end(`=== openab exited code=${String(code)} signal=${String(signal)} ===\n`)
+      if (capped) this.reaped = stopAgentScope(configPath)
       if (this.child !== child) return
       this.child = undefined
       for (const listener of this.exitListeners) listener(code)
@@ -249,7 +284,7 @@ export class OpenabProcess {
 
       child.once('exit', () => {
         clearTimeout(timer)
-        resolve()
+        resolve(this.reaped)
       })
       child.kill('SIGTERM')
     })

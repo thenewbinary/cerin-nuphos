@@ -17,10 +17,8 @@ registerSlackMappingRoutes(slackRoutes)
 registerSlackUserMappingRoutes(slackRoutes)
 
 export { handleAppMention } from '@/routes/slack/mention'
-export { persistedMessageToUiMessage } from '@/routes/slack/messages'
 export { beginCerinSlackTurn } from '@/routes/slack/cerin-turn'
 export type { CerinSlackTurnDelivery, CerinSlackTurnOutcome } from '@/routes/slack/cerin-turn'
 export { handlePermissionGrantInteraction } from '@/routes/slack/permission-decide'
-export { handlePlanApproveInteraction } from '@/routes/slack/plan-approve'
 export { handleToolApprovalInteraction } from '@/routes/slack/tool-approval-decide'
 export { handleThreadMessage } from '@/routes/slack/thread-message'

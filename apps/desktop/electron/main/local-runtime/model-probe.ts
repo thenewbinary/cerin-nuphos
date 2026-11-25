@@ -2,10 +2,12 @@ import { spawn } from 'node:child_process'
 
 import { agentEnv } from './config.ts'
 import { customProviderLaunch } from './custom-provider.ts'
+import { adapterRpc } from './model-probe-rpc.ts'
 
 import type { LocalRuntimeBundle } from './config.ts'
-import type { KeyStore } from './custom-provider.ts'
 import type { ProbeModelsRun } from './controller-types.ts'
+import type { KeyStore } from './custom-provider.ts'
+import type { ChildProcess } from 'node:child_process'
 
 export type ModelControls = {
   effort: { value: string; name: string; description?: string }[]
@@ -27,6 +29,7 @@ export type LocalModelCatalog = {
   controls: Record<string, ModelControls>
   /** Controls but no model list: `controls` holds one entry and a pick starts the session. */
   controlsOnly?: true
+  failed?: true // The read failed, so this emptiness is not a list still on its way.
 }
 
 type ConfigOption = {
@@ -102,18 +105,54 @@ export function controlsOf(options: ConfigOption[]): ModelControls {
   }
 }
 
+const isBare = (controls: ModelControls) => !controls.effort.length && !controls.fast.length
+
+/**
+ * Two models read and neither offers a control: the runtime has none per model.
+ * A custom provider's ids are never cut short, since setting each finds the ones refused.
+ */
+function noModelControls(controls: Record<string, ModelControls>, custom?: string[]) {
+  const read = Object.values(controls)
+
+  if (custom?.length) return false
+
+  return read.length > 1 && read.every(isBare)
+}
+
 /** A runtime's settings when it lists no models, or null when it offers no choices. */
 function settingsOnlyCatalog(configOptions: ConfigOption[]): LocalModelCatalog | null {
   const controls = controlsOf(configOptions)
 
   // Choices only: an empty level is nothing to pick, so it would open an empty popover.
-  if (!controls.effort.length && !controls.fast.length) return null
+  if (isBare(controls)) return null
 
   return {
     models: [],
     defaultModel: '',
     controls: { [CONTROLS_ONLY_KEY]: controls },
     controlsOnly: true,
+  }
+}
+
+/**
+ * Ends the adapter and the agent it started. Killing the adapter alone can orphan the
+ * agent: cursor-agent keeps running after its stdin closes.
+ */
+function endTree(child: ChildProcess) {
+  if (child.pid == null) return
+  if (process.platform === 'win32') {
+    const taskkill = `${process.env.SystemRoot ?? 'C:\\Windows'}\\System32\\taskkill.exe`
+
+    spawn(taskkill, ['/pid', String(child.pid), '/T', '/F']).on('error', () => {
+      // No taskkill: nothing else can end the tree.
+    })
+
+    return
+  }
+  try {
+    process.kill(-child.pid, 'SIGKILL')
+  } catch {
+    // Already gone.
   }
 }
 
@@ -137,71 +176,25 @@ export function probeLocalModels(options: {
       env: { ...options.env, ...options.secretEnv },
       stdio: ['pipe', 'pipe', 'ignore'],
       windowsHide: true,
+      // Its own process group on POSIX, so endTree reaches the agent the adapter starts.
+      detached: process.platform !== 'win32',
     })
+    let settled = false
     const timer = setTimeout(() => {
       finish(new Error('Model discovery timed out'))
     }, PROBE_TIMEOUT_MS)
-    let buffer = ''
-    let nextId = 1
-    const waiting = new Map<
-      number,
-      { resolve: (result: Record<string, unknown>) => void; reject: (error: Error) => void }
-    >()
+    // Every way the adapter can go away ends this probe, never the app.
+    const rpc = adapterRpc(child, (error) => finish(error))
+    const call = rpc.call
     const finish = (error: Error | null, catalog?: LocalModelCatalog) => {
+      if (settled) return
+      settled = true
       clearTimeout(timer)
-      child.kill()
+      rpc.stop(error ?? new Error('Model discovery finished'))
+      endTree(child)
       if (error) reject(error)
       else if (catalog) resolve(catalog)
     }
-    const call = (method: string, params: unknown) =>
-      new Promise<Record<string, unknown>>((resolve, reject) => {
-        const id = nextId++
-
-        waiting.set(id, { resolve, reject })
-        child.stdin.write(`${JSON.stringify({ jsonrpc: '2.0', id, method, params })}\n`)
-      })
-
-    child.once('error', (error) => {
-      finish(error)
-    })
-    child.once('exit', () => {
-      finish(new Error('The runtime exited during model discovery'))
-    })
-    child.stdout.setEncoding('utf8')
-    child.stdout.on('data', (chunk: string) => {
-      buffer += chunk
-      for (let newline = buffer.indexOf('\n'); newline >= 0; newline = buffer.indexOf('\n')) {
-        const line = buffer.slice(0, newline)
-
-        buffer = buffer.slice(newline + 1)
-        let frame: {
-          id?: number
-          method?: string
-          result?: Record<string, unknown>
-          error?: unknown
-        }
-
-        try {
-          frame = JSON.parse(line) as typeof frame
-        } catch {
-          continue
-        }
-        if (frame.method && frame.id !== undefined) {
-          child.stdin.write(
-            `${JSON.stringify({ jsonrpc: '2.0', id: frame.id, error: { code: -32601, message: 'Unavailable' } })}\n`,
-          )
-        } else if (frame.id !== undefined && waiting.has(frame.id)) {
-          const request = waiting.get(frame.id)
-
-          if (frame.error)
-            request?.reject(
-              new Error(`Model discovery failed: ${JSON.stringify(frame.error).slice(0, 300)}`),
-            )
-          else request?.resolve(frame.result ?? {})
-          waiting.delete(frame.id)
-        }
-      }
-    })
 
     void (async () => {
       await call('initialize', {
@@ -234,8 +227,15 @@ export function probeLocalModels(options: {
       const controls: Record<string, ModelControls> = {
         [defaultModel as string]: controlsOf(configOptions),
       }
+      let tried = 0
 
       for (const { id } of models) {
+        // Cursor names each model's settings in its id and has no control to read, and a
+        // set costs it half a second: across its ~50 models, longer than the probe may take.
+        // So once two models show no control, the rest are listed as advertised.
+        if (noModelControls(controls, options.models)) break
+        tried++
+
         // Claude validates full model ids with a network call that can fail
         // once; try again before reporting the model without its controls.
         for (let attempt = 0; attempt < 2 && !controls[id]; attempt++) {
@@ -256,7 +256,7 @@ export function probeLocalModels(options: {
         }
       }
       finish(null, {
-        models: models.filter(({ id }) => controls[id]),
+        models: models.filter(({ id }, index) => index >= tried || controls[id]),
         defaultModel: defaultModel as string,
         controls,
       })

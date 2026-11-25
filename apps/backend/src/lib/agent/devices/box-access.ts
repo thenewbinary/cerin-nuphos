@@ -1,7 +1,7 @@
 import { AppError } from '@/lib/errors'
 import { getTeamMembership } from '@/lib/identity'
 
-import { teamGrant } from './device-grants'
+import { teamGrant } from './access-audit'
 import { tunnelBus } from './local-runtime/bus'
 import { holderChannel } from './local-runtime/protocol'
 import {
@@ -32,6 +32,17 @@ export function allows(access: DeviceAccessLevel | null, needed: DeviceAccessLev
 /** Who owns a computer: whoever made a cloud computer, or the person whose computer it is. */
 export function deviceOwner(device: AgentDevice): string {
   return device.box?.createdBy ?? device.userId
+}
+
+/** Whether no one but `userId` owns, uses or manages the computer, in any team. */
+export function onlyUsedBy(device: AgentDevice, userId: string): boolean {
+  return (
+    deviceOwner(device) === userId &&
+    (device.access ?? []).every(
+      (grant) =>
+        !grant.everyone && [...grant.userIds, ...grant.managerIds].every((id) => id === userId),
+    )
+  )
 }
 
 /** Who among these members can no longer use the computer under this team's new use list. */

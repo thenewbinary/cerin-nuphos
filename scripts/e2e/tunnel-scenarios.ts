@@ -11,7 +11,7 @@ import { forgetComputer } from './computer-scenarios.ts'
 import { artifacts, until } from './processes.ts'
 import { DESKTOP_DIR, startSecondComputer } from './second-computer.ts'
 import { proxyTo } from './tcp-proxy.ts'
-import { newTask, openComputers, pickInSubmenu, send } from './ui.ts'
+import { newTask, openComputers, pickInRow, send } from './ui.ts'
 
 import type { Stack } from './stack.ts'
 import type { Scenario } from './ui.ts'
@@ -20,11 +20,12 @@ import type { Page } from 'playwright-core'
 const LABEL = 'E2E patchy mini'
 const RESET = 'E2E reset mini'
 const UPDATED = 'E2E office mini'
+const CLONED = 'E2E cloned mini'
 const UPDATE_RELEASE = join(artifacts, 'update-release')
 const RELEASE = join(artifacts, 'tunnel-release')
 
 /** The app's local-runtime bundle with the fixture agent as Claude Code; E2E_WAIT_RELEASE waits for `release`. */
-function fixtureBundle(stack: Stack, name = 'tunnel', release = RELEASE): string {
+export function fixtureBundle(stack: Stack, name = 'tunnel', release = RELEASE): string {
   const real = join(DESKTOP_DIR, 'build', 'local-runtime', 'linux-x64')
   const root = join(artifacts, `${name}-bundle`)
   const neverFile = join(artifacts, `${name}-never`)
@@ -69,7 +70,7 @@ function fixtureBundle(stack: Stack, name = 'tunnel', release = RELEASE): string
 }
 
 /** Adds Claude Code to `label` as a person does (the installer is the fixture's), and starts a Task there. */
-async function newTaskOn(page: Page, label: string) {
+export async function newTaskOn(page: Page, label: string) {
   await openComputers(page)
   await page.getByRole('button', { name: `New runtime on ${label}` }).click()
   await page.getByRole('menuitem', { name: 'Claude Code', exact: true }).click()
@@ -85,8 +86,7 @@ async function newTaskOn(page: Page, label: string) {
   await newTask(page)
   // The computer's row opens its runtimes, named by agent alone.
   await page.getByRole('button', { name: /^Runtime:/ }).click()
-  await page.getByRole('menu').getByText(label).click()
-  await pickInSubmenu(page, page.getByRole('menuitem', { name: /^Claude Code/ }))
+  await pickInRow(page, label, /^Claude Code/)
 }
 
 /** Lines the backend logged about this computer since `from`. */
@@ -194,6 +194,40 @@ export const tunnelScenarios: Scenario[] = [
     },
   },
   {
+    // #4844: two `cerin agent` services with one identity, as on a cloned machine, took the
+    // computer from each other forever, as the one taken over exited 0, which systemd restarts.
+    name: 'a computer taken over by another with its identity stops for good',
+    run: async (_page, stack) => {
+      const computer = await startSecondComputer(stack, CLONED)
+
+      try {
+        const from = backendLines()
+        const tunnel = `${stack.apiUrl.replace(/^http/, 'ws')}/agent/devices/${computer.deviceId}/runtime-tunnel`
+        const other = new WebSocket(tunnel, {
+          headers: { authorization: `Bearer ${stack.token}` },
+        } as unknown as string[])
+
+        await new Promise((opened, failed) => {
+          other.addEventListener('open', opened)
+          other.addEventListener('error', failed)
+        })
+        // It takes the computer once it speaks, as a host does on connecting.
+        other.send(JSON.stringify({ t: 'status', status: { agents: {} } }))
+        await until('the other connection to take the computer', async () =>
+          about(computer.deviceId, from).some((line) => line.includes('"code":4000')),
+        )
+        await until('the computer to stop', async () => computer.exitCode() !== null)
+        other.close()
+        // 78 is the status its systemd unit is not restarted after.
+        if (computer.exitCode() !== 78)
+          throw new Error(`It exited ${String(computer.exitCode())}, which its service restarts`)
+      } finally {
+        await computer.stop()
+        forgetComputer(stack.mongoUri, computer.deviceId)
+      }
+    },
+  },
+  {
     // Yuanlin's Mac mini: Update waited for its running Tasks, so it never started.
     name: 'Update on another computer restarts it at once, and the turn running there ends',
     run: async (page, stack) => {
@@ -224,12 +258,18 @@ export const tunnelScenarios: Scenario[] = [
         // It used to answer "An agent is working on this computer" and leave the turn running.
         await until('the computer to restart into its update', async () => computer.restarts() > 0)
         await page.getByText(`${UPDATED} is back`).waitFor({ timeout: 120_000 })
+        // Back as soon as it reported in again, though it restarted between two readings.
+        await page.evaluate(() => {
+          document.documentElement.classList.remove('dark')
+          document.documentElement.classList.add('light')
+        })
+        await card.screenshot({ path: join(artifacts, 'computer-update-back-light.png') })
         await page.getByText('Back to app', { exact: true }).click()
 
         // The turn the restart ended stops running and says it was cut off; the Task carries on.
         await until(
           'the Task to stop running',
-          async () => (await page.locator('button[title="Stop"]').count()) === 0,
+          async () => (await page.locator('button[title="Stop"]:visible').count()) === 0,
           120_000,
         )
         await page.getByText(/This message was cut off/).waitFor({ timeout: 60_000 })

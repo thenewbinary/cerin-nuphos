@@ -1,6 +1,6 @@
 ---
 name: aliyun
-description: Run Alibaba Cloud CLI (aliyun) commands from the sandbox to inspect or change Alibaba Cloud resources (ACK, ECS, SLB, VPC, OSS, etc.). Includes a script to load a Cerin-bound Alibaba Cloud account's credentials.
+description: Run the aliyun CLI to inspect or change Alibaba Cloud resources (ACK, ECS, SLB, VPC, OSS). Includes a script that loads a Cerin-bound account's credentials.
 ---
 
 # Alibaba Cloud CLI (aliyun)

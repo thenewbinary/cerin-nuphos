@@ -87,6 +87,7 @@ The adapters are patched at build time rather than forked. Each patch pins the
 SHA-256 of the upstream bundle it edits, so an adapter upgrade fails the build
 until someone re-reviews the patch.
 
+<<<<<<< origin/main
 | Path in the image                          | What it does                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `/opt/cerin-claude-agent-acp`              | Claude adapter (0.74.0, Agent SDK 0.3.322), patched to publish session state and to bridge HTTP MCP servers                                                                                                                                                                                                                                                  |
@@ -107,6 +108,28 @@ until someone re-reviews the patch.
 | `/opt/cerin-runtime/claude-login.mjs`      | Drives `claude auth login`: reports the authorize URL, passes back the code the user pastes, and leaves the credential in `~/.claude`                                                                                                                                                                                                                        |
 | `/usr/local/bin/cerin-sync-skills`         | Fetches the workspace's skill bundle and swaps it in atomically — pushed by the provisioner for a managed pod, run per session by `runtime-defaults.mjs` for a self-hosted one                                                                                                                                                                               |
 | `/usr/local/bin/cerin-seed-codex-auth`     | Seeds Codex credentials from a mounted secret, once per credential revision                                                                                                                                                                                                                                                                                  |
+=======
+| Path in the image                           | What it does                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/opt/cerin-claude-agent-acp`              | Claude adapter (0.74.0, Agent SDK 0.3.332), patched to publish session state and to bridge HTTP MCP servers                                                                                                                                                                                                                                                    |
+| `/opt/cerin-codex-acp`                     | Codex adapter (1.1.4, Codex CLI 0.172.0), patched for per-session instructions and environment, MCP bridging, and steering an active turn                                                                                                                                                                                                                      |
+| `/usr/local/bin/cerin-runtime-start`       | The entrypoint: checks a password set in the environment and derives the operator key from it, points openab's console at a password file from an earlier version, lays out `/workspace` the way a provisioned pod does, then becomes openab                                                                                                                   |
+| `/etc/openab/config.toml`                   | The gateway config openab reads, so the container starts with nothing mounted; a mount at this path replaces it                                                                                                                                                                                                                                                |
+| `/opt/runtime-defaults.mjs`                 | Applies a model, reasoning effort and fast-mode default to a new session                                                                                                                                                                                                                                                                                       |
+| `/opt/cerin-runtime/mcp-http-bridge.mjs`   | Relays a stdio MCP server to a bearer-authenticated HTTP endpoint, re-reading the token per request                                                                                                                                                                                                                                                            |
+| `/opt/cerin-runtime/runtime-guard.sh`      | Sourced via `BASH_ENV`; refreshes per-turn credentials into the shell environment                                                                                                                                                                                                                                                                              |
+| `/opt/cerin-runtime/panel-job.mjs`         | The `panel` job OpenAB runs for `_openab/runtime/job`: writes the panel runner, script and params into a fresh directory and runs `node runner.mjs <dir>`, passing stdout and the exit code through                                                                                                                                                            |
+| `/opt/cerin-runtime/codex-login.mjs`       | Drives Codex's device-code login in an isolated `CODEX_HOME`                                                                                                                                                                                                                                                                                                   |
+| `/opt/acp-shim.mjs`                         | The Cerin layer for Grok Build, Antigravity, OpenCode, Hermes Agent and DeepSeek Harness: respawns the agent with the conversation's environment and CLI home, syncs skills, applies runtime defaults, bridges MCP credentials, and hands over Cerin's instructions (Grok's `_meta.rules`; otherwise ahead of the first prompt after each session is opened) |
+| `/opt/cerin-runtime/grok-login.mjs`        | Drives `grok login --device-auth` and reports the xAI device code                                                                                                                                                                                                                                                                                              |
+| `/opt/cerin-runtime/opencode-login.mjs`    | Drives OpenCode's own server through every sign-in it offers: reports the provider, method and field choices, then an API key prompt or the provider's page, and passes back what the user picks, types or pastes                                                                                                                                              |
+| `/opt/cerin-runtime/hermes-login.mjs`      | Drives `hermes auth add` for the provider and method the user picks: an API key on stdin, a device page and its code, or a page whose code is pasted back. Then makes that provider and its model Hermes's default                                                                                                                                             |
+| `/opt/cerin-runtime/dsh-login.mjs`         | Signs DeepSeek Harness in with an API key or a DeepSeek account: boots the `acp` profile with a `--patch` overlay that swaps the ACP server for DSH's web server on loopback and `dsh-sign-in.mjs`, which asks DSH's own services to store the key or run the browser sign-in; the user pastes back the loopback address the browser lands on                  |
+| `/opt/cerin-runtime/antigravity-login.mjs` | Runs the official `agy acp --login`: reports its Google authorize URL and passes the code or callback URL back over stdin; the CLI owns the credential store                                                                                                                                                                                                   |
+| `/opt/cerin-runtime/claude-login.mjs`      | Drives `claude auth login`: reports the authorize URL, passes back the code the user pastes, and leaves the credential in `~/.claude`                                                                                                                                                                                                                          |
+| `/usr/local/bin/cerin-sync-skills`         | Fetches the workspace's skill bundle and swaps it in atomically — pushed by the provisioner for a managed pod, run per session by `runtime-defaults.mjs` for a self-hosted one                                                                                                                                                                                 |
+| `/usr/local/bin/cerin-seed-codex-auth`     | Seeds Codex credentials from a mounted secret, once per credential revision                                                                                                                                                                                                                                                                                    |
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 
 `OPENAB_AGENT_COMMAND` names the patched adapter, and `claude` on `PATH` is the
 same native CLI the Claude adapter runs.
@@ -616,8 +639,9 @@ OpenAI, xAI or Google.
 
 ### Automatic Claude SDK updates
 
-`Update Claude SDK` checks npm's stable `latest` daily at 06:23 UTC, with a
-manual **Run workflow** option. A newer SDK in the same major updates the SDK
+`Update Claude SDK` checks npm's stable `latest` when run by hand (**Run
+workflow**). Every runtime release pull request already includes the latest SDK
+and Codex CLI, so it has no schedule. A newer SDK in the same major updates the SDK
 override, lockfile and Dockerfile assertion together. Helpers, patched Claude
 adapter regressions, an image build and native model discovery must pass before
 it opens (or refreshes) the `runtime/update-claude-sdk` pull request with the
@@ -629,7 +653,9 @@ main only takes signed commits through a reviewed pull request, so the workflow
 creates its commit with the GitHub API and never pushes to main. The pull request
 is opened with `GITHUB_TOKEN`, which needs **Allow GitHub Actions to create and
 approve pull requests** enabled; such pull requests do not trigger CI, so the
-workflow's own checks are the gate. If publication fails after tagging, rerun the
+workflow's own checks are the gate. That setting is off in this repository, so
+the step that opens the pull request fails; put the update in the runtime
+release pull request instead. If publication fails after tagging, rerun the
 failed jobs, or run **Build runtime image** with that tag; do not create another
 version merely to retry. Publishing does not update Cerin's configured runtime
 version or the Desktop's pinned runtime commit; those remain separate deployment
@@ -646,17 +672,16 @@ human edits. Every release, manual or automatic, uses this same path.
 
 ### Automatic Codex CLI updates
 
-`Update Codex CLI` checks npm's stable `latest` daily at 07:23 UTC
-and supports manual dispatch. It updates the pinned CLI and lockfile, runs the
+`Update Codex CLI` checks npm's stable `latest` when run by hand. It updates the pinned CLI and lockfile, runs the
 Codex adapter, active-turn steering and real CLI environment-isolation regressions,
 then builds and smoke-tests a candidate image including prompt-free model discovery.
 Only passing updates open (or refresh) the `runtime/update-codex-cli` pull request
 with a runtime patch bump; merging it releases. No change opens nothing; major CLI
 changes require manual review. If both update pull requests are open, they bump
-the same version: merge one, and the next scheduled run rebases the other.
+the same version: merge one, then run the other again to rebase it.
 
 Both ACP adapters remain pinned: Cerin patches their bundles, so adapter upgrades
-require a reviewed patch port and compatibility tests. CLI/SDK updates are automatic;
+require a reviewed patch port and compatibility tests. CLI/SDK updates are scripted;
 ACP adapter updates are not. Deployment to existing runtimes remains separate.
 
 The Codex candidate-image probe runs without an account: an explicit native

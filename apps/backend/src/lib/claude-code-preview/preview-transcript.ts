@@ -5,6 +5,7 @@
 import { getCompactionSummary } from '@/lib/agent/db'
 
 import { CodexTurnFailedError } from './codex-turn-failure'
+import { outdatedHint } from './host-minimum-version'
 import { OpenAbConnectionLostError, claudeNotice, turnFailureCause } from './openab-acp-errors'
 import { plainTurnFailure, userSetupFailure } from './plain-failure'
 import { runtimeFailure } from './runtime-failure'
@@ -56,7 +57,10 @@ export function classifyPreviewInterruption(
   error: unknown,
   aborted: boolean,
 ): PreviewTurnInterruption {
-  const interruption = interruptionOf(error, aborted)
+  const found = interruptionOf(error, aborted)
+  // The line noteOutdated added to the error is the one part of it the summary keeps.
+  const hint = outdatedHint(error)
+  const interruption = hint ? { ...found, message: `${found.message} ${hint}` } : found
   const cause = aborted
     ? 'other'
     : userSetupFailure(error) === 'agent_cli_unstartable'
@@ -81,6 +85,16 @@ function interruptionOf(error: unknown, aborted: boolean): PreviewTurnInterrupti
   if (failure) return { reason: 'error', message: failure.message }
   const lower = (error instanceof Error ? error.message : String(error)).toLowerCase()
 
+  const noOutput = aborted ? null : /no model output for (\d+)s/u.exec(lower)
+
+  if (noOutput) {
+    const minutes = Math.max(1, Math.round(Number(noOutput[1]) / 60))
+
+    return {
+      reason: 'timeout',
+      message: `The model didn't start answering within ${String(minutes)} minute${minutes === 1 ? '' : 's'}. On the computer running this agent, check its sign-in, model provider and network, or switch to another agent.`,
+    }
+  }
   if (!aborted && lower.includes('no turn progress')) {
     return {
       reason: 'timeout',

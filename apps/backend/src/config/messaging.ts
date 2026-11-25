@@ -25,7 +25,12 @@ export function messagingConfig() {
       },
     },
     discord: {
+<<<<<<< origin/main
       commandName: optional('DISCORD_COMMAND_NAME') ?? 'cerin',
+=======
+      // Its REST API; e2e points it at a local stand-in.
+      apiBaseUrl: optional('DISCORD_API_BASE_URL') ?? 'https://discord.com/api/v10',
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
       botToken: optional('DISCORD_BOT_TOKEN'),
       clientId: optional('DISCORD_CLIENT_ID'),
       clientSecret: optional('DISCORD_CLIENT_SECRET'),

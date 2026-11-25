@@ -8,57 +8,57 @@ import { t } from '../i18n'
 import { answerInboxWithUndo } from './inbox/answerInboxWithUndo'
 import { ChannelMentions } from './inbox/ChannelMentions'
 import { DecisionCard } from './inbox/DecisionCard'
+<<<<<<< origin/main
 import { snoozeQuestion } from './inbox/dismissQuestion'
 import { openQuestion } from './inbox/inboxItems'
 import { selectInboxQuestion, useInboxSelection } from './inbox/inboxSelection'
 import { openListed } from './inbox/openListed'
 import { useChannelMentions } from './inbox/useChannelMentions'
 import { sendHeldAnswer } from './inbox/useInbox'
+=======
+import { openQuestion, shownQuestions } from './inbox/inboxItems'
+import {
+  selectInboxQuestion,
+  useDismissAllAsking,
+  useInboxSearch,
+  useInboxSelection,
+} from './inbox/inboxSelection'
+import { openListed } from './inbox/openListed'
+import { useChannelMentions } from './inbox/useChannelMentions'
+import { snoozeQuestion } from './inbox/dismissQuestion'
+import { replyInInbox } from './inbox/useInbox'
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 import { useInboxQuestions } from './inbox/useInboxQuestions'
 
 import type { InboxQuestion } from './inbox/inboxItems'
-import type { HeldReply } from './inbox/useInbox'
+import type { InboxReply } from './inbox/useInbox'
 
 type Props = {
   teamId: string
-  query: string
   refreshKey: number
   onCount?: (n: number) => void
   onLoading?: (loading: boolean) => void
   onOpenConversation: (sessionId: string) => void
-  /** Opens a link in a question's text, as the conversation does. */
-  onOpenLink: (href: string, beside: boolean) => boolean
 }
 
 /**
  * Teammates asking to use the viewer's own computer and channel @mentions,
- * above one open question at a time, the one the sidebar's Inbox list opens.
- * Answering it opens the next, and wakes the agent that asked once its Undo
- * window passes, or at once when the viewer leaves; a dismissal waits out the same window.
+ * above one open question at a time, the one the sidebar's Inbox list opens:
+ * only the matches of the search above that list.
+ * Answering or dismissing it opens the next and wakes the agent that asked at once.
  * Snooze sets it aside until a time. ↑ ↓ move between them. Who asked opens from the question's source line, where the sidebar lists it.
  */
-export function InboxView({
-  teamId,
-  query,
-  refreshKey,
-  onCount,
-  onLoading,
-  onOpenConversation,
-  onOpenLink,
-}: Props) {
+export function InboxView({ teamId, refreshKey, onCount, onLoading, onOpenConversation }: Props) {
   const { isActive } = useWorkspaceTab()
+  const asking = useDismissAllAsking(teamId)
+  // Keys rest while the sidebar's "Dismiss all" asks first.
+  const keys = isActive && !asking
   const all = useInboxQuestions(teamId, refreshKey)
   const selected = useInboxSelection(teamId)
   // An invite is only announced, never listed.
   const mentions = useChannelMentions(teamId)?.filter((mention) => !mention.invited) ?? []
-  const needle = query.trim().toLowerCase()
-  const rows = all?.filter(
-    ({ conversation, request }) =>
-      !needle ||
-      [request.question, request.body, conversation.title].some((text) =>
-        text?.toLowerCase().includes(needle),
-      ),
-  )
+  const search = useInboxSearch(teamId)
+  const rows = all ? shownQuestions(all, search) : undefined
   const open = rows ? openQuestion(rows, selected) : undefined
   const openId = open?.request.id
   const at = open && rows ? rows.indexOf(open) : -1
@@ -79,7 +79,7 @@ export function InboxView({
 
   // ↑ and ↓ open the question above or below, unless a field has the caret.
   useEffect(() => {
-    if (!isActive || !rows) return
+    if (!keys || !rows) return
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null
 
@@ -98,22 +98,24 @@ export function InboxView({
     window.addEventListener('keydown', onKeyDown)
 
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [isActive, rows, at, move])
+  }, [keys, rows, at, move])
 
-  // Leaving the Inbox sends the answer still waiting out its Undo window.
-  useEffect(() => {
-    if (!isActive) return
-
-    return sendHeldAnswer
-  }, [isActive])
-
-  const answer = (row: InboxQuestion, reply: HeldReply) => {
+  const answer = (row: InboxQuestion, reply: InboxReply) => {
     // The answered question leaves the list, and the one that takes its place opens.
     move(rows?.at(at + 1) ?? rows?.at(at - 1))
+<<<<<<< origin/main
     answerInboxWithUndo(teamId, row, reply, () => {
       // Once sent, the answer stays: the question is not opened again.
       selectInboxQuestion(teamId, row.request.id)
     })
+=======
+    replyInInbox(teamId, row.conversation.sessionId, row.request.id, reply, (reason) =>
+      toast.error(
+        dismissed ? t('Could not dismiss question') : t('Could not send your answer'),
+        reason,
+      ),
+    )
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   }
 
   const caughtUp = all?.length === 0 && mentions.length === 0
@@ -142,7 +144,7 @@ export function InboxView({
           conversation={open.conversation}
           bot={open.bot}
           request={open.request}
-          keys={isActive}
+          keys={keys}
           onAnswer={(reply) => answer(open, reply)}
           onSnooze={(until) => {
             // The snoozed question leaves the list, and its neighbour opens, as after an answer.
@@ -151,7 +153,6 @@ export function InboxView({
           }}
           onDismiss={(reason) => answer(open, { dismissed: true, reason: reason || undefined })}
           onOpenSource={(source) => openListed(teamId, source, onOpenConversation)}
-          onOpenLink={onOpenLink}
         />
       )}
     </div>

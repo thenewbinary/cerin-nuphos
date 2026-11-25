@@ -8,6 +8,7 @@ import { recordPreviewMemoryActivity } from '@/lib/agent/memory-slots/preview-ac
 import { createMemoryObserver, resolveTurnFromStamp } from '@/lib/agent/memory-slots/runtime'
 import { createTurnMemoryAccumulator } from '@/lib/agent/memory-slots/turn-accumulator'
 import { listActivePlansForConversation } from '@/lib/agent/plans'
+import { createTodoTools } from '@/lib/agent/todos'
 import { createSessionTools } from '@/lib/agent/tools-sessions'
 import { createArtifactTool } from '@/lib/agent/tools-skilled/artifact-tool'
 import { createChartTool } from '@/lib/agent/tools-skilled/chart-tool'
@@ -100,7 +101,6 @@ async function memoryTools(ctx: PreviewToolContext): Promise<Record<string, unkn
     userId: ctx.userId,
     teamId: ctx.teamId,
     conversationId: ctx.sessionId,
-    origin: 'user',
     observer,
     getActivePlanId: async () => {
       try {
@@ -162,6 +162,7 @@ export async function previewAiSdkToolSets(
     chart: { render_chart: createChartTool() },
     artifact: { render_artifact: createArtifactTool() },
     sessions: createSessionTools(ctx.userId, ctx.sessionId, ctx.teamId),
+    todos: createTodoTools(ctx.conversationOwnerUserId ?? ctx.userId, ctx.sessionId, ctx.teamId),
   }
 }
 
@@ -184,16 +185,52 @@ const EXTRA_MODULES: ModuleFactory[] = [
   () => Promise.resolve(localBrowserToolModule),
 ]
 
+/**
+ * Antigravity loads MCP tools into one budget per session, shared by every server and
+ * filled smallest first, and cannot call a tool left out of it (#4148). So it gets only
+ * what a Task or Bot needs, plus `cerin-credentials`, within that budget.
+ */
+export const ANTIGRAVITY_TOOLS: ReadonlySet<string> = new Set([
+  'create_thread',
+  'send_message_to_thread',
+  'report_task',
+  'update_self',
+  'request_user_decision',
+  'save_memory',
+  'memory_get',
+  'local_exec',
+  'channel_read',
+  'channel_post',
+])
+
+/** The modules as the conversation's agent should see them. */
+export function toolModulesForRuntime(
+  modules: PreviewToolModule[],
+  agentRuntime?: string,
+): PreviewToolModule[] {
+  if (agentRuntime !== 'antigravity') return modules
+
+  return modules.map((module) => ({
+    ...module,
+    definitions: module.definitions.filter((definition) =>
+      ANTIGRAVITY_TOOLS.has((definition as { name: string }).name),
+    ),
+  }))
+}
+
 export async function previewToolModules(ctx: PreviewToolContext): Promise<PreviewToolModule[]> {
   const [sets, extras] = await Promise.all([
     previewAiSdkToolSets(ctx),
     Promise.all(EXTRA_MODULES.map((factory) => factory(ctx))),
   ])
 
-  return [
-    ...Object.values(sets)
-      .filter((tools) => Object.keys(tools).length > 0)
-      .map((tools) => toolModuleFromAiSdkTools(tools)),
-    ...extras,
-  ]
+  return toolModulesForRuntime(
+    [
+      ...Object.values(sets)
+        .filter((tools) => Object.keys(tools).length > 0)
+        .map((tools) => toolModuleFromAiSdkTools(tools)),
+      ...extras,
+    ],
+    ctx.agentRuntime,
+  )
 }

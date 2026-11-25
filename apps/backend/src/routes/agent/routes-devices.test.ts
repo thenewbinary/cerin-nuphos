@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from 'bun:test'
 import { Hono } from 'hono'
 
 import { forgetDeviceShares } from '@/lib/agent/devices/local-share-revoke'
-import { errorHandler } from '@/lib/errors'
+import { AppError, errorHandler } from '@/lib/errors'
 import { useDb } from '@/lib/test/doubles/db'
 import { createAgentDeviceRoutes } from '@/routes/agent/routes-devices'
 import { nextBoxLabel } from '@/routes/agent/routes-devices-box'
@@ -125,6 +125,14 @@ function buildApp(box: BoxDeps | null = null) {
       isOnline: async () => onlineNow,
       deleteDevice: async (userId, deviceId) => delete devices[key(userId, deviceId)],
       forgetDeviceShares,
+      forgetOwnSignIn: async (userId, deviceId, provider) => {
+        const device = devices[key(userId, deviceId)]
+
+        if (!device || device.box) return false
+        device.signIns = device.signIns?.filter((entry) => entry.agent !== provider)
+
+        return true
+      },
       renameDevice: async (userId, deviceId, label) => {
         const device = devices[key(userId, deviceId)]
 
@@ -153,8 +161,8 @@ function buildApp(box: BoxDeps | null = null) {
       },
       conversationTitlesFor: async (sessionIds) =>
         new Map(sessionIds.map((id) => [id, `Title ${id}`])),
-      ownComputer: async ({ userId, deviceId }, viewer) =>
-        onlineNow && userId === viewer
+      ownComputer: async ({ userId, deviceId, managesBox }, viewer) =>
+        onlineNow && (userId === viewer || managesBox)
           ? {
               desktopRuntimeId: `local_${userId}_${deviceId}`,
               app: { version: '0.120.0', update: { version: '0.121.0', ready: true } },
@@ -255,6 +263,32 @@ describe('agent device routes', () => {
     expect(new Set(Object.keys(devices))).toEqual(
       new Set([key('user-1', 'b1'), key('someone-else', 'theirs')]),
     )
+  })
+
+  test('a CLI sign-in on its own computer replaces whoever signed its default agent in', async () => {
+    const forget = (deviceId: string, provider = 'claude-code') =>
+      buildApp().request(`/agent/devices/${deviceId}/agents/${provider}/sign-in`, {
+        method: 'DELETE',
+      })
+    const at = new Date('2026-11-13T00:00:00Z')
+
+    registerDevice('user-1', 'mac')
+    devices[key('user-1', 'mac')]!.signIns = [
+      { agent: 'claude-code', userId: 'manager', teamId: 'team-1', at, endedAt: at },
+      { agent: 'codex', userId: 'manager', teamId: 'team-1', at },
+    ]
+    registerDevice('user-1', 'b1')
+    devices[key('user-1', 'b1')]!.box = { provider: 'instabox', teamId: 'team-1' }
+    registerDevice('someone-else', 'theirs')
+
+    expect((await forget('mac')).status).toBe(204)
+    expect(devices[key('user-1', 'mac')]!.signIns).toEqual([
+      { agent: 'codex', userId: 'manager', teamId: 'team-1', at },
+    ])
+    // Only its owner's own computer, and only the agents its CLI login signs in.
+    expect((await forget('b1')).status).toBe(404)
+    expect((await forget('theirs')).status).toBe(404)
+    expect((await forget('mac', 'opencode')).status).toBe(400)
   })
 
   test('DELETE /agent/devices/:id still removes a computer it could not disconnect', async () => {
@@ -513,12 +547,12 @@ describe('agent device routes', () => {
 
         return boxDevice(userId, deviceId)
       },
-      destroy: async (_userId, deviceId) => {
-        calls.push(`destroy ${deviceId}`)
+      delete: async (userId, deviceId) => {
+        calls.push(`delete ${deviceId}`)
+        delete devices[key(userId, deviceId)]
 
         return true
       },
-      desktop: async (_userId, deviceId) => `https://desktop.example/${deviceId}`,
       heal: (_userId, deviceId) => {
         calls.push(`heal ${deviceId}`)
       },
@@ -606,6 +640,26 @@ describe('agent device routes', () => {
     expect((await list()).devices[0]?.desktops).toEqual([
       { display: 2, sessionId: 'user-1:b1:user-1:team-1', title: 'Fix' },
     ])
+  })
+
+  test("GET /devices offers a Box's desktop to whoever manages it, not to someone who only uses it", async () => {
+    onlineNow = true
+    // Teammates' Boxes: the caller manages one and only uses the other.
+    devices[key('user-2', 'managed')] = boxDevice('user-2', 'managed')
+    devices[key('user-2', 'used')] = boxDevice('user-2', 'used', {
+      userIds: ['user-1'],
+      managerIds: [],
+    })
+    const body = (await (
+      await buildApp(fakeBox([])).request('/agent/devices?teamId=team-1')
+    ).json()) as {
+      devices: { deviceId: string; desktopRuntimeId?: string }[]
+    }
+    const runtimeOf = (id: string) => body.devices.find((device) => device.deviceId === id)
+
+    expect(runtimeOf('managed')?.desktopRuntimeId).toBe('local_user-2_managed')
+    expect(runtimeOf('used')).toBeDefined()
+    expect(runtimeOf('used')?.desktopRuntimeId).toBeUndefined()
   })
 
   test('GET /devices tells the viewer where their own computer opens its screen, and its update', async () => {
@@ -704,43 +758,36 @@ describe('agent device routes', () => {
     const removed = await app.request('/agent/devices/b1/box?teamId=team-1', { method: 'DELETE' })
 
     expect(removed.status).toBe(200)
-    expect(calls).toEqual(['pause b1', 'resume b1', 'destroy b1'])
-    expect(disconnected).toEqual([key('user-1', 'b1')])
-    expect(devices[key('user-1', 'b1')]).toBeUndefined()
-  })
-
-  test('DELETE closes the Box tunnel before its machine goes', async () => {
-    devices[key('user-1', 'b1')] = boxDevice('user-1', 'b1')
-    credentials.add(key('user-1', 'b1'))
-    const seen: string[] = []
-    const box: BoxDeps = {
-      ...fakeBox([]),
-      destroy: async () => {
-        seen.push(`destroy after ${disconnected.length} disconnect(s)`)
-
-        return true
-      },
-    }
-
-    expect(
-      (await buildApp(box).request('/agent/devices/b1/box?teamId=team-1', { method: 'DELETE' }))
-        .status,
-    ).toBe(200)
-    expect(seen).toEqual(['destroy after 1 disconnect(s)'])
-    expect(credentials.has(key('user-1', 'b1'))).toBe(false)
+    expect(calls).toEqual(['pause b1', 'resume b1', 'delete b1'])
     expect(devices[key('user-1', 'b1')]).toBeUndefined()
   })
 
   test('DELETE deletes a Box whose machine instabox would not kill, and says it may still run', async () => {
     devices[key('user-1', 'b1')] = boxDevice('user-1', 'b1')
-    const box: BoxDeps = { ...fakeBox([]), destroy: async () => false }
+    const box: BoxDeps = { ...fakeBox([]), delete: async () => false }
     const response = await buildApp(box).request('/agent/devices/b1/box?teamId=team-1', {
       method: 'DELETE',
     })
 
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({ ok: true, machineLeft: true })
-    expect(devices[key('user-1', 'b1')]).toBeUndefined()
+  })
+
+  test('DELETE keeps a Box whose machine is still pausing, so a later delete finds it', async () => {
+    devices[key('user-1', 'b1')] = boxDevice('user-1', 'b1')
+    const box: BoxDeps = {
+      ...fakeBox([]),
+      delete: () =>
+        Promise.reject(
+          new AppError(409, 'box_busy', 'The computer is still pausing. Try again in a minute.'),
+        ),
+    }
+    const response = await buildApp(box).request('/agent/devices/b1/box?teamId=team-1', {
+      method: 'DELETE',
+    })
+
+    expect(response.status).toBe(409)
+    expect(await response.json()).toMatchObject({ error: { code: 'box_busy' } })
   })
   test('Box routes deny someone with use only, removed members and cross-team calls before provider dispatch', async () => {
     const calls: string[] = []

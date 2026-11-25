@@ -34,7 +34,11 @@ docker compose ps             # wait until rustfs, backend and runtime are healt
 
 Without `init-env.sh`, copy `.env.example` to `.env` and fill each value with the `openssl` command noted on its line.
 
+<<<<<<< origin/main
 To change the runtime version, edit `RUNTIME_TAG` in `.env` (for example `commit-45f3647f283b1c6d54d8b942ae0a02d456f67472-claude-code`), then run `docker compose up -d runtime`.
+=======
+To change the runtime version, edit `RUNTIME_TAG` in `.env` (for example `0.1.78-claude-code`), then run `docker compose up -d runtime`.
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 
 ## First sign-in
 
@@ -109,7 +113,9 @@ The desktop app's sign-in is stored in `~/.config/cerin/desktop.yaml` (on macOS 
 
 3. In the console, set the public URL to `ws://runtime:8080/acp`. That is the address the backend dials from inside the compose network, not the one your browser uses. Then choose **Connect to Cerin**.
 
-   Cerin Desktop opens **Connect this agent to a team**: pick the team, then press **Connect agent**. A Desktop run from source handles `cerin://` links only with `ATLAS_REGISTER_CERIN_PROTOCOL=1`. Without it, open Settings → Agent → **Add agent** → **Self-hosted Cloud Agent** and paste the address and pairing code the console shows. An image without the console connects the same way through **Use a password instead**, with the address `ws://runtime:8080/acp` and the password from step 1.
+   Cerin Desktop opens **Connect this runtime to a team**: choose a team you administer, then press **Connect runtime**. A Desktop run from source handles `cerin://` links only with `ATLAS_REGISTER_CERIN_PROTOCOL=1`; start it with that flag before choosing **Connect to Cerin** in the runtime console. The connected runtime appears under Settings → Computers.
+
+   Settings → Computers → **Add computer** → **Your own computer** provides a one-time join command for a laptop or server. It does not accept the compose runtime's address or pairing code. Use the runtime console's **Connect to Cerin** flow for this stack; if an older runtime image has no console, upgrade to an image that includes it.
 
    The backend exchanges the code with the runtime for a key that belongs to this team alone, and detects that the runtime runs Claude Code. This compose file sets `CERIN_LOCAL_STACK=true` (ignored when `NODE_ENV=production`), so the backend treats a single-label host such as `runtime` as internal: plain `ws://` is accepted, and the runtime calls the backend back at `http://backend:3000`.
 
@@ -123,7 +129,7 @@ The desktop app's sign-in is stored in `~/.config/cerin/desktop.yaml` (on macOS 
 
 Cloud and database CLIs are not baked into the image: the runtime installs each one the first time the agent needs it, into the `runtime-home` volume, so later uses and restarts skip the download.
 
-The console lists every team connection with who made it, and revoking one there disconnects only that team. Removing the runtime from Settings → Agent revokes its connection on the runtime too.
+The console lists every team connection with who made it, and revoking one there disconnects only that team. Removing the runtime from Settings → Computers revokes its connection on the runtime too.
 
 ## Verify
 

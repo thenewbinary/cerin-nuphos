@@ -96,7 +96,11 @@ runtime:
   url: '' # required when enabled, e.g. https://runtime.cerin.example.com
   image:
     repository: ghcr.io/thenewbinary/cerin-runtime
+<<<<<<< origin/main
     tag: commit-45f3647f283b1c6d54d8b942ae0a02d456f67472-claude-code
+=======
+    tag: 0.1.78-claude-code
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
     pullPolicy: IfNotPresent
   persistence:
     home:

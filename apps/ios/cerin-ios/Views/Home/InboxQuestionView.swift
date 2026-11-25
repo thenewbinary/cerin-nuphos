@@ -45,6 +45,12 @@ struct InboxQuestionView: View {
                         .padding(.top, 18)
                         .accessibilityIdentifier("inbox.body")
                 }
+                if let desktop = question.request.desktop {
+                    ComputerPreview(teamId: inbox.teamId, sessionId: question.sessionId, desktop: desktop, bot: question.title) {
+                        answer(DecisionAnswer(choices: [question.request.options?.first ?? "I'm done"]))
+                    }
+                    .padding(.top, 18)
+                }
                 if wide || !pinned { answers.padding(.top, 24) }
                 if let failure = inbox.failures[question.id] {
                     Label("Couldn't send the answer · \(failure)", image: "lucide-circle-alert")
@@ -72,22 +78,8 @@ struct InboxQuestionView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 12)
                     .background(Theme.canvas)
-                    // Floats 12 above the options.
-                    .overlay(alignment: .top) { InboxToast(inbox: inbox).alignmentGuide(.top) { $0[.bottom] + 12 } }
             }
         }
-        .overlay(alignment: .bottom) {
-            // 32 from the screen's bottom edge, not the home indicator's.
-            // Centred on the question's text, inside its margins.
-            if wide {
-                InboxToast(inbox: inbox)
-                    .padding(.leading, margins.leading)
-                    .padding(.trailing, margins.trailing)
-                    .padding(.bottom, 32)
-                    .ignoresSafeArea(.container, edges: .bottom)
-            }
-        }
-        .animation(.snappy, value: inbox.toast)
         .animation(.snappy, value: dismissing)
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -165,7 +157,7 @@ struct InboxQuestionView: View {
         AnswerField(words: $reason, focused: $focused, prompt: "Reason (optional)",
                     sendLabel: "Dismiss question", optional: true) {
             focused = false
-            Task { await inbox.hold(question, with: .dismiss(reason: Snooze.reason(reason))) }
+            Task { await inbox.dismiss(question, reason: Snooze.reason(reason)) }
         }
         .padding(.horizontal, wide ? 0 : -4)
         // As Desktop's field, it takes no more than the server keeps.
@@ -176,7 +168,7 @@ struct InboxQuestionView: View {
 
     private func answer(_ answer: DecisionAnswer) {
         focused = false
-        Task { await inbox.hold(question, with: .answer(answer)) }
+        Task { await inbox.answer(question, with: answer, inInbox: true) }
     }
 
     /// Cerin pages open in the app, as a conversation's links do; anything else leaves.

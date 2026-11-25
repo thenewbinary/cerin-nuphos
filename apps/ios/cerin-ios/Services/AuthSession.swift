@@ -40,14 +40,19 @@ final class AuthSession {
     private(set) var mfaChallenge: (token: String, origin: String)?
 
     let savedAccounts: SavedAccounts = {
-        #if DEBUG && targetEnvironment(simulator)
-        if CommandLine.arguments.contains("-preview-saved-account") {
+        #if DEBUG
+        // Fixture logins and restored previews must never read or overwrite real accounts.
+        // The same check `PreviewIsolation.installIfPreview` makes, which runs after this.
+        if PreviewIsolation.isPreview(arguments: CommandLine.arguments, fixture: PreviewIsolation.launchFixture()) {
             return SavedAccounts(read: { nil }, write: { _ in })
         }
         #endif
         return SavedAccounts()
     }()
     private(set) var generation = 0
+    /// Home was painted from the cache but the launch check could not reach
+    /// Cerin, so the token is still unchecked. RootView checks again on return.
+    private(set) var unverified = false
     private(set) var accountError: String?
     private(set) var addingAccount = false
     private var returnAccountID: String?
@@ -121,18 +126,27 @@ final class AuthSession {
         }
         #endif
 
-        if let active = savedAccounts.active, active.token != nil {
-            await selectAccount(active.id)
-            return
-        }
-        guard !savedAccounts.hasRegistry, savedAccounts.error == nil, let saved = Keychain.read(Self.tokenKey) else {
+        // The active account, or a token from before saved accounts. Both open
+        // the same way, with no reset first: nothing is open to reset, and a
+        // reset would drop the cache this launch paints from.
+        let account = savedAccounts.active
+        let saved: String
+        if let account, let accountToken = account.token {
+            saved = accountToken
+            UserDefaults.standard.set(account.origin, forKey: CerinAPI.baseURLKey)
+            identityOrigin = account.origin
+        } else if !savedAccounts.hasRegistry, savedAccounts.error == nil, let legacy = Keychain.read(Self.tokenKey) {
+            saved = legacy
+        } else {
             state = .signedOut(error: nil)
             return
         }
 
         let expected = generation
         token = saved
-        if let cached = LaunchCache.read(LaunchCache.User.self), cached.aiConsentVersion == AccountAPI.aiConsentVersion {
+        unverified = false
+        if let cached = LaunchCache.read(LaunchCache.User.self), cached.aiConsentVersion == AccountAPI.aiConsentVersion,
+           account == nil || cached.user.id == account?.user.id {
             aiConsentAccepted = true
             aiConsentVersion = cached.aiConsentVersion
             state = .signedIn(cached.user)
@@ -140,8 +154,9 @@ final class AuthSession {
         do {
             let user = try await CerinAPI.currentUser(token: saved)
             guard generation == expected, token == saved else { return }
+            if let account, user.id != account.user.id { throw CerinAPI.Failure.unauthorized }
             try savedAccounts.save(user: user, token: saved, origin: identityOrigin)
-            Keychain.delete(Self.tokenKey)
+            clearLegacyToken()
             await loadAIConsent()
             // Home may already be open from the cache, so the user can sign
             // out, or in again, before this answers. That session wins.
@@ -151,12 +166,16 @@ final class AuthSession {
         } catch CerinAPI.Failure.unauthorized {
             guard generation == expected, token == saved else { return }
             clearToken()
-            state = .signedOut(error: nil)
+            guard let account else { state = .signedOut(error: nil); return }
+            do { try savedAccounts.invalidate(account.id) }
+            catch { state = .signedOut(error: String(localized: "We could not remove the expired session. Try again.")); return }
+            state = .signedOut(error: String(localized: "This account's session expired. Sign in again."))
         } catch {
+            // Offline: a Home painted from the cache stays, as a chat app's does.
             guard generation == expected, token == saved else { return }
-            if self.user == nil {
-                state = .signedOut(error: String(localized: "We could not reach Cerin. Check your connection and try again."))
-            }
+            if self.user != nil { unverified = true; return }
+            token = nil
+            state = .signedOut(error: String(localized: "We could not reach Cerin. Check your connection and try again."))
         }
     }
 
@@ -212,7 +231,7 @@ final class AuthSession {
             await pushCleanup?.value
             guard generation == expected, CerinAPI.baseURL.absoluteString == origin else { return }
             try savedAccounts.save(user: user, token: token, origin: origin)
-            Keychain.delete(Self.tokenKey)
+            clearLegacyToken()
             self.token = token
             identityOrigin = origin
             addingAccount = false
@@ -300,6 +319,7 @@ final class AuthSession {
         SharedShareSession.revoke()
         PushNotifications.shared.invalidateRouting()
         generation += 1
+        unverified = false
         webSession?.cancel()
         webSession = nil
         let previous = pushCleanup
@@ -479,8 +499,12 @@ final class AuthSession {
         resetIdentity()
         addingAccount = false
         returnAccountID = nil
-        Keychain.delete(Self.tokenKey)
+        clearLegacyToken()
+        #if DEBUG
+        if !PreviewIsolation.isActive { Keychain.delete("openai-api-key") }
+        #else
         Keychain.delete("openai-api-key")
+        #endif
         let cleanup = pushCleanup
         Task {
             await cleanup?.value
@@ -489,10 +513,17 @@ final class AuthSession {
         state = .signedOut(error: error)
     }
 
+    private func clearLegacyToken() {
+        #if DEBUG
+        guard !PreviewIsolation.isActive else { return }
+        #endif
+        Keychain.delete(Self.tokenKey)
+    }
+
     private func clearToken() {
         sharingLoginID = nil
         SharedShareSession.revoke()
-        Keychain.delete(Self.tokenKey)
+        clearLegacyToken()
         LaunchCache.clear()
         TransferFiles.clear()
         token = nil

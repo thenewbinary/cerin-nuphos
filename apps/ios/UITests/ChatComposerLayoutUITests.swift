@@ -1,7 +1,7 @@
 import XCTest
 
-/// The composer and the nav bar are see-through and rows scroll on under them,
-/// so they need a backing: whatever is scrolled behind, they look the same.
+/// The composer is see-through and rows scroll on under it, so it needs a backing:
+/// whatever is scrolled behind, it looks the same. Under the header, rows blur out by design.
 /// Uses a copy of the offline chats fixture with release-planning's posts
 /// replaced by a mix of video, words, an image, words and a file.
 final class ChatComposerLayoutUITests: XCTestCase {
@@ -19,24 +19,57 @@ final class ChatComposerLayoutUITests: XCTestCase {
         sleep(2)
         let bar = app.navigationBars.firstMatch.frame
         let window = app.windows.firstMatch.frame
-        // The composer's full width, from just above its field to just below.
-        let field = CGRect(x: 0, y: composer.frame.minY - 8, width: window.width, height: composer.frame.height + 16)
+        // The composer's field itself. Above it, rows fade out under the scroll edge by design.
+        let field = composer.frame
         let rest = shot("at-rest")
         let middle = transcript.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.4))
         middle.press(forDuration: 0.1, thenDragTo: middle.withOffset(CGVector(dx: 0, dy: 160)))
         sleep(2)
         let scrolled = shot("mid-scroll")
         let width = window.width
-        XCTAssertLessThan(changed(rest, scrolled, in: field, width: width), 0.001, "Rows show through the composer")
-        XCTAssertLessThan(changed(rest, scrolled, in: bar, width: width), 0.001, "Rows show through the nav bar")
+        // The comparison below only means something if the rows behind moved.
+        let rows = CGRect(x: 0, y: bar.maxY + 8, width: width, height: field.minY - bar.maxY - 16)
+        XCTAssertGreaterThan(changed(rest, scrolled, in: rows, width: width), 0.05, "The transcript did not move between the shots")
+        // Glass tints faintly with what scrolls behind it; a row showing through differs far more.
+        XCTAssertLessThan(changed(rest, scrolled, in: field, width: width, by: 48), 0.001, "Rows show through the composer")
         composer.tap()
         composer.typeText("A longer draft that wraps onto a second line and then a third, to grow the composer.")
         sleep(2)
         shot("keyboard-draft")
     }
 
-    /// The share of pixels in `rect` (points) that differ visibly between two screenshots.
-    private func changed(_ a: XCUIScreenshot, _ b: XCUIScreenshot, in rect: CGRect, width: CGFloat) -> Double {
+    /// The composer rides the keyboard in every frame as it opens and closes,
+    /// rather than racing ahead of it and sinking behind it. The app measures
+    /// each drawn frame, since a screenshot only comes once the motion is over.
+    func testComposerRidesTheKeyboard() throws {
+        let app = try launch(probe: true)
+        let transcript = app.collectionViews["chat.transcript"]
+        let composer = app.textViews["Message release-planning"].firstMatch
+        XCTAssertTrue(composer.waitForExistence(timeout: 10), "No composer")
+        // The field's height above the keyboard in the last frame, and the least and most it has been.
+        func gaps() throws -> [Int] {
+            let value = try XCTUnwrap(transcript.value as? String, "No measurement")
+            return value.split(separator: " ").compactMap { Int($0) }
+        }
+        sleep(2)
+        let resting = try gaps()[0]
+        composer.tap()
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "The keyboard never opened")
+        sleep(2)
+        // The focused composer shows more below the field, so the field rests higher.
+        let focused = try gaps()[0]
+        // A pull down on the composer puts the keyboard away in its own animation.
+        let field = composer.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        field.press(forDuration: 0.05, thenDragTo: field.withOffset(CGVector(dx: 0, dy: 120)))
+        sleep(2)
+        XCTAssertFalse(app.keyboards.firstMatch.exists, "The keyboard did not close")
+        let all = try gaps()
+        XCTAssertGreaterThanOrEqual(all[1], min(resting, focused) - 2, "The composer sank behind the keyboard: \(all)")
+        XCTAssertLessThanOrEqual(all[2], max(resting, focused) + 2, "The composer ran ahead of the keyboard: \(all)")
+    }
+
+    /// The share of pixels in `rect` (points) where some channel differs by more than `by`.
+    private func changed(_ a: XCUIScreenshot, _ b: XCUIScreenshot, in rect: CGRect, width: CGFloat, by threshold: Int = 8) -> Double {
         func pixels(_ shot: XCUIScreenshot) -> [UInt8] {
             let image = shot.image.cgImage!, scale = CGFloat(image.width) / width
             let crop = image.cropping(to: CGRect(x: rect.minX * scale, y: rect.minY * scale,
@@ -50,12 +83,12 @@ final class ChatComposerLayoutUITests: XCTestCase {
         }
         let (x, y) = (pixels(a), pixels(b))
         let count = x.count / 4
-        let differing = (0..<count).filter { i in (0..<3).contains { abs(Int(x[i * 4 + $0]) - Int(y[i * 4 + $0])) > 8 } }.count
+        let differing = (0..<count).filter { i in (0..<3).contains { abs(Int(x[i * 4 + $0]) - Int(y[i * 4 + $0])) > threshold } }.count
         print("CHANGED \(rect) \(differing)/\(count)")
         return Double(differing) / Double(max(count, 1))
     }
 
-    private func launch() throws -> XCUIApplication {
+    private func launch(probe: Bool = false) throws -> XCUIApplication {
         let fixtures = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
             .appending(path: "tests/fixtures")
         let live = fixtures.appending(path: "chat-composer-layout-live.json")
@@ -70,7 +103,10 @@ final class ChatComposerLayoutUITests: XCTestCase {
         func text(_ s: String) -> [String: Any] { ["type": "text", "text": s] }
         func download(_ group: String) -> [String: Any] { ["type": "transfer-download", "groupId": group] }
         let line = "The new opening line lands faster, and the pause before the product name is gone."
-        let messages = [
+        // Older posts first, so the transcript can still scroll up after the drag below
+        // puts the keyboard away, and the two shots show different rows (#3636).
+        let older = (0..<8).map { post("o\($0)", 0, [text("Earlier note \($0 + 1). " + line)]) }
+        let messages = older + [
             post("p1", 1, [text("The cut with the new voice-over."), download("g-video")]),
             post("p2", 2, [text("The key frames, one sheet. " + line), download("g-sheet")]),
             post("p3", 3, [text("Both readings of the first sentence, old then new. " + line + " " + line), download("g-audio")]),
@@ -95,7 +131,7 @@ final class ChatComposerLayoutUITests: XCTestCase {
         addTeardownBlock { try? FileManager.default.removeItem(at: live) }
 
         let app = XCUIApplication()
-        app.launchArguments = ["-preview-home", "-preview-no-push"]
+        app.launchArguments = ["-preview-home", "-preview-no-push"] + (probe ? ["-composer-keyboard-probe"] : [])
         app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         app.staticTexts["release-planning"].firstMatch.tap()

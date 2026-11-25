@@ -63,7 +63,7 @@ nonisolated enum PreviewIsolation {
         URLSessionConfiguration.routeThroughPreviewTransport()
     }
 
-    private static func launchFixture() -> String? {
+    static func launchFixture() -> String? {
         #if targetEnvironment(simulator)
         ProcessInfo.processInfo.environment["CERIN_PREVIEW_RESPONSES"]
             ?? UserDefaults.standard.string(forKey: "previewResponses")

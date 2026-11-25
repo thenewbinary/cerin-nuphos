@@ -78,6 +78,44 @@ describe('ensurePreviewChannelCredentials', () => {
     expect(updated?.updatedBy).toBe('user-1')
   })
 
+  test('MCP first turn selects the app default, All', async () => {
+    let updated: AgentCredentialAccess | undefined
+    const options = credentialOptions()
+
+    options.githubInstallations = [
+      { installationId: 'github', accountLogin: 'team', accountType: 'Organization' },
+    ]
+    options.grafanaInstances = [
+      { instanceId: 'grafana', name: 'Grafana', grafanaUrl: 'https://example.com' },
+    ] as AgentCredentialOptions['grafanaInstances']
+    options.resendIntegrations = [
+      { integrationId: 'mail', label: 'Mail', permission: 'full_access' },
+    ]
+    options.trelloIntegrations = [
+      { integrationId: 'trello' },
+    ] as AgentCredentialOptions['trelloIntegrations']
+    const conversation = { sessionId: 'conversation-1' } as AgentConversation
+
+    await ensurePreviewChannelCredentials(
+      { ...baseArgs, appDefaults: true },
+      {
+        getConversation: async () => conversation,
+        getCredentialOptions: async () => options,
+        updateCredentialAccess: async (_sessionId, _userId, _teamId, access) => {
+          updated = access
+
+          return { ...conversation, credentialAccess: access }
+        },
+      },
+    )
+    expect(updated?.awsRoleIds).toEqual(['role-1'])
+    expect(updated?.githubInstallationIds).toEqual(['github'])
+    expect(updated?.grafanaInstanceIds).toEqual(['grafana'])
+    expect(updated?.resendIntegrationIds).toEqual(['mail'])
+    expect(updated?.trelloIntegrationIds).toEqual(['trello'])
+    expect(updated).toMatchObject({ allCredentials: true, allDevices: true })
+  })
+
   test('explicit channel defaults select every available connector, including Resend', async () => {
     let updated: AgentCredentialAccess | undefined
     const options = credentialOptions()
@@ -114,15 +152,18 @@ describe('ensurePreviewChannelCredentials', () => {
       credentialAccess: { githubInstallationIds: ['chosen-installation'] },
     } as AgentConversation
 
-    await ensurePreviewChannelCredentials(baseArgs, {
-      getConversation: () => Promise.resolve(conversation),
-      getCredentialOptions: () => Promise.resolve(credentialOptions()),
-      updateCredentialAccess: () => {
-        writes++
+    await ensurePreviewChannelCredentials(
+      { ...baseArgs, appDefaults: true },
+      {
+        getConversation: () => Promise.resolve(conversation),
+        getCredentialOptions: () => Promise.resolve(credentialOptions()),
+        updateCredentialAccess: () => {
+          writes++
 
-        return Promise.resolve(conversation)
+          return Promise.resolve(conversation)
+        },
       },
-    })
+    )
 
     expect(writes).toBe(0)
   })

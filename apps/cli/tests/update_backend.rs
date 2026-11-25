@@ -12,7 +12,10 @@ fn update_asks_the_configured_backend_for_the_release() {
         let deadline = Instant::now() + Duration::from_secs(10);
         loop {
             if let Ok((mut stream, _)) = listener.accept() {
+<<<<<<< origin/main
                 // macOS hands the accepted stream the listener's non-blocking mode.
+=======
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
                 stream.set_nonblocking(false).unwrap();
                 stream.set_read_timeout(Some(Duration::from_secs(2))).unwrap();
                 let mut bytes = [0; 4096];

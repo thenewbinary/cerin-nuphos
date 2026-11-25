@@ -85,6 +85,53 @@ final class BotPinsUITests: XCTestCase {
     }
 
 
+    /// A Bot's owner reaches its Task, runtime and model from the chat's header in one tap,
+    /// as before Bot details (#3873 left them only behind the Bot's name).
+    func testBotChatHeaderOpensTheBotsTaskWithRuntimeAndModel() throws {
+        let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent().appending(path: "tests/fixtures/bot-desktop-responses.json")
+        var responses = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: fixture)) as? [String: Any])
+        var detail = try XCTUnwrap(responses["GET /agent/conversations/chat-bot-plain"] as? [String: Any])
+        var body = try XCTUnwrap(detail["body"] as? [String: Any])
+        body["botId"] = "bot-plain"
+        detail["body"] = body
+        responses["GET /agent/conversations/chat-bot-plain"] = detail
+        let listing = responses["GET /agent/conversations"] as! [String: Any]
+        var task = ((listing["body"] as! [String: Any])["conversations"] as! [[String: Any]])[1]
+        task["messages"] = body["messages"]; task["messagesFirstIndex"] = 0; task["readOnly"] = false
+        responses["GET /agent/conversations/bot-plain"] = ["status": 200, "body": task]
+        responses["GET /agent/conversations/bot-plain/model-config"] = ["status": 200, "body": [
+            "status": "ready",
+            "options": [["id": "model", "name": "Model", "kind": "model", "currentValue": "sonnet",
+                         "options": [["value": "sonnet", "name": "Sonnet"], ["value": "opus", "name": "Opus"]]]],
+        ]]
+        let live = URL.temporaryDirectory.appending(path: "bot-header-task-\(UUID()).json")
+        try JSONSerialization.data(withJSONObject: responses).write(to: live)
+        defer { try? FileManager.default.removeItem(at: live) }
+        let app = XCUIApplication()
+        app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
+        app.launch()
+        let row = app.staticTexts["Release notes"].firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 10)); row.tap()
+        let more = app.buttons["chat.more"]
+        XCTAssertTrue(more.waitForExistence(timeout: 10), "The Bot chat's header has no More button")
+        more.tap()
+        let entry = app.buttons["Task"]
+        XCTAssertTrue(entry.waitForExistence(timeout: 10), "The Bot chat's More has no Task")
+        shot("bot-header-task")
+        entry.tap()
+        XCTAssertTrue(app.buttons["agent-summary-button"].waitForExistence(timeout: 10), "The header's Task button did not open the Bot's Task")
+        let input = app.textViews.firstMatch.exists ? app.textViews.firstMatch : app.textFields.firstMatch
+        input.tap()
+        let runtime = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Switch runtime'")).firstMatch
+        XCTAssertTrue(runtime.waitForExistence(timeout: 10), "The Bot's Task offers no runtime switch")
+        XCTAssertTrue(app.buttons["Model settings"].waitForExistence(timeout: 10), "The Bot's Task shows no model")
+        shot("bot-task-runtime-model")
+        runtime.tap()
+        XCTAssertTrue(app.navigationBars["Choose runtime"].waitForExistence(timeout: 10), "Switch runtime opened nothing")
+        shot("bot-task-runtime-picker")
+    }
+
     func testBotTaskReturnsToItsChat() throws {
         let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent().appending(path: "tests/fixtures/bot-desktop-responses.json")
         var responses = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: fixture)) as? [String: Any])
@@ -150,6 +197,92 @@ final class BotPinsUITests: XCTestCase {
             XCTAssertTrue(app.buttons["agent-summary-button"].waitForNonExistence(timeout: 5), "Selecting another chat must pop the previous Bot Task")
             shot("bot-task-selection-reset")
         }
+    }
+
+    /// As on Desktop (#4080): a pull request linked to the Bot's own session stays off Bot details.
+    /// A Task's summary keeps it (AgentSummaryUITests).
+    func testBotDetailsLeavesOutChanges() throws {
+        let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent().appending(path: "tests/fixtures/bot-desktop-responses.json")
+        var responses = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: fixture)) as? [String: Any])
+        var detail = try XCTUnwrap(responses["GET /agent/conversations/chat-bot-plain"] as? [String: Any])
+        var body = try XCTUnwrap(detail["body"] as? [String: Any])
+        body["botId"] = "bot-plain"
+        detail["body"] = body
+        responses["GET /agent/conversations/chat-bot-plain"] = detail
+        let listing = responses["GET /agent/conversations"] as! [String: Any]
+        var task = ((listing["body"] as! [String: Any])["conversations"] as! [[String: Any]])[1]
+        task["messages"] = body["messages"]; task["messagesFirstIndex"] = 0; task["readOnly"] = false
+        responses["GET /agent/conversations/bot-plain"] = ["status": 200, "body": task]
+        responses["GET /agent/conversations/bot-plain/resources"] = ["status": 200, "body": ["resources": [[
+            "id": "pr1", "provider": "github", "title": "Release notes for 0.26",
+            "url": "https://github.com/example/project/pull/42", "state": "open", "number": 42,
+        ]]]]
+        let live = URL.temporaryDirectory.appending(path: "bot-details-changes-\(UUID()).json")
+        try JSONSerialization.data(withJSONObject: responses).write(to: live)
+        defer { try? FileManager.default.removeItem(at: live) }
+        let app = XCUIApplication()
+        app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
+        app.launch()
+        let row = app.staticTexts["Release notes"].firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 10)); row.tap()
+        let name = app.buttons["bot-details-entry"]
+        XCTAssertTrue(name.waitForExistence(timeout: 10)); name.tap()
+        XCTAssertTrue(app.staticTexts["Bot details"].firstMatch.waitForExistence(timeout: 10))
+        // Long enough for the Bot's linked pull request to load, so its absence is the panel's choice.
+        XCTAssertFalse(app.staticTexts["Release notes for 0.26"].waitForExistence(timeout: 5))
+        for _ in 0..<3 where app.scrollViews["agent-summary-list"].exists { app.scrollViews["agent-summary-list"].swipeUp() }
+        XCTAssertFalse(app.staticTexts["Changes"].exists)
+        XCTAssertFalse(app.staticTexts["Release notes for 0.26"].exists)
+        shot("bot-details-no-changes")
+    }
+
+    /// On a phone, a Bot's runtime and model are in view without scrolling the composer's
+    /// controls row, and Bot details names the model (#4204).
+    func testBotRuntimeAndModelAreInViewOnAPhone() throws {
+        let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent().appending(path: "tests/fixtures/bot-desktop-responses.json")
+        var responses = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: fixture)) as? [String: Any])
+        var detail = try XCTUnwrap(responses["GET /agent/conversations/chat-bot-plain"] as? [String: Any])
+        var body = try XCTUnwrap(detail["body"] as? [String: Any])
+        body["botId"] = "bot-plain"
+        detail["body"] = body
+        responses["GET /agent/conversations/chat-bot-plain"] = detail
+        let listing = responses["GET /agent/conversations"] as! [String: Any]
+        var task = ((listing["body"] as! [String: Any])["conversations"] as! [[String: Any]])[1]
+        task["messages"] = body["messages"]; task["messagesFirstIndex"] = 0; task["readOnly"] = false
+        responses["GET /agent/conversations/bot-plain"] = ["status": 200, "body": task]
+        responses["GET /agent/conversations/bot-plain/model-config"] = ["status": 200, "body": [
+            "status": "ready",
+            "options": [["id": "model", "name": "Model", "kind": "model", "currentValue": "sonnet",
+                         "options": [["value": "sonnet", "name": "Sonnet"], ["value": "opus", "name": "Opus"]]]],
+        ]]
+        let live = URL.temporaryDirectory.appending(path: "bot-runtime-model-\(UUID()).json")
+        try JSONSerialization.data(withJSONObject: responses).write(to: live)
+        defer { try? FileManager.default.removeItem(at: live) }
+        let app = XCUIApplication()
+        app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
+        app.launch()
+        let row = app.staticTexts["Release notes"].firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 10)); row.tap()
+        let name = app.buttons["bot-details-entry"]
+        XCTAssertTrue(name.waitForExistence(timeout: 10)); name.tap()
+        let model = app.buttons.matching(NSPredicate(format: "identifier == 'bot-details-model' AND label CONTAINS 'Sonnet'")).firstMatch
+        XCTAssertTrue(model.waitForExistence(timeout: 10), "Bot details does not name the Bot's model")
+        shot("bot-details-model")
+        let entry = app.buttons["bot-task-entry"]
+        XCTAssertTrue(entry.waitForExistence(timeout: 10)); entry.tap()
+        XCTAssertTrue(app.buttons["agent-summary-button"].waitForExistence(timeout: 10))
+        let input = app.textViews.firstMatch.exists ? app.textViews.firstMatch : app.textFields.firstMatch
+        input.tap()
+        let runtime = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Switch runtime'")).firstMatch
+        let modelChip = app.buttons["Model settings"]
+        XCTAssertTrue(runtime.waitForExistence(timeout: 10))
+        XCTAssertTrue(modelChip.waitForExistence(timeout: 10))
+        let screen = app.windows.firstMatch.frame
+        XCTAssertTrue(screen.contains(runtime.frame), "The runtime chip starts off-screen: \(runtime.frame)")
+        XCTAssertTrue(screen.contains(modelChip.frame), "The model chip starts off-screen: \(modelChip.frame)")
+        shot("bot-task-runtime-model-in-view")
     }
 
     private func shot(_ name: String) {

@@ -142,7 +142,11 @@ services:
     restart: unless-stopped
 
   runtime:
+<<<<<<< origin/main
     image: ghcr.io/thenewbinary/cerin-runtime:${RUNTIME_TAG:-commit-45f3647f283b1c6d54d8b942ae0a02d456f67472-claude-code}
+=======
+    image: ghcr.io/thenewbinary/cerin-runtime:${RUNTIME_TAG:-0.1.78-claude-code}
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
     environment:
       OPENAB_STREAM_EDIT_INTERVAL_MS: '300'
       # A fresh volume otherwise waits for someone to open the setup screen;

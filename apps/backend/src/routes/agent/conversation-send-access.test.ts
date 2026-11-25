@@ -1,6 +1,7 @@
 import { beforeEach, expect, test } from 'bun:test'
 
 import { serializeConversationForViewer } from './conversation-view'
+import { listRow } from './list-row'
 import { assertConversationSendable, assertConversationWritable } from './team-scope'
 
 import type { AgentConversation } from '@/lib/agent/db'
@@ -104,6 +105,24 @@ test('the serializer tells each viewer what they may do', () => {
   ).toMatchObject({ generalAccess: 'view' })
 })
 
+test('only the owner reads who archived and restored it, and never in the list', () => {
+  const archiveLog = [{ archived: true, at: new Date(), source: 'user' as const, userId: 'owner' }]
+  const doc = {
+    userId: 'owner',
+    teamId,
+    generalAccess: 'view',
+    participantIds: ['invited'],
+    archiveLog,
+  }
+  const as = (id: string, access: 'owner' | 'reply' | 'view') =>
+    serializeConversationForViewer(doc, { id } as CerinUser, new Map(), null, access)
+
+  expect(as('owner', 'owner').archiveLog).toEqual(archiveLog)
+  expect(as('invited', 'reply').archiveLog).toBeUndefined()
+  expect(as('teammate', 'view').archiveLog).toBeUndefined()
+  expect(listRow(as('owner', 'owner'))).not.toHaveProperty('archiveLog')
+})
+
 test('a removed participant falls back to whatever general access still grants', async () => {
   conversation!.generalAccess = 'view'
   conversation!.participantIds = []
@@ -128,4 +147,22 @@ test("each viewer sees the Task archived when they archived it, and never someon
   expect(as('daniel').archivedAt).toBeUndefined()
   expect(as('owner').archivedAt).toBeUndefined()
   expect(as('amy')).not.toHaveProperty('memberArchivedAt')
+})
+
+test('who may archive: the owner for everyone, a participant in a Task for themselves', () => {
+  const task = { userId: 'owner', teamId, participantIds: ['amy'] }
+  const as = (doc: Record<string, unknown>, id: string) =>
+    serializeConversationForViewer(
+      { ...task, ...doc } as typeof task,
+      { id } as CerinUser,
+      new Map(),
+      null,
+      'reply',
+    ).canArchive
+
+  expect(as({}, 'owner')).toBe(true)
+  expect(as({}, 'amy')).toBe(true)
+  // A teammate who only reads it, and a member of a group chat, who leaves it instead.
+  expect(as({}, 'reader')).toBe(false)
+  expect(as({ kind: 'channel' }, 'amy')).toBe(false)
 })

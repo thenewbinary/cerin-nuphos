@@ -26,8 +26,8 @@ try {
   await page.getByRole('button', { name: 'Continue with email' }).click()
   await page.getByText('Enter the 6-digit code').waitFor()
   await page.locator('input[placeholder="000000"]').fill(stack.signInCode(email) ?? '')
-  await page.getByPlaceholder('Name your workspace…').fill('New user')
-  await page.getByRole('button', { name: 'Create workspace' }).click()
+  await page.getByPlaceholder('Name your team…').fill('New user')
+  await page.getByRole('button', { name: 'Create team' }).click()
   const cloud = page.getByRole('button', { name: /^Rent a computer from Cerin/ })
 
   // Each place a new user is asked for a runtime offers the cloud computer: onboarding,
@@ -36,9 +36,14 @@ try {
   await page.screenshot({ path: `${artifacts}/new-user-onboarding.png` })
   // No Claude Code or Codex on this computer: setting them up waits.
   await page.getByRole('button', { name: 'Set up later' }).click()
+<<<<<<< origin/main
   await page.getByRole('button', { name: 'Open workspace' }).click()
   // their first Bot, from the Bots page (sign-in opens Home),
   await page.getByRole('tab', { name: 'Bots' }).click()
+=======
+  await page.getByRole('button', { name: 'Open team' }).click()
+  // their first Bot,
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   await page.getByRole('button', { name: 'New Bot', exact: true }).click()
   await page.getByRole('textbox', { name: 'Bot name' }).fill('E2E Bot')
   await page.getByRole('button', { name: 'Create', exact: true }).click()
@@ -64,7 +69,11 @@ try {
   await page.screenshot({ path: `${artifacts}/new-user-cloud-computer.png` })
   // Back returns to Connect a runtime, where it was chosen.
   await page.getByRole('button', { name: 'Back', exact: true }).click()
-  await page.getByText('Connect a runtime', { exact: true }).first().waitFor()
+  await page
+    .getByText('Connect a runtime', { exact: true })
+    .filter({ visible: true })
+    .first()
+    .waitFor()
   await cloud.waitFor()
   await page.waitForTimeout(800)
   await page.screenshot({ path: `${artifacts}/new-user-back.png` })

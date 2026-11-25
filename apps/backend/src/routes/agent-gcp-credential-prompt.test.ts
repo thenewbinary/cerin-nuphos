@@ -82,6 +82,7 @@ describe('GCP credentials in the agent prompt', () => {
     )
   })
 
+<<<<<<< origin/main
   test('carries a GUI link for the instance list and an SSH template', () => {
     expect(line).toContain(
       `guiLinks={gceInstances:"https://cerin.ai/teams/${TEAM_ID}/infra/gcp/example-project/gce-instances"}`,
@@ -97,6 +98,12 @@ describe('GCP credentials in the agent prompt', () => {
         .find((l) => l.startsWith('- projectId=a b')) ?? ''
 
     expect(encoded).toContain('/infra/gcp/a%20b/gce-instances')
+=======
+  test('leaves GUI routes to the route catalog, so each account costs no link tokens', () => {
+    expect(line).not.toContain('guiLinks')
+    expect(line).not.toContain('guiTemplates')
+    expect(prompt).not.toContain('https://platform.cerin.ai/')
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   })
 })
 
@@ -124,10 +131,15 @@ describe('On-prem Kubernetes credentials in the agent prompt', () => {
     expect(prompt).not.toContain('sync-clusters.sh')
   })
 
+<<<<<<< origin/main
   test('links to the shared Kubernetes resource UI', () => {
     expect(prompt).toContain(
       `https://cerin.ai/teams/${TEAM_ID}/k8s/onprem/${clusterId}/onprem/${clusterId}/workloads/pods`,
     )
+=======
+  test('leaves its GUI route to the route catalog', () => {
+    expect(prompt).not.toContain('https://platform.cerin.ai/')
+>>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   })
 })
 

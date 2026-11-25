@@ -1,5 +1,6 @@
 import { getConversationPreviewAttachment } from '@/lib/agent/db'
 import { sameRuntimeUrl } from '@/lib/agent/devices/local-runtime/address'
+import { instructionsUpdate } from '@/lib/instructions/prompt'
 import { RunHandoff } from '@/lib/lifecycle'
 
 import { registry } from './agent-chat-registry'
@@ -9,19 +10,21 @@ import {
 } from './autonomous-session-observer'
 import { backgroundWorkPrompt, markBackgroundWorkLost } from './background-work'
 import { openConversationSession } from './open-conversation-session'
+import { pendingTurnDefaults } from './own-session-config'
+import { promptFailure } from './prompt-failure'
 import { redactedPromptUpdates } from './redacted-prompt-updates'
 import { retractedPrompt } from './retracted-notice'
-import { promptFailure } from './prompt-failure'
 import { materializeRuntimeAttachments } from './runtime-attachments'
+import { noteTurnSignIn } from './runtime-auth-refusal'
 import { assertConversationRuntimeAvailable } from './runtime-portability-store'
 import { refusal } from './runtime-refusal'
+import { settledTurn } from './session-config-record'
 import {
   previewSessionPrincipalChanged,
   sessionContextStale,
   turnDefaults,
 } from './session-context'
 import { pushSessionCredentials } from './session-credential-push'
-import { settledTurn } from './session-config-record'
 import { probeExecutionState } from './session-execution-state'
 import { observeSession, resumeSessionOn } from './session-reattach'
 import {
@@ -32,7 +35,6 @@ import {
 import { renewTurnCredentials } from './turn-credential-renewal'
 import { probeFailure } from './turn-diagnostics'
 
-import type { previewSessionAccess } from './credentials-mcp'
 import type { AcpHttpMcpServer, PreviewAgentUpdate } from './openab-acp-client'
 import type { OpenAbPermissionHandler, OpenAbSessionRuntime } from './openab-acp-session'
 import type { RuntimeAttachment } from './runtime-attachments'
@@ -67,8 +69,12 @@ export {
  * Runs one prompt on the conversation's OpenAB session, streaming text deltas.
  * Reuses the shared Team connection, reattaches with `session/load` after a transport loss, and
  * keeps one active turn per conversation. `unsent`: stopped before the agent received the prompt.
+ * How it ends also notes whether the agent's provider refused its sign-in (runtime-auth-refusal).
  */
-export async function runClaudeCodePreviewPrompt(args: {
+export const runClaudeCodePreviewPrompt = (args: Parameters<typeof promptTurn>[0]) =>
+  noteTurnSignIn(args.teamId, args.endpoint.runtimeId, promptTurn(args))
+
+async function promptTurn(args: {
   teamId: string
   conversationId: string
   userId: string
@@ -107,40 +113,39 @@ export async function runClaudeCodePreviewPrompt(args: {
   if (currentAttachment && !sameRuntimeUrl(currentAttachment.runtimeUrl, args.endpoint.url))
     throw new Error('Conversation runtime changed. Retry this message.')
   let fresh = false
-  const session = await openConversationSession(
-    args.teamId,
-    args.conversationId,
-    args.userId,
-    args.locale,
-    args.endpoint,
-    args.mcpServers ?? [],
-    args.systemPrompt,
-    args.runtime,
-    () => {
-      fresh = true
-    },
-    args.conversationOwnerUserId ?? args.userId,
-  )
-
-  // Query runtime admission without attaching a replacement prompt socket.
+  const open = () =>
+    openConversationSession(
+      args.teamId,
+      args.conversationId,
+      args.userId,
+      args.locale,
+      args.endpoint,
+      args.mcpServers ?? [],
+      args.systemPrompt,
+      args.runtime,
+      () => {
+        fresh = true
+      },
+      args.conversationOwnerUserId ?? args.userId,
+    )
+  // Ask admission before resuming the session here: its output goes to the last replica
+  // to resume it, so a refused message must not take a running turn away (#4540).
   const observe = () =>
     probeExecutionState({
-      teamId: session.teamId,
-      sessionId: session.conversationId,
-      userId: session.conversationOwnerUserId ?? session.userId,
-      agentRuntime: session.endpoint.provider ?? 'claude-code',
-      runtimeId: session.endpoint.runtimeId,
-      claudeCodePreview: {
-        runtimeUrl: session.endpoint.url,
-        openabSessionId: session.openabSessionId,
-      },
+      teamId: args.teamId,
+      sessionId: args.conversationId,
+      userId: args.conversationOwnerUserId ?? args.userId,
+      agentRuntime: args.endpoint.provider ?? 'claude-code',
+      runtimeId: args.endpoint.runtimeId,
+      claudeCodePreview: { runtimeUrl: args.endpoint.url, openabSessionId },
     }).catch(async (cause: unknown) => {
-      throw await probeFailure(cause, session.conversationId, session.endpoint)
+      throw await probeFailure(cause, args.conversationId, args.endpoint)
     })
+  const openabSessionId = currentAttachment?.openabSessionId ?? (await open()).openabSessionId
   const observed = await observe()
 
   if (observed.schemaVersion === 2 && observed.phase === 'resume_disconnected') {
-    await resumeSessionOn(session, await registry.acquire(session.teamId, session.endpoint))
+    await resumeSessionOn(await open(), await registry.acquire(args.teamId, args.endpoint))
     const reattached = await observe()
 
     // Still parked: the next prompt would only land here again. Fail this one.
@@ -159,6 +164,7 @@ export async function runClaudeCodePreviewPrompt(args: {
   if (!observed.actions?.send)
     throw refusal(observed.label ?? 'The agent cannot accept a message yet')
 
+  const session = await open()
   const principalChanged = previewSessionPrincipalChanged(session, args.userId, args.runtime)
 
   const nextContext = {
@@ -191,6 +197,8 @@ export async function runClaudeCodePreviewPrompt(args: {
 
     activeTurn.client = client
     if (activeTurn.cancelled) return { stopReason: 'cancelled', unsent: true }
+    nextContext.runtime.defaults = await pendingTurnDefaults(client, session, currentAttachment)
+    if (activeTurn.cancelled) return { stopReason: 'cancelled', unsent: true }
     // MCP tokens, runtime environment, and the personal portion of the system
     // prompt are execution-principal scoped. A shared Slack conversation can
     // legitimately switch actors between serialized turns; re-load even on
@@ -198,11 +206,7 @@ export async function runClaudeCodePreviewPrompt(args: {
     // credentials or personal context.
     const rebind = session.client !== client || principalChanged
 
-    if (
-      rebind ||
-      nextContext.systemPrompt !== session.systemPrompt ||
-      sessionContextStale(session, Date.now())
-    ) {
+    if (rebind || sessionContextStale(session, Date.now())) {
       const { alive } = await client.loadSession(
         session.openabSessionId,
         RUNTIME_CWD,
@@ -228,17 +232,18 @@ export async function runClaudeCodePreviewPrompt(args: {
     )
 
     if (activeTurn.cancelled) return { stopReason: 'cancelled', unsent: true }
+    const update = await instructionsUpdate(args.teamId, args.userId, args.conversationId, fresh)
     // The lead ends with the current message's header, nearest its words.
     const lead = [
       attachments.length
         ? 'Attached files are already on this runtime. Use your native image/file reading tools to inspect them before answering.'
         : '',
       await retractedPrompt(session, fresh),
+      session.endpoint.provider === 'codex' ? '' : update.text,
       await backgroundWorkPrompt(session, fresh, args),
     ]
       .filter(Boolean)
       .join('\n\n')
-    const text = redactedPromptUpdates(args.onTextDelta, args.onAgentUpdate)
     const target = {
       teamId: session.teamId,
       conversationId: session.conversationId,
@@ -248,6 +253,7 @@ export async function runClaudeCodePreviewPrompt(args: {
       runtimeUrl: session.endpoint.url,
       openabSessionId: session.openabSessionId,
     }
+    const text = redactedPromptUpdates(args.onTextDelta, args.onAgentUpdate, target)
 
     if (args.renewRuntimeEnv)
       renewal = renewTurnCredentials({
@@ -268,10 +274,11 @@ export async function runClaudeCodePreviewPrompt(args: {
           // Runtime admission, not a backend flag, selects the command whose
           // principal and cancellation route own subsequent output.
           Object.assign(session, nextContext)
+          void update.given()
           session.activeTurn = activeTurn
           if (activeTurn.cancelled) client.cancel(session.openabSessionId)
         },
-        nextContext,
+        { ...nextContext, instructionsUpdate: update.text },
         attachments,
         lead,
       )
