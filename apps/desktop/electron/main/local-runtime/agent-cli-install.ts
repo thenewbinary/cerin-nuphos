@@ -63,7 +63,7 @@ function onPath(name: string, env: NodeJS.ProcessEnv): string | null {
 export function installCommand(provider: Installable, env: NodeJS.ProcessEnv): Command | null {
   const windows = process.platform === 'win32'
   // The end-to-end harness's stand-in, so a run installs no vendor's CLI.
-  const standIn = envValue(env, 'NUPHOS_E2E_AGENT_INSTALLER')
+  const standIn = envValue(env, 'CERIN_E2E_AGENT_INSTALLER')
 
   if (standIn) return { file: '/bin/sh', args: [standIn, provider] }
   if (provider in SCRIPT) {

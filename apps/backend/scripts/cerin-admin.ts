@@ -30,7 +30,7 @@ const USAGE = `usage:
       Prints a one-time token that joins a machine as the team owner's computer.
   cerin-admin telemetry [on|off]
       Prints whether health reports are sent and the exact last one; on/off
-      switches sending without a restart (NUPHOS_TELEMETRY_KEY must be set).`
+      switches sending without a restart (CERIN_TELEMETRY_KEY must be set).`
 
 function flag(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`)
@@ -81,7 +81,7 @@ async function joinToken(): Promise<string> {
 
   ${token}
 
-On the machine (keep NUPHOS_API_URL set for later runs, e.g. in its systemd unit):
+On the machine (keep CERIN_API_URL set for later runs, e.g. in its systemd unit):
 
   curl -fsSL https://cerin.ai/install | sh -s -- --join ${token} --api-url ${api}`
 }

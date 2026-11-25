@@ -248,8 +248,8 @@ expired session or an unexpected identity fails explicitly. Default device
 fixture runs report this live test as skipped. Password mode adds one real
 `/auth/password/sign-in` request; the remaining calls are GET requests.
 
-For a clean dedicated device, set `NUPHOS_E2E_LOGIN_MODE=password` and
-`NUPHOS_E2E_ALLOW_LOGIN=true`. Supply `NUPHOS_E2E_PASSWORD` through a secret
+For a clean dedicated device, set `CERIN_E2E_LOGIN_MODE=password` and
+`CERIN_E2E_ALLOW_LOGIN=true`. Supply `CERIN_E2E_PASSWORD` through a secret
 environment variable or a local config file with mode `0600`. The account must
 already have a password and current consent. The runner sends config through
 stdin to a uniquely named app-private file. The test and runner remove that

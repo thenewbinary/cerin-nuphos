@@ -18,7 +18,7 @@ class ConsentInterceptorTest {
         var calls = 0
         val client = OkHttpClient.Builder().addInterceptor(ConsentInterceptor()).addInterceptor { chain ->
             calls++
-            assertNull(chain.request().header("x-nuphos-ai-consent-version"))
+            assertNull(chain.request().header("x-cerin-ai-consent-version"))
             Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(200).message("fixture")
                 .body("{}".toResponseBody()).build()
         }.build()
@@ -32,7 +32,7 @@ class ConsentInterceptorTest {
         AiAccess.activate("fixture")
         AiAccess.grant("fixture")
         val client = OkHttpClient.Builder().addInterceptor(ConsentInterceptor()).addInterceptor { chain ->
-            assertEquals(AccountApi.AI_CONSENT_VERSION, chain.request().header("x-nuphos-ai-consent-version"))
+            assertEquals(AccountApi.AI_CONSENT_VERSION, chain.request().header("x-cerin-ai-consent-version"))
             Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(403).message("fixture")
                 .body("""{"error":"ai_consent_required"}""".toResponseBody()).build()
         }.build()
@@ -76,7 +76,7 @@ class ConsentInterceptorTest {
         var calls = 0
         val client = OkHttpClient.Builder().addInterceptor(ConsentInterceptor()).addInterceptor { chain ->
             calls++
-            assertEquals(AccountApi.AI_CONSENT_VERSION, chain.request().header("x-nuphos-ai-consent-version"))
+            assertEquals(AccountApi.AI_CONSENT_VERSION, chain.request().header("x-cerin-ai-consent-version"))
             Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(200).message("fixture")
                 .body("".toResponseBody()).build()
         }.build()

@@ -18,8 +18,8 @@ import { pathToFileURL } from 'node:url'
 
 import { MODEL_SETTINGS, readJson, writeJson } from './pi-session.mjs'
 
-const PI = process.env.NUPHOS_AGENT_EXECUTABLE || 'pi'
-const HOME = process.env.NUPHOS_AGENT_HOME || process.env.HOME || '/home/node'
+const PI = process.env.CERIN_AGENT_EXECUTABLE || 'pi'
+const HOME = process.env.CERIN_AGENT_HOME || process.env.HOME || '/home/node'
 
 /**
  * The providers Pi takes an API key for, by the id `pi auth` knows them by, with the model

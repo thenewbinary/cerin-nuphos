@@ -84,8 +84,8 @@ railway config apply --file .railway/runtime.ts
 
 Verify that the CLI names the **runtime project**, not the data project, before
 applying. The Dockerfile source defaults to `thenewbinary/cerin-platform` on `main`. To test an
-unmerged branch or deploy a fork, set `NUPHOS_GITHUB_REPO` and
-`NUPHOS_GITHUB_BRANCH` in this shell before planning. The source must contain
+unmerged branch or deploy a fork, set `CERIN_GITHUB_REPO` and
+`CERIN_GITHUB_BRANCH` in this shell before planning. The source must contain
 `deploy/railway/runtime/Dockerfile`. The spec explicitly selects the Dockerfile
 builder. Verify the deployed commit before pairing the runtime.
 
@@ -96,7 +96,7 @@ Keep the home volume when redeploying: it contains credentials and workspaces.
 
 The runtime is also published as a one-click marketplace template,
 [Cerin Agent Runtime](https://railway.com/deploy/cerin-agent-runtime). It runs the
-public `ghcr.io/nuphos/runtime` image directly instead of building this directory:
+public `ghcr.io/thenewbinary/cerin-runtime` image directly instead of building this directory:
 `RAILWAY_RUN_UID=0` and a start command do what `runtime/start.sh` does.
 `OPENAB_ACP_AUTH_KEY` is a generated template variable
 (`${{secret(64, "abcdef0123456789")}}`), so a fresh deployment is never open for its

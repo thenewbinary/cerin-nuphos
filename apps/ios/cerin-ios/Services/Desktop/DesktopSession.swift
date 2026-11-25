@@ -154,7 +154,7 @@ final class DesktopSession {
         components.scheme = components.scheme == "http" ? "ws" : "wss"
         var request = URLRequest(url: components.url!)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-nuphos-ai-consent-version")
+        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-cerin-ai-consent-version")
         let socket = URLSession.shared.webSocketTask(with: request)
         socket.maximumMessageSize = 16 << 20
         self.socket = socket
@@ -438,7 +438,7 @@ final class DesktopSession {
         var request = URLRequest(url: CerinAPI.baseURL(for: token).appending(path: "teams/\(teamId)/runtime-desktop/\(sessionId)"))
         request.httpMethod = "POST"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-nuphos-ai-consent-version")
+        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-cerin-ai-consent-version")
         request.timeoutInterval = 40
         let (data, response) = try await URLSession.shared.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0

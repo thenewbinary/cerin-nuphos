@@ -7,7 +7,7 @@ description: Call Huawei Cloud (华为云) REST APIs from the sandbox with the b
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -23,7 +23,7 @@ source ~/.huawei/credentials.env
 
 Cerin uses OIDC federation here, like every other cloud connector — but Huawei Cloud has no AssumeRole, so the trust relationship *is* an IAM5 OIDC provider plus a trust agency assigned to Cerin's audience on it. Cerin mints a per-team RS256 ID token and calls STS's `AssumeAgencyWithOIDC` (`POST https://sts.<region>.myhuaweicloud.com/v5/agencies/assume-with-oidc`, unsigned) with the provider and agency URNs to get temporary AK/SK + security token directly — no long-lived Huawei keys, no intermediate token, and no relation to IAM's legacy Keystone identity-provider APIs, which don't see IAM5 providers at all.
 
-`setup-credentials.sh` calls `GET /teams/:teamId/huawei-accounts/:accountId/credentials` with the user's `NUPHOS_TOKEN` and writes both naming schemes, because neither reads the other's:
+`setup-credentials.sh` calls `GET /teams/:teamId/huawei-accounts/:accountId/credentials` with the user's `CERIN_TOKEN` and writes both naming schemes, because neither reads the other's:
 
 - `HUAWEICLOUD_SDK_AK` / `HUAWEICLOUD_SDK_SK` / `HUAWEICLOUD_SDK_SECURITY_TOKEN` / `HUAWEICLOUD_SDK_REGION` — the bundled `hw-api.py` signer and Huawei's official SDKs
 - `HW_ACCESS_KEY` / `HW_SECRET_KEY` / `HW_SECURITY_TOKEN` / `HW_REGION_NAME` — the Terraform provider

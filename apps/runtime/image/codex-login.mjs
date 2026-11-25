@@ -38,7 +38,7 @@ export function loginChoice(line) {
   return null
 }
 
-export const CODEX_AUTH_DIRECTORY = process.env.NUPHOS_CODEX_AUTH_DIRECTORY ?? '/home/node/.codex'
+export const CODEX_AUTH_DIRECTORY = process.env.CERIN_CODEX_AUTH_DIRECTORY ?? '/home/node/.codex'
 
 /**
  * Move the credential into the directory the Codex CLI actually reads. The revision

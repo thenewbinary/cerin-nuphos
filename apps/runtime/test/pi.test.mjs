@@ -31,14 +31,14 @@ test('each conversation and each teammate in it runs Pi from an agent directory 
       join(root, 'settings.json'),
       JSON.stringify({ defaultProvider: 'deepseek', defaultModel: 'deepseek-chat', theme: 'x' }),
     )
-    const runtimeEnv = { HOME: home, PATH: '/bin', NUPHOS_AGENT_EXECUTABLE: '/opt/pi/bin/pi' }
+    const runtimeEnv = { HOME: home, PATH: '/bin', CERIN_AGENT_EXECUTABLE: '/opt/pi/bin/pi' }
     const env = (session) => agentEnv('pi', { env: session }, runtimeEnv)
-    const owner = env({ NUPHOS_SESSION_ID: 'conversation-a', NUPHOS_TOKEN: 'a' })
-    const other = env({ NUPHOS_SESSION_ID: 'conversation-b', NUPHOS_TOKEN: 'b' })
+    const owner = env({ CERIN_SESSION_ID: 'conversation-a', CERIN_TOKEN: 'a' })
+    const other = env({ CERIN_SESSION_ID: 'conversation-b', CERIN_TOKEN: 'b' })
     const teammate = env({
-      NUPHOS_SESSION_ID: 'conversation-a',
-      NUPHOS_SESSION_ACTOR: 'teammate',
-      NUPHOS_TOKEN: 't',
+      CERIN_SESSION_ID: 'conversation-a',
+      CERIN_SESSION_ACTOR: 'teammate',
+      CERIN_TOKEN: 't',
     })
     const dirs = [owner, other, teammate].map((e) => e.PI_CODING_AGENT_DIR)
     assert.equal(new Set(dirs).size, 3)
@@ -59,7 +59,7 @@ test('each conversation and each teammate in it runs Pi from an agent directory 
     // A conversation opened after a new sign-in uses the new key.
     const renewed = { deepseek: { type: 'api_key', key: 'sk-new' } }
     writeFileSync(join(root, 'auth.json'), JSON.stringify(renewed))
-    const again = env({ NUPHOS_SESSION_ID: 'conversation-a', NUPHOS_TOKEN: 'a' })
+    const again = env({ CERIN_SESSION_ID: 'conversation-a', CERIN_TOKEN: 'a' })
     assert.deepEqual(readJson(join(again.PI_CODING_AGENT_DIR, 'auth.json')), renewed)
   } finally {
     rmSync(home, { recursive: true, force: true })
@@ -190,7 +190,7 @@ test('the sign-in a computer runs asks for a provider and a key, then is done', 
       process.execPath,
       [fileURLToPath(new URL('../image/pi-login.mjs', import.meta.url))],
       {
-        env: { PATH: process.env.PATH, NUPHOS_AGENT_EXECUTABLE: pi, NUPHOS_AGENT_HOME: home },
+        env: { PATH: process.env.PATH, CERIN_AGENT_EXECUTABLE: pi, CERIN_AGENT_HOME: home },
         stdio: ['pipe', 'pipe', 'inherit'],
       },
     )

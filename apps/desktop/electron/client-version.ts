@@ -10,4 +10,4 @@ import pkg from '../package.json' with { type: 'json' }
 export const CLIENT_VERSION_HEADER = 'x-atlas-client'
 export const CLIENT_VERSION_VALUE = process.versions.electron
   ? `cerin-desktop/${pkg.version}`
-  : `cerin-cli/${process.env.NUPHOS_CLI_VERSION ?? 'dev'}`
+  : `cerin-cli/${process.env.CERIN_CLI_VERSION ?? 'dev'}`

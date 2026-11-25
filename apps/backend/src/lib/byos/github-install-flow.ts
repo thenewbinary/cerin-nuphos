@@ -40,7 +40,7 @@ export type InstallFlowState = {
 function mac(payload: string): Buffer {
   const secret = config.auth.jwtSecret
 
-  if (!secret) throw new Error('NUPHOS_JWT_SECRET is not configured')
+  if (!secret) throw new Error('CERIN_JWT_SECRET is not configured')
 
   return createHmac('sha256', secret).update(`github-install-flow:${payload}`).digest()
 }

@@ -92,7 +92,7 @@ final class AuthSession {
         #if targetEnvironment(simulator)
         if CommandLine.arguments.contains("-clear-preview") {
             UserDefaults.standard.removeObject(forKey: "previewResponses")
-        } else if let fixture = ProcessInfo.processInfo.environment["NUPHOS_PREVIEW_RESPONSES"] {
+        } else if let fixture = ProcessInfo.processInfo.environment["CERIN_PREVIEW_RESPONSES"] {
             UserDefaults.standard.set(fixture, forKey: "previewResponses")
         }
         let previewFixture = UserDefaults.standard.string(forKey: "previewResponses")
@@ -518,7 +518,7 @@ final class AuthSession {
 final class WebAuthPresentationContext: NSObject, ASWebAuthenticationPresentationContextProviding {
     nonisolated func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         MainActor.assumeIsolated {
-            #if NUPHOS_SHARE_EXTENSION
+            #if CERIN_SHARE_EXTENSION
             return ASPresentationAnchor()
             #elseif os(macOS)
             return NSApplication.shared.keyWindow ?? NSApplication.shared.windows.first ?? ASPresentationAnchor()

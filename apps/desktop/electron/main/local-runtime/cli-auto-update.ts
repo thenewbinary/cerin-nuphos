@@ -67,13 +67,13 @@ export function idleClock(now = () => Date.now()) {
 }
 
 export type CliAutoUpdateDeps = {
-  /** The CLI this host runs (`NUPHOS_CLI_VERSION`). */
+  /** The CLI this host runs (`CERIN_CLI_VERSION`). */
   version: string
   home: string
   latest: () => Promise<string | null>
   busy: () => boolean
   idleSeconds: () => number
-  /** Seconds without a task before it updates (idleThreshold: NUPHOS_AUTO_UPDATE_IDLE_SECONDS). */
+  /** Seconds without a task before it updates (idleThreshold: CERIN_AUTO_UPDATE_IDLE_SECONDS). */
   idleThreshold?: number
   /** Starts `cerin update`; false when it could not start. */
   update: () => Promise<boolean>
@@ -146,9 +146,9 @@ export function runCliUpdate(exe: string): Promise<boolean> {
   })
 }
 
-/** `NUPHOS_AUTO_UPDATE_CHECK_SECONDS` checks sooner for testing; never more often than 5 s. */
+/** `CERIN_AUTO_UPDATE_CHECK_SECONDS` checks sooner for testing; never more often than 5 s. */
 export function checkInterval(env: NodeJS.ProcessEnv): number {
-  const seconds = Number(env.NUPHOS_AUTO_UPDATE_CHECK_SECONDS)
+  const seconds = Number(env.CERIN_AUTO_UPDATE_CHECK_SECONDS)
 
   return Number.isFinite(seconds) && seconds > 0
     ? Math.max(5, Math.floor(seconds)) * 1_000
@@ -209,10 +209,10 @@ export function writeCliAutoInstall(home: string, value: unknown): AutoInstallPr
  * requests the computer's card reads and changes the switch through. Checks start at once.
  */
 export function cliAutoUpdate(apiUrl: () => string, changed: () => void, env = process.env) {
-  const home = env.NUPHOS_AGENT_HOME
-  const version = env.NUPHOS_CLI_VERSION
+  const home = env.CERIN_AGENT_HOME
+  const version = env.CERIN_CLI_VERSION
   // Set only when the host runs as the service, whose restart brings the update up (agent.rs).
-  const exe = env.NUPHOS_CLI_EXE
+  const exe = env.CERIN_CLI_EXE
   const clock = idleClock()
 
   if (home && version && exe)

@@ -82,7 +82,7 @@ test('runtime discovery skips other components, follows pages and preserves the 
   resetRuntimeReleaseCache()
   const originalFetch = globalThis.fetch
   const image = (version: string, provider = 'codex') =>
-    `ghcr.io/nuphos/runtime:${version}-${provider}`
+    `ghcr.io/thenewbinary/cerin-runtime:${version}-${provider}`
   const requests: string[] = []
   let responses: Response[] = []
 
@@ -158,7 +158,7 @@ test('each provider follows the newest release that published it', async () => {
   resetRuntimeReleaseCache()
   const originalFetch = globalThis.fetch
   const image = (version: string, provider: string) =>
-    `ghcr.io/nuphos/runtime:${version}-${provider}`
+    `ghcr.io/thenewbinary/cerin-runtime:${version}-${provider}`
   const all = ['claude-code', 'codex', 'grok', 'antigravity', 'opencode', 'dsh']
 
   globalThis.fetch = (async (_url: FetchInput) =>

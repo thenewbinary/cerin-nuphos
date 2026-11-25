@@ -151,8 +151,8 @@ mod unix {
         let home = home.to_string_lossy().into_owned();
         let mut env = std::collections::HashMap::from([
             ("HOME".into(), home.clone()),
-            ("NUPHOS_SESSION_HOME".into(), home.clone()),
-            ("NUPHOS_SESSION_ID".into(), session.into()),
+            ("CERIN_SESSION_HOME".into(), home.clone()),
+            ("CERIN_SESSION_ID".into(), session.into()),
             ("TERM".into(), "xterm-256color".into()),
             (
                 "PATH".into(),

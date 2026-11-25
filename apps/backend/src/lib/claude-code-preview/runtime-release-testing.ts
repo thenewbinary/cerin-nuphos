@@ -8,7 +8,7 @@ import { OPENAB_PROVIDERS } from './runtime-provider'
 import {
   latestRuntimeRelease,
   LEGACY_RUNTIME_REPOSITORY,
-  NUPHOS_RUNTIME_REPOSITORY,
+  CERIN_RUNTIME_REPOSITORY,
   resetRuntimeReleaseCache,
 } from './runtime-release'
 
@@ -56,7 +56,7 @@ function feed({
   const legacyTags = new Set(
     legacyPublished.flatMap((value) => OPENAB_PROVIDERS.map((provider) => `${value}-${provider}`)),
   )
-  const repository = legacy ? LEGACY_RUNTIME_REPOSITORY : NUPHOS_RUNTIME_REPOSITORY
+  const repository = legacy ? LEGACY_RUNTIME_REPOSITORY : CERIN_RUNTIME_REPOSITORY
   const body = (advertises ?? OPENAB_PROVIDERS)
     .map((provider) => `${repository}:${version}-${provider}`)
     .join('\n')

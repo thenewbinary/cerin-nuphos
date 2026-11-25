@@ -15,13 +15,13 @@ import { join as cerinJoin, delimiter as cerinPathDelimiter } from 'node:path'
 // run as the same OS user. Never mutate process.env or copy ambient credentials.
 // Use the conversation ID, not the ACP process/turn ID, so load/resume and token
 // refresh keep the same home. Hash it so metadata cannot supply a filesystem path.
-// A teammate's turns in someone else's conversation (NUPHOS_SESSION_ACTOR) get a
+// A teammate's turns in someone else's conversation (CERIN_SESSION_ACTOR) get a
 // home of their own, so neither side picks up the other's CLI logins.
 export function cerinSessionHomeEnv(sessionEnv = {}, runtimeEnv = process.env) {
-  const id = sessionEnv.NUPHOS_SESSION_ID
+  const id = sessionEnv.CERIN_SESSION_ID
   if (typeof id !== 'string' || !id.trim()) {
-    if (sessionEnv.NUPHOS_TOKEN || sessionEnv.NUPHOS_TEAM_ID)
-      throw new Error('Cerin sessions require NUPHOS_SESSION_ID for CLI configuration isolation')
+    if (sessionEnv.CERIN_TOKEN || sessionEnv.CERIN_TEAM_ID)
+      throw new Error('Cerin sessions require CERIN_SESSION_ID for CLI configuration isolation')
     return {} // Ordinary ACP clients without a Cerin conversation keep their defaults.
   }
   const runtimeHome = runtimeEnv.HOME || runtimeEnv.USERPROFILE || cerinHostHome()
@@ -29,7 +29,7 @@ export function cerinSessionHomeEnv(sessionEnv = {}, runtimeEnv = process.env) {
   const hash = (value) => cerinHomeHash('sha256').update(value).digest('hex')
   // <conversation> for the owner, <conversation>.<actor> for a teammate, so
   // reclaiming a conversation finds every home it left from its ID alone.
-  const actor = sessionEnv.NUPHOS_SESSION_ACTOR
+  const actor = sessionEnv.CERIN_SESSION_ACTOR
   const name = typeof actor === 'string' && actor ? `${hash(id)}.${hash(actor)}` : hash(id)
   const home = cerinJoin(root, name)
   for (const dir of [root, home]) {
@@ -113,7 +113,7 @@ export function cerinSessionHomeEnv(sessionEnv = {}, runtimeEnv = process.env) {
     PATH: [cerinJoin(home, '.local', 'bin'), runtimeEnv.PATH]
       .filter(Boolean)
       .join(cerinPathDelimiter),
-    NUPHOS_SESSION_HOME: home,
+    CERIN_SESSION_HOME: home,
   }
 }
 

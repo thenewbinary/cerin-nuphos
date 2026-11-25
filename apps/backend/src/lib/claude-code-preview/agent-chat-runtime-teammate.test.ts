@@ -82,7 +82,7 @@ test('a teammate’s turn on the owner’s computer resumes its session instead 
     message: '',
     text: 'test',
     endpoint,
-    runtime: { provider: 'claude-code', env: { NUPHOS_TOKEN: 'teammate-turn' } },
+    runtime: { provider: 'claude-code', env: { CERIN_TOKEN: 'teammate-turn' } },
     signal: new AbortController().signal,
     onTextDelta: noop,
   })

@@ -23,7 +23,7 @@ class LiveReadOnlyDeviceTest {
         val builder = Request.Builder().url("${CerinApi.BASE_URL}/$path")
             .header("Accept", "application/json").header("x-atlas-client", Http.clientHeader())
         if (token != null) builder.header("Authorization", "Bearer $token")
-        if (path.startsWith("agent/")) builder.header("x-nuphos-ai-consent-version", AccountApi.AI_CONSENT_VERSION)
+        if (path.startsWith("agent/")) builder.header("x-cerin-ai-consent-version", AccountApi.AI_CONSENT_VERSION)
         if (body != null) builder.post(body.toString().toRequestBody(Http.jsonMedia))
         return try {
             client.newCall(builder.build()).execute().use {

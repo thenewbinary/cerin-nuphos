@@ -17,9 +17,9 @@ function emit(event: DevBackendHealthEvent): void {
 }
 
 export function startDevBackendHealthProbe(): void {
-  if (!isDev || process.env.NUPHOS_LAUNCHER_HEALTH !== '1') return
+  if (!isDev || process.env.CERIN_LAUNCHER_HEALTH !== '1') return
 
-  const backendUrl = process.env.NUPHOS_API_URL ?? process.env.ATLAS_API_URL
+  const backendUrl = process.env.CERIN_API_URL ?? process.env.ATLAS_API_URL
 
   if (!backendUrl) return
 

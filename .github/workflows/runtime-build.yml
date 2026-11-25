@@ -70,7 +70,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  RUNTIME_IMAGE: ghcr.io/nuphos/runtime
+  RUNTIME_IMAGE: ghcr.io/thenewbinary/cerin-runtime
 
 defaults:
   run:

@@ -162,7 +162,7 @@ test('cerin update that cannot start says so instead of crashing the host', asyn
   assert.equal(await runCliUpdate(process.execPath), true)
 })
 
-test('the idle wait follows NUPHOS_AUTO_UPDATE_IDLE_SECONDS, as on the Desktop', async () => {
+test('the idle wait follows CERIN_AUTO_UPDATE_IDLE_SECONDS, as on the Desktop', async () => {
   const short = deps({ idleSeconds: () => 40, idleThreshold: 30 })
   const long = deps({ idleSeconds: () => 40 })
 

@@ -4,9 +4,9 @@ import { cerinStreamReplyImages } from './reply-image-stream.mjs'
 export function cerinReplyImages(agent, params, response) {
   const env = params?._meta?.claudeCode?.options?.env ?? params?._meta?.['ai.cerin/codex']?.env
   if (
-    !env?.NUPHOS_TOKEN ||
-    !env.NUPHOS_SESSION_ID ||
-    !(env.TEAM || env.NUPHOS_TEAM_ID) ||
+    !env?.CERIN_TOKEN ||
+    !env.CERIN_SESSION_ID ||
+    !(env.TEAM || env.CERIN_TEAM_ID) ||
     !params.cwd
   )
     return response
@@ -171,12 +171,12 @@ export async function cerinUploadReplyImages(text, state) {
       let group = cached?.expiresAt > Date.now() ? cached.id : null
       if (!group) {
         const env = state.env
-        let token = env.NUPHOS_TOKEN
+        let token = env.CERIN_TOKEN
         if (state.credentialsDir)
           token = (
-            await fs.readFile(path.join(state.credentialsDir, 'NUPHOS_TOKEN'), 'utf8')
+            await fs.readFile(path.join(state.credentialsDir, 'CERIN_TOKEN'), 'utf8')
           ).trim()
-        const base = `${(env.NUPHOS_BACKEND_URL || 'https://api.cerin.ai').replace(/\/$/, '')}/agent-sessions/${encodeURIComponent(env.NUPHOS_SESSION_ID)}/teams/${encodeURIComponent(env.TEAM || env.NUPHOS_TEAM_ID)}/file-transfers`
+        const base = `${(env.CERIN_BACKEND_URL || 'https://api.cerin.ai').replace(/\/$/, '')}/agent-sessions/${encodeURIComponent(env.CERIN_SESSION_ID)}/teams/${encodeURIComponent(env.TEAM || env.CERIN_TEAM_ID)}/file-transfers`
         const signal = uploadSignal
         const request = async (url, options) => {
           const result = await fetch(url, { ...options, signal })

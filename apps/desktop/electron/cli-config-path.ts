@@ -3,7 +3,7 @@ import path from 'node:path'
 
 /** `bun run dev` points this at a dev-only file, so signing in to a local backend never replaces the installed app's session. */
 export const CLI_CONFIG_PATH =
-  process.env.NUPHOS_CLI_CONFIG || path.join(os.homedir(), '.config', 'cerin', 'cli.yaml')
+  process.env.CERIN_CLI_CONFIG || path.join(os.homedir(), '.config', 'cerin', 'cli.yaml')
 
 /** A file beside the CLI's sign-in: `cli.yaml` → `desktop.yaml`, `cli.dev.yaml` → `desktop.dev.yaml` (as `apps/cli/src/config.rs`). */
 export function siblingConfig(cliPath: string, name: string): string {

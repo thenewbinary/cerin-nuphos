@@ -14,7 +14,7 @@ test(
     const root = mkdtempSync(path.join(tmpdir(), 'cerin-guard-'))
     const credentials = path.join(root, 'credentials')
     const launch = { bundle: { root }, openabHome: path.join(root, 'openab-home') }
-    const print = 'printf %s "$NUPHOS_TOKEN"'
+    const print = 'printf %s "$CERIN_TOKEN"'
 
     try {
       mkdirSync(credentials)
@@ -34,7 +34,7 @@ test(
             PATH: process.env.PATH,
             ...shellGuardEnv(launch),
             OPENAB_CREDENTIALS_DIR: credentials,
-            NUPHOS_TOKEN: 'spawn',
+            CERIN_TOKEN: 'spawn',
           },
           encoding: 'utf8',
           // A pipe is a socket here, as Claude Code's shell gets.
@@ -42,9 +42,9 @@ test(
         }).stdout
 
       for (const [name, shell] of Object.entries(shells)) {
-        writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), `${name} 1`)
+        writeFileSync(path.join(credentials, 'CERIN_TOKEN'), `${name} 1`)
         assert.equal(token(shell), `${name} 1`)
-        writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), `${name} 2`)
+        writeFileSync(path.join(credentials, 'CERIN_TOKEN'), `${name} 2`)
         assert.equal(token(shell), `${name} 2`)
       }
     } finally {

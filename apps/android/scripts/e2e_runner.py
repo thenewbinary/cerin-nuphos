@@ -39,12 +39,12 @@ def read_config(values):
         if not value:
             raise SetupError(f"Set {key}.")
         return value
-    serial = required("NUPHOS_E2E_DEVICE_SERIAL")
-    email = required("NUPHOS_E2E_EXPECTED_EMAIL")
-    team = required("NUPHOS_E2E_TEAM_ID")
-    mode = required("NUPHOS_E2E_LOGIN_MODE")
-    password = values.get("NUPHOS_E2E_PASSWORD") or None
-    allow = values.get("NUPHOS_E2E_ALLOW_LOGIN", "false")
+    serial = required("CERIN_E2E_DEVICE_SERIAL")
+    email = required("CERIN_E2E_EXPECTED_EMAIL")
+    team = required("CERIN_E2E_TEAM_ID")
+    mode = required("CERIN_E2E_LOGIN_MODE")
+    password = values.get("CERIN_E2E_PASSWORD") or None
+    allow = values.get("CERIN_E2E_ALLOW_LOGIN", "false")
     if not re.fullmatch(r"[A-Za-z0-9_.:-]+", serial):
         raise SetupError("Invalid device serial.")
     if "@" not in email or not re.fullmatch(r"[A-Za-z0-9_-]+", team):
@@ -67,13 +67,13 @@ def load_file(path):
                 continue
             key, value = line.split("=", 1)
             key = key.strip()
-            if not re.fullmatch(r"NUPHOS_E2E_[A-Z_]+", key) or key in values:
+            if not re.fullmatch(r"CERIN_E2E_[A-Z_]+", key) or key in values:
                 raise ValueError()
             tokens = shlex.split(value, comments=False)
             if len(tokens) > 1:
                 raise ValueError()
             values[key] = tokens[0] if tokens else ""
-        if values.get("NUPHOS_E2E_PASSWORD") and path.stat().st_mode & 0o077:
+        if values.get("CERIN_E2E_PASSWORD") and path.stat().st_mode & 0o077:
             raise SetupError("A config file with a password must have mode 0600.")
         return values
     except SetupError:
@@ -126,7 +126,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         values = load_file(args.config)
-        values.update({k: v for k, v in os.environ.items() if k.startswith("NUPHOS_E2E_")})
+        values.update({k: v for k, v in os.environ.items() if k.startswith("CERIN_E2E_")})
         config = read_config(values)
         if args.validate:
             print("Configuration valid. No device access or login performed.")

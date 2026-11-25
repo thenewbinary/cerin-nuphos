@@ -20,8 +20,8 @@ test('commit setup reports the current participant without changing Git authors'
     GH_CONFIG_DIR: join(root, 'gh'),
     GIT_CONFIG_GLOBAL: globalConfig,
     GIT_CONFIG_NOSYSTEM: '1',
-    NUPHOS_TOKEN: 'fixture',
-    NUPHOS_BACKEND_URL: 'https://fixture.invalid',
+    CERIN_TOKEN: 'fixture',
+    CERIN_BACKEND_URL: 'https://fixture.invalid',
     TEST_AUTHOR_NAME: 'Current Teammate',
     TEST_AUTHOR_EMAIL: 'teammate@example.invalid',
   }

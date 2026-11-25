@@ -16,7 +16,7 @@ use crate::config;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const MIN_NODE: u64 = 22;
 
-/// The join token from `--join`, `--join -` (stdin) or `NUPHOS_JOIN_TOKEN`.
+/// The join token from `--join`, `--join -` (stdin) or `CERIN_JOIN_TOKEN`.
 pub fn join_token(arg: Option<&str>) -> Result<Option<String>> {
     let token = match arg {
         Some("-") => {
@@ -25,15 +25,15 @@ pub fn join_token(arg: Option<&str>) -> Result<Option<String>> {
             line
         }
         Some(token) => token.to_owned(),
-        None => std::env::var("NUPHOS_JOIN_TOKEN").unwrap_or_default(),
+        None => std::env::var("CERIN_JOIN_TOKEN").unwrap_or_default(),
     };
     let token = token.trim();
     Ok((!token.is_empty()).then(|| token.to_owned()))
 }
 
-/// Where the host keeps this computer's identity and credential; the host gets it as `NUPHOS_AGENT_HOME`.
+/// Where the host keeps this computer's identity and credential; the host gets it as `CERIN_AGENT_HOME`.
 fn agent_home() -> Result<PathBuf> {
-    if let Some(dir) = std::env::var_os("NUPHOS_AGENT_HOME") {
+    if let Some(dir) = std::env::var_os("CERIN_AGENT_HOME") {
         return Ok(PathBuf::from(dir));
     }
     let home = std::env::var_os("HOME").context("HOME is not set")?;
@@ -50,7 +50,7 @@ pub fn joined() -> bool {
 /// it can stop the agents before exiting.
 pub async fn run(join: Option<String>) -> Result<i32> {
     let (node, node_bin) = node().await?;
-    let runtime = match std::env::var_os("NUPHOS_LOCAL_RUNTIME_DIR") {
+    let runtime = match std::env::var_os("CERIN_LOCAL_RUNTIME_DIR") {
         Some(dir) => PathBuf::from(dir),
         None => fetch().await?,
     };
@@ -61,24 +61,24 @@ pub async fn run(join: Option<String>) -> Result<i32> {
         host.env("PATH", std::env::join_paths(std::iter::once(bin).chain(std::env::split_paths(&path)))?);
     }
     if let Some(token) = join {
-        host.env("NUPHOS_JOIN_TOKEN", token);
+        host.env("CERIN_JOIN_TOKEN", token);
     }
     // The session for a host on plain Node, which cannot read the keychain;
     // it drops the variable at once so the agents it starts never see it.
     if let Some(token) = config::read_session().token {
-        host.env("NUPHOS_SESSION_TOKEN", token);
+        host.env("CERIN_SESSION_TOKEN", token);
     }
     // Under the service only: the restart `cerin update` ends with starts the new one, so the
     // host updates this computer when idle (cli-auto-update.ts runs `<exe> update`).
     if crate::service::running() {
-        host.env("NUPHOS_CLI_EXE", std::env::current_exe()?);
+        host.env("CERIN_CLI_EXE", std::env::current_exe()?);
     }
     let error = host
         .arg(runtime.join("host.mjs"))
-        .env("NUPHOS_AGENT_HOME", agent_home()?)
-        .env("NUPHOS_LOCAL_RUNTIME_DIR", &runtime)
-        .env("NUPHOS_API_URL", config::api_url())
-        .env("NUPHOS_CLI_VERSION", VERSION)
+        .env("CERIN_AGENT_HOME", agent_home()?)
+        .env("CERIN_LOCAL_RUNTIME_DIR", &runtime)
+        .env("CERIN_API_URL", config::api_url())
+        .env("CERIN_CLI_VERSION", VERSION)
         .exec();
     Err(error).context("could not start node")
 }
@@ -168,18 +168,11 @@ async fn fetch() -> Result<PathBuf> {
         return Ok(dir);
     }
 
-    let base = std::env::var("NUPHOS_DOWNLOAD_URL")
+    let base = std::env::var("CERIN_DOWNLOAD_URL")
         .unwrap_or_else(|_| format!("https://github.com/thenewbinary/cerin-platform/releases/download/cli-v{VERSION}"));
     eprintln!("Downloading the local runtime for {platform}…");
-    // Releases before the rename, and mirrors of them, have only the old name.
-    let mut asset = format!("cerin-agent-{platform}.tar.gz");
-    let checksum = match get(format!("{base}/{asset}.sha256")).await {
-        Ok(checksum) => checksum,
-        Err(_) => {
-            asset = format!("cerin-agent-{platform}.tar.gz");
-            get(format!("{base}/{asset}.sha256")).await?
-        }
-    };
+    let asset = format!("cerin-agent-{platform}.tar.gz");
+    let checksum = get(format!("{base}/{asset}.sha256")).await?;
     let archive = get(format!("{base}/{asset}")).await?;
     let expected = String::from_utf8_lossy(&checksum).split_whitespace().next().unwrap_or_default().to_string();
     unpack(&archive, &expected, &asset, &root, &dir, &[])?;

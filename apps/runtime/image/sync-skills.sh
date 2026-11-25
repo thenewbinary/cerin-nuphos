@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${NUPHOS_RUNTIME_SKILLS_URL:?runtime skills URL is unavailable}"
-: "${NUPHOS_RUNTIME_SKILLS_TOKEN:?runtime skills credential is unavailable}"
+: "${CERIN_RUNTIME_SKILLS_URL:?runtime skills URL is unavailable}"
+: "${CERIN_RUNTIME_SKILLS_TOKEN:?runtime skills credential is unavailable}"
 
 # These used to arrive only from a pod spec an operator wrote. A self-hosted runtime
 # takes them from the session instead, so they are now untrusted input to a file whose
@@ -16,24 +16,24 @@ reject_unusable() {
     exit 1
   fi
 }
-reject_unusable URL "$NUPHOS_RUNTIME_SKILLS_URL"
-reject_unusable credential "$NUPHOS_RUNTIME_SKILLS_TOKEN"
-if [[ ! $NUPHOS_RUNTIME_SKILLS_URL =~ ^https?:// ]]; then
+reject_unusable URL "$CERIN_RUNTIME_SKILLS_URL"
+reject_unusable credential "$CERIN_RUNTIME_SKILLS_TOKEN"
+if [[ ! $CERIN_RUNTIME_SKILLS_URL =~ ^https?:// ]]; then
   printf 'runtime skills URL must be http(s)\n' >&2
   exit 1
 fi
 
 umask 077
-runtime_workspace=${NUPHOS_RUNTIME_WORKSPACE:-/workspace}
+runtime_workspace=${CERIN_RUNTIME_WORKSPACE:-/workspace}
 claude_dir="$runtime_workspace/.claude"
 # A second run per session installs the personal skills of the member the credential
 # names. They go to a directory of that one conversation, never into the workspace
 # tree every conversation on this runtime reads. The adapter derives the directory
 # from the conversation id; nothing a session sends chooses it.
-personal_dir=${NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR:-}
+personal_dir=${CERIN_RUNTIME_PERSONAL_SKILLS_DIR:-}
 if [[ -n $personal_dir ]]; then
   claude_dir="$personal_dir/.claude"
-  NUPHOS_RUNTIME_SKILLS_URL="$NUPHOS_RUNTIME_SKILLS_URL?scope=personal"
+  CERIN_RUNTIME_SKILLS_URL="$CERIN_RUNTIME_SKILLS_URL?scope=personal"
 fi
 mkdir -p "$claude_dir"
 
@@ -88,7 +88,7 @@ revision_file="$claude_dir/.skills-revision"
   # Only the credential still goes through the config file, because argv is world
   # readable through /proc and this is the one value that must not be. The URL rides
   # the command line, where no config syntax can reinterpret it.
-  printf 'header = "Authorization: Bearer %s"\n' "$NUPHOS_RUNTIME_SKILLS_TOKEN"
+  printf 'header = "Authorization: Bearer %s"\n' "$CERIN_RUNTIME_SKILLS_TOKEN"
   # The revision comes from a bundle the backend produced, so it is no more trusted
   # than the values above; send it only when it cannot carry syntax of its own.
   if [[ -d $claude_dir/skills && -r $revision_file ]]; then
@@ -101,7 +101,7 @@ revision_file="$claude_dir/.skills-revision"
   printf 'write-out = "%%{http_code}"\n'
 } >"$curl_config"
 chmod 600 "$curl_config"
-status=$(curl --config "$curl_config" -- "$NUPHOS_RUNTIME_SKILLS_URL")
+status=$(curl --config "$curl_config" -- "$CERIN_RUNTIME_SKILLS_URL")
 
 # 304 is a success with an empty body, so it must return before the body is
 # parsed — `jq` on nothing would fail the script under `set -e`, and this script
@@ -133,7 +133,7 @@ if command -v flock >/dev/null 2>&1; then
   # Bounded, so one wedged holder cannot stall every later sync behind it. Giving up
   # is safe: this run's own `.owner` lock keeps its tree from being swept while it
   # waits, and the next session or reconcile simply tries again.
-  if ! flock -w "${NUPHOS_SKILLS_LOCK_WAIT_SECONDS:-120}" 9; then
+  if ! flock -w "${CERIN_SKILLS_LOCK_WAIT_SECONDS:-120}" 9; then
     printf 'another skills sync held the lock too long; giving up this run\n' >&2
     exit 1
   fi

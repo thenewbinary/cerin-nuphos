@@ -6,7 +6,7 @@
 // those spelled the host out itself, and they disagreed — see isAppWebUrl.
 //
 // Runtime configuration, not build-time: a self-hosted deployment sets
-// NUPHOS_WEB_URL the same way it already sets NUPHOS_API_URL, and the renderer
+// CERIN_WEB_URL the same way it already sets CERIN_API_URL, and the renderer
 // reads the resolved value over the preload bridge rather than compiling its
 // own copy in.
 
@@ -25,7 +25,7 @@ function normalize(raw: string | undefined): string {
   }
 }
 
-export const WEB_BASE_URL = normalize(process.env.NUPHOS_WEB_URL)
+export const WEB_BASE_URL = normalize(process.env.CERIN_WEB_URL)
 
 const WEB_BASE_HOST = new URL(WEB_BASE_URL).hostname
 

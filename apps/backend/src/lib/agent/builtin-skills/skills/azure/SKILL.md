@@ -7,7 +7,7 @@ description: Inspect or change Microsoft Azure resources from the sandbox via th
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -31,7 +31,7 @@ Use this skill when the user asks for something Cerin does not expose (e.g. reso
 source <(bash skills/azure/scripts/setup-credentials.sh <teamId> <accountId>)
 ```
 
-Cerin uses OIDC workload identity federation here (like AWS/Tencent): the customer creates an Entra ID app registration with a federated credential trusting the Cerin issuer and grants it an RBAC role on a subscription. Cerin exchanges a per-team token for a short-lived ARM access token — no client secret is stored. `setup-credentials.sh` calls `GET /teams/:teamId/azure-accounts/:accountId/credentials` on the Cerin backend with the user's `NUPHOS_TOKEN` and prints `export` lines for the token + subscription id. The token carries exactly the app's RBAC permissions and expires (~1h), so re-run to refresh.
+Cerin uses OIDC workload identity federation here (like AWS/Tencent): the customer creates an Entra ID app registration with a federated credential trusting the Cerin issuer and grants it an RBAC role on a subscription. Cerin exchanges a per-team token for a short-lived ARM access token — no client secret is stored. `setup-credentials.sh` calls `GET /teams/:teamId/azure-accounts/:accountId/credentials` on the Cerin backend with the user's `CERIN_TOKEN` and prints `export` lines for the token + subscription id. The token carries exactly the app's RBAC permissions and expires (~1h), so re-run to refresh.
 
 ## Calling ARM
 

@@ -22,9 +22,9 @@ const params = {
     claudeCode: {
       options: {
         env: {
-          NUPHOS_RUNTIME_SKILLS_URL:
+          CERIN_RUNTIME_SKILLS_URL:
             'https://api.example.com/internal/claude-code-runtime-skills/t1',
-          NUPHOS_RUNTIME_SKILLS_TOKEN: 'token',
+          CERIN_RUNTIME_SKILLS_TOKEN: 'token',
         },
       },
     },
@@ -403,7 +403,7 @@ test('the adapter patch points the bridge and skills sync at the desktop bundle'
   const patched = patchDesktopAdapter(source)
 
   assert.ok(patched.startsWith('#!/usr/bin/env node\nasync function cerinLocalSyncSkills('))
-  assert.match(patched, /env\.NUPHOS_MCP_BRIDGE/u)
+  assert.match(patched, /env\.CERIN_MCP_BRIDGE/u)
   assert.match(patched, /ELECTRON_RUN_AS_NODE/u)
   assert.match(patched, /await cerinLocalSyncSkills\(params\);/u)
   assert.throws(() => patchDesktopAdapter('nothing to patch'))
@@ -413,7 +413,7 @@ test('personal skills follow the turn’s credential and never land in the works
   const workspace = mkdtempSync(join(tmpdir(), 'skills-'))
   const sessionHome = mkdtempSync(join(tmpdir(), 'skills-home-'))
   const credentialsDir = mkdtempSync(join(tmpdir(), 'skills-credentials-'))
-  const credential = join(credentialsDir, 'NUPHOS_RUNTIME_SKILLS_TOKEN')
+  const credential = join(credentialsDir, 'CERIN_RUNTIME_SKILLS_TOKEN')
   const personal = join(sessionHome, 'personal-skills')
   const skills = join(personal, '.claude', 'skills')
   let failing = false
@@ -445,7 +445,7 @@ test('personal skills follow the turn’s credential and never land in the works
   const opened = structuredClone(params)
 
   opened.cwd = '/workspace'
-  opened._meta.claudeCode.options.env.NUPHOS_RUNTIME_SKILLS_TOKEN = 'p.owner.1.sig'
+  opened._meta.claudeCode.options.env.CERIN_RUNTIME_SKILLS_TOKEN = 'p.owner.1.sig'
   const calls = []
   const agent = {
     sessions: { s1: { configOptions: [] } },
@@ -509,7 +509,7 @@ test('personal skills follow the turn’s credential and never land in the works
   writeFileSync(credential, 'p.none.10.sig\n')
   const reopened = structuredClone(opened)
 
-  reopened._meta.claudeCode.options.env.NUPHOS_RUNTIME_SKILLS_TOKEN = 'p.none.10.sig'
+  reopened._meta.claudeCode.options.env.CERIN_RUNTIME_SKILLS_TOKEN = 'p.none.10.sig'
   await sync(reopened, { workspace, sessionHome, credentialsDir })
   assert.deepEqual(readdirSync(skills), [])
   delete globalThis.cerinRefreshSkills
@@ -528,8 +528,8 @@ test('a reopened session never starts on another member’s personal skills', as
   const open = async (who) => {
     const reopened = structuredClone(params)
 
-    reopened._meta.claudeCode.options.env.NUPHOS_RUNTIME_SKILLS_TOKEN = `p.${who}.1.sig`
-    writeFileSync(join(credentialsDir, 'NUPHOS_RUNTIME_SKILLS_TOKEN'), `p.${who}.1.sig\n`)
+    reopened._meta.claudeCode.options.env.CERIN_RUNTIME_SKILLS_TOKEN = `p.${who}.1.sig`
+    writeFileSync(join(credentialsDir, 'CERIN_RUNTIME_SKILLS_TOKEN'), `p.${who}.1.sig\n`)
     await cerinLocalSyncSkills(reopened, { workspace, sessionHome, credentialsDir })
     delete globalThis.cerinRefreshSkills
   }

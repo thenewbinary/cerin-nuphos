@@ -56,24 +56,24 @@ spec:
                   name: {{ $secret }}
                   key: MONGO_PASSWORD
             - name: MONGODB_URI
-              value: mongodb://nuphos:$(MONGO_PASSWORD)@{{ include "cerin.mongoHost" . }}:27017/nuphos?authSource=admin&replicaSet=rs0&directConnection=true
+              value: mongodb://cerin:$(MONGO_PASSWORD)@{{ include "cerin.mongoHost" . }}:27017/cerin?authSource=admin&replicaSet=rs0&directConnection=true
             - name: MONGODB_DB
               value: cerin
-            - name: NUPHOS_JWT_SECRET
+            - name: CERIN_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ $secret }}
-                  key: NUPHOS_JWT_SECRET
+                  key: CERIN_JWT_SECRET
             - name: OPENAB_RUNTIME_TOKEN_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ $secret }}
                   key: RUNTIME_TOKEN_ENCRYPTION_KEY
-            - name: NUPHOS_AUTH_BASE_URL
+            - name: CERIN_AUTH_BASE_URL
               value: {{ include "cerin.backendUrl" . }}
-            - name: NUPHOS_BACKEND_URL
+            - name: CERIN_BACKEND_URL
               value: {{ include "cerin.backendUrl" . }}
-            - name: NUPHOS_PUBLIC_BACKEND_URL
+            - name: CERIN_PUBLIC_BACKEND_URL
               value: {{ include "cerin.backendUrl" . }}
             # Optional: without both, email sign-in is off and `cerin-admin` issues codes.
             - name: RESEND_API_KEY
@@ -82,7 +82,7 @@ spec:
                   name: {{ $secret }}
                   key: RESEND_API_KEY
                   optional: true
-            - name: NUPHOS_EMAIL_FROM
+            - name: CERIN_EMAIL_FROM
               value: {{ .Values.email.from | quote }}
             # Optional: without both, sign-in offers no Google button.
             - name: GOOGLE_OAUTH_CLIENT_ID
@@ -113,15 +113,15 @@ spec:
                 secretKeyRef:
                   name: {{ $secret }}
                   key: STORAGE_SECRET_KEY
-            - name: NUPHOS_FILE_TRANSFER_S3_BUCKET
+            - name: CERIN_FILE_TRANSFER_S3_BUCKET
               value: cerin-file-transfers
-            - name: NUPHOS_FILE_TRANSFER_S3_REGION
+            - name: CERIN_FILE_TRANSFER_S3_REGION
               value: us-east-1
-            - name: NUPHOS_FILE_TRANSFER_S3_ENDPOINT
+            - name: CERIN_FILE_TRANSFER_S3_ENDPOINT
               value: {{ $storageUrl }}
-            - name: NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID
+            - name: CERIN_FILE_TRANSFER_S3_ACCESS_KEY_ID
               value: {{ .Values.storage.accessKey | quote }}
-            - name: NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY
+            - name: CERIN_FILE_TRANSFER_S3_SECRET_ACCESS_KEY
               value: $(STORAGE_SECRET_KEY)
             - name: ATLAS_SKILLS_BUCKET
               value: cerin-skills

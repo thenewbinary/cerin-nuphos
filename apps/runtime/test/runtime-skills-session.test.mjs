@@ -36,8 +36,8 @@ const meta = (env, provider = 'claudeCode') =>
     : { _meta: { 'ai.cerin/codex': { env } } }
 
 const bundleSession = meta({
-  NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
-  NUPHOS_RUNTIME_SKILLS_TOKEN: 'tok',
+  CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
+  CERIN_RUNTIME_SKILLS_TOKEN: 'tok',
 })
 
 /** A workspace whose team bundle is already installed, as a 304 leaves it. */
@@ -65,26 +65,26 @@ async function waitFor(predicate, timeoutMs = 10_000) {
 }
 
 test('a session carrying a bundle credential syncs, and one without it does not', async () => {
-  await withFakeScript('printenv > "$NUPHOS_TEST_RECORD"', async ({ record, script }) => {
-    const sync = (params) => synced(params, { script, env: { NUPHOS_TEST_RECORD: record } })
+  await withFakeScript('printenv > "$CERIN_TEST_RECORD"', async ({ record, script }) => {
+    const sync = (params) => synced(params, { script, env: { CERIN_TEST_RECORD: record } })
 
     // Managed pods carry neither variable and must not be touched at all.
     assert.equal(await sync({}), false)
     assert.equal(await sync(meta({})), false)
-    assert.equal(await sync(meta({ NUPHOS_RUNTIME_SKILLS_URL: 'https://x' })), false)
-    assert.equal(await sync(meta({ NUPHOS_RUNTIME_SKILLS_TOKEN: 't' })), false)
+    assert.equal(await sync(meta({ CERIN_RUNTIME_SKILLS_URL: 'https://x' })), false)
+    assert.equal(await sync(meta({ CERIN_RUNTIME_SKILLS_TOKEN: 't' })), false)
     await assert.rejects(readFile(record), { code: 'ENOENT' })
 
     assert.equal(
       await sync(
-        meta({ NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle', NUPHOS_RUNTIME_SKILLS_TOKEN: 'tok' }),
+        meta({ CERIN_RUNTIME_SKILLS_URL: 'https://bundle', CERIN_RUNTIME_SKILLS_TOKEN: 'tok' }),
       ),
       true,
     )
     const env = await readFile(record, 'utf8')
 
-    assert.match(env, /^NUPHOS_RUNTIME_SKILLS_URL=https:\/\/bundle$/mu)
-    assert.match(env, /^NUPHOS_RUNTIME_SKILLS_TOKEN=tok$/mu)
+    assert.match(env, /^CERIN_RUNTIME_SKILLS_URL=https:\/\/bundle$/mu)
+    assert.match(env, /^CERIN_RUNTIME_SKILLS_TOKEN=tok$/mu)
     // The bundle credential is all the script needs; the agent's own account and the
     // runtime's transport keys must not ride along.
     assert.deepEqual(
@@ -94,16 +94,16 @@ test('a session carrying a bundle credential syncs, and one without it does not'
         .map((line) => line.slice(0, line.indexOf('=')))
         // `sh` sets these three itself; everything else present would be inherited.
         .filter((name) => !['PWD', 'SHLVL', '_'].includes(name))
-        .filter((name) => !name.startsWith('NUPHOS_TEST'))
+        .filter((name) => !name.startsWith('CERIN_TEST'))
         .sort(),
-      ['HOME', 'NUPHOS_RUNTIME_SKILLS_TOKEN', 'NUPHOS_RUNTIME_SKILLS_URL', 'PATH'],
+      ['HOME', 'CERIN_RUNTIME_SKILLS_TOKEN', 'CERIN_RUNTIME_SKILLS_URL', 'PATH'],
     )
   })
 })
 
 test('a session cannot choose the workspace the sync writes to', async () => {
   await withFakeScript(
-    'printenv > "$NUPHOS_TEST_RECORD"',
+    'printenv > "$CERIN_TEST_RECORD"',
     async ({ record, script, directory }) => {
       // The script mkdirs under this path, replaces files in it and recursively removes
       // trees beneath it. A session-chosen value would be a write primitive aimed
@@ -111,15 +111,15 @@ test('a session cannot choose the workspace the sync writes to', async () => {
       assert.equal(
         await synced(
           meta({
-            NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
-            NUPHOS_RUNTIME_SKILLS_TOKEN: 'tok',
-            NUPHOS_RUNTIME_WORKSPACE: join(directory, 'somewhere-else'),
+            CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
+            CERIN_RUNTIME_SKILLS_TOKEN: 'tok',
+            CERIN_RUNTIME_WORKSPACE: join(directory, 'somewhere-else'),
           }),
-          { script, env: { NUPHOS_TEST_RECORD: record } },
+          { script, env: { CERIN_TEST_RECORD: record } },
         ),
         true,
       )
-      assert.doesNotMatch(await readFile(record, 'utf8'), /NUPHOS_RUNTIME_WORKSPACE/u)
+      assert.doesNotMatch(await readFile(record, 'utf8'), /CERIN_RUNTIME_WORKSPACE/u)
     },
   )
 })
@@ -127,10 +127,10 @@ test('a session cannot choose the workspace the sync writes to', async () => {
 test('personal skills follow the turn’s credential, and a prompt never rebuilds the session', async () => {
   // The fake installs one skill named after whoever the credential names; `none` has none.
   const install = [
-    '[ -n "$NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR" ] || exit 0',
-    '[ ! -e "$NUPHOS_TEST_RECORD.fail" ] || exit 1',
-    'd="$NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR/.claude"',
-    'who=$(printf %s "$NUPHOS_RUNTIME_SKILLS_TOKEN" | cut -d. -f2)',
+    '[ -n "$CERIN_RUNTIME_PERSONAL_SKILLS_DIR" ] || exit 0',
+    '[ ! -e "$CERIN_TEST_RECORD.fail" ] || exit 1',
+    'd="$CERIN_RUNTIME_PERSONAL_SKILLS_DIR/.claude"',
+    'who=$(printf %s "$CERIN_RUNTIME_SKILLS_TOKEN" | cut -d. -f2)',
     'rm -rf "$d/skills"; mkdir -p "$d/skills"',
     '[ "$who" = none ] || mkdir "$d/skills/$who"',
     'printf %s "$who" > "$d/.skills-revision"',
@@ -140,10 +140,10 @@ test('personal skills follow the turn’s credential, and a prompt never rebuild
     const personal = join(directory, 'personal-skills')
     const skills = join(personal, '.claude/skills')
     const credentialsDir = join(directory, 'credentials')
-    const credential = join(credentialsDir, 'NUPHOS_RUNTIME_SKILLS_TOKEN')
+    const credential = join(credentialsDir, 'CERIN_RUNTIME_SKILLS_TOKEN')
     const params = meta({
-      NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
-      NUPHOS_RUNTIME_SKILLS_TOKEN: 'p.owner.1.sig',
+      CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
+      CERIN_RUNTIME_SKILLS_TOKEN: 'p.owner.1.sig',
     })
 
     params.cwd = '/workspace'
@@ -151,7 +151,7 @@ test('personal skills follow the turn’s credential, and a prompt never rebuild
       script,
       sessionHome: directory,
       credentialsDir,
-      env: { NUPHOS_TEST_RECORD: record },
+      env: { CERIN_TEST_RECORD: record },
     }
     const calls = []
     const agent = {
@@ -214,8 +214,8 @@ test('personal skills follow the turn’s credential, and a prompt never rebuild
     await writeFile(`${record}.fail`, '')
     await writeFile(credential, 'p.none.10.sig\n')
     const reopened = meta({
-      NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
-      NUPHOS_RUNTIME_SKILLS_TOKEN: 'p.none.10.sig',
+      CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
+      CERIN_RUNTIME_SKILLS_TOKEN: 'p.none.10.sig',
     })
 
     await synced(reopened, run)
@@ -235,10 +235,10 @@ test('a reopened session never starts on another member’s personal skills', as
       await writeFile(join(claude, '.skills-holder'), who)
     }
     const open = async (who) => {
-      await writeFile(join(credentialsDir, 'NUPHOS_RUNTIME_SKILLS_TOKEN'), `p.${who}.1.sig\n`)
+      await writeFile(join(credentialsDir, 'CERIN_RUNTIME_SKILLS_TOKEN'), `p.${who}.1.sig\n`)
       const opened = meta({
-        NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
-        NUPHOS_RUNTIME_SKILLS_TOKEN: `p.${who}.1.sig`,
+        CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
+        CERIN_RUNTIME_SKILLS_TOKEN: `p.${who}.1.sig`,
       })
       const { synced: fetch } = await cerinSyncRuntimeSkills(opened, {
         script,
@@ -277,18 +277,18 @@ test('both adapters re-sync skills before a prompt', () => {
 test('a prompt re-syncs the team skills, so a live session gets a skill added after it opened', async () => {
   // Each run records whether it was the team sync or a personal one.
   const body =
-    '[ -n "$NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR" ] && k=personal || k=team; echo $k >> "$NUPHOS_TEST_RECORD"'
+    '[ -n "$CERIN_RUNTIME_PERSONAL_SKILLS_DIR" ] && k=personal || k=team; echo $k >> "$CERIN_TEST_RECORD"'
 
   for (const provider of ['codex', 'claudeCode'])
     await withFakeScript(body, async ({ record, script, directory }) => {
       const params = meta(
         {
-          NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
-          NUPHOS_RUNTIME_SKILLS_TOKEN: 'p.owner.1.sig',
+          CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
+          CERIN_RUNTIME_SKILLS_TOKEN: 'p.owner.1.sig',
         },
         provider,
       )
-      const run = { script, env: { NUPHOS_TEST_RECORD: record } }
+      const run = { script, env: { CERIN_TEST_RECORD: record } }
 
       if (provider === 'claudeCode') run.sessionHome = directory
       await synced(params, run)
@@ -303,25 +303,25 @@ test('a prompt re-syncs the team skills, so a live session gets a skill added af
 })
 
 test('the Codex session shape is read too', async () => {
-  await withFakeScript('printenv > "$NUPHOS_TEST_RECORD"', async ({ record, script }) => {
+  await withFakeScript('printenv > "$CERIN_TEST_RECORD"', async ({ record, script }) => {
     assert.equal(
       await synced(
         meta(
-          { NUPHOS_RUNTIME_SKILLS_URL: 'https://codex', NUPHOS_RUNTIME_SKILLS_TOKEN: 'ct' },
+          { CERIN_RUNTIME_SKILLS_URL: 'https://codex', CERIN_RUNTIME_SKILLS_TOKEN: 'ct' },
           'codex',
         ),
-        { script, env: { NUPHOS_TEST_RECORD: record } },
+        { script, env: { CERIN_TEST_RECORD: record } },
       ),
       true,
     )
-    assert.match(await readFile(record, 'utf8'), /^NUPHOS_RUNTIME_SKILLS_URL=https:\/\/codex$/mu)
+    assert.match(await readFile(record, 'utf8'), /^CERIN_RUNTIME_SKILLS_URL=https:\/\/codex$/mu)
   })
 })
 
 test('a failing or hanging sync never stops the conversation', async () => {
   const carrying = meta({
-    NUPHOS_RUNTIME_SKILLS_URL: 'https://bundle',
-    NUPHOS_RUNTIME_SKILLS_TOKEN: 'tok',
+    CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
+    CERIN_RUNTIME_SKILLS_TOKEN: 'tok',
   })
 
   await withFakeScript('exit 7', async ({ script }) => {
@@ -343,15 +343,15 @@ test('a session on an older team bundle starts with the newer one', async () => 
   await withInstalledBundle(async (workspace) => {
     const body = [
       'sleep 0.3',
-      'printf %s rev-2 > "$NUPHOS_RUNTIME_WORKSPACE/.claude/.skills-revision"',
-      'printf %s "# Two" > "$NUPHOS_RUNTIME_WORKSPACE/.claude/skills/kept/SKILL.md"',
+      'printf %s rev-2 > "$CERIN_RUNTIME_WORKSPACE/.claude/.skills-revision"',
+      'printf %s "# Two" > "$CERIN_RUNTIME_WORKSPACE/.claude/skills/kept/SKILL.md"',
     ].join('\n')
 
     await withFakeScript(body, async ({ script }) => {
       // Not `.synced`: this is the moment the agent starts and reads its skills, once.
       await cerinSyncRuntimeSkills(bundleSession, {
         script,
-        env: { NUPHOS_RUNTIME_WORKSPACE: workspace },
+        env: { CERIN_RUNTIME_WORKSPACE: workspace },
       })
       assert.equal(await readFile(join(workspace, '.claude/.skills-revision'), 'utf8'), 'rev-2')
       assert.equal(await readFile(join(workspace, '.claude/skills/kept/SKILL.md'), 'utf8'), '# Two')
@@ -368,7 +368,7 @@ test('each session offers the team skills, and only those, as a plugin of its ow
         await cerinSyncRuntimeSkills(params, {
           script,
           sessionHome: directory,
-          env: { NUPHOS_RUNTIME_WORKSPACE: workspace },
+          env: { CERIN_RUNTIME_WORKSPACE: workspace },
         })
         delete globalThis.cerinRefreshSkills
 
@@ -415,8 +415,8 @@ test('a skill added after the sync is fetched over, and never offered', async ()
   await writeFile(join(claude, '.skills-revision'), revision)
   // The backend is unreachable; the script notes whether it had a revision to offer.
   const body = [
-    'if [ -z "$NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR" ]; then',
-    '  [ -e "$NUPHOS_RUNTIME_WORKSPACE/.claude/.skills-revision" ] && echo revision >> "$NUPHOS_TEST_RECORD" || echo none >> "$NUPHOS_TEST_RECORD"',
+    'if [ -z "$CERIN_RUNTIME_PERSONAL_SKILLS_DIR" ]; then',
+    '  [ -e "$CERIN_RUNTIME_WORKSPACE/.claude/.skills-revision" ] && echo revision >> "$CERIN_TEST_RECORD" || echo none >> "$CERIN_TEST_RECORD"',
     'fi',
     'exit 1',
   ].join('\n')
@@ -429,7 +429,7 @@ test('a skill added after the sync is fetched over, and never offered', async ()
         await cerinSyncRuntimeSkills(params, {
           script,
           sessionHome: directory,
-          env: { NUPHOS_RUNTIME_WORKSPACE: workspace, NUPHOS_TEST_RECORD: record },
+          env: { CERIN_RUNTIME_WORKSPACE: workspace, CERIN_TEST_RECORD: record },
         })
         delete globalThis.cerinRefreshSkills
 
@@ -480,7 +480,7 @@ test('a wrapper goes with its session’s process, or with the next session afte
       await cerinSyncRuntimeSkills(structuredClone(bundleSession), {
         script,
         sessionHome: directory,
-        env: { NUPHOS_RUNTIME_WORKSPACE: workspace },
+        env: { CERIN_RUNTIME_WORKSPACE: workspace },
       })
       delete globalThis.cerinRefreshSkills
       assert.ok(await gone(stale))
@@ -495,7 +495,7 @@ test('a wrapper goes with its session’s process, or with the next session afte
           '-e',
           `const { cerinSyncRuntimeSkills } = await import(${JSON.stringify(new URL('../image/runtime-defaults.mjs', import.meta.url).href)})
           const opened = ${JSON.stringify(bundleSession)}
-          await cerinSyncRuntimeSkills(opened, { script: ${JSON.stringify(script)}, sessionHome: ${JSON.stringify(directory)}, env: { NUPHOS_RUNTIME_WORKSPACE: ${JSON.stringify(workspace)} } })
+          await cerinSyncRuntimeSkills(opened, { script: ${JSON.stringify(script)}, sessionHome: ${JSON.stringify(directory)}, env: { CERIN_RUNTIME_WORKSPACE: ${JSON.stringify(workspace)} } })
           console.log(opened._meta.claudeCode.options.plugins[0].path)
           process.exit(0)`,
         ],
@@ -513,8 +513,8 @@ test('the first session in a workspace starts with the team skills on disk', asy
   const workspace = await mkdtemp(join(tmpdir(), 'cerin-workspace-'))
   const body = [
     'sleep 0.3',
-    'mkdir -p "$NUPHOS_RUNTIME_WORKSPACE/.claude/skills/deploy"',
-    'printf %s "# Deploy" > "$NUPHOS_RUNTIME_WORKSPACE/.claude/skills/deploy/SKILL.md"',
+    'mkdir -p "$CERIN_RUNTIME_WORKSPACE/.claude/skills/deploy"',
+    'printf %s "# Deploy" > "$CERIN_RUNTIME_WORKSPACE/.claude/skills/deploy/SKILL.md"',
   ].join('\n')
 
   try {
@@ -522,7 +522,7 @@ test('the first session in a workspace starts with the team skills on disk', asy
       // Not `.synced`: this is the moment the agent starts and reads its skills, once.
       await cerinSyncRuntimeSkills(bundleSession, {
         script,
-        env: { NUPHOS_RUNTIME_WORKSPACE: workspace },
+        env: { CERIN_RUNTIME_WORKSPACE: workspace },
       })
       assert.equal(
         await readFile(join(workspace, '.claude/skills/deploy/SKILL.md'), 'utf8'),
@@ -572,7 +572,7 @@ class Agent {
   // The patched call hands the child nothing but the bundle credential, so the fake
   // script records into a path written into its own body.
   await withFakeScript('', async ({ record, script }) => {
-    await writeFile(script, `#!/bin/sh\necho "$NUPHOS_RUNTIME_SKILLS_URL" >> '${record}'\n`)
+    await writeFile(script, `#!/bin/sh\necho "$CERIN_RUNTIME_SKILLS_URL" >> '${record}'\n`)
     const module = await import(
       `data:text/javascript,${encodeURIComponent(
         `${patched.replace("'/usr/local/bin/cerin-sync-skills'", JSON.stringify(script))}\nexport { Agent }`,
@@ -580,7 +580,7 @@ class Agent {
     )
     const agent = new module.Agent()
     const carrying = (url) =>
-      meta({ NUPHOS_RUNTIME_SKILLS_URL: url, NUPHOS_RUNTIME_SKILLS_TOKEN: 't' })
+      meta({ CERIN_RUNTIME_SKILLS_URL: url, CERIN_RUNTIME_SKILLS_TOKEN: 't' })
 
     const session = await agent.newSession({
       id: 'a',

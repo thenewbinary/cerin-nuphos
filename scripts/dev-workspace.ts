@@ -9,11 +9,11 @@ export const ROOT = process.cwd()
 export const BACKEND_DIR = join(ROOT, 'apps/backend')
 export const DESKTOP_DIR = join(ROOT, 'apps/desktop')
 
-/** `NUPHOS_DEV_INSTANCE`, else the worktree's directory name. */
+/** `CERIN_DEV_INSTANCE`, else the worktree's directory name. */
 export function instanceKey(explicit: string | undefined, root: string): string {
   return (explicit || basename(root)).replace(/[^\w.-]/g, '-')
 }
-export const INSTANCE = instanceKey(process.env.NUPHOS_DEV_INSTANCE, ROOT)
+export const INSTANCE = instanceKey(process.env.CERIN_DEV_INSTANCE, ROOT)
 // Desktop's sign-in for this instance, apart from the installed app's cli.yaml.
 export const CLI_CONFIG_DIR = join(homedir(), '.config/cerin')
 export const DEV_CLI_CONFIG = join(CLI_CONFIG_DIR, `cli.dev.${INSTANCE}.yaml`)

@@ -153,7 +153,7 @@ export function boxBackendUrl(): string | undefined {
 
 /** The CLI and its runtime bundle come from the release, or from a mirror in development. */
 export function downloadEnv(): Record<string, string> {
-  return config.box.downloadUrl ? { NUPHOS_DOWNLOAD_URL: config.box.downloadUrl } : {}
+  return config.box.downloadUrl ? { CERIN_DOWNLOAD_URL: config.box.downloadUrl } : {}
 }
 
 export function requireBackendUrl(): string {

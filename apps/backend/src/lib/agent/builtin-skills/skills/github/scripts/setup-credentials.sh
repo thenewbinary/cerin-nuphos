@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 usage() {
@@ -22,8 +22,8 @@ Usage: setup-credentials.sh <teamId> <installationId|personal> [--for-commit] [-
 Environment:
   GH_CONFIG_DIR     Optional. Defaults to \$XDG_CONFIG_HOME/gh or \$HOME/.config/gh.
   GIT_CONFIG_GLOBAL Optional. Respected by git when supplied.
-  NUPHOS_TOKEN       Required. Already exported in the Cerin agent sandbox.
-  NUPHOS_BACKEND_URL Required. Base URL of the Cerin backend API; defaults to https://api.cerin.ai.
+  CERIN_TOKEN       Required. Already exported in the Cerin agent sandbox.
+  CERIN_BACKEND_URL Required. Base URL of the Cerin backend API; defaults to https://api.cerin.ai.
 
 Mints a fresh GitHub App installation token (≤1 h) and configures \`gh\`
 auth so any subsequent tool call can run \`gh\` / \`gh api\` without
@@ -62,8 +62,8 @@ else
   exit 1
 fi
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set in this sandbox" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is not set in this sandbox" >&2
   exit 1
 fi
 
@@ -88,8 +88,8 @@ team_get() {
     --retry 2 \
     --retry-delay 1 \
     --retry-all-errors \
-    -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") \
-    "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}/teams/$team_id/$1"
+    -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") \
+    "${CERIN_BACKEND_URL:-https://api.cerin.ai}/teams/$team_id/$1"
 }
 
 token_response="$(team_get "$token_path")"

@@ -41,7 +41,7 @@ class CerinLogicTest {
             assertEquals("/auth/social/login", request.url.encodedPath)
             assertNull(request.header("Authorization"))
             okhttp3.Response.Builder().request(request).protocol(okhttp3.Protocol.HTTP_1_1).code(code).message("fixture")
-                .apply { if (header != null) header("X-Nuphos-Social-Providers", header) }
+                .apply { if (header != null) header("X-Cerin-Social-Providers", header) }
                 .body("".toResponseBody()).build()
         }.build()
         assertEquals(listOf(CerinWeb.Provider.Apple, CerinWeb.Provider.Google), CerinWeb.availableProviders(client(200, "google,apple")))

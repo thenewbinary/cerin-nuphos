@@ -207,7 +207,7 @@ test('one backend spelt two ways is one account: not parked, not listed twice', 
     file,
     yaml.dump({ api: 'http://127.0.0.1:3718', token: 'tok-dev', userInfo: BOB }),
   )
-  // Launched as `NUPHOS_API_URL=http://localhost:3718/`.
+  // Launched as `CERIN_API_URL=http://localhost:3718/`.
   const session = new AuthSession('http://localhost:3718/')
   const config = configFile({
     path: file,

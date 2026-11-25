@@ -113,12 +113,12 @@ FROM common AS grok
 ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs grok" \
     OPENAB_AGENT_AUTH_COMMAND="grok login --device-auth" \
     OPENAB_ADAPTER_VERSION="grok@1.0.46" \
-    NUPHOS_RUNTIME_PREINSTALL=grok
+    CERIN_RUNTIME_PREINSTALL=grok
 
 FROM common AS antigravity
 ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs antigravity" \
     OPENAB_ADAPTER_VERSION="antigravity-cli@1.5.4" \
-    NUPHOS_RUNTIME_PREINSTALL=antigravity-cli \
+    CERIN_RUNTIME_PREINSTALL=antigravity-cli \
     OPENAB_RUNTIME_AUTH_COMMAND="node /opt/cerin-runtime/antigravity-status-cli.mjs"
 
 FROM common AS opencode
@@ -127,7 +127,7 @@ ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs opencode" \
     OPENAB_AGENT_AUTH_COMMAND="opencode providers login" \
     OPENAB_RUNTIME_AUTH_COMMAND="echo true" \
     OPENAB_ADAPTER_VERSION="opencode@1.18.35" \
-    NUPHOS_RUNTIME_PREINSTALL=opencode
+    CERIN_RUNTIME_PREINSTALL=opencode
 
 # Hermes Agent speaks ACP itself too, but ships no binaries and its PyPI package is stale:
 # the tagged source installs from its own uv.lock, on the only Python it supports (3.14),
@@ -199,12 +199,12 @@ ARG RUNTIME_PROVIDER
 
 COPY --from=openab /usr/local/bin/openab /usr/local/bin/openab
 
-# The `cerin agent` host from that CLI release. A container given NUPHOS_JOIN_TOKEN runs
+# The `cerin agent` host from that CLI release. A container given CERIN_JOIN_TOKEN runs
 # it instead of openab and joins Cerin as a device, the way a Box does (runtime-start.sh).
-ARG NUPHOS_AGENT_VERSION=0.28.1
+ARG CERIN_AGENT_VERSION=0.28.1
 ARG CERIN_AGENT_RELEASES=https://github.com/thenewbinary/cerin-platform/releases/download
 RUN arch=$(case "$(dpkg --print-architecture)" in amd64) echo x64 ;; *) dpkg --print-architecture ;; esac) \
- && base="${CERIN_AGENT_RELEASES}/cli-v${NUPHOS_AGENT_VERSION}" \
+ && base="${CERIN_AGENT_RELEASES}/cli-v${CERIN_AGENT_VERSION}" \
  && cd /tmp \
  && asset="cerin-agent-linux-${arch}.tar.gz" && curl -fsSLO "${base}/${asset}" \
  && curl -fsSLO "${base}/${asset}.sha256" \
@@ -213,8 +213,8 @@ RUN arch=$(case "$(dpkg --print-architecture)" in amd64) echo x64 ;; *) dpkg --p
  && tar -xzf "${asset}" -C /opt/cerin-agent \
  && rm -f "${asset}" "${asset}.sha256" \
  && chmod -R a+rX /opt/cerin-agent
-ENV NUPHOS_LOCAL_RUNTIME_DIR=/opt/cerin-agent \
-    NUPHOS_CLI_VERSION="${NUPHOS_AGENT_VERSION}"
+ENV CERIN_LOCAL_RUNTIME_DIR=/opt/cerin-agent \
+    CERIN_CLI_VERSION="${CERIN_AGENT_VERSION}"
 
 # The openab commit the binary was built from, reported on ACP initialize.
 ARG OPENAB_BUILD_SHA

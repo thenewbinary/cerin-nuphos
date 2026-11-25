@@ -7,7 +7,7 @@
 // sentinel line to stdout carrying the JSON output, which the backend validates
 // against panelOutputSchema (panel-output.ts).
 //
-// Panel code can read NUPHOS_TOKEN directly. That token is a short-lived
+// Panel code can read CERIN_TOKEN directly. That token is a short-lived
 // dashboard panel token: bound to this team and the script's author, GET-only, and
 // limited to the credentials selected in the panel's settings. The backend
 // enforces those limits; the checks in `request` below only keep the built-in
@@ -67,8 +67,8 @@ function fail(error) {
 const runDir = process.argv[2]
 if (!runDir) fail('panel-runner: missing run directory argument')
 
-const backendUrl = (process.env.NUPHOS_BACKEND_URL || '').replace(/\/$/, '')
-const token = process.env.NUPHOS_TOKEN || ''
+const backendUrl = (process.env.CERIN_BACKEND_URL || '').replace(/\/$/, '')
+const token = process.env.CERIN_TOKEN || ''
 
 // A route answers `<integration>_not_bound` when the integration it reads is no
 // longer connected to the team (or not selected for this panel). Its name, as a
@@ -103,7 +103,7 @@ function notConnectedName(code) {
 // configured backend origin. Selected credentials stay reachable so panels can
 // query provider read APIs when Cerin has no equivalent endpoint.
 async function request(path) {
-  if (!backendUrl) throw new Error('NUPHOS_BACKEND_URL is not set for the panel job')
+  if (!backendUrl) throw new Error('CERIN_BACKEND_URL is not set for the panel job')
   let url
   if (/^https?:\/\//i.test(path)) {
     // Absolute URLs may only target the configured backend origin, so this

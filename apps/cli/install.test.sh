@@ -66,10 +66,6 @@ run_install "$home" SHELL="$(command -v zsh)" CERIN_NO_MODIFY_PATH=1
 [ ! -e "$home/.zprofile" ] || fail "CERIN_NO_MODIFY_PATH=1 still wrote ~/.zprofile"
 echo "ok: CERIN_NO_MODIFY_PATH=1 leaves the profile alone"
 
-home=$(mktemp -d "$work/home.XXXXXX")
-run_install "$home" SHELL="$(command -v zsh)" NUPHOS_NO_MODIFY_PATH=1
-[ ! -e "$home/.zprofile" ] || fail "NUPHOS_NO_MODIFY_PATH=1 still wrote ~/.zprofile"
-echo "ok: NUPHOS_NO_MODIFY_PATH=1 still works"
 
 # cron, systemd units and bare containers often have no SHELL at all.
 home=$(mktemp -d "$work/home.XXXXXX")

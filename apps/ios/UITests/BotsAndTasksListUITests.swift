@@ -203,7 +203,7 @@ final class BotsAndTasksListUITests: XCTestCase {
     private func launch(page: String) {
         app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", page, "-cerin.agent.foldedThreads", "{}"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
     }
 
@@ -255,14 +255,14 @@ final class BotsAndTasksListUITests: XCTestCase {
         ["status": 200, "body": ["conversations": rows, "parents": [], "nextCursor": NSNull(), "hasMore": false]]
     }
 
-    /// The simulator's screen only; also saved to `NUPHOS_SHOTS` when the run sets it.
+    /// The simulator's screen only; also saved to `CERIN_SHOTS` when the run sets it.
     private func shot(_ name: String) {
         let screenshot = XCUIScreen.main.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
-        if let dir = ProcessInfo.processInfo.environment["NUPHOS_SHOTS"] {
+        if let dir = ProcessInfo.processInfo.environment["CERIN_SHOTS"] {
             try? screenshot.pngRepresentation.write(to: URL(filePath: dir).appending(path: "\(name).png"))
         }
     }

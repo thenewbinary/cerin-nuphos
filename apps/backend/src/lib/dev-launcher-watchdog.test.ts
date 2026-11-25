@@ -30,7 +30,7 @@ test('a killed launcher stops its backend watcher, including after hot-reload re
       cwd,
       env: {
         NODE_ENV: 'development',
-        NUPHOS_DEV_LAUNCHER_PID: String(launcher.pid),
+        CERIN_DEV_LAUNCHER_PID: String(launcher.pid),
         MONGODB_URI: 'mongodb://localhost/watchdog-test',
       },
       stdout: 'pipe',
@@ -64,9 +64,9 @@ test('standalone and production backends do not follow a development launcher', 
   try {
     await Promise.all(
       [
-        { NODE_ENV: 'production', NUPHOS_DEV_LAUNCHER_PID: '999999' },
-        { NODE_ENV: 'development', NUPHOS_DEV_LAUNCHER_PID: '' },
-        { NODE_ENV: 'development', NUPHOS_DEV_LAUNCHER_PID: '-1' },
+        { NODE_ENV: 'production', CERIN_DEV_LAUNCHER_PID: '999999' },
+        { NODE_ENV: 'development', CERIN_DEV_LAUNCHER_PID: '' },
+        { NODE_ENV: 'development', CERIN_DEV_LAUNCHER_PID: '-1' },
       ].map(async (env) => {
         const child = Bun.spawn(
           [

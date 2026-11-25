@@ -6,8 +6,8 @@ import { after, mock, test } from 'node:test'
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dev-registration-'))
 
-process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
-process.env.NUPHOS_API_URL = 'http://127.0.0.1:3718'
+process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
+process.env.CERIN_API_URL = 'http://127.0.0.1:3718'
 delete process.env.ATLAS_API_URL
 mock.module('./env.ts', { namedExports: { isDev: true } })
 mock.module('../client-version.ts', {

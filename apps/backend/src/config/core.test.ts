@@ -4,9 +4,9 @@ import { coreConfig } from './core'
 
 const keys = [
   'NODE_ENV',
-  'NUPHOS_DEV_HTTP_PORT',
-  'NUPHOS_DEV_EMAIL_OTP_LOG',
-  'NUPHOS_LOCAL_STACK',
+  'CERIN_DEV_HTTP_PORT',
+  'CERIN_DEV_EMAIL_OTP_LOG',
+  'CERIN_LOCAL_STACK',
 ] as const
 const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]))
 
@@ -22,9 +22,9 @@ afterEach(() => {
 describe('local-stack switches', () => {
   test('apply outside production', () => {
     process.env.NODE_ENV = 'development'
-    process.env.NUPHOS_DEV_HTTP_PORT = '3818'
-    process.env.NUPHOS_DEV_EMAIL_OTP_LOG = 'true'
-    process.env.NUPHOS_LOCAL_STACK = 'true'
+    process.env.CERIN_DEV_HTTP_PORT = '3818'
+    process.env.CERIN_DEV_EMAIL_OTP_LOG = 'true'
+    process.env.CERIN_LOCAL_STACK = 'true'
 
     const config = coreConfig()
 
@@ -35,9 +35,9 @@ describe('local-stack switches', () => {
 
   test('are ignored in production', () => {
     process.env.NODE_ENV = 'production'
-    process.env.NUPHOS_DEV_HTTP_PORT = '3818'
-    process.env.NUPHOS_DEV_EMAIL_OTP_LOG = 'true'
-    process.env.NUPHOS_LOCAL_STACK = 'true'
+    process.env.CERIN_DEV_HTTP_PORT = '3818'
+    process.env.CERIN_DEV_EMAIL_OTP_LOG = 'true'
+    process.env.CERIN_LOCAL_STACK = 'true'
 
     const config = coreConfig()
 

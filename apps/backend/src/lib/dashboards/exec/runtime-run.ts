@@ -137,7 +137,7 @@ const RUNTIME_OUTDATED_JOB_MESSAGE =
 const RUNTIME_KEY_REJECTED_MESSAGE =
   'The agent rejected its operator credential. Rotate it in the agent settings, then refresh.'
 const PUBLIC_URL_MISSING_MESSAGE =
-  'A self-hosted agent was selected, but this Cerin deployment has no public backend URL for it to call. Set NUPHOS_PUBLIC_BACKEND_URL on the backend.'
+  'A self-hosted agent was selected, but this Cerin deployment has no public backend URL for it to call. Set CERIN_PUBLIC_BACKEND_URL on the backend.'
 
 function timeoutError(): PanelExecError {
   return new PanelExecError(
@@ -195,7 +195,7 @@ export async function runOnRuntime(args: {
         jobId,
         job: PANEL_JOB,
         stdin: JSON.stringify({ runner: await runnerSource(), script: code, params }),
-        env: { NUPHOS_BACKEND_URL: backendUrl, NUPHOS_TOKEN: cerinToken },
+        env: { CERIN_BACKEND_URL: backendUrl, CERIN_TOKEN: cerinToken },
         timeoutMs: config.dashboards.execTimeoutMs,
         maxStdoutBytes: config.dashboards.maxOutputBytes,
       },

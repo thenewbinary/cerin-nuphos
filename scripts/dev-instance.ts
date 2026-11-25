@@ -86,13 +86,13 @@ export async function acquireDevInstance(key: string): Promise<() => void> {
     if ((error as NodeJS.ErrnoException).code !== 'EADDRINUSE') throw error
     if ((await leaseOwner(port)) === leaseIdentity(key))
       throw new Error(
-        `Dev instance "${key}" is already running. Use its Electron window, or set NUPHOS_DEV_INSTANCE=<another name> to start a second one.`,
+        `Dev instance "${key}" is already running. Use its Electron window, or set CERIN_DEV_INSTANCE=<another name> to start a second one.`,
         { cause: error },
       )
     // Fail closed on a collision. Picking a second port could admit a duplicate
     // later if the unrelated listener on the first port disappears.
     throw new Error(
-      `Dev instance lease port ${String(port)} is occupied by another process; set NUPHOS_DEV_INSTANCE to another name.`,
+      `Dev instance lease port ${String(port)} is occupied by another process; set CERIN_DEV_INSTANCE to another name.`,
       { cause: error },
     )
   }

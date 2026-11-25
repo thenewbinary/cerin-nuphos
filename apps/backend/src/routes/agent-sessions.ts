@@ -48,7 +48,7 @@ import type { FileTransferVariables } from '@/routes/file-transfers'
 import type { Context, MiddlewareHandler } from 'hono'
 
 /**
- * Agent-side routes — called from inside the sandbox using NUPHOS_TOKEN. The
+ * Agent-side routes — called from inside the sandbox using CERIN_TOKEN. The
  * session id in the path identifies which agent is calling; we verify that
  * the authenticated user owns that session before honoring the request.
  */

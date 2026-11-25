@@ -47,9 +47,9 @@ done
         command_explicit: true,
     };
     let pool = SessionPool::new(config, 4, 60, HashMap::new());
-    let meta = |token: &str| json!({"dev.openab/credentials": {"NUPHOS_TOKEN": token}});
+    let meta = |token: &str| json!({"dev.openab/credentials": {"CERIN_TOKEN": token}});
     let dir = session_credentials_dir(&tmp.path().join(".openab/credentials"), "acp:c");
-    let token = || std::fs::read_to_string(dir.join("NUPHOS_TOKEN")).unwrap();
+    let token = || std::fs::read_to_string(dir.join("CERIN_TOKEN")).unwrap();
     let spawns = || {
         std::fs::read_to_string(&spawned)
             .unwrap()
@@ -74,7 +74,7 @@ done
     assert_eq!(spawns().len(), 1, "a live agent must not be restarted");
 
     // Mid-turn refresh: same files, same agent, and the meta a respawn replays.
-    let creds = |token: &str| json!({"NUPHOS_TOKEN": token});
+    let creds = |token: &str| json!({"CERIN_TOKEN": token});
     let refresh = |expected: &str, next: &str| {
         let (expected, next) = (creds(expected), creds(next));
         let pool = &pool;
@@ -94,7 +94,7 @@ done
         .is_err());
 
     // A write that fails is reported and leaves the stored meta alone.
-    let file = dir.join("NUPHOS_TOKEN");
+    let file = dir.join("CERIN_TOKEN");
     std::fs::remove_file(&file).unwrap();
     std::fs::create_dir(&file).unwrap();
     std::fs::write(file.join("blocker"), "").unwrap();
@@ -130,6 +130,6 @@ done
         .lines()
         .find(|line| line.contains("\"session/load\""))
         .expect("respawn resumes the saved session");
-    assert!(load.contains("\"NUPHOS_TOKEN\":\"third\""), "{load}");
+    assert!(load.contains("\"CERIN_TOKEN\":\"third\""), "{load}");
     assert_eq!(token(), "third");
 }

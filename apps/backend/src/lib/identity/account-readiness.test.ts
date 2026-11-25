@@ -296,7 +296,7 @@ test('iOS AI requests require current saved consent, including after withdrawal'
   app.post('/agent/conversations/test/cancel-runtime', (c) => c.json({ cancelled: true }))
   const headers = {
     Authorization: 'Bearer valid-session',
-    'x-nuphos-ai-consent-version': AI_CONSENT_VERSION,
+    'x-cerin-ai-consent-version': AI_CONSENT_VERSION,
   }
 
   expect((await app.request('/agent/chat', { method: 'POST', headers })).status).toBe(403)
@@ -400,7 +400,7 @@ test('sign-in JWTs issued before sessions work until they expire; longer ones ar
     const body = Buffer.from(JSON.stringify({ ...claims, exp: claims.iat + lifetimeSec })).toString(
       'base64url',
     )
-    const sig = createHmac('sha256', process.env.NUPHOS_JWT_SECRET!)
+    const sig = createHmac('sha256', process.env.CERIN_JWT_SECRET!)
       .update(`${header}.${body}`)
       .digest('base64url')
 

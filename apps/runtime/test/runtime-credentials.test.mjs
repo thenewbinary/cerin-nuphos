@@ -14,8 +14,8 @@ const guard = fileURLToPath(new URL('../image/runtime-guard.sh', import.meta.url
 function credentialsDir(token) {
   const dir = mkdtempSync(join(tmpdir(), 'cerin-credentials-'))
 
-  writeFileSync(join(dir, 'NUPHOS_TOKEN'), token)
-  writeFileSync(join(dir, 'NUPHOS_PLAN_API_TOKEN'), token)
+  writeFileSync(join(dir, 'CERIN_TOKEN'), token)
+  writeFileSync(join(dir, 'CERIN_PLAN_API_TOKEN'), token)
 
   return dir
 }
@@ -70,12 +70,12 @@ test('the MCP bridge authorizes every request with the token current at call tim
   const options = { url: new URL('http://backend/mcp'), env, post, write: (m) => written.push(m) }
 
   await relay('{"jsonrpc":"2.0","id":1,"method":"tools/list"}', options)
-  writeFileSync(join(dir, 'NUPHOS_TOKEN'), 'turn-2\n')
+  writeFileSync(join(dir, 'CERIN_TOKEN'), 'turn-2\n')
   await relay('{"jsonrpc":"2.0","method":"notifications/initialized"}', options)
 
   assert.deepEqual(seen, ['Bearer turn-1', 'Bearer turn-2'])
   assert.deepEqual(written, [{ jsonrpc: '2.0', id: 1, result: { ok: 1 } }])
-  rmSync(join(dir, 'NUPHOS_TOKEN'))
+  rmSync(join(dir, 'CERIN_TOKEN'))
   await relay('{"jsonrpc":"2.0","id":2,"method":"tools/list"}', options)
   assert.equal(seen.length, 3)
   assert.equal(seen[2], undefined, 'a revoked credential sends no authorization')
@@ -116,13 +116,13 @@ test('the MCP bridge turns transport and HTTP failures into JSON-RPC errors', as
 test('every bash, nested ones included, reads the current conversation token', () => {
   const dir = credentialsDir('turn-1')
   const run = (extra = {}) =>
-    spawnSync('bash', ['-c', 'printf "%s %s" "$NUPHOS_TOKEN" "$NUPHOS_PLAN_API_TOKEN"'], {
+    spawnSync('bash', ['-c', 'printf "%s %s" "$CERIN_TOKEN" "$CERIN_PLAN_API_TOKEN"'], {
       env: {
         PATH: process.env.PATH,
         BASH_ENV: guard,
         OPENAB_CREDENTIALS_DIR: dir,
-        NUPHOS_TOKEN: 'spawn',
-        NUPHOS_PLAN_API_TOKEN: 'spawn',
+        CERIN_TOKEN: 'spawn',
+        CERIN_PLAN_API_TOKEN: 'spawn',
         ...extra,
       },
       encoding: 'utf8',
@@ -131,10 +131,10 @@ test('every bash, nested ones included, reads the current conversation token', (
     }).stdout
 
   assert.equal(run(), 'turn-1 turn-1')
-  writeFileSync(join(dir, 'NUPHOS_TOKEN'), 'turn-2')
-  writeFileSync(join(dir, 'NUPHOS_PLAN_API_TOKEN'), 'turn-2')
+  writeFileSync(join(dir, 'CERIN_TOKEN'), 'turn-2')
+  writeFileSync(join(dir, 'CERIN_PLAN_API_TOKEN'), 'turn-2')
   assert.equal(run(), 'turn-2 turn-2')
   assert.equal(run({ OPENAB_CREDENTIALS_DIR: '' }), 'spawn spawn')
-  rmSync(join(dir, 'NUPHOS_TOKEN'))
+  rmSync(join(dir, 'CERIN_TOKEN'))
   assert.equal(run(), ' turn-2', 'a revoked credential unsets the stale env token')
 })

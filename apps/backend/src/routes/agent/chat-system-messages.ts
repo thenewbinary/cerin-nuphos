@@ -81,7 +81,7 @@ export const API_ROUTING_MESSAGE = [
   '## Cerin backend API routing',
   '',
   'When calling Cerin backend APIs from the sandbox shell, never hard-code `https://api.cerin.ai`.',
-  'Always use the `ac` helper from the cerin-api skill, or build URLs from `${NUPHOS_BACKEND_URL:-https://api.cerin.ai}`. Local dev injects `NUPHOS_BACKEND_URL` so approved agent commands route back through the developer tunnel to the same backend this chat is using.',
+  'Always use the `ac` helper from the cerin-api skill, or build URLs from `${CERIN_BACKEND_URL:-https://api.cerin.ai}`. Local dev injects `CERIN_BACKEND_URL` so approved agent commands route back through the developer tunnel to the same backend this chat is using.',
 ].join('\n')
 
 export function buildCerinLinksMessage(

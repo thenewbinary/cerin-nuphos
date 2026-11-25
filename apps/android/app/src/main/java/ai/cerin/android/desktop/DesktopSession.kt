@@ -169,7 +169,7 @@ internal class DesktopSession(
     }
     private fun ensureCurrent(owner: Int) { if(!active(owner)) throw CancellationException() }
     private fun authorize(builder: Request.Builder)=builder.header("Authorization","Bearer $token")
-        .header("x-nuphos-ai-consent-version",AccountApi.AI_CONSENT_VERSION).header("x-atlas-client",Http.clientHeader())
+        .header("x-cerin-ai-consent-version",AccountApi.AI_CONSENT_VERSION).header("x-atlas-client",Http.clientHeader())
 }
 
 internal data class DesktopTiming(val handshakeMillis: Long=10_000,val frameMillis: Long=20_000,val progressMillis: Long=10_000,val refreshMillis: Long=30_000,val maxFailures: Int=6)

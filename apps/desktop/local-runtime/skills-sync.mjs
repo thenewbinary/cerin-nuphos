@@ -11,9 +11,9 @@ export async function cerinLocalSyncSkills(params, options = {}) {
     params?._meta?.['ai.cerin/codex']?.env ??
     params?._meta?.['ai.cerin/session']?.env ??
     {}
-  const url = env.NUPHOS_RUNTIME_SKILLS_URL
-  const token = env.NUPHOS_RUNTIME_SKILLS_TOKEN
-  const workspace = options.workspace ?? process.env.NUPHOS_RUNTIME_WORKSPACE
+  const url = env.CERIN_RUNTIME_SKILLS_URL
+  const token = env.CERIN_RUNTIME_SKILLS_TOKEN
+  const workspace = options.workspace ?? process.env.CERIN_RUNTIME_WORKSPACE
 
   const none = { synced: Promise.resolve(false) }
 
@@ -247,7 +247,7 @@ export async function cerinLocalSyncSkills(params, options = {}) {
     const credentials = options?.credentialsDir ?? process.env.OPENAB_CREDENTIALS_DIR
     const refreshed = !credentials
       ? ''
-      : await fs.readFile(path.join(credentials, 'NUPHOS_RUNTIME_SKILLS_TOKEN'), 'utf8').then(
+      : await fs.readFile(path.join(credentials, 'CERIN_RUNTIME_SKILLS_TOKEN'), 'utf8').then(
           (value) => value.trim(),
           () => '',
         )

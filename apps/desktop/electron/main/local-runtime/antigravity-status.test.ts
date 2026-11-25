@@ -34,7 +34,7 @@ test('a bundled Node host imports AGY status without running its CLI entry point
     },
   })
   const stdout = execFileSync(process.execPath, [path.join(outDir, 'entry.mjs')], {
-    env: { ...process.env, NUPHOS_AGENT_EXECUTABLE: path.join(directory, 'missing-agy') },
+    env: { ...process.env, CERIN_AGENT_EXECUTABLE: path.join(directory, 'missing-agy') },
     encoding: 'utf8',
   })
 

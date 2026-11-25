@@ -7,21 +7,21 @@ import { cerinBoxDesktopMcpServers } from './box-desktop-mcp.mjs'
 
 // The injected function calls cerinSessionHomeEnv from the adapter's scope.
 globalThis.cerinSessionHomeEnv = (sessionEnv) => ({
-  HOME: `/homes/${sessionEnv.NUPHOS_SESSION_ID}`,
+  HOME: `/homes/${sessionEnv.CERIN_SESSION_ID}`,
 })
 
 const bridge = [
   { name: 'cerin-tools', command: '/node', args: ['bridge.mjs', 'https://x'], env: [] },
 ]
 const box = {
-  NUPHOS_DESKTOP_SESSION: '/bundle/desktop-session.mjs',
-  NUPHOS_DESKTOP_POOL: '/agent/desktops',
-  NUPHOS_DESKTOP_POOL_SIZE: '4',
+  CERIN_DESKTOP_SESSION: '/bundle/desktop-session.mjs',
+  CERIN_DESKTOP_POOL: '/agent/desktops',
+  CERIN_DESKTOP_POOL_SIZE: '4',
   PATH: '/usr/bin',
 }
 
 test('a session on a Box gets a cerin-desktop server on its own desktop', () => {
-  const servers = cerinBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 's1' }, box)
+  const servers = cerinBoxDesktopMcpServers(bridge, { CERIN_SESSION_ID: 's1' }, box)
 
   assert.equal(servers.length, 2)
   assert.deepEqual(servers[1], {
@@ -29,9 +29,9 @@ test('a session on a Box gets a cerin-desktop server on its own desktop', () => 
     command: process.execPath,
     args: ['/bundle/desktop-session.mjs', 'serve'],
     env: [
-      { name: 'NUPHOS_SESSION_ID', value: 's1' },
-      { name: 'NUPHOS_DESKTOP_POOL', value: '/agent/desktops' },
-      { name: 'NUPHOS_DESKTOP_POOL_SIZE', value: '4' },
+      { name: 'CERIN_SESSION_ID', value: 's1' },
+      { name: 'CERIN_DESKTOP_POOL', value: '/agent/desktops' },
+      { name: 'CERIN_DESKTOP_POOL_SIZE', value: '4' },
       { name: 'HOME', value: '/homes/s1' },
       { name: 'PATH', value: '/usr/bin' },
       { name: 'ELECTRON_RUN_AS_NODE', value: '1' },
@@ -41,14 +41,14 @@ test('a session on a Box gets a cerin-desktop server on its own desktop', () => 
 
 test('without a pool, a session id or servers, nothing changes', () => {
   assert.equal(
-    cerinBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 's1' }, { PATH: '/usr/bin' }),
+    cerinBoxDesktopMcpServers(bridge, { CERIN_SESSION_ID: 's1' }, { PATH: '/usr/bin' }),
     bridge,
   )
   assert.equal(cerinBoxDesktopMcpServers(bridge, {}, box), bridge)
-  assert.equal(cerinBoxDesktopMcpServers(undefined, { NUPHOS_SESSION_ID: 's1' }, box), undefined)
+  assert.equal(cerinBoxDesktopMcpServers(undefined, { CERIN_SESSION_ID: 's1' }, box), undefined)
   const own = [{ name: 'cerin-desktop', command: 'x', args: [] }]
 
-  assert.equal(cerinBoxDesktopMcpServers(own, { NUPHOS_SESSION_ID: 's1' }, box), own)
+  assert.equal(cerinBoxDesktopMcpServers(own, { CERIN_SESSION_ID: 's1' }, box), own)
 })
 
 test('Codex on a Box gets the same cerin-desktop server, from its session env', () => {
@@ -78,7 +78,7 @@ test('Codex on a Box gets the same cerin-desktop server, from its session env', 
   )
   assert.match(patched, /function cerinBoxDesktopMcpServers\(/u)
   // The env Codex's session carries names the session, as Claude's does.
-  const servers = cerinBoxDesktopMcpServers(bridge, { NUPHOS_SESSION_ID: 'c1' }, box)
+  const servers = cerinBoxDesktopMcpServers(bridge, { CERIN_SESSION_ID: 'c1' }, box)
 
   assert.equal(servers[1].name, 'cerin-desktop')
   assert.throws(() => patchDesktopAdapter(source.replace(handoff(' ?? []'), ''), 'codex'))

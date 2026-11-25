@@ -123,7 +123,7 @@ private final class Ceremony: NSObject, ASAuthorizationControllerDelegate, ASAut
 
     nonisolated func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         MainActor.assumeIsolated {
-            #if canImport(UIKit) && !NUPHOS_SHARE_EXTENSION
+            #if canImport(UIKit) && !CERIN_SHARE_EXTENSION
             let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
                 .first { $0.activationState == .foregroundActive }
             return scene?.keyWindow ?? ASPresentationAnchor()

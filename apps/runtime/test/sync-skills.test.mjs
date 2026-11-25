@@ -62,9 +62,9 @@ const gnuBin = [
 const workspaceEnv = (url) => ({
   ...process.env,
   PATH: gnuBin ? `${gnuBin}:${process.env.PATH}` : process.env.PATH,
-  NUPHOS_RUNTIME_WORKSPACE: mkdtempSync(join(tmpdir(), 'cerin-runtime-skills-')),
-  NUPHOS_RUNTIME_SKILLS_URL: url,
-  NUPHOS_RUNTIME_SKILLS_TOKEN: 'narrow-token',
+  CERIN_RUNTIME_WORKSPACE: mkdtempSync(join(tmpdir(), 'cerin-runtime-skills-')),
+  CERIN_RUNTIME_SKILLS_URL: url,
+  CERIN_RUNTIME_SKILLS_TOKEN: 'narrow-token',
 })
 
 test('installs the authenticated bundle with executable scripts', async () => {
@@ -97,7 +97,7 @@ test('installs the authenticated bundle with executable scripts', async () => {
 
   try {
     const env = workspaceEnv(server.url)
-    const skills = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude/skills')
+    const skills = join(env.CERIN_RUNTIME_WORKSPACE, '.claude/skills')
     const { code, stderr } = await sync(env)
 
     assert.equal(code, 0)
@@ -130,8 +130,8 @@ test('rejects a bundle that points outside the skills tree', async () => {
 
     assert.notEqual(code, 0)
     assert.ok(stderr.includes('unsafe runtime skill path: ../escaped/SKILL.md'))
-    assert.equal(existsSync(join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude/skills')), false)
-    assert.equal(existsSync(join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude/escaped')), false)
+    assert.equal(existsSync(join(env.CERIN_RUNTIME_WORKSPACE, '.claude/skills')), false)
+    assert.equal(existsSync(join(env.CERIN_RUNTIME_WORKSPACE, '.claude/escaped')), false)
   } finally {
     await server.close()
   }
@@ -145,7 +145,7 @@ test('leaves the live tree untouched when the bundle has not changed', async () 
 
   try {
     const env = workspaceEnv(server.url)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
     const skills = join(claude, 'skills')
     const run = async () => {
       const { code, stderr } = await sync(env)
@@ -198,7 +198,7 @@ test('an unchanged bundle is settled by a conditional request, not a whole body'
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
   try {
     const env = workspaceEnv(`http://127.0.0.1:${server.address().port}/skills`)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
 
     // Nothing installed yet, so there is no tag to offer and the body must arrive.
     assert.deepEqual(await sync(env), { code: 0, stderr: '' })
@@ -226,7 +226,7 @@ test('a backend that ignores the entity tag still installs the bundle', async ()
 
   try {
     const env = workspaceEnv(server.url)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
 
     assert.deepEqual(await sync(env), { code: 0, stderr: '' })
     assert.deepEqual(await sync(env), { code: 0, stderr: '' })
@@ -245,7 +245,7 @@ test('staging trees abandoned by a killed run are swept, and a live one is not',
 
   try {
     const env = workspaceEnv(server.url)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
     const abandoned = join(claude, '.skills-sync.dead01')
     const inFlight = join(claude, '.skills-sync.live01')
 
@@ -307,7 +307,7 @@ test('a run waiting on the lock keeps its staging tree however long it waits', a
 
   try {
     const env = workspaceEnv(server.url)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
 
     mkdirSync(claude, { recursive: true })
     const lock = holdSyncLock(claude, 60)
@@ -328,7 +328,7 @@ test('a run waiting on the lock keeps its staging tree however long it waits', a
 
     // A second run sweeps on its way in. It then queues behind the same lock and gives
     // up quickly, which is fine; what matters is what its sweep did.
-    const sweeper = await sync({ ...env, NUPHOS_SKILLS_LOCK_WAIT_SECONDS: '1' })
+    const sweeper = await sync({ ...env, CERIN_SKILLS_LOCK_WAIT_SECONDS: '1' })
 
     assert.equal(sweeper.code, 1)
     assert.equal(existsSync(waiterTree), true, 'a live waiter lost its staging tree')
@@ -352,12 +352,12 @@ test('a run gives up rather than wait forever behind a wedged holder', async (t)
 
   try {
     const env = workspaceEnv(server.url)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
 
     mkdirSync(claude, { recursive: true })
     const lock = holdSyncLock(claude, 60)
     const started = Date.now()
-    const { code, stderr } = await sync({ ...env, NUPHOS_SKILLS_LOCK_WAIT_SECONDS: '1' })
+    const { code, stderr } = await sync({ ...env, CERIN_SKILLS_LOCK_WAIT_SECONDS: '1' })
 
     assert.equal(code, 1)
     assert.match(stderr, /held the lock too long/u)
@@ -383,7 +383,7 @@ test('a workspace with no skills yet installs an empty tree rather than failing'
 
   try {
     const env = workspaceEnv(server.url)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
 
     assert.deepEqual(await sync(env), { code: 0, stderr: '' })
     assert.equal(lstatSync(join(claude, 'skills')).isSymbolicLink(), true)
@@ -402,14 +402,14 @@ test('a value that could rewrite the curl config is refused outright', async () 
     // The config file is line-oriented, so a newline in either value would append
     // directives of the caller's choosing. These arrive from session metadata now,
     // so the script must refuse rather than try to quote around them.
-    const stolen = join(base.NUPHOS_RUNTIME_WORKSPACE, 'stolen')
+    const stolen = join(base.CERIN_RUNTIME_WORKSPACE, 'stolen')
     const injections = [
-      { NUPHOS_RUNTIME_SKILLS_URL: `${server.url}"\noutput = "${stolen}` },
-      { NUPHOS_RUNTIME_SKILLS_TOKEN: `t"\noutput = "${stolen}` },
-      { NUPHOS_RUNTIME_SKILLS_URL: `${server.url}\r\nupload-file = "/etc/passwd` },
-      { NUPHOS_RUNTIME_SKILLS_TOKEN: 'back\\slash' },
+      { CERIN_RUNTIME_SKILLS_URL: `${server.url}"\noutput = "${stolen}` },
+      { CERIN_RUNTIME_SKILLS_TOKEN: `t"\noutput = "${stolen}` },
+      { CERIN_RUNTIME_SKILLS_URL: `${server.url}\r\nupload-file = "/etc/passwd` },
+      { CERIN_RUNTIME_SKILLS_TOKEN: 'back\\slash' },
       // Only http(s) may be fetched; `file://` would read the container's disk.
-      { NUPHOS_RUNTIME_SKILLS_URL: 'file:///etc/passwd' },
+      { CERIN_RUNTIME_SKILLS_URL: 'file:///etc/passwd' },
     ]
 
     for (const override of injections) {
@@ -443,7 +443,7 @@ test('concurrent syncs never leave the live tree dangling', async (t) => {
 
   try {
     const env = workspaceEnv(server.url)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
     const results = await Promise.all(Array.from({ length: 6 }, () => sync(env)))
 
     for (const result of results) assert.deepEqual(result, { code: 0, stderr: '' })
@@ -495,7 +495,7 @@ test('swaps a new bundle in without ever exposing a missing tree', async () => {
 
   try {
     const env = workspaceEnv(server.url)
-    const claude = join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude')
+    const claude = join(env.CERIN_RUNTIME_WORKSPACE, '.claude')
     const skills = join(claude, 'skills')
     const run = async () => {
       const { code, stderr } = await sync(env)
@@ -560,7 +560,7 @@ test('a personal run installs in the conversation directory and leaves the works
   try {
     const env = workspaceEnv(server.url)
     const personal = mkdtempSync(join(tmpdir(), 'cerin-personal-skills-'))
-    const { code, stderr } = await sync({ ...env, NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR: personal })
+    const { code, stderr } = await sync({ ...env, CERIN_RUNTIME_PERSONAL_SKILLS_DIR: personal })
 
     assert.equal(code, 0)
     assert.equal(stderr, '')
@@ -569,7 +569,7 @@ test('a personal run installs in the conversation directory and leaves the works
     // In place, not a swapped symlink: a running session watches this directory.
     assert.equal(lstatSync(join(personal, '.claude/skills')).isSymbolicLink(), false)
     assert.equal(existsSync(join(personal, '.claude/settings.json')), false)
-    assert.equal(existsSync(join(env.NUPHOS_RUNTIME_WORKSPACE, '.claude/skills')), false)
+    assert.equal(existsSync(join(env.CERIN_RUNTIME_WORKSPACE, '.claude/skills')), false)
   } finally {
     await server.close()
   }
@@ -585,7 +585,7 @@ test('a backend that answers a personal run with the team bundle installs nothin
     const personal = mkdtempSync(join(tmpdir(), 'cerin-personal-skills-'))
     const { code } = await sync({
       ...workspaceEnv(server.url),
-      NUPHOS_RUNTIME_PERSONAL_SKILLS_DIR: personal,
+      CERIN_RUNTIME_PERSONAL_SKILLS_DIR: personal,
     })
 
     assert.equal(code, 0)

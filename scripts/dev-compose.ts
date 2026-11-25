@@ -30,7 +30,7 @@ export function stackEnvText(example: string, existing: string | null, running: 
   const text =
     existing ??
     example
-      .replace(/^NUPHOS_JWT_SECRET=.*$/m, `NUPHOS_JWT_SECRET=${hex()}`)
+      .replace(/^CERIN_JWT_SECRET=.*$/m, `CERIN_JWT_SECRET=${hex()}`)
       .replace(/^S3_SECRET_KEY=.*$/m, `S3_SECRET_KEY=${hex()}`)
 
   return running
@@ -59,7 +59,7 @@ export const RUNTIME_PASSWORD_ARGS = [
   '-T',
   'runtime',
   'cat',
-  '/home/node/.nuphos-runtime/auth-key',
+  '/home/node/.cerin-runtime/auth-key',
 ]
 
 export type StackCommand =

@@ -27,7 +27,7 @@ final class BotMentionUITests: XCTestCase {
         let other = app.buttons["Sign-in helper"]
         let offered = other.waitForExistence(timeout: 10)
         shot("bot-chat-mention-list")
-        if ProcessInfo.processInfo.environment["NUPHOS_EVIDENCE_BASELINE"] == "1" { return }
+        if ProcessInfo.processInfo.environment["CERIN_EVIDENCE_BASELINE"] == "1" { return }
         XCTAssertTrue(offered, "`@` in a Bot's chat does not offer the other Bot")
 
         other.tap()
@@ -83,7 +83,7 @@ final class BotMentionUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: file, options: .atomic)
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": file.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": file.path]
         app.launch()
         return app
     }

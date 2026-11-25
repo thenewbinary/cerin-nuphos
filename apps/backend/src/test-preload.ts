@@ -18,7 +18,7 @@ delete process.env.MEMORY_PROVIDER
 // The skill scripts under test prefer them over what a test passes in, so they
 // would call the real API with a real token. Nothing here may see them.
 delete process.env.OPENAB_CREDENTIALS_DIR
-delete process.env.NUPHOS_TOKEN
+delete process.env.CERIN_TOKEN
 process.env.MONGODB_URI ??= 'mongodb://unit-test:27017'
 // config.admin.teamId has no default — unset denies admin access — so the admin
 // route tests need one in place before @/config is imported.
@@ -29,17 +29,17 @@ process.env.GRAFANA_BYOK_ENCRYPTION_KEY ??= '00'.repeat(32)
 // Signs/verifies MCP + Marketplace tokens via config.auth.jwtSecret. Must be
 // set here (not in a per-file beforeAll) because config freezes on first import
 // — see oauth/aws-marketplace tests, which round-trip against this value.
-process.env.NUPHOS_JWT_SECRET ??= 'unit-test-jwt-secret' // On-prem relay. Same reason as the JWT secret: the enrolment route bakes these
+process.env.CERIN_JWT_SECRET ??= 'unit-test-jwt-secret' // On-prem relay. Same reason as the JWT secret: the enrolment route bakes these
 // into the install manifest it returns, and config freezes on first import, so a
 // per-file assignment would be too late in a full-suite run.
-process.env.NUPHOS_RELAY_TOKEN_SECRET ??= 'unit-test-relay-token-secret-32b!!'
-process.env.NUPHOS_RELAY_AGENT_ENDPOINT ??= 'relay.unit-test.invalid:8444'
-process.env.NUPHOS_RELAY_PROXY_ENDPOINT ??= 'relay.unit-test.invalid:8443'
+process.env.CERIN_RELAY_TOKEN_SECRET ??= 'unit-test-relay-token-secret-32b!!'
+process.env.CERIN_RELAY_AGENT_ENDPOINT ??= 'relay.unit-test.invalid:8444'
+process.env.CERIN_RELAY_PROXY_ENDPOINT ??= 'relay.unit-test.invalid:8443'
 // Digest-shaped: the enrolment route refuses to render a manifest without an
 // image, and a mutable tag here would make the tests disagree with the rule.
-process.env.NUPHOS_RELAY_AGENT_IMAGE ??=
+process.env.CERIN_RELAY_AGENT_IMAGE ??=
   'public.ecr.aws/unit-test/kube-relay-agent@sha256:0000000000000000000000000000000000000000000000000000000000000000'
 // Registering a self-hosted runtime refuses to hand it an address it cannot
 // reach, so the suite needs a public base for the same reason as the JWT
 // secret: config freezes on first import.
-process.env.NUPHOS_PUBLIC_BACKEND_URL ??= 'https://unit-test.invalid'
+process.env.CERIN_PUBLIC_BACKEND_URL ??= 'https://unit-test.invalid'

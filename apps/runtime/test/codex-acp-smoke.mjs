@@ -37,7 +37,7 @@ const child = spawn(process.execPath, [`${base}/patched.mjs`], {
     GOMEMLIMIT: '6GiB',
     NODE_OPTIONS: '--max-old-space-size=6144',
     CODEX_PATH: fileURLToPath(new URL('./fixtures/codex-app-server.mjs', import.meta.url)),
-    NUPHOS_SMOKE_RECORD: `${base}/requests.jsonl`,
+    CERIN_SMOKE_RECORD: `${base}/requests.jsonl`,
     OPENAB_CREDENTIALS_DIR: base,
   },
   stdio: ['pipe', 'pipe', 'pipe'],
@@ -95,7 +95,7 @@ try {
     _meta: {
       'ai.cerin/codex': {
         developerInstructions: `context ${actor}`,
-        env: { NUPHOS_TOKEN: actor, NUPHOS_SESSION_ID: 'conversation-smoke' },
+        env: { CERIN_TOKEN: actor, CERIN_SESSION_ID: 'conversation-smoke' },
       },
     },
   })
@@ -129,7 +129,7 @@ try {
   // A teammate's load moves the session home; the owner's reload above did not.
   const teammate = args('actor-c')
 
-  teammate._meta['ai.cerin/codex'].env.NUPHOS_SESSION_ACTOR = 'teammate'
+  teammate._meta['ai.cerin/codex'].env.CERIN_SESSION_ACTOR = 'teammate'
   await rpc('session/load', { ...teammate, sessionId: created.sessionId })
   const config = async (configId, value) =>
     rpc('session/set_config_option', { sessionId: created.sessionId, configId, value })
@@ -230,9 +230,9 @@ try {
     resume.params.config.shell_environment_policy.set.HOME,
   )
   assert.equal(start.params.config.developer_instructions, 'context actor-a')
-  assert.equal(start.params.config.shell_environment_policy.set.NUPHOS_TOKEN, 'actor-a')
+  assert.equal(start.params.config.shell_environment_policy.set.CERIN_TOKEN, 'actor-a')
   assert.equal(resume.params.config.developer_instructions, 'context actor-b')
-  assert.equal(resume.params.config.shell_environment_policy.set.NUPHOS_TOKEN, 'actor-b')
+  assert.equal(resume.params.config.shell_environment_policy.set.CERIN_TOKEN, 'actor-b')
   for (const request of [start, resume]) {
     const { cerin } = request.params.config.mcp_servers
 
@@ -358,7 +358,7 @@ if (process.env.OPENAB_ACP_AUTH_KEY) process.exit(10);
 const child = spawn(process.execPath, [${JSON.stringify(join(base, 'patched.mjs'))}], {
   stdio: 'inherit', env: { ...process.env,
     CODEX_PATH: ${JSON.stringify(fileURLToPath(new URL('./fixtures/codex-app-server.mjs', import.meta.url)))},
-    NUPHOS_SMOKE_RECORD: ${JSON.stringify(modelCalls)}
+    CERIN_SMOKE_RECORD: ${JSON.stringify(modelCalls)}
   }
 });
 child.on('exit', code => process.exit(code ?? 1));

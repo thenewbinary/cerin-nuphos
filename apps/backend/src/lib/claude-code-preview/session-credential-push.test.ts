@@ -89,7 +89,7 @@ test('the runtime refuses a credential renewal on the turn transport connection'
   try {
     await transport.initialize()
     const refused = await transport
-      .refreshCredentials(SESSION, { NUPHOS_TOKEN: 'turn' }, { NUPHOS_TOKEN: 'renewed' })
+      .refreshCredentials(SESSION, { CERIN_TOKEN: 'turn' }, { CERIN_TOKEN: 'renewed' })
       .catch((error: unknown) => error)
 
     expect(refused).toBeInstanceOf(OpenAbRpcError)
@@ -104,11 +104,11 @@ test('turn renewals reach the runtime over a control connection, each naming the
   advertise = true
   let minted = 0
   const renewal = renewTurnCredentials({
-    installed: { NUPHOS_TOKEN: 'turn', NUPHOS_PLAN_API_TOKEN: 'turn', OTHER: 'kept-local' },
+    installed: { CERIN_TOKEN: 'turn', CERIN_PLAN_API_TOKEN: 'turn', OTHER: 'kept-local' },
     mint: () => {
       minted++
 
-      return { NUPHOS_TOKEN: `renewed-${String(minted)}` }
+      return { CERIN_TOKEN: `renewed-${String(minted)}` }
     },
     push: (expected, next) => pushSessionCredentials(target, expected, next),
     intervalMs: 5,
@@ -122,10 +122,10 @@ test('turn renewals reach the runtime over a control connection, each naming the
   expect(received.every((entry) => entry.key === CONTROL_KEY)).toBe(true)
   expect(received[0]?.params).toEqual({
     sessionId: SESSION,
-    expected: { NUPHOS_TOKEN: 'turn', NUPHOS_PLAN_API_TOKEN: 'turn' },
-    credentials: { NUPHOS_TOKEN: 'renewed-1' },
+    expected: { CERIN_TOKEN: 'turn', CERIN_PLAN_API_TOKEN: 'turn' },
+    credentials: { CERIN_TOKEN: 'renewed-1' },
   })
-  expect(received[1]?.params.expected).toEqual({ NUPHOS_TOKEN: 'renewed-1' })
+  expect(received[1]?.params.expected).toEqual({ CERIN_TOKEN: 'renewed-1' })
 })
 
 test('renewal stops for a runtime that cannot take credentials mid-turn', async () => {
@@ -133,8 +133,8 @@ test('renewal stops for a runtime that cannot take credentials mid-turn', async 
   advertise = false
   let pushes = 0
   const renewal = renewTurnCredentials({
-    installed: { NUPHOS_TOKEN: 'turn' },
-    mint: () => ({ NUPHOS_TOKEN: 'renewed' }),
+    installed: { CERIN_TOKEN: 'turn' },
+    mint: () => ({ CERIN_TOKEN: 'renewed' }),
     push: async (expected, next) => {
       pushes++
 
@@ -168,11 +168,11 @@ test('renewals run one at a time; a failed push keeps the previous expectation',
   let inFlight = 0
   let attempt = 0
   const renewal = renewTurnCredentials({
-    installed: { NUPHOS_TOKEN: 'turn' },
-    mint: () => ({ NUPHOS_TOKEN: `next-${String(++attempt)}` }),
+    installed: { CERIN_TOKEN: 'turn' },
+    mint: () => ({ CERIN_TOKEN: `next-${String(++attempt)}` }),
     push: async (current) => {
       expect(++inFlight).toBe(1)
-      expected.push(current?.NUPHOS_TOKEN)
+      expected.push(current?.CERIN_TOKEN)
       await Bun.sleep(8)
       inFlight--
       if (attempt === 1)
@@ -195,16 +195,16 @@ function fakeRuntime(lostReplies: number[], undelivered: number[], failedWrites:
 
   return {
     state,
-    mint: () => ({ NUPHOS_TOKEN: `next-${String(++state.attempt)}` }),
+    mint: () => ({ CERIN_TOKEN: `next-${String(++state.attempt)}` }),
     push: async (expected: Record<string, string> | undefined, next: typeof expected) => {
       await Promise.resolve()
       if (undelivered.includes(state.attempt)) throw new UndeliveredCredentialPush('offline')
-      if (expected?.NUPHOS_TOKEN !== state.held)
+      if (expected?.CERIN_TOKEN !== state.held)
         throw new OpenAbRpcError('Session credentials changed since this refresh', -32004)
       // The session holds `expected`, but writing the new credential files fails.
       if (failedWrites.includes(state.attempt))
         throw new OpenAbRpcError('No space left on device (os error 28)', -32004)
-      state.held = next?.NUPHOS_TOKEN ?? ''
+      state.held = next?.CERIN_TOKEN ?? ''
       if (lostReplies.includes(state.attempt)) throw new Error('OpenAB ACP call timed out')
 
       return true
@@ -214,7 +214,7 @@ function fakeRuntime(lostReplies: number[], undelivered: number[], failedWrites:
 
 async function renewUntil(runtime: ReturnType<typeof fakeRuntime>, attempts: number) {
   const renewal = renewTurnCredentials({
-    installed: { NUPHOS_TOKEN: 'turn' },
+    installed: { CERIN_TOKEN: 'turn' },
     mint: runtime.mint,
     push: runtime.push,
     intervalMs: 2,

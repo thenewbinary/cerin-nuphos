@@ -23,7 +23,7 @@ final class RentComputerUITests: XCTestCase {
     func testTheBoxOptionHasDesktopsName() {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "runtimes"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let add = app.buttons["Add computer"].firstMatch
         XCTAssertTrue(add.waitForExistence(timeout: 10), "Computers & runtimes did not open")

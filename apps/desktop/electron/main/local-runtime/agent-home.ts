@@ -234,7 +234,7 @@ export function podOwnerAgentHome(
 ): typeof prepareAgentHome {
   // The provisioner names the person a hosted runtime pod belongs to.
   const ownerDir =
-    env.NUPHOS_AGENT_OWNER_ID?.trim() === owner ? path.join(dataDir, 'users', owner) : undefined
+    env.CERIN_AGENT_OWNER_ID?.trim() === owner ? path.join(dataDir, 'users', owner) : undefined
 
   return (provider, userDir, workspace, env) =>
     provider === 'claude-code' && ownerDir && path.resolve(userDir) === path.resolve(ownerDir)

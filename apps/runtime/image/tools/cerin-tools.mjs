@@ -34,7 +34,7 @@ export function loadManifest(file = join(HERE, 'manifest.json')) {
 }
 
 export function toolsRoot(env = process.env) {
-  return env.NUPHOS_TOOLS_DIR || DEFAULT_ROOT
+  return env.CERIN_TOOLS_DIR || DEFAULT_ROOT
 }
 
 export function hostArch(arch = process.arch) {
@@ -61,7 +61,7 @@ export function renderShim(name, tool, command) {
   return [
     '#!/bin/sh',
     `# ${command} is installed on first use; see cerin-tools list.`,
-    `t="\${NUPHOS_TOOLS_DIR:-${DEFAULT_ROOT}}/${name}/${tool.version}/.bin/${command}"`,
+    `t="\${CERIN_TOOLS_DIR:-${DEFAULT_ROOT}}/${name}/${tool.version}/.bin/${command}"`,
     `[ -x "$t" ] || /usr/local/bin/cerin-tools install ${name} || exit`,
     'exec "$t" "$@"',
     '',
@@ -372,7 +372,7 @@ const USAGE = `usage: cerin-tools list [--json]
        cerin-tools install <tool>... | --all
 
 Tools not built into the image install into ${DEFAULT_ROOT}
-(or $NUPHOS_TOOLS_DIR) the first time one of their commands runs.`
+(or $CERIN_TOOLS_DIR) the first time one of their commands runs.`
 
 function main(argv) {
   const manifest = loadManifest()

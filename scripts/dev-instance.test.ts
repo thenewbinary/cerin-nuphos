@@ -17,7 +17,7 @@ test('one concurrent launcher per instance key; other keys remain independent', 
   assert.equal(results.filter((result) => result.status === 'rejected').length, 1)
   assert.ok(owner?.status === 'fulfilled')
   t.after(owner.value)
-  await assert.rejects(acquireDevInstance(key), /already running.*NUPHOS_DEV_INSTANCE/)
+  await assert.rejects(acquireDevInstance(key), /already running.*CERIN_DEV_INSTANCE/)
   assert.equal(await instanceRunning(key), true)
   t.after(await acquireDevInstance(`${key}-other`))
 })

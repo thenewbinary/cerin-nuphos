@@ -13,10 +13,10 @@ const png = Buffer.from(
 const groupId = '0123456789abcdef01234567'
 const marker = `https://platform.cerin.ai/_reply-images/${groupId}`
 const env = {
-  NUPHOS_TOKEN: 'test-only',
-  NUPHOS_SESSION_ID: 'session',
+  CERIN_TOKEN: 'test-only',
+  CERIN_SESSION_ID: 'session',
   TEAM: 'team',
-  NUPHOS_BACKEND_URL: 'https://backend.invalid',
+  CERIN_BACKEND_URL: 'https://backend.invalid',
 }
 async function fixture(t) {
   const cwd = await mkdtemp(join(tmpdir(), 'reply-images-'))

@@ -22,7 +22,7 @@ export function patchDesktopBridge(source) {
   const patched = replaceOnce(
     source,
     "args: ['/opt/cerin-runtime/mcp-http-bridge.mjs', server.url],",
-    "args: [env.NUPHOS_MCP_BRIDGE ?? '/opt/cerin-runtime/mcp-http-bridge.mjs', server.url],",
+    "args: [env.CERIN_MCP_BRIDGE ?? '/opt/cerin-runtime/mcp-http-bridge.mjs', server.url],",
   )
 
   return replaceOnce(

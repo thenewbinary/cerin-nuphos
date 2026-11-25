@@ -23,7 +23,7 @@ final class ChannelMessageMenuUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
             "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/chat-release"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let cell = app.collectionViews["chat.transcript"].cells.element(boundBy: 2)
         XCTAssertTrue(cell.waitForExistence(timeout: 15))
@@ -40,7 +40,7 @@ final class ChannelMessageMenuUITests: XCTestCase {
         XCTAssertTrue(app.buttons["Reply"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["Copy"].exists)
         shot(app, "context-menu")
-        if ProcessInfo.processInfo.environment["NUPHOS_EVIDENCE_BASELINE"] == "1" { return }
+        if ProcessInfo.processInfo.environment["CERIN_EVIDENCE_BASELINE"] == "1" { return }
         app.buttons["Select Text"].tap()
         let copy = app.menuItems["Copy"].firstMatch
         XCTAssertTrue(copy.waitForExistence(timeout: 5))

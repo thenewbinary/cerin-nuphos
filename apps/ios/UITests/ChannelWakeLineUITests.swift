@@ -37,7 +37,7 @@ final class ChannelWakeLineUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
             "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let wakeLine = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS 'launch-review'")).firstMatch
         XCTAssertTrue(wakeLine.waitForExistence(timeout: 10))

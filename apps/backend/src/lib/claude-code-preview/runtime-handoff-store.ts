@@ -33,7 +33,7 @@ export function sessionHandoff(session: TeamSession): Omit<RuntimeHandoff, 'at'>
     actorUserId: session.userId,
     locale: session.locale,
     // Only a teammate's own turn acts as someone other than the owner.
-    humanTurn: Boolean(session.runtime?.env?.NUPHOS_SESSION_ACTOR),
+    humanTurn: Boolean(session.runtime?.env?.CERIN_SESSION_ACTOR),
     runtimeUrl: session.endpoint.url,
   }
 }

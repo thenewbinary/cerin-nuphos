@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 // A missing file means OpenAB revoked the credential: send no authorization.
 export function currentAuthorization(env) {
   try {
-    const token = readFileSync(join(env.OPENAB_CREDENTIALS_DIR, 'NUPHOS_TOKEN'), 'utf8').trim()
+    const token = readFileSync(join(env.OPENAB_CREDENTIALS_DIR, 'CERIN_TOKEN'), 'utf8').trim()
     return token ? `Bearer ${token}` : undefined
   } catch {
     return undefined

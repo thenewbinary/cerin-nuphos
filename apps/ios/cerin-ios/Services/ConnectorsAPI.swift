@@ -107,7 +107,7 @@ enum ConnectorsAPI {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue(AgentChatAPI.clientVersion, forHTTPHeaderField: "x-atlas-client")
-        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-nuphos-ai-consent-version")
+        request.setValue(AccountAPI.aiConsentVersion, forHTTPHeaderField: "x-cerin-ai-consent-version")
         request.timeoutInterval = timeout
         if let body {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")

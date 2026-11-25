@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 usage() {
@@ -20,9 +20,9 @@ Options:
   --help                   Show this help.
 
 Environment:
-  NUPHOS_BACKEND_URL       Defaults to https://api.cerin.ai
-  NUPHOS_TOKEN             Sent as bearer auth when set.
-  NUPHOS_OPENAPI_CACHE     Defaults to /tmp/cerin-openapi.json
+  CERIN_BACKEND_URL       Defaults to https://api.cerin.ai
+  CERIN_TOKEN             Sent as bearer auth when set.
+  CERIN_OPENAPI_CACHE     Defaults to /tmp/cerin-openapi.json
 EOF
 }
 
@@ -75,13 +75,13 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-base_url="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base_url="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base_url="${base_url%/}"
-cache_path="${NUPHOS_OPENAPI_CACHE:-/tmp/cerin-openapi.json}"
+cache_path="${CERIN_OPENAPI_CACHE:-/tmp/cerin-openapi.json}"
 
 # The bearer goes to curl through a file descriptor, never argv.
 auth_header() {
-  if [ -n "${NUPHOS_TOKEN:-}" ]; then printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN"; fi
+  if [ -n "${CERIN_TOKEN:-}" ]; then printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN"; fi
 }
 
 if [ "$refresh" -eq 1 ]; then

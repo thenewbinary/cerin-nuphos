@@ -17,11 +17,11 @@ installs the newest release for macOS or Linux (x86_64 and arm64) into
 `~/.local/bin`, after checking its SHA-256. When that directory is not on
 `PATH`, it adds one `export PATH=…` line to your login shell's profile
 (`~/.zprofile` for zsh, `~/.bash_profile` or `~/.profile` for bash), once;
-open a new shell afterwards. `NUPHOS_NO_MODIFY_PATH=1` skips that,
-`NUPHOS_VERSION` pins a version and `NUPHOS_INSTALL_DIR` changes the directory.
+open a new shell afterwards. `CERIN_NO_MODIFY_PATH=1` skips that,
+`CERIN_VERSION` pins a version and `CERIN_INSTALL_DIR` changes the directory.
 
 The TUI checks for a newer release when it starts and says so; `cerin update`
-installs it in place. `NUPHOS_NO_UPDATE_CHECK=1` turns the check off.
+installs it in place. `CERIN_NO_UPDATE_CHECK=1` turns the check off.
 
 ## Usage
 
@@ -97,7 +97,7 @@ into `~/.local/share/cerin/runtime`. On macOS it reuses your terminal Claude
 login; if none exists, it asks you to sign in to that shared login. Linux and
 Windows use a separate Claude sign-in for Cerin. Codex uses your `codex login`. It
 runs as its own computer, so the desktop app on the same computer is unaffected;
-`NUPHOS_LOCAL_RUNTIME_DIR` points it at a locally staged runtime instead.
+`CERIN_LOCAL_RUNTIME_DIR` points it at a locally staged runtime instead.
 
 On macOS, the Desktop app and the iPhone can open this Mac's screen as the
 desktop of a conversation running here, as they can with the desktop app. The
@@ -129,7 +129,7 @@ the token to a file only the runtime's account can read and pipe it:
 `cerin agent --join - < /run/cerin-join`.
 
 The token works once. The machine keeps its own credential in
-`~/.local/share/cerin/agent/device-credential.json` (`NUPHOS_AGENT_HOME`
+`~/.local/share/cerin/agent/device-credential.json` (`CERIN_AGENT_HOME`
 moves it); later runs need neither the token nor a sign-in. The credential
 opens only this machine's tunnel. Revoking it
 (`DELETE /agent/devices/<deviceId>/credential`) disconnects the machine, and
@@ -139,7 +139,7 @@ token, until it joins again with a new one.
 On Linux with systemd, `cerin agent` does not stay in the foreground: it
 installs the user service `cerin-agent` and starts it, so the runtime starts
 again after a crash or a reboot. With `--join` it returns once the machine has
-joined. The service runs `cerin agent` with the `PATH` and `NUPHOS_*`
+joined. The service runs `cerin agent` with the `PATH` and `CERIN_*`
 variables of the shell that installed it (kept in `~/.config/cerin/agent.env`);
 run `cerin agent` again to refresh them. A revoked computer or a refused token
 exits with status 78, which the service does not restart. `cerin update`
@@ -206,7 +206,7 @@ the agent id. New agents use the mode last picked in `/full-access`
 a command that needs approval is denied unless `--approve` is given; the exit status is 0, 1 on error, or 2 when an approval was denied.
 
 The CLI keeps its own sign-in in `~/.config/cerin/cli.yaml`
-(`NUPHOS_CLI_CONFIG` overrides it), next to the desktop app's `desktop.yaml`.
+(`CERIN_CLI_CONFIG` overrides it), next to the desktop app's `desktop.yaml`.
 `cerin login` starts from the desktop app's sign-in when it has one, and opens
 the browser otherwise; `cerin logout` signs out of the CLI only. The API
 endpoint saved on the desktop's sign-in screen (`cli.api-url`) applies here
@@ -219,8 +219,8 @@ neither asks. A token an older version left in `cli.yaml` moves there on the
 next run. A Linux without a Secret Service (a headless server), or a store
 that refuses the write (locked, in an SSH session), keeps the token in the
 file, readable only by you. `cerin auth status` shows who is signed in
-and where the token is. `NUPHOS_API_URL` and `NUPHOS_TEAM` override the endpoint and the team, and
-`NUPHOS_DEBUG_FRAMES=<file>` appends every stream event to a file.
+and where the token is. `CERIN_API_URL` and `CERIN_TEAM` override the endpoint and the team, and
+`CERIN_DEBUG_FRAMES=<file>` appends every stream event to a file.
 
 In the composer:
 
@@ -268,7 +268,7 @@ To try `cerin agent` from a checkout, stage the runtime and point at it:
 cd apps/desktop && node local-runtime/prepare.mjs --targets linux-x64 --require
 bun build electron/main/local-runtime/cli-host.ts --target=node --format=esm \
   --outfile build/local-runtime/linux-x64/host.mjs
-NUPHOS_LOCAL_RUNTIME_DIR=$PWD/build/local-runtime/linux-x64 cerin agent
+CERIN_LOCAL_RUNTIME_DIR=$PWD/build/local-runtime/linux-x64 cerin agent
 ```
 
 `cerin.ai/install` is pinned to the tag of the `install.sh` it serves (the

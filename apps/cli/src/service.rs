@@ -19,7 +19,7 @@ const LABEL: &str = "ai.cerin.agent";
 /// What the service needs from the shell that installed it. HOME keeps the agent's data
 /// where that shell keeps it: launchd and systemd would start the service in the
 /// account's own home. PATH finds node, claude and codex.
-const FORWARD: [&str; 5] = ["HOME", "PATH", "NUPHOS_API_URL", "NUPHOS_DOWNLOAD_URL", "NUPHOS_AGENT_HOME"];
+const FORWARD: [&str; 5] = ["HOME", "PATH", "CERIN_API_URL", "CERIN_DOWNLOAD_URL", "CERIN_AGENT_HOME"];
 
 /// The agents' own model provider, set where `cerin agent` is run: the variables Claude Code
 /// and Codex read, which the host passes on to them. The same list as host-provider.ts in the
@@ -189,7 +189,7 @@ fn launchctl(args: &[&str]) -> Command {
 fn plist(exe: &Path, vars: &[(&str, String)], join: Option<&str>, log: &Path) -> String {
     let escape = |text: &str| text.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;");
     let string = |text: &str| format!("<string>{}</string>", escape(text));
-    let join = join.map(|token| ("NUPHOS_JOIN_TOKEN", token.to_owned()));
+    let join = join.map(|token| ("CERIN_JOIN_TOKEN", token.to_owned()));
     let env: String = vars
         .iter()
         .cloned()
@@ -306,7 +306,7 @@ fn unit(exe: &Path, env: &Path) -> String {
 }
 
 fn env_file(vars: &[(&str, String)], join: Option<&str>) -> String {
-    let join = join.map(|token| ("NUPHOS_JOIN_TOKEN", token.to_owned()));
+    let join = join.map(|token| ("CERIN_JOIN_TOKEN", token.to_owned()));
     vars.iter().cloned().chain(join).map(|(key, value)| format!("{key}={value}\n")).collect()
 }
 
@@ -344,15 +344,15 @@ mod tests {
 
     #[test]
     fn plist_keeps_the_agent_alive_with_the_token_only_when_given() {
-        let vars = [("PATH", "/usr/bin:/bin".to_owned()), ("NUPHOS_API_URL", "https://a.dev/?x=1&y=<2>".to_owned())];
+        let vars = [("PATH", "/usr/bin:/bin".to_owned()), ("CERIN_API_URL", "https://a.dev/?x=1&y=<2>".to_owned())];
         let log = Path::new("/Users/a/Library/Logs/cerin-agent.log");
         let text = plist(Path::new("/Users/a b/.local/bin/cerin"), &vars, Some("nbj_1"), log);
         assert!(text.contains("<key>Label</key><string>ai.cerin.agent</string>"));
         assert!(text.contains("<array><string>/Users/a b/.local/bin/cerin</string><string>agent</string></array>"));
-        assert!(text.contains("<key>NUPHOS_API_URL</key><string>https://a.dev/?x=1&amp;y=&lt;2&gt;</string>"));
-        assert!(text.contains("<key>NUPHOS_JOIN_TOKEN</key><string>nbj_1</string>"));
+        assert!(text.contains("<key>CERIN_API_URL</key><string>https://a.dev/?x=1&amp;y=&lt;2&gt;</string>"));
+        assert!(text.contains("<key>CERIN_JOIN_TOKEN</key><string>nbj_1</string>"));
         assert!(text.contains("<key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>"));
-        assert!(!plist(Path::new("/n"), &vars, None, log).contains("NUPHOS_JOIN_TOKEN"));
+        assert!(!plist(Path::new("/n"), &vars, None, log).contains("CERIN_JOIN_TOKEN"));
     }
 
     #[test]
@@ -392,8 +392,8 @@ mod tests {
 
     #[test]
     fn env_file_holds_the_token_only_when_given() {
-        let vars = [("PATH", "/usr/bin:/bin".to_owned()), ("NUPHOS_API_URL", "https://api.dev".to_owned())];
-        assert_eq!(env_file(&vars, None), "PATH=/usr/bin:/bin\nNUPHOS_API_URL=https://api.dev\n");
-        assert!(env_file(&vars, Some("nbj_1")).ends_with("NUPHOS_JOIN_TOKEN=nbj_1\n"));
+        let vars = [("PATH", "/usr/bin:/bin".to_owned()), ("CERIN_API_URL", "https://api.dev".to_owned())];
+        assert_eq!(env_file(&vars, None), "PATH=/usr/bin:/bin\nCERIN_API_URL=https://api.dev\n");
+        assert!(env_file(&vars, Some("nbj_1")).ends_with("CERIN_JOIN_TOKEN=nbj_1\n"));
     }
 }

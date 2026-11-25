@@ -208,7 +208,7 @@ function applyQuickTunnelResult(url: string | null) {
 }
 
 // Bring up the tunnel for `port` and return the public URL to hand the backend
-// as NUPHOS_BACKEND_URL. Returns null when unavailable (backend still starts,
+// as CERIN_BACKEND_URL. Returns null when unavailable (backend still starts,
 // but sandbox callbacks fall back to PROD — surfaced loudly on the dashboard).
 export async function setupTunnel(port: number): Promise<string | null> {
   stopTunnel() // drop any quick tunnel from a previous (port-conflict) attempt

@@ -369,8 +369,8 @@ impl Api {
             return Err(error.message);
         };
 
-        // `NUPHOS_DEBUG_FRAMES=<file>` appends every event, for debugging.
-        let mut debug = std::env::var_os("NUPHOS_DEBUG_FRAMES").and_then(|path| {
+        // `CERIN_DEBUG_FRAMES=<file>` appends every event, for debugging.
+        let mut debug = std::env::var_os("CERIN_DEBUG_FRAMES").and_then(|path| {
             let mut options = std::fs::OpenOptions::new();
             options.create(true).append(true);
             // It holds whole conversations, like cli.yaml holds the token.

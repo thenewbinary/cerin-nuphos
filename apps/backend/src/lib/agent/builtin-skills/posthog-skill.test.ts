@@ -37,8 +37,8 @@ function runSetup(body: unknown) {
       env: {
         PATH: `${bin}:${process.env.PATH ?? ''}`,
         HOME: home,
-        NUPHOS_TOKEN: 'token',
-        NUPHOS_BACKEND_URL: 'http://backend.invalid',
+        CERIN_TOKEN: 'token',
+        CERIN_BACKEND_URL: 'http://backend.invalid',
       },
     },
   )

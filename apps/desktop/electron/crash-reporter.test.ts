@@ -49,8 +49,8 @@ const syncValue = (channel = 'diagnostics:enabled') => {
 
 before(async () => {
   delete process.env.VITE_DEV_SERVER_URL
-  process.env.NUPHOS_CLI_CONFIG = path.join(userData, 'cli.test.yaml')
-  process.env.NUPHOS_API_URL = SELF_HOSTED
+  process.env.CERIN_CLI_CONFIG = path.join(userData, 'cli.test.yaml')
+  process.env.CERIN_API_URL = SELF_HOSTED
   mock.module('electron', {
     namedExports: {
       app: { getPath: () => userData },

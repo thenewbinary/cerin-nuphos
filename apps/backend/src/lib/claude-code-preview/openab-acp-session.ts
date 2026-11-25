@@ -130,9 +130,9 @@ export const supportsCredentialRefresh = (initializeResult: Record<string, unkno
 // The skills credential names the turn's sender, whose personal skills the runtime
 // re-syncs before each prompt.
 const REFRESHED_CREDENTIALS = [
-  'NUPHOS_TOKEN',
-  'NUPHOS_PLAN_API_TOKEN',
-  'NUPHOS_RUNTIME_SKILLS_TOKEN',
+  'CERIN_TOKEN',
+  'CERIN_PLAN_API_TOKEN',
+  'CERIN_RUNTIME_SKILLS_TOKEN',
 ] as const
 
 // OpenAB rewrites these as per-session files on every prompt, so a live agent

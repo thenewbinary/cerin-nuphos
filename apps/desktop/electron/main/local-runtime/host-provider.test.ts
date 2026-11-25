@@ -76,7 +76,7 @@ test('each agent gets only its own provider variables, and only those that are s
     AWS_REGION: 'us-east-1',
     AWS_BEARER_TOKEN_BEDROCK: 'bedrock-secret',
   })
-  assert.deepEqual(hostProviderEnv('codex', bedrock), { NUPHOS_CODEX_PROVIDER_KEY: 'azure-secret' })
+  assert.deepEqual(hostProviderEnv('codex', bedrock), { CERIN_CODEX_PROVIDER_KEY: 'azure-secret' })
   assert.deepEqual(hostProviderEnv('opencode', bedrock), {})
   assert.deepEqual(hostProviderEnv('claude-code', { PATH: '/usr/bin', AWS_REGION: ' ' }), {})
   assert.deepEqual(hostProviderEnv('codex', { OPENAI_BASE_URL: 'https://x.example' }), {})
@@ -129,7 +129,7 @@ test('Codex gets the endpoint as its provider entry, which goes with the variabl
   hostDeps(bedrock).deps.prepareAgentHome('codex', dir, dir, runtimeEnv)
   assert.match(
     readFileSync(config, 'utf8'),
-    /base_url = "https:\/\/res\.openai\.azure\.com\/openai\/v1", env_key = "NUPHOS_CODEX_PROVIDER_KEY"/u,
+    /base_url = "https:\/\/res\.openai\.azure\.com\/openai\/v1", env_key = "CERIN_CODEX_PROVIDER_KEY"/u,
   )
   assert.doesNotMatch(readFileSync(config, 'utf8'), secrets)
   hostDeps(unset).deps.prepareAgentHome('codex', dir, dir, runtimeEnv)

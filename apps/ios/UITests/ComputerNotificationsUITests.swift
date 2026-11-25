@@ -8,7 +8,7 @@ final class ComputerNotificationsUITests: XCTestCase {
         let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
             .appending(path: "tests/fixtures/computer-notifications-responses.json")
         app.launchArguments = ["-preview-home", "-preview-saved-account", "-preview-no-push", "-AppleInterfaceStyle", "Light"]
-        app.launchEnvironment["NUPHOS_PREVIEW_RESPONSES"] = fixture.path
+        app.launchEnvironment["CERIN_PREVIEW_RESPONSES"] = fixture.path
         app.launch()
         let account = app.buttons["Account"]
         XCTAssertTrue(account.waitForExistence(timeout: 15))

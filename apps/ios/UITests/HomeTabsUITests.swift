@@ -6,7 +6,7 @@ final class HomeTabsUITests: XCTestCase {
         let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
             .appending(path: "tests/fixtures/channel-responses.json")
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
 
         let tabs = app.tabBars.firstMatch
@@ -63,7 +63,7 @@ final class HomeTabsUITests: XCTestCase {
         responses["GET /agent/conversations/agent-ops"] = ["status": 200, "body": taskBody]
         let responseFile = FileManager.default.temporaryDirectory.appending(path: "focus-\(UUID().uuidString).json")
         try JSONSerialization.data(withJSONObject: responses).write(to: responseFile)
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": responseFile.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": responseFile.path]
         app.launch()
         XCTAssertTrue(app.staticTexts["design-review"].firstMatch.waitForExistence(timeout: 10))
         XCTAssertFalse(app.keyboards.firstMatch.exists)
@@ -92,7 +92,7 @@ final class HomeTabsUITests: XCTestCase {
         let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
             .appending(path: "tests/fixtures/channel-responses.json")
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 10))
         app.buttons["Create"].tap()
@@ -119,7 +119,7 @@ final class HomeTabsUITests: XCTestCase {
         let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
             .appending(path: "tests/fixtures/channel-responses.json")
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-AppleInterfaceStyle", "Light"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         let tabs = app.tabBars.firstMatch
         XCTAssertTrue(app.staticTexts["Release ops"].firstMatch.waitForExistence(timeout: 15))
@@ -176,7 +176,7 @@ final class HomeTabsUITests: XCTestCase {
         let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
             .appending(path: "tests/fixtures/channel-responses.json")
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 10))
         XCTAssertFalse(app.textFields.firstMatch.exists, "The task list must not have a persistent composer")
@@ -203,7 +203,7 @@ final class HomeTabsUITests: XCTestCase {
         let fixture = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
             .appending(path: "tests/fixtures/channel-responses.json")
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 10))
         app.buttons["Create"].tap()

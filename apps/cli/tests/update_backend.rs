@@ -31,8 +31,8 @@ fn update_asks_the_configured_backend_for_the_release() {
         .env_clear()
         .env("PATH", std::env::var_os("PATH").unwrap_or_default())
         .env("HOME", &home)
-        .env("NUPHOS_CLI_CONFIG", home.join("cli.yaml"))
-        .env("NUPHOS_API_URL", format!("http://{address}/"))
+        .env("CERIN_CLI_CONFIG", home.join("cli.yaml"))
+        .env("CERIN_API_URL", format!("http://{address}/"))
         // Trap an old hardcoded HTTPS target locally instead of reaching Cloud.
         .env("HTTPS_PROXY", format!("http://{address}"))
         .env("NO_PROXY", "127.0.0.1")

@@ -30,7 +30,7 @@ export const RUNTIME_QUOTA_PROBE = String.raw`
 const { readFile } = await import('node:fs/promises');
 const { homedir } = await import('node:os');
 const { join } = await import('node:path');
-const SENTINEL = '__NUPHOS_QUOTA__';
+const SENTINEL = '__CERIN_QUOTA__';
 const MAX_BODY_CHARS = 200000;
 let token = '';
 let asked = false;
@@ -154,7 +154,7 @@ const PROBE_CALL_GRACE_MS = 5_000
 const PROBE_MAX_STDOUT_BYTES = 256 * 1024
 
 /** The line the probe prints its result on. A test pins it to the program. */
-export const RUNTIME_QUOTA_SENTINEL = '__NUPHOS_QUOTA__'
+export const RUNTIME_QUOTA_SENTINEL = '__CERIN_QUOTA__'
 
 const UNREADABLE = 'The agent reported unreadable usage'
 const MAX_REASON_CHARS = 500

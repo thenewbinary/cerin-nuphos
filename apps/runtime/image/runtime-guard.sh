@@ -6,7 +6,7 @@
 # one, so a missing file must unset the stale value. Nested shells re-read it
 # too.
 if [ -n "${OPENAB_CREDENTIALS_DIR:-}" ]; then
-  for cerin_credential in NUPHOS_TOKEN NUPHOS_PLAN_API_TOKEN; do
+  for cerin_credential in CERIN_TOKEN CERIN_PLAN_API_TOKEN; do
     cerin_credential_value=
     if [ -r "$OPENAB_CREDENTIALS_DIR/$cerin_credential" ]; then
       IFS= read -r cerin_credential_value <"$OPENAB_CREDENTIALS_DIR/$cerin_credential" || true

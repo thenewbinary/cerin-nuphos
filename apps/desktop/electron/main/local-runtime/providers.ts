@@ -24,7 +24,7 @@ export const LOCAL_AGENT_NAMES: Record<LocalAgentProvider, string> = {
  * HOME, so the shim and the wrapper are both told the CLI and the home.
  */
 export function shimEnv(cliPath: string, home: string): Record<string, string> {
-  return { HOME: home, NUPHOS_AGENT_EXECUTABLE: cliPath, NUPHOS_AGENT_HOME: home }
+  return { HOME: home, CERIN_AGENT_EXECUTABLE: cliPath, CERIN_AGENT_HOME: home }
 }
 
 /**

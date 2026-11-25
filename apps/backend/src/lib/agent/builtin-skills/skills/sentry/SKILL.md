@@ -7,7 +7,7 @@ description: Investigate Sentry errors — list unresolved issues, read stack tr
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -34,7 +34,7 @@ set -o pipefail   # so a failed curl piped into python3 fails the step, not sile
 # 1. Discover the Sentry accounts the team has bound. --fail-with-body makes a
 # 401/403/5xx exit non-zero (still printing the error body) so a bad listing
 # doesn't look successful.
-ac() { curl -sS --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
+ac() { curl -sS --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 ac /teams/$TEAM/sentry-accounts | python3 -m json.tool
 # → { "accounts": [ { "id": "<bindingId>", "userName": "Jane Doe",
 #       "userEmail": "jane@acme.com", "userId": "<id>", ... } ] }

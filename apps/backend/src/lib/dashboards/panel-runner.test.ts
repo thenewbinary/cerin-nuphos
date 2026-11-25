@@ -41,8 +41,8 @@ async function runPanel(
     const process = Bun.spawn(['node', RUNNER, runDir], {
       env: {
         ...Bun.env,
-        NUPHOS_BACKEND_URL: server.url.toString().replace(/\/$/, ''),
-        NUPHOS_TOKEN: 'test-token',
+        CERIN_BACKEND_URL: server.url.toString().replace(/\/$/, ''),
+        CERIN_TOKEN: 'test-token',
       },
       stdout: 'pipe',
       stderr: 'pipe',

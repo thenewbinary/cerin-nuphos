@@ -174,7 +174,7 @@ async function testHome(): Promise<string> {
   await mkdir(linear)
   await writeFile(
     path.join(linear, 'cerin.env'),
-    "export LINEAR_ACCESS_TOKEN='test-token'\nexport LINEAR_NUPHOS_TEAM_ID='cerin-team'\n",
+    "export LINEAR_ACCESS_TOKEN='test-token'\nexport LINEAR_CERIN_TEAM_ID='cerin-team'\n",
   )
   await chmod(path.join(linear, 'cerin.env'), 0o600)
 
@@ -186,10 +186,10 @@ function spawnEnv(home: string): Record<string, string> {
     ...process.env,
     HOME: home,
     LINEAR_TEST_GRAPHQL_URL: server.url.toString(),
-    NUPHOS_SESSION_ID: 'session-123',
+    CERIN_SESSION_ID: 'session-123',
     // Exercise the default Cerin link without inheriting a host from another suite.
-    NUPHOS_PUBLIC_URL: '',
-    NUPHOS_BACKEND_URL: '',
+    CERIN_PUBLIC_URL: '',
+    CERIN_BACKEND_URL: '',
   } as Record<string, string>
 }
 

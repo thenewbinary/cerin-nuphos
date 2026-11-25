@@ -6,9 +6,9 @@ import { after, mock, test } from 'node:test'
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dev-runtime-'))
 
-process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
-process.env.NUPHOS_API_URL = 'http://127.0.0.1:3718'
-process.env.NUPHOS_LOCAL_RUNTIME_DIR = path.join(dir, 'unbundled')
+process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
+process.env.CERIN_API_URL = 'http://127.0.0.1:3718'
+process.env.CERIN_LOCAL_RUNTIME_DIR = path.join(dir, 'unbundled')
 delete process.env.ATLAS_API_URL
 const requests: string[] = []
 const sockets: string[] = []

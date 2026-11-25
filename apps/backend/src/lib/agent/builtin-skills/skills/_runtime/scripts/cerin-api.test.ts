@@ -27,7 +27,7 @@ async function run(path: string, env: Record<string, string> = {}) {
   const process = Bun.spawn(['bash', import.meta.dir + '/cerin-api.sh', 'GET', path], {
     env: {
       ...Bun.env,
-      NUPHOS_TOKEN: tokenFor(server.url.origin),
+      CERIN_TOKEN: tokenFor(server.url.origin),
       ...env,
     },
     stdout: 'pipe',
@@ -43,7 +43,7 @@ async function run(path: string, env: Record<string, string> = {}) {
 
 describe('cerin-api helper origin binding', () => {
   test('uses the origin signed into the token and ignores an env override', async () => {
-    const result = await run('/safe', { NUPHOS_BACKEND_URL: 'https://attacker.invalid' })
+    const result = await run('/safe', { CERIN_BACKEND_URL: 'https://attacker.invalid' })
 
     expect(result).toMatchObject({ exitCode: 0, stderr: '' })
     expect(JSON.parse(result.stdout)).toEqual({ ok: true })

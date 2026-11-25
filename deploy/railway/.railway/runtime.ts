@@ -6,8 +6,8 @@ export default defineRailway(() => {
   if (password.length < 32) throw new Error('RUNTIME_PASSWORD must contain at least 32 characters')
   const home = volume('runtime-home', { region: 'us-west2', sizeMB: 10240 })
   const runtime = service('runtime', {
-    source: github(process.env.NUPHOS_GITHUB_REPO || 'thenewbinary/cerin-platform', {
-      branch: process.env.NUPHOS_GITHUB_BRANCH || 'main',
+    source: github(process.env.CERIN_GITHUB_REPO || 'thenewbinary/cerin-platform', {
+      branch: process.env.CERIN_GITHUB_BRANCH || 'main',
       rootDirectory: 'deploy/railway/runtime',
     }),
     build: { builder: 'DOCKERFILE', dockerfilePath: 'Dockerfile' },

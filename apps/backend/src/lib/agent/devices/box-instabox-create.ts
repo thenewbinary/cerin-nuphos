@@ -180,7 +180,7 @@ async function setUp(
       return install()
     })
     await sandbox.commands.run(AGENT_COMMAND, {
-      envs: { ...downloadEnv(), NUPHOS_JOIN_TOKEN: token, NUPHOS_API_URL: url },
+      envs: { ...downloadEnv(), CERIN_JOIN_TOKEN: token, CERIN_API_URL: url },
       background: true,
     })
     await sandbox.commands.run(BOX_MOUNTS_COMMAND, { background: true })

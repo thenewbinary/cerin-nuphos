@@ -422,7 +422,7 @@ jobs:
         env:
           TEST_MONGODB_URI: mongodb://127.0.0.1:27017
           MONGODB_URI: mongodb://127.0.0.1:27017
-          MONGODB_DB: nuphos_test
+          MONGODB_DB: cerin_test
         # A suite that skips here passes without having touched the database.
         run: |
           # A run block is `bash -e` without pipefail: without this, tee's exit hides bun's.
@@ -577,7 +577,7 @@ jobs:
         working-directory: apps/desktop
         run: |
           bun build electron/main/local-runtime/cli-host.ts --target=node --format=esm --external @napi-rs/keyring --outfile "$RUNNER_TEMP/host.mjs"
-          (env -u NUPHOS_AGENT_HOME node "$RUNNER_TEMP/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'NUPHOS_AGENT_HOME is not set'
+          (env -u CERIN_AGENT_HOME node "$RUNNER_TEMP/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'CERIN_AGENT_HOME is not set'
 
   # Some tests only run on macOS (the keychain, macOS config paths), and the
   # native addon only compiles there. A PR or queue entry gets the Mac only when

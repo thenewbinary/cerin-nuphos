@@ -21,13 +21,13 @@ current browser user, never the session token. This does not change the separate
 website must integrate this endpoint before its own UI can offer Apple login.
 No cross-origin redirects or arbitrary return URLs are accepted.
 
-The chooser's `X-Nuphos-Social-Providers` header lists the configured providers
+The chooser's `X-Cerin-Social-Providers` header lists the configured providers
 (for example `google,apple`). The desktop reads it before registration, shows a
 "Continue with Google" button and, only when Apple is listed, a "Continue with
 Apple" button, and opens `/auth/social/<provider>/start?handle=...` directly.
-Without the header it offers no provider button, so a server without social sign-in never sends anyone to another server's sign-in. The CLI honors `NUPHOS_LOGIN_URL` as a
+Without the header it offers no provider button, so a server without social sign-in never sends anyone to another server's sign-in. The CLI honors `CERIN_LOGIN_URL` as a
 full provider chooser URL; its default now follows the selected API endpoint
-rather than `NUPHOS_WEB_URL`. iOS also reads the provider header, displays separate provider buttons, and opens the selected start URL directly. Email code and password sign-in remain available when provider discovery fails.
+rather than `CERIN_WEB_URL`. iOS also reads the provider header, displays separate provider buttons, and opens the selected start URL directly. Email code and password sign-in remain available when provider discovery fails.
 
 Deploy the backend before mobile/CLI
 updates; those clients require the new chooser.
@@ -56,7 +56,7 @@ is retained for compatibility and keeps its existing linking behavior.
 
 ## Provider setup and rollout
 
-1. Set `NUPHOS_AUTH_BASE_URL` to the public HTTPS backend origin. HTTPS is required
+1. Set `CERIN_AUTH_BASE_URL` to the public HTTPS backend origin. HTTPS is required
    for the browser-binding cookies, including local interactive testing.
 2. Configure `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` for a web OAuth
    client and register the exact backend callback

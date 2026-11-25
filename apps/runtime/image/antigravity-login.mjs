@@ -27,14 +27,14 @@ export function authorizePrompt(output) {
 }
 
 export async function runAntigravityLogin({
-  executable = process.env.NUPHOS_AGENT_EXECUTABLE || 'agy',
+  executable = process.env.CERIN_AGENT_EXECUTABLE || 'agy',
   env = process.env,
   input = process.stdin,
   emit = (frame) => process.stdout.write(`${JSON.stringify(frame)}\n`),
   signal,
 } = {}) {
   if (signal?.aborted) throw new Error('Antigravity login cancelled')
-  const home = env.NUPHOS_AGENT_HOME || env.HOME || '/home/node'
+  const home = env.CERIN_AGENT_HOME || env.HOME || '/home/node'
   const child = spawn(executable, ['acp', '--login'], {
     env: {
       ...Object.fromEntries(

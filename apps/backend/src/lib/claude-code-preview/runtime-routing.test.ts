@@ -171,15 +171,15 @@ test('Codex ACP metadata carries session context without Claude-specific fields'
   const { sessionMeta } = await import('./openab-acp-session')
 
   expect(
-    sessionMeta('Cerin context', { provider: 'codex', env: { NUPHOS_TOKEN: 'actor-token' } }),
+    sessionMeta('Cerin context', { provider: 'codex', env: { CERIN_TOKEN: 'actor-token' } }),
   ).toEqual({
     _meta: {
       'ai.cerin/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
-      'dev.openab/credentials': { NUPHOS_TOKEN: 'actor-token' },
+      'dev.openab/credentials': { CERIN_TOKEN: 'actor-token' },
       'ai.cerin/codex': {
         developerInstructions: 'Cerin context',
-        env: { NUPHOS_TOKEN: 'actor-token' },
+        env: { CERIN_TOKEN: 'actor-token' },
       },
     },
   })
@@ -295,15 +295,15 @@ test('Agents behind the ACP shim get one shim-facing shape with the instructions
 
   for (const provider of ['grok', 'antigravity', 'opencode'] as const)
     expect(
-      sessionMeta('Cerin context', { provider, env: { NUPHOS_TOKEN: 'actor-token' } }),
+      sessionMeta('Cerin context', { provider, env: { CERIN_TOKEN: 'actor-token' } }),
     ).toEqual({
       _meta: {
         'ai.cerin/runtimeAuthority': 2,
         'dev.openab/permissionPolicy': 'relay',
-        'dev.openab/credentials': { NUPHOS_TOKEN: 'actor-token' },
+        'dev.openab/credentials': { CERIN_TOKEN: 'actor-token' },
         'ai.cerin/session': {
           systemPrompt: 'Cerin context',
-          env: { NUPHOS_TOKEN: 'actor-token' },
+          env: { CERIN_TOKEN: 'actor-token' },
         },
       },
     })

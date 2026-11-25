@@ -28,13 +28,13 @@ def main():
     parser.add_argument("operation", choices=("project", "apps"))
     parser.add_argument("--page-token")
     args = parser.parse_args()
-    token = os.environ.get("NUPHOS_TOKEN", "")
+    token = os.environ.get("CERIN_TOKEN", "")
     credential_dir = os.environ.get("OPENAB_CREDENTIALS_DIR")
     if credential_dir:
-        token = (Path(credential_dir) / "NUPHOS_TOKEN").read_text().strip()
+        token = (Path(credential_dir) / "CERIN_TOKEN").read_text().strip()
     if not token:
         raise ValueError("Cerin session credential is unavailable")
-    base = os.environ.get("NUPHOS_BACKEND_URL", "https://api.cerin.ai").rstrip("/")
+    base = os.environ.get("CERIN_BACKEND_URL", "https://api.cerin.ai").rstrip("/")
     parts = urlsplit(base)
     if parts.scheme not in ("http", "https") or parts.username or parts.password:
         raise ValueError("Invalid Cerin backend URL")

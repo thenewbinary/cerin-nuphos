@@ -81,6 +81,6 @@ describe('sendEmail', () => {
   test('names the missing key', async () => {
     configure({})
 
-    await expect(sendEmail(message)).rejects.toThrow('RESEND_API_KEY / NUPHOS_EMAIL_FROM')
+    await expect(sendEmail(message)).rejects.toThrow('RESEND_API_KEY / CERIN_EMAIL_FROM')
   })
 })

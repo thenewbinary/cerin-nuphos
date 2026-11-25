@@ -76,7 +76,7 @@ Other commands:
   issue a new one.
 - `cerin-admin join-token --team <id> [--label <name>]` prints a one-time token
   that joins a server as the team owner's computer, with
-  `NUPHOS_API_URL=<backend-url> cerin agent --join -` on that server. It is the
+  `CERIN_API_URL=<backend-url> cerin agent --join -` on that server. It is the
   same token `POST /agent/devices/join-tokens` issues, so no browser or
   `cerin login --device` is needed.
 
@@ -106,7 +106,7 @@ password and runtime token encryption key on first install, keeps them on
 upgrade, and leaves the Secret behind on uninstall. Renderers without cluster
 access (`helm template`, Argo CD, Flux with `--dry-run`) regenerate them on every
 render. For those, set `secrets.existingSecret` to a Secret you manage with the
-keys `NUPHOS_JWT_SECRET`, `MONGO_PASSWORD`, `STORAGE_SECRET_KEY`,
+keys `CERIN_JWT_SECRET`, `MONGO_PASSWORD`, `STORAGE_SECRET_KEY`,
 `RUNTIME_AUTH_KEY`, `RUNTIME_TOKEN_ENCRYPTION_KEY` and, optionally, `RESEND_API_KEY` and `GOOGLE_OAUTH_CLIENT_SECRET`. Keep the Mongo password
 alphanumeric: it is placed in the connection URI as is.
 `RUNTIME_TOKEN_ENCRYPTION_KEY` is base64 of 32 random bytes

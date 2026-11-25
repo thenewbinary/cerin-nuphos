@@ -38,7 +38,7 @@ guard arguments.count == 2 || (arguments.count == 3 && arguments[2] == "--own-pe
 }
 let socketPath = arguments[1]
 /// Set in the copy --own-permissions starts: the pid of the Cerin that started the first one.
-let parentKey = "NUPHOS_MAC_SCREEN_PARENT"
+let parentKey = "CERIN_MAC_SCREEN_PARENT"
 
 @_silgen_name("responsibility_spawnattrs_setdisclaim")
 func responsibility_spawnattrs_setdisclaim(_ attrs: UnsafeMutablePointer<posix_spawnattr_t?>, _ disclaim: Int32) -> Int32

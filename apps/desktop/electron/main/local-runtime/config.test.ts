@@ -60,7 +60,7 @@ test('Claude keeps the host home for Keychain access and filters the owner’s e
   assert.equal(env.HOME, '/Users/me')
   assert.equal(env.CLAUDE_CODE_EXECUTABLE, launch.cliPath)
   assert.equal(env.ELECTRON_RUN_AS_NODE, '1')
-  assert.equal(env.NUPHOS_RUNTIME_WORKSPACE, launch.workspace)
+  assert.equal(env.CERIN_RUNTIME_WORKSPACE, launch.workspace)
   assert.equal(env.AWS_SECRET_ACCESS_KEY, undefined)
 })
 
@@ -74,7 +74,7 @@ test('openab listens on loopback only, with a control key it cannot confuse with
 
   assert.equal(
     deriveControlKey(transportKey),
-    createHmac('sha256', transportKey).update('nuphos-runtime-control-v1').digest('hex'),
+    createHmac('sha256', transportKey).update('cerin-runtime-control-v1').digest('hex'),
   )
   assert.equal(env.HOME, launch.openabHome)
 })
@@ -151,20 +151,20 @@ test(
       )
       const { BASH_ENV } = agentEnv({ ...launch, bundle: { ...launch.bundle, root } })
       const token = () =>
-        spawnSync('/bin/bash', ['-c', 'printf %s "$NUPHOS_TOKEN"'], {
+        spawnSync('/bin/bash', ['-c', 'printf %s "$CERIN_TOKEN"'], {
           env: {
             PATH: process.env.PATH,
             BASH_ENV,
             OPENAB_CREDENTIALS_DIR: credentials,
-            NUPHOS_TOKEN: 'spawn',
+            CERIN_TOKEN: 'spawn',
           },
           encoding: 'utf8',
           stdio: ['ignore', 'pipe', 'pipe'],
         }).stdout
 
-      writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), 'turn-1')
+      writeFileSync(path.join(credentials, 'CERIN_TOKEN'), 'turn-1')
       assert.equal(token(), 'turn-1')
-      writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), 'turn-2')
+      writeFileSync(path.join(credentials, 'CERIN_TOKEN'), 'turn-2')
       assert.equal(token(), 'turn-2')
     } finally {
       rmSync(root, { recursive: true, force: true })
@@ -224,7 +224,7 @@ test('tunnel sign-in uses bundled wrappers and each provider’s isolated creden
       assert.equal(env.AWS_SECRET_ACCESS_KEY, undefined)
       if (provider === 'codex') {
         assert.equal(env.CODEX_EXECUTABLE, launch.cliPath)
-        assert.equal(env.NUPHOS_CODEX_AUTH_DIRECTORY, launch.agentHome)
+        assert.equal(env.CERIN_CODEX_AUTH_DIRECTORY, launch.agentHome)
       } else assert.equal(env.CLAUDE_CONFIG_DIR, launch.agentHome)
     }
     // Grok Build and OpenCode run the image's wrappers, told the CLI and the agent's home.
@@ -235,8 +235,8 @@ test('tunnel sign-in uses bundled wrappers and each provider’s isolated creden
       const env = agentLoginEnv({ ...launch, provider, bundle: { ...launch.bundle, root } })
 
       assert.equal(env.OPENAB_RUNTIME_LOGIN_COMMAND, `${prefix}${launch.nodeExecPath} ${wrapper}`)
-      assert.equal(env.NUPHOS_AGENT_EXECUTABLE, launch.cliPath)
-      assert.equal(env.NUPHOS_AGENT_HOME, launch.agentHome)
+      assert.equal(env.CERIN_AGENT_EXECUTABLE, launch.cliPath)
+      assert.equal(env.CERIN_AGENT_HOME, launch.agentHome)
     }
   } finally {
     rmSync(root, { recursive: true, force: true })

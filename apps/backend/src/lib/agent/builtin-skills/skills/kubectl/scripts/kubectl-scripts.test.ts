@@ -66,9 +66,9 @@ function run(script: string, args: string[]) {
     env: {
       HOME: home,
       PATH: `${shim}:/usr/bin:/bin`,
-      NUPHOS_TOKEN: 'test-token',
-      NUPHOS_SESSION_ID: 'sess-1',
-      NUPHOS_BACKEND_URL: 'https://backend.test',
+      CERIN_TOKEN: 'test-token',
+      CERIN_SESSION_ID: 'sess-1',
+      CERIN_BACKEND_URL: 'https://backend.test',
     },
   })
   return {
@@ -163,7 +163,7 @@ describe('sync-clusters.sh', () => {
         '      exec:',
         '        command: bash',
         '        args:',
-        '          - "__NUPHOS_SKILLS_DIR__/kubectl/scripts/get-credential.sh"',
+        '          - "__CERIN_SKILLS_DIR__/kubectl/scripts/get-credential.sh"',
       ].join('\n'),
       '200',
     )
@@ -173,7 +173,7 @@ describe('sync-clusters.sh', () => {
     const config = readFileSync(path.join(home, '.kube/config'), 'utf-8')
     const skillsDir = path.dirname(path.dirname(scriptsDir))
     expect(config).toContain(`"${skillsDir}/kubectl/scripts/get-credential.sh"`)
-    expect(config).not.toContain('__NUPHOS_SKILLS_DIR__')
+    expect(config).not.toContain('__CERIN_SKILLS_DIR__')
   })
 
   test('--fresh asks the backend to re-issue credentials; a bad flag is rejected', () => {

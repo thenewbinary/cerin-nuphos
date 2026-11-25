@@ -128,7 +128,7 @@ registerAppScheme()
 // cerin:// handler unless a local deep-link test explicitly opts in.
 if (!isDev) {
   app.setAsDefaultProtocolClient(githubInstall.GITHUB_PROTOCOL)
-} else if (process.env.ATLAS_REGISTER_NUPHOS_PROTOCOL === '1' && process.argv.length >= 2) {
+} else if (process.env.ATLAS_REGISTER_CERIN_PROTOCOL === '1' && process.argv.length >= 2) {
   app.setAsDefaultProtocolClient(githubInstall.GITHUB_PROTOCOL, process.execPath, [
     path.resolve(process.argv[1] ?? ''),
   ])

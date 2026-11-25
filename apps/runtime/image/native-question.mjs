@@ -81,7 +81,7 @@ async function cerinAuthorization(server, env) {
   if (!env.OPENAB_CREDENTIALS_DIR) return server.authorization
   try {
     const { readFile } = await import('node:fs/promises')
-    const token = (await readFile(`${env.OPENAB_CREDENTIALS_DIR}/NUPHOS_TOKEN`, 'utf8')).trim()
+    const token = (await readFile(`${env.OPENAB_CREDENTIALS_DIR}/CERIN_TOKEN`, 'utf8')).trim()
     return token ? `Bearer ${token}` : undefined
   } catch {
     return undefined

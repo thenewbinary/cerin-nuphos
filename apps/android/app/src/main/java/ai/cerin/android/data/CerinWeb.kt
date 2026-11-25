@@ -38,7 +38,7 @@ object CerinWeb {
         client.newBuilder().callTimeout(10, TimeUnit.SECONDS).build().newCall(request).execute().use { response ->
             if (response.code == 503) return emptyList()
             if (!response.isSuccessful) throw IOException("Sign-in options are unavailable.")
-            return providers(response.header("X-Nuphos-Social-Providers"))
+            return providers(response.header("X-Cerin-Social-Providers"))
         }
     }
 

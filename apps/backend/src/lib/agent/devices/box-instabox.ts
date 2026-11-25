@@ -155,7 +155,7 @@ export async function resumeBox(userId: string, deviceId: string, command = AGEN
     )
 
     await sandbox.commands.run(command, {
-      envs: { ...downloadEnv(), NUPHOS_API_URL: url },
+      envs: { ...downloadEnv(), CERIN_API_URL: url },
       background: true,
     })
   } catch (error) {

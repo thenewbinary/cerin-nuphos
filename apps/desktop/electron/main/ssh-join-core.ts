@@ -147,7 +147,7 @@ export function sshJoinScript({ token, apiUrl }: { token: string; apiUrl: string
   const api = apiUrl && apiUrl !== 'https://platform.cerin.ai' ? apiUrl : null
 
   if (!SAFE.test(token) || (api && !SAFE.test(api))) throw new Error('Unexpected join token')
-  const env = [api && `NUPHOS_API_URL='${api}'`, `NUPHOS_JOIN_TOKEN='${token}'`]
+  const env = [api && `CERIN_API_URL='${api}'`, `CERIN_JOIN_TOKEN='${token}'`]
     .filter(Boolean)
     .join(' ')
 

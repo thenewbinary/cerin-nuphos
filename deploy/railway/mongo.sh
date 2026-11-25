@@ -17,7 +17,7 @@ for attempt in $(seq 1 120); do
     if (!admin.auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD)) quit(1);
     try { rs.status(); } catch (e) {
       if (e.code !== 94) throw e;
-      rs.initiate({_id:"rs0",members:[{_id:0,host:process.env.NUPHOS_MONGO_HOST+":27017"}]});
+      rs.initiate({_id:"rs0",members:[{_id:0,host:process.env.CERIN_MONGO_HOST+":27017"}]});
     }
     quit(db.hello().isWritablePrimary ? 0 : 1);
   ' >/dev/null 2>&1; then

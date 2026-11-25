@@ -96,13 +96,13 @@ type CreateTunnel<R, S, C, T> = (
 
 /**
  * The e2e suite's stand-in for an update a Cerin Desktop downloaded (scripts/e2e/second-computer.ts):
- * with NUPHOS_E2E_STAGED_UPDATE set, `cerin agent` reports that version staged, and its owner's
+ * with CERIN_E2E_STAGED_UPDATE set, `cerin agent` reports that version staged, and its owner's
  * Update runs `install`, as the Desktop quits to install it. Unset, the tunnel is made as before.
  */
 export function withE2eStagedUpdate<R, S, C, T>(
   install: () => void,
   create: CreateTunnel<R, S, C, T>,
-  version = process.env.NUPHOS_E2E_STAGED_UPDATE,
+  version = process.env.CERIN_E2E_STAGED_UPDATE,
 ): CreateTunnel<R, S, C, T> {
   if (!version) return create
   const app: AppUpdateStatus = { version: '0.0.0', update: { version, ready: true } }

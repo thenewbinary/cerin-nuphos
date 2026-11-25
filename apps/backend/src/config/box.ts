@@ -22,7 +22,7 @@ export type BoxConfig = {
 
 export function boxConfig(): BoxConfig {
   const apiKey = optional('INSTABOX_API_KEY')
-  const downloadUrl = optional('NUPHOS_BOX_DOWNLOAD_URL') ?? optional('BOX_DEV_DOWNLOAD_URL')
+  const downloadUrl = optional('CERIN_BOX_DOWNLOAD_URL') ?? optional('BOX_DEV_DOWNLOAD_URL')
 
   return {
     ...(downloadUrl ? { downloadUrl } : {}),
@@ -32,7 +32,7 @@ export function boxConfig(): BoxConfig {
     ...(optional('BOX_DEFAULT_MONTHLY_HOURS')
       ? { defaultMonthlyHours: boundedInt('BOX_DEFAULT_MONTHLY_HOURS', 0, { min: 0, max: 744 }) }
       : {}),
-    ...(optional('NUPHOS_BILLING_URL') ? { billingUrl: optional('NUPHOS_BILLING_URL') } : {}),
+    ...(optional('CERIN_BILLING_URL') ? { billingUrl: optional('CERIN_BILLING_URL') } : {}),
     instabox: apiKey
       ? {
           apiKey,

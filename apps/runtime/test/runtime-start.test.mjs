@@ -43,7 +43,7 @@ function run(env, home = mkdtempSync(join(tmpdir(), 'cerin-home-'))) {
     {
       env: {
         PATH: process.env.PATH,
-        NUPHOS_RUNTIME_WORKSPACE: workspace,
+        CERIN_RUNTIME_WORKSPACE: workspace,
         OPENAB_ACP_ENABLED: 'true',
         OPENAB_ACP_AUTH_KEY_FILE: keyFile,
         ...env,
@@ -79,14 +79,14 @@ test('a container handed a join token runs the CLI host instead, as a Box does',
       'writeSync(3, JSON.stringify({ argv: process.argv.slice(2), env: process.env }))',
   )
   const { env, keyFile } = start(
-    { HOME: home, NUPHOS_JOIN_TOKEN: 'nbj_token', NUPHOS_LOCAL_RUNTIME_DIR: bundle },
+    { HOME: home, CERIN_JOIN_TOKEN: 'nbj_token', CERIN_LOCAL_RUNTIME_DIR: bundle },
     home,
   )
 
   // The command it was given (openab) never runs, and no runtime password is made.
   assert.deepEqual(env.argv, [])
-  assert.equal(env.env.NUPHOS_AGENT_HOME, join(home, '.local/share/cerin/agent'))
-  assert.equal(env.env.NUPHOS_JOIN_TOKEN, 'nbj_token')
+  assert.equal(env.env.CERIN_AGENT_HOME, join(home, '.local/share/cerin/agent'))
+  assert.equal(env.env.CERIN_JOIN_TOKEN, 'nbj_token')
   assert.equal(env.env.OPENAB_ACP_CONTROL_KEY, undefined)
   assert.equal(existsSync(keyFile), false)
 })
@@ -102,7 +102,7 @@ test('back on the direct path, the credential of an earlier join is dropped', ()
 })
 
 test('without a join token the runtime starts as before', () => {
-  const { env } = start({ NUPHOS_JOIN_TOKEN: '', NUPHOS_LOCAL_RUNTIME_DIR: '/nonexistent' })
+  const { env } = start({ CERIN_JOIN_TOKEN: '', CERIN_LOCAL_RUNTIME_DIR: '/nonexistent' })
 
   assert.ok(env.OPENAB_ACP_CONTROL_KEY)
 })
@@ -189,7 +189,7 @@ test('the operator key is derived from a generated password', () => {
 
   assert.equal(
     env.OPENAB_ACP_CONTROL_KEY,
-    createHmac('sha256', env.OPENAB_ACP_AUTH_KEY).update('nuphos-runtime-control-v1').digest('hex'),
+    createHmac('sha256', env.OPENAB_ACP_AUTH_KEY).update('cerin-runtime-control-v1').digest('hex'),
   )
 })
 
@@ -332,10 +332,10 @@ test('with the console on, a stored password is left for openab to import, not e
   assert.match(tooShort.result.stderr, /at least 32/u)
 })
 
-test('with the console on, NUPHOS_RUNTIME_AUTOGEN_PASSWORD keeps the generated password', () => {
+test('with the console on, CERIN_RUNTIME_AUTOGEN_PASSWORD keeps the generated password', () => {
   const { env, stdout, keyFile } = start({
     OPENAB_RUNTIME_CONSOLE: 'true',
-    NUPHOS_RUNTIME_AUTOGEN_PASSWORD: 'true',
+    CERIN_RUNTIME_AUTOGEN_PASSWORD: 'true',
   })
   const password = readFileSync(keyFile, 'utf8').trim()
 
@@ -365,7 +365,7 @@ test('the workspace is laid out the way a provisioned pod lays it out', () => {
 
   // Starting again finds the layout in place and leaves it alone.
   const again = spawnSync('sh', [startScript, 'true'], {
-    env: { PATH: process.env.PATH, NUPHOS_RUNTIME_WORKSPACE: workspace },
+    env: { PATH: process.env.PATH, CERIN_RUNTIME_WORKSPACE: workspace },
     encoding: 'utf8',
   })
 
@@ -389,7 +389,7 @@ test('temp files Claude Code left mid-save are cleared before any agent starts',
 
 test('an unwritable workspace does not stop the runtime starting', () => {
   const result = spawnSync('sh', [startScript, 'true'], {
-    env: { PATH: process.env.PATH, NUPHOS_RUNTIME_WORKSPACE: '/proc/cerin-cannot-exist' },
+    env: { PATH: process.env.PATH, CERIN_RUNTIME_WORKSPACE: '/proc/cerin-cannot-exist' },
     encoding: 'utf8',
   })
 
@@ -408,7 +408,7 @@ test('with no command it becomes openab with the baked config', () => {
   const result = spawnSync('sh', [startScript], {
     env: {
       PATH: `${bin}:${process.env.PATH}`,
-      NUPHOS_RUNTIME_WORKSPACE: mkdtempSync(join(tmpdir(), 'cerin-start-')),
+      CERIN_RUNTIME_WORKSPACE: mkdtempSync(join(tmpdir(), 'cerin-start-')),
     },
     encoding: 'utf8',
   })

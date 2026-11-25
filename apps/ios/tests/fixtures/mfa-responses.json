@@ -19,7 +19,7 @@
   "GET /auth/social/login": {
     "status": 200,
     "headers": {
-      "X-Nuphos-Social-Providers": "google,apple"
+      "X-Cerin-Social-Providers": "google,apple"
     },
     "body": {}
   },

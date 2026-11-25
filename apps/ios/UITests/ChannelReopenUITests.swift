@@ -10,7 +10,7 @@ final class ChannelReopenUITests: XCTestCase {
     func testSecondChannelFromListLoads() {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
 
         let transcript = app.collectionViews["chat.transcript"].cells.firstMatch
@@ -44,7 +44,7 @@ final class ChannelReopenUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
 
         app.staticTexts["release-planning"].firstMatch.tap()

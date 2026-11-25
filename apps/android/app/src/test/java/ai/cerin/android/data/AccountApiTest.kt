@@ -69,7 +69,7 @@ class AccountApiTest {
         assertEquals("""{"email":"fixture@example.com","code":"123456"}""", body())
         requests.forEach {
             assertNull(it.header("Authorization"))
-            assertNull(it.header("x-nuphos-ai-consent-version"))
+            assertNull(it.header("x-cerin-ai-consent-version"))
             assertEquals("POST", it.method)
         }
     }
@@ -111,7 +111,7 @@ class AccountApiTest {
         requests.forEach {
             assertEquals("Bearer fixture-token", it.header("Authorization"))
             assertNotNull(it.header("x-atlas-client"))
-            assertNull(it.header("x-nuphos-ai-consent-version"))
+            assertNull(it.header("x-cerin-ai-consent-version"))
         }
     }
     @Test fun profileTrimsOnlyNameAndUsernameAndKeepsConflict() = runTest {
@@ -141,7 +141,7 @@ class AccountApiTest {
         api.requestCode("fixture@example.com")
         assertEquals("/auth/email/request-code", requests.last().url.encodedPath)
         assertNull(requests.last().header("Authorization"))
-        assertNull(requests.last().header("x-nuphos-ai-consent-version"))
+        assertNull(requests.last().header("x-cerin-ai-consent-version"))
         assertEquals("""{"email":"fixture@example.com"}""", body())
     }
     @Test fun invalidInputMakesZeroRequests() = runTest {

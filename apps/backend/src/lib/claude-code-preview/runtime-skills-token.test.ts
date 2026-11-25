@@ -37,7 +37,7 @@ describe('runtime skills token', () => {
   })
 })
 
-// The suite runs off-cluster with NUPHOS_PUBLIC_BACKEND_URL seeded and the
+// The suite runs off-cluster with CERIN_PUBLIC_BACKEND_URL seeded and the
 // backend url cleared, so an external session resolves to exactly that base.
 describe('skill bundle delivery over the session', () => {
   const backendUrl = config.agent.backendUrl
@@ -56,21 +56,21 @@ describe('skill bundle delivery over the session', () => {
       external: true,
     })
 
-    expect(managed.runtimeEnv?.NUPHOS_RUNTIME_SKILLS_URL).toBeUndefined()
-    expect(managed.runtimeEnv?.NUPHOS_RUNTIME_SKILLS_TOKEN).toBeUndefined()
-    expect(external.runtimeEnv?.NUPHOS_RUNTIME_SKILLS_URL).toBe(
+    expect(managed.runtimeEnv?.CERIN_RUNTIME_SKILLS_URL).toBeUndefined()
+    expect(managed.runtimeEnv?.CERIN_RUNTIME_SKILLS_TOKEN).toBeUndefined()
+    expect(external.runtimeEnv?.CERIN_RUNTIME_SKILLS_URL).toBe(
       'https://unit-test.invalid/internal/claude-code-runtime-skills/team-1',
     )
     // An owner's own turn may load their personal skills.
     expect(
-      verifyRuntimeSkillsToken(external.runtimeEnv?.NUPHOS_RUNTIME_SKILLS_TOKEN ?? ''),
+      verifyRuntimeSkillsToken(external.runtimeEnv?.CERIN_RUNTIME_SKILLS_TOKEN ?? ''),
     ).toEqual({ teamId: 'team-1', userId: 'user-1' })
     // A guest's turn names nobody: neither the guest's skills nor the owner's.
     const guest = await previewSessionAccess('conv-1', 'team-1', 'user-2', 'user-1', {
       external: true,
     })
 
-    expect(verifyRuntimeSkillsToken(guest.runtimeEnv?.NUPHOS_RUNTIME_SKILLS_TOKEN ?? '')).toEqual({
+    expect(verifyRuntimeSkillsToken(guest.runtimeEnv?.CERIN_RUNTIME_SKILLS_TOKEN ?? '')).toEqual({
       teamId: 'team-1',
     })
   })

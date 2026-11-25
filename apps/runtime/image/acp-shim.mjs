@@ -30,14 +30,14 @@ export const SESSION_META = 'ai.cerin/session'
 // Same principal-scoped keys the Codex adapter forwards; nothing else in the
 // session's env reaches the agent.
 const SESSION_ENV = new Set([
-  'NUPHOS_TOKEN',
-  'NUPHOS_BACKEND_URL',
-  'NUPHOS_TEAM_ID',
+  'CERIN_TOKEN',
+  'CERIN_BACKEND_URL',
+  'CERIN_TEAM_ID',
   'TEAM',
-  'NUPHOS_SESSION_ID',
-  'NUPHOS_SESSION_ACTOR',
-  'NUPHOS_PLAN_API_BASE',
-  'NUPHOS_PLAN_API_TOKEN',
+  'CERIN_SESSION_ID',
+  'CERIN_SESSION_ACTOR',
+  'CERIN_PLAN_API_BASE',
+  'CERIN_PLAN_API_TOKEN',
   // The backend clears these for a selected connector, so the runtime's own do
   // not beat it. Codex needs none of them: its shells inherit nothing.
   'AWS_ACCESS_KEY_ID',
@@ -66,9 +66,9 @@ export const PROVIDERS = {
       'acp',
       '--process-per-session',
       '--gemini-dir',
-      join(env.NUPHOS_AGENT_HOME, '.gemini'),
+      join(env.CERIN_AGENT_HOME, '.gemini'),
     ],
-    home: (runtimeHome) => ({ NUPHOS_AGENT_HOME: runtimeHome }),
+    home: (runtimeHome) => ({ CERIN_AGENT_HOME: runtimeHome }),
     // Reuse the existing first-prompt instruction path.
     instruct: null,
     // Keep separate Cerin turns separate: native ACP treats overlapping prompts as steering.
@@ -124,7 +124,7 @@ export const PROVIDERS = {
     // An agent directory of the session home's own: see pi-session.mjs.
     home: (runtimeHome, sessionHome, runtimeEnv) => ({
       PI_CODING_AGENT_DIR: piAgentDir(runtimeHome, sessionHome ?? runtimeHome),
-      PI_ACP_PI_COMMAND: runtimeEnv.NUPHOS_AGENT_EXECUTABLE || 'pi',
+      PI_ACP_PI_COMMAND: runtimeEnv.CERIN_AGENT_EXECUTABLE || 'pi',
     }),
     // pi-acp passes a session's MCP servers nowhere; Pi reads them from its agent directory.
     mcpServers: (env, servers) => writePiMcpServers(env.PI_CODING_AGENT_DIR, servers),
@@ -148,15 +148,15 @@ export function agentEnv(provider, context, runtimeEnv = process.env) {
     ),
   )
   const sessionHome = cerinSessionHomeEnv(env, runtimeEnv)
-  if (sessionHome.NUPHOS_SESSION_HOME)
+  if (sessionHome.CERIN_SESSION_HOME)
     for (const path of PROVIDERS[provider].shared ?? [])
-      shareFromRuntimeHome(path, sessionHome.NUPHOS_SESSION_HOME, runtimeHome)
+      shareFromRuntimeHome(path, sessionHome.CERIN_SESSION_HOME, runtimeHome)
   // The provider's home is pinned to the runtime's, after the session home moves HOME.
   return {
     ...runtimeEnv,
     ...env,
     ...sessionHome,
-    ...PROVIDERS[provider].home(runtimeHome, sessionHome.NUPHOS_SESSION_HOME, runtimeEnv),
+    ...PROVIDERS[provider].home(runtimeHome, sessionHome.CERIN_SESSION_HOME, runtimeEnv),
   }
 }
 
@@ -272,7 +272,7 @@ export function runShim({
     // A computer running the agent locally names its own CLI, which may be off PATH.
     const [command, ...args] = typeof spec.command === 'function' ? spec.command(env) : spec.command
     // An adapter runs the CLI itself, named to it in its home's environment.
-    const executable = spec.adapter ? command : env.NUPHOS_AGENT_EXECUTABLE || command
+    const executable = spec.adapter ? command : env.CERIN_AGENT_EXECUTABLE || command
     const child = spawnAgent([executable, ...args], env)
     agent = child
     agentEnvironment = env
@@ -437,11 +437,11 @@ export function runShim({
   const openSession = async (message) => {
     const context = sessionContext(message.params)
     const env = context?.env ? agentEnv(provider, context, runtimeEnv) : undefined
-    if (env && (env.NUPHOS_SESSION_HOME ?? '') !== boundHome) {
+    if (env && (env.CERIN_SESSION_HOME ?? '') !== boundHome) {
       // The agent runs under the runtime's own env, or the previous actor's when
       // a teammate now acts in the conversation; restart it under this one's
       // before it opens the session. The client already holds the initialize answer.
-      boundHome = env.NUPHOS_SESSION_HOME ?? ''
+      boundHome = env.CERIN_SESSION_HOME ?? ''
       start(env)
       if (initialize) await request('initialize', initialize.params)
     }

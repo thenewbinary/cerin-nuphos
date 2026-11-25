@@ -20,7 +20,7 @@ chat_b="https://platform.cerin.ai/teams/$team/agent/chat-design"
 
 launch() {
   local out
-  out=$(SIMCTL_CHILD_NUPHOS_PREVIEW_RESPONSES="$fixture" \
+  out=$(SIMCTL_CHILD_CERIN_PREVIEW_RESPONSES="$fixture" \
     xcrun simctl launch --terminate-running-process "$device" ai.cerin.ios -preview-home -preview-no-push "$@")
   pid=${out##*: }
 }

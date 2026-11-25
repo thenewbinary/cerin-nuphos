@@ -213,7 +213,7 @@ export function createCliBrowser(launch: () => Browser, harDir: string) {
       return text(
         await stopRecording(tab, {
           dir: harDir,
-          creator: { name: 'Cerin CLI', version: process.env.NUPHOS_CLI_VERSION ?? 'dev' },
+          creator: { name: 'Cerin CLI', version: process.env.CERIN_CLI_VERSION ?? 'dev' },
         }),
       )
     const { data } = await within(

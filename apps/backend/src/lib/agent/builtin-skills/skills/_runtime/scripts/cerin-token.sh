@@ -6,11 +6,11 @@
 #   auth_token="$(cerin_token)" || exit 1
 #
 # Lookup order:
-#   1. $OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN, the conversation token the runtime
+#   1. $OPENAB_CREDENTIALS_DIR/CERIN_TOKEN, the conversation token the runtime
 #      renews during a turn. When the directory is set it is the only source, so
-#      a revoked token is never replaced by the NUPHOS_TOKEN the process was
+#      a revoked token is never replaced by the CERIN_TOKEN the process was
 #      spawned with.
-#   2. NUPHOS_TOKEN.
+#   2. CERIN_TOKEN.
 #
 # It never reads ~/.config/cerin/*.yaml: that file holds the account's full
 # session token, which scripts must not use.
@@ -19,13 +19,13 @@ cerin_token() {
   local token=""
 
   if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-    token=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
+    token=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
   else
-    token="${NUPHOS_TOKEN:-}"
+    token="${CERIN_TOKEN:-}"
   fi
 
   if [[ -z "$token" ]]; then
-    echo "Cerin authorization is unavailable: run this from a Cerin agent conversation, which provides a short-lived NUPHOS_TOKEN." >&2
+    echo "Cerin authorization is unavailable: run this from a Cerin agent conversation, which provides a short-lived CERIN_TOKEN." >&2
     return 1
   fi
 

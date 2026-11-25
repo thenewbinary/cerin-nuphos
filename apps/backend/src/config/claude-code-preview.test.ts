@@ -10,8 +10,8 @@ const keys = [
   'CLAUDE_CODE_RUNTIME_DEV_AUTH_KEY',
   'CLAUDE_CODE_PREVIEW_TOKEN_ENCRYPTION_KEY',
   'NODE_ENV',
-  'NUPHOS_LOCAL_STACK',
-  'NUPHOS_JWT_SECRET',
+  'CERIN_LOCAL_STACK',
+  'CERIN_JWT_SECRET',
 ] as const
 const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]))
 
@@ -63,8 +63,8 @@ describe('local-stack token encryption key', () => {
   function localStack(nodeEnv: string) {
     for (const key of keys) delete process.env[key]
     process.env.NODE_ENV = nodeEnv
-    process.env.NUPHOS_LOCAL_STACK = 'true'
-    process.env.NUPHOS_JWT_SECRET = 'local-jwt-secret'
+    process.env.CERIN_LOCAL_STACK = 'true'
+    process.env.CERIN_JWT_SECRET = 'local-jwt-secret'
   }
 
   test('a local stack derives a stable 32-byte key from its JWT secret', () => {

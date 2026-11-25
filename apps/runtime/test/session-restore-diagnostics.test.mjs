@@ -13,8 +13,8 @@ const params = {
     claudeCode: {
       options: {
         env: {
-          NUPHOS_SESSION_ID: id,
-          NUPHOS_TOKEN: 'secret-must-not-be-recorded',
+          CERIN_SESSION_ID: id,
+          CERIN_TOKEN: 'secret-must-not-be-recorded',
         },
       },
     },

@@ -7,7 +7,7 @@ final class ConversationTriggersUITests: XCTestCase {
             .appending(path: "tests/fixtures/conversation-triggers-responses.json")
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-AppleInterfaceStyle", "Light"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         let tasks = app.tabBars.buttons["Tasks"].firstMatch
         XCTAssertTrue(tasks.waitForExistence(timeout: 15))

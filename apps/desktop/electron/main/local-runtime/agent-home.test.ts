@@ -273,7 +273,7 @@ test('a hosted pod’s owner uses the pod’s own Claude login; other members ke
   t.after(() => rmSync(dir, { recursive: true, force: true }))
   const data = path.join(dir, 'agent')
   const home = path.join(dir, 'home')
-  const prepare = podOwnerAgentHome('owner-1', data, { NUPHOS_AGENT_OWNER_ID: 'owner-1' }, home)
+  const prepare = podOwnerAgentHome('owner-1', data, { CERIN_AGENT_OWNER_ID: 'owner-1' }, home)
   const member = (id: string) => path.join(data, 'users', id)
 
   assert.equal(

@@ -9,7 +9,7 @@ final class RuntimesDesktopUITests: XCTestCase {
             .appending(path: "tests/fixtures/runtimes-desktop-responses.json")
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         // Computers is in the Account sheet since #3004.
         app.buttons["Account"].firstMatch.tap()

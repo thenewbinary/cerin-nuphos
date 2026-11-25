@@ -86,9 +86,9 @@ spec:
             capabilities:
               drop: ['ALL']
           env:
-            - name: NUPHOS_RELAY_ENDPOINT
+            - name: CERIN_RELAY_ENDPOINT
               value: RELAY_ENDPOINT_PLACEHOLDER
-            - name: NUPHOS_RELAY_TOKEN
+            - name: CERIN_RELAY_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: cerin-relay-agent
@@ -116,7 +116,7 @@ export function renderRelayInstallManifest(opts: {
   if (!image) {
     // Unreachable through the routes, which gate on relayConfigured(); explicit
     // so a future caller cannot render a manifest with a blank image.
-    throw new Error('NUPHOS_RELAY_AGENT_IMAGE is required to render an install manifest')
+    throw new Error('CERIN_RELAY_AGENT_IMAGE is required to render an install manifest')
   }
 
   return INSTALL_MANIFEST_TEMPLATE.replaceAll('RELAY_ENDPOINT_PLACEHOLDER', opts.agentEndpoint)

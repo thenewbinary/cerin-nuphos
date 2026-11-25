@@ -2287,7 +2287,7 @@ mod reader_loop_tests {
     #[test]
     fn stderr_tail_keeps_failures_and_never_a_credential() {
         let leaks = [
-            "NUPHOS_TOKEN=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.c2lnbmF0dXJl failed",
+            "CERIN_TOKEN=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.c2lnbmF0dXJl failed",
             "Error: request failed with eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.c2ln",
             "Error: AWS AKIAIOSFODNN7EXAMPLE was denied",
             "Error: connect postgres://admin:hunter2@db.internal:5432/app refused",

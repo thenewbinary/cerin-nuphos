@@ -7,7 +7,7 @@ description: Run hcloud CLI commands from the sandbox to inspect or change Hetzn
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -53,7 +53,7 @@ bash skills/hetzner/scripts/setup-credentials.sh <teamId> <accountId>
 ```
 
 The setup script uses the selected account for this agent session when
-`NUPHOS_SESSION_ID` is present, writes `~/.config/hcloud/cli.toml` with an
+`CERIN_SESSION_ID` is present, writes `~/.config/hcloud/cli.toml` with an
 active context, and also writes `~/.hetzner/cerin.env` exporting `HCLOUD_TOKEN`
 for tools that read it from the environment. `hcloud` prefers `HCLOUD_TOKEN`
 when it is set, so `source ~/.hetzner/cerin.env` if a later shell doesn't pick

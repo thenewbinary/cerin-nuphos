@@ -61,7 +61,7 @@ final class ComposerReturnUITests: XCTestCase {
 
     /// What the text view must still do besides Return: the placeholder, a
     /// final line break counted as a line, growing to eight lines and then
-    /// scrolling, and an image paste. Screenshots go to NUPHOS_SHOTS when set.
+    /// scrolling, and an image paste. Screenshots go to CERIN_SHOTS when set.
     func testFieldGrowsScrollsAndPastes() throws {
         let composer = try openComposer(hardwareKeys: false)
         shot("1-placeholder")
@@ -143,7 +143,7 @@ final class ComposerReturnUITests: XCTestCase {
     }
 
     private func shot(_ name: String) {
-        guard let dir = ProcessInfo.processInfo.environment["NUPHOS_SHOTS"] else { return }
+        guard let dir = ProcessInfo.processInfo.environment["CERIN_SHOTS"] else { return }
         try? XCUIScreen.main.screenshot().pngRepresentation.write(to: URL(filePath: dir).appending(path: "\(name).png"))
     }
 
@@ -162,7 +162,7 @@ final class ComposerReturnUITests: XCTestCase {
         try JSONSerialization.data(withJSONObject: responses).write(to: file, options: .atomic)
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"] + (markedText ? ["-preview-marked-text"] : [])
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": file.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": file.path]
         app.launch()
 
         app.staticTexts["Release notes"].firstMatch.tap()

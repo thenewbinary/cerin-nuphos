@@ -57,7 +57,7 @@ const rpc = async (method, params) => {
   return result.result
 }
 const config = (actor) => ({
-  shell_environment_policy: { inherit: 'core', set: { NUPHOS_SMOKE_ACTOR: actor } },
+  shell_environment_policy: { inherit: 'core', set: { CERIN_SMOKE_ACTOR: actor } },
 })
 const out = join(base, 'actor')
 // The actor a shell in the thread sees, through the thread's own environment.
@@ -65,7 +65,7 @@ const actorOf = async (threadId) => {
   rmSync(out, { force: true })
   await rpc('thread/shellCommand', {
     threadId,
-    command: `printf %s "$NUPHOS_SMOKE_ACTOR" > ${out}`,
+    command: `printf %s "$CERIN_SMOKE_ACTOR" > ${out}`,
   })
   for (let i = 0; i < 100 && !(existsSync(out) && readFileSync(out, 'utf8')); i++)
     await new Promise((settle) => setTimeout(settle, 100))

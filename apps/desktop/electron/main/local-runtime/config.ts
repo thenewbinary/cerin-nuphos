@@ -70,14 +70,14 @@ const AGENT_ENV_PASSTHROUGH = [
   'ComSpec',
   'PATHEXT',
   // A Linux Box with a desktop pool: the adapter adds a per-session cerin-desktop server.
-  'NUPHOS_DESKTOP_SESSION',
-  'NUPHOS_DESKTOP_POOL',
-  'NUPHOS_DESKTOP_POOL_SIZE',
+  'CERIN_DESKTOP_SESSION',
+  'CERIN_DESKTOP_POOL',
+  'CERIN_DESKTOP_POOL_SIZE',
 ]
 
 /** Must match `deriveRuntimeControlKey` in the backend and `cerin-runtime-start`. */
 export function deriveControlKey(authKey: string): string {
-  return createHmac('sha256', authKey).update('nuphos-runtime-control-v1').digest('hex')
+  return createHmac('sha256', authKey).update('cerin-runtime-control-v1').digest('hex')
 }
 
 function tomlString(value: string): string {
@@ -128,9 +128,9 @@ export function agentEnv(launch: LocalRuntimeLaunch): Record<string, string> {
     ...agentCliEnv(launch),
     MCP_TOOL_TIMEOUT: '1800000',
     MCP_TIMEOUT: '30000',
-    NUPHOS_MCP_BRIDGE: launch.adapter.bridge,
-    NUPHOS_CUA_PERMISSION_CLIENT: path.join(launch.bundle.root, 'cua-permission'),
-    NUPHOS_RUNTIME_WORKSPACE: launch.workspace,
+    CERIN_MCP_BRIDGE: launch.adapter.bridge,
+    CERIN_CUA_PERMISSION_CLIENT: path.join(launch.bundle.root, 'cua-permission'),
+    CERIN_RUNTIME_WORKSPACE: launch.workspace,
     ...shellGuardEnv(launch),
   }
 }
@@ -174,7 +174,7 @@ export function agentLoginEnv(launch: LocalRuntimeLaunch): Record<string, string
   return {
     ...cliEnv,
     ...(launch.provider === 'codex'
-      ? { CODEX_EXECUTABLE: launch.cliPath, NUPHOS_CODEX_AUTH_DIRECTORY: launch.agentHome }
+      ? { CODEX_EXECUTABLE: launch.cliPath, CERIN_CODEX_AUTH_DIRECTORY: launch.agentHome }
       : {}),
     OPENAB_RUNTIME_LOGIN_COMMAND: [
       ...prefix,
