@@ -32,7 +32,7 @@ pub fn join_token(arg: Option<&str>) -> Result<Option<String>> {
 }
 
 /// Where the host keeps this computer's identity and credential; the host gets it as `CERIN_AGENT_HOME`.
-fn agent_home() -> Result<PathBuf> {
+pub(crate) fn agent_home() -> Result<PathBuf> {
     if let Some(dir) = std::env::var_os("CERIN_AGENT_HOME") {
         return Ok(PathBuf::from(dir));
     }

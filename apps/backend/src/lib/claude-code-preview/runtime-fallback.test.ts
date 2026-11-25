@@ -63,7 +63,7 @@ useModels({
 })
 useAgentDb({
   getConversationBySessionId: async () => conversation,
-  agentMessages: () => ({ findOne: async () => null }),
+  agentMessages: () => ({ findOne: async () => null, find: () => ({ toArray: async () => [] }) }),
   agentConversations: () => ({
     updateOne: async (_filter: unknown, update: Record<string, unknown>) => {
       updates.push(update)
@@ -265,6 +265,16 @@ test('a failure that is not the agent’s does not move the conversation', async
   expect(updates).toEqual([])
 })
 
+test('a model its endpoint does not serve moves the conversation on down the list', async () => {
+  await fallBackAfterFailure(
+    'session',
+    new Error('Error code: 404 - model_not_found: The model `gpt-9` does not exist'),
+    'owner',
+  )
+
+  expect(moves).toEqual([{ to: 'b', reason: 'failure', claimed: true }])
+})
+
 test('a teammate’s turn falls back to a Box or team agent they may use, never a computer', async () => {
   usedPercent = { a: 95 }
   instances = [
@@ -331,6 +341,21 @@ test('a Codex usage limit counts as the agent failing, so the turn can fall back
         '**Internal Error** (code: -32603)\nInternal error\n> You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at 5:12 PM.',
         -32603,
         { code: -32603, message: 'Internal error' },
+      ),
+    ),
+  ).toBe(true)
+})
+
+test('Claude Code on a model its endpoint does not serve counts as the agent failing', () => {
+  const message =
+    "Internal error: There's an issue with the selected model (claude-e2e-retired). It may not exist or you may not have access to it."
+
+  expect(
+    runtimeFailed(
+      new OpenAbRpcError(
+        `**Internal Error** (code: -32603)\n${message}\n> {"errorKind":"model_not_found"}`,
+        -32603,
+        { code: -32603, message },
       ),
     ),
   ).toBe(true)

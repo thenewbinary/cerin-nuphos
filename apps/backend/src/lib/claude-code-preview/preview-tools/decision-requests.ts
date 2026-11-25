@@ -2,11 +2,12 @@
 // the questions it asked while they are still open in the user's Inbox.
 import { channelIdOf } from '@/lib/agent/channel-wake'
 import { agentConversations, agentMessages, getConversationBySessionId } from '@/lib/agent/db'
+import { SLACK_CHANNEL_SENDER_PREFIX } from '@/lib/agent/db/channel-notes'
 import { conversationParticipantIds } from '@/lib/agent/db/participants'
 import {
   listOpenInputRequests,
-  resolveInputRequest,
   updateInputRequest,
+  withdrawInputRequest,
 } from '@/lib/agent/db/pending-decision'
 import { botFace } from '@/lib/agent/mentions'
 import { parseMessageMetadata } from '@/lib/agent/message-metadata'
@@ -36,7 +37,24 @@ type RequestFollowUp = {
   questions?: DecisionQuestion[]
 }
 
-const NOT_OPEN = 'No open question has this requestId; the user may have answered it already.'
+const NOT_OPEN =
+  'No open question has this requestId: it was answered, dismissed or withdrawn. Any answer or dismissal reaches you as a message. Do not ask it again.'
+const CLOSED =
+  'The person already answered or dismissed this question; `notice` is what they said. Act on it now and do not ask it again. The same notice also arrives as a message after this turn.'
+
+/**
+ * A question answered while this turn runs: its answer waits behind the turn,
+ * so the agent gets it here instead of a question that seems lost.
+ */
+async function closedNotice(ctx: PreviewToolContext, requestId: string) {
+  const notice = (await queuedAnswers(requestOwner(ctx), ctx.sessionId)).get(
+    requestId,
+  )?.renderedText
+
+  return notice === undefined
+    ? undefined
+    : toolResult({ requestId, status: 'closed', notice, note: CLOSED })
+}
 
 /** The agent lists, corrects or withdraws the questions it asked while the user has not answered them. */
 const requestFollowUps = {
@@ -46,21 +64,34 @@ const requestFollowUps = {
     if (Object.keys(patch).length === 0)
       return toolError('Pass question, body, options, multiSelect or questions to change.')
 
-    return (await updateInputRequest(ctx.sessionId, requestOwner(ctx), requestId, patch))
-      ? toolResult({ ok: true, requestId, status: 'updated' })
-      : toolError(NOT_OPEN)
+    return (
+      (await closedNotice(ctx, requestId)) ??
+      ((await updateInputRequest(ctx.sessionId, requestOwner(ctx), requestId, patch))
+        ? toolResult({ ok: true, requestId, status: 'updated' })
+        : toolError(NOT_OPEN))
+    )
   },
   withdraw_user_decision: async (ctx: PreviewToolContext, { requestId }: RequestFollowUp) =>
-    (await resolveInputRequest(ctx.sessionId, requestOwner(ctx), requestId))
+    (await closedNotice(ctx, requestId)) ??
+    ((await withdrawInputRequest(ctx.sessionId, requestOwner(ctx), requestId))
       ? toolResult({ ok: true, requestId, status: 'withdrawn' })
-      : toolError(NOT_OPEN),
+      : toolError(NOT_OPEN)),
   list_user_decisions: async (ctx: PreviewToolContext) => {
     const owner = requestOwner(ctx)
-    // An answer waiting behind a running turn already settles its question.
-    const answering = new Set((await queuedAnswers(owner, ctx.sessionId)).keys())
-    const open = await listOpenInputRequests(ctx.sessionId, owner, answering)
+    // An answer waiting behind a running turn already settles its question: it is listed with that answer.
+    const answers = await queuedAnswers(owner, ctx.sessionId)
+    const open = await listOpenInputRequests(ctx.sessionId, owner, new Set(answers.keys()))
 
     return toolResult({
+      ...(answers.size
+        ? {
+            closed: [...answers].map(([requestId, { renderedText }]) => ({
+              requestId,
+              notice: renderedText,
+            })),
+            note: CLOSED,
+          }
+        : {}),
       requests: open.map(({ id, category, question, options, about, askedAt, snoozedUntil }) => ({
         requestId: id,
         category,
@@ -138,11 +169,12 @@ export async function aboutRefs(
 }
 
 /**
- * The channel a question is asked in: the one whose post woke the turn that
- * asks it, read from that turn's wake notice. Any other turn (a sub-agent's
- * report, a Trigger, an answer) asks in the Bot's chat with its owner, where
- * they talk to it, when it has exactly one open. Otherwise none is guessed,
- * nor for the questions a card answers by itself.
+ * The channel a question is asked in: the Cerin channel whose post woke the
+ * turn that asks it, read from that turn's wake notice. Any other turn (a
+ * sub-agent's report, a Trigger, an answer, a Slack post) asks in the Bot's
+ * chat with its owner, where they talk to it, when it has exactly one open.
+ * Otherwise none is guessed, nor for the questions a card answers by itself.
+ * A Slack channel is never one: its members may be people outside the team.
  */
 async function askedInChannel(
   ctx: PreviewToolContext,
@@ -155,9 +187,11 @@ async function askedInChannel(
     { sort: { index: -1 }, projection: { metadata: 1 } },
   )
   const metadata = parseMessageMetadata(latest?.metadata)
-  const channelId =
-    (metadata && channelIdOf({ source: metadata.source, metadata })) ??
-    (await botChat(ctx.sessionId, owner))
+  const woke =
+    metadata && !metadata.sender.id.startsWith(SLACK_CHANNEL_SENDER_PREFIX)
+      ? channelIdOf({ source: metadata.source, metadata })
+      : undefined
+  const channelId = woke ?? (await botChat(ctx.sessionId, owner))
 
   return channelId ? { channelId } : {}
 }
@@ -204,6 +238,7 @@ async function botChat(botId: string, owner: string): Promise<string | undefined
           userId: owner,
           kind: 'channel',
           agentSessionIds: [botId],
+          external: { $exists: false },
           archivedAt: { $exists: false },
         },
         { projection: { sessionId: 1, userId: 1, participantIds: 1 } },

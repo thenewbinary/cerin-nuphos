@@ -1,11 +1,12 @@
 import { MongoServerError } from 'mongodb'
 
 import { setupAutoModeIndexes } from '@/lib/agent/auto-mode/store'
-import { backfillConversationWatchers, setupAgentIndexes } from '@/lib/agent/db'
+import { setupAgentIndexes } from '@/lib/agent/db'
 import { setupDeviceAccessAuditIndexes } from '@/lib/agent/devices/access-audit'
 import { setupDeviceExecAuditIndexes } from '@/lib/agent/devices/audit'
 import { setupBoxUsageHistoryIndexes } from '@/lib/agent/devices/box-usage-history'
 import { setupDeviceGrantIndexes } from '@/lib/agent/devices/device-grants'
+import { setupForgottenDeviceIndexes } from '@/lib/agent/devices/forgotten-devices'
 import { setupDeviceJoinTokenIndexes } from '@/lib/agent/devices/join-tokens'
 import { setupLocalRuntimeActivityIndexes } from '@/lib/agent/devices/local-runtime/activity'
 import { dropOrphanedShareState } from '@/lib/agent/devices/local-share-orphans'
@@ -19,9 +20,12 @@ import { setupMemoryIngestEventIndexes } from '@/lib/agent/memory-slots/ingest-e
 import { setupPreviewMemoryActivityIndexes } from '@/lib/agent/memory-slots/preview-activity-store'
 import { setupPlanIndexes } from '@/lib/agent/plans'
 import { setupSkillMetadataIndexes } from '@/lib/agent/skill-store/metadata'
+import { setupTodoIndexes } from '@/lib/agent/todos'
 import { setupTokenUsageIndexes } from '@/lib/agent/token-usage'
 import { setupTriggerIndexes } from '@/lib/agent/trigger-db'
+import { setupReminderIndexes } from '@/lib/agent/reminders'
 import { setupTriggerHistoryIndexes } from '@/lib/agent/trigger-history'
+import { setupRuntimeAuthRefusalIndexes } from '@/lib/claude-code-preview/runtime-auth-refusal'
 import { setupRuntimeImageAuditIndexes } from '@/lib/claude-code-preview/runtime-image-audit'
 import { setupRuntimeLoginIndexes } from '@/lib/claude-code-preview/runtime-login-store'
 import { setupRuntimeMetricIndexes } from '@/lib/claude-code-preview/runtime-metrics-store'
@@ -43,6 +47,9 @@ import { logEvent } from '@/lib/observability'
 import { setupPushDeviceIndexes } from '@/lib/push/devices'
 import { setupLiveActivityIndexes } from '@/lib/push/live-activity-store'
 import { setupSlackAgentIndexes } from '@/lib/slack/agent-bot'
+import { unwatchExternalChats } from '@/lib/slack/external-chats'
+import { setupVaultIndexes } from '@/lib/vault'
+import { setupWebhookIndexes } from '@/lib/webhooks/store'
 import { setupCoreIndexes } from '@/models/indexes-core'
 import { agentInstructions } from '@/models/instructions'
 import {
@@ -79,6 +86,7 @@ export async function setupIndexes(): Promise<void> {
     ['core', setupCoreIndexes],
     ['identity', setupIdentityIndexes],
     ['email-otp', setupEmailOtpIndexes],
+    ['vault', setupVaultIndexes],
     ['token-revocation', setupTokenRevocationIndexes],
     ['password-login', setupPasswordIndexes],
     ['download-link-email', setupDownloadLinkEmailIndexes],
@@ -99,6 +107,8 @@ export async function setupIndexes(): Promise<void> {
     ['directory', setupDirectoryIndexes],
     ['triggers', setupTriggerIndexes],
     ['trigger-history', setupTriggerHistoryIndexes],
+    ['reminders', setupReminderIndexes],
+    ['todos', setupTodoIndexes],
     ['plans', setupPlanIndexes],
     ['skill-metadata', setupSkillMetadataIndexes],
     ['auto-mode', setupAutoModeIndexes],
@@ -119,6 +129,7 @@ export async function setupIndexes(): Promise<void> {
     ['push-devices', setupPushDeviceIndexes],
     ['push-live-activities', setupLiveActivityIndexes],
     ['agent-devices', setupAgentDeviceIndexes],
+    ['agent-devices-forgotten', setupForgottenDeviceIndexes],
     ['agent-device-shares', setupShareApprovalIndexes],
     ['agent-device-access', setupDeviceGrantIndexes],
     ['agent-device-share-trusts', setupShareTrustIndexes],
@@ -130,9 +141,11 @@ export async function setupIndexes(): Promise<void> {
     ['agent-device-exec-audit', setupDeviceExecAuditIndexes],
     ['agent-device-access-audit', setupDeviceAccessAuditIndexes],
     ['agent-device-runtime-sessions', setupLocalRuntimeActivityIndexes],
+    ['runtime-auth-refusals', setupRuntimeAuthRefusalIndexes],
     ['agent-instructions', setupAgentInstructionIndexes],
-    // Idempotent backfill, not an index; remove once every deployment ran it.
-    ['conversation-watchers', backfillConversationWatchers],
+    ['team-webhooks', setupWebhookIndexes],
+    // Idempotent cleanup, not an index; remove once every deployment ran it.
+    ['slack-external-chats-unwatched', unwatchExternalChats],
   ]
 
   // Build every group in parallel. The groups are independent, and on a

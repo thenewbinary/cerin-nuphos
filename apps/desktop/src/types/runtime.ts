@@ -1,5 +1,3 @@
-import type { BoxState } from '../api/device-types.ts'
-
 /** Every agent a team runtime can run. This computer's own agent is narrower: `LocalAgentProvider`. */
 export const AGENT_PROVIDERS = [
   'claude-code',
@@ -10,6 +8,7 @@ export const AGENT_PROVIDERS = [
   'hermes',
   'dsh',
   'pi',
+  'cursor',
 ] as const
 
 export type AgentProvider = (typeof AGENT_PROVIDERS)[number]
@@ -27,6 +26,17 @@ export const AGENT_PROVIDER: Record<
   hermes: { label: 'Hermes Agent', account: 'a model provider' },
   dsh: { label: 'DeepSeek Harness', account: 'DeepSeek', preview: true },
   pi: { label: 'Pi', account: 'a model provider', preview: true },
+  cursor: { label: 'Cursor', account: 'Cursor', preview: true },
+}
+
+/**
+ * An agent's entry. A newer backend can list an agent this build does not know yet; it is
+ * named by its id instead of taking the window down.
+ */
+export function agentProvider(provider: string): (typeof AGENT_PROVIDER)[AgentProvider] {
+  return Object.hasOwn(AGENT_PROVIDER, provider)
+    ? AGENT_PROVIDER[provider as AgentProvider]
+    : { label: provider, account: 'a model provider' }
 }
 
 export type LocalRuntimeSummary = {
@@ -52,14 +62,22 @@ export type LocalRuntimeSummary = {
   desktopOpen?: true
   /** The owner's own `claude` sign-in, last reported while away; null when the computer cannot tell. */
   signedIn: boolean | null
+  /** Someone lost access since it was signed in; only a sign-in through Cerin renews it. */
+  signInEnded?: true
+  /** Why the runtime CLI failed its existing startup probe. */
+  probeError?: string
+  /** Who signed it in through Cerin, and when, while it is signed in. */
+  signedInBy?: { userId: string; at: string }
   /** Seen signed in at least once; a host's default agent no one used, or a failed sign-in, has none. */
   everSignedIn?: true
   /** Provider usage that computer reported; the backend normalizes it. */
   usage?: unknown
   /** When that computer read the usage above. */
   usageAt?: string
-  /** Set when this computer is one of the owner's Boxes. */
-  box?: { state: BoxState }
+  /** Set when this computer is one of the owner's Boxes: who provides the machine, and no more.
+   *  The machine's state belongs to the device list (box-instabox-state.ts), which reads it from
+   *  the provider; this list is polled far too often to ask. */
+  box?: { provider: 'instabox' | 'k8s' }
   /** Set when it is a teammate's own computer they share with the viewer. */
   shared?: { level: 'approve' | 'full' }
 }
@@ -137,8 +155,6 @@ export type RuntimeQuota = {
   offline?: true
   plan?: string
   windows: RuntimeQuotaWindow[]
-  /** The other agents signed in to the same account: they run out together. */
-  sharesQuotaWith?: { runtimeId: string; label: string }[]
 }
 
 export type RuntimeMetricSample = {

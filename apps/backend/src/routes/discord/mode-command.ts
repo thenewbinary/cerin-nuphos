@@ -65,7 +65,7 @@ export async function handleDiscordModeCommand(
 
   if (!installation || !channel) return 'Cerin is not enabled for this thread.'
   if (!mapping || !(await getTeamMembership(mapping.cerinUserId, thread.teamId))) {
-    return 'Link your Discord account to this Cerin workspace first.'
+    return 'Link your Discord account to this Cerin team first.'
   }
   // Permission grants are actor scoped: nobody can disarm a teammate's gate.
   try {

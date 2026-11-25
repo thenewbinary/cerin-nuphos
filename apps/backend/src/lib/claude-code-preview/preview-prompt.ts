@@ -4,12 +4,14 @@
 // scripts) are adapted to the native runtime equivalents it actually has.
 
 import { getConversationBySessionId } from '@/lib/agent/db'
-import { OWNER_DECISION_NOTE } from '@/lib/agent/db/channel-notes'
+import { EXTERNAL_CHANNEL_NOTE, OWNER_DECISION_NOTE } from '@/lib/agent/db/channel-notes'
 import { agentConversations } from '@/lib/agent/db/shared'
 import { parseLocalRuntimeId } from '@/lib/agent/devices/local-runtime/address'
 import { getAgentDevice } from '@/lib/agent/devices/store'
 import { getSystemPrompt } from '@/lib/agent/system-prompt'
+import { COMPUTER_CARDS } from '@/lib/agent/tools-skilled/decision-tools'
 import { isUnnamedTask } from '@/lib/agent/title-fallback'
+import { turnPending } from '@/lib/agent/todos'
 import { generateContextPrompt, parseUrlContext } from '@/lib/agent/url-context'
 import { loadInstructionsBlock } from '@/lib/instructions/prompt'
 import {
@@ -18,7 +20,6 @@ import {
   buildCerinLinksMessage,
   buildTurnRulesMessage,
 } from '@/routes/agent/chat-system-messages'
-import { MODEL_OUTPUT_BUDGET_TOKENS } from '@/routes/agent/constants'
 import { getAgentCredentialOptions } from '@/routes/agent/credential-options'
 import { renderAgentCredentialPrompt } from '@/routes/agent/credential-prompt'
 import { safePromptField } from '@/routes/agent/credential-prompt-sections'
@@ -43,9 +44,6 @@ export type PreviewPromptArgs = {
   teamId: string
   sessionId: string
   locale: string
-  kubeContext?: string
-  diagramId?: string
-  currentUrl?: string | null
   slackThread?: { teamId: string; channelId: string; threadTs: string }
   /** The runtime the turn runs on; a computer's own agent is told it runs there. */
   runtimeId?: string | null
@@ -76,7 +74,7 @@ async function runtimeWhere(runtimeId: string | null | undefined): Promise<strin
 
   if (!device) return 'inside the team sandbox'
 
-  return `on ${safePromptField(device.label)}, the computer this conversation runs on: your shell, files${device.box ? ' and the `cerin-desktop` tools for this conversation’s own desktop (the user watches it in Cerin; a page or website the user asks to open, or "a browser", goes to local_browser, the Cerin browser, shown to them with its show action; use this desktop’s Web Browser launcher, with get_app_state and click and not the shell, only when they ask for this desktop or local_browser cannot run; ignore MACHINE.md’s notes about display :1 and an instabox dashboard)' : ''} are there, and local_exec is for the user's other devices, only when they ask for one`
+  return `on ${safePromptField(device.label)}, the computer this conversation runs on: your shell, files${device.box ? ' and the `cerin-desktop` tools for this conversation’s own desktop (the user watches it in Cerin; a page or website the user asks to open, or "a browser", goes to local_browser, the Cerin browser, shown to them with its show action; use this desktop’s Web Browser launcher, with get_app_state and click and not the shell, only when they ask for this desktop or local_browser cannot run' + (COMPUTER_CARDS ? '; a sign-in or human check only the user can do goes on this desktop, handed to them with a request_user_decision `computer` card' : '') + '; ignore MACHINE.md’s notes about display :1 and an instabox dashboard)' : ''} are there, and local_exec is for the user's other devices, only when they ask for one`
 }
 
 const DASHBOARDS_RUNTIME_NOTE =
@@ -107,7 +105,9 @@ const TASK_NAME_NOTE =
 async function taskNameSection(sessionId: string): Promise<string | null> {
   const conversation = await getConversationBySessionId(sessionId)
 
-  return conversation && isUnnamedTask(conversation) ? TASK_NAME_NOTE : null
+  // A Task's first turn can run before its record exists: it is named after that first
+  // message, so it is unnamed, and its next turn must not see a different prompt (#4087).
+  return !conversation || isUnnamedTask(conversation) ? TASK_NAME_NOTE : null
 }
 
 /**
@@ -117,14 +117,22 @@ async function taskNameSection(sessionId: string): Promise<string | null> {
 async function channelsSection(sessionId: string): Promise<string | null> {
   const channels = await agentConversations()
     .find({ kind: 'channel', agentSessionIds: sessionId, archivedAt: { $exists: false } })
-    .project<{ sessionId: string }>({ _id: 0, sessionId: 1 })
+    .project<{ sessionId: string; external?: string }>({ _id: 0, sessionId: 1, external: 1 })
     .toArray()
 
   if (channels.length === 0) return null
   // Ids only: a title is free text the channel's creator, maybe not the owner, chose.
-  const ids = channels.map((channel) => channel.sessionId).join(', ')
+  const ids = (list: typeof channels) => list.map((channel) => channel.sessionId).join(', ')
+  const slack = channels.filter((channel) => channel.external)
+  const cerin = channels.filter((channel) => !channel.external)
 
-  return `## Channels you are in\nYou are a member of the channels ${ids}; channel_read shows who is in each. The people in a channel see you only there: nothing you write in this conversation reaches them, and only channel_post does. Whatever woke this turn (a channel, a sub-agent, an Inbox answer, a Trigger, a Cerin notice or your owner here), when it produced something a channel's people are meant to see, such as a result, a finding or a blocker for work they asked for, post it in that channel with channel_post. ${OWNER_DECISION_NOTE}`
+  return [
+    `## Channels you are in\nYou are a member of the channels ${ids(channels)}; channel_read shows who is in each. The people in a channel see you only there: nothing you write in this conversation reaches them, and only channel_post does. Whatever woke this turn (a channel, a sub-agent, an Inbox answer, a Trigger, a Cerin notice or your owner here), when it produced something a channel's people are meant to see, such as a result, a finding or a blocker for work they asked for, post it in that channel with channel_post.`,
+    cerin.length ? OWNER_DECISION_NOTE : '',
+    slack.length ? `Slack channels: ${ids(slack)}. ${EXTERNAL_CHANNEL_NOTE}` : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 }
 
 /** Build credential context and permission recovery guidance together. */
@@ -153,31 +161,61 @@ async function credentialAndPermissionWallSections(
   }
 }
 
+// The notes are written for Claude Code. Grok Build reads `.claude/skills` as well;
+// Codex, Antigravity, OpenCode and DeepSeek Harness read the `.agents/skills` link to it.
+function forProvider(provider: OpenAbProvider = 'claude-code', text: string | null) {
+  return text === null || provider === 'claude-code'
+    ? text
+    : text
+        .replaceAll('Claude Code', runtimeLabel(provider))
+        .replaceAll('.claude/skills', provider === 'grok' ? '.claude/skills' : '.agents/skills')
+}
+
+/**
+ * Where the person is as they send this turn: the page, the diagram and the kubeconfig context
+ * of their tab, and what the Task still waits on. It changes from turn to turn, so it leads the
+ * turn instead of sitting in the system prompt, which a running agent reloads for when it changes
+ * (#4087).
+ */
+export async function withPageContext(
+  turnContext: string | undefined,
+  args: {
+    provider?: OpenAbProvider
+    kubeContext?: string
+    diagramId?: string
+    currentUrl?: string | null
+    sessionId?: string
+    teamId?: string | null
+  },
+): Promise<string | undefined> {
+  const lead = [
+    turnContext,
+    buildKubeContextMessage(args.kubeContext),
+    forProvider(args.provider, buildDiagramMessage(args.diagramId, { nativeClaudeSkills: true })),
+    await urlContextSection(args.currentUrl),
+    args.teamId && args.sessionId && (await turnPending(args.teamId, args.sessionId)),
+  ]
+    .filter(Boolean)
+    .join('\n\n')
+
+  return lead || undefined
+}
+
 /** The text appended to Claude Code's system prompt for one conversation. */
 export async function buildPreviewSystemPrompt(args: PreviewPromptArgs): Promise<string> {
-  const [base, cloudAccess, urlContext, instructions, where, taskName, channels] =
-    await Promise.all([
-      getSystemPrompt(args.locale, { max_output_tokens: MODEL_OUTPUT_BUDGET_TOKENS }),
-      credentialAndPermissionWallSections(args).catch(() => ({
-        credentials: '',
-        permissionWall: '',
-      })),
-      urlContextSection(args.currentUrl),
-      loadInstructionsBlock(args.teamId, args.userId, args.sessionId),
-      runtimeWhere(args.runtimeId).catch(() => 'inside the team sandbox'),
-      taskNameSection(args.sessionId).catch(() => null),
-      channelsSection(args.sessionId).catch(() => null),
-    ])
+  const [base, cloudAccess, instructions, where, taskName, channels] = await Promise.all([
+    getSystemPrompt(args.locale),
+    credentialAndPermissionWallSections(args).catch(() => ({
+      credentials: '',
+      permissionWall: '',
+    })),
+    loadInstructionsBlock(args.teamId, args.userId, args.sessionId),
+    runtimeWhere(args.runtimeId).catch(() => 'inside the team sandbox'),
+    taskNameSection(args.sessionId).catch(() => null),
+    channelsSection(args.sessionId).catch(() => null),
+  ])
 
-  // The notes are written for Claude Code. Grok Build reads `.claude/skills` as well;
-  // Codex, Antigravity, OpenCode and DeepSeek Harness read the `.agents/skills` link to it.
-  const provider = args.provider ?? 'claude-code'
-  const nativeText = (text: string | null) =>
-    text === null || provider === 'claude-code'
-      ? text
-      : text
-          .replaceAll('Claude Code', runtimeLabel(provider))
-          .replaceAll('.claude/skills', provider === 'grok' ? '.claude/skills' : '.agents/skills')
+  const nativeText = (text: string | null) => forProvider(args.provider, text)
 
   return [
     base.prompt,
@@ -194,9 +232,6 @@ export async function buildPreviewSystemPrompt(args: PreviewPromptArgs): Promise
     nativeText(cloudAccess.permissionWall),
     TOOL_MEMORY_BUDGET_NOTE,
     MEMORY_SCOPE_NOTE,
-    buildKubeContextMessage(args.kubeContext),
-    nativeText(buildDiagramMessage(args.diagramId, { nativeClaudeSkills: true })),
-    urlContext,
     buildTurnRulesMessage(),
     nativeText(DASHBOARDS_RUNTIME_NOTE),
     BACKGROUND_MONITOR_NOTE,

@@ -88,6 +88,15 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
         var questions: [DecisionQuestion]? = nil
         /// ISO time its owner snoozed it until: out of their Inbox till then, still answerable where it was asked.
         var snoozedUntil: String? = nil
+        /// The desktop a `computer` question hands over: answered with I'm done or Skip, beside it live.
+        var desktop: ComputerDesktop? = nil
+    }
+
+    /// The Box display a `computer` question hands over, and the title its card shows.
+    struct ComputerDesktop: Codable, Equatable, Hashable, Sendable {
+        let deviceId: String
+        let display: Int
+        let title: String
     }
 
     /// One input of a card that asks for a web form's details: its file name and what the person reads.
@@ -123,6 +132,8 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
     /// The owner, or a teammate invited to manage it: may switch the mode and
     /// the agent, and archive it.
     let canManage: Bool
+    /// The owner archives it for everyone; someone else in a Task, for themselves.
+    let canArchive: Bool
     let tokenUsage: TokenUsage?
     let activitySource: ActivitySource?
     /// `cerin` | `claude-code` | `codex` | `grok` | `antigravity` | `opencode` | `dsh`.
@@ -148,6 +159,9 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
     var faces: [ChatFace]?
     /// A chat's agent members, all of them; a Bot in any chat needs no row of its own.
     var agentSessionIds: [String]?
+    /// The folder a Task works in; Tasks group under it as projects, as on Desktop.
+    var workspace: Workspace?
+    struct Workspace: Codable, Equatable, Hashable, Sendable { var path: String? }
     /// A Bot's face, e.g. `05-rembrandt`; nil for a Task (#1691).
     var avatar: String?
     /// The tint a Bot's face sits on, e.g. `sky`; nil for none (#3504).
@@ -157,6 +171,8 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
     /// Open questions, oldest first; absent when there are none.
     var inputRequests: [InputRequest]?
     var botOnboarding: String?
+    /// A Bot's standing instructions, in full; its owner rewrites them in Bot details (#4084).
+    var instructions: String?
 
     var id: String { sessionId }
 
@@ -193,6 +209,9 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
         return isChannel ? String(localized: "New Group Chat") : String(localized: "Untitled task")
     }
 
+    /// A project row on Tasks, which stands for a folder rather than a conversation.
+    var isProject: Bool { sessionId.hasPrefix(ConversationNesting.projectPrefix) }
+
     /// An open question waits on the viewer.
     var attentionInputRequests: [InputRequest] { (inputRequests ?? []).filter { !["pending", "active"].contains(botOnboarding ?? "") || $0.category != "preference" } }
     var isWaiting: Bool { !attentionInputRequests.isEmpty }
@@ -212,6 +231,7 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
         isOwner = try c.decodeIfPresent(Bool.self, forKey: .isOwner)
         readOnly = try c.decodeIfPresent(Bool.self, forKey: .readOnly)
         canManage = try c.decodeIfPresent(Bool.self, forKey: .canManage) ?? (isOwner == true && readOnly != true)
+        canArchive = try c.decodeIfPresent(Bool.self, forKey: .canArchive) ?? canManage
         tokenUsage = try c.decodeIfPresent(TokenUsage.self, forKey: .tokenUsage)
         activitySource = try c.decodeIfPresent(ActivitySource.self, forKey: .activitySource)
         agentRuntime = try c.decodeIfPresent(String.self, forKey: .agentRuntime)
@@ -227,11 +247,13 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
         group = try? c.decodeIfPresent(Bool.self, forKey: .group)
         faces = try? c.decodeIfPresent([ChatFace].self, forKey: .faces)
         agentSessionIds = try? c.decodeIfPresent([String].self, forKey: .agentSessionIds)
+        workspace = try? c.decodeIfPresent(Workspace.self, forKey: .workspace)
         avatar = try? c.decodeIfPresent(String.self, forKey: .avatar)
         avatarBackground = try? c.decodeIfPresent(String.self, forKey: .avatarBackground)
         lastMessage = try? c.decodeIfPresent(LastMessage.self, forKey: .lastMessage)
         inputRequests = try? c.decodeIfPresent([InputRequest].self, forKey: .inputRequests)
         botOnboarding = try? c.decodeIfPresent(String.self, forKey: .botOnboarding)
+        instructions = try? c.decodeIfPresent(String.self, forKey: .instructions)
     }
 
     init(
@@ -254,6 +276,7 @@ struct AgentConversation: Codable, Identifiable, Equatable, Hashable, Sendable {
         self.isOwner = isOwner
         self.readOnly = readOnly
         canManage = isOwner == true && readOnly != true
+        canArchive = canManage
         self.tokenUsage = tokenUsage
         self.activitySource = activitySource
         self.agentRuntime = agentRuntime
@@ -315,17 +338,6 @@ extension Array where Element == SessionResource {
     }
 }
 
-extension Array where Element == AgentConversation {
-    /// A fresh first page over the rows already listed: page one as the
-    /// server returns it, then the later rows it no longer covers. Nothing a
-    /// refresh misses is dropped, so a chat that leaves the list has to be
-    /// removed by whoever took it out.
-    func refreshed(firstPage: [AgentConversation]) -> [AgentConversation] {
-        let ids = Set(firstPage.map(\.sessionId))
-        return firstPage + filter { !ids.contains($0.sessionId) }
-    }
-}
-
 struct AgentConversationsPage: Codable, Sendable {
     let conversations: [AgentConversation]
     /// The page's threads' parents that another page lists, so a thread nests
@@ -376,6 +388,8 @@ struct AgentConversationDetail: Decodable, Sendable {
         var cause: String? = nil
         /// `agent_reply_failed`: when an agent out of usage gets it back.
         var resetsAt: Date? = nil
+        /// `agent_reply_failed`: where the account's holder verifies it, when its provider holds it until they do.
+        var verifyUrl: URL? = nil
     }
 
     let messages: [ChatMessage]
@@ -385,7 +399,10 @@ struct AgentConversationDetail: Decodable, Sendable {
     let runtimeState: JSONValue?
     let isOwner: Bool?
     let canManage: Bool?
+    let canArchive: Bool?
     let readOnly: Bool?
+    /// Whether Share is offered: never on a Bot or a Task an agent opened. Nil from an older server.
+    let shareable: Bool?
     let title: String?
     /// The conversation's stored IAM choice (`AgentCredentialAccess`).
     let credentialAccess: JSONValue?
@@ -439,7 +456,7 @@ struct AgentConversationDetail: Decodable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case avatar, faces, group, kind, messageCount, transcriptUpdatedAt, isOwner, canManage, messages, messagesFirstIndex, activeRun, runtimeState, readOnly, title, credentialAccess, credentialSource, agentRuntime, runtimeId, runtimeLabel, archivedAt, activitySeq, readSeq, watching, timelineEvents, waitingAnswers, promptSuggestion
+        case avatar, faces, group, kind, messageCount, transcriptUpdatedAt, isOwner, canManage, canArchive, messages, messagesFirstIndex, activeRun, runtimeState, readOnly, shareable, title, credentialAccess, credentialSource, agentRuntime, runtimeId, runtimeLabel, archivedAt, activitySeq, readSeq, watching, timelineEvents, waitingAnswers, promptSuggestion
     }
 
     init(from decoder: Decoder) throws {
@@ -455,7 +472,9 @@ struct AgentConversationDetail: Decodable, Sendable {
         runtimeState = try c.decodeIfPresent(JSONValue.self, forKey: .runtimeState)
         isOwner = try c.decodeIfPresent(Bool.self, forKey: .isOwner)
         canManage = try c.decodeIfPresent(Bool.self, forKey: .canManage)
+        canArchive = try c.decodeIfPresent(Bool.self, forKey: .canArchive)
         readOnly = try c.decodeIfPresent(Bool.self, forKey: .readOnly)
+        shareable = try? c.decodeIfPresent(Bool.self, forKey: .shareable)
         title = try c.decodeIfPresent(String.self, forKey: .title)
         credentialAccess = try? c.decodeIfPresent(JSONValue.self, forKey: .credentialAccess)
         followsBot = c.contains(.credentialSource)

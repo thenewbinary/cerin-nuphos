@@ -51,14 +51,14 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
   private readonly socket: AcpSocket
   private readonly callTimeoutMs: number
   private readonly promptTimeoutMs: number
-  private readonly promptProgressTimeoutMs: number
+  private readonly promptWindows: [progressMs: number, firstOutputMs: number]
   private readonly retireGraceMs: number
   private constructor(connection: OpenAbAcpConnection) {
     super()
     this.socket = connection.socket
     this.callTimeoutMs = connection.callTimeoutMs
     this.promptTimeoutMs = connection.promptTimeoutMs
-    this.promptProgressTimeoutMs = connection.promptProgressTimeoutMs
+    this.promptWindows = [connection.promptProgressTimeoutMs, connection.promptFirstOutputTimeoutMs]
     this.retireGraceMs = connection.retireGraceMs
     connection.socket.addEventListener('message', this.onMessage)
     connection.socket.addEventListener('close', this.onDisconnect)
@@ -72,9 +72,8 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
     return this.call('initialize', ACP_INITIALIZE_PARAMS, {}, this.callTimeoutMs, true)
   }
   /**
-   * Creates the session and reports the settings the runtime started it with.
-   * `session/new` names them, so the chip can show the model during the very
-   * first turn instead of waiting for the turn to settle.
+   * Creates the session. Its settings come up once the agent's own session
+   * opens, as a `config_option_update` (see `createdSession`).
    */
   async createSession(
     cwd: string,
@@ -149,7 +148,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
       },
       this.promptTimeoutMs,
       false,
-      this.promptProgressTimeoutMs,
+      ...this.promptWindows,
     )
   }
   cancel(sessionId: string, requireDelivery = false): void {
@@ -171,6 +170,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
     timeoutMs = this.callTimeoutMs,
     closeOnTimeout = false,
     progressWindowMs = 0,
+    firstOutputMs = 0,
   ): Promise<JsonRpcResult> {
     const id = this.nextId++
 
@@ -186,7 +186,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
           if (!timer.stalled()) this.retireTransport()
         } else if (closeOnTimeout) this.closeSocket()
       }
-      const timer = createCallTimer(onTimeout, timeoutMs, progressWindowMs)
+      const timer = createCallTimer(onTimeout, timeoutMs, progressWindowMs, firstOutputMs)
 
       this.pending.set(id, { resolve, reject, timer: timer.arm(), arm: timer.arm, ...context })
       this.socket.send(JSON.stringify({ jsonrpc: '2.0', id, method, params }))

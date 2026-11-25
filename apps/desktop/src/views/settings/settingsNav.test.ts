@@ -2,9 +2,14 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
 import { withRenamedPage } from '../../app/workspacePersistence.ts'
-import { emptyNavigation } from '../../lib/appRoutes.ts'
+import { emptyNavigation, navigationFromAppPath } from '../../lib/appRoutes.ts'
 
-import { settingsLinkTarget, settingsNavGroups, settingsSectionForPage } from './settingsNav.ts'
+import {
+  filterSettingsNavGroups,
+  settingsLinkTarget,
+  settingsNavGroups,
+  settingsSectionForPage,
+} from './settingsNav.ts'
 
 const team = { kind: 'team', teamId: 'aaaaaaaaaaaaaaaaaaaaaaaa' } as const
 
@@ -45,6 +50,17 @@ test("a Settings link opens the link's team, not the one on screen", () => {
   assert.equal(settingsLinkTarget(emptyNavigation(team, 'team.plans'), [team.teamId]), undefined)
 })
 
+test("a team's billing link opens its Billing settings", () => {
+  const link = navigationFromAppPath(`/teams/${team.teamId}/settings/billing`)
+
+  assert.ok(link)
+  assert.deepEqual(settingsLinkTarget(link, [team.teamId]), {
+    section: 'workspace.billing',
+    filter: undefined,
+    teamId: team.teamId,
+  })
+})
+
 test('Triggers are managed in conversations, not Team Settings', () => {
   assert.equal(settingsSectionForPage('team.triggers'), undefined)
   assert.equal(settingsSectionForPage('team.schedule'), undefined)
@@ -53,4 +69,16 @@ test('Triggers are managed in conversations, not Team Settings', () => {
       .flatMap((group) => group.items)
       .some((item) => item.key === 'workspace.triggers'),
   )
+})
+
+test('searching for what the Privacy switch turns off finds Privacy', () => {
+  const groups = settingsNavGroups('user')
+  const keys = (query: string) =>
+    filterSettingsNavGroups(groups, query).flatMap((group) => group.items.map((item) => item.key))
+
+  for (const query of ['privacy', 'Usage data', 'crash', 'analytics', 'Telemetry']) {
+    assert.deepEqual(keys(query), ['device.privacy'], query)
+  }
+  assert.deepEqual(keys('two-factor'), ['account.mfa'])
+  assert.deepEqual(keys('no such setting'), [])
 })

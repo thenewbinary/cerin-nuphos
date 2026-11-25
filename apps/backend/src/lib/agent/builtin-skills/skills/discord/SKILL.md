@@ -1,6 +1,6 @@
 ---
 name: discord
-description: Read and act in the team's Discord server through the Cerin API — find the channel and thread a conversation came from, read recent messages, pins and threads, search messages, look up members, post a message, and add a reaction. Use for anything that involves Discord: every turn that arrives from Discord, and whenever the user asks about, quotes, or wants something posted to a Discord channel.
+description: "Read and act in the team's Discord: channels, threads, pins, search, members, posting and reactions. Use on every Discord turn and whenever Discord is mentioned."
 ---
 
 # Discord
@@ -40,7 +40,7 @@ on non-2xx responses. Put request bodies in files.
   user was in when they mentioned you; `rootMessageId` is that mention.
 
 `409 discord_not_installed` means the team has not connected Discord. Say so
-and point to Settings → Integrations; do not look for another route.
+and point to Settings → Connectors; do not look for another route.
 
 ## When a Discord message does not say what it means
 

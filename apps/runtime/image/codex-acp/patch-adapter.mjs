@@ -149,8 +149,15 @@ export function patchAdapter(source, helper) {
     warning +
       '    if (event.message.startsWith("Codex couldn\'t save diagnostic logs")) return null;\n',
   )
+  // A prompt can carry changed standing instructions; see cerinInjectInstructions.
+  const turn = '    return await this.codexClient.runTurn({'
+  if (quiet.split(turn).length !== 2) throw new Error('Expected one Codex turn start')
+  const instructed = quiet.replace(
+    turn,
+    '    await cerinInjectInstructions(this.codexClient, request);\n' + turn,
+  )
   // request_user_input asks through Cerin; see native-question.mjs.
-  const asking = patchCodexTurnUsage(patchCodexUltrafast(patchCodexUserInput(quiet)))
+  const asking = patchCodexTurnUsage(patchCodexUltrafast(patchCodexUserInput(instructed)))
   const nativeQuestion = readFileSync(
     new URL('../native-question.mjs', import.meta.url),
     'utf8',

@@ -279,6 +279,71 @@ describe('OpenAbAcpClient', () => {
     })
   })
 
+  test('gives up early on a prompt with no model output, before the progress window', async () => {
+    const h = harness()
+    const client = await OpenAbAcpClient.connect({
+      url: 'wss://openab.example/acp',
+      authKey: 'transport-key',
+      socketFactory: h.connect,
+      promptTimeoutMs: 1_000,
+      promptFirstOutputTimeoutMs: 60,
+      promptProgressTimeoutMs: 5_000,
+    })
+    const prompting = client.prompt('sess-silent', 'hello', () => {})
+
+    await nextSent(h.socket(), 0)
+    // The provider never answers: the agent only reports liveness.
+    const heartbeats = setInterval(() => {
+      h.socket().receive({
+        jsonrpc: '2.0',
+        method: 'session/update',
+        params: { sessionId: 'sess-silent', update: { sessionUpdate: 'session_info_update' } },
+      })
+    }, 10)
+
+    try {
+      await expect(prompting).rejects.toThrow('session/prompt timed out: no model output')
+    } finally {
+      clearInterval(heartbeats)
+    }
+    expect(JSON.parse(h.socket().sent.at(-1)!)).toEqual({
+      jsonrpc: '2.0',
+      method: 'session/cancel',
+      params: { sessionId: 'sess-silent' },
+    })
+  })
+
+  test('the first-output window ends with the first model output', async () => {
+    const h = harness()
+    const client = await OpenAbAcpClient.connect({
+      url: 'wss://openab.example/acp',
+      authKey: 'transport-key',
+      socketFactory: h.connect,
+      promptTimeoutMs: 1_000,
+      promptFirstOutputTimeoutMs: 60,
+      promptProgressTimeoutMs: 5_000,
+    })
+    let settled = false
+    const prompting = client
+      .prompt('sess-slow', 'hello', () => {})
+      .finally(() => {
+        settled = true
+      })
+    const promptFrame = await nextSent(h.socket(), 0)
+
+    await Bun.sleep(30)
+    h.socket().receive({
+      jsonrpc: '2.0',
+      method: 'session/update',
+      params: { sessionId: 'sess-slow', update: { sessionUpdate: 'agent_thought_chunk' } },
+    })
+    await Bun.sleep(120)
+    expect(settled).toBe(false)
+
+    h.socket().receive({ jsonrpc: '2.0', id: promptFrame.id, result: { stopReason: 'end_turn' } })
+    await expect(prompting).resolves.toEqual({ stopReason: 'end_turn' })
+  })
+
   test('keeps a turn alive past the progress window while tools keep reporting', async () => {
     const h = harness()
     const client = await OpenAbAcpClient.connect({
@@ -932,48 +997,6 @@ describe('OpenAbAcpClient', () => {
       result: { _meta: { 'dev.openab/sessionAlive': true } },
     })
     expect(await third).toEqual({ alive: true })
-  })
-
-  test('reports the settings session/new started the session with', async () => {
-    const h = harness()
-    const client = await OpenAbAcpClient.connect({
-      url: 'wss://openab/acp',
-      authKey: 'key',
-      socketFactory: h.connect,
-    })
-    const creating = client.createSession('/workspace')
-    const frame = await nextSent(h.socket(), 0)
-
-    h.socket().receive({
-      jsonrpc: '2.0',
-      id: frame.id,
-      result: {
-        sessionId: 'sess_confirmed',
-        configOptions: [
-          {
-            // The runtime names the control itself; only `category` says it is the model.
-            id: 'claude-model',
-            name: 'Model',
-            category: 'model',
-            currentValue: 'opus',
-            options: [{ value: 'opus', name: 'Opus' }],
-          },
-        ],
-      },
-    })
-
-    expect(await creating).toEqual({
-      sessionId: 'sess_confirmed',
-      sessionConfig: [
-        {
-          id: 'claude-model',
-          name: 'Model',
-          kind: 'model',
-          currentValue: 'opus',
-          options: [{ value: 'opus', name: 'Opus' }],
-        },
-      ],
-    })
   })
 
   test('session/new and session/load carry a declared MCP server verbatim', async () => {

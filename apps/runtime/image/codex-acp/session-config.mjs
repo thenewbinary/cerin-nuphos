@@ -12,6 +12,7 @@ export function cerinCodexSessionConfig(config, meta, processEnv = process.env) 
     'TEAM',
     'CERIN_SESSION_ID',
     'CERIN_SESSION_ACTOR',
+    'CERIN_SESSION_HOME_EPOCH',
     'CERIN_PLAN_API_BASE',
     'CERIN_PLAN_API_TOKEN',
   ])
@@ -92,8 +93,13 @@ const cerinThreadHomes = new Map()
 
 function cerinThreadHome(meta, processEnv) {
   const env = meta?.['ai.cerin/codex']?.env ?? {}
-  const { CERIN_SESSION_ID, CERIN_SESSION_ACTOR } = env
-  return cerinSessionHomeEnv({ CERIN_SESSION_ID, CERIN_SESSION_ACTOR }, processEnv).HOME ?? ''
+  const { CERIN_SESSION_ID, CERIN_SESSION_ACTOR, CERIN_SESSION_HOME_EPOCH } = env
+  return (
+    cerinSessionHomeEnv(
+      { CERIN_SESSION_ID, CERIN_SESSION_ACTOR, CERIN_SESSION_HOME_EPOCH },
+      processEnv,
+    ).HOME ?? ''
+  )
 }
 
 // App Server ignores a resume's config while a subscription holds the loaded
@@ -110,4 +116,18 @@ export async function cerinReleaseMovedThread(client, threadId, meta, processEnv
 
 export function cerinRememberThreadHome(threadId, meta, processEnv = process.env) {
   cerinThreadHomes.set(threadId, cerinThreadHome(meta, processEnv))
+}
+
+// Codex follows a change of standing instructions only when the developer makes
+// it, so the prompt that carries one injects it as a developer message first.
+export async function cerinInjectInstructions(codexClient, request) {
+  const text = request._meta?.['ai.cerin/instructionsUpdate']
+  if (typeof text !== 'string' || !text) return
+  await codexClient.sendRequest({
+    method: 'thread/inject_items',
+    params: {
+      threadId: request.sessionId,
+      items: [{ type: 'message', role: 'developer', content: [{ type: 'input_text', text }] }],
+    },
+  })
 }

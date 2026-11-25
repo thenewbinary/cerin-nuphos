@@ -1,15 +1,14 @@
 import { executable } from './agent-cli-apps.ts'
 import { cliPath, LOCAL_AGENT_PROVIDERS } from './agent-cli.ts'
 import { discoverModels } from './agent-models.ts'
+import { runtimeStateOf, tunnelStatusOf } from './controller-status.ts'
 import {
   freshAgent,
   HEALTHY_AFTER_MS,
+  pauseAgent,
   prepareHomeFor,
   scheduleAgentRestart,
-  stopAgentProcess,
-  runtimeStateOf,
   saveCli,
-  tunnelStatusOf,
   userDir,
 } from './controller-types.ts'
 import { InstanceControllers } from './instance-controllers.ts'
@@ -43,6 +42,12 @@ export class LocalRuntimeController {
   private revision = 0
   private endpoint: string | undefined
   private switching: Promise<unknown> = Promise.resolve()
+  readonly whileStopped = <T>(provider: LocalAgentProvider, work?: () => Promise<T> | T) =>
+    pauseAgent(this.agents[provider], this.reportChange, work)
+  private readonly reportChange = (): void => {
+    this.changed()
+    this.tunnel?.sendStatus()
+  }
   constructor(
     deps: LocalRuntimeControllerDeps,
     providers: readonly LocalAgentProvider[] = LOCAL_AGENT_PROVIDERS,
@@ -53,11 +58,11 @@ export class LocalRuntimeController {
       this.instances = new InstanceControllers(
         deps,
         (childDeps, provider) => new LocalRuntimeController(childDeps, [provider], true),
-        () => {
-          this.changed()
-          this.tunnel?.sendStatus()
+        this.reportChange,
+        {
+          refreshDefault: (provider, restart) => this.refresh(restart, [provider]),
+          pauseDefault: this.whileStopped,
         },
-        { refreshDefault: (provider, restart) => this.refresh(restart, [provider]) },
       )
     this.deps = deps
     this.usage = createUsageSampler(
@@ -131,7 +136,6 @@ export class LocalRuntimeController {
         const cli = await this.deps.probeCli(provider, env, agentHome)
 
         if (userId !== this.userId) return
-        // A running agent keeps the CLI it started with, so one found elsewhere needs a restart.
         if (cliPath(this.agents[provider].cli) !== cliPath(cli)) moved.add(provider)
         this.agents[provider].cli = cli
       }),
@@ -154,23 +158,18 @@ export class LocalRuntimeController {
     this.tunnel?.reconnectNow()
   }
   async shutdown(): Promise<void> {
+    this.userId = null
     this.usage.stop()
     this.tunnel?.stop()
     this.tunnel = undefined
     this.online = false
     this.superseded = false
     this.revoked = false
-    await Promise.all(this.providers.map((provider) => this.stopAgent(provider)))
+    await Promise.all(this.providers.map((provider) => this.whileStopped(provider)))
     await this.instances?.shutdown()
   }
   private changed(): void {
     this.deps.onChange?.()
-  }
-  private stopAgent(provider: LocalAgentProvider): Promise<void> {
-    return stopAgentProcess(this.agents[provider], () => {
-      this.tunnel?.sendStatus()
-      this.changed()
-    })
   }
   private openTunnel(): void {
     this.tunnel ??= this.deps.createTunnel(
@@ -222,7 +221,7 @@ export class LocalRuntimeController {
     const userId = this.userId
 
     if (!userId) return
-    await this.stopAgent(provider)
+    await this.whileStopped(provider)
     const agent = this.agents[provider]
     const generation = agent.generation
     const current = () => generation === agent.generation && userId === this.userId
@@ -246,7 +245,8 @@ export class LocalRuntimeController {
     saveCli(this.deps, this.userId, this.agents)
     this.changed()
     if (!agent.cli.installed) {
-      agent.error = INSTALL_HINT[provider]
+      agent.error = agent.cli.error ?? INSTALL_HINT[provider]
+      this.tunnel?.sendStatus()
       this.changed()
 
       return

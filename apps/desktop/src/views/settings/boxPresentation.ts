@@ -1,5 +1,5 @@
 import { t } from '../../i18n/index.ts'
-import { AGENT_PROVIDER } from '../../types/runtime.ts'
+import { agentProvider } from '../../types/runtime.ts'
 
 import { agentName, canManage } from './agentPresentation.ts'
 
@@ -131,6 +131,16 @@ export function accessHint(device: AgentDevice): string | null {
   return t('Shared with {n}', { n: access.userIds.length })
 }
 
+/** What a Box that could not be made says: nothing is left behind, so creating it again works. */
+export function boxSetupFailed(label: string): { title: string; description: string } {
+  return {
+    title: t('Computer setup failed'),
+    description: t('{name} could not start and was removed. Try creating it again.', {
+      name: label,
+    }),
+  }
+}
+
 /** Boxes that were creating and are gone: #355 drops a Box whose machine could not be made. */
 export function vanishedBoxes(previous: AgentDevice[], next: AgentDevice[]): BoxDevice[] {
   const ids = new Set(next.map((device) => device.deviceId))
@@ -156,7 +166,7 @@ export function agentNameTaken(agents: RuntimeInstance[], name: string): boolean
 
 /** A new agent's name: its provider's, numbered past the ones this machine already has. */
 export function defaultAgentName(agents: RuntimeInstance[], provider: LocalAgentProvider): string {
-  const base = AGENT_PROVIDER[provider].label
+  const base = agentProvider(provider).label
   const named = (n: number) => (n === 1 ? base : `${base} ${String(n)}`)
   let n = 1
 
@@ -242,21 +252,20 @@ export function boxSessions(memMiB: number): number {
 const SIZE_TIERS = [
   { upTo: 2, name: t('Small'), use: t('Light tasks') },
   { upTo: 6, name: t('Medium'), use: t('Everyday work') },
-  { upTo: Infinity, name: t('Large'), use: t('Heavy builds') },
+  { upTo: 8, name: t('Large'), use: t('Heavy builds') },
+  { upTo: Infinity, name: t('Extra large'), use: t('Parallel builds') },
 ]
 
 const sessionCount = (n: number) =>
   n === 1 ? t('Up to 1 task at once') : t('Up to {n} tasks at once', { n })
 
-/** The sizes instabox offers, named by vCPU: up to 2 Small, up to 6 Medium, more Large. */
+/** The sizes instabox offers, named by vCPU: up to 2 Small, up to 6 Medium, up to 8 Large, more Extra large. */
 export function boxSizeChoices(sizes: { vcpus: number; memMiB: number }[]) {
   return sizes.map(({ vcpus, memMiB }) => {
-    // 0 Small, 1 Medium, 2 Large; also how many slabs its glyph fills, less one.
     const tier = SIZE_TIERS.findIndex((size) => vcpus <= size.upTo)
 
     return {
       vcpus,
-      tier,
       name: SIZE_TIERS[tier].name,
       spec: `${String(vcpus)} vCPU · ${String(memMiB / 1024)} GiB`,
       use: SIZE_TIERS[tier].use,

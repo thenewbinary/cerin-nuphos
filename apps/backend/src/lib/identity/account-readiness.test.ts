@@ -320,6 +320,77 @@ test('iOS AI requests require current saved consent, including after withdrawal'
   ).toBe(401)
 })
 
+// Shipped iOS 0.50.0 and Android 1.21.0 send 2026-09-28; any other value locks them out.
+test('the consent version shipped clients send passes auth and can be saved', async () => {
+  const app = new Hono().onError(errorHandler)
+
+  app.use('*', requireAuth)
+  app.post('/agent/chat', (c) => c.json({ ran: true }))
+  const headers = {
+    Authorization: 'Bearer valid-session',
+    'x-cerin-ai-consent-version': '2026-09-28',
+  }
+
+  await saveAIConsent(String(USER), { version: '2026-09-28', accepted: true })
+  expect(await readAIConsent(String(USER))).toEqual({ version: '2026-09-28', accepted: true })
+  expect((await app.request('/agent/chat', { method: 'POST', headers })).status).toBe(200)
+})
+
+// #4853: newer clients show the 2026-11-23 notice while shipped ones still show 2026-09-28.
+test('both shown notices pass auth on their own consent and unknown ones are refused', async () => {
+  const app = new Hono().onError(errorHandler)
+
+  app.use('*', requireAuth)
+  app.post('/agent/chat', (c) => c.json({ ran: true }))
+  const chat = (version: string) =>
+    app.request('/agent/chat', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer valid-session', 'x-cerin-ai-consent-version': version },
+    })
+
+  await saveAIConsent(String(USER), { version: '2026-09-28', accepted: true })
+  expect((await chat('2026-09-28')).status).toBe(200)
+  // Consent to the earlier notice does not cover the later one, so the new client asks again.
+  expect((await chat('2026-11-23')).status).toBe(403)
+  expect(await saveAIConsent(String(USER), { version: '2026-11-23', accepted: true })).toEqual({
+    version: '2026-11-23',
+    accepted: true,
+  })
+  expect((docs('users')[0] as CerinUserDoc).aiConsent?.version).toBe('2026-11-23')
+  expect((await chat('2026-11-23')).status).toBe(200)
+  // The later notice covers the earlier one, so the old client keeps working.
+  expect((await chat('2026-09-28')).status).toBe(200)
+  expect((await chat('2026-12-31')).status).toBe(403)
+  await expect(
+    saveAIConsent(String(USER), { version: '2026-12-31', accepted: true }),
+  ).rejects.toMatchObject({ code: 'invalid_consent' })
+})
+
+// Clients read which notice to show from GET /auth/ai-consent, so it answers in the version they send.
+test('GET ai-consent answers for the notice the client shows', async () => {
+  const { auth } = await import('@/routes/auth')
+  const app = new Hono().onError(errorHandler).route('/auth', auth)
+  const read = async (version?: string) =>
+    (
+      await app.request('/auth/ai-consent', {
+        headers: {
+          Authorization: 'Bearer valid-session',
+          ...(version && { 'x-cerin-ai-consent-version': version }),
+        },
+      })
+    ).json()
+
+  await saveAIConsent(String(USER), { version: '2026-09-28', accepted: true })
+  expect(await read('2026-11-23')).toEqual({ version: '2026-11-23', accepted: false })
+  expect(await read('2026-09-28')).toEqual({ version: '2026-09-28', accepted: true })
+  // Shipped clients send no version and keep seeing 2026-09-28.
+  expect(await read()).toEqual({ version: '2026-09-28', accepted: true })
+  expect(await read('2026-12-31')).toEqual({ version: '2026-09-28', accepted: true })
+  await saveAIConsent(String(USER), { version: '2026-11-23', accepted: true })
+  expect(await read('2026-11-23')).toEqual({ version: '2026-11-23', accepted: true })
+  expect(await read()).toEqual({ version: '2026-09-28', accepted: true })
+})
+
 test('password reset revokes earlier sessions and run tokens', async () => {
   const earlier = Date.now() - 60_000
   const clock = spyOn(Date, 'now').mockReturnValue(earlier)
@@ -431,7 +502,7 @@ test('deletion can use the account password without access to the email inbox', 
     requestAccountDeletion(user, { confirmation: 'DELETE', password: wrongPassword }),
   ).rejects.toMatchObject({ code: 'invalid_credentials' })
   expect((await getDeletionRequest(user.id)).request).toBeNull()
-  docs('personal_credentials').push({ userId: user.id, provider: 'github' })
+  docs('personal_credentials').push({ _id: new ObjectId(), userId: user.id, provider: 'github' })
   const result = await requestAccountDeletion(user, {
     confirmation: 'DELETE',
     password: testPassword,

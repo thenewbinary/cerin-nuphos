@@ -10,6 +10,7 @@ import { RUNTIME_INSTANCES_CHANGED } from '../../hooks/useRuntimeInstances'
 import { useThisComputerConnection } from '../../hooks/useThisComputer'
 import { t } from '../../i18n'
 
+import { useAddToVault } from './AddToVault'
 import { canManage, newAgentAction } from './agentPresentation'
 import { BoxAccessDialog } from './BoxAccessDialog'
 import { useComputerSettings } from './useComputerSettings'
@@ -70,7 +71,7 @@ export function BoxRow({
   const AccessDialog = cloud ? BoxAccessDialog : LocalAgentShareDialog
   const manage = canManage(device)
   const owner = useComputerOwner(teamId, device)
-  // Besides a Box, another of the viewer's own computers whose host opens its screen.
+  // Another of the viewer's own computers, a Box too, whose host opens its screen.
   const screen = thisComputer ? undefined : device.desktopRuntimeId
   const remove = removal(device)
   const badge = computerBadge(state, useThisComputerConnection(thisComputer))
@@ -86,6 +87,7 @@ export function BoxRow({
     window.dispatchEvent(new Event(RUNTIME_INSTANCES_CHANGED))
   }
   const computerSettings = useComputerSettings(device, teamId, changed)
+  const addToVault = useAddToVault(device, teamId)
   const run = async (title: string, action: () => Promise<unknown>, fallback?: string) => {
     setBusy(true)
     try {
@@ -127,7 +129,7 @@ export function BoxRow({
   const update = () =>
     act(t('Could not update computer'), async (deviceId, team) => {
       await hostUpdate.request(deviceId, team)
-      boxRestarts.start(deviceId, team, 'update')
+      boxRestarts.start(deviceId, team, 'update', device.lastSeenAt)
     })
 
   return (
@@ -183,8 +185,8 @@ export function BoxRow({
               <Ellipsis className="h-4 w-4" />
             </MenuTrigger>
             <MenuContent align="end">
-              {(cloud ? state === 'running' : screen) && (
-                <MenuItem onClick={() => openDesktop(device.deviceId, teamId, screen)}>
+              {screen && (
+                <MenuItem onClick={() => openDesktop(device.deviceId, teamId, screen, cloud)}>
                   {t('Open desktop')}
                 </MenuItem>
               )}
@@ -197,6 +199,7 @@ export function BoxRow({
                 </MenuItem>
               )}
               {computerSettings.menuItem}
+              {!thisComputer && addToVault.menuItem}
               <MenuItem onClick={() => setRenaming(true)}>{t('Rename')}</MenuItem>
               <MenuItem onClick={() => void copyUid(device)}>{t('Copy UID')}</MenuItem>
               <MenuItem onClick={() => setSharing(true)}>{t('Manage access…')}</MenuItem>
@@ -271,6 +274,7 @@ export function BoxRow({
         />
       )}
       {computerSettings.dialog}
+      {addToVault.dialog}
       {sharing && (
         <AccessDialog
           teamId={teamId}

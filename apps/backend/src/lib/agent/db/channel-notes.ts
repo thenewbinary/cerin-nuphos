@@ -1,4 +1,33 @@
 import type { MessageMetadata } from '../message-metadata'
+import type { AgentConversation } from './shared'
+
+/** The sender id a chat's wake notice carries, which also picks its instructions. */
+export const CHANNEL_SENDER_PREFIX = 'channel:'
+/**
+ * A Slack channel's notice (#3702) carries this instead: the apps draw `channel:`
+ * as a chat to open, and a Slack channel's record is never opened in Cerin.
+ */
+export const SLACK_CHANNEL_SENDER_PREFIX = 'slack-channel:'
+
+/**
+ * A channel's wake notice as queued: fixed per channel, so the queue keeps one.
+ * A Slack channel's record (#3702) is named for what it is, never a Cerin chat.
+ */
+export const channelNotice = (channel: Pick<AgentConversation, 'sessionId' | 'external'>) =>
+  `New messages in ${channel.external === 'slack' ? 'a Slack channel' : 'a Cerin channel'} (channelId ${channel.sessionId}).`
+
+/** The chat whose wake notice a sender id is, if it is one. */
+export function noticeChannelId(senderId: string | undefined): string | undefined {
+  const prefix = [CHANNEL_SENDER_PREFIX, SLACK_CHANNEL_SENDER_PREFIX].find((candidate) =>
+    senderId?.startsWith(candidate),
+  )
+
+  return prefix && senderId ? senderId.slice(prefix.length) || undefined : undefined
+}
+
+/** Who may read a Slack channel (#3702); shared by its wake and the system prompt. */
+export const EXTERNAL_CHANNEL_NOTE =
+  "A Slack channel's members may be customers or other people outside your team: post there only what they are meant to see, never a pointer to a decision card or other internal work (questions for your owner, Trigger or setting changes, reports to your owner)."
 
 /** How an agent in a channel asks its owner; shared by the channel wake and the system prompt. */
 export const OWNER_DECISION_NOTE =

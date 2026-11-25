@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { AgentProviderIcon } from '../../components/agent/panel/icons'
 import { Button } from '../../components/ui/button'
 import { t } from '../../i18n'
-import { AGENT_PROVIDER } from '../../types/runtime'
+import { agentProvider } from '../../types/runtime'
 
 import { Choice } from './AddAgentChoice'
 import { NEW_BOX_DESCRIPTION } from './boxCreatePresentation'
@@ -23,6 +23,7 @@ export function BoxAgentForm({
   teamId,
   footer,
   onCloseGuard,
+  cancel = false,
   onBack,
   onChosen,
   onCreated,
@@ -36,6 +37,8 @@ export function BoxAgentForm({
   footer: HTMLElement | null
   /** Hands the dialog whether it may close now: not while creating, nor on an Escape meant for the plans. */
   onCloseGuard: (canClose: (() => boolean) | null) => void
+  /** Opened on this step: its secondary action cancels instead of going Back. */
+  cancel?: boolean
   onBack: () => void
   onChosen: (instance: RuntimeInstance) => void
   /** Instead of waiting here for its runtimes, once the computer is made. */
@@ -83,9 +86,9 @@ export function BoxAgentForm({
             <Choice
               key={agent.id}
               icon={<AgentProviderIcon provider={agent.provider} className="h-4 w-4" />}
-              title={AGENT_PROVIDER[agent.provider].label}
+              title={agentProvider(agent.provider).label}
               description={t('Sign in with {account}.', {
-                account: AGENT_PROVIDER[agent.provider].account,
+                account: agentProvider(agent.provider).account,
               })}
               onClick={() => onChosen(agent)}
             />
@@ -102,7 +105,7 @@ export function BoxAgentForm({
       )}
       <StepActions footer={footer} className="flex items-center justify-end gap-2">
         <button type="button" onClick={onBack} disabled={creating} className={button}>
-          {t('Back')}
+          {cancel ? t('Cancel') : t('Back')}
         </button>
         {box.phase === 'idle' && (
           <Button size="sm" type="submit" form={NEW_BOX_FORM} disabled={creating}>

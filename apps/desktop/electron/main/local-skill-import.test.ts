@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, truncateSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { after, before, describe, it, mock } from 'node:test'
@@ -12,6 +12,10 @@ const home = mkdtempSync(path.join(os.tmpdir(), 'skill-import-home-'))
 const userData = mkdtempSync(path.join(os.tmpdir(), 'skill-import-data-'))
 const originalHome = process.env.HOME
 const store = new Map<string, number>()
+/** Keys whose next upload fails once, as a dropped connection would. */
+const failOnce = new Set<string>()
+/** The store's listing, capped like the backend's at 5,000 objects. */
+let listing: { truncated: boolean } = { truncated: false }
 
 let importLocalSkills: typeof import('./local-skill-import.ts').importLocalSkills
 let listLocalSkills: typeof import('./local-skills.ts').listLocalSkills
@@ -42,21 +46,43 @@ before(async () => {
   mock.module('../atlas.ts', {
     namedExports: {
       teamSkillsListObjects: async () => ({
-        objects: [...store].map(([key, size]) => ({ key, size })),
+        objects: listing.truncated ? [] : [...store].map(([key, size]) => ({ key, size })),
+        truncated: listing.truncated,
       }),
+      teamSkillsGetObject: async (_teamId: string, key: string) => {
+        if (!store.has(key))
+          throw buildAtlasError('Skill object not found', 'skill_object_not_found')
+
+        return { key, size: store.get(key) }
+      },
       teamSkillsPutObject: async (_teamId: string, key: string, file: { bytes: Uint8Array }) => {
         if (key.startsWith('skills/reserved/')) {
           throw buildAtlasError('Cannot create builtin skill', 'reserved_skill_name')
         }
         if (key.startsWith('skills/broken/')) throw buildAtlasError('Storage is full', 'quota')
+        if (failOnce.delete(key)) throw buildAtlasError('Connection reset', 'network')
         store.set(key, file.bytes.byteLength)
       },
     },
   })
-  for (const name of ['deploy', 'taken', 'reserved', 'broken', 'stale', 'last']) {
+  for (const name of ['deploy', 'taken', 'reserved', 'broken', 'stale', 'last', 'hidden']) {
     writeSkill('.claude/skills', name, { 'SKILL.md': `---\ndescription: ${name}\n---\n` })
   }
   writeSkill('.agents/skills', 'deploy', { 'SKILL.md': '---\ndescription: codex\n---\n' })
+  // Sparse files: the sizes the walk reports without writing megabytes to disk.
+  writeSkill('.claude/skills', 'assets', { 'SKILL.md': 'x', 'hero.mp4': '' })
+  truncateSync(path.join(home, '.claude/skills/assets/hero.mp4'), 16_000_000)
+  writeSkill('.claude/skills', 'huge', { 'SKILL.md': 'x' })
+  for (let part = 0; part < 4; part += 1) {
+    writeSkill('.claude/skills', 'huge', { [`p${String(part)}.png`]: '' })
+    truncateSync(path.join(home, `.claude/skills/huge/p${String(part)}.png`), 8_000_000)
+  }
+  writeSkill('.claude/skills', 'deep', { 'SKILL.md': 'x', 'a/b/c/d/e/f/g/notes.md': 'deep' })
+  writeSkill('.claude/skills', 'partial', {
+    'SKILL.md': '---\ndescription: partial\n---\n',
+    'notes.md': 'notes',
+  })
+  writeSkill('.agents/skills', 'partial', { 'SKILL.md': '---\ndescription: codex\n---\n' })
   store.set('skills/taken/SKILL.md', 1)
   ;({ importLocalSkills } = await import('./local-skill-import.ts'))
   ;({ listLocalSkills } = await import('./local-skills.ts'))
@@ -104,5 +130,68 @@ describe('importLocalSkills', () => {
     assert.deepEqual(outcomes[0]?.keys, ['skills/deploy/SKILL.md'])
     assert.ok(!store.has('skills/stale/SKILL.md'))
     assert.ok(store.has('skills/last/SKILL.md'))
+  })
+
+  it('names the files it leaves out, and refuses a skill it could only import in part', async () => {
+    const deep = (await listLocalSkills()).find((skill) => skill.id === 'claude/deep')
+
+    assert.equal(deep?.truncated, true)
+    const outcomes = await importLocalSkills('t1', 'personal', [
+      await pick('claude/assets'),
+      await pick('claude/huge'),
+      await pick('claude/deep'),
+    ])
+
+    assert.deepEqual(
+      outcomes.map((outcome) => [outcome.id, outcome.status, outcome.reason, outcome.tooLarge]),
+      [
+        ['claude/assets', 'imported', undefined, ['hero.mp4']],
+        // Past what the runtime loads, it would break every skill in the store.
+        ['claude/huge', 'skipped', 'too_large', []],
+        // A folder below the depth cap was never read.
+        ['claude/deep', 'skipped', 'incomplete', []],
+      ],
+    )
+    assert.deepEqual(outcomes[0]?.keys, ['skills/assets/SKILL.md'])
+    assert.ok(![...store.keys()].some((key) => /^skills\/(huge|deep)\//u.test(key)))
+  })
+
+  it('lets a retry finish a skill whose upload stopped partway', async () => {
+    failOnce.add('skills/partial/notes.md')
+    const first = await importLocalSkills('t1', 'personal', [
+      await pick('claude/partial'),
+      await pick('codex/partial'),
+    ])
+
+    assert.deepEqual(
+      first.map((outcome) => [outcome.id, outcome.status, outcome.reason]),
+      [
+        ['claude/partial', 'failed', 'error'],
+        // Not written into the half-uploaded skill of the same name.
+        ['codex/partial', 'skipped', 'name_taken'],
+      ],
+    )
+    const retry = await importLocalSkills('t1', 'personal', [await pick('claude/partial')])
+
+    assert.deepEqual(
+      retry.map((outcome) => [outcome.id, outcome.status, outcome.keys]),
+      [['claude/partial', 'imported', ['skills/partial/notes.md', 'skills/partial/SKILL.md']]],
+    )
+  })
+
+  it('never overwrites a skill a truncated listing left out', async () => {
+    store.set('skills/hidden/SKILL.md', 7)
+    listing = { truncated: true }
+    try {
+      const outcomes = await importLocalSkills('t1', 'personal', [await pick('claude/hidden')])
+
+      assert.deepEqual(
+        outcomes.map((outcome) => [outcome.id, outcome.status, outcome.reason]),
+        [['claude/hidden', 'skipped', 'name_taken']],
+      )
+      assert.equal(store.get('skills/hidden/SKILL.md'), 7)
+    } finally {
+      listing = { truncated: false }
+    }
   })
 })

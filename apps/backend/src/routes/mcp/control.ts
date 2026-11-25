@@ -2,7 +2,8 @@
 // on, Stop, the waiting messages, and the run's events after a cursor. Each
 // tool checks access as the app's route for the same action does.
 
-import { getReadableConversation } from '@/lib/agent/db'
+import { cleanUpArchived } from '@/lib/agent/archive-cleanup'
+import { archiveConversationAs, getReadableConversation } from '@/lib/agent/db'
 import { canReplyIn } from '@/lib/agent/devices/conversation-computer'
 import { frameEvent } from '@/lib/agent/live-turn'
 import { agentRuns, getLocalActiveAgentRun } from '@/lib/agent/run-admission'
@@ -85,6 +86,33 @@ export async function cerinStop(
   return toolResult({ session_id: conversation.sessionId, status })
 }
 
+export async function cerinArchiveSession(
+  args: Record<string, unknown>,
+  ctx: McpCallContext,
+): Promise<ToolResult> {
+  const archived = args.archived ?? true
+
+  if (typeof archived !== 'boolean') return toolError('`archived` must be a boolean.')
+  const conversation = await readable(args, ctx)
+
+  if (isError(conversation)) return conversation
+  const principal = ctx.cliToken?.principal
+  const moved = await archiveConversationAs(
+    conversation,
+    {
+      source: 'mcp',
+      userId: ctx.userId,
+      ...(principal?.kind === 'agent' ? { agentTokenId: principal.id } : {}),
+    },
+    archived,
+  )
+
+  if (!moved) return toolError('You can only view this session, so you cannot archive it.')
+  if (archived) await cleanUpArchived(moved.sessionIds)
+
+  return toolResult({ session_id: conversation.sessionId, archived, session_ids: moved.sessionIds })
+}
+
 export async function cerinListQueue(
   args: Record<string, unknown>,
   ctx: McpCallContext,
@@ -140,7 +168,6 @@ function parseCursor(value: string): { streamId: string; after: string } | null 
  * frames are only in this process: an entry id is the frame's position.
  */
 function localFramesAfter(owner: string, streamId: string, after: string, count: number) {
-  // eslint-disable-next-line sonarjs/no-empty-collection -- populated by registerAgentRun
   const run = [...agentRuns.values()].find((r) => r.userId === owner && r.streamId === streamId)
   const start = after === '-' ? 0 : Number(after)
 

@@ -1,7 +1,14 @@
-import { faFolder, faPaperclip } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import clsx from 'clsx'
-import { ChevronDown, ChevronRight, FileSearch, Loader2, Lock, Plus, Unlock } from 'lucide-react'
+import {
+  Paperclip as PaperclipIcon,
+  Folder as FolderIcon,
+  ChevronDown,
+  ChevronRight,
+  FileSearch,
+  Lock,
+  Plus,
+  Unlock,
+} from 'lucide-react'
 
 import { t } from '../../../i18n'
 import {
@@ -12,85 +19,14 @@ import {
   MenuSubmenuTrigger,
   MenuTrigger,
 } from '../../ui/menu'
+import { UiIcon } from '../../ui/ui-icon'
+import { SummaryMenuRow } from '../summary/ChatSummaryRows'
 
 import { ClaudeCodeIcon, CodexIcon } from './icons'
-import { relativeTimeFromNow } from './textUtils'
+import { SessionSubmenu } from './SessionSubmenu'
 
 import type { LocalAgentSessionInfo, LocalSessionSource } from '../../../api'
 import type { ReactNode, SVGProps } from 'react'
-
-function SessionSubmenu({
-  source,
-  label,
-  title,
-  Icon,
-  items,
-  loading,
-  error,
-  onOpen,
-  onAttach,
-  onImport,
-}: {
-  source: LocalSessionSource
-  label: string
-  title: string
-  Icon: (props: SVGProps<SVGSVGElement>) => ReactNode
-  items: LocalAgentSessionInfo[]
-  loading: boolean
-  error?: string
-  onOpen: (source: LocalSessionSource) => void
-  onAttach: (session: LocalAgentSessionInfo) => void
-  /** Continues the session on the selected agent instead of attaching its log.
-   *  Absent outside a new conversation, where there is no agent to import onto. */
-  onImport?: (session: LocalAgentSessionInfo) => void
-}) {
-  return (
-    <MenuSubmenu
-      onOpenChange={(open) => {
-        if (open) onOpen(source)
-      }}
-    >
-      <MenuSubmenuTrigger
-        icon={<Icon className="w-3.5 h-3.5 flex-shrink-0" />}
-        chevron={<ChevronRight className="w-3.5 h-3.5" strokeWidth={2} />}
-        title={title}
-      >
-        {label}
-      </MenuSubmenuTrigger>
-      <MenuContent alignOffset={-6} className="w-[300px]">
-        <div className="h-8 px-2 flex items-center gap-2 text-[12px] text-tertiary">
-          <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-          <span className="truncate">{title}</span>
-          {loading && <Loader2 className="ml-auto w-3.5 h-3.5 animate-spin" strokeWidth={2} />}
-        </div>
-        {error ? (
-          <div className="px-2 py-2 text-[12px] text-error">{t('Failed to load sessions')}</div>
-        ) : loading && items.length === 0 ? (
-          <div className="px-2 py-2 text-[12px] text-tertiary">{t('Loading...')}</div>
-        ) : items.length === 0 ? (
-          <div className="px-2 py-2 text-[12px] text-tertiary">{t('No recent sessions')}</div>
-        ) : (
-          <div className="max-h-64 overflow-auto scrollbar-thin">
-            {items.map((session) => (
-              <MenuItem
-                key={session.id}
-                onClick={() => (onImport ? onImport(session) : onAttach(session))}
-                title={session.path}
-              >
-                <span className="flex w-full min-w-0 flex-col">
-                  <span className="w-full truncate text-[12.5px]">{session.title}</span>
-                  <span className="w-full truncate text-[11px] text-tertiary">
-                    {session.subtitle} · {relativeTimeFromNow(session.updatedAt)}
-                  </span>
-                </span>
-              </MenuItem>
-            ))}
-          </div>
-        )}
-      </MenuContent>
-    </MenuSubmenu>
-  )
-}
 
 export function ComposerAttachmentMenu({
   open,
@@ -159,7 +95,7 @@ export function ComposerAttachmentMenu({
       <MenuContent side="top" align="start" className="w-56">
         <MenuSubmenu>
           <MenuSubmenuTrigger
-            icon={<FontAwesomeIcon icon={faPaperclip} className="w-3.5 h-3.5" />}
+            icon={<UiIcon size={14} icon={PaperclipIcon} className="w-3.5 h-3.5" />}
             chevron={<ChevronRight className="w-3.5 h-3.5" strokeWidth={2} />}
             title={t('Attach files or a folder')}
           >
@@ -174,7 +110,7 @@ export function ComposerAttachmentMenu({
               {t('Files')}
             </MenuItem>
             <MenuItem
-              icon={<FontAwesomeIcon icon={faFolder} className="w-3.5 h-3.5" />}
+              icon={<UiIcon size={14} icon={FolderIcon} className="w-3.5 h-3.5" />}
               onClick={() => onSelectFolderAttachment()}
               title={t('Attach a folder (uploaded with its structure)')}
             >
@@ -202,10 +138,13 @@ export function ComposerAttachmentMenu({
 export function BypassControlMenu({
   bypassControl,
   hero,
+  asRow,
 }: {
   /** active is undefined until the task's own mode is known. */
   bypassControl: { active: boolean | undefined; onSelect: (bypass: boolean) => void }
   hero: boolean
+  /** A row of a details panel, opening the menu under it, instead of a composer chip. */
+  asRow?: boolean
 }) {
   const { active } = bypassControl
   // Both labels always share one cell, the inactive one unseen, so the chip is
@@ -214,44 +153,61 @@ export function BypassControlMenu({
 
   return (
     <Menu>
-      <MenuTrigger
-        aria-label={t('Authorization mode')}
-        aria-hidden={active === undefined || undefined}
-        className={clsx(
-          'hidden @[210px]:flex items-center gap-1.5 flex-shrink-0 rounded-full transition-colors',
-          hero ? 'h-8 px-1.5 @[400px]:px-3' : 'h-7 px-1.5 @[400px]:px-2.5',
-          'text-secondary hover:text-main hover:bg-state-hover',
-          active === undefined && 'invisible',
-        )}
-        title={t('Choose how commands in this task are authorized')}
-      >
-        <span className="grid text-[12.5px] font-medium">
-          {[true, false].map((full) => (
-            <span
-              key={String(full)}
-              aria-hidden={full !== active || undefined}
-              className={clsx(
-                'col-start-1 row-start-1 flex items-center',
-                full !== active && 'invisible',
-              )}
-            >
-              {full ? (
-                <Unlock className="w-3.5 h-3.5 @[400px]:hidden" strokeWidth={2} aria-hidden />
-              ) : (
-                <Lock className="w-3.5 h-3.5 @[400px]:hidden" strokeWidth={2} aria-hidden />
-              )}
-              <span className="hidden @[400px]:inline @[520px]:hidden">
-                {full ? t('Full') : t('Auto')}
+      {asRow ? (
+        <SummaryMenuRow
+          aria-label={t('Authorization mode')}
+          className={clsx(active === undefined && 'invisible')}
+          title={t('Choose how commands in this task are authorized')}
+          icon={
+            active ? (
+              <Unlock className="size-3.5" strokeWidth={1.8} />
+            ) : (
+              <Lock className="size-3.5" strokeWidth={1.8} />
+            )
+          }
+          label={active ? t('Full Access') : t('Auto Mode')}
+          note={<ChevronDown className="size-3.5" strokeWidth={1.8} />}
+        />
+      ) : (
+        <MenuTrigger
+          aria-label={t('Authorization mode')}
+          aria-hidden={active === undefined || undefined}
+          className={clsx(
+            'hidden @[210px]:flex items-center gap-1.5 flex-shrink-0 rounded-full transition-colors',
+            hero ? 'h-8 px-1.5 @[400px]:px-3' : 'h-7 px-1.5 @[400px]:px-2.5',
+            'text-secondary hover:text-main hover:bg-state-hover',
+            active === undefined && 'invisible',
+          )}
+          title={t('Choose how commands in this task are authorized')}
+        >
+          <span className="grid text-[12.5px] font-medium">
+            {[true, false].map((full) => (
+              <span
+                key={String(full)}
+                aria-hidden={full !== active || undefined}
+                className={clsx(
+                  'col-start-1 row-start-1 flex items-center',
+                  full !== active && 'invisible',
+                )}
+              >
+                {full ? (
+                  <Unlock className="w-3.5 h-3.5 @[400px]:hidden" strokeWidth={2} aria-hidden />
+                ) : (
+                  <Lock className="w-3.5 h-3.5 @[400px]:hidden" strokeWidth={2} aria-hidden />
+                )}
+                <span className="hidden @[400px]:inline @[520px]:hidden">
+                  {full ? t('Full') : t('Auto')}
+                </span>
+                <span className="hidden @[520px]:inline">
+                  {full ? t('Full Access') : t('Auto Mode')}
+                </span>
               </span>
-              <span className="hidden @[520px]:inline">
-                {full ? t('Full Access') : t('Auto Mode')}
-              </span>
-            </span>
-          ))}
-        </span>
-        <ChevronDown className="w-3 h-3 opacity-60 hidden @[400px]:block" strokeWidth={2} />
-      </MenuTrigger>
-      <MenuContent side="top" align="start" className="w-64">
+            ))}
+          </span>
+          <ChevronDown className="w-3 h-3 opacity-60 hidden @[400px]:block" strokeWidth={2} />
+        </MenuTrigger>
+      )}
+      <MenuContent side={asRow ? 'bottom' : 'top'} align={asRow ? 'end' : 'start'} className="w-64">
         <MenuItem selected={active === false} onClick={() => bypassControl.onSelect(false)}>
           <div className="flex flex-col">
             <span>{t('Auto Mode')}</span>

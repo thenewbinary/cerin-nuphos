@@ -2,6 +2,7 @@ import { errorTelemetryProperties } from '@/lib/observability'
 import { getRedis, withRedis } from '@/lib/redis'
 
 import {
+  frameType,
   OWNER_TTL_SEC,
   parseEntries,
   RESUME_ATTACH_GRACE_MS,
@@ -96,18 +97,25 @@ export async function backfillAgentRunHistory(ctx: StreamResumeContext): Promise
     const expired = Boolean(probe) && startIndex > 0
 
     if (expired || orphanConfirmed || Date.now() >= attachDeadline) {
-      traceRunStoreEvent('error', 'agent.run.redis_resume.stream_missing_after_wait', trace, {
-        redis_stream_key: key,
-        redis_owner_key: oKey,
-        resume_from: startIndex,
-        owner_present: Boolean(owner),
-        orphan_confirmed: orphanConfirmed,
-        expired,
-        orphan_probes: orphanProbes,
-        attach_wait_ms: Date.now() - startedAt,
-        attach_grace_ms: RESUME_ATTACH_GRACE_MS,
-        error_code: 'stream_unresumable',
-      })
+      // An expired buffer is a finished run resumed too late, which the client is told; the
+      // other two mean a live run's stream is missing.
+      traceRunStoreEvent(
+        expired ? 'warn' : 'error',
+        'agent.run.redis_resume.stream_missing_after_wait',
+        trace,
+        {
+          redis_stream_key: key,
+          redis_owner_key: oKey,
+          resume_from: startIndex,
+          owner_present: Boolean(owner),
+          orphan_confirmed: orphanConfirmed,
+          expired,
+          orphan_probes: orphanProbes,
+          attach_wait_ms: Date.now() - startedAt,
+          attach_grace_ms: RESUME_ATTACH_GRACE_MS,
+          error_code: 'stream_unresumable',
+        },
+      )
       emit(
         runStoreErrorFrame('stream_unresumable', 'Agent run stream is no longer available', trace, {
           reason: expired
@@ -131,7 +139,14 @@ export async function backfillAgentRunHistory(ctx: StreamResumeContext): Promise
     await sleep(RESUME_ATTACH_RETRY_MS)
   }
   if (state.closed) return
-  for (let i = startIndex; i < entries.length; i++) {
+  // A resume past the end of a finished run still ends with its done frame (#4924).
+  const last = entries.at(-1)
+  const from =
+    last && frameType(last.frame) === STREAM_DONE_NEEDLE
+      ? Math.min(startIndex, entries.length - 1)
+      : startIndex
+
+  for (let i = from; i < entries.length; i++) {
     const e = entries[i]!
 
     emit(e.frame)
@@ -214,6 +229,7 @@ async function tailLoop(
       // the client stops waiting.
       const currentOwner = await withRedis((c) => c.get(oKey))
 
+      if (state.closed) break
       if (currentOwner) {
         state.ownerSeenAt = Date.now()
         traceRunStoreEvent('info', 'agent.run.redis_resume.owner_seen', trace, {

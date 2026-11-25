@@ -60,12 +60,14 @@ export async function conversationExecutionState(
 
 /**
  * Prompt admission must retain probe failures rather than treating them as runtime state.
- * It also keeps the default connect timeout: a computer's tunnel can be slow to open a
- * stream, and admission failing loses the turn (a scheduled one is not retried).
+ * It also keeps the default deadlines: a computer's tunnel can be slow to open a stream and
+ * slow to answer the first call after it reconnects, and admission failing loses the turn
+ * (a scheduled one is not retried). The prompt that follows waits that long anyway. Only the
+ * polled status read, which falls back to 'disconnected', passes a short one.
  */
 export async function probeExecutionState(
   conversation: ExecutionStateConversation,
-  connectTimeoutMs?: number,
+  timeoutMs?: number,
 ): Promise<SessionExecutionState> {
   const attachment = liveAttachment(conversation)
 
@@ -88,8 +90,8 @@ export async function probeExecutionState(
       return { state: 'disconnected' }
     client = await OpenAbAcpClient.connect({
       ...endpoint,
-      connectTimeoutMs,
-      callTimeoutMs: 3_000,
+      connectTimeoutMs: timeoutMs,
+      callTimeoutMs: timeoutMs,
     })
     await client.initialize()
     const state = parseSessionExecutionState(
@@ -123,7 +125,7 @@ export async function probeExecutionState(
 export async function cancelConversationRuntime(conversation: AgentConversation): Promise<void> {
   const attachment = liveAttachment(conversation)
 
-  if (!attachment || !conversation.teamId) throw new Error('Conversation has no runtime session')
+  if (!attachment || !conversation.teamId) return
   const { endpoint } = await resolveConversationChatRuntime(conversation.teamId, conversation, {
     purpose: 'control',
   })
@@ -233,9 +235,9 @@ export async function steerConversationRuntime(
   const attachment = liveAttachment(conversation)
 
   if (!attachment || !conversation.teamId) throw new Error('Conversation has no runtime session')
-  // Steering carries the sender's input, so it is resolved as theirs.
+  // Steering carries the sender's input, so it is resolved as theirs, on a current sign-in.
   const { endpoint } = await resolveConversationChatRuntime(conversation.teamId, conversation, {
-    purpose: 'control',
+    purpose: 'steer',
     userId: steer.userId,
   })
 

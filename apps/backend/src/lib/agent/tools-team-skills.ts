@@ -1,12 +1,18 @@
 import { tool } from 'ai'
 import { z } from 'zod'
 
-import { AppError } from '@/lib/errors'
 import { findEmbeddedSecret } from '@/lib/secrets/scan'
 
 import {
+  decodeSkillFileContent,
+  skillFileContentType,
+  skillFileEncodingInput,
+  skillFileSecret,
+} from './skill-file-content'
+import {
   assertSkillNameNotBuiltinOverlay,
   buildSkillMdContent,
+  deleteSkillByName,
   getSkillManifest,
   putSkillObjects,
   skillObjectKeyForName,
@@ -14,15 +20,9 @@ import {
   validateSkillObjectKey,
   validateSkillRelativePath,
 } from './skill-store/service'
-import { requireScopeAccess, scopeInput } from './tools-team-skills-access'
+import { label, requireScopeAccess, run, scopeInput } from './tools-team-skills-access'
 
-import type { SkillScopeName } from './tools-team-skills-access'
-
-const label = z
-  .string()
-  .min(1)
-  .max(160)
-  .describe('Short human-readable description of this single action, shown to the user as a step.')
+import type { ScopeNeed, SkillScopeName } from './tools-team-skills-access'
 
 const skillFileInputSchema = z.object({
   path: z
@@ -31,19 +31,11 @@ const skillFileInputSchema = z.object({
     .describe(
       'Path relative to the skill directory, e.g. "scripts/run.sh" or "references/notes.md".',
     ),
-  content: z.string().describe('UTF-8 text file content.'),
+  content: z.string().describe('File content: UTF-8 text, or base64 with `encoding: "base64"`.'),
+  encoding: skillFileEncodingInput,
 })
 
-async function run<T>(fn: () => Promise<T>): Promise<T | { ok: false; error: string }> {
-  try {
-    return await fn()
-  } catch (err) {
-    if (err instanceof AppError) return { ok: false, error: `${err.code}: ${err.message}` }
-    throw err
-  }
-}
-
-type ScopeAccess = (scope: SkillScopeName, write: boolean) => ReturnType<typeof requireScopeAccess>
+type ScopeAccess = (scope: SkillScopeName, need: ScopeNeed) => ReturnType<typeof requireScopeAccess>
 
 function createSkillListTool(access: ScopeAccess) {
   return tool({
@@ -53,7 +45,7 @@ function createSkillListTool(access: ScopeAccess) {
     inputSchema: z.object({ label, scope: scopeInput }),
     execute: async (input) =>
       run(async () => {
-        const resolved = await access(input.scope, false)
+        const resolved = await access(input.scope, 'read')
 
         if (!resolved.ok) return resolved
         const manifest = await getSkillManifest(resolved.scope)
@@ -83,13 +75,13 @@ export function createTeamSkillTools(
     conversationOwnerUserId?: string
   },
 ) {
-  const access: ScopeAccess = (scope, write) =>
+  const access: ScopeAccess = (scope, need) =>
     requireScopeAccess({
       userId,
       teamId,
       ownerUserId: auditContext?.conversationOwnerUserId ?? userId,
       scope: scope ?? 'team',
-      write,
+      need,
     })
 
   const mutationContext = (toolCallId: string) => ({
@@ -141,7 +133,7 @@ export function createTeamSkillTools(
     }),
     execute: async (input, { toolCallId }) =>
       run(async () => {
-        const resolved = await access(input.scope, true)
+        const resolved = await access(input.scope, 'write')
 
         if (!resolved.ok) return resolved
         const { scope } = resolved
@@ -164,7 +156,7 @@ export function createTeamSkillTools(
           return { ok: false, error: `unsafe_content: ${secretHit}` }
         }
 
-        const extraFiles: { key: string; content: string }[] = []
+        const extraFiles: { key: string; body: Buffer; contentType: string }[] = []
 
         for (const file of input.files ?? []) {
           const rel = validateSkillRelativePath(file.path)
@@ -172,12 +164,14 @@ export function createTeamSkillTools(
           if (rel === 'SKILL.md') {
             return { ok: false, error: 'invalid_input: put SKILL.md content in body, not files[]' }
           }
-          const secret = await findEmbeddedSecret(file.content)
+          const body = decodeSkillFileContent(file.path, file.content, file.encoding)
+          const secret = await skillFileSecret(body)
 
           if (secret) return { ok: false, error: `unsafe_content: ${secret}` }
           extraFiles.push({
             key: skillObjectKeyForName(name, rel),
-            content: file.content,
+            body,
+            contentType: skillFileContentType(file.encoding),
           })
         }
 
@@ -188,11 +182,7 @@ export function createTeamSkillTools(
             body: Buffer.from(skillMd, 'utf8'),
             contentType: 'text/markdown',
           },
-          ...extraFiles.map((file) => ({
-            key: file.key,
-            body: Buffer.from(file.content, 'utf8'),
-            contentType: 'text/plain',
-          })),
+          ...extraFiles,
         ]
 
         await putSkillObjects(scope, writes, mutationContext(toolCallId))
@@ -215,6 +205,7 @@ export function createTeamSkillTools(
       'Create or replace one or more files in an existing (or new) skill: team-shared by default, or with `scope: "personal"` one of the conversation owner\'s personal skills. ' +
       'Each file key must be `skills/<name>/...` relative to the chosen scope. ' +
       'Use to revise SKILL.md, add scripts, or fix playbooks the user asked you to update. ' +
+      'Binary files (images, audio, archives) go in as base64 with `encoding: "base64"`, up to 10 MB each once decoded. ' +
       'Confirm with the user before mutating shared team skills. Never store secrets or private keys in skill files.',
     inputSchema: z.object({
       label,
@@ -226,7 +217,10 @@ export function createTeamSkillTools(
               .string()
               .min(1)
               .describe('Object key relative to the scope, e.g. skills/deploy-checklist/SKILL.md'),
-            content: z.string().describe('UTF-8 text file content.'),
+            content: z
+              .string()
+              .describe('File content: UTF-8 text, or base64 with `encoding: "base64"`.'),
+            encoding: skillFileEncodingInput,
           }),
         )
         .min(1)
@@ -234,11 +228,11 @@ export function createTeamSkillTools(
     }),
     execute: async (input, { toolCallId }) =>
       run(async () => {
-        const resolved = await access(input.scope, true)
+        const resolved = await access(input.scope, 'write')
 
         if (!resolved.ok) return resolved
         const { scope } = resolved
-        const pending: { key: string; content: string }[] = []
+        const pending: { key: string; body: Buffer; contentType: string }[] = []
 
         for (const file of input.files) {
           const key = validateSkillObjectKey(file.key)
@@ -253,21 +247,14 @@ export function createTeamSkillTools(
           const skillName = validateSkillName(parts[1])
 
           await assertSkillNameNotBuiltinOverlay(skillName)
-          const secret = await findEmbeddedSecret(file.content)
+          const body = decodeSkillFileContent(file.key, file.content, file.encoding)
+          const secret = await skillFileSecret(body)
 
           if (secret) return { ok: false, error: `unsafe_content: ${secret}` }
-          pending.push({ key, content: file.content })
+          pending.push({ key, body, contentType: skillFileContentType(file.encoding) })
         }
 
-        await putSkillObjects(
-          scope,
-          pending.map((file) => ({
-            key: file.key,
-            body: Buffer.from(file.content, 'utf8'),
-            contentType: 'text/plain',
-          })),
-          mutationContext(toolCallId),
-        )
+        await putSkillObjects(scope, pending, mutationContext(toolCallId))
 
         return {
           ok: true,
@@ -278,5 +265,35 @@ export function createTeamSkillTools(
       }),
   })
 
-  return { skill_list: createSkillListTool(access), skill_create, skill_upsert }
+  const skill_delete = tool({
+    description:
+      'Delete a whole skill (every file under `skills/<name>/`) from the team store, or with `scope: "personal"` from the conversation owner\'s personal skills. ' +
+      'Destructive and not undoable: call it only when the user explicitly asked to delete this skill by name in this conversation, never to tidy up on your own. ' +
+      'Same rule as the Skills page: only an ADMINISTRATOR can delete a team skill; the owner can delete their own personal skills.',
+    inputSchema: z.object({
+      label,
+      scope: scopeInput,
+      name: z.string().min(1).max(80).describe('Skill directory name, e.g. "deploy-checklist".'),
+    }),
+    execute: async (input, { toolCallId }) =>
+      run(async () => {
+        const resolved = await access(input.scope, 'delete')
+
+        if (!resolved.ok) return resolved
+        const result = await deleteSkillByName(
+          resolved.scope,
+          input.name,
+          mutationContext(toolCallId),
+        )
+
+        return {
+          ok: true,
+          scope: resolved.scope,
+          name: result.name,
+          deletedCount: result.deletedCount,
+        }
+      }),
+  })
+
+  return { skill_list: createSkillListTool(access), skill_create, skill_upsert, skill_delete }
 }

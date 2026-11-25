@@ -36,6 +36,7 @@ export {
   setConversationPromptSuggestion,
   stampConversationAgentRuntime,
   stampConversationRuntimeInstance,
+  setConversationInstructionsDigest,
 } from './db/conversations-runtime'
 export {
   buildEmptyContentFilteredReplyEvent,
@@ -57,7 +58,6 @@ export {
 } from './db/maintenance'
 export {
   addInputRequest,
-  findInputRequest,
   resolveInputRequest,
   resolvePlanInputRequests,
 } from './db/pending-decision'
@@ -74,7 +74,7 @@ export {
 } from './db/transcript-autonomous'
 export { getConversationTranscriptForAgent, liveTurnTranscriptLine } from './db/transcript-read'
 export { recordMessageEditedInFork } from './db/message-edit'
-export { retractTrailingUserMessage } from './db/transcript-retract'
+export { retractTrailingUserMessage, unstoreRequeuedMessages } from './db/transcript-retract'
 export {
   appendTranscriptMessages,
   getConversationMessagesHead,
@@ -82,11 +82,12 @@ export {
 } from './db/transcript'
 export { getConversations } from './db/conversations-list'
 export {
+  archiveConversationAs,
   restoreArchivedConversation,
   setConversationArchived,
   setMemberArchived,
 } from './db/archive'
-export { backfillConversationWatchers, setConversationWatched } from './db/watch'
+export { setConversationWatched } from './db/watch'
 
 export type { AdminFilterOp, StatWindows } from './db/admin'
 export type { AdminFeedbackEntry } from './db/admin-feedback'

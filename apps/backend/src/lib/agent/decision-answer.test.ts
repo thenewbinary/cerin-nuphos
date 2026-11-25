@@ -160,7 +160,9 @@ test("a question asked in a channel gets the answerer's replies there, one per q
   })
   // One wake, the asking agent's: the posts themselves wake no one.
   expect(turns).toHaveLength(1)
-  expect(turns[0]!.text).toContain('reply there with channel_post')
+  // The notice names no place to post: a channel can be external, its members customers.
+  expect(turns[0]!.text).not.toContain('channel_post')
+  expect(turns[0]!.text).toContain('Continue the task with this answer.')
 })
 
 test('an answer given on its card in the chat is a reply that names no Inbox', async () => {
@@ -201,7 +203,13 @@ test("a teammate's answer is told apart from the owner's", async () => {
 })
 
 test('a secret or a connection is never answered with text here', async () => {
-  for (const asked of [{ category: 'credential' }, { category: 'integration', providers: ['gcp'] }])
+  for (const asked of [
+    // With no options a credential question asks for the value itself.
+    { category: 'credential', options: undefined },
+    { category: 'credential', secretName: 'API_KEY', options: undefined },
+    { category: 'credential', secretName: 'API_KEY' },
+    { category: 'integration', providers: ['gcp'] },
+  ])
     await expect(
       answerDecision({
         conversation: ask(asked),
@@ -355,6 +363,18 @@ test('credential-category status choices can be answered without entering a secr
   expect(turns).toHaveLength(1)
 })
 
+test('a credential question with options is answered in words too, as with Other…', async () => {
+  await answerDecision({
+    conversation: ask({ category: 'credential', options: ['Signed in', 'Later'] }),
+    requestId: 'q1',
+    answer: { text: 'Use the other Codex for now' },
+    actor,
+    teamId: 't1',
+  })
+  expect(turns).toHaveLength(1)
+  expect(turns[0]!.text).toContain('Use the other Codex for now')
+})
+
 test('credential status choices cannot smuggle typed text or an unknown choice', async () => {
   for (const answer of [
     { choices: ['not an option'] },
@@ -384,4 +404,44 @@ test('a masked secret card cannot be answered by selecting a status option', asy
     }),
   ).rejects.toThrow('its own card')
   expect(turns).toHaveLength(0)
+})
+
+test("a computer card's I'm done says how long the desktop was held", async () => {
+  const takenOverAt = new Date(Date.now() - 185_000)
+
+  await answerDecision({
+    conversation: ask({ category: 'computer', options: ["I'm done", 'Skip'], takenOverAt }),
+    requestId: 'q1',
+    answer: { choices: ["I'm done"] },
+    actor,
+    teamId: 't1',
+  })
+
+  expect(turns[0]!.text).toContain("- Which regions? → I'm done (handed back after 3m 5s)")
+})
+
+test('a skipped computer card, or one nobody took over, is told as answered', async () => {
+  const { withHandBack } = await import('./decision-answer')
+  const request = { category: 'computer', takenOverAt: new Date(0) } as never
+
+  expect(withHandBack(request, { choices: ['Skip'] }, new Date(5_000))).toEqual({
+    choices: ['Skip'],
+  })
+  expect(
+    withHandBack({ category: 'computer' } as never, { choices: ["I'm done"] }, new Date(5_000)),
+  ).toEqual({ choices: ["I'm done"] })
+  expect(
+    withHandBack({ category: 'approval', takenOverAt: new Date(0) } as never, {
+      choices: ["I'm done"],
+    }),
+  ).toEqual({ choices: ["I'm done"] })
+})
+
+test('a hold reads in seconds, minutes or hours', async () => {
+  const { heldFor } = await import('./decision-answer')
+
+  expect(heldFor(45_400)).toBe('45s')
+  expect(heldFor(185_000)).toBe('3m 5s')
+  expect(heldFor(3_725_000)).toBe('1h 2m')
+  expect(heldFor(-10)).toBe('0s')
 })

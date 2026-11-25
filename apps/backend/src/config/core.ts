@@ -90,6 +90,8 @@ export function coreConfig() {
       devLogOtp: process.env.NODE_ENV !== 'production' && bool('CERIN_DEV_EMAIL_OTP_LOG', false),
     },
     server: {
+      // Address to listen on; unset = every interface. The e2e stack sets 127.0.0.1.
+      listenHost: optional('CERIN_LISTEN_HOST'),
       tlsCertPath: optional('ATLAS_DEV_TLS_CERT'),
       tlsKeyPath: optional('ATLAS_DEV_TLS_KEY'),
       // Local stacks only: a second, plain-HTTP listener for local containers

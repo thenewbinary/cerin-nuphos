@@ -232,6 +232,11 @@ export function redactSecretsSync(text: string): string {
   return replaceFindings(text, mergeFindings(findCerinSecrets(text, PROFILES.everything)))
 }
 
+/** `redactTokenShapes` without the secretlint preset, for a caller that cannot await. */
+export function redactTokenShapesSync(text: string): string {
+  return replaceFindings(text, mergeFindings(findCerinSecrets(text, PROFILES.tokenShapes)))
+}
+
 /** Replaces only well-known token shapes; leaves everything else readable. */
 export async function redactTokenShapes(text: string): Promise<string> {
   return replaceFindings(text, await findSecrets(text, 'tokenShapes'))

@@ -79,6 +79,14 @@ export function bindInstaboxAccount(
 export async function unbindInstaboxAccount(teamId: string, accountId: string): Promise<void> {
   await call<void>('DELETE', instabox(teamId, accountId), undefined, { retry: false })
 }
+/** A new API key for the same account, so its computers stay on it. */
+export async function replaceInstaboxKey(
+  teamId: string,
+  accountId: string,
+  apiKey: string,
+): Promise<void> {
+  await call<void>('PUT', `${instabox(teamId, accountId)}/key`, { apiKey }, { retry: false })
+}
 /** The sizes a Box on this account can have, smallest first. */
 export async function instaboxAccountSizes(teamId: string, accountId: string) {
   return (await call<{ sizes: BoxSize[] }>('GET', instabox(teamId, accountId))).sizes
@@ -143,12 +151,6 @@ export function setBoxAccess(
 }
 export function renameBox(deviceId: string, teamId: string, label: string): Promise<{ ok: true }> {
   return call('PATCH', deviceRoute(deviceId, teamId), { label }, { retry: false })
-}
-export function boxDesktop(
-  deviceId: string,
-  teamId: string,
-): Promise<{ url: string; label: string }> {
-  return call('POST', box(deviceId, '/desktop', teamId), undefined, { retry: false })
 }
 /** Has the conversation's Box hold a desktop for it, or with `runtime/<id>` a computer its own screen. */
 export function openSessionDesktop(
