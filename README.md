@@ -1,4 +1,4 @@
-![Cerin, the open source Grok Bot alternative](assets/cerin-banner.jpg)
+<img alt="Cerin, the open source Grok Bot alternative" src="assets/cerin-banner.jpg" width="1200">
 
 # Cerin
 

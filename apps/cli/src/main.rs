@@ -15,6 +15,7 @@ mod shared;
 mod transcript;
 mod triggers;
 mod update;
+mod vault;
 
 use std::io::{IsTerminal, Read};
 
@@ -69,6 +70,11 @@ enum Command {
         session: Option<String>,
         #[command(subcommand)]
         command: Option<TriggersCommand>,
+    },
+    /// Your end-to-end encrypted vault: enroll this device, approve others, and keep secrets.
+    Vault {
+        #[command(subcommand)]
+        command: VaultCommand,
     },
     /// List teams, make TEAM the default, or create it with --create.
     Team {
@@ -175,6 +181,49 @@ enum TriggersCommand {
 }
 
 #[derive(Subcommand)]
+enum VaultCommand {
+    /// Add this device to your vault. The first device joins at once; later ones wait for approval.
+    Enroll {
+        /// The name the device list shows (default: the hostname).
+        #[arg(long)]
+        name: Option<String>,
+    },
+    /// List your devices with their fingerprints; `*` marks this one.
+    Devices,
+    /// Let a pending device read your vault, after checking its fingerprint.
+    Approve {
+        device: String,
+        /// Skip the fingerprint confirmation.
+        #[arg(long)]
+        yes: bool,
+    },
+    /// Remove a device. Items are not re-keyed.
+    RemoveDevice { device: String },
+    /// Save an item; the value is read from stdin.
+    Set { name: String },
+    /// Print an item's value.
+    Get {
+        name: String,
+        /// On a computer added from Desktop: read with its device credential, without signing in.
+        #[arg(long)]
+        computer: bool,
+        /// With --computer: whose vault (default: the computer's owner).
+        #[arg(long, requires = "computer")]
+        user: Option<String>,
+    },
+    /// List item names.
+    List,
+    /// Delete an item.
+    Rm { name: String },
+    /// Make this computer's vault key and print its public key (Desktop's "Add to Vault" runs it).
+    #[command(hide = true)]
+    Keygen {
+        #[arg(long)]
+        user: String,
+    },
+}
+
+#[derive(Subcommand)]
 enum TokenCommand {
     /// List CLI sign-ins, newest first.
     List,
@@ -263,6 +312,11 @@ async fn run(args: Args) -> Result<i32> {
             println!("Signed in as {}.", who(&session));
             return Ok(0);
         }
+        // A computer added to a vault from Desktop needs no sign-in of its own.
+        Some(Command::Vault { command: VaultCommand::Keygen { user } }) => return vault::keygen(user).map(|_| 0),
+        Some(Command::Vault { command: VaultCommand::Get { name, computer: true, user } }) => {
+            return vault::get_on_computer(name, user.clone()).await.map(|_| 0);
+        }
         Some(Command::Token { command }) => {
             let (api, _, _) = sign_in(false).await?;
             return token(&api, command, args.json).await;
@@ -314,6 +368,18 @@ async fn run(args: Args) -> Result<i32> {
             triggers::usage(&ctx, &trigger).await.map(|_| 0)
         }
         Some(Command::Triggers { session, .. }) => triggers::list(&ctx, session.as_deref()).await.map(|_| 0),
+        Some(Command::Vault { command }) => match command {
+            VaultCommand::Enroll { name } => vault::enroll(&ctx, name).await,
+            VaultCommand::Devices => vault::devices(&ctx).await,
+            VaultCommand::Approve { device, yes } => vault::approve(&ctx, &device, yes).await,
+            VaultCommand::RemoveDevice { device } => vault::remove_device(&ctx, &device).await,
+            VaultCommand::Set { name } => vault::set(&ctx, &name).await,
+            VaultCommand::Get { name, .. } => vault::get(&ctx, &name).await,
+            VaultCommand::Keygen { .. } => unreachable!("handled before sign-in"),
+            VaultCommand::List => vault::list(&ctx).await,
+            VaultCommand::Rm { name } => vault::remove(&ctx, &name).await,
+        }
+        .map(|_| 0),
         Some(Command::Team { name, .. }) => cli::team(&mut ctx, name).await.map(|_| 0),
         Some(Command::Runtime { name: Some(name), login: true, .. }) => {
             cli::login_runtime(&ctx, &name).await.map(|_| 0)
@@ -694,5 +760,41 @@ mod triggers_args {
             args.command,
             Some(Command::Triggers { session: None, command: Some(TriggersCommand::Usage { trigger }) }) if trigger == "Nightly"
         ));
+    }
+}
+
+#[cfg(test)]
+mod vault_args {
+    use clap::Parser;
+
+    use super::{Args, Command, VaultCommand};
+
+    #[test]
+    fn vault_subcommands_parse() {
+        let args = Args::try_parse_from(["cerin", "vault", "approve", "dev-1", "--yes"]).unwrap();
+        assert!(matches!(
+            args.command,
+            Some(Command::Vault { command: VaultCommand::Approve { device, yes: true } }) if device == "dev-1"
+        ));
+        let args = Args::try_parse_from(["cerin", "vault", "remove-device", "dev-1"]).unwrap();
+        assert!(matches!(args.command, Some(Command::Vault { command: VaultCommand::RemoveDevice { .. } })));
+        let args = Args::try_parse_from(["cerin", "vault", "set", "token"]).unwrap();
+        assert!(
+            matches!(args.command, Some(Command::Vault { command: VaultCommand::Set { name } }) if name == "token")
+        );
+    }
+
+    #[test]
+    fn a_computer_reads_without_signing_in_and_names_whose_vault() {
+        let args = Args::try_parse_from(["cerin", "vault", "get", "token", "--computer", "--user", "u1"]).unwrap();
+        assert!(matches!(
+            args.command,
+            Some(Command::Vault { command: VaultCommand::Get { computer: true, user: Some(u), .. } }) if u == "u1"
+        ));
+        assert!(Args::try_parse_from(["cerin", "vault", "get", "token", "--user", "u1"]).is_err());
+        let args = Args::try_parse_from(["cerin", "vault", "keygen", "--user", "u1"]).unwrap();
+        assert!(
+            matches!(args.command, Some(Command::Vault { command: VaultCommand::Keygen { user } }) if user == "u1")
+        );
     }
 }

@@ -5,6 +5,7 @@ struct RootView: View {
     @Environment(AuthSession.self) private var session
     @Environment(\.scenePhase) private var scenePhase
     private let stepUp = StepUpPrompt.shared
+    @State private var leftApp = false
 
     var body: some View {
         Group {
@@ -28,6 +29,12 @@ struct RootView: View {
         .onOpenURL { PushNotifications.shared.open($0) }
         .onChange(of: scenePhase, initial: true) { _, phase in
             Analytics.shared.setActive(phase == .active)
+            if phase == .background { leftApp = true }
+            // A Home painted offline checks its token again once the app is back.
+            if phase == .active, leftApp {
+                leftApp = false
+                if session.unverified { Task { await session.restore() } }
+            }
         }
         .task(id: "\(session.generation)/\(isSignedIn)") {
             if isSignedIn { await session.activatePush() }
@@ -50,7 +57,6 @@ private struct SplashView: View {
                 Image("CerinMark")
                     .resizable()
                     .scaledToFit()
-                    .foregroundStyle(Theme.heading)
                     .frame(width: 72, height: 72)
                 ProgressView().tint(Theme.muted)
             }

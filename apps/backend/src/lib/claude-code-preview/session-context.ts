@@ -26,7 +26,9 @@ export function previewSessionPrincipalChanged(
   return (
     session.userId !== nextUserId ||
     (nextRuntime !== undefined &&
-      session.runtime?.env?.CERIN_SESSION_ACTOR !== nextRuntime.env?.CERIN_SESSION_ACTOR)
+      (session.runtime?.env?.CERIN_SESSION_ACTOR !== nextRuntime.env?.CERIN_SESSION_ACTOR ||
+        (session.runtime?.env?.CERIN_SESSION_HOME_EPOCH ?? '0') !==
+          (nextRuntime.env?.CERIN_SESSION_HOME_EPOCH ?? '0')))
   )
 }
 

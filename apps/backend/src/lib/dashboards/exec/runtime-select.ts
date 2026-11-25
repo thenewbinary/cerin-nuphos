@@ -93,14 +93,15 @@ const defaultDeps: PanelRuntimeDeps = {
   },
 }
 
+/** Agents on someone's own computer never offer the panel job, so say what does (#4168). */
 export const NO_RUNTIME_MESSAGE =
-  "No agent can run this dashboard's panels. Panels run on one of the team's agents or on an online, signed-in Box agent of the panel's author: bring one online in Settings → Agent, then refresh."
+  "Runtimes on your own computer can't run dashboard panels. A team runtime or a computer from Cerin can. Ask a team admin to rent one, then refresh."
 export const UNREACHABLE_RUNTIME_MESSAGE =
-  "None of this team's agents could be reached. Check that an agent is online in Settings → Agent, then refresh."
+  "None of this team's runtimes could be reached. Check that a runtime is online in Settings → Computers, then refresh."
 export const PARTLY_UNREACHABLE_RUNTIME_MESSAGE =
-  "Some of this team's agents could not be reached, and the reachable ones run an image that cannot run dashboard panels. Bring an agent online or update one to the latest image in Settings → Agent, then refresh."
+  "Some of this team's runtimes could not be reached, and the reachable ones run an image that cannot run dashboard panels. Bring a runtime online or update one to the latest image in Settings → Computers, then refresh."
 export const OUTDATED_RUNTIME_MESSAGE =
-  "This team's agents run an image that cannot run dashboard panels. Update an agent to the latest image in Settings → Agent, then refresh."
+  "This team's runtimes run an image that cannot run dashboard panels. Update a runtime to the latest image in Settings → Computers, then refresh."
 
 export async function selectPanelRuntime(
   context: PanelRuntimeContext,
@@ -109,7 +110,7 @@ export async function selectPanelRuntime(
 ): Promise<PanelRuntime> {
   const candidates = await deps.listEndpoints(context.teamId, context.userId)
 
-  if (candidates.length === 0) throw new PanelExecError('runtime_unavailable', NO_RUNTIME_MESSAGE)
+  if (candidates.length === 0) throw new PanelExecError('no_runtime', NO_RUNTIME_MESSAGE)
   let unreachable = 0
 
   for (const endpoint of strategy(candidates, context)) {

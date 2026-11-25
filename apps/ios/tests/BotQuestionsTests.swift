@@ -6,6 +6,7 @@ enum BotQuestionsTests {
         listsTheBotsQuestionsAtAnyDepth()
         leavesOutOtherBotsAndTeammates()
         decodesTheOpenRequestsOfAListRow()
+        decodesTheDesktopAComputerQuestionHandsOver()
         theInboxListsEveryOwnQuestionOnce()
         keepsTheBodyTheAgentWroteToDecideFrom()
         aPlanOrASecretIsNeverAnsweredInWords()
@@ -162,6 +163,9 @@ enum BotQuestionsTests {
         var secret = AgentConversation.InputRequest(id: "d", category: "credential", question: "Which key?",
                                                     options: ["a", "b"], askedAt: nil)
         secret.multiSelect = true
+        // Without a secret it is a choice like any other, picked with Send (#4029); a secret is never a form.
+        precondition(ask(secret).form?.first?.options == ["a", "b"])
+        secret.secretName = "API_KEY"
         precondition(ask(secret).form == nil)
     }
 
@@ -211,6 +215,21 @@ enum BotQuestionsTests {
         let decoded = try! decoder.decode(AgentConversation.self, from: Data(json.utf8))
         precondition(decoded.inputRequests?.first?.options == ["Yes"])
         precondition(BotQuestions.under(bot: "rollout", rows: [decoded]).map(\.id) == ["canary:q-canary"])
+    }
+
+    private static func decodesTheDesktopAComputerQuestionHandsOver() {
+        let json = """
+        {"sessionId":"chat","title":"Chat","isOwner":true,
+         "inputRequests":[{"id":"q-1","category":"computer","question":"Sign in","options":["I'm done","Skip"],
+         "desktop":{"deviceId":"box-1","display":2,"title":"Studio Box · :2"},
+         "askedAt":"2026-11-09T03:03:00Z","status":"open"}]}
+        """
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try! decoder.decode(AgentConversation.self, from: Data(json.utf8))
+        let request = decoded.inputRequests?.first
+        precondition(request?.desktop == AgentConversation.ComputerDesktop(deviceId: "box-1", display: 2, title: "Studio Box · :2"))
+        precondition(request?.options == ["I'm done", "Skip"])
     }
 
     private static func theInboxListsEveryOwnQuestionOnce() {
@@ -273,7 +292,14 @@ enum BotQuestionsTests {
         }
         precondition(ask("preference").typed)
         precondition(!ask("approval", planId: "p1").typed)
-        precondition(!ask("credential").typed)
+        // A credential question with options is a choice like any other; only its secret card takes no words (#4029).
+        precondition(ask("credential").typed)
+        var secret = ask("credential").request
+        secret.secretName = "DEPLOY_TOKEN"
+        precondition(!BotQuestion(sessionId: "s", title: "Agent", request: secret).typed)
+        // Without options it asks for the value itself, which is never typed into the chat.
+        let bare = AgentConversation.InputRequest(id: "r", category: "credential", question: "Key?", options: nil, askedAt: nil)
+        precondition(!BotQuestion(sessionId: "s", title: "Agent", request: bare).typed)
         // An integration question naming nothing to select, e.g. a service with no connector, takes words.
         precondition(ask("integration").typed)
         let plan = try! JSONDecoder().decode(
@@ -288,9 +314,9 @@ enum BotQuestionsTests {
             BotQuestion(sessionId: "s", title: "Agent", request: try! JSONDecoder().decode(
                 AgentConversation.InputRequest.self, from: Data(json.utf8)))
         }
-        // A sign-in status card: a credential with options and no secret is answered with them.
+        // A sign-in status card: a credential with options and no secret is answered with them, or in words (#4029).
         let signedIn = ask(#"{"id":"q","category":"credential","question":"Sign in?","options":["Signed in","Not now"]}"#)
-        precondition(signedIn.options == ["Signed in", "Not now"] && !signedIn.typed)
+        precondition(signedIn.options == ["Signed in", "Not now"] && signedIn.typed)
         // An integration naming no provider keeps its options and its words.
         let play = ask(#"{"id":"q","category":"integration","question":"Play review?","options":["I check","Wait"]}"#)
         precondition(play.options == ["I check", "Wait"] && play.typed)

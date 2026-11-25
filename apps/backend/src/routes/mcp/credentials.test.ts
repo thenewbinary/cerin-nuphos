@@ -34,7 +34,7 @@ const options = {
   vantaIntegrations: [],
   secureframeIntegrations: [],
   resendIntegrations: [],
-  personalCredentials: [{ provider: 'github', login: 'me' }],
+  personalCredentials: [{ id: 'c1', provider: 'github', login: 'me' }],
   devices: [{ deviceId: 'mac', label: 'Mac', platform: 'darwin', available: false }],
   ...emptyConnectorCredentialOptions(),
   githubInstallations: [
@@ -77,7 +77,7 @@ useAgentDb({
   },
 })
 
-const { cerinUpdateCredentials } = await import('./credentials')
+const { cerinListCredentials, cerinUpdateCredentials } = await import('./credentials')
 
 beforeEach(() => {
   stored = {
@@ -111,6 +111,28 @@ describe('cerin_update_credentials', () => {
     expect(await run()).not.toContain('isError":true')
     expect(stored.credentialAccess.deviceIds).toEqual(['mac', 'other-mac'])
     expect(stored.credentialAccess.awsRoleIds).toEqual([])
+  })
+
+  test('naming credentials turns off All credentials but keeps All computers', async () => {
+    Object.assign(stored.credentialAccess, { allCredentials: true, allDevices: true })
+
+    expect(await run()).not.toContain('isError":true')
+    expect(stored.credentialAccess.allCredentials).toBe(false)
+    expect(stored.credentialAccess.allDevices).toBe(true)
+  })
+
+  test('list_credentials shows what All covers now, not the saved lists', async () => {
+    stored.credentialAccess = { allCredentials: true, awsRoleIds: [], azureAccountIds: [] }
+
+    const listed = JSON.parse(
+      (
+        (await cerinListCredentials({ team_id: 't1', session_id: 's1' }, {
+          userId: 'u1',
+        } as never)) as { content: { text: string }[] }
+      ).content[0]!.text,
+    )
+
+    expect(listed.enabled_for_session.aws_role_ids).toEqual(['aws-1'])
   })
 })
 

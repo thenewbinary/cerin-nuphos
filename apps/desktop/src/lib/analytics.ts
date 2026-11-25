@@ -5,6 +5,7 @@
 import posthog from 'posthog-js'
 
 import { setFrontendErrorReporter } from './frontendErrorReporter'
+import { skipPersonProcessing } from './personlessEvents'
 import { sanitizeReportText } from './reportRedaction'
 
 import type { UserInfo } from '../types'
@@ -54,9 +55,6 @@ export type AnalyticsEvent =
   | 'agent_resume_dispatched'
   | 'agent_end_effects_deferred'
   | 'agent_end_effects_drained'
-  | 'agent_plan_approved'
-  | 'agent_plan_rejected'
-  | 'agent_plan_changes_requested'
   // Trust depth. The decision is a GRADIENT (once < session < always), not a
   // boolean approve/reject: how far the user is willing to let the agent run
   // unattended is the signal, and it stays readable without knowing how wide
@@ -165,6 +163,7 @@ export function initAnalytics(): void {
     // (surveys, toolbar) into the renderer at runtime — those would execute
     // with full Electron process privileges.
     disable_external_dependency_loading: true,
+    before_send: skipPersonProcessing,
   })
   // An opt-out from an earlier session is persisted; the setting is on now.
   if (posthog.has_opted_out_capturing()) posthog.opt_in_capturing()

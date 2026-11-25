@@ -7,14 +7,14 @@ import { config } from '@/config'
 import { AppError } from '@/lib/errors'
 import { logError } from '@/lib/observability'
 
-import { killMachine, listMachines } from './instabox-machines'
+import { killMachine, listMachines, machineState } from './instabox-machines'
 
 /** The default template: a desktop the person can watch and take over. */
 export const BOX_TEMPLATE = 'agent-browser'
 /** Installing the CLI and the agents on a fresh machine. */
 export const INSTALL_TIMEOUT_MS = 9 * 60_000
-/** Ordering a machine, in the background. */
-export const CREATE_TIMEOUT_MS = 3 * 60_000
+/** Ordering a machine, in the background: instabox may queue a create for minutes first. */
+export const CREATE_TIMEOUT_MS = 10 * 60_000
 /** Anything on a turn's path: an instabox outage must not stall a conversation for long. */
 export const QUICK_TIMEOUT_MS = 30_000
 /** The most one HTTP request to instabox may take; long operations poll within their own budget. */
@@ -24,6 +24,10 @@ export const RETRY_AFTER_MS = 300
 
 /** A failure the next try may not meet: a reset connection or a 502–504, never a timeout. */
 export const transient = (error: unknown) => error instanceof InstaboxError && error.retryable
+
+/** instabox refuses a call while the machine's last operation, a pause mostly, still runs. */
+export const busy = (error: unknown) =>
+  error instanceof InstaboxError && error.code === 'operation_conflict'
 
 const PATHS = 'export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"'
 
@@ -125,7 +129,7 @@ export const BOX_UPDATE_COMMAND = [
   // The written AGENTS.md (sent agents to /data/workspace and MACHINE.md) is emptied, not
   // removed: instabox writes it again, links included, wherever it is missing. Only while it
   // is exactly what was written; an edit keeps it, and the agents' links stay as they are.
-  `a=$(readlink -f "$HOME/AGENTS.md"); case "$(sha256sum "$a" 2>/dev/null | cut -d' ' -f1)" in ${IMAGE_AGENTS_SHA256.join('|')}) : > "$a" ;; esac`,
+  `case "$(sha256sum "$HOME/AGENTS.md" 2>/dev/null | cut -d' ' -f1)" in ${IMAGE_AGENTS_SHA256.join('|')}) : > "$HOME/AGENTS.md" ;; esac`,
   ') >> "$HOME/cerin-update.log" 2>&1',
   AGENT_COMMAND,
 ].join('\n')
@@ -179,6 +183,8 @@ export function boxesAvailable(): boolean {
  */
 export function unavailable(what: string, error: unknown): AppError {
   if (error instanceof AppError) return error
+  if (busy(error))
+    return new AppError(409, 'box_busy', 'The computer is still pausing. Try again in a minute.')
   logError('agent.box.instabox_failed', error, { what })
 
   return new AppError(503, 'box_unavailable', `${what}. Try again in a few minutes.`)
@@ -208,7 +214,7 @@ export function orderRefused(error: unknown, ownAccount: boolean): AppError {
     return new AppError(
       409,
       'instabox_key_rejected',
-      'Your instabox account no longer accepts its API key. A team administrator can bind the account again with a new key under Settings → Integrations.',
+      'Your instabox account no longer accepts its API key. A team administrator can replace the key under Settings → Connectors.',
     )
 
   return new AppError(
@@ -234,12 +240,22 @@ export async function killBoxMachine(
   for (const machine of machines) await kill(machine.sandboxId, conn)
 }
 
-/** Deletes a machine, treating one that is already gone as deleted. */
-async function kill(sandboxId: string, conn: ReturnType<typeof connection>): Promise<void> {
+/**
+ * Deletes a machine, treating one that is already gone as deleted. A machine still pausing
+ * is deleted once the pause is over, which reading its state waits for.
+ */
+async function kill(
+  sandboxId: string,
+  conn: ReturnType<typeof connection>,
+  wait = true,
+): Promise<void> {
   try {
     await killMachine(conn, sandboxId)
   } catch (error) {
     if (error instanceof InstaboxError && error.status === 404) return
-    throw error
+    if (!wait || !busy(error)) throw error
+    // A machine gone meanwhile fails this read too; the next kill says so.
+    await machineState(conn, sandboxId).catch(() => undefined)
+    await kill(sandboxId, conn, false)
   }
 }

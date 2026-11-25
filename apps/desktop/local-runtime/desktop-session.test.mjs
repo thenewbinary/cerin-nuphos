@@ -1,5 +1,17 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, readdirSync, utimesSync, writeFileSync } from 'node:fs'
+import { spawn, spawnSync } from 'node:child_process'
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  utimesSync,
+  writeFileSync,
+} from 'node:fs'
+import { connect } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
@@ -12,6 +24,12 @@ import {
   lockFile,
   readLock,
   reap,
+  startXvnc,
+  vncSocket,
+  writeXauthority,
+  xauthority,
+  xdgDir,
+  xvncArgs,
 } from './desktop-session.mjs'
 
 test('each session gets its own display, the lowest free one, and keeps it', () => {
@@ -185,3 +203,143 @@ test('a full pool answers the call that needs a desktop, and the next call tries
   await relay.receive({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'click' } })
   assert.equal(sent[1].result.content[0].text, ':2')
 })
+
+// The agent's runtime ends a session by signalling its whole process group, which
+// already reaches the computer-use proxy; a second signal from here re-entered the
+// proxy's handler and left it hung for good, holding the session's home (#4727).
+test(
+  "ending the session closes the proxy's stdin instead of signalling it",
+  {
+    skip: process.platform === 'win32',
+  },
+  async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'desktop-session-'))
+    const log = path.join(dir, 'proxy.log')
+
+    // Stands in for `python3 -I <proxy>`: notes each signal, then EOF on stdin.
+    writeFileSync(
+      path.join(dir, 'python3'),
+      `#!/bin/sh\ntrap 'echo signal >> "${log}"' TERM HUP INT\necho started >> "${log}"\nwhile read -r line; do :; done\necho eof >> "${log}"\n`,
+    )
+    chmodSync(path.join(dir, 'python3'), 0o755)
+    const session = spawn(
+      process.execPath,
+      [new URL('desktop-session.mjs', import.meta.url).pathname, 'serve'],
+      {
+        env: {
+          PATH: `${dir}:/usr/bin:/bin`,
+          HOME: dir,
+          CERIN_SESSION_ID: 'session',
+          CERIN_DESKTOP_POOL: path.join(dir, 'pool'),
+        },
+        stdio: ['pipe', 'ignore', 'inherit'],
+      },
+    )
+    const until = async (done) => {
+      for (const deadline = Date.now() + 5000; !done() && Date.now() < deadline;)
+        await new Promise((resolve) => setTimeout(resolve, 20))
+    }
+
+    await until(() => existsSync(log))
+    session.kill('SIGTERM')
+    await new Promise((resolve) => session.once('exit', resolve))
+    await until(() => readFileSync(log, 'utf8').includes('eof'))
+    assert.equal(readFileSync(log, 'utf8'), 'started\neof\n')
+  },
+)
+
+/** What a client reading from `target` gets first: the server's bytes, or the error that refused it. */
+const firstRead = (target, hello = '') =>
+  new Promise((resolve) => {
+    const socket = connect(...target)
+
+    socket.write(hello)
+    socket.once('data', (chunk) => {
+      resolve(chunk)
+      socket.destroy()
+    })
+    socket.once('error', (error) => resolve(error.code))
+  })
+
+/** An X11 connection setup carrying `cookie`, or none: the server answers 1 to accept, 0 to refuse. */
+function xHello(cookie) {
+  const name = cookie ? Buffer.from('MIT-MAGIC-COOKIE-1\0\0') : Buffer.alloc(0)
+  const head = Buffer.from([0x6c, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+  head.writeUInt16LE(cookie ? 18 : 0, 6)
+  head.writeUInt16LE(cookie ? cookie.length : 0, 8)
+
+  return Buffer.concat([head, name, cookie ?? Buffer.alloc(0)])
+}
+
+// Another session runs as the same user, but no other user or container on the
+// machine should reach a desktop: X takes only the display's cookie and RFB is
+// served only on the display's 0600 socket. Needs a real Xvnc, so it runs on a
+// Linux Box image, not on CI.
+test(
+  'a display takes X clients only with its cookie and serves RFB only on its own 0600 socket',
+  { skip: spawnSync('Xvnc', ['-version']).error ? 'needs Xvnc' : false },
+  async () => {
+    const pool = mkdtempSync(path.join(os.tmpdir(), 'pool-'))
+    const display = 90 + Math.floor(Math.random() * 9)
+    const x = [`/tmp/.X11-unix/X${String(display)}`]
+
+    mkdirSync(xdgDir(pool, display), { mode: 0o700 })
+    writeXauthority(xauthority(pool, display))
+    const xvnc = spawn('Xvnc', xvncArgs(pool, display), { stdio: 'ignore' })
+
+    try {
+      for (let i = 0; i < 50 && !existsSync(vncSocket(pool, display)); i++)
+        await new Promise((resolve) => setTimeout(resolve, 100))
+      assert.equal(statSync(vncSocket(pool, display)).mode & 0o777, 0o600)
+      assert.equal(statSync(xauthority(pool, display)).mode & 0o777, 0o600)
+      assert.match(String(await firstRead([vncSocket(pool, display)])), /^RFB 003\.008/u)
+      assert.equal(await firstRead([5900 + display, '127.0.0.1']), 'ECONNREFUSED')
+      assert.equal(await firstRead([5900 + display, '::1']), 'ECONNREFUSED')
+      const cookie = readFileSync(xauthority(pool, display)).subarray(-16)
+
+      assert.equal((await firstRead(x, xHello()))[0], 0)
+      assert.equal((await firstRead(x, xHello(Buffer.alloc(16))))[0], 0)
+      assert.equal((await firstRead(x, xHello(cookie)))[0], 1)
+    } finally {
+      xvnc.kill()
+    }
+  },
+)
+
+// A display an older runtime started listens on a TCP port with no cookie. The next
+// start replaces it, so it ends up on its own socket like a fresh one.
+test(
+  'a display started without its own RFB socket is replaced by one with it',
+  { skip: spawnSync('Xvnc', ['-version']).error ? 'needs Xvnc' : false },
+  async () => {
+    const pool = mkdtempSync(path.join(os.tmpdir(), 'pool-'))
+    const display = 80 + Math.floor(Math.random() * 9)
+    const old = spawn(
+      'Xvnc',
+      [
+        `:${String(display)}`,
+        '-rfbport',
+        String(5900 + display),
+        '-localhost',
+        '-SecurityTypes',
+        'None',
+      ],
+      { stdio: 'ignore' },
+    )
+
+    try {
+      for (let i = 0; i < 50 && !existsSync(`/tmp/.X11-unix/X${String(display)}`); i++)
+        await new Promise((resolve) => setTimeout(resolve, 100))
+      assert.match(String(await firstRead([5900 + display, '127.0.0.1'])), /^RFB/u)
+      mkdirSync(xdgDir(pool, display), { mode: 0o700 })
+      assert.equal(await startXvnc(pool, display, process.env), true)
+      assert.match(String(await firstRead([vncSocket(pool, display)])), /^RFB 003\.008/u)
+      assert.equal(await firstRead([5900 + display, '127.0.0.1']), 'ECONNREFUSED')
+      assert.equal(await startXvnc(pool, display, process.env), false)
+    } finally {
+      old.kill()
+      spawnSync('pkill', ['-TERM', '-f', `^Xvnc :${String(display)} `])
+    }
+  },
+)

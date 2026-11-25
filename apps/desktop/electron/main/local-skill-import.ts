@@ -3,15 +3,16 @@
 // resolved against what listLocalSkills found, checked against its review, and
 // imported on its own, so one that is skipped or fails never stops the rest.
 import { atlasErrorInfo } from '../atlas/error.ts'
-import { teamSkillsListObjects, teamSkillsPutObject } from '../atlas.ts'
+import { teamSkillsGetObject, teamSkillsPutObject } from '../atlas.ts'
 
+import { RUNTIME_BYTE_BUDGET, RUNTIME_FILE_BUDGET } from './local-setup-plan.ts'
 import { recordReviewedLinks } from './local-setup-snapshot.ts'
 import {
   listLocalSkills,
-  localSkillEntries,
   matchesReview,
   MAX_SKILL_FILE_BYTES,
   readSkillFile,
+  walkSkill,
 } from './local-skills.ts'
 
 import type { LocalSkillInfo, LocalSkillReviewedFile } from './local-skills.ts'
@@ -25,7 +26,16 @@ export type LocalSkillImportOutcome = {
   name: string
   status: 'imported' | 'skipped' | 'failed'
   /** Why it was skipped or failed. */
-  reason?: 'name_taken' | 'builtin' | 'changed' | 'missing' | 'error'
+  reason?:
+    | 'name_taken'
+    | 'builtin'
+    | 'changed'
+    | 'missing'
+    | 'error'
+    /** A walk cap stopped before the whole skill was seen. */
+    | 'incomplete'
+    /** Larger than agents can load: the runtime would refuse every skill in the store. */
+    | 'too_large'
   /** The store's or the reader's own words, for `error`. */
   message?: string
   /** Object keys written, in upload order. */
@@ -49,11 +59,16 @@ function contentType(relPath: string): string | undefined {
   return dot === -1 ? undefined : CONTENT_TYPES[relPath.slice(dot).toLowerCase()]
 }
 
-/** Skill names that already have objects in the target store. */
-async function storeSkillNames(teamId: string, scope: SkillScope | undefined) {
-  const listing = (await teamSkillsListObjects(teamId, scope)) as { objects: { key: string }[] }
+/** Whether the target store has this skill: its SKILL.md, which an import writes last. */
+async function inStore(teamId: string, scope: SkillScope | undefined, name: string) {
+  try {
+    await teamSkillsGetObject(teamId, `skills/${name}/SKILL.md`, scope)
 
-  return new Set(listing.objects.map((object) => /^skills\/([^/]+)\//u.exec(object.key)?.[1]))
+    return true
+  } catch (e) {
+    if (atlasErrorInfo(e).code === 'skill_object_not_found') return false
+    throw e
+  }
 }
 
 async function importOne(
@@ -69,17 +84,32 @@ async function importOne(
     keys: [],
     tooLarge: [],
   }
-  const entries = await localSkillEntries(skill.path)
 
+  // Never overwrite a skill already in the store: importing is for new ones.
+  if (await inStore(teamId, scope, skill.name))
+    return { ...outcome, status: 'skipped', reason: 'name_taken' }
+  const { entries, truncated } = await walkSkill(skill.path)
+
+  // A partial skill would look imported while files the agent needs are missing.
+  if (truncated) return { ...outcome, status: 'skipped', reason: 'incomplete' }
   // A link re-pointed since the review would upload a file the member never saw.
   if (!matchesReview(entries, reviewed)) return { ...outcome, status: 'failed', reason: 'changed' }
-  // One file in memory at a time, uploaded before the next is read: the store
-  // versions each object anyway, and main gains nothing from holding a whole skill.
-  for (const entry of entries) {
-    if (entry.size > MAX_SKILL_FILE_BYTES) {
-      outcome.tooLarge.push(entry.relPath)
-      continue
-    }
+  const uploads = entries.filter((entry) => entry.size <= MAX_SKILL_FILE_BYTES)
+  const tooLarge = entries.filter((entry) => entry.size > MAX_SKILL_FILE_BYTES)
+
+  outcome.tooLarge = tooLarge.map((entry) => entry.relPath)
+  if (
+    uploads.length > RUNTIME_FILE_BUDGET ||
+    uploads.reduce((sum, entry) => sum + entry.size, 0) > RUNTIME_BYTE_BUDGET
+  ) {
+    return { ...outcome, status: 'skipped', reason: 'too_large' }
+  }
+  // SKILL.md last: a skill whose upload stops partway is not in the store yet, so a
+  // retry finishes it. One file in memory at a time, uploaded before the next is
+  // read: the store versions each object anyway.
+  const skillMd = (entry: { relPath: string }) => entry.relPath === 'SKILL.md'
+
+  for (const entry of [...uploads.filter((e) => !skillMd(e)), ...uploads.filter(skillMd)]) {
     const key = `skills/${skill.name}/${entry.relPath}`
     const bytes = new Uint8Array(await readSkillFile(entry))
 
@@ -119,7 +149,8 @@ export async function importLocalSkills(
   // Never take a directory the renderer names: the listing main just produced is
   // the whole allow-list, and each file is read where localSkillEntries resolved it.
   const skills = new Map((await listLocalSkills()).map((skill) => [skill.id, skill]))
-  const taken = await storeSkillNames(teamId, scope)
+  // Two local skills can share a name (Claude Code and Codex): only the first is tried.
+  const taken = new Set<string>()
   const outcomes: LocalSkillImportOutcome[] = []
 
   for (const pick of picks) {
@@ -127,7 +158,6 @@ export async function importLocalSkills(
     const base = { id: pick.id, name: skill?.name ?? pick.id, keys: [], tooLarge: [] }
 
     if (!skill) outcomes.push({ ...base, status: 'failed', reason: 'missing' })
-    // Never overwrite a skill already in the store: importing is for new ones.
     else if (taken.has(skill.name))
       outcomes.push({ ...base, status: 'skipped', reason: 'name_taken' })
     else {
@@ -140,8 +170,7 @@ export async function importLocalSkills(
         }),
       )
 
-      // Two local skills can share a name (Claude Code and Codex): the second is taken.
-      if (outcome.status === 'imported') taken.add(skill.name)
+      taken.add(skill.name)
       outcomes.push(outcome)
     }
   }

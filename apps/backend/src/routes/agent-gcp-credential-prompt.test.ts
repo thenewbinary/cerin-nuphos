@@ -1,15 +1,6 @@
-import { afterAll, describe, expect, test } from 'bun:test'
-
-import { config } from '@/config'
+import { describe, expect, test } from 'bun:test'
 
 import { renderAgentCredentialPrompt } from './agent'
-
-const originalWebUrl = config.auth.publicWebUrl
-
-config.auth.publicWebUrl = 'https://cerin.ai'
-afterAll(() => {
-  config.auth.publicWebUrl = originalWebUrl
-})
 
 const TEAM_ID = '64b5f1c2e4b0a1d2c3e4f5a6'
 
@@ -82,21 +73,10 @@ describe('GCP credentials in the agent prompt', () => {
     )
   })
 
-  test('carries a GUI link for the instance list and an SSH template', () => {
-    expect(line).toContain(
-      `guiLinks={gceInstances:"https://cerin.ai/teams/${TEAM_ID}/infra/gcp/example-project/gce-instances"}`,
-    )
-    expect(line).toContain('gceSsh:"https://cerin.ai/teams/')
-    expect(line).toContain('/gce/<region>/instances/<instanceName>/ssh"')
-  })
-
-  test('percent-encodes a project id in the GUI links', () => {
-    const encoded =
-      promptFor('a b')
-        .split('\n')
-        .find((l) => l.startsWith('- projectId=a b')) ?? ''
-
-    expect(encoded).toContain('/infra/gcp/a%20b/gce-instances')
+  test('leaves GUI routes to the route catalog, so each account costs no link tokens', () => {
+    expect(line).not.toContain('guiLinks')
+    expect(line).not.toContain('guiTemplates')
+    expect(prompt).not.toContain('https://cerin.ai/')
   })
 })
 
@@ -124,10 +104,8 @@ describe('On-prem Kubernetes credentials in the agent prompt', () => {
     expect(prompt).not.toContain('sync-clusters.sh')
   })
 
-  test('links to the shared Kubernetes resource UI', () => {
-    expect(prompt).toContain(
-      `https://cerin.ai/teams/${TEAM_ID}/k8s/onprem/${clusterId}/onprem/${clusterId}/workloads/pods`,
-    )
+  test('leaves its GUI route to the route catalog', () => {
+    expect(prompt).not.toContain('https://cerin.ai/')
   })
 })
 

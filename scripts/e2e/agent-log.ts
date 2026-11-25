@@ -9,12 +9,34 @@ type AgentEntry = {
   sessionId: string
   event: string
   marker?: string
+  /** Every marker in a turn's prompt, in order. */
+  markers?: string[]
   /** The model settings a new session was created with. */
   defaults?: { model?: string; effort?: string; fast?: string }
+  /** The Bot-only Claude Code env a new session was created with. */
+  env?: Record<string, string>
+  /** A fresh session's history preamble: the prompt's length and what it says about omitted turns. */
+  history?: { chars: number; omitted: boolean; readConversation: boolean }
+  /** Whether the system prompt a session opened with tells it to delegate work (#4156). */
+  delegates?: boolean
+  /** A model discovery attempt, and whether the fixture refused it. */
+  failed?: boolean
+  /** The E2E_RULE:<name> the system prompt a session was loaded with names. */
+  rule?: string
+  /** `start`: the E2E_RULE:<name> a standing-instructions update in the turn names. */
+  update?: string
+  /** Each system prompt section's start and hash, as the session opened or loaded with it. */
+  sections?: string[]
   /** The response language a turn's prompt names. */
   language?: string
+  /** `start`: the turn's `Pending:` line, if it carried one. */
+  pending?: string
+  /** `start`: the model the turn received. */
+  model?: string
   isError?: boolean
   detail?: string
+  /** How long a permission request took to be answered. */
+  ms?: number
   /** E2E_CALL: the tool it called and that tool's answer. */
   name?: string
   result?: unknown

@@ -599,7 +599,7 @@ test('reconnecting Codex after login leaves the Claude process running', async (
 })
 
 test('a host run by the `cerin` CLI reports that CLI, which a Box updates by', async () => {
-  const { tunnelStatusOf } = await import('./controller-types.ts')
+  const { tunnelStatusOf } = await import('./controller-status.ts')
   const agents = {
     'claude-code': { runtime: null },
     codex: { runtime: null },
@@ -609,6 +609,7 @@ test('a host run by the `cerin` CLI reports that CLI, which a Box updates by', a
     dsh: { runtime: null },
     hermes: { runtime: null },
     pi: { runtime: null },
+    cursor: { runtime: null },
   } as unknown as Parameters<typeof tunnelStatusOf>[0]
   const before = process.env.CERIN_CLI_VERSION
 
@@ -625,7 +626,7 @@ test('a host run by the `cerin` CLI reports that CLI, which a Box updates by', a
 })
 
 test('a running agent reports which account it spends beside its usage, not in its CLI status', async () => {
-  const { tunnelStatusOf } = await import('./controller-types.ts')
+  const { tunnelStatusOf } = await import('./controller-status.ts')
   const signedIn = {
     installed: true,
     path: '/bin/claude',
@@ -633,10 +634,17 @@ test('a running agent reports which account it spends beside its usage, not in i
     accountKey: '359cc9796000792b',
   }
   const agents = Object.fromEntries(
-    ['claude-code', 'codex', 'grok', 'antigravity', 'opencode', 'dsh', 'hermes', 'pi'].map((p) => [
-      p,
-      p === 'claude-code' ? { runtime: {}, cli: signedIn } : { runtime: null },
-    ]),
+    [
+      'claude-code',
+      'codex',
+      'grok',
+      'antigravity',
+      'opencode',
+      'dsh',
+      'hermes',
+      'pi',
+      'cursor',
+    ].map((p) => [p, p === 'claude-code' ? { runtime: {}, cli: signedIn } : { runtime: null }]),
   ) as unknown as Parameters<typeof tunnelStatusOf>[0]
 
   assert.deepEqual(tunnelStatusOf(agents, 'https://api.test').agents['claude-code'], {

@@ -1,7 +1,6 @@
 import {
   boxBillingPage,
   boxBillingSummary,
-  boxDesktop,
   boxJoinToken,
   openSessionDesktop,
   createBox,
@@ -16,6 +15,7 @@ import {
   bindInstaboxAccount,
   instaboxAccountSizes,
   listInstaboxAccounts,
+  replaceInstaboxKey,
   unbindInstaboxAccount,
   renameBox,
   setBoxAccess,
@@ -126,6 +126,8 @@ export const boxChannels = {
     bindInstaboxAccount(string(teamId), string(label), string(apiKey)),
   'box:unbindInstaboxAccount': (_e: unknown, teamId: unknown, accountId: unknown) =>
     unbindInstaboxAccount(string(teamId), string(accountId)),
+  'box:replaceInstaboxKey': (_e: unknown, teamId: unknown, accountId: unknown, apiKey: unknown) =>
+    replaceInstaboxKey(string(teamId), string(accountId), string(apiKey)),
   'box:instaboxSizes': (_e: unknown, teamId: unknown, accountId: unknown) =>
     instaboxAccountSizes(string(teamId), string(accountId)),
   'box:createAgent': (
@@ -169,8 +171,6 @@ export const boxChannels = {
     clearBoxCaches(string(deviceId), string(teamId)),
   'box:autoInstall': (_e: unknown, deviceId: unknown, teamId: unknown, enabled: unknown) =>
     setDeviceAutoInstall(string(deviceId), string(teamId), enabled === true),
-  'box:desktop': (_e: unknown, deviceId: unknown, teamId: unknown) =>
-    boxDesktop(string(deviceId), string(teamId)),
   'box:join-token': () => boxJoinToken(),
   'box:setAccess': (_e: unknown, deviceId: unknown, teamId: unknown, access: unknown) =>
     setBoxAccess(string(deviceId), string(teamId), boxAccess(access)),

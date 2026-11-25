@@ -41,7 +41,7 @@ export type ConversationChatRequest = {
   ownerUserId?: string
   runtime?: OpenAbProvider
   runtimeId?: string
-  purpose?: 'transport' | 'control'
+  purpose?: 'transport' | 'steer' | 'control'
   /** The conversation this turn is for, even before it is stored; a shared computer asks about it. */
   sessionId?: string
   /** Where this turn comes from (a channel or trigger), which may differ from where the conversation began. */
@@ -69,6 +69,33 @@ async function ownerDefaultRuntimeId(
     recentIds: recent.flatMap((conversation) => conversation.runtimeId ?? []),
     provider,
   })
+}
+
+/**
+ * The runtime a conversation stored before its first turn (a new Bot) is placed on: the one
+ * asked for, else its owner's default, else the team's. A workspace without one refuses,
+ * so no conversation is stored without its runtime.
+ */
+export async function resolveNewConversationRuntime(
+  teamId: string,
+  userId: string,
+  runtimeId?: string,
+): Promise<{ agentRuntime: OpenAbProvider; runtimeId?: string; runtimeLabel?: string }> {
+  const id = runtimeId ?? (await ownerDefaultRuntimeId(teamId, userId, undefined))
+
+  if (id) {
+    const instance = await requireRuntimeInstance(teamId, id, userId)
+
+    return { agentRuntime: instance.provider, runtimeId: instance.id, runtimeLabel: instance.label }
+  }
+  const agentRuntime = await getTeamAgentRuntime(teamId)
+
+  assertClaudeCodeSetupConfigured(
+    (await listTeamRuntimes(teamId, agentRuntime)).length > 0,
+    agentRuntime,
+  )
+
+  return { agentRuntime }
 }
 
 type RoutedConversation =
@@ -143,7 +170,8 @@ async function resolveChatRuntime(
 
     return { runtime, endpoint, runtimeId: instance.id, runtimeLabel: instance.label }
   }
-  const developmentEndpoint = developmentRuntimeEndpoint(runtime, purpose)
+  const channel = purpose === 'steer' ? 'control' : purpose
+  const developmentEndpoint = developmentRuntimeEndpoint(runtime, channel)
 
   if (
     developmentEndpoint &&
@@ -172,7 +200,7 @@ async function resolveChatRuntime(
       runtimeLabel,
     }
   }
-  const registered = await resolveTeamRuntimeEndpoints(teamId, runtime, purpose)
+  const registered = await resolveTeamRuntimeEndpoints(teamId, runtime, channel)
   const endpoints = selectedId
     ? registered.filter((endpoint) => endpoint.runtimeId === selectedId)
     : registered

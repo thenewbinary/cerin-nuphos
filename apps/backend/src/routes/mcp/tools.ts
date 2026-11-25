@@ -3,6 +3,7 @@ import { getCapabilities, toolResult } from '@/lib/mcp/protocol'
 import { cerinAsk } from '@/routes/mcp/ask'
 import { cerinCheck } from '@/routes/mcp/check'
 import {
+  cerinArchiveSession,
   cerinEvents,
   cerinListQueue,
   cerinListRuntimes,
@@ -10,7 +11,10 @@ import {
   cerinStop,
 } from '@/routes/mcp/control'
 import { cerinListCredentials, cerinUpdateCredentials } from '@/routes/mcp/credentials'
+import { cerinFiles } from '@/routes/mcp/files'
+import { cerinFindPrSessions } from '@/routes/mcp/resources'
 import { cerinListSessions, cerinUpdateSession } from '@/routes/mcp/sessions'
+import { cerinWebhooks } from '@/routes/mcp/webhooks'
 
 import type { ToolHandler, ToolResult } from '@/lib/mcp/protocol'
 import type { McpCallContext } from '@/routes/mcp/types'
@@ -37,11 +41,15 @@ export function toolsForContext(ctx: McpCallContext): Record<string, ToolHandler
     cerin_list_sessions: (args) => cerinListSessions(args, ctx),
     cerin_events: (args) => cerinEvents(args, ctx),
     cerin_stop: (args) => cerinStop(args, ctx),
+    cerin_archive_session: (args) => cerinArchiveSession(args, ctx),
     cerin_list_queue: (args) => cerinListQueue(args, ctx),
     cerin_remove_queued: (args) => cerinRemoveQueued(args, ctx),
     cerin_update_session: (args) => cerinUpdateSession(args, ctx),
     cerin_list_credentials: (args) => cerinListCredentials(args, ctx),
     cerin_update_credentials: (args) => cerinUpdateCredentials(args, ctx),
+    cerin_files: (args) => cerinFiles(args, ctx),
+    cerin_find_pr_sessions: (args) => cerinFindPrSessions(args, ctx),
+    cerin_webhooks: (args) => cerinWebhooks(args, ctx),
     cerin_capabilities: async () => toolResult(getCapabilities()),
   }
 }

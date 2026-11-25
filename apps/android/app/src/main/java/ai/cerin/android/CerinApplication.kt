@@ -3,6 +3,9 @@ package ai.cerin.android
 import android.app.Application
 import ai.cerin.android.data.TokenStore
 import ai.cerin.android.session.AuthSession
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 class CerinApplication : Application() {
     lateinit var incomingShares: ai.cerin.android.session.IncomingShares
@@ -22,8 +25,18 @@ class CerinApplication : Application() {
     lateinit var pushNotifications: ai.cerin.android.notifications.PushNotifications
         private set
 
+    private val appearancePreferences by lazy { getSharedPreferences("cerin.appearance", MODE_PRIVATE) }
+    var botAvatarsEnabled by mutableStateOf(true)
+        private set
+
+    fun updateBotAvatars(enabled: Boolean) {
+        botAvatarsEnabled = enabled
+        appearancePreferences.edit().putBoolean("botAvatars", enabled).apply()
+    }
+
     override fun onCreate() {
         super.onCreate()
+        botAvatarsEnabled = appearancePreferences.getBoolean("botAvatars", true)
         ai.cerin.android.model.Words.context = this
         getSharedPreferences("cerin.backend", MODE_PRIVATE).getString("origin", null)?.let {
             runCatching { ai.cerin.android.data.BackendOrigin.select(it) }

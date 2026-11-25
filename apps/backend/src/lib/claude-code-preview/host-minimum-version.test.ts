@@ -4,7 +4,13 @@ import { describe, expect, test } from 'bun:test'
 
 import { createMemoryPresenceStore } from '@/lib/agent/devices/local-runtime/presence'
 
-import { MINIMUM_HOST_VERSION, hostOutdated } from './host-minimum-version'
+import {
+  MINIMUM_HOST_VERSION,
+  hostOutdated,
+  DESKTOP_UPDATE_READY_HINT,
+  hostUpdateHint,
+  withOutdatedHint,
+} from './host-minimum-version'
 import { ownComputer } from './session-desktops'
 
 import type { LocalRuntimeStatus } from '@/lib/agent/devices/local-runtime/protocol'
@@ -15,13 +21,15 @@ const agents = {}
 
 describe('the oldest Cerin a computer may run', () => {
   test('a Desktop below the floor is out of date, one at it is not', () => {
-    // #3829: before 0.127.0 a downloaded update waits for a manual restart.
-    expect(MINIMUM_HOST_VERSION.desktop).toBe('0.127.0')
+    // #5081: before 0.133.2 a downloaded update waits for someone to quit Cerin by hand.
     expect(hostOutdated({ client: 'cerin-desktop/0.119.2' })).toBe('desktop')
     expect(hostOutdated({ client: 'cerin-desktop/0.124.0' })).toBe('desktop')
     expect(hostOutdated({ client: 'cerin-desktop/0.126.0' })).toBe('desktop')
-    expect(hostOutdated({ client: 'cerin-desktop/0.127.0' })).toBeUndefined()
-    expect(hostOutdated({ client: 'cerin-desktop/0.130.1' })).toBeUndefined()
+    expect(hostOutdated({ client: 'cerin-desktop/0.132.0' })).toBe('desktop')
+    expect(hostOutdated({ client: 'cerin-desktop/0.133.1' })).toBe('desktop')
+    expect(hostOutdated({ client: 'cerin-desktop/0.133.2' })).toBeUndefined()
+    expect(hostOutdated({ client: 'cerin-desktop/0.137.0' })).toBeUndefined()
+    expect(MINIMUM_HOST_VERSION.desktop).toBe('0.133.2')
   })
 
   test('a CLI host is held to the CLI’s own floor', () => {
@@ -50,7 +58,7 @@ describe('the oldest Cerin a computer may run', () => {
 
 // The floor only says a computer should update: nothing refuses a turn or a runtime start for it.
 describe('a computer below the floor', () => {
-  test('is read only by the computer card', () => {
+  test('is used only for update notices, never to block runtime operations', () => {
     const src = `${import.meta.dir}/../..`
     const readers = [...new Bun.Glob('**/*.ts').scanSync(src)].filter(
       (file) =>
@@ -59,7 +67,15 @@ describe('a computer below the floor', () => {
         readFileSync(`${src}/${file}`, 'utf8').includes('host-minimum-version'),
     )
 
-    expect(readers).toEqual(['lib/claude-code-preview/session-desktops.ts'])
+    // #3562: a failed turn also says so; that only adds a line to its error and summary.
+    expect(new Set(readers)).toEqual(
+      new Set([
+        'lib/claude-code-preview/preview-transcript.ts',
+        'lib/claude-code-preview/runtime-refusal.ts',
+        'lib/agent/reply-failed.ts',
+        'lib/claude-code-preview/session-desktops.ts',
+      ]),
+    )
   })
 
   test('still opens its desktop and reports its app, with the notice added', async () => {
@@ -76,4 +92,35 @@ describe('a computer below the floor', () => {
     expect(card).toMatchObject({ outdated: 'desktop', app })
     expect(card.desktopRuntimeId).toBeString()
   })
+})
+
+test('a Bot update hint neither repeats a product error nor exposes a raw error', () => {
+  const shown = `A runtime could not start. ${DESKTOP_UPDATE_READY_HINT}`
+  const error = new Error(`internal path and RPC detail\n\n${DESKTOP_UPDATE_READY_HINT}`)
+
+  expect(withOutdatedHint(shown, error)).toBe(shown)
+  expect(withOutdatedHint(undefined, error)).toBe(DESKTOP_UPDATE_READY_HINT)
+  expect(withOutdatedHint(undefined, new Error('internal path'))).toBeUndefined()
+})
+
+test('an update hint names the host and preserves the known sentence without raw diagnostics', async () => {
+  const hint = await hostUpdateHint({ client: 'cerin-desktop/0.123.0' }, 'Build Mac')
+
+  expect(hint).toBe(
+    "Cerin Desktop on Build Mac is out of date. Open Settings → Updates to get the update, then quit Cerin fully (⌘Q on a Mac) and reopen it. If it doesn't close, quit it again.",
+  )
+  expect(withOutdatedHint(undefined, new Error(`private diagnostic\n\n${hint}`))).toBe(hint)
+})
+
+test('an update hint inserts a host label literally, on one short line', async () => {
+  const hint = await hostUpdateHint(
+    { client: 'cerin-desktop/0.123.0' },
+    ` $& Mac\n${'x'.repeat(200)}`,
+  )
+
+  expect(hint).toStartWith('Cerin Desktop on $& Mac x')
+  expect(hint).not.toContain('\n')
+  expect(hint).toContain(`${'x'.repeat(73)} is out of date.`)
+  expect(hint).not.toContain(`${'x'.repeat(74)} is out of date.`)
+  expect(withOutdatedHint(undefined, new Error(`raw\n\n${hint}`))).toBe(hint)
 })

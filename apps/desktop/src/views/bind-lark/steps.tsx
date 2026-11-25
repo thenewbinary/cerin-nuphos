@@ -34,7 +34,7 @@ export function CreateAppStep({ domain }: { domain: LarkDomain }) {
         <li>
           {t('Use the Cerin logo as its icon:')}
           <div className="mt-2">
-            <WizardDownloadLink href="/logo-white-bg.svg" download="cerin-logo.svg">
+            <WizardDownloadLink href="/cerin-icon.png" download="cerin-logo.png">
               {t('Download Cerin logo')}
             </WizardDownloadLink>
           </div>

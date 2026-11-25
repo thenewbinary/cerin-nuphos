@@ -55,6 +55,13 @@ useAgentDb({
   agentConversations: () => ({
     updateOne: async (...args: unknown[]) => {
       updates.push(args)
+      const update = args[1] as { $pull?: { linkedResources?: { id: string } } }
+      const removedId = update.$pull?.linkedResources?.id
+
+      if (removedId)
+        conversation.linkedResources = conversation.linkedResources?.filter(
+          (entry) => entry.id !== removedId,
+        )
 
       return { modifiedCount: 1 }
     },
@@ -73,7 +80,12 @@ useGithubHttp({
       return Response.json({ token: 'test-token', expires_at: '2099-01-01T00:00:00Z' })
 
     if (url.includes('/check-runs'))
-      return Response.json({ check_runs: [{ conclusion: 'success' }, { conclusion: 'failure' }] })
+      return Response.json({
+        check_runs: [
+          { id: 1, name: 'build', conclusion: 'success' },
+          { id: 2, name: 'test', conclusion: 'failure' },
+        ],
+      })
     if (url.endsWith('/status')) return Response.json({ state: 'success', total_count: 1 })
     if (url.includes('/reviews')) return Response.json([])
     if (url.endsWith('/pulls/78')) return new Response('Not Found', { status: 404 })
@@ -164,6 +176,24 @@ test('unlink only updates the authorized conversation', async () => {
   expect(updates).toEqual([
     [{ sessionId: 'session', teamId }, { $pull: { linkedResources: { id: resource.id } } }],
   ])
+})
+test('unlink by resource key removes only the matching binding', async () => {
+  const other = { ...resource, id: 'other-id', key: 'github/12/34/99' }
+
+  conversation.linkedResources = [resource, other]
+  await unlinkSessionResource(actor, resource.key)
+  expect((await resourceConversation(actor)).linkedResources).toEqual([other])
+})
+test('MCP unlinks a resource using the listed key', async () => {
+  const tools = sessionResourceToolModule().handlers(actor as never)
+  const result = (await tools.unlink_session_resource!({
+    label: 'Unlink PR',
+    resourceId: resource.key,
+  })) as { isError?: boolean; content: { text: string }[] }
+
+  expect(result.isError).not.toBe(true)
+  expect((await resourceConversation(actor)).linkedResources).toEqual([])
+  expect(await authorizedResourceTurn(delivery)).toBeNull()
 })
 test('input rejects arbitrary URLs and repository path traversal', () => {
   expect(

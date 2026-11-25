@@ -330,3 +330,23 @@ test('sessions get the long-lived token until it lapses, and an explicit one win
   rmSync(join(configDir, '.cerin-oauth-token.json'))
   assert.equal(cerinClaudeSessionEnv({}, context, host, now).CLAUDE_CODE_OAUTH_TOKEN, undefined)
 })
+
+test('a restored Task gets a distinct home generation across all adapters', (t) => {
+  const host = runtime(t)
+  const old = { CERIN_SESSION_ID: 'fictional', CERIN_SESSION_HOME_EPOCH: '1' }
+  const restored = { ...old, CERIN_SESSION_HOME_EPOCH: '2' }
+  const first = cerinSessionHomeEnv(old, host)
+  const next = cerinSessionHomeEnv(restored, host)
+  put(join(first.HOME, 'fixture'), 'old data')
+  put(join(next.HOME, 'fixture'), 'restored data')
+  assert.notEqual(first.HOME, next.HOME)
+  assert.equal(readFileSync(join(first.HOME, 'fixture'), 'utf8'), 'old data')
+  assert.equal(readFileSync(join(next.HOME, 'fixture'), 'utf8'), 'restored data')
+  assert.equal(cerinClaudeSessionEnv({ ...host, ...restored }, restored, host).HOME, next.HOME)
+  assert.equal(
+    cerinCodexSessionConfig({}, { 'ai.cerin/codex': { env: restored } }, host)
+      .shell_environment_policy.set.HOME,
+    next.HOME,
+  )
+  assert.equal(agentEnv('grok', { env: restored }, host).HOME, next.HOME)
+})

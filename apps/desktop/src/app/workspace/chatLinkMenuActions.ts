@@ -8,7 +8,7 @@ export type ChatLinkMenuDeps = {
   resolveExternalLink?: (href: string) => Promise<string>
   copyLink: (href: string) => Promise<void>
   openExternalLink: (url: string) => void
-  openCerinLinkFromChat: (href: string) => boolean
+  openCerinLinkFromChat: (href: string, beside?: boolean) => boolean
   openCerinLinkInNewTab: (href: string) => boolean
 }
 
@@ -39,6 +39,7 @@ export function buildChatLinkMenuActions({
   }
 
   return {
+    open: openCerinLinkFromChat,
     openInApp: (href) => {
       if (openCerinLinkFromChat(href)) return
       const url = absolute(href)

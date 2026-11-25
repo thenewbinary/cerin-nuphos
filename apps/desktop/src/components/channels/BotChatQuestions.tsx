@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { api } from '../../api'
 import { AnswerFailure } from '../../views/inbox/AnswerFailure'
 import { dismissQuestion, snoozeQuestion } from '../../views/inbox/dismissQuestion'
@@ -5,7 +7,7 @@ import { DismissQuestionButton } from '../../views/inbox/DismissQuestionButton'
 import { QuestionSource } from '../../views/inbox/QuestionRail'
 import { answerQuestion, useAnswerFailure } from '../../views/inbox/useInbox'
 import { DecisionToolPart } from '../agent/panel/ConnectCard'
-import { ConnectCardContext } from '../agent/panel/connectCardContext'
+import { CardConversationContext, ConnectCardContext } from '../agent/panel/connectCardContext'
 import { parseChoiceRequest } from '../agent/panel/connectCardModel'
 
 import { botChatQuestion } from './botChatQuestion'
@@ -22,7 +24,6 @@ export function BotChatQuestion({
   onOpenSession,
   dismissible,
   onAnswer,
-  onLinkClick,
   fullBody,
 }: {
   request: Pick<
@@ -38,8 +39,6 @@ export function BotChatQuestion({
   dismissible?: boolean
   /** Answers the question: the server wakes the agent that asked. */
   onAnswer: (answer: DecisionAnswer, requestId: string) => void
-  /** Opens a link in the question's body, as the conversation does. */
-  onLinkClick?: (href: string, beside: boolean) => boolean
   /** Shows the question's body in full, as the Inbox does. */
   fullBody?: boolean
 }) {
@@ -48,10 +47,14 @@ export function BotChatQuestion({
     credentials !== undefined,
   )
   const failure = useAnswerFailure(request.inputRequest.id)
+  const conversation = useMemo(
+    () => ({ teamId, sessionId: request.sessionId, name: request.title }),
+    [teamId, request.sessionId, request.title],
+  )
   // A question card names who asked and is dismissed inside itself; the other cards keep both outside.
-  const choice = parseChoiceRequest(part.input) !== null
-  // A secure card is dismissed inside itself too, but names no source.
-  const dismissedInside = choice || Boolean(request.inputRequest.secretName)
+  const choice = parseChoiceRequest(part.input) !== null && !request.inputRequest.desktop
+  // A secure card is dismissed inside itself too, but names no source. One it cannot answer has no Dismiss.
+  const dismissedInside = (choice && answerable) || Boolean(request.inputRequest.secretName)
   const source = onOpenSession && (
     <QuestionSource
       conversation={request}
@@ -85,16 +88,17 @@ export function BotChatQuestion({
             (await api.agentSaveSecret(request.sessionId, name, value, teamId)).path,
           openQuestions: questions,
           fullBody,
-          onLinkClick,
         }}
       >
-        <DecisionToolPart
-          part={part}
-          now={0}
-          teamId={teamId}
-          canAct={answerable}
-          canReply={answerable}
-        />
+        <CardConversationContext.Provider value={conversation}>
+          <DecisionToolPart
+            part={part}
+            now={0}
+            teamId={teamId}
+            canAct={answerable}
+            canReply={answerable}
+          />
+        </CardConversationContext.Provider>
       </ConnectCardContext.Provider>
       {failure && <AnswerFailure message={failure} />}
       {!dismissedInside && dismissible && (

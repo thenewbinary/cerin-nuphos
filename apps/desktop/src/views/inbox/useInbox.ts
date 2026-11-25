@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useSyncExternalStore } from 'react'
 
+import { parseAtlasError } from '../../api/errors.ts'
 import { api } from '../../api.ts'
 import { cardReplyId } from '../../components/agent/panel/replyTarget.ts'
 import { refreshInputRequests } from '../../lib/inputRequestRefresh.ts'
@@ -65,7 +66,8 @@ export function answeringInbox<T>(requestId: string | undefined, send: Promise<T
     },
     (error: unknown) => {
       answered.delete(requestId)
-      failures.set(requestId, error instanceof Error ? error.message : String(error))
+      // The server's own words, not the IPC wrapper and sentinel around them.
+      failures.set(requestId, parseAtlasError(error).message)
       emit()
     },
   )
@@ -160,8 +162,28 @@ export function dismissDecision(
   )
 }
 
-/** An Inbox question's reply waiting out its Undo window: an answer, or its dismissal. */
-export type HeldReply = DecisionAnswer | { dismissed: true; reason?: string }
+/** An Inbox question's reply: an answer, or its dismissal. */
+export type InboxReply = DecisionAnswer | { dismissed: true; reason?: string }
+
+/**
+ * Sends an Inbox reply at once. The viewer has moved on to the next question by
+ * the time it is refused, so `onFailed` hears why.
+ */
+export function replyInInbox(
+  teamId: string,
+  sessionId: string,
+  requestId: string,
+  reply: InboxReply,
+  onFailed: (reason: string | undefined) => void,
+) {
+  void (
+    'dismissed' in reply
+      ? dismissDecision(teamId, sessionId, requestId, reply.reason)
+      : answerDecision(teamId, sessionId, requestId, { ...reply, answeredIn: 'inbox' })
+  ).then((ok) => {
+    if (!ok) onFailed(failures.get(requestId))
+  })
+}
 
 /** How long an Inbox answer waits, its question already gone, before it is sent: its Undo window. */
 export const ANSWER_UNDO_MS = 5_000
@@ -187,7 +209,7 @@ export function holdAnswer(
   teamId: string,
   sessionId: string,
   requestId: string,
-  answer: HeldReply,
+  answer: InboxReply,
   onFailed: (reason: string | undefined) => void,
 ): () => boolean {
   sendHeldAnswer()
@@ -198,14 +220,7 @@ export function holdAnswer(
     clearTimeout(timer)
     if (held !== finish) return false
     held = undefined
-    if (send)
-      void (
-        'dismissed' in answer
-          ? dismissDecision(teamId, sessionId, requestId, answer.reason)
-          : answerDecision(teamId, sessionId, requestId, { ...answer, answeredIn: 'inbox' })
-      ).then((ok) => {
-        if (!ok) onFailed(failures.get(requestId))
-      })
+    if (send) replyInInbox(teamId, sessionId, requestId, answer, onFailed)
     else if (answered.delete(requestId)) emit()
 
     return true
@@ -216,6 +231,9 @@ export function holdAnswer(
 
   return () => finish(false)
 }
+
+/** Why the last reply to this question failed, if it did. */
+export const answerFailure = (requestId: string) => failures.get(requestId)
 
 /** A conversation's cards answered through the server, each naming the open request it shows. */
 export function cardAnswers(

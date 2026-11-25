@@ -27,8 +27,7 @@ swiftc tests/StringCatalogTests.swift -o "$test_dir/string-catalog-tests"
 "$test_dir/string-catalog-tests" cerin-ios/InfoPlist.xcstrings
 # A chat's real read builds against UIKit: as Mac Catalyst, it runs here without a simulator.
 macos_sdk=$(xcrun --sdk macosx --show-sdk-path)
-swiftc -target arm64-apple-ios18.0-macabi -sdk "$macos_sdk" -Fsystem "$macos_sdk/System/iOSSupport/System/Library/Frameworks" \
-  -I "$macos_sdk/System/iOSSupport/usr/lib/swift" -L "$macos_sdk/System/iOSSupport/usr/lib/swift" -parse-as-library -default-isolation MainActor \
+chat_sources=(
   BotAvatars/BotAvatars.swift \
   cerin-ios/Services/Chat/ThreadReference.swift \
   cerin-ios/Services/ImageAttachment.swift \
@@ -43,6 +42,7 @@ swiftc -target arm64-apple-ios18.0-macabi -sdk "$macos_sdk" -Fsystem "$macos_sdk
   cerin-ios/Models/Channel.swift \
   cerin-ios/Views/Home/ChatTime.swift \
   cerin-ios/Services/Chat/TransferDownloads.swift \
+  cerin-ios/Services/Chat/MarkdownImages.swift \
   cerin-ios/Models/AgentConversation.swift \
   cerin-ios/Services/ConversationNesting.swift \
   cerin-ios/Services/Chat/BotQuestions.swift \
@@ -56,6 +56,7 @@ swiftc -target arm64-apple-ios18.0-macabi -sdk "$macos_sdk" -Fsystem "$macos_sdk
   cerin-ios/Services/Chat/OpenQuestions.swift \
   cerin-ios/Services/BotFaces.swift \
   cerin-ios/Services/Chat/AgentChatAPI.swift \
+  cerin-ios/Services/LaunchCache.swift \
   cerin-ios/Views/Home/ComposerAttachment.swift \
   cerin-ios/Services/AccountAPI.swift \
   cerin-ios/Models/TeamMember.swift \
@@ -63,5 +64,42 @@ swiftc -target arm64-apple-ios18.0-macabi -sdk "$macos_sdk" -Fsystem "$macos_sdk
   cerin-ios/Views/Home/LucideIcon.swift \
   cerin-ios/Views/Theme.swift \
   cerin-ios/Services/Passkeys.swift \
-  cerin-ios/Services/Chat/ChannelSession.swift tests/CancelledLoadTests.swift -o "$test_dir/cancelled-load-tests"
-"$test_dir/cancelled-load-tests"
+  cerin-ios/Services/Chat/SSEClient.swift \
+  cerin-ios/Services/Chat/ChannelSession.swift)
+for chat_test in CancelledLoadTests ChannelPushTests HeldFilesTests QueueHoldTests UploadProgressTests; do
+  swiftc -target arm64-apple-ios18.0-macabi -sdk "$macos_sdk" -Fsystem "$macos_sdk/System/iOSSupport/System/Library/Frameworks" \
+    -I "$macos_sdk/System/iOSSupport/usr/lib/swift" -L "$macos_sdk/System/iOSSupport/usr/lib/swift" -parse-as-library -default-isolation MainActor \
+    "${chat_sources[@]}" "tests/$chat_test.swift" -o "$test_dir/$chat_test"
+  "$test_dir/$chat_test"
+done
+
+swiftc BotAvatars/BotAvatars.swift tests/HostedBotAvatarTests.swift -o "$test_dir/hosted-bot-avatar-tests"
+"$test_dir/hosted-bot-avatar-tests"
+
+# The store and the session it keeps (#3525), the runtimes it reloads, and a chat moved between them (#4214), with what they name. Analytics and AuthSession are stand-ins in the tests.
+for store_test in ChatReopenTests RuntimeReloadTests RuntimeMoveTests; do
+swiftc -target arm64-apple-ios18.0-macabi -sdk "$macos_sdk" -Fsystem "$macos_sdk/System/iOSSupport/System/Library/Frameworks" \
+  -I "$macos_sdk/System/iOSSupport/usr/lib/swift" -L "$macos_sdk/System/iOSSupport/usr/lib/swift" -parse-as-library -default-isolation MainActor \
+  "${chat_sources[@]}" \
+  cerin-ios/Services/AgentStore.swift \
+  cerin-ios/Services/Chat/ChatSession.swift \
+  cerin-ios/Services/Chat/UIStreamReducer.swift \
+  cerin-ios/Services/Chat/RuntimeTranscript.swift \
+  cerin-ios/Services/Chat/ResumeFallback.swift \
+  cerin-ios/Services/Chat/StreamBacklog.swift \
+  cerin-ios/Services/Chat/DockDestination.swift \
+  cerin-ios/Services/Chat/BrowserTabs.swift \
+  cerin-ios/Services/Chat/AnsweredQuestion.swift \
+  cerin-ios/Services/Desktop/*.swift \
+  cerin-ios/Services/Terminal/TerminalSession.swift \
+  cerin-ios/Models/SelectorBox.swift \
+  cerin-ios/Views/Chat/ChatRow.swift \
+  cerin-ios/Views/Chat/ShareSessionSheet.swift \
+  cerin-ios/Views/Components/AvatarView.swift \
+  cerin-ios/Views/Home/HomePage.swift \
+  cerin-ios/Views/Home/NewBox.swift \
+  ShareSupport/SubmissionAdmission.swift \
+  ShareSupport/SharedShareSession.swift \
+  "tests/$store_test.swift" -o "$test_dir/$store_test"
+"$test_dir/$store_test"
+done

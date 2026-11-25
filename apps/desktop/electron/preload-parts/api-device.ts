@@ -43,15 +43,14 @@ export const deviceApi = {
     return () => ipcRenderer.off('localRuntime:state', handler)
   },
   localRuntimeRefresh: () => ipcRenderer.invoke('localRuntime:refresh'),
-  localRuntimeRefreshModels: () => ipcRenderer.invoke('localRuntime:refreshModels'),
+  localRuntimeRefreshModels: (pickerOpened?: boolean) =>
+    ipcRenderer.invoke('localRuntime:refreshModels', pickerOpened),
   localRuntimeUpdateAgent: (provider: string) =>
     ipcRenderer.invoke('localRuntime:updateAgent', provider),
   localRuntimeInstallAgent: (provider: string) =>
     ipcRenderer.invoke('localRuntime:installAgent', provider),
   localRuntimeLatestAgentVersions: () => ipcRenderer.invoke('localRuntime:latestAgentVersions'),
   localRuntimeOpenWorkspace: () => ipcRenderer.invoke('localRuntime:openWorkspace'),
-  localRuntimeListActivity: (before?: string) =>
-    ipcRenderer.invoke('localRuntime:listActivity', before),
   boxListDevices: (options?: AgentDeviceListOptions) =>
     ipcRenderer.invoke('box:listDevices', options),
   boxCreate: (
@@ -66,6 +65,8 @@ export const deviceApi = {
     ipcRenderer.invoke('box:bindInstaboxAccount', teamId, label, apiKey),
   unbindInstaboxAccount: (teamId: string, accountId: string) =>
     ipcRenderer.invoke('box:unbindInstaboxAccount', teamId, accountId),
+  replaceInstaboxKey: (teamId: string, accountId: string, apiKey: string) =>
+    ipcRenderer.invoke('box:replaceInstaboxKey', teamId, accountId, apiKey),
   instaboxSizes: (teamId: string, accountId: string) =>
     ipcRenderer.invoke('box:instaboxSizes', teamId, accountId),
   boxPause: (deviceId: string, teamId: string) => ipcRenderer.invoke('box:pause', deviceId, teamId),
@@ -81,8 +82,6 @@ export const deviceApi = {
     ipcRenderer.invoke('box:clearCaches', deviceId, teamId),
   deviceSetAutoInstall: (deviceId: string, teamId: string, enabled: boolean) =>
     ipcRenderer.invoke('box:autoInstall', deviceId, teamId, enabled),
-  boxDesktop: (deviceId: string, teamId: string) =>
-    ipcRenderer.invoke('box:desktop', deviceId, teamId),
   boxJoinToken: () => ipcRenderer.invoke('box:join-token'),
   sshHosts: () => ipcRenderer.invoke('ssh:hosts'),
   sshJoin: (id: string, target: string) => ipcRenderer.invoke('ssh:join', id, target),

@@ -5,7 +5,6 @@ import {
   CreditCard,
   Download,
   FileText,
-  KeyRound,
   LockKeyhole,
   Monitor,
   MonitorSmartphone,
@@ -18,6 +17,8 @@ import {
   SquareTerminal,
   SunMedium,
   Users,
+  Vault,
+  Webhook,
 } from 'lucide-react'
 
 import { t } from '../../i18n/index.ts'
@@ -30,6 +31,8 @@ export type SettingsNavItem = {
   key: string
   label: string
   icon: LucideIcon
+  /** Other words the search box finds this section by. */
+  keywords?: string[]
 }
 
 export type SettingsNavGroup = {
@@ -46,6 +49,7 @@ const SETTINGS_SECTION_FOR_PAGE: Partial<Record<string, string>> = {
   'team.agents': 'workspace.computers',
   'team.agent-skills': 'workspace.skills',
   'team.agent-memories': 'workspace.memories',
+  'team.billing': 'workspace.billing',
 }
 
 export function settingsSectionForPage(key: string): string | undefined {
@@ -80,6 +84,7 @@ const TEAM_GROUPS: SettingsNavGroup[] = [
       { key: 'workspace.instructions', label: t('Instructions'), icon: FileText },
       { key: 'workspace.skills', label: t('Skills'), icon: Sparkles },
       { key: 'workspace.memories', label: t('Memories'), icon: Brain },
+      { key: 'workspace.webhooks', label: t('Webhooks'), icon: Webhook },
       { key: 'workspace.archived', label: t('Archived'), icon: Archive },
       { key: 'workspace.audit', label: t('Audit log'), icon: ScrollText },
     ],
@@ -98,9 +103,9 @@ const USER_GROUPS: SettingsNavGroup[] = [
     title: t('Account'),
     items: [
       { key: 'account.profile', label: t('Profile'), icon: CircleUserRound },
-      { key: 'account.personalCredentials', label: t('Personal Credentials'), icon: KeyRound },
       { key: 'account.devices', label: t('Signed-in devices'), icon: MonitorSmartphone },
       { key: 'account.mfa', label: t('Two-factor authentication'), icon: LockKeyhole },
+      { key: 'account.vault', label: t('Vault'), icon: Vault },
     ],
   },
   {
@@ -109,8 +114,19 @@ const USER_GROUPS: SettingsNavGroup[] = [
       { key: 'device.appearance', label: t('Appearance'), icon: SunMedium },
       { key: 'device.updates', label: t('Updates'), icon: Download },
       { key: 'device.localExec', label: t('Local exec'), icon: SquareTerminal },
-      { key: 'device.localRuntime', label: t('Local runtime'), icon: Monitor },
-      { key: 'device.privacy', label: t('Privacy'), icon: ShieldCheck },
+      {
+        key: 'device.privacy',
+        label: t('Privacy'),
+        icon: ShieldCheck,
+        // Found by what its switch turns off, and by the English words in any language.
+        keywords: [
+          t('Send crash reports and usage data'),
+          'usage data',
+          'crash reports',
+          'analytics',
+          'telemetry',
+        ],
+      },
     ],
   },
 ]
@@ -134,7 +150,9 @@ export function filterSettingsNavGroups(
   return groups
     .map((group) => ({
       ...group,
-      items: group.items.filter((item) => item.label.toLowerCase().includes(needle)),
+      items: group.items.filter((item) =>
+        [item.label, ...(item.keywords ?? [])].some((word) => word.toLowerCase().includes(needle)),
+      ),
     }))
     .filter((group) => group.items.length > 0)
 }

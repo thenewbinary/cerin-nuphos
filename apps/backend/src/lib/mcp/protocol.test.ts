@@ -39,10 +39,13 @@ describe('handleMcpMessage', () => {
     const list = (res as { result: { tools: { name: string }[] } }).result.tools
 
     expect(list.map((t) => t.name).sort((a, b) => a.localeCompare(b))).toEqual([
+      'cerin_archive_session',
       'cerin_ask',
       'cerin_capabilities',
       'cerin_check',
       'cerin_events',
+      'cerin_files',
+      'cerin_find_pr_sessions',
       'cerin_list_credentials',
       'cerin_list_queue',
       'cerin_list_runtimes',
@@ -52,6 +55,7 @@ describe('handleMcpMessage', () => {
       'cerin_stop',
       'cerin_update_credentials',
       'cerin_update_session',
+      'cerin_webhooks',
     ])
   })
 

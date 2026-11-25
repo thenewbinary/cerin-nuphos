@@ -129,6 +129,7 @@ import ai.cerin.android.ui.components.CerinAvatar
 import ai.cerin.android.ui.plans.PlanDetailScreen
 import ai.cerin.android.ui.chats.CreateBotDialog
 import ai.cerin.android.ui.profile.ProfileSheet
+import ai.cerin.android.ui.profile.TwoFactorResume
 import ai.cerin.android.ui.profile.WorkspacePickerContent
 import ai.cerin.android.ui.login.SplashScreen
 import androidx.compose.ui.res.stringResource
@@ -343,7 +344,8 @@ fun HomeScreen(
     val current = HomePage.fromRoute(page)
     val unavailablePage = HomePage.unavailableRoute(page)
     var searching by rememberSaveable { mutableStateOf(false) }
-    var showProfile by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var showProfile by remember { mutableStateOf(TwoFactorResume.pending(context)) }
     var showSetup by remember { mutableStateOf(false) }
     val auth = LocalAuthSession.current
     var showWorkspacePicker by remember(user.id, auth.generation, store.workspaceRevision, AiAccess.revision) { mutableStateOf(false) }
@@ -378,6 +380,8 @@ fun HomeScreen(
                 if (!current()) false else {
                     val accepted = store.acceptMemberships(saved, selected?.id)
                     if (accepted) workspaceRevision = store.workspaceRevision
+                    // A verified workspace is now selected, so the sheet has done its job.
+                    if (accepted && selected != null) showSetup = false
                     accepted
                 }
             }, { if (current()) auth.signOut(CerinApi.Failure.Unauthorized.message) }, auth.workspaceWriteReview, setupStrings)
@@ -539,7 +543,8 @@ fun HomeScreen(
             } else {
             AnimatedContent(current, modifier = Modifier.weight(1f), label = "page") { dest ->
                 when (dest) {
-                    HomePage.Chats -> ai.cerin.android.ui.chats.ChatsPage(nav, selectedSessionId, searching, { searching = it }, active = listVisible, showCreateButton = false)
+                    HomePage.Chats -> ai.cerin.android.ui.chats.ChatsPage(nav, selectedSessionId, searching, { searching = it }, active = listVisible, showCreateButton = false,
+                        onNewBot = { showNewBot = true }.takeIf { canCreate && botRuntime != null && !store.creatingBot })
                     HomePage.Agent -> CompositionLocalProvider(LocalNewTaskRequest provides { showNewTask = true }) {
                         AgentPage(searching = searching, onSearchingChange = { searching = it }, nav = nav, showComposer = showComposer, selectedSessionId = selectedSessionId, newChatComposer = newChatComposer)
                     }
@@ -600,7 +605,9 @@ fun HomeScreen(
         ProfileSheet(
             user = user,
             onDismiss = { showProfile = false },
+            showIntegrations = true,
             workspaceName = store.selectedTeam?.name,
+            teamId = store.selectedTeam?.id,
             workspacePicker = workspacePicker,
         )
     }

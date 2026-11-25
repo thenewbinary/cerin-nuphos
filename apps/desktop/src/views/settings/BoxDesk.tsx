@@ -45,16 +45,11 @@ function Keyboard() {
   )
 }
 
-/** A Box carries Cerin's mark on its top. Other machines carry no maker's mark:
- * the desk draws their shape, not someone else's logo. */
+/** Only a Cerin Box carries a maker's mark, the app icon; the desk draws other machines' shape, not someone else's logo. */
 function Mark({ brand }: { brand: DeskModel['brand'] }) {
   if (brand !== 'cerin') return null
 
-  return (
-    <svg className="desk-mark is-cerin" viewBox="0 0 128 128" aria-hidden>
-      <image href="/logo-dark-bg.svg" width="128" height="128" />
-    </svg>
-  )
+  return <img className="desk-mark is-cerin" src="/cerin-icon.png" alt="" aria-hidden />
 }
 
 /** Folded shut under the viewer; the lid swings up as the view turns to face it. */
@@ -82,7 +77,7 @@ function Laptop({ brand, screen }: { brand: DeskModel['brand']; screen: ReactNod
   )
 }
 
-/** A Mac mini or a Box: its top from above, then its front as the view turns. */
+/** A Mac mini, a Linux machine or a Box: its top from above, then its front as the view turns. */
 function MiniBox({ brand }: { brand: DeskModel['brand'] }) {
   return (
     <>

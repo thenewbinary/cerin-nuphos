@@ -16,7 +16,8 @@ final class BotsAndTasksListUITests: XCTestCase {
         live = fixture.deletingLastPathComponent().appending(path: "bots-tasks-live-\(UUID().uuidString).json")
         var responses = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: fixture)) as? [String: Any])
         let bots = [
-            Self.row("bot-lead", "Release Lead", at: "09:00", avatar: "05-rembrandt"),
+            Self.row("bot-lead", "Release Lead", at: "09:00", avatar: "05-rembrandt")
+                .merging(["instructions": "Ship the 2.4 release. Ask before tagging."]) { $1 },
             Self.row("bot-docs", "Docs Bot", at: "09:00", avatar: "02-leonardo"),
             Self.row("bot-triage", "Triage Bot", at: "09:00", avatar: "07-ada"),
             // Has dispatched nothing.
@@ -29,6 +30,9 @@ final class BotsAndTasksListUITests: XCTestCase {
             Self.row("agent-rollout", "Roll out to staging", at: "09:50", parent: "agent-ops"),
             Self.row("agent-staging", "Check the staging cluster", at: "09:30", question: "Scale the staging pool?"),
             Self.row("agent-notes", "Write the changelog", at: "09:40"),
+            // A teammate's: I take part in one, and only read the other (#3686).
+            Self.teammates(Self.row("agent-review", "Review the migration", at: "09:35"), canArchive: true),
+            Self.teammates(Self.row("agent-offsite", "Plan the offsite", at: "09:34"), canArchive: false),
             // What the Bots dispatched, at any depth: listed under Bots, never in Tasks.
             Self.row("agent-ci", "Check the CI flake", at: "09:45", parent: "bot-lead", question: "Retry the flaky iOS job?"),
             Self.row("agent-rerun", "Rerun the iOS job", at: "09:46", parent: "agent-ci"),
@@ -40,7 +44,8 @@ final class BotsAndTasksListUITests: XCTestCase {
         ]
         let chats = [
             // Named before the Bot was renamed: the row shows the Bot's name.
-            Self.chat("chat-lead", "release-lead-old", at: "09:55", faces: [Self.face("bot-lead", "Release Lead", "05-rembrandt")]),
+            Self.chat("chat-lead", "release-lead-old", at: "09:55", faces: [Self.face("bot-lead", "Release Lead", "05-rembrandt")],
+                      message: Self.longPost),
             Self.chat("chat-docs", "", at: "09:52", faces: [Self.face("bot-docs", "Docs Bot", "02-leonardo")]),
             Self.chat("chat-notes", "", at: "09:51", faces: [Self.face("bot-notes", "Notes Bot", "13-shakespeare")]),
             // Triage Bot is in this group chat, so it has no row of its own.
@@ -70,6 +75,7 @@ final class BotsAndTasksListUITests: XCTestCase {
         responses["GET /agent/conversations/chat-lead"] = lead
         responses["GET /agent/conversations/chat-lead/agents"] = ["status": 200, "body": ["agents": [
             ["sessionId": "bot-lead", "title": "Release Lead", "ownerId": "507f1f77bcf86cd799439011"]]]]
+        responses["PATCH /agent/conversations/bot-lead/instructions"] = ["status": 200, "body": ["instructions": "Ship 2.4 on Thursday."]]
         try JSONSerialization.data(withJSONObject: responses).write(to: live, options: .atomic)
     }
 
@@ -82,7 +88,13 @@ final class BotsAndTasksListUITests: XCTestCase {
         let lead = app.staticTexts["Release Lead"].firstMatch
         XCTAssertTrue(lead.waitForExistence(timeout: 10), "The Bot's chat is not named after the Bot")
         XCTAssertFalse(app.staticTexts["release-lead-old"].exists, "The Bot's chat kept its own name")
-        XCTAssertTrue(app.staticTexts["Needs your input: Retry the flaky iOS job?"].exists, "A dispatched question is not on the Bot's chat")
+        // The question stays in the Inbox; the row keeps previewing the newest post, on two lines (#4508).
+        XCTAssertFalse(app.staticTexts["Needs your input: Retry the flaky iOS job?"].exists, "A dispatched question took over the Bot's preview")
+        let preview = app.staticTexts[Self.longPost].firstMatch
+        XCTAssertTrue(preview.exists, "The Bot's chat row hides its newest post while a question is open")
+        let line = app.staticTexts["On it."].firstMatch.frame.height
+        XCTAssertGreaterThan(preview.frame.height, line * 1.5, "The preview is cut to one line")
+        XCTAssertLessThan(preview.frame.height, line * 2.5, "The preview runs past two lines")
         // Its chat shows no typing for a dispatched turn, so neither does its row (#3522).
         XCTAssertFalse(app.descendants(matching: .any)["Docs Bot is thinking"].exists, "A dispatched turn shows typing dots on a chat that isn't typing")
         XCTAssertTrue(app.staticTexts["On it."].exists, "The Bot's chat row hides its latest message")
@@ -97,12 +109,30 @@ final class BotsAndTasksListUITests: XCTestCase {
     func testBotRowsHaveNoExpandControl() throws {
         launch(page: "chats")
         XCTAssertTrue(app.staticTexts["Release Lead"].firstMatch.waitForExistence(timeout: 10), "Bots did not load")
-        let expand = app.buttons.matching(NSPredicate(format: "label ENDSWITH 'sub-agents'"))
+        let expand = app.buttons.matching(NSPredicate(format: "label ENDSWITH 'sub-tasks'"))
         XCTAssertEqual(expand.count, 0, "A Bot row has a control that expands its Tasks")
         for thread in ["Check the CI flake", "Rerun the iOS job", "Fix broken links", "Collect crash logs"] {
             XCTAssertFalse(app.staticTexts[thread].exists, "\(thread) is listed under Bots")
         }
         shot("2-bots-flat")
+    }
+
+    /// A Bot with no chat yet ends like every other row, with the system chevron,
+    /// so its time lines up with theirs (#3614).
+    func testABotWithNoChatEndsLikeTheOtherRows() throws {
+        launch(page: "chats")
+        let lead = app.staticTexts["Release Lead"].firstMatch
+        XCTAssertTrue(lead.waitForExistence(timeout: 10), "Bots did not load")
+        let helper = app.staticTexts["Helper Bot"].firstMatch
+        XCTAssertTrue(helper.exists, "The Bot with no chat is not listed")
+        // A row's time is the rightmost text on its title's line.
+        func timeEdge(_ title: XCUIElement) -> CGFloat {
+            app.staticTexts.allElementsBoundByIndex
+                .filter { abs($0.frame.midY - title.frame.midY) < 8 }
+                .map(\.frame.maxX).max() ?? 0
+        }
+        XCTAssertEqual(timeEdge(helper), timeEdge(lead), accuracy: 2, "The Bot with no chat ends further right than the other rows")
+        shot("3-bot-without-chat")
     }
 
     /// A Bot's page says what its Tasks are doing and opens them (#2983). The state sits
@@ -125,7 +155,6 @@ final class BotsAndTasksListUITests: XCTestCase {
         lead.tap()
         XCTAssertTrue(name.waitForExistence(timeout: 10))
         XCTAssertTrue(name.label.hasSuffix("1 needs input · 1 running"), "No state under the Bot's name: \(name.label)")
-        XCTAssertFalse(app.navigationBars.buttons["bot-task-entry"].exists, "The header still has its own Task button")
         // Once the chat and its agents have loaded, so the header and posts show the Bot's face.
         _ = app.buttons["Release Lead"].waitForExistence(timeout: 5)
         sleep(2)
@@ -165,6 +194,34 @@ final class BotsAndTasksListUITests: XCTestCase {
         shot("3-tasks")
     }
 
+    /// Someone else in a teammate's Task archives it for themselves from its row (#3686): by a swipe…
+    func testTeammatesTaskIsArchivedFromItsSwipe() throws {
+        teammatesTask("Review the migration").swipeLeft()
+        XCTAssertTrue(app.buttons["Archive"].waitForExistence(timeout: 5), "A Task I take part in offers no Archive")
+        shot("4-teammates-task-swipe")
+    }
+
+    /// …or from its menu.
+    func testTeammatesTaskIsArchivedFromItsMenu() throws {
+        teammatesTask("Review the migration").press(forDuration: 1.2)
+        XCTAssertTrue(app.buttons["Archive"].waitForExistence(timeout: 5), "Its menu offers no Archive")
+        shot("5-teammates-task-menu")
+    }
+
+    /// A teammate's Task I only read is not mine to archive. Its menu, as it has no swipe actions.
+    func testTeammatesTaskIOnlyReadOffersNoArchive() throws {
+        teammatesTask("Plan the offsite").press(forDuration: 1.2)
+        XCTAssertTrue(app.buttons["Watch"].waitForExistence(timeout: 5), "Its menu did not open")
+        XCTAssertFalse(app.buttons["Archive"].exists, "A Task I only read offers Archive")
+    }
+
+    private func teammatesTask(_ title: String) -> XCUIElement {
+        launch(page: "agent")
+        let row = app.staticTexts[title].firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 10), "Tasks did not load")
+        return row
+    }
+
     /// What the Inbox opens, as a notification does, lands over the list that has it (#2964): Tasks
     /// lists no Bot nor what one dispatched, so those go back to Bots, never to a Tasks page without them.
     func testWhatTheInboxOpensReturnsToItsList() throws {
@@ -197,6 +254,78 @@ final class BotsAndTasksListUITests: XCTestCase {
             XCTAssertTrue(tab.isSelected, "\(question) did not go back to \(list)")
             app.terminate()
         }
+    }
+
+    /// The owner rewrites a Bot's instructions in Bot details (#4084): Edit opens them in place,
+    /// Save shows what the server kept, and a refusal shows its reason under the field.
+    func testOwnerEditsTheBotsInstructions() throws {
+        openLeadDetails()
+        let text = app.staticTexts["bot-instructions-text"]
+        XCTAssertTrue(text.waitForExistence(timeout: 5), "Bot details does not show the Bot's instructions")
+        XCTAssertEqual(text.label, "Ship the 2.4 release. Ask before tagging.")
+        app.buttons["bot-instructions-edit"].tap()
+        let field = app.textViews["bot-instructions-field"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5), "Edit opens no field")
+        XCTAssertFalse(app.buttons["bot-instructions-save"].isEnabled, "Save is offered with nothing changed")
+        field.tap()
+        field.typeText(" Thursday.")
+        shot("6-bot-instructions-editing")
+        // The server lists what it saved from now on, so the Bots poll does not bring the old text back.
+        let saved = try String(contentsOf: live, encoding: .utf8)
+            .replacingOccurrences(of: "Ship the 2.4 release. Ask before tagging.", with: "Ship 2.4 on Thursday.")
+        try saved.write(to: live, atomically: true, encoding: .utf8)
+        app.buttons["bot-instructions-save"].tap()
+        XCTAssertTrue(text.waitForExistence(timeout: 5), "Save does not close the editor")
+        XCTAssertEqual(text.label, "Ship 2.4 on Thursday.", "Bot details does not show what the server saved")
+        shot("7-bot-instructions-saved")
+    }
+
+    func testARefusedSaveSaysWhyUnderTheField() throws {
+        var responses = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: live)) as? [String: Any])
+        responses["PATCH /agent/conversations/bot-lead/instructions"] = ["status": 400, "body": ["error": [
+            "code": "invalid_request", "message": "Instructions must be at most 8000 characters"]]]
+        try JSONSerialization.data(withJSONObject: responses).write(to: live, options: .atomic)
+        openLeadDetails()
+        XCTAssertTrue(app.buttons["bot-instructions-edit"].waitForExistence(timeout: 5))
+        app.buttons["bot-instructions-edit"].tap()
+        let field = app.textViews["bot-instructions-field"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.tap()
+        field.typeText(" More.")
+        app.buttons["bot-instructions-save"].tap()
+        let error = app.staticTexts["bot-instructions-error"]
+        XCTAssertTrue(error.waitForExistence(timeout: 5), "A refused save says nothing")
+        XCTAssertEqual(error.label, "Instructions must be at most 8000 characters")
+        XCTAssertTrue(field.exists, "A refused save drops the edit")
+        shot("8-bot-instructions-refused")
+    }
+
+    /// A teammate's Bot shows no instructions card, so nothing offers an edit the server would refuse.
+    func testATeammatesBotShowsNoInstructions() throws {
+        var responses = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: live)) as? [String: Any])
+        for key in ["GET /agent/conversations", "GET /agent/conversations?bots=true"] {
+            var page = try XCTUnwrap(responses[key] as? [String: Any])
+            var body = try XCTUnwrap(page["body"] as? [String: Any])
+            let rows = try XCTUnwrap(body["conversations"] as? [[String: Any]])
+            body["conversations"] = rows.map { $0["sessionId"] as? String == "bot-lead" ? Self.teammates($0, canArchive: false) : $0 }
+            page["body"] = body
+            responses[key] = page
+        }
+        try JSONSerialization.data(withJSONObject: responses).write(to: live, options: .atomic)
+        openLeadDetails()
+        XCTAssertTrue(app.descendants(matching: .any)["agent-summary-list"].waitForExistence(timeout: 10), "Bot details did not open")
+        XCTAssertFalse(app.staticTexts["bot-instructions-text"].exists, "A teammate's Bot shows its instructions")
+        XCTAssertFalse(app.buttons["bot-instructions-edit"].exists, "A teammate's Bot offers to edit its instructions")
+    }
+
+    private func openLeadDetails() {
+        launch(page: "chats")
+        let lead = app.staticTexts["Release Lead"].firstMatch
+        XCTAssertTrue(lead.waitForExistence(timeout: 10), "Bots did not load")
+        lead.tap()
+        let name = app.buttons["bot-details-entry"]
+        XCTAssertTrue(name.waitForExistence(timeout: 10), "The Bot's name opens nothing")
+        name.tap()
     }
 
     /// Starts from no stored folds, so earlier runs leave nothing behind.
@@ -235,17 +364,27 @@ final class BotsAndTasksListUITests: XCTestCase {
          "createdAt": "2026-11-03T09:50:00.000Z"]
     }
 
+    private static func teammates(_ row: [String: Any], canArchive: Bool) -> [String: Any] {
+        row.merging(["isOwner": false, "canManage": false, "canArchive": canArchive, "watching": false]) { $1 }
+    }
+
     private static func face(_ id: String, _ name: String, _ avatar: String) -> [String: Any] {
         ["id": id, "name": name, "agent": ["avatar": avatar, "provider": "claude-code"]]
     }
 
-    private static func chat(_ id: String, _ title: String, at time: String, faces: [[String: Any]], group: Bool = false, agents: [String]? = nil) -> [String: Any] {
+    // Under the 128 characters an XCUITest query takes.
+    private static let longPost = "Moved the staging rollout to Thursday so the migration can finish first, and the on-call team will watch the error rate."
+
+    private static func chat(
+        _ id: String, _ title: String, at time: String, faces: [[String: Any]], group: Bool = false, agents: [String]? = nil,
+        message: String = "On it."
+    ) -> [String: Any] {
         var chat: [String: Any] = [
             "sessionId": id, "teamId": team, "kind": "channel", "title": title, "firstMessage": "", "messageCount": 3,
             "createdAt": "2026-11-02T08:00:00Z", "lastActiveAt": "2026-11-03T\(time):00Z",
             "isOwner": true, "readOnly": false, "activitySeq": 3, "readSeq": 3, "faces": faces,
             "agentSessionIds": agents ?? faces.compactMap { $0["agent"] == nil ? nil : $0["id"] as? String },
-            "lastMessage": ["text": "On it.", "from": (faces.last?["name"] as? String) ?? ""],
+            "lastMessage": ["text": message, "from": (faces.last?["name"] as? String) ?? ""],
         ]
         if group { chat["group"] = true }
         return chat

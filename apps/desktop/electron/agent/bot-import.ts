@@ -4,7 +4,7 @@ import { dialog } from 'electron'
 
 import { accountSignal, stillCurrent } from '../account-request'
 
-import { agentAccount, callJsonForRenderer } from './http'
+import { agentAccount, callJson } from './http'
 
 import type {
   BotImportPreview,
@@ -83,7 +83,7 @@ export async function chooseBotImport(
 }
 
 export function applyBotImport(target: BotImportTarget, id: string, selection: BotImportSelection) {
-  return callJsonForRenderer<BotImportPreview>(
+  return callJson<BotImportPreview>(
     'POST',
     `/agent/bot-imports/${encodeURIComponent(id)}/apply${query(target)}`,
     selection,
@@ -92,7 +92,7 @@ export function applyBotImport(target: BotImportTarget, id: string, selection: B
 }
 
 export function getBotImportStatus(target: BotImportTarget, id: string) {
-  return callJsonForRenderer<BotImportPreview>(
+  return callJson<BotImportPreview>(
     'GET',
     `/agent/bot-imports/${encodeURIComponent(id)}${query(target)}`,
   )

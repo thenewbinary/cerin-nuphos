@@ -35,14 +35,8 @@ export function allCredentialAccessFromOptions(
     secureframeIntegrationIds: options.secureframeIntegrations.map(
       (integration) => integration.integrationId,
     ),
-    // Explicit all-credential channel defaults include Resend; other surfaces
-    // retain their existing opt-in default.
-    trelloIntegrationIds: selectAll
-      ? (options.trelloIntegrations ?? []).map((entry) => entry.integrationId)
-      : [],
-    resendIntegrationIds: selectAll
-      ? options.resendIntegrations.map((entry) => entry.integrationId)
-      : [],
+    trelloIntegrationIds: (options.trelloIntegrations ?? []).map((entry) => entry.integrationId),
+    resendIntegrationIds: options.resendIntegrations.map((entry) => entry.integrationId),
     // Offline and long-gone registrations are listed too; a default takes only usable ones.
     deviceIds: options.devices
       .filter((device) => device.available)
@@ -68,6 +62,48 @@ export function allCredentialAccessFromOptions(
 }
 
 /**
+ * `access` with its "All" choices filled in from what the owner can use now, so
+ * a credential connected or a computer registered later is included, and a
+ * revoked one is gone.
+ */
+export function expandAllCredentialAccess<T extends Partial<AgentCredentialAccess>>(
+  access: T,
+  options: AgentCredentialOptions,
+): T {
+  if (!access.allCredentials && !access.allDevices) return access
+  const {
+    updatedAt: _updatedAt,
+    updatedBy: _updatedBy,
+    deviceIds: _deviceIds,
+    ...credentials
+  } = allCredentialAccessFromOptions(options, '', true)
+
+  return {
+    ...access,
+    ...(access.allCredentials ? credentials : {}),
+    ...(access.allDevices
+      ? {
+          // A sleeping Box counts: it is woken when used.
+          deviceIds: options.devices
+            .filter((device) => device.available || device.box?.ready)
+            .map((device) => device.deviceId),
+        }
+      : {}),
+  }
+}
+
+/** As expandAllCredentialAccess, reading the owner's options only when "All" is chosen. */
+export async function withAllExpanded(
+  access: AgentCredentialAccess | undefined,
+  teamId: string | undefined,
+  userId: string,
+): Promise<AgentCredentialAccess | undefined> {
+  if (!access?.allCredentials && !access?.allDevices) return access
+
+  return expandAllCredentialAccess(access, await getAgentCredentialOptions(teamId, userId))
+}
+
+/**
  * The principal's full allow-listed bindings as they stand right now, for a
  * headless Trigger run: the same all-credential scope a channel session gets. Recomputing them every run is what makes a revoked
  * connector take effect immediately.
@@ -83,6 +119,27 @@ export async function resolveTriggerCredentialAccess(
   const options = await getAgentCredentialOptions(teamId, userId)
 
   return allCredentialAccessFromOptions(options, userId, true)
+}
+
+/** What a new Bot may use: All, as Desktop's new chat selects it, ones added later included. */
+export async function defaultCredentialAccess(
+  teamId: string,
+  userId: string,
+): Promise<AgentCredentialAccess> {
+  const options = await getAgentCredentialOptions(teamId, userId)
+
+  return defaultCredentialAccessFromOptions(options, userId)
+}
+
+export function defaultCredentialAccessFromOptions(
+  options: AgentCredentialOptions,
+  userId: string,
+): AgentCredentialAccess {
+  return {
+    ...allCredentialAccessFromOptions(options, userId, true),
+    allCredentials: true,
+    allDevices: true,
+  }
 }
 
 export function hasCredentialOptions(options: AgentCredentialOptions): boolean {
@@ -126,6 +183,7 @@ export function hasCredentialOptions(options: AgentCredentialOptions): boolean {
 
 export function isEmptyCredentialAccess(access: AgentCredentialAccess | undefined): boolean {
   if (!access) return true
+  if (access.allCredentials || access.allDevices) return false
 
   return (
     (access.awsRoleIds?.length ?? 0) +

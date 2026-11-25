@@ -80,6 +80,11 @@ cerin bots NAME --create --agent RUNTIME     # ... on a chosen runtime
 cerin model                                  # list the runtime's models
 cerin model [VALUE] [--effort E] --session ID
 cerin stop --session ID
+cerin vault enroll [--name N]               # add this device to your end-to-end encrypted vault
+cerin vault devices | approve ID | remove-device ID
+echo -n "..." | cerin vault set NAME        # save an item; the value comes from stdin
+cerin vault get NAME | list | rm NAME
+cerin vault get NAME --computer [--user ID]  # on a computer added from Desktop's "Add to Vault", once approved
 cerin login | logout
 cerin login --device                         # sign in with a code approved on another device
 cerin token list | revoke ID                 # list your CLI sign-ins / sign one out
@@ -140,7 +145,9 @@ On Linux with systemd, `cerin agent` does not stay in the foreground: it
 installs the user service `cerin-agent` and starts it, so the runtime starts
 again after a crash or a reboot. With `--join` it returns once the machine has
 joined. The service runs `cerin agent` with the `PATH` and `CERIN_*`
-variables of the shell that installed it (kept in `~/.config/cerin/agent.env`);
+variables of the shell that installed it, plus any
+[model-provider variables](#your-own-model-provider) set there (kept in
+`~/.config/cerin/agent.env`);
 run `cerin agent` again to refresh them. A revoked computer or a refused token
 exits with status 78, which the service does not restart. `cerin update`
 restarts the service on the new version. Its log is
