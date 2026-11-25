@@ -1,4 +1,4 @@
-// A real `nuphos agent` host whose Claude Code runtime runs the fixture agent, so its turns go
+// A real `cerin agent` host whose Claude Code runtime runs the fixture agent, so its turns go
 // through its tunnel: one whose path goes silent mid-turn and redials (#3366), one whose path is
 // reset as a turn starts (#3648), and one updated from its card mid-turn, which restarts at once.
 import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'

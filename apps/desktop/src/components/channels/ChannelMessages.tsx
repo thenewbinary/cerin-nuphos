@@ -62,7 +62,7 @@ export function ChannelMessages({
   viewerId,
   teamId,
   onOpenSession,
-  onOpenNuphosLink,
+  onOpenCerinLink,
   channelId,
   onReply,
   extraRows = [],
@@ -75,7 +75,7 @@ export function ChannelMessages({
   viewerId: string
   teamId: string
   onOpenSession: (sessionId: string) => void
-  onOpenNuphosLink?: (href: string, beside?: boolean) => boolean
+  onOpenCerinLink?: (href: string, beside?: boolean) => boolean
   channelId: string
   /** Replies to a post; absent where the viewer cannot post. */
   onReply?: (reply: AgentMessageReply) => void
@@ -84,7 +84,7 @@ export function ChannelMessages({
   /** What the workspace lends to repair an agent that could not reply. */
   fixes?: ChannelFixes
 }) {
-  const renderAgentLink = useAgentLinks(teamId, onOpenNuphosLink)
+  const renderAgentLink = useAgentLinks(teamId, onOpenCerinLink)
 
   useOpenAtPost(channelId)
   // One function across renders: a new one makes every post rebuild its text,
@@ -92,11 +92,11 @@ export function ChannelMessages({
   const renderLink = useCallback(
     (href: string, children: ReactNode) =>
       renderMemberMentionLink(href, children, teamId) ??
-      renderAtlasMentionLink(href, children, onOpenNuphosLink) ??
+      renderAtlasMentionLink(href, children, onOpenCerinLink) ??
       renderAgentLink(href, children),
-    [teamId, renderAgentLink, onOpenNuphosLink],
+    [teamId, renderAgentLink, onOpenCerinLink],
   )
-  const links = { channelId, renderLink, onLinkClick: onOpenNuphosLink }
+  const links = { channelId, renderLink, onLinkClick: onOpenCerinLink }
   // What was here on opening stays put; only posts that arrive later spring in.
   const owned = new Set(
     agents.filter((agent) => agent.ownerId === viewerId).map((agent) => agent.sessionId),

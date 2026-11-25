@@ -187,7 +187,7 @@ export class CuaHost {
           this.request('initialize', {
             protocolVersion: '2025-06-18',
             capabilities: { elicitation: {} },
-            clientInfo: { name: 'nuphos-desktop', version: '1' },
+            clientInfo: { name: 'cerin-desktop', version: '1' },
           }),
         )
         .then(() => this.write({ jsonrpc: '2.0', method: 'notifications/initialized' }))

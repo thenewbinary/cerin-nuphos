@@ -11,7 +11,7 @@ import {
   architectureDiagrams,
   dashboardPanels,
   designs,
-  nuphosDashboards,
+  cerinDashboards,
   agentInstructions,
   teamHomeLayouts,
 } from '@/models'
@@ -251,7 +251,7 @@ export async function writeDatabase(
     archive,
     'work/dashboards.ndjson',
     // Personal dashboards are their creator's, not the team's: they stay behind.
-    nuphosDashboards().find({ teamId: teamObjectId, visibility: { $ne: 'personal' } }, { session }),
+    cerinDashboards().find({ teamId: teamObjectId, visibility: { $ne: 'personal' } }, { session }),
     (row) => {
       const {
         nextRefreshAt: _next,

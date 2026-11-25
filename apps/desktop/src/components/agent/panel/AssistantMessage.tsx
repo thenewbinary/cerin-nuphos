@@ -56,7 +56,7 @@ export const AssistantMessage = memo(
     canActOnPlans = false,
     canReplyToQuestions = false,
     isTeamAdmin = false,
-    onOpenNuphosLink,
+    onOpenCerinLink,
     onMessageFeedback,
     onRequestFeedbackComment,
     activityHistory = false,
@@ -86,7 +86,7 @@ export const AssistantMessage = memo(
     onApprovePlan?: (planId: string) => void
     onRejectPlan?: (planId: string, reason: string, mode: 'revise' | 'delete') => void
     activePlanCanAct?: ActivePlanCanAct | null
-    onOpenNuphosLink?: (href: string, beside?: boolean) => boolean
+    onOpenCerinLink?: (href: string, beside?: boolean) => boolean
     onMessageFeedback?: (
       sessionId: string,
       messageId: string,
@@ -95,7 +95,7 @@ export const AssistantMessage = memo(
     ) => void
     onRequestFeedbackComment?: (messageId: string) => void
   }) => {
-    const renderAgentLink = useAgentLinks(teamId, onOpenNuphosLink)
+    const renderAgentLink = useAgentLinks(teamId, onOpenCerinLink)
     const normalizedParts = normalizeRecallFirstOrder(message.parts)
     const orderedParts = withoutNoResponsePlaceholder(normalizedParts)
     const stoppedCalls = streaming ? null : stoppedTurnCalls(orderedParts, message.stoppedByUser)
@@ -146,7 +146,7 @@ export const AssistantMessage = memo(
             streaming={isStreamingTail}
             teamId={teamId}
             currentUrl={currentUrl}
-            onLinkClick={onOpenNuphosLink}
+            onLinkClick={onOpenCerinLink}
             renderLink={renderAgentLink}
           >
             {p.text}
@@ -167,7 +167,7 @@ export const AssistantMessage = memo(
             key={partKey}
             message={steeringMessage(p.data)}
             teamId={teamId}
-            onOpenNuphosLink={onOpenNuphosLink}
+            onOpenCerinLink={onOpenCerinLink}
           />
         )
       }
@@ -182,7 +182,7 @@ export const AssistantMessage = memo(
       if (p.type === 'tool' && p.toolName !== 'skill') {
         const card = renderCardToolPart(p, partKey, {
           teamId,
-          onOpen: onOpenNuphosLink,
+          onOpen: onOpenCerinLink,
           now,
           canAct: isLatestReply && !streaming && canActOnPlans,
           canReply: canReplyToQuestions,
@@ -275,7 +275,7 @@ export const AssistantMessage = memo(
       <div className="group/message space-y-2">
         {body}
         {!streaming && (
-          <TurnLinkChips parts={orderedParts} teamId={teamId} onOpen={onOpenNuphosLink} />
+          <TurnLinkChips parts={orderedParts} teamId={teamId} onOpen={onOpenCerinLink} />
         )}
         {stoppedCalls !== null && <StoppedTurnEnding calls={stoppedCalls} />}
         {!streaming && copyableText && (

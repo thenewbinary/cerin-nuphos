@@ -7,7 +7,7 @@ description: Manage Upstash — list/create/delete Redis databases, read usage s
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -37,7 +37,7 @@ Cerin. Pick one (most teams have exactly one) and run its `setupCommand` verbati
 ```bash
 # 1. Load the account's key into the env.
 bash skills/upstash/scripts/setup-credentials.sh <teamId> <accountId>
-source ~/.upstash/nuphos.env
+source ~/.upstash/cerin.env
 
 # The official CLI reuses UPSTASH_EMAIL + UPSTASH_API_KEY. It is the shortest
 # path for common operations and avoids hand-authoring URLs and auth headers.
@@ -105,7 +105,7 @@ Only if the credential section is missing or looks stale. `$TEAM` is exported in
 environment.
 
 ```bash
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 ac /teams/$TEAM/upstash-accounts | python3 -m json.tool
 # → { "accounts": [ { "id": "<accountId>", "label": "Acme",
 #       "email": "ops@acme.com", ... } ] }

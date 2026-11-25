@@ -1,4 +1,4 @@
-# Nuphos Desktop — project rules
+# Cerin Desktop — project rules
 
 ## Components
 

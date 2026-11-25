@@ -17,7 +17,7 @@ const runDir = process.argv[2]
 const params = JSON.parse(await readFile(join(runDir, 'params.json'), 'utf8'))
 const { default: output } = await import(join(runDir, 'script.mjs'))
 process.stderr.write('stderr is not part of the result\\n')
-process.stdout.write('__PANEL_OUTPUT__' + JSON.stringify({ output, params, token: process.env.NUPHOS_TOKEN, cwd: process.cwd(), heap: process.execArgv }) + '\\n')
+process.stdout.write('__PANEL_OUTPUT__' + JSON.stringify({ output, params, token: process.env.CERIN_TOKEN, cwd: process.cwd(), heap: process.execArgv }) + '\\n')
 process.exit(params.exitCode ?? 0)
 `
 
@@ -48,7 +48,7 @@ test('runs the runner beside the script and params, passing stdout and the envir
       script: 'export default { kind: "stat", value: 42 }',
       params: { teamId: 't1' },
     }),
-    { NUPHOS_TOKEN: 'tok' },
+    { CERIN_TOKEN: 'tok' },
   )
   const line = stdout.trim()
 
@@ -94,8 +94,8 @@ test('the image lists the job for OpenAB with a 300s ceiling and ships the scrip
 
   assert.match(
     dockerfile,
-    /^ENV OPENAB_RUNTIME_JOBS="panel=node --max-old-space-size=512 \/opt\/nuphos-runtime\/panel-job\.mjs;/mu,
+    /^ENV OPENAB_RUNTIME_JOBS="panel=node --max-old-space-size=512 \/opt\/cerin-runtime\/panel-job\.mjs;/mu,
   )
   assert.match(dockerfile, /^ {4}OPENAB_RUNTIME_JOB_MAX_TIMEOUT_MS=300000$/mu)
-  assert.match(dockerfile, /^COPY [^\n]*panel-job\.mjs \/opt\/nuphos-runtime\/$/mu)
+  assert.match(dockerfile, /^COPY [^\n]*panel-job\.mjs \/opt\/cerin-runtime\/$/mu)
 })

@@ -150,7 +150,7 @@ integrationScoped.delete(
 )
 
 // Agent credential handout, mirroring linear-workspaces /credentials: the
-// sandbox exchanges its NUPHOS_TOKEN for the binding's Notion token and talks to
+// sandbox exchanges its CERIN_TOKEN for the binding's Notion token and talks to
 // api.notion.com directly. Gated by the per-binding member allow-list. Unlike
 // Secureframe (read-only server-side proxy), Notion is a full read/write surface
 // the agent drives itself, so it needs the raw token.

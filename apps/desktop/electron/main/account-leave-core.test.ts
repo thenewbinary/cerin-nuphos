@@ -5,8 +5,8 @@ import { AuthSession } from '../auth-session.ts'
 
 import { followAccount } from './account-leave-core.ts'
 
-const CLOUD = 'https://api.nuphos.ai'
-const SELF = 'https://nuphos.example.com'
+const CLOUD = 'https://platform.cerin.ai'
+const SELF = 'https://cerin.example.com'
 
 function harness(written: () => Promise<unknown> = () => Promise.resolve()) {
   const session = new AuthSession(CLOUD)
@@ -35,7 +35,7 @@ test('a refreshed token for the same account is not leaving it', async () => {
 
   h.session.set('tok-a', 'a')
   h.session.set('tok-a2', 'a')
-  h.session.use('https://api.nuphos.ai/', 'tok-a3', 'a')
+  h.session.use('https://platform.cerin.ai/', 'tok-a3', 'a')
   await h.settled()
   assert.deepEqual(h.events, [])
 })

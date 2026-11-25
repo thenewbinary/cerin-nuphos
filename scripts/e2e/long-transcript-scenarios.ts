@@ -22,7 +22,7 @@ function storeHistory(mongoUri: string, sessionId: string, userId: string) {
     import { MongoClient } from 'mongodb'
     const [uri, sessionId, userId, count] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const messages = db.collection('agent_messages')
     const stored = await messages.countDocuments({ sessionId, userId })
     const now = new Date()

@@ -42,10 +42,10 @@ export function devStatusPath(dir: string): string {
   return `${dir}.dev.json`
 }
 
-/** cargo and git only build openab; NUPHOS_OPENAB_BINARY hands prepare.mjs a prebuilt one. */
+/** cargo and git only build openab; CERIN_OPENAB_BINARY hands prepare.mjs a prebuilt one. */
 export function missingTools(
   has: (command: string) => boolean,
-  prebuiltOpenab = Boolean(process.env.NUPHOS_OPENAB_BINARY),
+  prebuiltOpenab = Boolean(process.env.CERIN_OPENAB_BINARY),
 ): string[] {
   return Object.keys(TOOLS)
     .filter((command) => !(prebuiltOpenab && command !== 'npm') && !has(command))

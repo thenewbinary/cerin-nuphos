@@ -8,7 +8,7 @@ fi
 
 team_id="$1"
 binding_id="$2"
-base="${NUPHOS_BACKEND_URL:-${NUPHOS_API_URL:-https://api.cerin.ai}}"
+base="${CERIN_BACKEND_URL:-${CERIN_API_URL:-https://api.cerin.ai}}"
 base="${base%/}"
 
 urlencode() {
@@ -19,9 +19,9 @@ PY
 }
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-# shellcheck source=../../_runtime/scripts/nuphos-token.sh
-source "$script_dir/../../_runtime/scripts/nuphos-token.sh"
-auth_token="$(nuphos_token)" || exit 1
+# shellcheck source=../../_runtime/scripts/cerin-token.sh
+source "$script_dir/../../_runtime/scripts/cerin-token.sh"
+auth_token="$(cerin_token)" || exit 1
 
 team_enc="$(urlencode "$team_id")"
 binding_enc="$(urlencode "$binding_id")"
@@ -44,10 +44,10 @@ mkdir -p "$HOME/.upstash"
 chmod 700 "$HOME/.upstash"
 
 # 600 before writing, so the key never exists under a permissive umask.
-touch "$HOME/.upstash/nuphos.env"
-chmod 600 "$HOME/.upstash/nuphos.env"
+touch "$HOME/.upstash/cerin.env"
+chmod 600 "$HOME/.upstash/cerin.env"
 
-python3 - "$tmp" "$HOME/.upstash/nuphos.env" <<'PY'
+python3 - "$tmp" "$HOME/.upstash/cerin.env" <<'PY'
 import json, shlex, sys
 src, dst = sys.argv[1], sys.argv[2]
 data = json.load(open(src))
@@ -67,5 +67,5 @@ with open(dst, "w") as f:
     f.write(f"export UPSTASH_BINDING_ID={shlex.quote(str(data.get('bindingId', '')))}\n")
 PY
 
-chmod 600 "$HOME/.upstash/nuphos.env"
-echo "Wrote Upstash credentials to ~/.upstash/nuphos.env"
+chmod 600 "$HOME/.upstash/cerin.env"
+echo "Wrote Upstash credentials to ~/.upstash/cerin.env"

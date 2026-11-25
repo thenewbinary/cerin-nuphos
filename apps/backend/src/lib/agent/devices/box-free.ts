@@ -1,7 +1,7 @@
 // A free Box: on a deployment that sets BOX_DEFAULT_MONTHLY_HOURS, a team without its own
 // `boxVcpuLimit` has one Box and may run its Boxes at the default limit that many hours a
 // calendar month (UTC). Use is read from the usage samples box-usage-history records, so
-// nothing new is metered. Nuphos pauses such a Box once nobody uses it (box-free-sweep);
+// nothing new is metered. Cerin pauses such a Box once nobody uses it (box-free-sweep);
 // instabox's own idle pause stays off, as it would pause a Box whose agent waits on its model.
 
 import { config } from '@/config'

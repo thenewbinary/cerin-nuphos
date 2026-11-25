@@ -6,8 +6,8 @@
 # to the kubeconfig, and re-fetches transparently once the token nears expiry.
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 if [ "$#" -lt 4 ]; then
@@ -21,8 +21,8 @@ account="$3"
 cluster="$4"
 region="${5:-}"
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set — this plugin only works inside the Cerin agent sandbox." >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is not set — this plugin only works inside the Cerin agent sandbox." >&2
   exit 1
 fi
 
@@ -41,11 +41,11 @@ case "$provider" in
     ;;
 esac
 
-base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}${path}"
 
-cache_dir="$HOME/.kube/nuphos-cred-cache"
+cache_dir="$HOME/.kube/cerin-cred-cache"
 mkdir -p "$cache_dir"
 chmod 700 "$cache_dir"
 # Region belongs in the key: two clusters in one account can share a name
@@ -76,7 +76,7 @@ trap 'rm -f "$tmp"' EXIT
 # hangs every kubectl call forever instead of failing with a readable error.
 http_code="$(curl -sS -o "$tmp" -w '%{http_code}' \
   --connect-timeout 10 --max-time 30 \
-  -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+  -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
   "$url")"
 
 if [ "$http_code" != "200" ]; then

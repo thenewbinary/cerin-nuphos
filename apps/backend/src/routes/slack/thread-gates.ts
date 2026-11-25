@@ -6,11 +6,11 @@ import { postSenderNotice, postThreadMessage } from '@/routes/slack/shared'
 import type { SlackAgentThread } from '@/lib/slack/agent-bot'
 import type { SlackRuntime } from '@/routes/slack/types'
 
-// May this reply keep driving the thread's Nuphos team? Returns false after
+// May this reply keep driving the thread's Cerin team? Returns false after
 // telling the thread and completing the event.
 export async function verifyThreadTeamAccess(args: {
   runtime: SlackRuntime
-  botNuphosTeamId: string
+  botCerinTeamId: string
   thread: SlackAgentThread
   slackWorkspaceId: string
   channelId: string
@@ -28,7 +28,7 @@ export async function verifyThreadTeamAccess(args: {
     // its notification threads authenticate via the channel mapping instead.
     // Fail closed visibly: the people replying here were mid-conversation
     // with the agent and must not be left guessing why it went quiet.
-    if (args.botNuphosTeamId !== thread.teamId) {
+    if (args.botCerinTeamId !== thread.teamId) {
       const grant = await getSlackChannelMapping(args.slackWorkspaceId, channelId)
 
       if (grant?.teamId !== thread.teamId) {
@@ -71,18 +71,18 @@ export async function verifyThreadTeamAccess(args: {
 export async function checkNotificationReplyAccess(args: {
   runtime: SlackRuntime
   thread: SlackAgentThread
-  senderNuphosUserId: string
+  senderCerinUserId: string
   senderSlackUserId: string
   channelId: string
   threadTs: string
   eventId: string
 }): Promise<boolean> {
   const { thread } = args
-  const membership = await getTeamMembership(args.senderNuphosUserId, thread.teamId)
+  const membership = await getTeamMembership(args.senderCerinUserId, thread.teamId)
   const access = getAgentNotificationReplyAccess({
     slackChannelId: thread.slackChannelId,
     conversationOwnerUserId: thread.agentUserId,
-    senderUserId: args.senderNuphosUserId,
+    senderUserId: args.senderCerinUserId,
     senderIsTeamMember: !!membership,
   })
 

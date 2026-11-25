@@ -67,7 +67,7 @@ Then:
 - **No Grafana**: deploy one next to Loki (a k8s Deployment + Service, or docker on the VM), then:
   1. add the Loki datasource via `POST /api/datasources` (`{"name":"loki","type":"loki","url":"http://<loki>:3100","access":"proxy"}`),
   2. create a service account (Viewer is enough for querying) + token via `POST /api/serviceaccounts` and `POST /api/serviceaccounts/<id>/tokens`,
-  3. bind it yourself: `POST {NUPHOS_BACKEND_URL}/teams/$TEAM/grafana-instances` with `{"name":"<label>","grafanaUrl":"https://<reachable-url>","saToken":"<token>"}` using the caller's Cerin token (requires team ADMINISTRATOR — confirm with the user before binding). Never print the saToken into chat.
+  3. bind it yourself: `POST {CERIN_BACKEND_URL}/teams/$TEAM/grafana-instances` with `{"name":"<label>","grafanaUrl":"https://<reachable-url>","saToken":"<token>"}` using the caller's Cerin token (requires team ADMINISTRATOR — confirm with the user before binding). Never print the saToken into chat.
 - **Reachability**: the bound `grafanaUrl` must be reachable by the Cerin backend (the bind API rejects private/blocked hosts). Options, in order of preference: an ALREADY-EXISTING ingress/HTTPS load balancer on the host (reuse its domain + TLS rather than opening a raw NodePort/port with plaintext HTTP); a new HTTPS LB with strong auth; or a provider private-access option (e.g. **GCP IAP**, authorizing the Cerin connector identity) for private-only requirements. When Grafana sits next to Loki, Loki itself needs no exposure at all; only the remote-Grafana path above exposes Loki's query API (auth'd, query-only).
 
 ### 3. Install the collector on each VM
@@ -104,7 +104,7 @@ The single plan-confirmation from the UX contract covers every step it lists (in
 
 ### 4. Verify end-to-end (always do this)
 
-The installer emits a marker line via `logger` (tag `nuphos-onboarding`). Prove retrieval works by querying it back through the bound Grafana proxy (see Query patterns below) with `{instance="<vm>"} |= "loki onboarding marker"` over the last 15 minutes, and show the user the returned line. Onboarding is not "done" until this query succeeds.
+The installer emits a marker line via `logger` (tag `cerin-onboarding`). Prove retrieval works by querying it back through the bound Grafana proxy (see Query patterns below) with `{instance="<vm>"} |= "loki onboarding marker"` over the last 15 minutes, and show the user the returned line. Onboarding is not "done" until this query succeeds.
 
 ## Query patterns (time range + keyword)
 

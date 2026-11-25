@@ -212,7 +212,7 @@ export async function localAgentNotInstalled(
 
   const name = runtimeLabel(ref.provider)
 
-  // Nuphos installs every agent it adds but Antigravity, which comes only as a desktop app.
+  // Cerin installs every agent it adds but Antigravity, which comes only as a desktop app.
   return new AppError(
     409,
     'runtime_not_installed',

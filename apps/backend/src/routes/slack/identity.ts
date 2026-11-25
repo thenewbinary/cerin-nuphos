@@ -105,7 +105,7 @@ export async function resolveSlackUserMapping(
     slackWorkspaceId,
     slackUserId,
     teamId,
-    nuphosUserId: match.id,
+    cerinUserId: match.id,
     createdBy: 'auto:slack-email',
   })
 
@@ -113,7 +113,7 @@ export async function resolveSlackUserMapping(
     team_id: teamId,
     slack_workspace_id: slackWorkspaceId,
     slack_user_id: slackUserId,
-    nuphos_user_id: match.id,
+    cerin_user_id: match.id,
   })
 
   return { mapping, email }

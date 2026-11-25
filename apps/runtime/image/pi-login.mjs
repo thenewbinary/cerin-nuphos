@@ -18,8 +18,8 @@ import { pathToFileURL } from 'node:url'
 
 import { MODEL_SETTINGS, readJson, writeJson } from './pi-session.mjs'
 
-const PI = process.env.NUPHOS_AGENT_EXECUTABLE || 'pi'
-const HOME = process.env.NUPHOS_AGENT_HOME || process.env.HOME || '/home/node'
+const PI = process.env.CERIN_AGENT_EXECUTABLE || 'pi'
+const HOME = process.env.CERIN_AGENT_HOME || process.env.HOME || '/home/node'
 
 /**
  * The providers Pi takes an API key for, by the id `pi auth` knows them by, with the model
@@ -48,7 +48,7 @@ const PROVIDERS = [
   // An endpoint of the user's own (a gateway, a proxy, a local model server): a provider
   // Pi's models.json adds, with its key in auth.json like every other provider's. Its id is
   // one a user is unlikely to have written there themselves, so their own `custom` stays.
-  { value: 'nuphos-custom', label: 'Custom (OpenAI-compatible)' },
+  { value: 'cerin-custom', label: 'Custom (OpenAI-compatible)' },
 ]
 
 // The computer itself: a key sent there over plain http never crosses the network.
@@ -124,7 +124,7 @@ export async function runPiLogin({
     PROVIDERS.map(({ value, label }) => ({ value, label })),
   )
   const { label, model } = PROVIDERS.find((entry) => entry.value === provider)
-  const endpoint = provider === 'nuphos-custom' && {
+  const endpoint = provider === 'cerin-custom' && {
     baseUrl: await input({ message: 'Base URL', placeholder: 'http://localhost:11434/v1' }),
   }
   if (endpoint && !/^https?:\/\/./u.test(endpoint.baseUrl)) throw new LoginError('Not a URL')

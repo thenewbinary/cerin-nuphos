@@ -4,7 +4,7 @@ Proposed on `feat/local-preview-card`; no deployment is implied.
 
 Standalone local links and tool-discovered local URLs use a page thumbnail
 above a quiet footer with the title, address and Open action. The thumbnail
-comes from a real page already opened in Nuphos's browser pane. A URL without
+comes from a real page already opened in Cerin's browser pane. A URL without
 an available capture keeps a compact footer. Links within prose retain their
 original inline treatment.
 
@@ -26,7 +26,7 @@ The shared ChatLink preserves browser-pane routing, modifier-click and context
 menus. Local URL validation, credential rejection and own-machine URL discovery
 remain unchanged. A thumbnail is a captured page, not a server-health indicator.
 
-Evidence uses neutral synthetic content with actual Nuphos components in an
+Evidence uses neutral synthetic content with actual Cerin components in an
 isolated Electron harness. The thumbnail is a real NativeImage capture of a
 live local fixture page in the production BrowserView, not a drawn mockup.
 These are not installed-app captures. The neutral page source is

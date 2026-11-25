@@ -1,6 +1,6 @@
 // Which instabox account a Box's machine lives on: the deployment's, or one the
 // team bound itself (`box.accountId`). A team's account is billed by instabox,
-// so Nuphos's vCPU limit applies only to the deployment's (see startBox).
+// so Cerin's vCPU limit applies only to the deployment's (see startBox).
 
 import { setTimeout as sleep } from 'node:timers/promises'
 

@@ -18,8 +18,8 @@ instance the user means and reuse its `proxyBase` for every call — there is no
 to run and no token to fetch.
 
 ```bash
-# Reuse the helper from the nuphos-api skill (loads it if needed):
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
+# Reuse the helper from the cerin-api skill (loads it if needed):
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 # Stash the instance id from the credential section for the rest of the session.
 GI=<instanceId from the credential section>
@@ -42,11 +42,11 @@ ac /teams/$TEAM/grafana-instances | python3 -m json.tool
 Every Grafana HTTP API path you'd hit on the upstream maps 1:1 onto:
 
 ```
-${NUPHOS_BACKEND_URL:-https://api.cerin.ai}/teams/$TEAM/grafana-instances/$GI/proxy/<grafana-path>
+${CERIN_BACKEND_URL:-https://api.cerin.ai}/teams/$TEAM/grafana-instances/$GI/proxy/<grafana-path>
 ```
 
 - All HTTP methods are forwarded (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`).
-- The agent's `Authorization: Bearer $NUPHOS_TOKEN` is consumed by Cerin backend; the proxy strips it and replaces it with the bound `Bearer <saToken>` before forwarding. **Don't** try to send a Grafana token yourself — it'll just be discarded.
+- The agent's `Authorization: Bearer $CERIN_TOKEN` is consumed by Cerin backend; the proxy strips it and replaces it with the bound `Bearer <saToken>` before forwarding. **Don't** try to send a Grafana token yourself — it'll just be discarded.
 - Cookies and `Set-Cookie` are stripped both ways. This is an API channel, not a browser session.
 - Query strings, request bodies, and response bodies pass through unchanged. You can stream Loki `tail` responses if needed.
 - 30 s upstream timeout. Long Prometheus range queries should narrow the time window or use `step=` rather than retrying.
@@ -188,7 +188,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    ac -X POST "/teams/$TEAM/grafana-instances/$GI/proxy/api/v1/provisioning/contact-points" \
      -H 'content-type: application/json' \
      -d "{
-       \"name\": \"nuphos-<trigger name>\",
+       \"name\": \"cerin-<trigger name>\",
        \"type\": \"webhook\",
        \"settings\": {
          \"url\": \"<webhookUrl>\",
@@ -204,7 +204,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    Grafana rules that directly select a contact point use an internal policy and do **not** pass through the user policy tree. Therefore adding a normal child policy while leaving `notification_settings.receiver` set does nothing. The safe Watch recipe is:
 
    1. Save the full rule and full policy tree for rollback, including response `ETag`, `resourceVersion`, `version`, `updated`, or equivalent concurrency metadata when present. Immediately before each full-resource PUT, GET that resource again and compare its canonical JSON with the snapshot you based the edit on. If it changed, abort and recompute instead of overwriting someone else's edit. When the Grafana endpoint/version exposes optimistic concurrency (`resourceVersion`, a version parameter, or `ETag`/`If-Match`), send it on the write. The legacy `/api/v1/provisioning/alert-rules/:uid` and `/policies` endpoints do not expose a general version parameter, so the immediate preflight comparison is mandatory there. Apply the same guard to rollback: restore a snapshot only when the current resource still equals the state written by this attempt; otherwise stop and report the concurrent edit.
-   2. Add a unique exact-match label to this rule, normally `nuphos_watch="<trigger id>"`. Fail closed if `nuphos_watch` already exists: reuse it only when its value, contact point, policy route, and trigger all match this same workflow. Never overwrite a different Watch's label. Otherwise choose a collision-free valid label key such as `nuphos_watch_<short trigger id>` (letters, digits, and underscores only), re-fetch the rule to prove that key is absent, and use that exact key/value in every matcher and read-back check. Use the trigger id, not only `alertname`, so duplicate rule names cannot broaden delivery.
+   2. Add a unique exact-match label to this rule, normally `cerin_watch="<trigger id>"`. Fail closed if `cerin_watch` already exists: reuse it only when its value, contact point, policy route, and trigger all match this same workflow. Never overwrite a different Watch's label. Otherwise choose a collision-free valid label key such as `cerin_watch_<short trigger id>` (letters, digits, and underscores only), re-fetch the rule to prove that key is absent, and use that exact key/value in every matcher and read-back check. Use the trigger id, not only `alertname`, so duplicate rule names cannot broaden delivery.
    3. If the rule has direct `notification_settings`, preserve its receiver/timing values, then set `notification_settings` to `null` in the full rule body so this rule uses the policy tree. PUT the complete rule back; preserve every unrelated field.
    4. For a rule that was already policy-routed, prepend only an exact-label Cerin route with `"continue": true`, then leave the original policy tree untouched so it continues to determine every prior delivery. Do not synthesize or reorder its receiver routes: route order, nested inheritance, `continue`, and mute intervals are semantic. Only when step 3 cleared a direct `notification_settings` receiver should you prepend an exact-label compatibility route for that direct receiver (copy its direct grouping/timing settings, `"continue": true`), followed by the exact-label Cerin route with `"continue": false`; stopping there preserves the former direct receiver plus Cerin without accidentally adding the policy tree's default receiver.
    5. Re-fetch and compare the policy snapshot (and send its concurrency token where supported), then PUT the WHOLE policy tree back — never a partial tree, because Grafana replaces the tree.
@@ -215,7 +215,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
 
 5. **Verify end-to-end before saying live**:
    - GET the contact points and verify the new Cerin receiver exists and targets this trigger.
-   - GET the alert rule and verify its unique `nuphos_watch` label plus policy-routing state.
+   - GET the alert rule and verify its unique `cerin_watch` label plus policy-routing state.
    - GET the policy tree and verify the exact-label Cerin route exists, any compatibility route came only from cleared direct `notification_settings`, and the original policy tree is otherwise structurally unchanged.
    - `POST /{triggerId}/test-fire` (see the `triggers` skill) with `{"test": true, "status": "firing", "title": "Cerin wiring drill"}` to check the cheap action branch, then Grafana's contact-point test (`POST /api/v1/provisioning/contact-points/test` where supported) to prove Grafana contact point → trigger delivery.
    - A contact-point test does **not** prove that this alert rule selects the expected preserved receiver(s) plus Cerin. If this Grafana version exposes a rule-level preview/drill that evaluates the exact saved rule through notification routing, run it and verify every expected receiver. Otherwise state precisely: "contact-point delivery verified; exact-rule routing structurally verified but runtime routing unverified". Do not describe the whole workflow as end-to-end tested or fully live until a real firing delivery or supported rule-level routing drill proves that last hop.

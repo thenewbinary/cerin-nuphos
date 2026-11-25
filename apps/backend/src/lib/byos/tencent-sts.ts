@@ -1,14 +1,14 @@
 import { config } from '@/config'
 import { AppError } from '@/lib/errors'
 
-// OIDC web-identity federation reuses the shared Nuphos issuer (same signing
+// OIDC web-identity federation reuses the shared Cerin issuer (same signing
 // key, JWKS, and per-team subject as the AWS/Aliyun/Volcengine connectors).
 import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
   getAwsOidcJwks,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from './aws-oidc'
 import { tencentBootstrapRegion, tencentErrorCode } from './tencent-core'
 
@@ -29,8 +29,8 @@ function tencentStsHost(site: TencentSite): string {
 }
 
 /**
- * Whether the Nuphos OIDC issuer is configured (shared with the AWS connector —
- * one Nuphos IdP). Without a signing key we cannot mint web-identity tokens, so
+ * Whether the Cerin OIDC issuer is configured (shared with the AWS connector —
+ * one Cerin IdP). Without a signing key we cannot mint web-identity tokens, so
  * AssumeRoleWithWebIdentity would have nothing to present.
  */
 export function tencentOidcConfigured(): boolean {
@@ -38,7 +38,7 @@ export function tencentOidcConfigured(): boolean {
 }
 
 /**
- * The values a customer needs to register Nuphos as a CAM OIDC identity provider
+ * The values a customer needs to register Cerin as a CAM OIDC identity provider
  * and pin their role's trust policy: the issuer URL, the audience (client id) to
  * configure on the provider, and this team's subject claim. Unlike AWS / Aliyun
  * / Volcengine, Tencent CAM does NOT auto-fetch the issuer's JWKS — the customer
@@ -66,16 +66,16 @@ export function tencentOidcInfo(teamId: string): {
 
 /** RoleSessionName must be 2-64 chars of [\w+=,.@-]; sanitize defensively. */
 function sanitizeSessionName(name: string): string {
-  const sanitized = (name || 'nuphos').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
+  const sanitized = (name || 'cerin').replace(/[^\w+=,.@-]/g, '-').slice(0, 64)
 
   // Enforce Tencent's 2-char minimum: an all-invalid 1-char input could sanitize
   // to a single '-'. Fall back to a safe default.
-  return sanitized.length >= 2 ? sanitized : 'nuphos'
+  return sanitized.length >= 2 ? sanitized : 'cerin'
 }
 
 /**
  * Assume a customer CAM role via OIDC web-identity federation, returning
- * short-lived STS credentials. Nuphos mints a per-team RS256 token and calls
+ * short-lived STS credentials. Cerin mints a per-team RS256 token and calls
  * sts:AssumeRoleWithWebIdentity with `Authorization: SKIP` — the token is the
  * credential. `ProviderId` is the OIDC provider's *name* (Tencent references the
  * provider by name, not ARN); the role's trust policy must trust it.
@@ -96,9 +96,9 @@ export async function assumeRoleWithWebIdentity(
   const site = opts.site ?? 'china'
   const payload = {
     ProviderId: providerId,
-    WebIdentityToken: mintNuphosOidcToken(teamId, config.byos.tencent.oidc.audience),
+    WebIdentityToken: mintCerinOidcToken(teamId, config.byos.tencent.oidc.audience),
     RoleArn: roleArn,
-    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'nuphos'),
+    RoleSessionName: sanitizeSessionName(opts.sessionName ?? 'cerin'),
     DurationSeconds: opts.durationSec ?? config.byos.tencent.oidc.sessionDurationSec,
   }
   let resp: {
@@ -164,7 +164,7 @@ export async function verifyTencentRole(
   try {
     await assumeRoleWithWebIdentity(roleArn, providerId, teamId, {
       site,
-      sessionName: 'nuphos-bind-verify',
+      sessionName: 'cerin-bind-verify',
       durationSec: 900,
     })
   } catch (e) {

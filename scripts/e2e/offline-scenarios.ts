@@ -149,7 +149,7 @@ export const offlineScenarios: Scenario[] = [
     name: 'a conversation on a computer whose Cerin is out of date says so, and updates it in place',
     run: async (page, stack) => {
       const goOffline = await laptopOnline(stack, {
-        client: 'nuphos-desktop/0.119.0',
+        client: 'cerin-desktop/0.119.0',
         app: { version: '0.119.0', update: { version: '0.131.0', ready: true } },
       })
 

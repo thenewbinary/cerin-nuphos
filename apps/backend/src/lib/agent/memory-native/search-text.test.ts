@@ -23,9 +23,9 @@ describe('segmentCjk', () => {
   })
 
   test('handles mixed English + Chinese, keeps only CJK tokens', () => {
-    const tokens = segmentCjk('nuphos-backend 的 CPU 飆高問題')
+    const tokens = segmentCjk('cerin-backend 的 CPU 飆高問題')
 
-    expect(tokens.join(' ')).not.toMatch(/nuphos|CPU/)
+    expect(tokens.join(' ')).not.toMatch(/cerin|CPU/)
     expect(tokens).toContain('問題')
   })
 

@@ -38,7 +38,7 @@ export function CreateChangeDialog({
 }) {
   const [operation, setOperation] = useState<Operation>('updateOne')
   const [title, setTitle] = useState('')
-  const [database, setDatabase] = useState(connection.databaseName ?? 'nuphos_demo')
+  const [database, setDatabase] = useState(connection.databaseName ?? 'cerin_demo')
   const [collection, setCollection] = useState('customers')
   const [filter, setFilter] = useState('{\n  "customerNo": "CUS-0001"\n}')
   const [payload, setPayload] = useState('{\n  "$set": {\n    "status": "active"\n  }\n}')

@@ -10,7 +10,7 @@ function sanitizeSenderName(displayName: string | null | undefined, fallback: st
   return stripPromptControlChars(displayName ?? '').slice(0, 80) || fallback
 }
 
-function nuphosLinksInSlack(teamId: string | undefined): string[] {
+function cerinLinksInSlack(teamId: string | undefined): string[] {
   return [
     'Cerin links in Slack:',
     `- The canonical Cerin web URL is ${publicWebUrl()}. The current team id is ${teamId ?? 'unknown'}.`,
@@ -20,10 +20,10 @@ function nuphosLinksInSlack(teamId: string | undefined): string[] {
   ]
 }
 
-// A turn typed in the Nuphos app on a Slack-bound conversation: the answer
-// streams to the Nuphos UI natively AND is mirrored into the thread, so the
+// A turn typed in the Cerin app on a Slack-bound conversation: the answer
+// streams to the Cerin UI natively AND is mirrored into the thread, so the
 // guidance balances both audiences instead of assuming Slack-only readers.
-function buildNuphosMirroredSlackMessage(
+function buildCerinMirroredSlackMessage(
   slackReply: SlackReplyToolContext,
   teamId: string | undefined,
 ): string {
@@ -48,7 +48,7 @@ function buildNuphosMirroredSlackMessage(
     '- If you created a plan this turn, the Cerin user gets the native review card and a review/approve card is posted to the Slack thread after your turn ends. Still close with 1-2 plain-language sentences saying what the plan will actually do.',
     '- If you are waiting on an external state change, say in one short line what you are waiting for.',
     '',
-    ...nuphosLinksInSlack(teamId),
+    ...cerinLinksInSlack(teamId),
   ].join('\n')
 }
 
@@ -57,7 +57,7 @@ export function buildSlackMessage(
   teamId: string | undefined,
 ): string | null {
   if (!slackReply) return null
-  if (slackReply.nuphosOriginated) return buildNuphosMirroredSlackMessage(slackReply, teamId)
+  if (slackReply.cerinOriginated) return buildCerinMirroredSlackMessage(slackReply, teamId)
 
   return [
     '## Slack thread output',
@@ -83,6 +83,6 @@ export function buildSlackMessage(
     '- If you created a plan this turn, a review card with view/approve buttons is posted to the thread automatically after your turn ends. Still close with 1-2 plain-language sentences saying what the plan will actually do, and that they can review and approve it right from Slack.',
     '- If you are waiting on an external state change, say in one short line what you are waiting for.',
     '',
-    ...nuphosLinksInSlack(teamId),
+    ...cerinLinksInSlack(teamId),
   ].join('\n')
 }

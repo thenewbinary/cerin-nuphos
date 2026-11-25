@@ -29,7 +29,7 @@ const { navigationFromMentionTarget } = await load<typeof MentionNavigation>(
   '/src/app/mentionNavigation.ts',
 )
 
-const CHAT = 'https://nuphos.ai/teams/team-1/agent/56c88cb7-1906-4bcf-bd66-13e68de21b45'
+const CHAT = 'https://platform.cerin.ai/teams/team-1/agent/56c88cb7-1906-4bcf-bd66-13e68de21b45'
 
 test('a conversation link keeps the artifact it names', () => {
   const navigation = navigationForLink(new URL(`${CHAT}?artifact=usage-report&version=2`))

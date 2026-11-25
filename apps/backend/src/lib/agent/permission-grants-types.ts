@@ -1,7 +1,7 @@
 import type { ObjectId as ObjectIdType } from 'mongodb'
 
 /**
- * A permission-update proposal the Nuphos agent creates during a session when it
+ * A permission-update proposal the Cerin agent creates during a session when it
  * hits (or anticipates) a permission wall. It is NEVER auto-applied: a team
  * administrator reviews the exact diff and approves it, at which point the
  * backend executes the change deterministically via a permission-admin binding

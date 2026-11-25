@@ -14,7 +14,7 @@ const CODE_LINE = /^[\w.~-]{1,2048}#[\w.~-]{1,512}$/u
 // `claude setup-token` prints its one-year token once; nothing else it prints looks like one.
 const LONG_LIVED_TOKEN = /\bsk-ant-oat\d*-[\w-]{20,}/u
 /** Where a long-lived sign-in lives, beside Claude's own store. session-home.mjs reads it. */
-export const LONG_LIVED_TOKEN_FILE = '.nuphos-oauth-token.json'
+export const LONG_LIVED_TOKEN_FILE = '.cerin-oauth-token.json'
 const LONG_LIVED_MS = 365 * 24 * 60 * 60 * 1000
 // Where and as whom the pinned CLI revokes a sign-in it gives up (its /logout).
 const REVOKE_URL = 'https://platform.claude.com/v1/oauth/token/revoke'

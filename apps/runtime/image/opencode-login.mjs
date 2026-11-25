@@ -46,8 +46,8 @@ const BEDROCK_METHODS = [
 ]
 const AWS_REGION = /^[a-z]{2}(?:-gov)?-[a-z]+-\d{1,2}$/u
 // A computer running OpenCode as a local agent names its own CLI and the home it runs with.
-const HOME = process.env.NUPHOS_AGENT_HOME || process.env.HOME || '/home/node'
-const OPENCODE_EXECUTABLE = process.env.NUPHOS_AGENT_EXECUTABLE || 'opencode'
+const HOME = process.env.CERIN_AGENT_HOME || process.env.HOME || '/home/node'
+const OPENCODE_EXECUTABLE = process.env.CERIN_AGENT_EXECUTABLE || 'opencode'
 const CONFIG_FILE = join(HOME, '.config', 'opencode', 'opencode.json')
 
 class LoginError extends Error {}

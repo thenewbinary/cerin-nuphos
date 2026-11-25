@@ -3,9 +3,9 @@ import { describe, expect, test } from 'bun:test'
 import { normalizeConversationActivitySource } from './conversation-activity-source'
 
 describe('normalizeConversationActivitySource', () => {
-  test('identifies Nuphos app conversations without a Slack link', () => {
+  test('identifies Cerin app conversations without a Slack link', () => {
     expect(normalizeConversationActivitySource('app')).toEqual({
-      origin: 'nuphos',
+      origin: 'cerin',
       linkedSlackThread: false,
     })
   })
@@ -44,7 +44,7 @@ describe('normalizeConversationActivitySource', () => {
 
   test('preserves the desktop origin when the user picked the session up in Slack', () => {
     expect(normalizeConversationActivitySource('app', { origin: 'user_pickup' })).toEqual({
-      origin: 'nuphos',
+      origin: 'cerin',
       linkedSlackThread: true,
     })
   })

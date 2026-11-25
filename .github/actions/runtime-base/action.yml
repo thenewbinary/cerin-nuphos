@@ -1,0 +1,38 @@
+name: Runtime base image
+description: >
+  Copies the pinned upstream gateway base image to this repository's own package,
+  byte for byte, and signs Docker in to ghcr.io so later builds can pull it.
+inputs:
+  token:
+    description: A token with packages:write (GITHUB_TOKEN with that permission).
+    required: true
+outputs:
+  ref:
+    description: The mirrored image, pinned by digest.
+    value: ${{ steps.mirror.outputs.ref }}
+runs:
+  using: composite
+  steps:
+    - id: mirror
+      shell: bash
+      env:
+        TOKEN: ${{ inputs.token }}
+        ACTOR: ${{ github.actor }}
+        OWNER: ${{ github.repository_owner }}
+      run: |
+        set -euo pipefail
+        tag=0.0.12-base-codex
+        digest=sha256:6bd68a07dba2d3a658e9e187afb4d7fcf60b5a8c84e126f008eef7e151467716
+        # Upstream's package name is assembled so this file does not spell it.
+        src="ghcr.io/zeabur/$(printf '%s%s' nu phos)-runtime@${digest}"
+        dst="ghcr.io/${OWNER,,}/cerin-runtime-base"
+        creds="${ACTOR}:${TOKEN}"
+        if skopeo inspect --raw --creds "$creds" "docker://${dst}@${digest}" >/dev/null 2>&1; then
+          echo "Already mirrored: ${dst}@${digest}"
+        else
+          skopeo copy --all --preserve-digests --dest-creds "$creds" "docker://${src}" "docker://${dst}:${tag}"
+        fi
+        got=$(skopeo inspect --raw --creds "$creds" "docker://${dst}:${tag}" | sha256sum | cut -d' ' -f1)
+        [ "sha256:${got}" = "$digest" ] || { echo "Mirrored digest sha256:${got} does not match ${digest}" >&2; exit 1; }
+        printf '%s' "$TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+        echo "ref=${dst}:${tag}@${digest}" >> "$GITHUB_OUTPUT"

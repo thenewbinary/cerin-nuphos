@@ -1,5 +1,5 @@
 {
-  "name": "nuphos-claude-agent-acp-runtime",
+  "name": "cerin-claude-agent-acp-runtime",
   "private": true,
   "dependencies": {
     "@agentclientprotocol/claude-agent-acp": "0.74.0"

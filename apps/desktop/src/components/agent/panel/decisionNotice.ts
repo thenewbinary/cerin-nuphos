@@ -15,7 +15,7 @@ export type DecisionNotice = {
 }
 
 /** The sender of the notice an answer wakes the asking agent with. */
-export const DECISION_NOTICE = 'nuphos:decision'
+export const DECISION_NOTICE = 'cerin:decision'
 
 const CONTEXT = /^Context (?:you|the asker) gave: /
 const OPTIONS = 'Options: '

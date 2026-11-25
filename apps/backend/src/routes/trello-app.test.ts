@@ -175,7 +175,7 @@ describe('Trello managed OAuth lifecycle', () => {
     ).toBe(403)
     expect(calls).toHaveLength(0)
   })
-  test('falls back to a public NUPHOS_BACKEND_URL like the other connectors', async () => {
+  test('falls back to a public CERIN_BACKEND_URL like the other connectors', async () => {
     config.agent.publicBackendUrl = undefined
     config.agent.backendUrl = 'https://api.example'
     const { state } = await start()
@@ -184,7 +184,7 @@ describe('Trello managed OAuth lifecycle', () => {
   })
   test('refuses to start without a public HTTPS backend URL', async () => {
     config.agent.publicBackendUrl = undefined
-    config.agent.backendUrl = 'http://nuphos-backend.prod.svc:3000'
+    config.agent.backendUrl = 'http://cerin-backend.prod.svc:3000'
     const response = await app().request('/trello-integrations/start-oauth', { method: 'POST' })
 
     expect(response.status).toBe(503)

@@ -17,7 +17,7 @@ test('one concurrent launcher per instance key; other keys remain independent', 
   assert.equal(results.filter((result) => result.status === 'rejected').length, 1)
   assert.ok(owner?.status === 'fulfilled')
   t.after(owner.value)
-  await assert.rejects(acquireDevInstance(key), /already running.*NUPHOS_DEV_INSTANCE/)
+  await assert.rejects(acquireDevInstance(key), /already running.*CERIN_DEV_INSTANCE/)
   assert.equal(await instanceRunning(key), true)
   t.after(await acquireDevInstance(`${key}-other`))
 })
@@ -36,7 +36,7 @@ test('stopping a launcher releases its lease for the next invocation', async (t)
 })
 
 test('rm deletes only the named instance, never one whose name extends it', async (t) => {
-  const home = await mkdtemp(join(tmpdir(), 'nuphos-instances-'))
+  const home = await mkdtemp(join(tmpdir(), 'cerin-instances-'))
 
   t.after(() => rm(home, { recursive: true, force: true }))
   process.env.HOME = home

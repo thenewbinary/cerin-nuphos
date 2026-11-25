@@ -16,7 +16,7 @@ import { applyEvent, looksLikeConfirmationAsk, shorten } from './test-deploy-flo
 
 import type { AssistantPart } from './test-deploy-flow-lib'
 
-const BACKEND = process.env.NUPHOS_BACKEND_URL_LOCAL ?? 'http://localhost:3717'
+const BACKEND = process.env.CERIN_BACKEND_URL_LOCAL ?? 'http://localhost:3717'
 
 const TEAM_ID = '64b5f1c2e4b0a1d2c3e4f5a6'
 const GCP_PROJECT_ID = 'zeabur-byos-test-20260425'

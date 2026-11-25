@@ -183,7 +183,7 @@ describe('decision tool module', () => {
       metadata: {
         version: 1,
         sender: { type: 'user', id: 'u1', displayName: 'Yuanlin' },
-        source: 'nuphos',
+        source: 'cerin',
         sentAt: '2026-11-12T00:00:00Z',
       },
     }
@@ -425,7 +425,7 @@ describe('decision tool module', () => {
     const { requestId } = result.structuredContent as { requestId: string }
     const [, update] = conversationUpdates.at(-1)!
 
-    expect(requestId).toStartWith('nuphos-')
+    expect(requestId).toStartWith('cerin-')
     expect(update).toMatchObject({
       $push: {
         inputRequests: {
@@ -439,7 +439,7 @@ describe('decision tool module', () => {
     const tools = decisionToolModule({ publish: async () => {} }).handlers(ctx)
     const result = await tools.update_user_decision!({
       label: 'Add the backup option',
-      requestId: 'nuphos-1',
+      requestId: 'cerin-1',
       options: ['Delete', 'Keep', 'Back up, then delete'],
     })
 
@@ -448,7 +448,7 @@ describe('decision tool module', () => {
       {
         sessionId: 'conv-1',
         userId: 'u1',
-        'inputRequests.id': 'nuphos-1',
+        'inputRequests.id': 'cerin-1',
       },
       {
         $set: {
@@ -464,17 +464,17 @@ describe('decision tool module', () => {
     const tools = decisionToolModule({ publish: async () => {} }).handlers(ctx)
     const before = conversationUpdates.length
 
-    expect((await tools.update_user_decision!({ label: 'x', requestId: 'nuphos-1' })).isError).toBe(
+    expect((await tools.update_user_decision!({ label: 'x', requestId: 'cerin-1' })).isError).toBe(
       true,
     )
     expect(
-      (await tools.update_user_decision!({ label: 'x', requestId: 'nuphos-1', options: ['one'] }))
+      (await tools.update_user_decision!({ label: 'x', requestId: 'cerin-1', options: ['one'] }))
         .isError,
     ).toBe(true)
     expect(conversationUpdates).toHaveLength(before)
     matchedCount = 0
     expect(
-      (await tools.update_user_decision!({ label: 'x', requestId: 'nuphos-1', question: 'Now?' }))
+      (await tools.update_user_decision!({ label: 'x', requestId: 'cerin-1', question: 'Now?' }))
         .isError,
     ).toBe(true)
   })
@@ -483,7 +483,7 @@ describe('decision tool module', () => {
     storedConversation = {
       inputRequests: [
         {
-          id: 'nuphos-1',
+          id: 'cerin-1',
           question: 'Rollout?',
           body: 'CI passed.\n\n---\n\nRisks.\n\n---\n\n**1. Old?**\n\n**2. Older?**',
           questions: [{ question: 'Old?' }, { question: 'Older?' }],
@@ -494,7 +494,7 @@ describe('decision tool module', () => {
     const tools = decisionToolModule({ publish: async () => {} }).handlers(ctx)
     const result = await tools.update_user_decision!({
       label: 'Ask about regions too',
-      requestId: 'nuphos-1',
+      requestId: 'cerin-1',
       questions: [
         { question: 'Which regions?', options: ['us', 'eu'], multiSelect: true },
         { question: 'Keep the old\n\n---\n\ncluster?' },
@@ -517,16 +517,16 @@ describe('decision tool module', () => {
 
   test('withdraw_user_decision takes the open request off the list', async () => {
     const tools = decisionToolModule({ publish: async () => {} }).handlers(ctx)
-    const result = await tools.withdraw_user_decision!({ label: 'Withdraw', requestId: 'nuphos-1' })
+    const result = await tools.withdraw_user_decision!({ label: 'Withdraw', requestId: 'cerin-1' })
 
     expect(result.structuredContent).toMatchObject({ status: 'withdrawn' })
     expect(conversationUpdates.at(-1)).toEqual([
       {
         sessionId: 'conv-1',
         userId: 'u1',
-        'inputRequests.id': 'nuphos-1',
+        'inputRequests.id': 'cerin-1',
       },
-      { $pull: { inputRequests: { id: 'nuphos-1' } } },
+      { $pull: { inputRequests: { id: 'cerin-1' } } },
     ])
   })
 
@@ -938,14 +938,14 @@ describe('decision tool module', () => {
     await registerPreviewWait({
       userId: ctx.userId,
       sessionId: ctx.sessionId,
-      waitId: 'nuphos-grant-1',
+      waitId: 'cerin-grant-1',
       kind: 'permission-grant',
       ref: 'proposal-1',
     })
     const outcome = await awaitDecisionOnce({
       userId: ctx.userId,
       sessionId: ctx.sessionId,
-      waitId: 'nuphos-grant-1',
+      waitId: 'cerin-grant-1',
       kind: 'permission-grant',
       timeoutMs: 30,
     })

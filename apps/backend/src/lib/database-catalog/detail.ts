@@ -92,7 +92,7 @@ function fitCollectionDetail(detail: MongoCollectionDetail): MongoCollectionDeta
     validation: {
       ...detail.validation,
       validator: detail.validation.validator
-        ? { $nuphosMetadata: 'Validator metadata exceeded the safe response limit.' }
+        ? { $cerinMetadata: 'Validator metadata exceeded the safe response limit.' }
         : null,
       truncated: detail.validation.validator !== null || detail.validation.truncated,
     },

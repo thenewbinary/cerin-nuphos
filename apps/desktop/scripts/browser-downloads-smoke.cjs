@@ -8,7 +8,7 @@ const { app, BrowserWindow, session } = require('electron')
 const { guardBrowserDownloads } = require(
   process.argv[2] || '../electron/main/browser-downloads.ts',
 )
-const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-download-smoke-'))
+const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-download-smoke-'))
 app.setPath('userData', profile)
 const server = http.createServer((request, response) => {
   if (request.url === '/file') {

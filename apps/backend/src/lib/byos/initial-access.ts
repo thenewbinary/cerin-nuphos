@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { AppError } from '@/lib/errors'
 
-import type { NuphosTeam } from '@/lib/identity/types'
+import type { CerinTeam } from '@/lib/identity/types'
 import type { TeamAuthVariables } from '@/middleware/auth/types'
 import type { BindingAccess } from '@/models'
 import type { Context } from 'hono'
@@ -22,7 +22,7 @@ export type BindingShare = z.infer<typeof bindingShareSchema>
  */
 export function initialBindingAccess(input: {
   userId: string
-  team: Pick<NuphosTeam, 'bindingShareDefault'> | undefined
+  team: Pick<CerinTeam, 'bindingShareDefault'> | undefined
   share?: BindingShare
   highPrivilege?: boolean
   now?: Date

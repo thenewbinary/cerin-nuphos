@@ -23,7 +23,7 @@ function setup(
   t: { after: (fn: () => void) => void },
   options: { slowStart?: boolean; credentialStays?: boolean } = {},
 ) {
-  const root = mkdtempSync(path.join(os.tmpdir(), 'nuphos-instance-lifecycle-'))
+  const root = mkdtempSync(path.join(os.tmpdir(), 'cerin-instance-lifecycle-'))
 
   t.after(() => rmSync(root, { recursive: true, force: true }))
   const fakes = new Map<string, Fake>()

@@ -23,7 +23,7 @@ id already filled in. Pick the exact integration the user names; when several ex
 user did not identify one, ask instead of guessing.
 
 ```bash
-ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
+ac() { curl -sS -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") "${CERIN_BACKEND_URL:-https://api.cerin.ai}$1" "${@:2}"; }
 
 SQ=<integrationId from the credential section>
 
@@ -163,7 +163,7 @@ explicitly supplied for the SonarQube connector test.
 When `sonarqube_scan_fixture` is present in the current tool list, the backend
 operator has explicitly enabled that isolated development path. It accepts only
 the bound integration ID and always scans project
-`nuphos-sonarqube-isolated-fixture`; there is no source/path/URL argument.
+`cerin-sonarqube-isolated-fixture`; there is no source/path/URL argument.
 
 1. Call `sonarqube_scan_fixture` once with the selected integration ID.
 2. Poll the returned task with `sonarqube_scan_status` at reasonable intervals.

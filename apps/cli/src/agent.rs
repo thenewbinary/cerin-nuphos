@@ -16,7 +16,7 @@ use crate::config;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const MIN_NODE: u64 = 22;
 
-/// The join token from `--join`, `--join -` (stdin) or `NUPHOS_JOIN_TOKEN`.
+/// The join token from `--join`, `--join -` (stdin) or `CERIN_JOIN_TOKEN`.
 pub fn join_token(arg: Option<&str>) -> Result<Option<String>> {
     let token = match arg {
         Some("-") => {
@@ -25,19 +25,19 @@ pub fn join_token(arg: Option<&str>) -> Result<Option<String>> {
             line
         }
         Some(token) => token.to_owned(),
-        None => std::env::var("NUPHOS_JOIN_TOKEN").unwrap_or_default(),
+        None => std::env::var("CERIN_JOIN_TOKEN").unwrap_or_default(),
     };
     let token = token.trim();
     Ok((!token.is_empty()).then(|| token.to_owned()))
 }
 
-/// Where the host keeps this computer's identity and credential; the host gets it as `NUPHOS_AGENT_HOME`.
+/// Where the host keeps this computer's identity and credential; the host gets it as `CERIN_AGENT_HOME`.
 fn agent_home() -> Result<PathBuf> {
-    if let Some(dir) = std::env::var_os("NUPHOS_AGENT_HOME") {
+    if let Some(dir) = std::env::var_os("CERIN_AGENT_HOME") {
         return Ok(PathBuf::from(dir));
     }
     let home = std::env::var_os("HOME").context("HOME is not set")?;
-    Ok(PathBuf::from(home).join(".local/share/nuphos/agent"))
+    Ok(PathBuf::from(home).join(".local/share/cerin/agent"))
 }
 
 /// Whether an earlier `--join` left this computer a credential. The host checks
@@ -50,7 +50,7 @@ pub fn joined() -> bool {
 /// it can stop the agents before exiting.
 pub async fn run(join: Option<String>) -> Result<i32> {
     let (node, node_bin) = node().await?;
-    let runtime = match std::env::var_os("NUPHOS_LOCAL_RUNTIME_DIR") {
+    let runtime = match std::env::var_os("CERIN_LOCAL_RUNTIME_DIR") {
         Some(dir) => PathBuf::from(dir),
         None => fetch().await?,
     };
@@ -61,24 +61,24 @@ pub async fn run(join: Option<String>) -> Result<i32> {
         host.env("PATH", std::env::join_paths(std::iter::once(bin).chain(std::env::split_paths(&path)))?);
     }
     if let Some(token) = join {
-        host.env("NUPHOS_JOIN_TOKEN", token);
+        host.env("CERIN_JOIN_TOKEN", token);
     }
     // The session for a host on plain Node, which cannot read the keychain;
     // it drops the variable at once so the agents it starts never see it.
     if let Some(token) = config::read_session().token {
-        host.env("NUPHOS_SESSION_TOKEN", token);
+        host.env("CERIN_SESSION_TOKEN", token);
     }
     // Under the service only: the restart `cerin update` ends with starts the new one, so the
     // host updates this computer when idle (cli-auto-update.ts runs `<exe> update`).
     if crate::service::running() {
-        host.env("NUPHOS_CLI_EXE", std::env::current_exe()?);
+        host.env("CERIN_CLI_EXE", std::env::current_exe()?);
     }
     let error = host
         .arg(runtime.join("host.mjs"))
-        .env("NUPHOS_AGENT_HOME", agent_home()?)
-        .env("NUPHOS_LOCAL_RUNTIME_DIR", &runtime)
-        .env("NUPHOS_API_URL", config::api_url())
-        .env("NUPHOS_CLI_VERSION", VERSION)
+        .env("CERIN_AGENT_HOME", agent_home()?)
+        .env("CERIN_LOCAL_RUNTIME_DIR", &runtime)
+        .env("CERIN_API_URL", config::api_url())
+        .env("CERIN_CLI_VERSION", VERSION)
         .exec();
     Err(error).context("could not start node")
 }
@@ -87,7 +87,7 @@ pub async fn run(join: Option<String>) -> Result<i32> {
 const NODE_DIST: &str = "https://nodejs.org/dist/latest-v22.x";
 
 /// The Node.js on PATH when it is new enough. Otherwise Node.js 22 LTS kept in
-/// `~/.local/share/nuphos/node`, fetched once and checked against the release's
+/// `~/.local/share/cerin/node`, fetched once and checked against the release's
 /// SHASUMS256.txt, with its bin directory to put first on the host's PATH.
 async fn node() -> Result<(PathBuf, Option<PathBuf>)> {
     let Err(missing) = system_node() else {
@@ -155,10 +155,10 @@ fn platform() -> Result<&'static str> {
 
 fn data_dir() -> Result<PathBuf> {
     let home = std::env::var_os("HOME").map(PathBuf::from).ok_or_else(|| anyhow!("HOME is not set"))?;
-    Ok(home.join(".local/share/nuphos"))
+    Ok(home.join(".local/share/cerin"))
 }
 
-/// `~/.local/share/nuphos/runtime/<version>-<platform>`, downloaded once per
+/// `~/.local/share/cerin/runtime/<version>-<platform>`, downloaded once per
 /// CLI version; older ones are removed once the new one is in place.
 async fn fetch() -> Result<PathBuf> {
     let platform = platform()?;
@@ -168,18 +168,11 @@ async fn fetch() -> Result<PathBuf> {
         return Ok(dir);
     }
 
-    let base = std::env::var("NUPHOS_DOWNLOAD_URL")
-        .unwrap_or_else(|_| format!("https://github.com/thenewbinary/cerin-nuphos/releases/download/cli-v{VERSION}"));
+    let base = std::env::var("CERIN_DOWNLOAD_URL")
+        .unwrap_or_else(|_| format!("https://github.com/thenewbinary/cerin-platform/releases/download/cli-v{VERSION}"));
     eprintln!("Downloading the local runtime for {platform}…");
-    // Releases before the rename, and mirrors of them, have only the old name.
-    let mut asset = format!("cerin-agent-{platform}.tar.gz");
-    let checksum = match get(format!("{base}/{asset}.sha256")).await {
-        Ok(checksum) => checksum,
-        Err(_) => {
-            asset = format!("nuphos-agent-{platform}.tar.gz");
-            get(format!("{base}/{asset}.sha256")).await?
-        }
-    };
+    let asset = format!("cerin-agent-{platform}.tar.gz");
+    let checksum = get(format!("{base}/{asset}.sha256")).await?;
     let archive = get(format!("{base}/{asset}")).await?;
     let expected = String::from_utf8_lossy(&checksum).split_whitespace().next().unwrap_or_default().to_string();
     unpack(&archive, &expected, &asset, &root, &dir, &[])?;
@@ -244,7 +237,7 @@ mod tests {
 
     #[test]
     fn skips_a_staging_folder_a_stopped_download_left() {
-        let root = std::env::temp_dir().join(format!("nuphos-node-test-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("cerin-node-test-{}", std::process::id()));
         let staging = root.join(".node-v22.21.1-linux-x64.123");
         std::fs::create_dir_all(staging.join("bin")).unwrap();
         std::fs::write(staging.join("bin/node"), "").unwrap();

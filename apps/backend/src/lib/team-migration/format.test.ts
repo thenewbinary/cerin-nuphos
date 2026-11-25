@@ -40,7 +40,7 @@ test('keeps conversation text and attribution, excluding runtime credentials and
     ],
     metadata: {
       version: 1,
-      source: 'nuphos',
+      source: 'cerin',
       sentAt: now,
       sender: { type: 'user', id: 'actual-sender', displayName: 'Member', secret },
       cliTokenId: secret,
@@ -126,7 +126,7 @@ test('user-authored text is preserved, not falsely claimed to be secret-free', (
 
 test('ZIP agrees with manifest counts, bytes and hashes, including empty parts', () => {
   const archive = createMigrationArchive({
-    format: 'nuphos-team',
+    format: 'cerin-team',
     formatVersion: 1,
     backendVersion: 'test',
     sourceTeamId: 'team',
@@ -166,7 +166,7 @@ test('ZIP agrees with manifest counts, bytes and hashes, including empty parts',
 
 test('oversized record refuses the archive', () => {
   const archive = createMigrationArchive({
-    format: 'nuphos-team',
+    format: 'cerin-team',
     formatVersion: 1,
     backendVersion: 'test',
     sourceTeamId: 'team',

@@ -13,7 +13,7 @@ use std::sync::Arc;
 
 fn tools(version: &str, token: &str) -> Vec<serde_json::Value> {
     vec![json!({
-        "name": "nuphos-tools",
+        "name": "cerin-tools",
         "type": "http",
         "url": format!("https://api.example/mcp-tools?tools={version}"),
         "headers": [{"name": "Authorization", "value": format!("Bearer {token}")}],

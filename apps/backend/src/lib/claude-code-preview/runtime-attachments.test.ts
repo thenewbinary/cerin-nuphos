@@ -53,7 +53,7 @@ test('materialization is a no-op for text turns and exposes only paths to the mo
 
     return {
       exitCode: 0,
-      stdout: JSON.stringify({ paths: ['/runtime/nuphos-attachments-test/0/image.png'] }),
+      stdout: JSON.stringify({ paths: ['/runtime/cerin-attachments-test/0/image.png'] }),
     }
   }
   const route = controlRoute()
@@ -69,7 +69,7 @@ test('materialization is a no-op for text turns and exposes only paths to the mo
       {
         type: 'resource_link',
         name: 'image.png',
-        uri: 'file:///runtime/nuphos-attachments-test/0/image.png',
+        uri: 'file:///runtime/cerin-attachments-test/0/image.png',
       },
     ])
     expect(JSON.stringify(text)).not.toContain('https://store.example/signed')

@@ -95,7 +95,7 @@ const scenarios: Scenario[] = [
       await page.screenshot({ path: `${artifacts}/bot-first-reply.png` })
       await send(
         page,
-        'Review https://github.com/nuphos/nuphos/issues/1 E2E_ASK_CREDENTIAL E2E_DELIVERY:bot',
+        'Review https://github.com/thenewbinary/cerin-platform/issues/1 E2E_ASK_CREDENTIAL E2E_DELIVERY:bot',
       )
       await page.getByText('POSTED E2E_DELIVERY:bot', { exact: true }).waitFor()
       await checkDecisionOutline(page)

@@ -30,7 +30,7 @@ exit 22
 `
 
 async function capturedAuthorization(script: string[], stdin = '', revoked = false) {
-  const dir = mkdtempSync(join(tmpdir(), 'nuphos-credential-scripts-'))
+  const dir = mkdtempSync(join(tmpdir(), 'cerin-credential-scripts-'))
   const bin = join(dir, 'bin')
   const credentials = join(dir, 'credentials')
   const capture = join(dir, 'capture')
@@ -42,7 +42,7 @@ async function capturedAuthorization(script: string[], stdin = '', revoked = fal
   writeFileSync(capture, '')
   writeFileSync(argv, '')
   if (!revoked) {
-    writeFileSync(join(credentials, 'NUPHOS_TOKEN'), jwt('fresh'))
+    writeFileSync(join(credentials, 'CERIN_TOKEN'), jwt('fresh'))
   }
   const child = Bun.spawn(['bash', ...script], {
     env: {
@@ -51,9 +51,9 @@ async function capturedAuthorization(script: string[], stdin = '', revoked = fal
       CURL_CAPTURE: capture,
       CURL_ARGV: argv,
       OPENAB_CREDENTIALS_DIR: credentials,
-      NUPHOS_TOKEN: jwt('stale'),
-      NUPHOS_BACKEND_URL: 'http://backend.invalid',
-      NUPHOS_SESSION_ID: 'session',
+      CERIN_TOKEN: jwt('stale'),
+      CERIN_BACKEND_URL: 'http://backend.invalid',
+      CERIN_SESSION_ID: 'session',
     },
     stdin: new Blob([stdin]),
     stdout: 'ignore',
@@ -67,7 +67,7 @@ async function capturedAuthorization(script: string[], stdin = '', revoked = fal
 
 describe('skill scripts prefer the per-turn credential file over the spawn-time env', () => {
   const cases: [string, string[], string?][] = [
-    ['Cerin API helper', [join(skills, '_runtime/scripts/nuphos-api.sh'), 'GET', '/teams']],
+    ['Cerin API helper', [join(skills, '_runtime/scripts/cerin-api.sh'), 'GET', '/teams']],
     [
       'file transfer',
       [join(skills, 'file-transfer/scripts/transfer-pull.sh'), 'team', 'group', 'out'],
@@ -117,24 +117,24 @@ const tokenLookupScripts = [
 ].map((skill) => join(skills, skill, 'scripts/setup-credentials.sh'))
 
 async function authorizationWithEnv(script: string, env: Record<string, string>) {
-  const dir = mkdtempSync(join(tmpdir(), 'nuphos-token-lookup-'))
+  const dir = mkdtempSync(join(tmpdir(), 'cerin-token-lookup-'))
   const bin = join(dir, 'bin')
   const capture = join(dir, 'capture')
 
-  Bun.spawnSync(['mkdir', '-p', bin, join(dir, '.config/nuphos')])
+  Bun.spawnSync(['mkdir', '-p', bin, join(dir, '.config/cerin')])
   writeFileSync(join(bin, 'curl'), fakeCurl)
   chmodSync(join(bin, 'curl'), 0o755)
   writeFileSync(capture, '')
   // The account's full session token, which scripts must never pick up.
-  writeFileSync(join(dir, '.config/nuphos/cli.yaml'), `token: ${jwt('session')}\n`)
-  writeFileSync(join(dir, '.config/nuphos/desktop.yaml'), `token: ${jwt('session')}\n`)
+  writeFileSync(join(dir, '.config/cerin/cli.yaml'), `token: ${jwt('session')}\n`)
+  writeFileSync(join(dir, '.config/cerin/desktop.yaml'), `token: ${jwt('session')}\n`)
   const child = Bun.spawn(['bash', script, 'team', 'binding'], {
     env: {
       PATH: `${bin}:${process.env.PATH ?? ''}`,
       HOME: dir,
       CURL_CAPTURE: capture,
       CURL_ARGV: join(dir, 'argv'),
-      NUPHOS_BACKEND_URL: 'http://backend.invalid',
+      CERIN_BACKEND_URL: 'http://backend.invalid',
       ...env,
     },
     stdout: 'ignore',
@@ -152,12 +152,12 @@ describe('builtin setup scripts share one Cerin token lookup', () => {
 
     test(`${name} sources the shared lookup`, () => {
       expect(readFileSync(script, 'utf8')).toContain(
-        'source "$script_dir/../../_runtime/scripts/nuphos-token.sh"',
+        'source "$script_dir/../../_runtime/scripts/cerin-token.sh"',
       )
     })
 
-    test(`${name} uses NUPHOS_TOKEN without a credentials directory`, async () => {
-      const { captured } = await authorizationWithEnv(script, { NUPHOS_TOKEN: jwt('env') })
+    test(`${name} uses CERIN_TOKEN without a credentials directory`, async () => {
+      const { captured } = await authorizationWithEnv(script, { CERIN_TOKEN: jwt('env') })
 
       expect(captured).toContain(`Bearer ${jwt('env')}`)
       expect(captured).not.toContain('session')
@@ -173,9 +173,9 @@ describe('builtin setup scripts share one Cerin token lookup', () => {
   }
 })
 
-test('no skill script reads the session token from ~/.config/nuphos', () => {
+test('no skill script reads the session token from ~/.config/cerin', () => {
   const offenders = Array.from(new Bun.Glob('**/*.sh').scanSync(skills)).filter((file) =>
-    /\.config\/nuphos\/|"nuphos" \/ name|read_local_nuphos_token/u.test(
+    /\.config\/cerin\/|"cerin" \/ name|read_local_cerin_token/u.test(
       // Comments may mention the file; only code is checked.
       readFileSync(join(skills, file), 'utf8').replace(/^\s*#.*$/gmu, ''),
     ),

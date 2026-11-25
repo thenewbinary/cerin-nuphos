@@ -48,9 +48,9 @@ export function shouldAutoInstall(
   )
 }
 
-/** `NUPHOS_AUTO_UPDATE_IDLE_SECONDS` shortens the wait for testing; never below 30 s. */
+/** `CERIN_AUTO_UPDATE_IDLE_SECONDS` shortens the wait for testing; never below 30 s. */
 export function idleThreshold(env: NodeJS.ProcessEnv): number {
-  const seconds = Number(env.NUPHOS_AUTO_UPDATE_IDLE_SECONDS)
+  const seconds = Number(env.CERIN_AUTO_UPDATE_IDLE_SECONDS)
 
   return Number.isFinite(seconds) && seconds > 0
     ? Math.max(30, Math.floor(seconds))

@@ -10,7 +10,7 @@ import { createInteractionRepliers } from '@/routes/slack/interaction-replies'
 import { resumeApprovedPlanTurn } from '@/routes/slack/plan-resume'
 
 // Approve button pressed on a plan review card. Approves the plan as the
-// mapped Nuphos user (same gates as the in-app approval), kicks the execution
+// mapped Cerin user (same gates as the in-app approval), kicks the execution
 // turn asynchronously, and replaces the card so the button disappears.
 //
 // Runs DETACHED from the interaction HTTP response: the approval does real work
@@ -102,9 +102,9 @@ export async function handlePlanApproveInteraction(args: {
   }
   repliers.setBotToken(botContext.botToken)
   // The thread is the scoping root and is resolved FIRST: a channel-mapped
-  // channel can belong to a different Nuphos team than the workspace's OAuth
+  // channel can belong to a different Cerin team than the workspace's OAuth
   // binding, and the plan, the user mappings, and the membership gate all live
-  // in the THREAD's team. Scoping any of them to botContext.nuphosTeamId
+  // in the THREAD's team. Scoping any of them to botContext.cerinTeamId
   // silently broke every cross-team approval (plans #88/#89). The button
   // payload is client-controlled, so requiring the thread to belong to this
   // Slack workspace is also the authZ check.
@@ -136,11 +136,11 @@ export async function handlePlanApproveInteraction(args: {
 
     return
   }
-  // A stored mapping outlives team membership: if the mapped Nuphos user has
+  // A stored mapping outlives team membership: if the mapped Cerin user has
   // since been removed from the team, the stale mapping must not still let them
   // approve. The in-app approval endpoint enforces this via team-scoped auth;
   // mirror that gate here rather than trusting the mapping alone.
-  const membership = await getTeamMembership(mapping.nuphosUserId, teamId)
+  const membership = await getTeamMembership(mapping.cerinUserId, teamId)
 
   if (!membership) {
     await reject(
@@ -150,7 +150,7 @@ export async function handlePlanApproveInteraction(args: {
         plan_id: planId,
         session_id: sessionId,
         team_id: teamId,
-        nuphos_user_id: mapping.nuphosUserId,
+        cerin_user_id: mapping.cerinUserId,
       },
     )
 
@@ -161,7 +161,7 @@ export async function handlePlanApproveInteraction(args: {
   let approval: Awaited<ReturnType<typeof approvePlanForCaller>>
 
   try {
-    approval = await approvePlanForCaller({ planId, teamId, userId: mapping.nuphosUserId })
+    approval = await approvePlanForCaller({ planId, teamId, userId: mapping.cerinUserId })
   } catch (err) {
     const refused = err instanceof AppError ? REFUSALS[err.code] : undefined
 
@@ -204,7 +204,7 @@ export async function handlePlanApproveInteraction(args: {
     team_id: teamId,
     slack_workspace_id: args.slackWorkspaceId,
     slack_user_id: args.slackUserId,
-    nuphos_user_id: mapping.nuphosUserId,
+    cerin_user_id: mapping.cerinUserId,
   })
 
   const title = updated.title || parsed.title || 'plan'
@@ -214,7 +214,7 @@ export async function handlePlanApproveInteraction(args: {
     planId,
     planTitle: title,
     approverSlackUserId: args.slackUserId,
-    approverNuphosUserId: mapping.nuphosUserId,
+    approverCerinUserId: mapping.cerinUserId,
   }).catch((err: unknown) => {
     logError('slack.plan.resume.error', err, { plan_id: planId, session_id: sessionId })
   })

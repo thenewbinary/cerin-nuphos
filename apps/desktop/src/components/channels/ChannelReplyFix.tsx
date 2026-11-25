@@ -50,7 +50,7 @@ export function ChannelReplyFix({
     onThisComputer,
   })
 
-  // The installer Settings uses, for the two CLIs Nuphos installs and this line names.
+  // The installer Settings uses, for the two CLIs Cerin installs and this line names.
   if (fix === 'install' && (provider === 'claude-code' || provider === 'codex'))
     return <InstallButton provider={provider} />
 

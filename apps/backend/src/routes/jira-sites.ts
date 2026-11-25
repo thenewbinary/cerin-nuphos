@@ -139,7 +139,7 @@ bindingScoped.delete(
 )
 
 // Agent credential handout, mirroring linear-workspaces /credentials: the
-// sandbox exchanges its NUPHOS_TOKEN for a fresh (auto-refreshed) Atlassian
+// sandbox exchanges its CERIN_TOKEN for a fresh (auto-refreshed) Atlassian
 // access token + cloudId and calls api.atlassian.com/ex/jira/<cloudId> directly.
 // Gated by the per-binding member allow-list.
 bindingScoped.get('/credentials', requireJiraMemberAccess(), async (c) => {

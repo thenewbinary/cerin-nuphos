@@ -666,7 +666,7 @@ mod auth_status_tests {
             assert_eq!(authenticated(&command).await, expected);
         }
         let missing = LoginCommand {
-            program: "/nonexistent/nuphos-status".into(),
+            program: "/nonexistent/cerin-status".into(),
             args: vec![],
         };
         assert_eq!(authenticated(&missing).await, None);

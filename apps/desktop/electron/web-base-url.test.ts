@@ -2,22 +2,22 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 // WEB_BASE_URL is resolved once at module load, so each case that needs a
-// different NUPHOS_WEB_URL imports a fresh copy through a cache-busting
+// different CERIN_WEB_URL imports a fresh copy through a cache-busting
 // specifier rather than trying to mutate a frozen const.
 let caseId = 0
 
 async function load(webUrl?: string) {
-  const previous = process.env.NUPHOS_WEB_URL
+  const previous = process.env.CERIN_WEB_URL
 
-  if (webUrl === undefined) delete process.env.NUPHOS_WEB_URL
-  else process.env.NUPHOS_WEB_URL = webUrl
+  if (webUrl === undefined) delete process.env.CERIN_WEB_URL
+  else process.env.CERIN_WEB_URL = webUrl
   try {
     return (await import(
       `./web-base-url.ts?case=${++caseId}`
     )) as typeof import('./web-base-url.ts')
   } finally {
-    if (previous === undefined) delete process.env.NUPHOS_WEB_URL
-    else process.env.NUPHOS_WEB_URL = previous
+    if (previous === undefined) delete process.env.CERIN_WEB_URL
+    else process.env.CERIN_WEB_URL = previous
   }
 }
 
@@ -33,21 +33,21 @@ test('defaults to platform.cerin.ai when nothing is configured', async () => {
 })
 
 test('a self-hosted origin replaces the default everywhere, aliases included', async () => {
-  const m = await load('https://nuphos.acme.internal')
+  const m = await load('https://cerin.acme.internal')
 
-  assert.equal(m.WEB_BASE_URL, 'https://nuphos.acme.internal')
-  assert.ok(m.isAppWebUrl('https://nuphos.acme.internal/teams/abc'))
+  assert.equal(m.WEB_BASE_URL, 'https://cerin.acme.internal')
+  assert.ok(m.isAppWebUrl('https://cerin.acme.internal/teams/abc'))
   // The old default is just another host once the app is pointed elsewhere.
   assert.equal(m.isAppWebUrl('https://platform.cerin.ai/teams/abc'), null)
-  assert.ok(m.ALLOWED_WEB_HOSTS.has('www.nuphos.acme.internal'))
+  assert.ok(m.ALLOWED_WEB_HOSTS.has('www.cerin.acme.internal'))
 })
 
 test('a configured value keeps only its origin', async () => {
   // A base URL carrying a path would make every `new URL(path, base)` resolve
   // relative to that path instead of the site root.
-  const m = await load('https://nuphos.acme.internal/app/?x=1')
+  const m = await load('https://cerin.acme.internal/app/?x=1')
 
-  assert.equal(m.WEB_BASE_URL, 'https://nuphos.acme.internal')
+  assert.equal(m.WEB_BASE_URL, 'https://cerin.acme.internal')
 })
 
 test('an unparseable value falls back rather than breaking every link', async () => {

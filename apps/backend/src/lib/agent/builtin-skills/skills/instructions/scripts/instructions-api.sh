@@ -15,7 +15,7 @@ if [[ -n "$resource" && "$resource" != /* ]]; then
 fi
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-request="$script_dir/../../_runtime/scripts/nuphos-api.sh"
+request="$script_dir/../../_runtime/scripts/cerin-api.sh"
 args=("$method" "/teams/$team_id/instructions$resource")
 [[ -z "$body" ]] || args+=("$body")
 exec "$request" "${args[@]}"

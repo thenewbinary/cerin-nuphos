@@ -49,19 +49,19 @@ describe('runtime registry', () => {
     const runtime = await registerTeamRuntime({
       teamId: 'team-1',
       userId: 'user-1',
-      url: 'ws://openab-team-1.nuphos.svc:8080/acp',
+      url: 'ws://openab-team-1.cerin.svc:8080/acp',
       authKey: 'transport-key-1',
       label: 'primary',
     })
 
-    expect(runtime.url).toBe('ws://openab-team-1.nuphos.svc:8080/acp')
+    expect(runtime.url).toBe('ws://openab-team-1.cerin.svc:8080/acp')
     expect(JSON.stringify(runtime)).not.toContain('transport-key-1')
 
     const endpoints = await resolveTeamRuntimeEndpoints('team-1')
 
     expect(endpoints).toEqual([
       {
-        url: 'ws://openab-team-1.nuphos.svc:8080/acp',
+        url: 'ws://openab-team-1.cerin.svc:8080/acp',
         authKey: 'transport-key-1',
         runtimeId: runtime.id,
       },
@@ -303,11 +303,11 @@ test('the derived operator key matches the runtime image, vector for vector', ()
   // Pinned in apps/runtime/test/runtime-start.test.mjs too. If these drift,
   // every self-hosted runtime loses status and Codex sign-in at once.
   expect(deriveRuntimeControlKey('correct-horse-battery-staple-0123456789')).toBe(
-    '78e1724e5d59fee7238251e59f3571e4cb5587f14f649e324efae6f25b85ad8e',
+    '4eaaa2f6b79f5b332baac31d6c8438c497505f9d8e3a7615de2e6b36e4ff36e9',
   )
   expect(
     deriveRuntimeControlKey('0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'),
-  ).toBe('c4838404cd7d81464a7ee6e518c24d3c1a5fc4a22525944d79956be27bb990f2')
+  ).toBe('8f6092e4b6b159657c5b6d0443122c6a53dcac30c6088a2664295a153caefb00')
 })
 
 describe('externally registered operator credential', () => {
@@ -405,7 +405,7 @@ describe('externally registered operator credential', () => {
 })
 
 describe('a self-hosted runtime owns its login', () => {
-  test('Nuphos claims nothing about the account of a runtime', async () => {
+  test('Cerin claims nothing about the account of a runtime', async () => {
     const runtime = await registerTeamRuntime({
       teamId: 'team-1',
       userId: 'user-1',

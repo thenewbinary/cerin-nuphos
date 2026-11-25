@@ -66,7 +66,7 @@ export function BindDiscordDialog({
               'Link your Discord identity so requests use your own Cerin permissions and credentials.',
             )
           : t(
-              'Add Cerin to your Discord server, enable a channel with /nuphos enable and mention it to start a conversation.',
+              'Add Cerin to your Discord server, enable a channel with /cerin enable and mention it to start a conversation.',
             )
       }
       width={460}

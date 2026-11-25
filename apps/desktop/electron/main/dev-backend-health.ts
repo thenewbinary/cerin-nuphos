@@ -4,7 +4,7 @@ const HEALTH_INTERVAL_MS = 5_000
 const HEALTH_TIMEOUT_MS = 3_000
 
 type DevBackendHealthEvent = {
-  event: 'nuphos.dev.electron_backend_health'
+  event: 'cerin.dev.electron_backend_health'
   status: 'healthy' | 'unhealthy'
   consecutiveFailures: number
   latencyMs: number
@@ -17,9 +17,9 @@ function emit(event: DevBackendHealthEvent): void {
 }
 
 export function startDevBackendHealthProbe(): void {
-  if (!isDev || process.env.NUPHOS_LAUNCHER_HEALTH !== '1') return
+  if (!isDev || process.env.CERIN_LAUNCHER_HEALTH !== '1') return
 
-  const backendUrl = process.env.NUPHOS_API_URL ?? process.env.ATLAS_API_URL
+  const backendUrl = process.env.CERIN_API_URL ?? process.env.ATLAS_API_URL
 
   if (!backendUrl) return
 
@@ -42,7 +42,7 @@ export function startDevBackendHealthProbe(): void {
       consecutiveFailures = 0
       if (lastStatus !== 'healthy') {
         emit({
-          event: 'nuphos.dev.electron_backend_health',
+          event: 'cerin.dev.electron_backend_health',
           status: 'healthy',
           consecutiveFailures,
           latencyMs: Date.now() - startedAt,
@@ -53,7 +53,7 @@ export function startDevBackendHealthProbe(): void {
       consecutiveFailures += 1
       lastStatus = 'unhealthy'
       emit({
-        event: 'nuphos.dev.electron_backend_health',
+        event: 'cerin.dev.electron_backend_health',
         status: 'unhealthy',
         consecutiveFailures,
         latencyMs: Date.now() - startedAt,

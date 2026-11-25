@@ -46,7 +46,7 @@ describe('signRelayToken', () => {
     // HTTP, so what goes over it must not be the signing key.
     const credential = deriveRelayStatusCredential(VECTOR_SECRET)
 
-    expect(credential).toBe('ab6371f73fc715869d26690d6a1f1978b0bdf8e7207de097897732f3492c6d2e')
+    expect(credential).toBe('e64196e879a7c1787bac07793fa794f134144fa1285133db4006e8d08ebd8ee7')
     expect(credential).not.toContain(VECTOR_SECRET)
   })
 

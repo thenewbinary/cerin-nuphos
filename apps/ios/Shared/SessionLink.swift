@@ -4,11 +4,11 @@ import Foundation
 /// URL" puts on the clipboard (`lib/app-routes/producerTeam.ts` builds the
 /// path, `ATLAS_WEB_BASE_URL` the origin).
 enum SessionLink {
-    static let webBase = "https://nuphos.ai"
+    static let webBase = "https://platform.cerin.ai"
     /// Where the Live Activity sends a tap outside its rows: the conversation list.
     static let conversations = URL(string: "\(webBase)/agent")!
 
-    /// `https://nuphos.ai/teams/<teamId>/agent/<sessionId>`, with both
+    /// `https://platform.cerin.ai/teams/<teamId>/agent/<sessionId>`, with both
     /// segments percent-encoded the way `encodeURIComponent` encodes them.
     static func url(teamId: String, sessionId: String) -> URL? {
         guard !teamId.isEmpty, !sessionId.isEmpty else { return nil }
@@ -30,7 +30,7 @@ enum SessionLink {
     /// `webBase`, as desktop's `isAppWebUrl` compares it — or of a bare path.
     static func appPath(of url: URL) -> [String]? {
         if url.scheme != nil || url.host() != nil {
-            guard url.scheme == "https", url.host()?.lowercased() == "nuphos.ai", url.port == nil else { return nil }
+            guard url.scheme == "https", url.host()?.lowercased() == "platform.cerin.ai", url.port == nil else { return nil }
         }
         return url.path().split(separator: "/").map(String.init)
     }

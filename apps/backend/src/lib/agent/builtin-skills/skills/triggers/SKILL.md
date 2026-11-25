@@ -14,7 +14,7 @@ not call `trigger_*` bound tools.
 
 ```bash
 SCRIPT=skills/triggers/scripts/trigger-api.sh
-bash "$SCRIPT" "$TEAM" GET "?targetSessionId=$NUPHOS_SESSION_ID"
+bash "$SCRIPT" "$TEAM" GET "?targetSessionId=$CERIN_SESSION_ID"
 bash "$SCRIPT" "$TEAM" POST '' @/tmp/trigger.json
 bash "$SCRIPT" "$TEAM" PATCH "$TRIGGER" @/tmp/trigger-patch.json
 bash "$SCRIPT" "$TEAM" POST "$TRIGGER/test-fire" @/tmp/test-payload.json
@@ -63,7 +63,7 @@ belongs to, for good:
 - If the Task is mid-turn, the fire queues and runs when that turn ends.
   A fire into an archived Task restores it.
 - The session id is the last segment of its `/agent/<sessionId>` link; for the
-  current conversation use `$NUPHOS_SESSION_ID`.
+  current conversation use `$CERIN_SESSION_ID`.
 - A trigger cannot be unbound. To report to Slack, say the exact destination
   in `messageTemplate`; the bound conversation posts with `slack_post`.
 

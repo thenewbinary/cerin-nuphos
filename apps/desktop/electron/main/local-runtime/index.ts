@@ -51,10 +51,10 @@ import type { LocalRuntimeBundle } from './config.ts'
 import type { LocalRuntimeState, LocalRuntimeViewState } from './controller-types.ts'
 
 const dataDir = () => path.join(app.getPath('userData'), 'local-runtime')
-const devBuild = () => !app.isPackaged && !process.env.NUPHOS_LOCAL_RUNTIME_DIR
+const devBuild = () => !app.isPackaged && !process.env.CERIN_LOCAL_RUNTIME_DIR
 
 function bundleRoot(): string {
-  if (process.env.NUPHOS_LOCAL_RUNTIME_DIR) return process.env.NUPHOS_LOCAL_RUNTIME_DIR
+  if (process.env.CERIN_LOCAL_RUNTIME_DIR) return process.env.CERIN_LOCAL_RUNTIME_DIR
   if (app.isPackaged) return path.join(process.resourcesPath, 'local-runtime')
 
   return path.join(
@@ -101,7 +101,7 @@ const controller: LocalRuntimeController = new LocalRuntimeController({
   createProcess: () => withProviderKey(new OpenabProcess(), providerKeys),
   probeModels: bundledModelProbe(findBundle, providerKeys),
   createTunnel: (runtime, runtimeStatus, onChange, agentInstances) => {
-    // Its owner updates this Nuphos from another computer (app-update-request.ts).
+    // Its owner updates this Cerin from another computer (app-update-request.ts).
     const { status, instances } = appUpdateTunnel(runtimeStatus, agentInstances, {
       version: () => app.getVersion(),
       state: getUpdaterState,

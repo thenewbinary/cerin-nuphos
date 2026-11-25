@@ -87,7 +87,7 @@ export function useWorkspaceLinkOpeners(a: Args) {
     workspaceActions.openTab(createWorkspaceTab(teamId), { openDock: true })
   }, [workspaceActions, workspaceStore])
 
-  const openNuphosLinkInNewTab = useCallback(
+  const openCerinLinkInNewTab = useCallback(
     (href: string, beside = false): boolean => {
       const trimmed = href.trim()
       let url: URL
@@ -98,10 +98,10 @@ export function useWorkspaceLinkOpeners(a: Args) {
         return false
       }
 
-      const isRelativeNuphosLink = trimmed.startsWith('/teams/')
-      const isCanonicalNuphosLink = url.origin === ATLAS_WEB_BASE_URL
+      const isRelativeCerinLink = trimmed.startsWith('/teams/')
+      const isCanonicalCerinLink = url.origin === ATLAS_WEB_BASE_URL
 
-      if (!isRelativeNuphosLink && !isCanonicalNuphosLink) return false
+      if (!isRelativeCerinLink && !isCanonicalCerinLink) return false
       if (!url.pathname.startsWith('/teams/')) return false
 
       const navigation = navigationForLink(url)
@@ -206,8 +206,8 @@ export function useWorkspaceLinkOpeners(a: Args) {
 
   // The window asks only the focused pane to open a link from outside the workspace.
   useEffect(
-    () => (paneId ? registerLinkOpener?.(paneId, openNuphosLinkInNewTab) : undefined),
-    [openNuphosLinkInNewTab, paneId, registerLinkOpener],
+    () => (paneId ? registerLinkOpener?.(paneId, openCerinLinkInNewTab) : undefined),
+    [openCerinLinkInNewTab, paneId, registerLinkOpener],
   )
 
   const openAppOpenDeepLink = useCallback(
@@ -217,7 +217,7 @@ export function useWorkspaceLinkOpeners(a: Args) {
       const [pathnameOnly] = payload.path.split(/[?#]/, 1)
       const isBareTeamPath = /^\/teams\/[^/]+\/?$/.test(pathnameOnly)
 
-      if (!isBareTeamPath && openNuphosLinkInNewTab(payload.path)) return
+      if (!isBareTeamPath && openCerinLinkInNewTab(payload.path)) return
 
       const teamId = teamIdFromAppPath(payload.path)
 
@@ -229,7 +229,7 @@ export function useWorkspaceLinkOpeners(a: Args) {
 
       openInChat(payload.url, { forceOpen: true })
     },
-    [openInChat, openNuphosLinkInNewTab, workspaceActions],
+    [openInChat, openCerinLinkInNewTab, workspaceActions],
   )
 
   const scopeChipForPath = useCallback(
@@ -283,7 +283,7 @@ export function useWorkspaceLinkOpeners(a: Args) {
 
   return {
     newTab,
-    openNuphosLinkInNewTab,
+    openCerinLinkInNewTab,
     openAppOpenDeepLink,
     scopeChipForPath,
     onSidebarOpenPath,

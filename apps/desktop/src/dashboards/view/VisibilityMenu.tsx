@@ -10,12 +10,12 @@ import { t } from '../../i18n'
 
 import { isPersonal, moveTarget } from './visibility'
 
-import type { DashboardVisibility, NuphosDashboard, NuphosDashboardDetail } from '../schema'
+import type { DashboardVisibility, CerinDashboard, CerinDashboardDetail } from '../schema'
 
 type Props = {
   teamId: string
-  detail: NuphosDashboardDetail | null
-  onSaved: (dashboard: NuphosDashboard) => void
+  detail: CerinDashboardDetail | null
+  onSaved: (dashboard: CerinDashboard) => void
 }
 
 /** Who can see the dashboard, as its label's tooltip says. */

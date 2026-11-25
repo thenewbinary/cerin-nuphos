@@ -11,7 +11,7 @@ const skills = join(import.meta.dir, 'skills')
 const team = '0123456789abcdef01234567'
 
 test('credential setup respects session config paths and never uses the shared GitHub keychain', () => {
-  const root = mkdtempSync(join(tmpdir(), 'nuphos-skill-isolation-'))
+  const root = mkdtempSync(join(tmpdir(), 'cerin-skill-isolation-'))
   const bin = join(root, 'bin')
 
   mkdirSync(bin)
@@ -56,10 +56,10 @@ else:
     return {
       PATH: `${bin}:${process.env.PATH ?? ''}`,
       HOME: home,
-      NUPHOS_SESSION_HOME: home,
-      NUPHOS_SESSION_ID: id,
-      NUPHOS_TOKEN: 'synthetic',
-      NUPHOS_BACKEND_URL: 'https://backend.invalid',
+      CERIN_SESSION_HOME: home,
+      CERIN_SESSION_ID: id,
+      CERIN_TOKEN: 'synthetic',
+      CERIN_BACKEND_URL: 'https://backend.invalid',
       CLOUDSDK_CONFIG: join(home, 'custom-gcloud'),
       GH_CONFIG_DIR: join(home, 'custom-gh'),
       GIT_CONFIG_GLOBAL: join(home, '.gitconfig'),
@@ -90,8 +90,8 @@ else:
                     Object.entries(env).filter(
                       ([key]) =>
                         ![
-                          'NUPHOS_SESSION_HOME',
-                          'NUPHOS_SESSION_ID',
+                          'CERIN_SESSION_HOME',
+                          'CERIN_SESSION_ID',
                           'CLOUDSDK_CONFIG',
                           'GH_CONFIG_DIR',
                           'GIT_CONFIG_GLOBAL',
@@ -125,7 +125,7 @@ else:
 })
 
 test('GitHub token refresh preserves other hosts and writes the entry gh reads', () => {
-  const root = mkdtempSync(join(tmpdir(), 'nuphos-gh-auth-'))
+  const root = mkdtempSync(join(tmpdir(), 'cerin-gh-auth-'))
   const target = join(root, 'hosts.yml')
   const write = (token: string) =>
     execFileSync('python3', [join(skills, 'github/scripts/write-auth.py'), root], {

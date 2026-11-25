@@ -23,8 +23,8 @@ use super::session_owners::SessionOwners;
 
 pub const TRANSPORT_PREFIX: &str = "nrt_";
 pub const CONTROL_PREFIX: &str = "nrc_";
-/// Must match `deriveRuntimeControlKey` in the Nuphos backend and the nuphos-runtime entrypoint.
-const LEGACY_CONTROL_CONTEXT: &[u8] = b"nuphos-runtime-control-v1";
+/// Must match `deriveRuntimeControlKey` in the Cerin backend and the cerin-runtime entrypoint.
+const LEGACY_CONTROL_CONTEXT: &[u8] = b"cerin-runtime-control-v1";
 const LEGACY_BINDING_ID: &str = "legacy";
 const BINDINGS_FILE: &str = "bindings.json";
 const INSTANCE_ID_FILE: &str = "instance-id";
@@ -160,7 +160,7 @@ fn ct_eq(a: &str, b: &str) -> bool {
     bool::from(a.as_bytes().ct_eq(b.as_bytes()))
 }
 
-/// Read a legacy password file the way the nuphos-runtime entrypoint did: trailing
+/// Read a legacy password file the way the cerin-runtime entrypoint did: trailing
 /// line breaks stripped, empty meaning absent.
 pub fn read_legacy_key(path: &Path) -> Option<(String, DateTime<Utc>)> {
     let raw = std::fs::read_to_string(path).ok()?;
@@ -707,11 +707,11 @@ mod tests {
         let control = legacy_control_key(&password);
         assert_eq!(
             control,
-            // HMAC-SHA256("a"*64, "nuphos-runtime-control-v1"), as the backend derives it.
+            // HMAC-SHA256("a"*64, "cerin-runtime-control-v1"), as the backend derives it.
             {
                 use hmac::{Hmac, Mac};
                 let mut mac = Hmac::<Sha256>::new_from_slice(password.as_bytes()).unwrap();
-                mac.update(b"nuphos-runtime-control-v1");
+                mac.update(b"cerin-runtime-control-v1");
                 hex(&mac.finalize().into_bytes())
             }
         );

@@ -1,7 +1,7 @@
 // Streams this device started. A pending client tool names the stream of the
 // run that asked for it, so only the device that started that stream runs it:
 // never a second device of the same user, and still this one after a restart.
-const STORAGE_KEY = 'nuphos.agent.ownedStreams'
+const STORAGE_KEY = 'cerin.agent.ownedStreams'
 const MAX_OWNED_STREAMS = 200
 
 let owned: string[] | null = null

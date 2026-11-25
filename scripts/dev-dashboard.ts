@@ -64,7 +64,7 @@ function quitMenuRows(): string[] {
     ? '\x1b[31mDeletes the local database and buckets. Enter or y to confirm, Esc to go back.\x1b[0m'
     : `${DIM}↑/↓ move · Enter choose · Esc or q cancel${RESET}`
 
-  return ['', `  ${BOLD}Quit nuphos dev${RESET}`, ...rows, `  ${hint}`]
+  return ['', `  ${BOLD}Quit cerin dev${RESET}`, ...rows, `  ${hint}`]
 }
 
 function serviceRow(s: Service): string[] {
@@ -99,7 +99,7 @@ export function render() {
 
   out.push(
     '',
-    `  ${BOLD}▲ nuphos dev${RESET}   ${DIM}${INSTANCE}  ·  r restart   q quit${RESET}`,
+    `  ${BOLD}▲ cerin dev${RESET}   ${DIM}${INSTANCE}  ·  r restart   q quit${RESET}`,
     `  ${rule(cols)}`,
   )
   for (const s of services) out.push(...serviceRow(s))

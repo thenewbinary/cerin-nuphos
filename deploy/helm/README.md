@@ -1,6 +1,6 @@
 # Helm chart
 
-[`nuphos/`](nuphos) deploys Nuphos onto any Kubernetes cluster: authenticated single-node MongoDB, RustFS, the
+[`cerin/`](cerin) deploys Cerin onto any Kubernetes cluster: authenticated single-node MongoDB, RustFS, the
 released backend, and an optional Claude Code runtime. There is no Redis, so
 the backend runs as one replica in in-memory mode.
 
@@ -11,19 +11,19 @@ the backend runs as one replica in in-memory mode.
   name the storage host, so Desktop and the runtime must reach it directly.
 - Optional: a Resend API key and a sender on a domain verified in Resend, to
   email sign-in codes. Without them email sign-in is off and an operator issues
-  codes with `nuphos-admin` (see [First user and team](#first-user-and-team)).
-- Backend image v0.119.0 or newer, which ships `nuphos-admin`.
+  codes with `cerin-admin` (see [First user and team](#first-user-and-team)).
+- Backend image v0.119.0 or newer, which ships `cerin-admin`.
 
 ## Install
 
 ```sh
 cat > values.local.yaml <<'EOF'
 backend:
-  url: https://api.nuphos.example.com
+  url: https://api.cerin.example.com
 storage:
-  url: https://storage.nuphos.example.com
+  url: https://storage.cerin.example.com
 runtime:
-  url: https://runtime.nuphos.example.com
+  url: https://runtime.cerin.example.com
 ingress:
   className: nginx
   annotations:
@@ -31,13 +31,13 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
     nginx.ingress.kubernetes.io/proxy-body-size: 100m
   tls:
-    - secretName: nuphos-tls
+    - secretName: cerin-tls
       hosts:
-        - api.nuphos.example.com
-        - storage.nuphos.example.com
-        - runtime.nuphos.example.com
+        - api.cerin.example.com
+        - storage.cerin.example.com
+        - runtime.cerin.example.com
 EOF
-helm install nuphos deploy/helm/nuphos -n nuphos --create-namespace -f values.local.yaml
+helm install cerin deploy/helm/cerin -n cerin --create-namespace -f values.local.yaml
 ```
 
 The install notes print the next steps: sign in from Desktop with
@@ -47,11 +47,11 @@ your team and sign in to Claude from the console.
 
 ## First user and team
 
-`nuphos-admin` in the backend image creates them, with no email involved:
+`cerin-admin` in the backend image creates them, with no email involved:
 
 ```sh
-kubectl -n nuphos exec deploy/nuphos-backend -- \
-  nuphos-admin bootstrap --email you@example.com --team Ops
+kubectl -n cerin exec deploy/cerin-backend -- \
+  cerin-admin bootstrap --email you@example.com --team Ops
 ```
 
 It prints the team id, an `ATLAS_ADMIN_TEAM_ID=<id>` line and a sign-in code
@@ -69,16 +69,16 @@ backend:
 
 Other commands:
 
-- `nuphos-admin sign-in-code --email <email>` prints a code for anyone else.
+- `cerin-admin sign-in-code --email <email>` prints a code for anyone else.
   Without Resend, this is how people sign in. Run it just before they press
   **Continue with email**; the backend accepts the request because a code is
   already waiting, and sends nothing. After five wrong tries a code is locked;
   issue a new one.
-- `nuphos-admin join-token --team <id> [--label <name>]` prints a one-time token
+- `cerin-admin join-token --team <id> [--label <name>]` prints a one-time token
   that joins a server as the team owner's computer, with
-  `NUPHOS_API_URL=<backend-url> nuphos agent --join -` on that server. It is the
+  `CERIN_API_URL=<backend-url> cerin agent --join -` on that server. It is the
   same token `POST /agent/devices/join-tokens` issues, so no browser or
-  `nuphos login --device` is needed.
+  `cerin login --device` is needed.
 
 To email codes instead, set `email.resendApiKey` and `email.from` (a sender on a
 domain verified in Resend), or add `RESEND_API_KEY` to `secrets.existingSecret`.
@@ -95,7 +95,7 @@ a Traditional Web application in Logto with the redirect URI
 issuer endpoint, e.g. `https://<tenant>.logto.app/oidc`), `oidc.clientId`,
 `oidc.clientSecret` (or add `OIDC_CLIENT_SECRET` to `secrets.existingSecret`)
 and `oidc.name`, the label on the "Continue with" button. A verified email
-signs in to the existing account with that email, so the user `nuphos-admin
+signs in to the existing account with that email, so the user `cerin-admin
 bootstrap` created can switch to SSO. Desktop and iOS show the button; Android
 does not offer OIDC yet.
 
@@ -106,7 +106,7 @@ password and runtime token encryption key on first install, keeps them on
 upgrade, and leaves the Secret behind on uninstall. Renderers without cluster
 access (`helm template`, Argo CD, Flux with `--dry-run`) regenerate them on every
 render. For those, set `secrets.existingSecret` to a Secret you manage with the
-keys `NUPHOS_JWT_SECRET`, `MONGO_PASSWORD`, `STORAGE_SECRET_KEY`,
+keys `CERIN_JWT_SECRET`, `MONGO_PASSWORD`, `STORAGE_SECRET_KEY`,
 `RUNTIME_AUTH_KEY`, `RUNTIME_TOKEN_ENCRYPTION_KEY` and, optionally, `RESEND_API_KEY` and `GOOGLE_OAUTH_CLIENT_SECRET`. Keep the Mongo password
 alphanumeric: it is placed in the connection URI as is.
 `RUNTIME_TOKEN_ENCRYPTION_KEY` is base64 of 32 random bytes
@@ -153,8 +153,8 @@ credentials.
 ## Validation
 
 ```sh
-helm lint deploy/helm/nuphos -f deploy/helm/ci-values.yaml --strict
-helm template nuphos deploy/helm/nuphos -f deploy/helm/ci-values.yaml | kubeconform -strict -summary
+helm lint deploy/helm/cerin -f deploy/helm/ci-values.yaml --strict
+helm template cerin deploy/helm/cerin -f deploy/helm/ci-values.yaml | kubeconform -strict -summary
 ```
 
 CI runs both. It does not install the chart on a cluster.

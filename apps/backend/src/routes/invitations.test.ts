@@ -5,15 +5,15 @@ import { useAuthMiddleware } from '@/lib/test/doubles/auth-middleware'
 import { useIdentity } from '@/lib/test/doubles/identity'
 import { useModels } from '@/lib/test/doubles/models'
 
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 import type { TeamInvitation } from '@/models'
 
 const TEAM = new ObjectId()
 const INVITER = new ObjectId()
 const INVITEE = new ObjectId().toHexString()
 let row: TeamInvitation
-let inviterRole: NuphosTeamRole | null
-let joined: { teamId: string; userId: string; role?: NuphosTeamRole }[]
+let inviterRole: CerinTeamRole | null
+let joined: { teamId: string; userId: string; role?: CerinTeamRole }[]
 
 useAuthMiddleware({
   requireAuth: async (c, next) => {
@@ -50,7 +50,7 @@ beforeEach(() => {
   inviterRole = 'ADMINISTRATOR'
 })
 
-const invite = (role?: NuphosTeamRole) => {
+const invite = (role?: CerinTeamRole) => {
   row = {
     _id: new ObjectId(),
     inviterId: INVITER,

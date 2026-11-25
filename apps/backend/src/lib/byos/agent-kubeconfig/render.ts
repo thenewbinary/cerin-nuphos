@@ -5,7 +5,7 @@ import YAML from 'yaml'
  * sandbox's absolute skills path, so exec commands reference this placeholder
  * and sync-clusters.sh substitutes the real path on write.
  */
-export const SKILLS_DIR_PLACEHOLDER = '__NUPHOS_SKILLS_DIR__'
+export const SKILLS_DIR_PLACEHOLDER = '__CERIN_SKILLS_DIR__'
 
 export type AgentClusterContext = {
   /** Context, cluster, and user entry name — `<provider>/<account>/<cluster>`. */

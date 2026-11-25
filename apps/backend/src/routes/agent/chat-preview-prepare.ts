@@ -20,7 +20,7 @@ import { renderInjectedUserMessages } from '@/lib/agent/pending-messages'
 import { takeTurnQueue } from '@/lib/agent/pending-queue'
 import { answerHumanTurn } from '@/lib/agent/plan-decision'
 import { markCarried } from '@/lib/agent/retract-marks'
-import { nuphosToolsVersion } from '@/lib/claude-code-preview/nuphos-tools-mcp'
+import { cerinToolsVersion } from '@/lib/claude-code-preview/cerin-tools-mcp'
 import { previewHistoryPreamble } from '@/lib/claude-code-preview/preview-history-preamble'
 import { buildPreviewSystemPrompt } from '@/lib/claude-code-preview/preview-prompt'
 import { previewCompactionSummary } from '@/lib/claude-code-preview/preview-transcript'
@@ -71,7 +71,7 @@ export function turnPromptMessages(
 
 /**
  * Splits a turn into the user's own words, prompted last where the agent reads
- * a slash command, and everything Nuphos adds ahead of them. The current
+ * a slash command, and everything Cerin adds ahead of them. The current
  * message's header ends that lead, so only attachment links separate it from
  * its words. A resume replaces the turn's messages, as it is not a new request.
  */
@@ -219,7 +219,7 @@ export async function preparePreviewTurn(
       }),
       previewCompactionSummary(sessionId, userId),
       takeTurnQueue(userId, sessionId, actorUserId, args.channelTurn).then(markCarried(requestId)),
-      nuphosToolsVersion({
+      cerinToolsVersion({
         userId: actorUserId,
         conversationOwnerUserId: userId,
         teamId,

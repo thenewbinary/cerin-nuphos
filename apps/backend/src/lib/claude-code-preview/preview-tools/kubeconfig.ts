@@ -1,9 +1,9 @@
 // Kubeconfig bootstrap for the Claude Code runtime: the same multi-cluster
 // resolution the classic sandbox gets from sync-clusters.sh, rendered for a
-// pod that has no skills directory and no general Nuphos bearer. Short-lived
+// pod that has no skills directory and no general Cerin bearer. Short-lived
 // EKS/GKE credentials are fetched by an inline exec plugin that authorizes with
 // the conversation token of whichever turn runs kubectl, so the file itself
-// holds no Nuphos credential.
+// holds no Cerin credential.
 import { agentSessionClusterContexts } from '@/lib/byos/agent-kubeconfig'
 import { renderAgentKubeconfig } from '@/lib/byos/agent-kubeconfig'
 import { canMintCredentials } from '@/lib/byos/credential-role'
@@ -21,17 +21,17 @@ import type { AgentClusterContext } from '@/lib/byos/agent-kubeconfig'
 const EXEC_SCRIPT = [
   'set -eu',
   'p="$1"; t="$2"; a="$3"; c="$4"; r="${5:-}"',
-  'k="${NUPHOS_TOKEN:-}"',
-  'if [ -n "${OPENAB_CREDENTIALS_DIR:-}" ] && [ -r "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" ]; then IFS= read -r k <"$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" || true; fi',
+  'k="${CERIN_TOKEN:-}"',
+  'if [ -n "${OPENAB_CREDENTIALS_DIR:-}" ] && [ -r "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" ]; then IFS= read -r k <"$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" || true; fi',
   '[ -n "$k" ] || { echo "no Cerin conversation token in this environment" >&2; exit 1; }',
-  '[ -n "${NUPHOS_BACKEND_URL:-}" ] && [ -n "${NUPHOS_SESSION_ID:-}" ] || { echo "NUPHOS_BACKEND_URL and NUPHOS_SESSION_ID are required" >&2; exit 1; }',
+  '[ -n "${CERIN_BACKEND_URL:-}" ] && [ -n "${CERIN_SESSION_ID:-}" ] || { echo "CERIN_BACKEND_URL and CERIN_SESSION_ID are required" >&2; exit 1; }',
   'case "$p" in',
   '  aws) path="aws-accounts/$a/clusters/$c/exec-credential${r:+?region=$r}" ;;',
   '  gcp) path="gcp-projects/$a/clusters/$c/exec-credential${r:+?location=$r}" ;;',
   '  *) echo "unknown provider: $p" >&2; exit 1 ;;',
   'esac',
-  'b="${NUPHOS_BACKEND_URL%/}"',
-  'exec curl -sS --fail-with-body --connect-timeout 10 --max-time 30 -H @- "$b/agent-sessions/$NUPHOS_SESSION_ID/teams/$t/$path" <<EOF',
+  'b="${CERIN_BACKEND_URL%/}"',
+  'exec curl -sS --fail-with-body --connect-timeout 10 --max-time 30 -H @- "$b/agent-sessions/$CERIN_SESSION_ID/teams/$t/$path" <<EOF',
   'Authorization: Bearer $k',
   'EOF',
 ].join('\n')
@@ -47,7 +47,7 @@ function withInlineExec(contexts: AgentClusterContext[]): AgentClusterContext[] 
         exec: {
           apiVersion: 'client.authentication.k8s.io/v1',
           command: 'bash',
-          args: ['-c', EXEC_SCRIPT, 'nuphos-exec-credential', ...execArgs],
+          args: ['-c', EXEC_SCRIPT, 'cerin-exec-credential', ...execArgs],
           interactiveMode: 'Never',
           provideClusterInfo: false,
         },

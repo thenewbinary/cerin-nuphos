@@ -35,31 +35,31 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm /etc/apt/apt.conf.d/docker-clean \
     && ln -s /usr/bin/python3 /usr/local/bin/python
 
-COPY tools/ /opt/nuphos-runtime/tools/
-RUN chmod -R a+rX /opt/nuphos-runtime \
- && chmod 755 /opt/nuphos-runtime/tools/nuphos-tools.mjs \
- && ln -s /opt/nuphos-runtime/tools/nuphos-tools.mjs /usr/local/bin/nuphos-tools \
- && nuphos-tools build /usr/local/bin \
+COPY tools/ /opt/cerin-runtime/tools/
+RUN chmod -R a+rX /opt/cerin-runtime \
+ && chmod 755 /opt/cerin-runtime/tools/cerin-tools.mjs \
+ && ln -s /opt/cerin-runtime/tools/cerin-tools.mjs /usr/local/bin/cerin-tools \
+ && cerin-tools build /usr/local/bin \
  && kubectl version --client && zeabur version
 
-COPY --chmod=755 sync-skills.sh /usr/local/bin/nuphos-sync-skills
-COPY --chmod=755 seed-codex-auth.sh /usr/local/bin/nuphos-seed-codex-auth
+COPY --chmod=755 sync-skills.sh /usr/local/bin/cerin-sync-skills
+COPY --chmod=755 seed-codex-auth.sh /usr/local/bin/cerin-seed-codex-auth
 COPY reply-image-stream.mjs reply-images.mjs runtime-defaults.mjs mcp-bridge-config.mjs session-home.mjs \
      process-death.mjs acp-shim.mjs hermes-session.mjs opencode-session.mjs pi-session.mjs native-question.mjs /opt/
 # Sourced via BASH_ENV, so it is read, never executed.
-COPY --chmod=644 runtime-guard.sh /opt/nuphos-runtime/runtime-guard.sh
-COPY codex-login.mjs claude-login.mjs mcp-http-bridge.mjs panel-job.mjs /opt/nuphos-runtime/
+COPY --chmod=644 runtime-guard.sh /opt/cerin-runtime/runtime-guard.sh
+COPY codex-login.mjs claude-login.mjs mcp-http-bridge.mjs panel-job.mjs /opt/cerin-runtime/
 COPY grok-login.mjs antigravity-login.mjs antigravity-status.mjs antigravity-status-cli.mjs opencode-login.mjs \
-     hermes-login.mjs hermes-providers.json dsh-login.mjs dsh-sign-in.mjs /opt/nuphos-runtime/
+     hermes-login.mjs hermes-providers.json dsh-login.mjs dsh-sign-in.mjs /opt/cerin-runtime/
 # COPY --chmod also affects newly created destination directories.
 # Runtime helpers must be traversable by the non-root init and agent containers.
-RUN chmod 755 /opt/nuphos-runtime \
- && chmod 644 /opt/nuphos-runtime/runtime-guard.sh /opt/nuphos-runtime/codex-login.mjs \
-      /opt/nuphos-runtime/claude-login.mjs /opt/nuphos-runtime/grok-login.mjs \
-      /opt/nuphos-runtime/antigravity-login.mjs /opt/nuphos-runtime/opencode-login.mjs \
-      /opt/nuphos-runtime/hermes-login.mjs /opt/nuphos-runtime/hermes-providers.json \
-      /opt/nuphos-runtime/dsh-login.mjs /opt/nuphos-runtime/dsh-sign-in.mjs \
-      /opt/nuphos-runtime/mcp-http-bridge.mjs /opt/nuphos-runtime/panel-job.mjs
+RUN chmod 755 /opt/cerin-runtime \
+ && chmod 644 /opt/cerin-runtime/runtime-guard.sh /opt/cerin-runtime/codex-login.mjs \
+      /opt/cerin-runtime/claude-login.mjs /opt/cerin-runtime/grok-login.mjs \
+      /opt/cerin-runtime/antigravity-login.mjs /opt/cerin-runtime/opencode-login.mjs \
+      /opt/cerin-runtime/hermes-login.mjs /opt/cerin-runtime/hermes-providers.json \
+      /opt/cerin-runtime/dsh-login.mjs /opt/cerin-runtime/dsh-sign-in.mjs \
+      /opt/cerin-runtime/mcp-http-bridge.mjs /opt/cerin-runtime/panel-job.mjs
 
 FROM common AS claude-code
 # Pin the SDK used by the adapter so the model picker lists current models and
@@ -70,21 +70,21 @@ COPY claude-agent-acp/package.json claude-agent-acp/package-lock.json \
      claude-agent-acp/patch-adapter.mjs claude-agent-acp/session-state.mjs \
      claude-agent-acp/turn-completion.mjs claude-agent-acp/default-effort.mjs \
      claude-agent-acp/project-instructions.mjs claude-agent-acp/ask-user-question.mjs \
-     /opt/nuphos-claude-agent-acp/
+     /opt/cerin-claude-agent-acp/
 # The lockfile carries no libc field, so npm installs the musl build of the
 # SDK's native CLI beside the glibc one this Debian image runs.
-RUN cd /opt/nuphos-claude-agent-acp \
+RUN cd /opt/cerin-claude-agent-acp \
  && npm ci --omit=dev --ignore-scripts --cache /tmp/npm-cache \
  && rm -rf /tmp/npm-cache node_modules/@anthropic-ai/claude-agent-sdk-linux-*-musl \
  && test "$(node -p "require('./node_modules/@anthropic-ai/claude-agent-sdk/package.json').version")" = \
       "${CLAUDE_AGENT_SDK_VERSION}" \
  && node patch-adapter.mjs node_modules/@agentclientprotocol/claude-agent-acp/dist/acp-agent.js \
- && ln -s "/opt/nuphos-claude-agent-acp/node_modules/@anthropic-ai/claude-agent-sdk-linux-$(node -p process.arch)/claude" \
+ && ln -s "/opt/cerin-claude-agent-acp/node_modules/@anthropic-ai/claude-agent-sdk-linux-$(node -p process.arch)/claude" \
       /usr/local/bin/claude \
  && claude --version
 # claude.ai connectors act as the signed-in account's owner, not the Cerin
 # sender. host.mjs sets this too, but a pod without a join token never runs it.
-ENV PATH="/opt/nuphos-claude-agent-acp/node_modules/.bin:${PATH}" \
+ENV PATH="/opt/cerin-claude-agent-acp/node_modules/.bin:${PATH}" \
     OPENAB_AGENT_COMMAND="claude-agent-acp" \
     OPENAB_AGENT_AUTH_COMMAND="claude auth login" \
     OPENAB_ADAPTER_VERSION="claude-agent-acp@0.74.0" \
@@ -95,12 +95,12 @@ COPY codex-acp/package.json codex-acp/package-lock.json \
      codex-acp/patch-adapter.mjs codex-acp/session-config.mjs codex-acp/steering.mjs \
      codex-acp/restore-history.mjs codex-acp/process-death.mjs codex-acp/ask-user-input.mjs \
      codex-acp/ultrafast.mjs codex-acp/turn-usage.mjs \
-     /opt/nuphos-codex-acp/
-RUN cd /opt/nuphos-codex-acp \
+     /opt/cerin-codex-acp/
+RUN cd /opt/cerin-codex-acp \
  && npm ci --omit=dev --ignore-scripts --cache /tmp/npm-cache \
  && rm -rf /tmp/npm-cache \
  && node patch-adapter.mjs node_modules/@agentclientprotocol/codex-acp/dist/index.js
-ENV PATH="/opt/nuphos-codex-acp/node_modules/.bin:${PATH}" \
+ENV PATH="/opt/cerin-codex-acp/node_modules/.bin:${PATH}" \
     OPENAB_AGENT_COMMAND="codex-acp" \
     OPENAB_AGENT_AUTH_COMMAND="codex login --device-auth" \
     OPENAB_ADAPTER_VERSION="codex-acp@1.1.4"
@@ -113,13 +113,13 @@ FROM common AS grok
 ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs grok" \
     OPENAB_AGENT_AUTH_COMMAND="grok login --device-auth" \
     OPENAB_ADAPTER_VERSION="grok@1.0.46" \
-    NUPHOS_RUNTIME_PREINSTALL=grok
+    CERIN_RUNTIME_PREINSTALL=grok
 
 FROM common AS antigravity
 ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs antigravity" \
     OPENAB_ADAPTER_VERSION="antigravity-cli@1.5.4" \
-    NUPHOS_RUNTIME_PREINSTALL=antigravity-cli \
-    OPENAB_RUNTIME_AUTH_COMMAND="node /opt/nuphos-runtime/antigravity-status-cli.mjs"
+    CERIN_RUNTIME_PREINSTALL=antigravity-cli \
+    OPENAB_RUNTIME_AUTH_COMMAND="node /opt/cerin-runtime/antigravity-status-cli.mjs"
 
 FROM common AS opencode
 # OpenCode answers on its free models with no provider connected, so it is always signed in.
@@ -127,7 +127,7 @@ ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs opencode" \
     OPENAB_AGENT_AUTH_COMMAND="opencode providers login" \
     OPENAB_RUNTIME_AUTH_COMMAND="echo true" \
     OPENAB_ADAPTER_VERSION="opencode@1.18.35" \
-    NUPHOS_RUNTIME_PREINSTALL=opencode
+    CERIN_RUNTIME_PREINSTALL=opencode
 
 # Hermes Agent speaks ACP itself too, but ships no binaries and its PyPI package is stale:
 # the tagged source installs from its own uv.lock, on the only Python it supports (3.14),
@@ -167,7 +167,7 @@ RUN arch=$(uname -m) \
  && HERMES_HOME=/tmp/hermes-check HERMES_DISABLE_LAZY_INSTALLS=1 \
       /opt/hermes/.venv/bin/python -I /tmp/hermes-providers.py > /tmp/hermes-providers.json \
  && node -e 'const { readFileSync: r } = require("node:fs"); require("node:assert").deepStrictEqual(JSON.parse(r(process.argv[1])), JSON.parse(r(process.argv[2])), "hermes-providers.json is stale: regenerate it with hermes-providers.py")' \
-      /tmp/hermes-providers.json /opt/nuphos-runtime/hermes-providers.json \
+      /tmp/hermes-providers.json /opt/cerin-runtime/hermes-providers.json \
  && rm -rf /tmp/hermes-check /tmp/hermes-providers.py /tmp/hermes-providers.json
 ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs hermes" \
     OPENAB_AGENT_AUTH_COMMAND="hermes auth add" \
@@ -179,16 +179,16 @@ ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs hermes" \
 FROM node:24-trixie-slim AS node24
 FROM common AS dsh
 ARG DSH_VERSION=0.2.2-rc.1
-COPY --from=node24 /usr/local/bin/node /opt/nuphos-node24/bin/node
-COPY --from=node24 /usr/local/lib/node_modules/npm /opt/nuphos-node24/lib/node_modules/npm
-RUN PATH="/opt/nuphos-node24/bin:${PATH}" \
-    node /opt/nuphos-node24/lib/node_modules/npm/bin/npm-cli.js install \
-      --prefix /opt/nuphos-dsh --omit=dev --no-audit --no-fund "@deepseek-ai/dsh@${DSH_VERSION}" \
- && rm -rf /opt/nuphos-node24/lib/node_modules/npm /root/.npm \
- && printf '#!/bin/sh\nexec /opt/nuphos-node24/bin/node /opt/nuphos-dsh/node_modules/@deepseek-ai/dsh/lib/bin.js "$@"\n' \
+COPY --from=node24 /usr/local/bin/node /opt/cerin-node24/bin/node
+COPY --from=node24 /usr/local/lib/node_modules/npm /opt/cerin-node24/lib/node_modules/npm
+RUN PATH="/opt/cerin-node24/bin:${PATH}" \
+    node /opt/cerin-node24/lib/node_modules/npm/bin/npm-cli.js install \
+      --prefix /opt/cerin-dsh --omit=dev --no-audit --no-fund "@deepseek-ai/dsh@${DSH_VERSION}" \
+ && rm -rf /opt/cerin-node24/lib/node_modules/npm /root/.npm \
+ && printf '#!/bin/sh\nexec /opt/cerin-node24/bin/node /opt/cerin-dsh/node_modules/@deepseek-ai/dsh/lib/bin.js "$@"\n' \
       > /usr/local/bin/dsh \
  && chmod 755 /usr/local/bin/dsh \
- && chmod -R a+rX /opt/nuphos-node24 /opt/nuphos-dsh \
+ && chmod -R a+rX /opt/cerin-node24 /opt/cerin-dsh \
  && test "$(dsh --version)" = "${DSH_VERSION}"
 ENV OPENAB_AGENT_COMMAND="node /opt/acp-shim.mjs dsh" \
     OPENAB_ADAPTER_VERSION="dsh@${DSH_VERSION}" \
@@ -199,27 +199,22 @@ ARG RUNTIME_PROVIDER
 
 COPY --from=openab /usr/local/bin/openab /usr/local/bin/openab
 
-# The `cerin agent` host from that CLI release. A container given NUPHOS_JOIN_TOKEN runs
+# The `cerin agent` host from that CLI release. A container given CERIN_JOIN_TOKEN runs
 # it instead of openab and joins Cerin as a device, the way a Box does (runtime-start.sh).
-# The bundle is cerin-agent-linux-<arch>.tar.gz; releases before the rename only have
-# nuphos-agent-linux-<arch>.tar.gz, so that name is the fallback. /opt/nuphos-agent
-# stays as a link for anything that still uses the old path.
-ARG NUPHOS_AGENT_VERSION=0.28.0
-ARG CERIN_AGENT_RELEASES=https://github.com/thenewbinary/cerin-nuphos/releases/download
+ARG CERIN_AGENT_VERSION=0.28.1
+ARG CERIN_AGENT_RELEASES=https://github.com/thenewbinary/cerin-platform/releases/download
 RUN arch=$(case "$(dpkg --print-architecture)" in amd64) echo x64 ;; *) dpkg --print-architecture ;; esac) \
- && base="${CERIN_AGENT_RELEASES}/cli-v${NUPHOS_AGENT_VERSION}" \
+ && base="${CERIN_AGENT_RELEASES}/cli-v${CERIN_AGENT_VERSION}" \
  && cd /tmp \
- && { asset="cerin-agent-linux-${arch}.tar.gz"; curl -fsSLO "${base}/${asset}" \
-      || { asset="nuphos-agent-linux-${arch}.tar.gz"; curl -fsSLO "${base}/${asset}"; }; } \
+ && asset="cerin-agent-linux-${arch}.tar.gz" && curl -fsSLO "${base}/${asset}" \
  && curl -fsSLO "${base}/${asset}.sha256" \
  && sha256sum -c "${asset}.sha256" \
  && install -d -m 755 /opt/cerin-agent \
  && tar -xzf "${asset}" -C /opt/cerin-agent \
  && rm -f "${asset}" "${asset}.sha256" \
- && chmod -R a+rX /opt/cerin-agent \
- && ln -s /opt/cerin-agent /opt/nuphos-agent
-ENV NUPHOS_LOCAL_RUNTIME_DIR=/opt/cerin-agent \
-    NUPHOS_CLI_VERSION="${NUPHOS_AGENT_VERSION}"
+ && chmod -R a+rX /opt/cerin-agent
+ENV CERIN_LOCAL_RUNTIME_DIR=/opt/cerin-agent \
+    CERIN_CLI_VERSION="${CERIN_AGENT_VERSION}"
 
 # The openab commit the binary was built from, reported on ACP initialize.
 ARG OPENAB_BUILD_SHA
@@ -245,8 +240,8 @@ ENV OPENAB_ACP_ENABLED=true \
     OPENAB_ACP_STREAMING=true \
     GATEWAY_ALLOWED_USERS=acp_client \
     OPENAB_RUNTIME_CONSOLE=true \
-    OPENAB_RUNTIME_STATE_DIR=/home/node/.nuphos-runtime \
-    OPENAB_RUNTIME_CONNECT_URL_TEMPLATE="nuphos://connect-runtime?url={url}&code={code}&exp={exp}"
+    OPENAB_RUNTIME_STATE_DIR=/home/node/.cerin-runtime \
+    OPENAB_RUNTIME_CONNECT_URL_TEMPLATE="cerin://connect-runtime?url={url}&code={code}&exp={exp}"
 
 # What `_openab/runtime/login` runs, and where the credential it produces lands. Empty
 # unless the build supplies them, which makes the runtime report "cannot tell" rather
@@ -259,7 +254,7 @@ ENV OPENAB_RUNTIME_LOGIN_COMMAND="${RUNTIME_LOGIN_COMMAND}" \
 # The one-shot commands `_openab/runtime/job` may run, as `name=argv`. The caller only
 # names a job; it never supplies argv. `tools` feeds the runtime console's tool list.
 # The timeout ceiling matches the backend's dashboard panel execution budget.
-ENV OPENAB_RUNTIME_JOBS="panel=node --max-old-space-size=512 /opt/nuphos-runtime/panel-job.mjs;tools=node /opt/nuphos-runtime/tools/nuphos-tools.mjs list --json" \
+ENV OPENAB_RUNTIME_JOBS="panel=node --max-old-space-size=512 /opt/cerin-runtime/panel-job.mjs;tools=node /opt/cerin-runtime/tools/cerin-tools.mjs list --json" \
     OPENAB_RUNTIME_JOB_MAX_TIMEOUT_MS=300000
 
 # The volumes whose usage `_openab/runtime/state` reports to the operator.
@@ -279,44 +274,44 @@ ENV OPENAB_RUNTIME_LABEL="${RUNTIME_LABEL}" \
 # replaces this file; openab reads that single path and merges nothing.
 COPY openab-config.claude-code.toml openab-config.codex.toml openab-config.grok.toml \
      openab-config.antigravity.toml openab-config.opencode.toml openab-config.hermes.toml \
-     openab-config.dsh.toml /tmp/nuphos-config/
+     openab-config.dsh.toml /tmp/cerin-config/
 RUN install -d -m 755 /etc/openab \
- && install -m 644 "/tmp/nuphos-config/openab-config.${RUNTIME_PROVIDER}.toml" \
+ && install -m 644 "/tmp/cerin-config/openab-config.${RUNTIME_PROVIDER}.toml" \
       /etc/openab/config.toml \
- && rm -rf /tmp/nuphos-config
+ && rm -rf /tmp/cerin-config
 
 # `node` cannot create a directory at the root, and a self-hosted container has
 # nothing mounted here. A volume at this path replaces it.
 RUN install -d -o node -g node -m 755 /workspace
 
-COPY --chmod=755 runtime-start.sh /usr/local/bin/nuphos-runtime-start
+COPY --chmod=755 runtime-start.sh /usr/local/bin/cerin-runtime-start
 WORKDIR /home/node
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD pgrep -x openab || exit 1
 # In the entrypoint so a replaced command still runs it.
-ENTRYPOINT ["tini", "--", "/usr/local/bin/nuphos-runtime-start"]
+ENTRYPOINT ["tini", "--", "/usr/local/bin/cerin-runtime-start"]
 CMD ["openab", "run", "-c", "/etc/openab/config.toml"]
 
 USER node
-RUN test -x /opt/nuphos-runtime \
- && test -r /opt/nuphos-runtime/mcp-http-bridge.mjs \
- && test -r /opt/nuphos-runtime/runtime-guard.sh \
- && test -r /opt/nuphos-runtime/codex-login.mjs \
- && test -r /opt/nuphos-runtime/claude-login.mjs \
- && test -r /opt/nuphos-runtime/grok-login.mjs \
- && test -r /opt/nuphos-runtime/antigravity-login.mjs \
- && test -r /opt/nuphos-runtime/antigravity-status.mjs \
- && test -r /opt/nuphos-runtime/antigravity-status-cli.mjs \
- && test -r /opt/nuphos-runtime/opencode-login.mjs \
- && test -r /opt/nuphos-runtime/hermes-login.mjs \
- && test -r /opt/nuphos-runtime/hermes-providers.json \
- && test -r /opt/nuphos-runtime/dsh-login.mjs \
- && test -r /opt/nuphos-runtime/dsh-sign-in.mjs \
- && test -r /opt/nuphos-runtime/panel-job.mjs \
+RUN test -x /opt/cerin-runtime \
+ && test -r /opt/cerin-runtime/mcp-http-bridge.mjs \
+ && test -r /opt/cerin-runtime/runtime-guard.sh \
+ && test -r /opt/cerin-runtime/codex-login.mjs \
+ && test -r /opt/cerin-runtime/claude-login.mjs \
+ && test -r /opt/cerin-runtime/grok-login.mjs \
+ && test -r /opt/cerin-runtime/antigravity-login.mjs \
+ && test -r /opt/cerin-runtime/antigravity-status.mjs \
+ && test -r /opt/cerin-runtime/antigravity-status-cli.mjs \
+ && test -r /opt/cerin-runtime/opencode-login.mjs \
+ && test -r /opt/cerin-runtime/hermes-login.mjs \
+ && test -r /opt/cerin-runtime/hermes-providers.json \
+ && test -r /opt/cerin-runtime/dsh-login.mjs \
+ && test -r /opt/cerin-runtime/dsh-sign-in.mjs \
+ && test -r /opt/cerin-runtime/panel-job.mjs \
  && test -r /opt/cerin-agent/host.mjs \
- && test -r /opt/nuphos-agent/host.mjs \
+ && test -r /opt/cerin-agent/host.mjs \
  && test -r /etc/openab/config.toml \
- && test -x /usr/local/bin/nuphos-runtime-start \
+ && test -x /usr/local/bin/cerin-runtime-start \
  && test -w /workspace \
  && openab --version \
  && command -v "${OPENAB_AGENT_COMMAND%% *}"

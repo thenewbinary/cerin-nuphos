@@ -165,7 +165,7 @@ export function assertHealthyConnection(health: DatabaseConnectionHealth): void 
       health.message ?? 'Database health check failed.',
     )
   }
-  // Credential capability and Nuphos authorization are separate boundaries.
+  // Credential capability and Cerin authorization are separate boundaries.
   // A write-capable account may be stored, but the current Agent policies only
   // expose metadata or the read-only query gateway. Credentials never enter a
   // model context or sandbox, so write access cannot be obtained by bypassing

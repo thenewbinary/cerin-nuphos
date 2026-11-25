@@ -24,7 +24,7 @@ import { ObjectId } from 'mongodb'
 
 import { config } from '@/config'
 import { connectDb, db } from '@/lib/db'
-import { signNuphosToken, getMyTeams } from '@/lib/identity'
+import { signCerinToken, getMyTeams } from '@/lib/identity'
 
 import { consume, fail, parseArgs, resolveCredentialAccess } from './agent-drive-lib'
 
@@ -73,7 +73,7 @@ async function main() {
 
   if (!user) fail(`no user matches ${args.user}`)
   const userId = user._id.toHexString()
-  const token = signNuphosToken(userId, 15 * 60)
+  const token = signCerinToken(userId, 15 * 60)
 
   let teamId = args.team
 

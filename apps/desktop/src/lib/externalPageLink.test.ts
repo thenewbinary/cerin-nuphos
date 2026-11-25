@@ -7,9 +7,9 @@ import type { GithubInstallation, GithubRepository } from '../types'
 
 const installation = { installationId: 7, accountLogin: 'zeabur' } as GithubInstallation
 const repo = {
-  name: 'nuphos',
-  fullName: 'zeabur/nuphos',
-  htmlUrl: 'https://github.com/zeabur/nuphos',
+  name: 'cerin',
+  fullName: 'zeabur/cerin',
+  htmlUrl: 'https://github.com/zeabur/cerin',
 } as GithubRepository
 
 function repositoryTab(githubNav: Parameters<typeof externalPageLink>[0]['githubNav']) {
@@ -27,7 +27,7 @@ test('a pull request page links to the PR on github.com', () => {
   })
 
   assert.deepEqual(externalPageLink(tab), {
-    url: 'https://github.com/zeabur/nuphos/pull/1152',
+    url: 'https://github.com/zeabur/cerin/pull/1152',
     provider: 'github',
   })
 })
@@ -37,11 +37,11 @@ test('a repository page links to the tab it shows', () => {
 
   assert.equal(
     externalPageLink(repositoryTab({ ...base, tab: 'prs' }))?.url,
-    'https://github.com/zeabur/nuphos/pulls',
+    'https://github.com/zeabur/cerin/pulls',
   )
   assert.equal(
     externalPageLink(repositoryTab({ ...base, tab: 'actions' }))?.url,
-    'https://github.com/zeabur/nuphos/actions',
+    'https://github.com/zeabur/cerin/actions',
   )
 })
 
@@ -90,7 +90,7 @@ test('a Linear issue links to its linear.app page once loaded', () => {
 })
 
 test('a Linear team task list links to the team when its URL is known', () => {
-  const team = { id: 'team-uuid', key: 'NUPS', name: 'Nuphos' }
+  const team = { id: 'team-uuid', key: 'NUPS', name: 'Cerin' }
 
   assert.deepEqual(
     externalPageLink(

@@ -4,7 +4,7 @@
 
 import type { OverrideSet, OverrideStore, Theme } from './types'
 
-const KEY = 'nuphos.devPalette.overrides'
+const KEY = 'cerin.devPalette.overrides'
 
 // Names we've written to <html> inline, so unapply removes exactly ours and a
 // dark override never leaks into light on theme switch.

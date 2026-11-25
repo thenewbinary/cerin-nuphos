@@ -24,15 +24,15 @@ fn update_asks_the_configured_backend_for_the_release() {
             std::thread::sleep(Duration::from_millis(10));
         }
     });
-    let home = std::env::temp_dir().join(format!("nuphos-update-test-{}", std::process::id()));
+    let home = std::env::temp_dir().join(format!("cerin-update-test-{}", std::process::id()));
     std::fs::create_dir_all(&home).unwrap();
     let output = Command::new(env!("CARGO_BIN_EXE_cerin"))
         .arg("update")
         .env_clear()
         .env("PATH", std::env::var_os("PATH").unwrap_or_default())
         .env("HOME", &home)
-        .env("NUPHOS_CLI_CONFIG", home.join("cli.yaml"))
-        .env("NUPHOS_API_URL", format!("http://{address}/"))
+        .env("CERIN_CLI_CONFIG", home.join("cli.yaml"))
+        .env("CERIN_API_URL", format!("http://{address}/"))
         // Trap an old hardcoded HTTPS target locally instead of reaching Cloud.
         .env("HTTPS_PROXY", format!("http://{address}"))
         .env("NO_PROXY", "127.0.0.1")

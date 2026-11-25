@@ -43,7 +43,7 @@ const refused = (code: string, message: string) =>
 // #2947: each way Open desktop can fail tells the person why.
 test('a Mac without Accessibility says so, and where to allow it', async () => {
   const reason =
-    'Accessibility is not allowed for Nuphos yet. Allow it on this Mac in System Settings > Privacy & Security > Accessibility.'
+    'Accessibility is not allowed for Cerin yet. Allow it on this Mac in System Settings > Privacy & Security > Accessibility.'
 
   assert.deepEqual(await shownFor(refused('agent_instance_failed', reason)), [
     { title: 'Could not open the desktop', description: reason },
@@ -52,7 +52,7 @@ test('a Mac without Accessibility says so, and where to allow it', async () => {
 
 test('a Mac without Screen Recording, or whose screen host did not start, says so', async () => {
   for (const reason of [
-    'Screen Recording is not allowed for Nuphos yet',
+    'Screen Recording is not allowed for Cerin yet',
     'This Mac’s screen did not start in time.',
   ]) {
     assert.deepEqual(await shownFor(refused('agent_instance_failed', reason)), [

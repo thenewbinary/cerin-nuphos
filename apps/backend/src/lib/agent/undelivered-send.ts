@@ -31,12 +31,12 @@ export async function keepUndeliveredSend(
         parts: message.chat.message.parts,
         ...(message.metadata ? { metadata: message.metadata } : {}),
       },
-      // Nuphos's notice, shown as its event line, never as the agent's reply.
+      // Cerin's notice, shown as its event line, never as the agent's reply.
       {
         id: `${message.id}-undelivered`,
         role: 'user',
         parts: [{ type: 'text', text: notice }],
-        metadata: systemSender('nuphos', 'Cerin'),
+        metadata: systemSender('cerin', 'Cerin'),
       },
     ],
   }).catch((error: unknown) => {
@@ -114,7 +114,7 @@ export async function noteLostTurn(data: {
           id: randomUUID(),
           role: 'user',
           parts: [{ type: 'text', text: `This message ${LOST_TURN}` }],
-          metadata: systemSender('nuphos', 'Cerin'),
+          metadata: systemSender('cerin', 'Cerin'),
         },
       ],
     })

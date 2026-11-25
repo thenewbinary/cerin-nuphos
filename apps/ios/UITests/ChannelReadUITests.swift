@@ -18,7 +18,7 @@ final class ChannelReadUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
 
         let transcript = app.collectionViews["chat.transcript"].cells.firstMatch

@@ -2,22 +2,22 @@ import { config } from '@/config'
 import { isEmailConfigured, sendEmail } from '@/lib/email'
 import { logError } from '@/lib/observability'
 
-import type { NuphosTeam } from '@/lib/identity'
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeam } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity/types'
 import type { TeamInvitation } from '@/models'
 
 export type SerializedTeamInvitation = {
   id: string
   inviterId: string
   teamId: string
-  team?: Pick<NuphosTeam, 'id' | 'name' | 'avatarUrl'>
+  team?: Pick<CerinTeam, 'id' | 'name' | 'avatarUrl'>
   invitedAt: string
   inviteeEmail: string
   acceptedAt?: string
   rejectedAt?: string
   /** The page the email's accept button opens, for an admin to send another way. */
   inviteUrl?: string
-  role: NuphosTeamRole
+  role: CerinTeamRole
 }
 
 export function normalizeInviteeEmail(email: string): string {
@@ -26,7 +26,7 @@ export function normalizeInviteeEmail(email: string): string {
 
 export function serializeTeamInvitation(
   invitation: TeamInvitation,
-  team?: Pick<NuphosTeam, 'id' | 'name' | 'avatarUrl'>,
+  team?: Pick<CerinTeam, 'id' | 'name' | 'avatarUrl'>,
   inviteUrl?: string,
 ): SerializedTeamInvitation {
   return {
@@ -44,7 +44,7 @@ export function serializeTeamInvitation(
 }
 
 /** The role accepting this invitation gives; one made before roles were stored gives Editor. */
-export function invitationRole(invitation: Pick<TeamInvitation, 'role'>): NuphosTeamRole {
+export function invitationRole(invitation: Pick<TeamInvitation, 'role'>): CerinTeamRole {
   return invitation.role ?? 'EDITOR'
 }
 

@@ -8,11 +8,11 @@ import {
 import { boundedInt, optional, optionalList } from './env'
 
 function relayTokenSecret(): string | undefined {
-  const secret = optional('NUPHOS_RELAY_TOKEN_SECRET')?.trim()
+  const secret = optional('CERIN_RELAY_TOKEN_SECRET')?.trim()
 
   if (!secret) return undefined
   if (Buffer.byteLength(secret, 'utf8') < 32) {
-    throw new Error('NUPHOS_RELAY_TOKEN_SECRET must be at least 32 bytes')
+    throw new Error('CERIN_RELAY_TOKEN_SECRET must be at least 32 bytes')
   }
 
   return secret
@@ -34,7 +34,7 @@ function downloadHandoffRateLimitSecret(): string | undefined {
 export function platformConfig() {
   return {
     downloadHandoff: {
-      // Shared only with the nuphos.ai server. It authenticates the landing
+      // Shared only with the platform.cerin.ai server. It authenticates the landing
       // page's requests to the cross-replica email-handoff rate limiter.
       rateLimitSecret: downloadHandoffRateLimitSecret(),
     },
@@ -43,25 +43,25 @@ export function platformConfig() {
     // no on-prem cluster can be enrolled.
     relay: {
       // Shared HMAC secret for relay tokens — the SAME value the relay runs with
-      // (NUPHOS_RELAY_TOKEN_SECRET there). Rotating it invalidates every enrolled
+      // (CERIN_RELAY_TOKEN_SECRET there). Rotating it invalidates every enrolled
       // cluster's agent token at once. The relay refuses to start below 32 bytes,
       // so accepting a shorter one here would only move the failure to the far
       // side of a token nobody can verify.
       tokenSecret: relayTokenSecret(),
       // host:port customers' agent pods dial. Shown in the install manifest.
-      agentEndpoint: optional('NUPHOS_RELAY_AGENT_ENDPOINT')?.trim() || undefined,
+      agentEndpoint: optional('CERIN_RELAY_AGENT_ENDPOINT')?.trim() || undefined,
       // host:port of the relay's CONNECT proxy, used as a kubeconfig proxy-url.
       // No path: client-go rejects one.
-      proxyEndpoint: optional('NUPHOS_RELAY_PROXY_ENDPOINT')?.trim() || undefined,
+      proxyEndpoint: optional('CERIN_RELAY_PROXY_ENDPOINT')?.trim() || undefined,
       // Authenticated status base URL. Production uses the proxy's public TLS
       // listener so backend replicas in either cluster query the same relay;
       // unset degrades "has the customer's pod connected" to unknown.
-      statusUrl: optional('NUPHOS_RELAY_STATUS_URL')?.trim().replace(/\/$/, '') || undefined,
+      statusUrl: optional('CERIN_RELAY_STATUS_URL')?.trim().replace(/\/$/, '') || undefined,
       // The agent image handed to customers. No default on purpose: the fallback
       // would be a mutable tag, and every manifest generated from it could quietly
       // start resolving to different agent code inside someone's cluster. An
       // unset value leaves the feature dormant like the rest of this section.
-      agentImage: optional('NUPHOS_RELAY_AGENT_IMAGE')?.trim() || undefined,
+      agentImage: optional('CERIN_RELAY_AGENT_IMAGE')?.trim() || undefined,
     },
     shutdown: resolveShutdownBudget({
       // The pod's actual terminationGracePeriodSeconds, injected by the
@@ -99,12 +99,12 @@ export function platformConfig() {
     },
     telemetry: {
       // Both the key and an explicit destination are required to collect or send.
-      key: optional('NUPHOS_TELEMETRY_KEY'),
-      url: optional('NUPHOS_TELEMETRY_URL')?.trim() || undefined,
+      key: optional('CERIN_TELEMETRY_KEY'),
+      url: optional('CERIN_TELEMETRY_URL')?.trim() || undefined,
     },
     publicLinks: {
       // Optional documentation host. Empty disables the bundled setup guide link.
-      docsBaseUrl: optional('NUPHOS_DOCS_URL')?.trim().replace(/\/$/, ''),
+      docsBaseUrl: optional('CERIN_DOCS_URL')?.trim().replace(/\/$/, ''),
     },
   }
 }

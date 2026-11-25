@@ -13,7 +13,7 @@ import { join } from 'node:path'
 
 // - standalone: the profile's own daemon, not one in the root serving every profile.
 // - The daemon exits 30 s after the conversation's agent stops, not after 10 minutes.
-// - Hermes's long-term memory is off: Nuphos memory, over MCP, is the only one.
+// - Hermes's long-term memory is off: Cerin memory, over MCP, is the only one.
 // - Its own connectors, schedules, chat platforms and browser download are left out.
 // - No on-demand installs: they build a second environment, without ACP, and move to it.
 const SETTINGS = (skills) => `gateway:

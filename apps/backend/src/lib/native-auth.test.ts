@@ -95,8 +95,8 @@ const USER = {
 
 useDb({ db: (() => ({ collection })) as unknown as typeof dbActual.db })
 useIdentity({
-  getNuphosUserById: (async (id: string) =>
-    id === USER.id ? USER : null) as unknown as typeof identityActual.getNuphosUserById,
+  getCerinUserById: (async (id: string) =>
+    id === USER.id ? USER : null) as unknown as typeof identityActual.getCerinUserById,
 })
 
 const {
@@ -333,7 +333,7 @@ describe('the delivery code binds the session to the machine that received the r
 })
 
 describe('the delivery target is constrained at registration', () => {
-  test.each(['cerin://google-callback', 'nuphos://google-callback'])(
+  test.each(['cerin://google-callback', 'cerin://google-callback'])(
     'accepts the native Google callback %s',
     async (redirectUri) => {
       const { handle } = await register({ redirectUri })
@@ -357,7 +357,7 @@ describe('the delivery target is constrained at registration', () => {
       'http://127.0.0.1:80/callback', // privileged
       'http://127.0.0.1:51000/callback?token=x', // pre-seeded query
       'http://127.0.0.1:51000/callback#x',
-      'nuphos://callback',
+      'cerin://callback',
       'cerin://callback',
       'cerin://google-callback?token=x',
       'cerin://google-callback#x',

@@ -71,11 +71,11 @@ export function useWorkspaceAccounts(a: Args) {
     }
 
     load()
-    window.addEventListener('nuphos:databases-changed', load)
+    window.addEventListener('cerin:databases-changed', load)
 
     return () => {
       cancelled = true
-      window.removeEventListener('nuphos:databases-changed', load)
+      window.removeEventListener('cerin:databases-changed', load)
     }
   }, [teamId, refreshKey, connectorsRefreshKey, setDatabaseConnectionsByTeam])
 

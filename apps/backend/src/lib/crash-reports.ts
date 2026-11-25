@@ -1,4 +1,4 @@
-// Native crash reports from Nuphos Desktop: Electron's crashReporter (Crashpad)
+// Native crash reports from Cerin Desktop: Electron's crashReporter (Crashpad)
 // uploads a minidump as multipart/form-data. The raw dump and a small metadata
 // object go to the Zeabur-owned S3 store under `crash-reports/`, so a crash can
 // be symbolicated later against Electron's public symbols for that version.

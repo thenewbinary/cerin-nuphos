@@ -4,12 +4,12 @@ import type { OpenAbProvider } from '@/lib/claude-code-preview/runtime-provider'
 
 export type Setting = 'model' | 'effort' | 'fast'
 
-/** Who a line names first: a person, a Task acting for one, the agent itself, or Nuphos. */
+/** Who a line names first: a person, a Task acting for one, the agent itself, or Cerin. */
 export type LineActor =
   | { type: 'person'; id: string; name: string; avatarURL: string }
   | { type: 'task'; sessionId: string; title: string; provider?: OpenAbProvider }
   | { type: 'runtime'; label: string; provider?: OpenAbProvider }
-  | { type: 'nuphos' }
+  | { type: 'cerin' }
 /** A value as the runtime names it. */
 export type Choice = { value: string; name?: string }
 /** A setting's change; an absent value is the agent's default. */

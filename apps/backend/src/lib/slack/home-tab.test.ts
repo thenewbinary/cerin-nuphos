@@ -95,7 +95,7 @@ describe('buildSlackHomeViewFromModel', () => {
     const view = buildSlackHomeViewFromModel({
       ...baseModel,
       viewer: { name: 'Jane', email: 'jane@acme.dev', role: 'ADMINISTRATOR' },
-      credentials: [{ provider: 'AWS', entries: ['arn:aws:iam::1:role/NuphosRole'] }],
+      credentials: [{ provider: 'AWS', entries: ['arn:aws:iam::1:role/CerinRole'] }],
     })
     const text = viewText(view)
 
@@ -105,10 +105,10 @@ describe('buildSlackHomeViewFromModel', () => {
     expect(text).toContain('Administrator')
     expect(text).toContain('<#C1>')
     expect(text).toContain('<#C2>')
-    expect(text).toContain('arn:aws:iam::1:role/NuphosRole')
+    expect(text).toContain('arn:aws:iam::1:role/CerinRole')
     expect(text).toContain('<@B123>')
-    expect(text).toContain('nuphos_home_refresh')
-    expect(text).toContain('nuphos_link_channel')
+    expect(text).toContain('cerin_home_refresh')
+    expect(text).toContain('cerin_link_channel')
   })
 
   test('unlinked viewer gets link guidance instead of credentials', () => {
@@ -122,8 +122,8 @@ describe('buildSlackHomeViewFromModel', () => {
     expect(text).toContain('Not linked')
     expect(text).toContain('Link your Cerin account to see which credentials')
     // Channel linking is admin-only; an unlinked viewer gets no picker.
-    expect(text).not.toContain('nuphos_link_channel')
-    expect(text).toContain('nuphos_home_refresh')
+    expect(text).not.toContain('cerin_link_channel')
+    expect(text).toContain('cerin_home_refresh')
   })
 
   test('non-admin members see linked channels but no picker', () => {
@@ -135,8 +135,8 @@ describe('buildSlackHomeViewFromModel', () => {
     const text = viewText(view)
 
     expect(text).toContain('<#C1>')
-    expect(text).not.toContain('nuphos_link_channel')
-    expect(text).toContain('nuphos_home_refresh')
+    expect(text).not.toContain('cerin_link_channel')
+    expect(text).toContain('cerin_home_refresh')
   })
 
   test('caps long credential lists with a +N more marker', () => {
@@ -175,7 +175,7 @@ describe('buildSlackHomeViewFromModel', () => {
 describe('buildConnectedSlackHomeView', () => {
   test('renders an unlinked member as not linked even with a stale mapping', async () => {
     teamsById = [{ id: TEAM_ID, name: 'Acme' }]
-    members = [] // mapped Nuphos user no longer on the team
+    members = [] // mapped Cerin user no longer on the team
     channelMappings = [
       { slackWorkspaceId: 'T1', slackChannelId: 'C1', enabled: true },
       { slackWorkspaceId: 'T-other', slackChannelId: 'C9', enabled: true },
@@ -185,8 +185,8 @@ describe('buildConnectedSlackHomeView', () => {
       slackWorkspaceId: 'T1',
       slackTeamName: 'Acme Slack',
       botUserId: 'B123',
-      nuphosTeamId: TEAM_ID,
-      nuphosUserId: 'gone-user',
+      cerinTeamId: TEAM_ID,
+      cerinUserId: 'gone-user',
     })
     const text = viewText(view)
 

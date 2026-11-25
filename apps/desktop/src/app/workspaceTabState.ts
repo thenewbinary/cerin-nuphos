@@ -5,7 +5,7 @@ import type {
   CloudflareResourceDetailRef,
   ConnectorDetailRef,
   LinearNavState,
-  NuphosDashboardRef,
+  CerinDashboardRef,
   GrafanaSelection,
   NavigationSnapshot,
   PageLocation,
@@ -169,10 +169,10 @@ export type WorkspaceTabState = {
   designDetail?: { designId: string; designName: string } | null
   /** Open dashboard drill-down; mirrors architectureDetail. Null means
    *  the Dashboards list page. */
-  nuphosDashboard?: NuphosDashboardRef | null
+  cerinDashboard?: CerinDashboardRef | null
   /** Dashboard list reported by the view (like `namespaces`): feeds the
    *  breadcrumb switcher and the default-view crumb label. Never serialized. */
-  nuphosDashboards?: { id: string; name: string }[]
+  cerinDashboards?: { id: string; name: string }[]
   /** Linear page drill-down (`team.linear`); null means its team list. */
   linearNav?: LinearNavState | null
   s3Detail: AwsS3Detail | null
@@ -216,7 +216,7 @@ export type WorkspaceTabState = {
    * Set when the auto-rehydrate attempt for this cluster tab failed. Until
    * the user explicitly retries (re-picking the cluster via `enterCluster`),
    * the rehydrate effect skips this tab so a failing call (network, expired
-   * auth, etc.) doesn't loop the Nuphos API on every state change.
+   * auth, etc.) doesn't loop the Cerin API on every state change.
    */
   kubeconfigContextError: string | null
   sshTerminal: SshTerminalTabState | null
@@ -241,7 +241,7 @@ export type WorkspaceTabState = {
   favoriteTitle?: { title: string; href: string } | null
 }
 
-export const LAST_TEAM_STORAGE_KEY = 'nuphos.workspace.lastTeamId'
+export const LAST_TEAM_STORAGE_KEY = 'cerin.workspace.lastTeamId'
 /**
  * The workspace dock's tab strip (this file's `WorkspaceTabState[]`) is
  * scoped per chat session (the selected session id) rather than shared across
@@ -253,14 +253,14 @@ export const NO_SESSION_TAB_BUCKET_KEY = '__no-session__'
  *  on disk. Only sessions where the user actually opened a dock tab ever get
  *  an entry, so this bounds worst-case growth, not typical usage. */
 export const MAX_RESIDENT_SESSION_TAB_BUCKETS = 20
-export const WORKSPACE_TABS_STORAGE_KEY = 'nuphos.workspace.tabs.bySession.v2'
+export const WORKSPACE_TABS_STORAGE_KEY = 'cerin.workspace.tabs.bySession.v2'
 /** Pre-per-session format: one global tab strip, not associated with any
  *  chat session. Read once, on first launch after upgrade, to seed
  *  `NO_SESSION_TAB_BUCKET_KEY` — see `readPersistedWorkspaceBySession`. */
-export const LEGACY_WORKSPACE_TABS_STORAGE_KEY = 'nuphos.workspace.tabs.v1'
+export const LEGACY_WORKSPACE_TABS_STORAGE_KEY = 'cerin.workspace.tabs.v1'
 // One frozen empty array for every "no rows yet" prop. A fresh `[]` per render
 // is a new identity, which alone is enough to defeat the memo below.
 export const EMPTY_LIST: never[] = []
 /** Pages that are a surface of their own, with no toolbar above them. */
 export const FULL_BLEED_PAGE_KEYS = new Set(['team.browser', 'team.terminal', 'team.desktop'])
-export const CLUSTER_NAMESPACE_STORAGE_PREFIX = 'nuphos.k8s.lastNamespace.'
+export const CLUSTER_NAMESPACE_STORAGE_PREFIX = 'cerin.k8s.lastNamespace.'

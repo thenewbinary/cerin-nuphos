@@ -82,10 +82,10 @@ useDb({ db: (() => ({ collection })) as unknown as typeof dbActual.db })
 useIdentity({
   authenticateToken: (async (token: string) =>
     token === 'session-token'
-      ? { user: USER, cacheHit: false, provider: 'nuphos' as const, sessionId: SESSION_ID }
+      ? { user: USER, cacheHit: false, provider: 'cerin' as const, sessionId: SESSION_ID }
       : null) as unknown as typeof identityActual.authenticateToken,
-  getNuphosUserById: (async (id: string) =>
-    id === USER_ID ? USER : null) as unknown as typeof identityActual.getNuphosUserById,
+  getCerinUserById: (async (id: string) =>
+    id === USER_ID ? USER : null) as unknown as typeof identityActual.getCerinUserById,
 })
 useIdentitySessions({
   createUserSession: async (userId: string) => {

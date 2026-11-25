@@ -1,4 +1,4 @@
-// `nuphos agent`: local agents on Node beside the staged openab, without Electron.
+// `cerin agent`: local agents on Node beside the staged openab, without Electron.
 
 import { randomUUID } from 'node:crypto'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -51,11 +51,11 @@ import type { DeviceIdentity } from '../device-identity-core.ts'
 import type { Instances } from './app-update-request.ts'
 import type { LocalRuntimeTunnelStatus } from './tunnel-protocol.ts'
 
-const bundleRoot = process.env.NUPHOS_LOCAL_RUNTIME_DIR ?? path.dirname(process.argv[1] ?? '.')
-const dataDir = process.env.NUPHOS_AGENT_HOME ?? ''
+const bundleRoot = process.env.CERIN_LOCAL_RUNTIME_DIR ?? path.dirname(process.argv[1] ?? '.')
+const dataDir = process.env.CERIN_AGENT_HOME ?? ''
 
 if (!dataDir) {
-  console.error('NUPHOS_AGENT_HOME is not set; run this through `cerin agent`.')
+  console.error('CERIN_AGENT_HOME is not set; run this through `cerin agent`.')
   process.exit(1)
 }
 
@@ -85,16 +85,16 @@ function deviceIdentity(): DeviceIdentity {
 const device = deviceIdentity()
 const bundle = () => readBundle(bundleRoot)
 const log = (message: string, data?: Record<string, unknown>) => {
-  if (process.env.NUPHOS_DEBUG) console.error(`[agent] ${message}`, data ?? '')
+  if (process.env.CERIN_DEBUG) console.error(`[agent] ${message}`, data ?? '')
 }
 let lastSummary = ''
 let stopping = false
 let tunnel: RuntimeTunnelClient | undefined
 
-// From `nuphos agent` (the keychain trusts the CLI, not node); kept from the agents.
-const launchToken = process.env.NUPHOS_SESSION_TOKEN || null
+// From `cerin agent` (the keychain trusts the CLI, not node); kept from the agents.
+const launchToken = process.env.CERIN_SESSION_TOKEN || null
 
-delete process.env.NUPHOS_SESSION_TOKEN
+delete process.env.CERIN_SESSION_TOKEN
 const launch = { token: launchToken, keychainAccount: readCliConfig()?.keychainAccount }
 const currentToken = () => cliSessionToken(readCliConfig(), launch)
 
@@ -102,7 +102,7 @@ const currentToken = () => cliSessionToken(readCliConfig(), launch)
 setTokenSource(() => Promise.resolve(currentToken()))
 
 // e2e stands a fake Mac screen host in here (scripts/e2e/fake-mac-screen-host.mjs), on any computer.
-const e2eMacScreenHost = process.env.NUPHOS_E2E_MAC_SCREEN_HOST
+const e2eMacScreenHost = process.env.CERIN_E2E_MAC_SCREEN_HOST
 // A Linux Box with Xvnc gives every session its own desktop (see desktop-session.mjs).
 const desktopPool = e2eMacScreenHost ? null : enableDesktopPool(bundleRoot, dataDir)
 const desktopWrapper = path.join(bundleRoot, 'desktop-session.mjs')
@@ -112,7 +112,7 @@ const deviceCredential = await deviceCredentialFor({
   dataDir,
   apiUrl: apiUrl(),
   label: device.label,
-  joinToken: process.env.NUPHOS_JOIN_TOKEN?.trim() || undefined,
+  joinToken: process.env.CERIN_JOIN_TOKEN?.trim() || undefined,
   headers: { [CLIENT_VERSION_HEADER]: CLIENT_VERSION_VALUE },
 })
 const deviceId = deviceCredential?.deviceId ?? device.deviceId

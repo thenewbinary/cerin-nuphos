@@ -9,7 +9,7 @@ import { nextBoxLabel } from '@/routes/agent/routes-devices-box'
 
 import type { DeviceExecAuditEntry } from '@/lib/agent/devices/audit'
 import type { AgentDevice, AgentDeviceRegistration, DeviceGrant } from '@/lib/agent/devices/store'
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 import type { AuthVariables } from '@/middleware/auth'
 import type { AgentDeviceRouteDependencies } from '@/routes/agent/routes-devices'
 
@@ -26,7 +26,7 @@ let auditQueries: {
 let issued: { userId: string; options: { label?: string; expiresInSec?: number } }[]
 let credentials: Set<string>
 let disconnected: string[]
-let role: NuphosTeamRole | null
+let role: CerinTeamRole | null
 let revoked: { deviceIds: string[]; actorIds: string[] }[]
 let metricsReads: string[]
 let onlineNow = false
@@ -132,7 +132,7 @@ function buildApp(box: BoxDeps | null = null) {
 
         return device !== undefined
       },
-      publicUrl: () => 'https://nuphos.example',
+      publicUrl: () => 'https://cerin.example',
       box,
       listDeviceExecAudit: async (ownerUserId, deviceId, options) => {
         auditQueries.push({ ownerUserId, deviceId, ...options })
@@ -296,7 +296,7 @@ describe('agent device routes', () => {
     expect(shareTables.agent_device_share_trusts).toEqual([
       { ownerId: 'user-1', deviceId: 'live', teamId: 'team-1', actorId: 'alice' },
     ])
-    // Nuphos there registers the machine again under the id it keeps, and its
+    // Cerin there registers the machine again under the id it keeps, and its
     // owner's answers are not waiting for it when it does.
     const again = await app.request('/agent/devices', {
       method: 'PUT',
@@ -426,7 +426,7 @@ describe('agent device routes', () => {
     expect(await response.json()).toEqual({
       token: 'nbj_test',
       expiresAt: '2026-10-14T12:15:00.000Z',
-      apiUrl: 'https://nuphos.example',
+      apiUrl: 'https://cerin.example',
     })
     expect(issued).toEqual([
       { userId: 'user-1', options: { label: 'build box', expiresInSec: 900 } },

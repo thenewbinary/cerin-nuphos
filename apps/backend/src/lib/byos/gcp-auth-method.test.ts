@@ -5,8 +5,8 @@ import { useByosGcp } from '@/lib/test/doubles/byos-gcp'
 import { useByosGcpWif } from '@/lib/test/doubles/byos-gcp-wif'
 
 const TEAM_ID = '68b0f1f77bcf86cd79943901'
-const CUSTOMER_SA = 'nuphos@customer-project.iam.gserviceaccount.com'
-const PRINCIPAL = `principal://iam.googleapis.com/projects/1/locations/global/workloadIdentityPools/nuphos/subject/nuphos:team:${TEAM_ID}`
+const CUSTOMER_SA = 'cerin@customer-project.iam.gserviceaccount.com'
+const PRINCIPAL = `principal://iam.googleapis.com/projects/1/locations/global/workloadIdentityPools/cerin/subject/cerin:team:${TEAM_ID}`
 
 useByosGcpWif({
   gcpWifConfigured: () => true,

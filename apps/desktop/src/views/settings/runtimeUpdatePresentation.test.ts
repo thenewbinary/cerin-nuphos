@@ -6,7 +6,7 @@ import { hostUpdateVersion, runtimeUpdatePresentation } from './runtimeUpdatePre
 const base = {
   currentVersion: '0.1.2',
   latestVersion: '0.1.3',
-  releaseUrl: 'https://github.com/zeabur/nuphos-runtime/releases/tag/v0.1.3',
+  releaseUrl: 'https://github.com/thenewbinary/cerin-platform/releases/tag/runtime-v0.1.3',
 }
 
 test('only administrators of managed agents see an available update button', () => {

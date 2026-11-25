@@ -12,9 +12,9 @@ export type LocalStack = {
 }
 
 const S3_BUCKETS = {
-  fileTransfers: 'nuphos-file-transfers',
-  skills: 'nuphos-skills',
-  journal: 'nuphos-journal',
+  fileTransfers: 'cerin-file-transfers',
+  skills: 'cerin-skills',
+  journal: 'cerin-journal',
 }
 
 export function parseEnvFile(text: string): Record<string, string> {
@@ -42,9 +42,9 @@ function port(value: string | undefined, fallback: number): number {
 
 /** Null when a secret init-env.sh generates is missing. */
 export function localStackFromEnv(env: Record<string, string>): LocalStack | null {
-  const { S3_ACCESS_KEY, S3_SECRET_KEY, NUPHOS_JWT_SECRET } = env
+  const { S3_ACCESS_KEY, S3_SECRET_KEY, CERIN_JWT_SECRET } = env
 
-  if (!S3_ACCESS_KEY || !S3_SECRET_KEY || !NUPHOS_JWT_SECRET) return null
+  if (!S3_ACCESS_KEY || !S3_SECRET_KEY || !CERIN_JWT_SECRET) return null
 
   return {
     mongoPort: port(env.MONGO_PORT, 27117),
@@ -52,7 +52,7 @@ export function localStackFromEnv(env: Record<string, string>): LocalStack | nul
     runtimePort: port(env.RUNTIME_PORT, 18180),
     s3AccessKey: S3_ACCESS_KEY,
     s3SecretKey: S3_SECRET_KEY,
-    jwtSecret: NUPHOS_JWT_SECRET,
+    jwtSecret: CERIN_JWT_SECRET,
   }
 }
 
@@ -73,21 +73,21 @@ export function localBackendEnv(stack: LocalStack): Record<string, string> {
 
   return {
     NODE_ENV: 'development',
-    NUPHOS_JWT_SECRET: stack.jwtSecret,
+    CERIN_JWT_SECRET: stack.jwtSecret,
     // The local stack has one HTTP port, even when a shared .env enables TLS.
     ATLAS_DEV_TLS_CERT: '',
     ATLAS_DEV_TLS_KEY: '',
-    NUPHOS_DEV_HTTP_PORT: '0',
+    CERIN_DEV_HTTP_PORT: '0',
     MONGODB_URI: `mongodb://127.0.0.1:${String(stack.mongoPort)}/?directConnection=true`,
-    MONGODB_DB: 'nuphos',
+    MONGODB_DB: 'cerin',
     ATLAS_REDIS_ENABLED: 'false',
-    NUPHOS_DEV_EMAIL_OTP_LOG: 'true',
-    NUPHOS_LOCAL_STACK: 'true',
-    NUPHOS_FILE_TRANSFER_S3_BUCKET: S3_BUCKETS.fileTransfers,
-    NUPHOS_FILE_TRANSFER_S3_REGION: 'us-east-1',
-    NUPHOS_FILE_TRANSFER_S3_ENDPOINT: s3,
-    NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: stack.s3AccessKey,
-    NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: stack.s3SecretKey,
+    CERIN_DEV_EMAIL_OTP_LOG: 'true',
+    CERIN_LOCAL_STACK: 'true',
+    CERIN_FILE_TRANSFER_S3_BUCKET: S3_BUCKETS.fileTransfers,
+    CERIN_FILE_TRANSFER_S3_REGION: 'us-east-1',
+    CERIN_FILE_TRANSFER_S3_ENDPOINT: s3,
+    CERIN_FILE_TRANSFER_S3_ACCESS_KEY_ID: stack.s3AccessKey,
+    CERIN_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: stack.s3SecretKey,
     ATLAS_SKILLS_BUCKET: S3_BUCKETS.skills,
     ATLAS_SKILLS_S3_REGION: 'us-east-1',
     ATLAS_SKILLS_S3_ENDPOINT: s3,

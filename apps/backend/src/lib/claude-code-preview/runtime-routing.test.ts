@@ -70,9 +70,9 @@ describe('selectClaudeCodeChatEndpoint', () => {
   })
 })
 
-// Two production conversations still carry the retired `nuphos` stamp; they
+// Two production conversations still carry the retired `cerin` stamp; they
 // must keep resolving onto Claude Code rather than throwing.
-const LEGACY_NUPHOS_CONVERSATION = { agentRuntime: 'nuphos' } as unknown as {
+const LEGACY_CERIN_CONVERSATION = { agentRuntime: 'cerin' } as unknown as {
   agentRuntime?: 'claude-code' | 'codex'
 }
 
@@ -81,7 +81,7 @@ describe('resolveConversationAgentRuntime', () => {
     expect(resolveConversationAgentRuntime({ agentRuntime: 'claude-code' }, 'claude-code')).toBe(
       'claude-code',
     )
-    expect(resolveConversationAgentRuntime(LEGACY_NUPHOS_CONVERSATION, 'claude-code')).toBe(
+    expect(resolveConversationAgentRuntime(LEGACY_CERIN_CONVERSATION, 'claude-code')).toBe(
       'claude-code',
     )
   })
@@ -122,7 +122,7 @@ describe('resolveConversationAgentRuntime', () => {
     expect(resolveConversationAgentRuntime({ agentRuntime: 'claude-code' }, 'codex', 'codex')).toBe(
       'claude-code',
     )
-    expect(resolveConversationAgentRuntime(LEGACY_NUPHOS_CONVERSATION, 'codex', 'codex')).toBe(
+    expect(resolveConversationAgentRuntime(LEGACY_CERIN_CONVERSATION, 'codex', 'codex')).toBe(
       'claude-code',
     )
     expect(
@@ -147,7 +147,7 @@ describe('Codex conversation routing', () => {
     expect(resolveConversationAgentRuntime({ agentRuntime: 'claude-code' }, 'codex')).toBe(
       'claude-code',
     )
-    expect(resolveConversationAgentRuntime(LEGACY_NUPHOS_CONVERSATION, 'codex')).toBe('claude-code')
+    expect(resolveConversationAgentRuntime(LEGACY_CERIN_CONVERSATION, 'codex')).toBe('claude-code')
     expect(
       resolveConversationAgentRuntime(
         { claudeCodePreview: { openabSessionId: 'old', runtimeUrl: 'wss://old/acp' } },
@@ -171,15 +171,15 @@ test('Codex ACP metadata carries session context without Claude-specific fields'
   const { sessionMeta } = await import('./openab-acp-session')
 
   expect(
-    sessionMeta('Nuphos context', { provider: 'codex', env: { NUPHOS_TOKEN: 'actor-token' } }),
+    sessionMeta('Cerin context', { provider: 'codex', env: { CERIN_TOKEN: 'actor-token' } }),
   ).toEqual({
     _meta: {
-      'ai.nuphos/runtimeAuthority': 2,
+      'ai.cerin/runtimeAuthority': 2,
       'dev.openab/permissionPolicy': 'relay',
-      'dev.openab/credentials': { NUPHOS_TOKEN: 'actor-token' },
-      'ai.nuphos/codex': {
-        developerInstructions: 'Nuphos context',
-        env: { NUPHOS_TOKEN: 'actor-token' },
+      'dev.openab/credentials': { CERIN_TOKEN: 'actor-token' },
+      'ai.cerin/codex': {
+        developerInstructions: 'Cerin context',
+        env: { CERIN_TOKEN: 'actor-token' },
       },
     },
   })
@@ -257,7 +257,7 @@ describe('isServerAuthoritativeTranscript', () => {
   })
 
   test('creation hints do not change authority for an existing legacy transcript', () => {
-    expect(isServerAuthoritativeTranscript(LEGACY_NUPHOS_CONVERSATION, 'codex')).toBe(false)
+    expect(isServerAuthoritativeTranscript(LEGACY_CERIN_CONVERSATION, 'codex')).toBe(false)
     expect(isServerAuthoritativeTranscript({}, 'codex')).toBe(false)
   })
 
@@ -266,7 +266,7 @@ describe('isServerAuthoritativeTranscript', () => {
     expect(isServerAuthoritativeTranscript({ agentRuntime: 'codex' })).toBe(true)
     expect(isServerAuthoritativeTranscript(null)).toBe(false)
     expect(isServerAuthoritativeTranscript({})).toBe(false)
-    expect(isServerAuthoritativeTranscript(LEGACY_NUPHOS_CONVERSATION)).toBe(false)
+    expect(isServerAuthoritativeTranscript(LEGACY_CERIN_CONVERSATION)).toBe(false)
   })
 
   test('a channel’s transcript is its posters’, never a client snapshot', () => {
@@ -274,19 +274,19 @@ describe('isServerAuthoritativeTranscript', () => {
   })
 })
 
-// Two production conversations still carry the retired `nuphos` stamp. Nothing
+// Two production conversations still carry the retired `cerin` stamp. Nothing
 // writes that value any more, so the only requirement is that reading one back
 // keeps working.
 describe('a conversation left stamped with the retired runtime', () => {
   test('resolves onto Claude Code instead of throwing', () => {
-    expect(resolveConversationAgentRuntime(LEGACY_NUPHOS_CONVERSATION, 'codex')).toBe('claude-code')
-    expect(
-      resolveConversationAgentRuntime(LEGACY_NUPHOS_CONVERSATION, 'claude-code', 'codex'),
-    ).toBe('claude-code')
+    expect(resolveConversationAgentRuntime(LEGACY_CERIN_CONVERSATION, 'codex')).toBe('claude-code')
+    expect(resolveConversationAgentRuntime(LEGACY_CERIN_CONVERSATION, 'claude-code', 'codex')).toBe(
+      'claude-code',
+    )
   })
 
   test('is treated as pinned, so no creation-time runtime id can move it', () => {
-    expect(resolveConversationRuntimeId(LEGACY_NUPHOS_CONVERSATION, 'runtime-b')).toBeUndefined()
+    expect(resolveConversationRuntimeId(LEGACY_CERIN_CONVERSATION, 'runtime-b')).toBeUndefined()
   })
 })
 
@@ -294,19 +294,19 @@ test('Agents behind the ACP shim get one shim-facing shape with the instructions
   const { sessionMeta } = await import('./openab-acp-session')
 
   for (const provider of ['grok', 'antigravity', 'opencode'] as const)
-    expect(
-      sessionMeta('Nuphos context', { provider, env: { NUPHOS_TOKEN: 'actor-token' } }),
-    ).toEqual({
-      _meta: {
-        'ai.nuphos/runtimeAuthority': 2,
-        'dev.openab/permissionPolicy': 'relay',
-        'dev.openab/credentials': { NUPHOS_TOKEN: 'actor-token' },
-        'ai.nuphos/session': {
-          systemPrompt: 'Nuphos context',
-          env: { NUPHOS_TOKEN: 'actor-token' },
+    expect(sessionMeta('Cerin context', { provider, env: { CERIN_TOKEN: 'actor-token' } })).toEqual(
+      {
+        _meta: {
+          'ai.cerin/runtimeAuthority': 2,
+          'dev.openab/permissionPolicy': 'relay',
+          'dev.openab/credentials': { CERIN_TOKEN: 'actor-token' },
+          'ai.cerin/session': {
+            systemPrompt: 'Cerin context',
+            env: { CERIN_TOKEN: 'actor-token' },
+          },
         },
       },
-    })
+    )
 })
 
 const ME = 'me'

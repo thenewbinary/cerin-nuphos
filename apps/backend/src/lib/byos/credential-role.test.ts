@@ -2,9 +2,9 @@ import { describe, expect, test } from 'bun:test'
 
 import { useIdentity } from '@/lib/test/doubles/identity'
 
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 
-const ROLES: Record<string, NuphosTeamRole> = {
+const ROLES: Record<string, CerinTeamRole> = {
   admin: 'ADMINISTRATOR',
   editor: 'EDITOR',
   viewer: 'VIEWER',

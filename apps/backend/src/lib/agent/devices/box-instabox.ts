@@ -1,4 +1,4 @@
-// A Box: a cloud machine Nuphos orders on instabox for a person, which joins as
+// A Box: a cloud machine Cerin orders on instabox for a person, which joins as
 // that person's device with a one-time token and then behaves like any other
 // computer of theirs. The machine is on the deployment's instabox account or on one
 // the team bound; it is created with `vault: false`, so none of the account's
@@ -6,7 +6,7 @@
 //
 // The row stores only which machine it is. Its state comes from instabox and
 // from the device's presence, so a machine that instabox paused on its own is
-// seen, and woken, like one Nuphos paused.
+// seen, and woken, like one Cerin paused.
 
 import { Sandbox } from '@insforge/instabox-sdk'
 
@@ -155,7 +155,7 @@ export async function resumeBox(userId: string, deviceId: string, command = AGEN
     )
 
     await sandbox.commands.run(command, {
-      envs: { ...downloadEnv(), NUPHOS_API_URL: url },
+      envs: { ...downloadEnv(), CERIN_API_URL: url },
       background: true,
     })
   } catch (error) {

@@ -119,7 +119,7 @@ const chat = z
 
 export const botBundleSchema = z
   .object({
-    format: z.literal('nuphos-bot-bundle'),
+    format: z.literal('cerin-bot-bundle'),
     version: z.literal(1),
     source: z.discriminatedUnion('application', [
       z
@@ -130,7 +130,7 @@ export const botBundleSchema = z
         .strict(),
       z
         .object({
-          application: z.literal('nuphos-template'),
+          application: z.literal('cerin-template'),
           templateId: key,
           version: z
             .string()
@@ -156,7 +156,7 @@ export const botBundleSchema = z
   })
   .strict()
   .superRefine((value, context) => {
-    if (value.source.application === 'nuphos-template') {
+    if (value.source.application === 'cerin-template') {
       if (value.bots.length !== 1 || value.chats.length)
         context.addIssue({
           code: 'custom',

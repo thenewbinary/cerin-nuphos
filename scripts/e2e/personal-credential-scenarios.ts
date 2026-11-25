@@ -17,7 +17,7 @@ function inDatabase(stack: Stack, script: string, ...args: string[]): string {
   const run = `
     import { MongoClient } from 'mongodb'
     const client = await new MongoClient(process.argv[1]).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     ${script}
     await client.close()`
 

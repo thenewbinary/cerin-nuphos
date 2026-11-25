@@ -34,7 +34,7 @@ export const defaultDependencies: SlackOutboundDependencies = {
       botToken,
       slackWorkspaceId,
       teamId,
-      nuphosUserId: userId,
+      cerinUserId: userId,
     }),
   // Keep identity lazy: Bun's module mocks are process-global, and importing
   // identity eagerly made unrelated Slack home tests order-dependent on CI.

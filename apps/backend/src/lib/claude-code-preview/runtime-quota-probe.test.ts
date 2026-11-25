@@ -43,7 +43,7 @@ test('a one-year token the usage API refuses says why instead of an HTTP code', 
   expect(
     probe(
       {
-        '.nuphos-oauth-token.json': {
+        '.cerin-oauth-token.json': {
           token: 'sk-ant-oat01-fixture',
           expiresAt: '2999-01-01T00:00:00Z',
         },
@@ -66,7 +66,7 @@ test('a lapsed one-year token is not used: the ordinary login beside it is', () 
   expect(
     probe(
       {
-        '.nuphos-oauth-token.json': {
+        '.cerin-oauth-token.json': {
           token: 'sk-ant-oat01-fixture',
           expiresAt: '2020-01-01T00:00:00Z',
         },
@@ -85,7 +85,7 @@ test('a lapsed one-year token with no login beside it reports Sign in required',
   expect(
     probe(
       {
-        '.nuphos-oauth-token.json': {
+        '.cerin-oauth-token.json': {
           token: 'sk-ant-oat01-fixture',
           expiresAt: '2020-01-01T00:00:00Z',
         },
@@ -148,7 +148,7 @@ test('the probe names the Claude account by a hash of its UUID, never the email'
 })
 
 test('a reading keeps only a 16-hex account key', () => {
-  expect(parseQuotaReading('__NUPHOS_QUOTA__{"usage":{},"accountKey":"a@example.com"}\n')).toEqual({
+  expect(parseQuotaReading('__CERIN_QUOTA__{"usage":{},"accountKey":"a@example.com"}\n')).toEqual({
     usage: {},
   })
 })

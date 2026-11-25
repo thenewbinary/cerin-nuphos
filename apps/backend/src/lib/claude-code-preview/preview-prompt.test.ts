@@ -33,9 +33,9 @@ describe('buildPreviewSystemPrompt', () => {
 
     expect(prompt).toContain('installed in `.claude/skills`')
     expect(prompt).toContain('call `request_user_decision` with category `approval`')
-    expect(prompt).not.toContain('nuphos-plan')
+    expect(prompt).not.toContain('cerin-plan')
     expect(prompt).toContain('native `architecture-diagram` skill FIRST')
-    expect(prompt).toContain('native `nuphos-dashboards` skill FIRST')
+    expect(prompt).toContain('native `cerin-dashboards` skill FIRST')
     expect(prompt).toContain('canonical Cerin REST APIs')
     expect(prompt).toContain('through its API script')
     expect(prompt).not.toContain('bound cost_dashboard_')
@@ -88,7 +88,7 @@ test('Codex receives native skill paths and its runtime identity', async () => {
 
   expect(prompt).toContain('running as Codex')
   expect(prompt).toContain('installed in `.agents/skills`')
-  expect(prompt).toContain('nuphos-credentials')
+  expect(prompt).toContain('cerin-credentials')
   expect(prompt).toContain('## Approval before risky cloud changes')
   expect(prompt).not.toContain('Claude Code')
   expect(prompt).toContain('## Workspace')
@@ -171,7 +171,7 @@ test('a computer’s own agent is told it runs there, not in the team sandbox', 
   const box = await on('box')
 
   expect(box).toContain('running as Codex on Box 1, the computer this conversation runs on')
-  expect(box).toContain('the `nuphos-desktop` tools for this conversation’s own desktop')
+  expect(box).toContain('the `cerin-desktop` tools for this conversation’s own desktop')
   expect(box).toContain(
     'a page or website the user asks to open, or "a browser", goes to local_browser, the Cerin browser, shown to them with its show action',
   )
@@ -180,7 +180,7 @@ test('a computer’s own agent is told it runs there, not in the team sandbox', 
   )
   expect(box).toContain("local_exec is for the user's other devices, only when they ask for one")
   expect(box).not.toContain('inside the team sandbox')
-  expect(await on('mac')).not.toContain('nuphos-desktop')
+  expect(await on('mac')).not.toContain('cerin-desktop')
   // A runtime that is not a computer's, or one gone from the registry, keeps the sandbox line.
   expect(await on('gone')).toContain('inside the team sandbox')
 })

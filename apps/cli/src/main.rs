@@ -30,7 +30,7 @@ use crate::api::Api;
 #[command(name = "cerin", version)]
 struct Args {
     /// Team id or name. Defaults to the team used last.
-    #[arg(long, global = true, env = "NUPHOS_TEAM")]
+    #[arg(long, global = true, env = "CERIN_TEAM")]
     team: Option<String>,
     /// Print JSON instead of text.
     #[arg(long, global = true)]
@@ -121,11 +121,11 @@ enum Command {
         session: String,
     },
     /// Run this computer's Claude Code and Codex as local runtimes, as the desktop app does.
-    /// On Linux with systemd it installs and starts the user service `nuphos-agent`, which
+    /// On Linux with systemd it installs and starts the user service `cerin-agent`, which
     /// starts again after a reboot; elsewhere it runs in the foreground.
     Agent {
         /// Join Cerin with a one-time token instead of signing in. Pass `-` and pipe the token
-        /// to stdin, or set `NUPHOS_JOIN_TOKEN`, so it stays out of the shell history. Later
+        /// to stdin, or set `CERIN_JOIN_TOKEN`, so it stays out of the shell history. Later
         /// runs need neither.
         #[arg(long, value_name = "TOKEN")]
         join: Option<String>,
@@ -137,7 +137,7 @@ enum Command {
         #[arg(long, conflicts_with = "token")]
         device: bool,
         /// Automation only, so hidden from help: an agent token minted through the API. Pass `-`
-        /// and pipe it to stdin. `NUPHOS_CLI_TOKEN` works without saving it.
+        /// and pipe it to stdin. `CERIN_CLI_TOKEN` works without saving it.
         #[arg(long, value_name = "TOKEN", hide = true)]
         token: Option<String>,
     },
@@ -360,7 +360,7 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
         AuthCommand::List => {
             // From the file: listing never needs a token, nor the keychain.
             let session = config::saved_session();
-            // NUPHOS_CLI_TOKEN outranks the saved sign-in: commands use it, and
+            // CERIN_CLI_TOKEN outranks the saved sign-in: commands use it, and
             // which account it is is not known without asking the backend.
             let from_env = config::env_token_set();
             let cli = if from_env { None } else { accounts::key_of(&session) };
@@ -380,7 +380,7 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
             }
             match &cli {
                 _ if from_env => {
-                    println!("CLI: the NUPHOS_CLI_TOKEN environment variable (`cerin team` checks whose it is)")
+                    println!("CLI: the CERIN_CLI_TOKEN environment variable (`cerin team` checks whose it is)")
                 }
                 Some(key) => println!("CLI: {} ({})", who(&session), render::clean(key)),
                 None => println!("CLI: not signed in"),
@@ -403,7 +403,7 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
             let env_api = config::env_api_override();
             if accounts::override_conflicts(env_api.as_deref(), &target.api) {
                 bail!(
-                    "NUPHOS_API_URL points at {}, not {}'s backend ({}); unset it to switch to that account",
+                    "CERIN_API_URL points at {}, not {}'s backend ({}); unset it to switch to that account",
                     render::clean(env_api.as_deref().unwrap_or_default()),
                     render::clean(&target.who),
                     render::clean(&target.api)
@@ -421,10 +421,10 @@ async fn auth(command: &AuthCommand, json: bool) -> Result<i32> {
 }
 
 /// "Grok Bot, an agent of Yuanlin" for an agent token, else the user. Not
-/// known locally for `NUPHOS_CLI_TOKEN`, which nothing has checked yet.
+/// known locally for `CERIN_CLI_TOKEN`, which nothing has checked yet.
 fn who(session: &config::Session) -> String {
     if session.from_env {
-        return "whoever NUPHOS_CLI_TOKEN belongs to (not checked locally; `cerin team` checks it)".to_string();
+        return "whoever CERIN_CLI_TOKEN belongs to (not checked locally; `cerin team` checks it)".to_string();
     }
     let user = session.user_info.as_ref().and_then(|u| u["email"].as_str()).or(session.user.as_deref());
     let user = render::clean(user.unwrap_or("unknown"));
@@ -541,7 +541,7 @@ async fn tui(start: app::Start, team: Option<String>) -> Result<i32> {
     };
     let app = app::App::new(Api::new(api_url, token), config::read_prefs());
     if let Some((team_id, session_id)) = app.run(start, team).await? {
-        let web = std::env::var("NUPHOS_WEB_URL").unwrap_or_else(|_| "https://platform.cerin.ai".into());
+        let web = std::env::var("CERIN_WEB_URL").unwrap_or_else(|_| "https://platform.cerin.ai".into());
         let path = render::clean(&format!("/teams/{team_id}/agent/{session_id}"));
         println!("Task: {}{path}", web.trim_end_matches('/'));
         println!("Continue with: cerin resume {}", render::clean(&session_id));
@@ -598,12 +598,12 @@ mod avatar_tests {
 
     #[tokio::test]
     async fn a_file_over_the_limit_is_refused() {
-        let path = std::env::temp_dir().join(format!("nuphos-avatar-{}.png", std::process::id()));
+        let path = std::env::temp_dir().join(format!("cerin-avatar-{}.png", std::process::id()));
         std::fs::write(&path, vec![0u8; MAX_AVATAR_BYTES + 1]).unwrap();
         let result = read_avatar(path.to_str().unwrap()).await;
         std::fs::remove_file(&path).unwrap();
         assert!(result.unwrap_err().to_string().contains("over 2 MB"));
-        let small = std::env::temp_dir().join(format!("nuphos-avatar-ok-{}.png", std::process::id()));
+        let small = std::env::temp_dir().join(format!("cerin-avatar-ok-{}.png", std::process::id()));
         std::fs::write(&small, b"png").unwrap();
         assert_eq!(read_avatar(small.to_str().unwrap()).await.unwrap(), b"png");
         std::fs::remove_file(&small).unwrap();

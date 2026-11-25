@@ -7,7 +7,7 @@ import { makeBot } from '../channels/botChannel'
 import type { ReactNode } from 'react'
 
 /** Set on a Task row's drag when it can become a Bot; its value is the session id. */
-export const MAKE_BOT_DRAG_TYPE = 'application/x-nuphos-make-bot'
+export const MAKE_BOT_DRAG_TYPE = 'application/x-cerin-make-bot'
 /**
  * Bots as a drop target: a Task dropped on it becomes a Bot, as "Make this a
  * Bot" does. It keeps running, gains a face and chat, and moves out of Tasks.

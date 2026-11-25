@@ -26,11 +26,11 @@
 
     <!-- Login -->
     <string name="shell_server_settings">Server settings</string>
-    <string name="shell_server_cloud_settings">Nuphos Cloud · Server settings</string>
+    <string name="shell_server_cloud_settings">Cerin Cloud · Server settings</string>
     <string name="shell_server_custom_settings">%1$s · Server settings</string>
-    <string name="shell_server_body">Use Nuphos Cloud, or enter the HTTPS address of your self-hosted backend.</string>
+    <string name="shell_server_body">Use Cerin Cloud, or enter the HTTPS address of your self-hosted backend.</string>
     <string name="shell_server_address">Server address</string>
-    <string name="shell_use_nuphos_cloud">Use Nuphos Cloud</string>
+    <string name="shell_use_cerin_cloud">Use Cerin Cloud</string>
     <string name="shell_server_save_failed">Could not save the server. Please try again.</string>
     <string name="shell_cancel_adding_account">Cancel adding account</string>
     <string name="shell_retry_sign_in_options">Retry sign-in options</string>
@@ -69,14 +69,14 @@
     <string name="shell_auth_cleanup_failed">Saved draft cleanup failed. Check storage, then try again.</string>
     <string name="shell_auth_signed_out_cleanup_failed">Signed out, but saved draft cleanup failed. Check storage before closing the app.</string>
     <string name="shell_auth_ai_access_changed">Your AI access changed. Reload your sharing choice before continuing.</string>
-    <string name="shell_auth_privacy_notice_changed">This privacy notice has changed. Please update Nuphos before using AI.</string>
+    <string name="shell_auth_privacy_notice_changed">This privacy notice has changed. Please update Cerin before using AI.</string>
     <string name="shell_auth_consent_load_failed">We could not load your AI sharing choice. Retry or manage your account.</string>
-    <string name="shell_auth_consent_unconfirmed">Nuphos could not confirm your AI sharing choice. Please retry.</string>
+    <string name="shell_auth_consent_unconfirmed">Cerin could not confirm your AI sharing choice. Please retry.</string>
     <string name="shell_auth_consent_save_failed">We could not save your choice.</string>
     <string name="shell_auth_photo_failed">We could not update your photo.</string>
     <string name="shell_auth_username_taken">That username is already in use. Choose another one.</string>
     <string name="shell_auth_profile_failed">We could not save your profile.</string>
-    <string name="shell_auth_unreachable">We could not reach Nuphos. Check your connection and try again.</string>
+    <string name="shell_auth_unreachable">We could not reach Cerin. Check your connection and try again.</string>
     <string name="shell_auth_window_failed">We could not open the sign-in window. Please try again.</string>
     <string name="shell_auth_secure_incomplete">Secure sign-in did not complete. Check your connection and try again.</string>
     <string name="shell_auth_wrong_password">The email or password is incorrect.</string>
@@ -156,7 +156,7 @@
     <!-- Notifications -->
     <string name="shell_notification_channel">Task updates</string>
     <string name="shell_notification_open_history">Open task history</string>
-    <string name="shell_notification_open_update">Open Nuphos to view the update</string>
+    <string name="shell_notification_open_update">Open Cerin to view the update</string>
     <string name="shell_notification_reply">Reply</string>
     <string name="shell_notification_you">You</string>
     <string name="shell_notification_message">Message</string>
@@ -169,11 +169,11 @@
     <string name="shell_voice_waiting_permission">Waiting for microphone permission…</string>
     <string name="shell_voice_transcribe_edit">Transcribe and edit</string>
     <string name="shell_voice_transcribe_send">Transcribe and send</string>
-    <string name="shell_voice_subscription">Voice input is included with a Nuphos subscription.</string>
+    <string name="shell_voice_subscription">Voice input is included with a Cerin subscription.</string>
     <string name="shell_voice_prompt_save_failed">Could not save the prompt.</string>
     <string name="shell_voice_prompt">Transcription prompt</string>
     <string name="shell_voice_reset_prompt">Reset prompt</string>
-    <string name="shell_voice_prompt_help" translatable="false">The prompt guides spelling and writing style. Recordings are transcribed by OpenAI through Nuphos.</string>
+    <string name="shell_voice_prompt_help" translatable="false">The prompt guides spelling and writing style. Recordings are transcribed by OpenAI through Cerin.</string>
 
     <!-- Remote desktop -->
     <string name="shell_desktop">Desktop</string>

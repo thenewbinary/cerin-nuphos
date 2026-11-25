@@ -12,7 +12,7 @@ hex() { openssl rand -hex 32; }
 
 umask 077
 sed \
-  -e "s|^NUPHOS_JWT_SECRET=.*|NUPHOS_JWT_SECRET=$(hex)|" \
+  -e "s|^CERIN_JWT_SECRET=.*|CERIN_JWT_SECRET=$(hex)|" \
   -e "s|^S3_SECRET_KEY=.*|S3_SECRET_KEY=$(hex)|" \
   .env.example >.env
 echo "Wrote $(pwd)/.env."

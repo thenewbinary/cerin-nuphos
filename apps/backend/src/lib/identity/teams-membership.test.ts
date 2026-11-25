@@ -3,12 +3,12 @@ import { ObjectId } from 'mongodb'
 
 import { useDb } from '@/lib/test/doubles/db'
 
-import type { NuphosTeamDoc } from './shared'
+import type { CerinTeamDoc } from './shared'
 import type { Filter } from 'mongodb'
 
 const USER_ID = new ObjectId()
 const TEAM_ID = new ObjectId()
-let updateFilters: Filter<NuphosTeamDoc>[] = []
+let updateFilters: Filter<CerinTeamDoc>[] = []
 
 useDb({
   db: () => ({
@@ -18,7 +18,7 @@ useDb({
       }
       if (name === 'teams') {
         return {
-          updateOne: (filter: Filter<NuphosTeamDoc>) => {
+          updateOne: (filter: Filter<CerinTeamDoc>) => {
             updateFilters.push(filter)
 
             return Promise.resolve({ modifiedCount: 1 })

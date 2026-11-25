@@ -1,4 +1,4 @@
-// `local_browser` under `nuphos agent`, with no Desktop: each tab is a page of a headless
+// `local_browser` under `cerin agent`, with no Desktop: each tab is a page of a headless
 // Chromium on the computer, driven over its debugging pipe, so no debugging port is opened.
 
 import { join } from 'node:path'
@@ -213,7 +213,7 @@ export function createCliBrowser(launch: () => Browser, harDir: string) {
       return text(
         await stopRecording(tab, {
           dir: harDir,
-          creator: { name: 'Cerin CLI', version: process.env.NUPHOS_CLI_VERSION ?? 'dev' },
+          creator: { name: 'Cerin CLI', version: process.env.CERIN_CLI_VERSION ?? 'dev' },
         }),
       )
     const { data } = await within(

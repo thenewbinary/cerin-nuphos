@@ -20,7 +20,7 @@ test('authenticated actor replaces forged metadata; reordered history wins; lega
   const actor: MessageMetadata = {
     ...trusted,
     sender: { type: 'user', id: 'actor', displayName: 'Authenticated User' },
-    source: 'nuphos',
+    source: 'cerin',
   }
 
   restoreAppMessageMetadata(messages, [{ messageId: 'old', metadata: trusted }], actor)

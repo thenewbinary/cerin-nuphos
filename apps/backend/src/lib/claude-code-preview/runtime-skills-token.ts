@@ -5,7 +5,7 @@ import { AppError } from '@/lib/errors'
 
 import { runtimeBackendUrl } from './runtime-backend-url'
 
-const PREFIX = 'nuphos-runtime-skills-v1'
+const PREFIX = 'cerin-runtime-skills-v1'
 
 export function runtimeSkillsUrl(teamId: string, external?: boolean, backendUrl?: string): string {
   const base = backendUrl ?? runtimeBackendUrl(external)
@@ -18,7 +18,7 @@ export function runtimeSkillsUrl(teamId: string, external?: boolean, backendUrl?
 function secret(): string {
   const value = config.auth.jwtSecret
 
-  if (!value) throw new AppError(503, 'jwt_secret_unavailable', 'NUPHOS_JWT_SECRET is required')
+  if (!value) throw new AppError(503, 'jwt_secret_unavailable', 'CERIN_JWT_SECRET is required')
 
   return value
 }

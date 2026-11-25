@@ -113,7 +113,7 @@ useAgentDb({
     ({ role: 'assistant', parts: [{ type: 'text', text: 'Done.' }] }) as never,
 })
 
-const { nuphosAsk } = await import('./ask')
+const { cerinAsk } = await import('./ask')
 const ME = 'a'.repeat(24)
 const ctx = { userId: ME }
 const body = (result: { structuredContent?: unknown }) =>
@@ -133,9 +133,9 @@ beforeEach(() => {
   finishRun = () => undefined
 })
 
-describe('nuphos_ask request_id', () => {
+describe('cerin_ask request_id', () => {
   test('answers the open question instead of sending a message', async () => {
-    const result = body(await nuphosAsk(answer, ctx))
+    const result = body(await cerinAsk(answer, ctx))
 
     expect(result).toMatchObject({ status: 'running', session_id: 's1' })
     expect(answered).toEqual([{ requestId: 'q1', answer: { text: 'eu' }, actor: ME }])
@@ -145,17 +145,17 @@ describe('nuphos_ask request_id', () => {
 
   test('a question that must be answered in its own card is a tool error', async () => {
     refuse = new AppError(400, 'decision_not_answerable', 'Answer this question in its own card')
-    const result = await nuphosAsk(answer, ctx)
+    const result = await cerinAsk(answer, ctx)
 
     expect(result.isError).toBe(true)
     expect(result.content[0]).toMatchObject({ text: 'Answer this question in its own card' })
   })
 })
 
-describe('nuphos_ask on a teammate’s session', () => {
+describe('cerin_ask on a teammate’s session', () => {
   test('is not found for someone who cannot reply in it', async () => {
     stored = session('owner')
-    const result = await nuphosAsk(answer, ctx)
+    const result = await cerinAsk(answer, ctx)
 
     expect(result.isError).toBe(true)
     expect(result.content[0]).toMatchObject({ text: 'Session not found: s1' })
@@ -166,10 +166,10 @@ describe('nuphos_ask on a teammate’s session', () => {
     stored = session('owner')
     participant = true
 
-    expect(body(await nuphosAsk(answer, ctx)).status).toBe('running')
+    expect(body(await cerinAsk(answer, ctx)).status).toBe('running')
     expect(answered).toHaveLength(1)
 
-    const sent = nuphosAsk({ prompt: 'Use eu.', team_id: 't1', session_id: 's1', wait: false }, ctx)
+    const sent = cerinAsk({ prompt: 'Use eu.', team_id: 't1', session_id: 's1', wait: false }, ctx)
 
     expect(body(await sent)).toMatchObject({ status: 'running', session_id: 's1' })
     // The session's queue is its owner's; the message stays the participant's.
@@ -187,15 +187,15 @@ describe('nuphos_ask on a teammate’s session', () => {
     stored = { ...session('owner'), teamId: 't2' } as AgentConversation
     participant = true
 
-    expect((await nuphosAsk(answer, ctx)).isError).toBe(true)
+    expect((await cerinAsk(answer, ctx)).isError).toBe(true)
   })
 })
 
-describe('nuphos_ask wait', () => {
+describe('cerin_ask wait', () => {
   test('false returns once the turn is accepted; the default waits for the answer', async () => {
     // A new session is returned only once it is stored, so a check finds it.
     stored = null
-    const starting = nuphosAsk({ prompt: 'Go.', team_id: 't1', wait: false }, ctx)
+    const starting = cerinAsk({ prompt: 'Go.', team_id: 't1', wait: false }, ctx)
     let returned = false
 
     void starting.then(() => {
@@ -209,7 +209,7 @@ describe('nuphos_ask wait', () => {
     finishRun()
 
     stored = session()
-    const waiting = nuphosAsk({ prompt: 'Go.', team_id: 't1', session_id: 's1' }, ctx)
+    const waiting = cerinAsk({ prompt: 'Go.', team_id: 't1', session_id: 's1' }, ctx)
 
     await new Promise((resolve) => setTimeout(resolve, 20))
     finishRun()
@@ -217,10 +217,10 @@ describe('nuphos_ask wait', () => {
   })
 })
 
-describe('nuphos_ask runtime_id', () => {
+describe('cerin_ask runtime_id', () => {
   test('starts a new session on the chosen agent', async () => {
     stored = null
-    const starting = nuphosAsk({ prompt: 'Go.', team_id: 't1', runtime_id: 'r1', wait: false }, ctx)
+    const starting = cerinAsk({ prompt: 'Go.', team_id: 't1', runtime_id: 'r1', wait: false }, ctx)
 
     await new Promise((resolve) => setTimeout(resolve, 20))
     stored = session()
@@ -236,7 +236,7 @@ describe('nuphos_ask runtime_id', () => {
       ['r9', 'This agent is no longer available to you.'],
       ['r2', 'This agent is disabled.'],
     ]) {
-      const result = await nuphosAsk({ prompt: 'Go.', team_id: 't1', runtime_id: id }, ctx)
+      const result = await cerinAsk({ prompt: 'Go.', team_id: 't1', runtime_id: id }, ctx)
 
       expect(result.isError).toBe(true)
       expect(result.content[0]).toMatchObject({ text: message })
@@ -246,7 +246,7 @@ describe('nuphos_ask runtime_id', () => {
   })
 
   test('an existing session keeps its own agent', async () => {
-    const result = await nuphosAsk(
+    const result = await cerinAsk(
       { prompt: 'Go.', team_id: 't1', session_id: 's1', runtime_id: 'r1' },
       ctx,
     )
@@ -256,10 +256,10 @@ describe('nuphos_ask runtime_id', () => {
   })
 })
 
-describe('nuphos_ask model and effort', () => {
+describe('cerin_ask model and effort', () => {
   test('a new session on a chosen agent starts on the model and effort asked for', async () => {
     stored = null
-    const starting = nuphosAsk(
+    const starting = cerinAsk(
       {
         prompt: 'Go.',
         team_id: 't1',
@@ -283,7 +283,7 @@ describe('nuphos_ask model and effort', () => {
 
   test('a value the agent does not offer is refused with its choices, before anything runs', async () => {
     stored = null
-    const result = await nuphosAsk(
+    const result = await cerinAsk(
       { prompt: 'Go.', team_id: 't1', runtime_id: 'r1', model: 'gpt-9' },
       ctx,
     )
@@ -298,18 +298,18 @@ describe('nuphos_ask model and effort', () => {
 
   test('model and effort need a runtime_id, and only start a new session', async () => {
     stored = null
-    const loose = await nuphosAsk({ prompt: 'Go.', team_id: 't1', effort: 'high' }, ctx)
+    const loose = await cerinAsk({ prompt: 'Go.', team_id: 't1', effort: 'high' }, ctx)
 
     expect(loose.content[0]).toMatchObject({ text: expect.stringContaining('need a runtime_id') })
 
     stored = session()
-    const later = await nuphosAsk(
+    const later = await cerinAsk(
       { prompt: 'Go.', team_id: 't1', session_id: 's1', model: 'gpt-5' },
       ctx,
     )
 
     expect(later.content[0]).toMatchObject({
-      text: expect.stringContaining('nuphos_update_session'),
+      text: expect.stringContaining('cerin_update_session'),
     })
     expect(runs).toEqual([])
   })
@@ -318,7 +318,7 @@ describe('nuphos_ask model and effort', () => {
 /** Starts a new session without waiting for its turn, as the tests above do. */
 async function startNew(args: Record<string, unknown>) {
   stored = null
-  const starting = nuphosAsk({ prompt: 'Go.', team_id: 't1', wait: false, ...args }, ctx)
+  const starting = cerinAsk({ prompt: 'Go.', team_id: 't1', wait: false, ...args }, ctx)
 
   await new Promise((resolve) => setTimeout(resolve, 20))
   const id = runs.at(-1)?.sessionId
@@ -331,7 +331,7 @@ async function startNew(args: Record<string, unknown>) {
   return { result, id }
 }
 
-describe('nuphos_ask full_access', () => {
+describe('cerin_ask full_access', () => {
   test('a new session starts in the chosen mode before its first turn runs', async () => {
     for (const fullAccess of [true, false]) {
       steps = []
@@ -350,18 +350,18 @@ describe('nuphos_ask full_access', () => {
   })
 
   test('only a new session takes it, so a caller cannot grant it on one they do not own', async () => {
-    // Their own session: changed as in the app, with nuphos_update_session.
-    const own = await nuphosAsk(
+    // Their own session: changed as in the app, with cerin_update_session.
+    const own = await cerinAsk(
       { prompt: 'Go.', team_id: 't1', session_id: 's1', full_access: true },
       ctx,
     )
 
-    expect(own.content[0]).toMatchObject({ text: expect.stringContaining('nuphos_update_session') })
+    expect(own.content[0]).toMatchObject({ text: expect.stringContaining('cerin_update_session') })
 
     // A teammate's session they may reply in: only its owner sets its mode.
     stored = session('owner')
     participant = true
-    const theirs = await nuphosAsk(
+    const theirs = await cerinAsk(
       { prompt: 'Go.', team_id: 't1', session_id: 's1', full_access: true },
       ctx,
     )
@@ -372,7 +372,7 @@ describe('nuphos_ask full_access', () => {
   })
 })
 
-describe('nuphos_ask request_id on a tool authorization', () => {
+describe('cerin_ask request_id on a tool authorization', () => {
   const waiting = (userId: string) =>
     runtimeRequests.records.set('s1:w1', {
       wait: {
@@ -392,7 +392,7 @@ describe('nuphos_ask request_id on a tool authorization', () => {
       ['Deny', 'rejected'],
     ]) {
       waiting(ME)
-      const result = body(await nuphosAsk({ ...answer, request_id: 'w1', prompt: word }, ctx))
+      const result = body(await cerinAsk({ ...answer, request_id: 'w1', prompt: word }, ctx))
 
       expect(result).toMatchObject({ status: 'running', session_id: 's1' })
       expect(runtimeRequests.records.get('s1:w1')?.decision?.payload).toEqual({ decision })
@@ -406,7 +406,7 @@ describe('nuphos_ask request_id on a tool authorization', () => {
   test('any answer but approve or deny is refused and leaves it pending', async () => {
     waiting(ME)
     for (const prompt of ['sure, go ahead', 'yes']) {
-      const result = await nuphosAsk({ ...answer, request_id: 'w1', prompt }, ctx)
+      const result = await cerinAsk({ ...answer, request_id: 'w1', prompt }, ctx)
 
       expect(result.isError).toBe(true)
     }
@@ -417,13 +417,13 @@ describe('nuphos_ask request_id on a tool authorization', () => {
     stored = session('owner')
     participant = true
     waiting('owner')
-    await nuphosAsk({ ...answer, request_id: 'w1', prompt: 'approve' }, ctx)
+    await cerinAsk({ ...answer, request_id: 'w1', prompt: 'approve' }, ctx)
 
     expect(runtimeRequests.records.get('s1:w1')?.decision).toBeNull()
   })
 })
 
-describe('nuphos_ask parent_session_id', () => {
+describe('cerin_ask parent_session_id', () => {
   const bot = (over: Partial<AgentConversation> = {}) =>
     ({
       sessionId: 'bot-1',
@@ -476,13 +476,13 @@ describe('nuphos_ask parent_session_id', () => {
     }
     stored = null
     for (const id of ['theirs', 'task', 'elsewhere', 'missing']) {
-      const result = await nuphosAsk({ prompt: 'Go.', team_id: 't1', parent_session_id: id }, ctx)
+      const result = await cerinAsk({ prompt: 'Go.', team_id: 't1', parent_session_id: id }, ctx)
 
       expect(result.content[0]).toMatchObject({
         text: expect.stringContaining('must be one of your Bots'),
       })
     }
-    const mode = await nuphosAsk(
+    const mode = await cerinAsk(
       { prompt: 'Go.', team_id: 't1', parent_session_id: 'bot-1', full_access: true },
       ctx,
     )

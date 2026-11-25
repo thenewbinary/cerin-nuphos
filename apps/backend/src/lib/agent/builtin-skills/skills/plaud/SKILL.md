@@ -7,7 +7,7 @@ description: Read Plaud recordings — list and search recordings, read transcri
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -21,7 +21,7 @@ The session's credential context lists each enabled Plaud account with an exact
 `setupCommand`. Run it once per conversation (and again on a 401):
 
 ```bash
-bash skills/plaud/scripts/setup-credentials.sh <teamId> <bindingId> && source ~/.plaud/nuphos.env
+bash skills/plaud/scripts/setup-credentials.sh <teamId> <bindingId> && source ~/.plaud/cerin.env
 ```
 
 It writes `PLAUD_ACCESS_TOKEN`, `PLAUD_API_BASE_URL` and `PLAUD_MCP_URL` to a
@@ -40,7 +40,7 @@ All calls are `GET` with `Authorization: Bearer $PLAUD_ACCESS_TOKEN` against
 `$PLAUD_API_BASE_URL` (`https://platform.plaud.ai/developer/api`).
 
 ```bash
-source ~/.plaud/nuphos.env
+source ~/.plaud/cerin.env
 plaud() { curl -sS --fail-with-body -H @<(printf 'Authorization: Bearer %s\n' "$PLAUD_ACCESS_TOKEN") -H 'Accept: application/json' "$PLAUD_API_BASE_URL$1"; }
 
 plaud /open/third-party/users/current                  # the connected account
@@ -71,7 +71,7 @@ Authorization header. Transcript content is a JSON array of segments with
 `start_time` / `end_time` (milliseconds), `speaker` and `content`:
 
 ```bash
-source ~/.plaud/nuphos.env
+source ~/.plaud/cerin.env
 plaud "/open/third-party/files/$FILE_ID" | python3 -c '
 import json, sys, urllib.request
 file = json.load(sys.stdin)

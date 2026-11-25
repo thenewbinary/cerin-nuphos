@@ -26,7 +26,7 @@ export function previewSessionPrincipalChanged(
   return (
     session.userId !== nextUserId ||
     (nextRuntime !== undefined &&
-      session.runtime?.env?.NUPHOS_SESSION_ACTOR !== nextRuntime.env?.NUPHOS_SESSION_ACTOR)
+      session.runtime?.env?.CERIN_SESSION_ACTOR !== nextRuntime.env?.CERIN_SESSION_ACTOR)
   )
 }
 

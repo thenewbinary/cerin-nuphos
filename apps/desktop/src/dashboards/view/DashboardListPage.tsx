@@ -17,20 +17,20 @@ import { useDashboardMenuItems } from './useDashboardMenuItems'
 import { splitByVisibility } from './visibility'
 
 import type { Column } from '../../components/Table'
-import type { NuphosDashboard, OpenAgentChat } from '../schema'
+import type { CerinDashboard, OpenAgentChat } from '../schema'
 import type { Dispatch, SetStateAction } from 'react'
 
 type Props = {
   embedded?: boolean
   teamId: string
   loading: boolean
-  dashboards: NuphosDashboard[]
-  setDashboards: Dispatch<SetStateAction<NuphosDashboard[]>>
-  visibleDashboards: NuphosDashboard[]
-  dashboardToDelete: NuphosDashboard | null
-  setDashboardToDelete: Dispatch<SetStateAction<NuphosDashboard | null>>
+  dashboards: CerinDashboard[]
+  setDashboards: Dispatch<SetStateAction<CerinDashboard[]>>
+  visibleDashboards: CerinDashboard[]
+  dashboardToDelete: CerinDashboard | null
+  setDashboardToDelete: Dispatch<SetStateAction<CerinDashboard | null>>
   createDashboard: () => Promise<void>
-  deleteDashboard: (dashboard: NuphosDashboard) => Promise<void>
+  deleteDashboard: (dashboard: CerinDashboard) => Promise<void>
   onOpenAgentChat: OpenAgentChat
   onDashboardOpened?: (d: { dashboardId: string; dashboardName: string } | null) => void
 }
@@ -50,7 +50,7 @@ export function DashboardListPage({
   onDashboardOpened,
 }: Props) {
   // Hooks sit above the empty-state early return so their order stays stable.
-  const [menu, setMenu] = useState<{ row: NuphosDashboard; x: number; y: number } | null>(null)
+  const [menu, setMenu] = useState<{ row: CerinDashboard; x: number; y: number } | null>(null)
   const role = useTeamRole(teamId)
   const menuItems = useDashboardMenuItems(teamId, setDashboards, setDashboardToDelete)
   const canCreate = role !== undefined // a new dashboard is personal: no team write role needed
@@ -82,7 +82,7 @@ export function DashboardListPage({
     )
   }
 
-  const columns: Column<NuphosDashboard>[] = [
+  const columns: Column<CerinDashboard>[] = [
     {
       key: 'name',
       header: t('Name'),
@@ -183,7 +183,7 @@ export function DashboardListPage({
 }
 
 /** The list's two sections, each with the filtered rows and what to say when it has none. */
-function listSections(visible: NuphosDashboard[], all: NuphosDashboard[]) {
+function listSections(visible: CerinDashboard[], all: CerinDashboard[]) {
   const shown = splitByVisibility(visible)
   const owned = splitByVisibility(all)
 
@@ -217,17 +217,17 @@ function SectionBody({
   hasMenu,
 }: {
   embedded: boolean
-  rows: NuphosDashboard[]
-  columns: Column<NuphosDashboard>[]
+  rows: CerinDashboard[]
+  columns: Column<CerinDashboard>[]
   loading: boolean
   empty: string
-  onOpen: (dashboard: NuphosDashboard) => void
-  onMenu: (row: NuphosDashboard, position: { x: number; y: number }) => void
-  hasMenu: (row: NuphosDashboard) => boolean
+  onOpen: (dashboard: CerinDashboard) => void
+  onMenu: (row: CerinDashboard, position: { x: number; y: number }) => void
+  hasMenu: (row: CerinDashboard) => boolean
 }) {
   if (!embedded) {
     return (
-      <Table<NuphosDashboard>
+      <Table<CerinDashboard>
         columns={columns}
         rows={rows}
         rowKey={(d) => d.id}

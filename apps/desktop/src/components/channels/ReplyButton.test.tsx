@@ -16,7 +16,7 @@ const post = {
   metadata: {
     version: 1,
     sender: { type: 'user', id: 'alex', displayName: 'Alex' },
-    source: 'nuphos',
+    source: 'cerin',
     sentAt: '2026-11-13T09:00:00Z',
   },
 } as unknown as AgentPersistedMessage

@@ -20,7 +20,7 @@ import { fetchSlackUserName } from '@/lib/slack/user-profile'
 import { requireAuth } from '@/middleware/auth'
 import { resolveVerifiedTeamId } from '@/routes/agent'
 import {
-  normalizeNuphosUserId,
+  normalizeCerinUserId,
   normalizeSlackId,
   requireTeamAdmin,
   requireTeamMember,
@@ -62,7 +62,7 @@ export function registerSlackUserMappingRoutes(
           mapping.slackUserId,
         )
         const matchMethod =
-          mapping.createdBy === 'auto:nuphos-email' || mapping.createdBy === 'auto:slack-email'
+          mapping.createdBy === 'auto:cerin-email' || mapping.createdBy === 'auto:slack-email'
             ? 'email'
             : bot.binding.installerSlackUserId === mapping.slackUserId
               ? 'oauth_installer'
@@ -124,7 +124,7 @@ export function registerSlackUserMappingRoutes(
         botToken: candidate.botToken,
         slackWorkspaceId: candidate.slackWorkspaceId,
         teamId,
-        nuphosUserId: userId,
+        cerinUserId: userId,
       })
 
       if (!mapping) continue
@@ -134,7 +134,7 @@ export function registerSlackUserMappingRoutes(
         mapping.slackUserId,
       )
       const matchMethod =
-        mapping.createdBy === 'auto:nuphos-email' || mapping.createdBy === 'auto:slack-email'
+        mapping.createdBy === 'auto:cerin-email' || mapping.createdBy === 'auto:slack-email'
           ? 'email'
           : candidate.installerSlackUserId === mapping.slackUserId
             ? 'oauth_installer'
@@ -169,11 +169,11 @@ export function registerSlackUserMappingRoutes(
     const slackWorkspaceId = normalizeSlackId(body.slackWorkspaceId, 'slackWorkspaceId')
     const slackUserId = normalizeSlackId(body.slackUserId, 'slackUserId')
     // Prevent claiming a Slack member ID that is already linked to a different
-    // Nuphos user: otherwise any member could overwrite someone else's mapping
+    // Cerin user: otherwise any member could overwrite someone else's mapping
     // and act in Slack as them.
     const existing = await getSlackUserMapping(slackWorkspaceId, teamId, slackUserId)
 
-    if (existing && existing.nuphosUserId !== userId) {
+    if (existing && existing.cerinUserId !== userId) {
       throw new AppError(
         409,
         'conflict',
@@ -184,7 +184,7 @@ export function registerSlackUserMappingRoutes(
       slackWorkspaceId,
       slackUserId,
       teamId,
-      nuphosUserId: userId,
+      cerinUserId: userId,
       createdBy: userId,
       enabled: true,
     })
@@ -212,19 +212,19 @@ export function registerSlackUserMappingRoutes(
 
     const slackWorkspaceId = normalizeSlackId(body.slackWorkspaceId, 'slackWorkspaceId')
     const slackUserId = normalizeSlackId(body.slackUserId, 'slackUserId')
-    const nuphosUserId =
-      body.nuphosUserId === undefined ? userId : normalizeNuphosUserId(body.nuphosUserId)
-    const targetMembership = await getTeamMembership(nuphosUserId, teamId)
+    const cerinUserId =
+      body.cerinUserId === undefined ? userId : normalizeCerinUserId(body.cerinUserId)
+    const targetMembership = await getTeamMembership(cerinUserId, teamId)
 
     if (!targetMembership) {
-      throw new AppError(400, 'invalid_request', 'nuphosUserId must belong to the mapped team')
+      throw new AppError(400, 'invalid_request', 'cerinUserId must belong to the mapped team')
     }
 
     const mapping = await upsertSlackUserMapping({
       slackWorkspaceId,
       slackUserId,
       teamId,
-      nuphosUserId,
+      cerinUserId,
       createdBy: userId,
       enabled: typeof body.enabled === 'boolean' ? body.enabled : true,
     })

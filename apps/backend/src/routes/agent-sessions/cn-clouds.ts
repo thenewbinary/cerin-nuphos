@@ -31,7 +31,7 @@ import type { AgentVars } from '@/routes/agent-sessions/shared'
 // ── CN-cloud BYOS providers (Tencent / Aliyun / Volcengine) ─────────────────
 // Session-scoped credential endpoints, gated on the conversation's
 // credentialAccess like every other provider above. The skills' setup scripts
-// hit these (instead of the team-scoped routes) when NUPHOS_SESSION_ID is set,
+// hit these (instead of the team-scoped routes) when CERIN_SESSION_ID is set,
 // so an agent session can only mint credentials for accounts the user enabled
 // in the credential selector.
 

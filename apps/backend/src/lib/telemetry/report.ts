@@ -268,14 +268,14 @@ export async function setTelemetryEnabled(enabled: boolean): Promise<TelemetrySt
     throw new AppError(
       400,
       'telemetry_key_missing',
-      'NUPHOS_TELEMETRY_KEY is not set; set it and restart the backend to send health reports',
+      'CERIN_TELEMETRY_KEY is not set; set it and restart the backend to send health reports',
     )
   }
   if (enabled && !config.telemetry.url) {
     throw new AppError(
       400,
       'telemetry_url_missing',
-      'NUPHOS_TELEMETRY_URL is not set; set it and restart the backend to send health reports',
+      'CERIN_TELEMETRY_URL is not set; set it and restart the backend to send health reports',
     )
   }
   await stateCollection().updateOne(

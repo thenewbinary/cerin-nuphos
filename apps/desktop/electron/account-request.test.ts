@@ -6,8 +6,8 @@ import { after, mock, test } from 'node:test'
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'account-request-'))
 
-process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
-process.env.NUPHOS_API_URL = 'https://a.example.test'
+process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
+process.env.CERIN_API_URL = 'https://a.example.test'
 mock.module('./analytics.ts', { namedExports: { captureMain: () => {} } })
 mock.module('./client-version.ts', {
   namedExports: { CLIENT_VERSION_HEADER: 'x-test', CLIENT_VERSION_VALUE: 'test' },

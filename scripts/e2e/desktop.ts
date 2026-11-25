@@ -38,14 +38,14 @@ export async function startDesktop(
     cwd: DESKTOP_DIR,
     env: {
       ...env,
-      NUPHOS_API_URL: apiUrl,
+      CERIN_API_URL: apiUrl,
       // The app's sign-in files, kept apart from the logs so a run's artifacts carry no token.
-      NUPHOS_CLI_CONFIG: join(signIn, 'cli.yaml'),
+      CERIN_CLI_CONFIG: join(signIn, 'cli.yaml'),
       // A name of its own gives the app a profile of its own, away from any installed app's.
       ATLAS_DEV_SUFFIX: `e2e-${String(cdpPort)}`,
       ATLAS_DEV_CDP_PORT: String(cdpPort),
       // Adding an agent installs fixture-claude.mjs, never a vendor's CLI.
-      NUPHOS_E2E_AGENT_INSTALLER: resolve(import.meta.dirname, 'fixture-install.sh'),
+      CERIN_E2E_AGENT_INSTALLER: resolve(import.meta.dirname, 'fixture-install.sh'),
     },
   })
   const cdp = `http://127.0.0.1:${String(cdpPort)}`

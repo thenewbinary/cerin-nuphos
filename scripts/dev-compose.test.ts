@@ -27,7 +27,7 @@ test('reset asks first unless --yes is passed', () => {
 test('runtime-password prints the password the runtime generated', () => {
   assert.deepEqual(parseStackCommand(['runtime-password']), {
     kind: 'run',
-    args: ['exec', '-T', 'runtime', 'cat', '/home/node/.nuphos-runtime/auth-key'],
+    args: ['exec', '-T', 'runtime', 'cat', '/home/node/.cerin-runtime/auth-key'],
   })
 })
 
@@ -47,17 +47,17 @@ test('anything else prints usage', () => {
 })
 
 test('stack secrets keep a running stack S3 keys, else the main checkout, else fresh ones', () => {
-  const example = 'NUPHOS_JWT_SECRET=\nS3_ACCESS_KEY=nuphos-local\nS3_SECRET_KEY=\n'
-  const existing = 'NUPHOS_JWT_SECRET=jwt\nS3_ACCESS_KEY=nuphos-local\nS3_SECRET_KEY=old\n'
-  const running = { access: 'nuphos-local', secret: 'live' }
+  const example = 'CERIN_JWT_SECRET=\nS3_ACCESS_KEY=cerin-local\nS3_SECRET_KEY=\n'
+  const existing = 'CERIN_JWT_SECRET=jwt\nS3_ACCESS_KEY=cerin-local\nS3_SECRET_KEY=old\n'
+  const running = { access: 'cerin-local', secret: 'live' }
 
   assert.equal(stackEnvText(example, existing, null), existing)
   assert.equal(
     stackEnvText(example, existing, running),
-    'NUPHOS_JWT_SECRET=jwt\nS3_ACCESS_KEY=nuphos-local\nS3_SECRET_KEY=live\n',
+    'CERIN_JWT_SECRET=jwt\nS3_ACCESS_KEY=cerin-local\nS3_SECRET_KEY=live\n',
   )
   assert.match(
     stackEnvText(example, null, null),
-    /^NUPHOS_JWT_SECRET=[\da-f]{64}\nS3_ACCESS_KEY=nuphos-local\nS3_SECRET_KEY=[\da-f]{64}\n$/,
+    /^CERIN_JWT_SECRET=[\da-f]{64}\nS3_ACCESS_KEY=cerin-local\nS3_SECRET_KEY=[\da-f]{64}\n$/,
   )
 })

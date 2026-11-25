@@ -70,7 +70,7 @@ minimum system version, matching macOS 12 in the package configuration.
 `linux/amd64` and `linux/arm64` as:
 
 ```text
-ghcr.io/nuphos/backend:vX.Y.Z
+ghcr.io/thenewbinary/cerin-backend:vX.Y.Z
 ```
 
 The workflow uses the repository's built-in `GITHUB_TOKEN` with `packages: write`;
@@ -117,8 +117,8 @@ Environment secrets:
   Distribution identity, created once and reused so builds never request new
   certificates.
 - `APPLE_APPSTORE_PROFILE_BASE64`, the App Store provisioning profile for
-  `ai.nuphos.ios`. Its name must match `PROVISIONING_PROFILE_SPECIFIER` in the
+  `ai.cerin.ios`. Its name must match `PROVISIONING_PROFILE_SPECIFIER` in the
   project and `ExportOptions.plist`. If it lacks Push Notifications, the build ships without push
   and the run warns.
 - `APPLE_WIDGETS_APPSTORE_PROFILE_BASE64`, the App Store provisioning profile
-  for the Live Activity extension, `ai.nuphos.ios.widgets`, named the same way.
+  for the Live Activity extension, `ai.cerin.ios.widgets`, named the same way.

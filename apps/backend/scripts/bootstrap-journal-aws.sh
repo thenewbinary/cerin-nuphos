@@ -2,11 +2,11 @@
 # One-time AWS setup for the tamper-evident audit journal.
 #
 # Creates (idempotent):
-#   - S3 bucket   nuphos-audit-journal   with Object Lock (governance mode)
+#   - S3 bucket   cerin-audit-journal   with Object Lock (governance mode)
 #     enabled AT CREATION (it cannot be enabled later), versioning implied,
 #     default retention JOURNAL_RETENTION_DAYS, public access fully blocked,
 #     and an explicit bucket-policy Deny on deletes/retention changes.
-#   - KMS key     alias/nuphos-journal-signing   asymmetric ECC_NIST_P256
+#   - KMS key     alias/cerin-journal-signing   asymmetric ECC_NIST_P256
 #     SIGN_VERIFY, for segment manifest signatures.
 #   - Prints the IAM separation-of-duties policy JSON (v2 #3):
 #       sealer   — PutObject + kms:Sign only (no delete, no retention edits,
@@ -25,8 +25,8 @@
 set -euo pipefail
 
 REGION="${JOURNAL_S3_REGION:-us-east-1}"
-BUCKET="${JOURNAL_S3_BUCKET:-nuphos-audit-journal}"
-KMS_ALIAS="alias/nuphos-journal-signing"
+BUCKET="${JOURNAL_S3_BUCKET:-cerin-audit-journal}"
+KMS_ALIAS="alias/cerin-journal-signing"
 RETENTION_DAYS="${JOURNAL_RETENTION_DAYS:-400}"
 
 ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
@@ -101,7 +101,7 @@ if aws kms describe-key --key-id "$KMS_ALIAS" --region "$REGION" >/dev/null 2>&1
 else
   KEY_ID="$(aws kms create-key --region "$REGION" \
     --key-spec ECC_NIST_P256 --key-usage SIGN_VERIFY \
-    --description 'Nuphos audit journal segment signing' \
+    --description 'Cerin audit journal segment signing' \
     --query 'KeyMetadata.KeyId' --output text)"
   aws kms create-alias --region "$REGION" --alias-name "$KMS_ALIAS" --target-key-id "$KEY_ID"
   echo "Created KMS signing key: $KEY_ID ($KMS_ALIAS)"

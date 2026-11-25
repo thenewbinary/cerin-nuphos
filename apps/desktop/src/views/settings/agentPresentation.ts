@@ -8,7 +8,7 @@ import type { LocalRuntimeSummary, RuntimeInstance, RuntimeQuota } from '../../t
 
 /**
  * A person's own computer's default agent whose CLI is signed in. That computer's report
- * lists it whatever Nuphos forgets, so it cannot be removed while it stays signed in.
+ * lists it whatever Cerin forgets, so it cannot be removed while it stays signed in.
  */
 export function ownSignedInCli(instance: RuntimeInstance): boolean {
   const local = instance.local
@@ -18,7 +18,7 @@ export function ownSignedInCli(instance: RuntimeInstance): boolean {
 
 /**
  * How a computer's agent is removed: an added one by its id, a default one by its provider
- * (as for rename). A person's own computer's default is their CLI login, so Nuphos only
+ * (as for rename). A person's own computer's default is their CLI login, so Cerin only
  * forgets it, and only while that CLI is signed out; it shows again once it signs in (see
  * visibleAgent).
  */

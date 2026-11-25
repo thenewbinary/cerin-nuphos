@@ -83,14 +83,14 @@ test("a plan's question is its plan card, so it is not drawn twice", () => {
       {
         type: 'tool',
         toolName: 'plan_create',
-        toolCallId: 'nuphos-plan-7-1',
+        toolCallId: 'cerin-plan-7-1',
         output: { planId: '7', status: 'proposed' },
         state: 'output-available',
       },
     ],
   }
   const asked: ReplyQuestion = {
-    id: 'nuphos-plan-7-1',
+    id: 'cerin-plan-7-1',
     question: 'Approve plan #7?',
     options: ['Approve', 'Reject'],
   }

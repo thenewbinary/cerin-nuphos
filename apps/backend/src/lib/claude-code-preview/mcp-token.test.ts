@@ -165,10 +165,10 @@ describe('redactSignedTokens', () => {
       teamId: 'team-1',
     })
     const skills = mintRuntimeSkillsToken('team-1', 'user-1')
-    const frame = JSON.stringify({ text: `NUPHOS_TOKEN=${token}\nBearer ${token}\tS=${skills}` })
+    const frame = JSON.stringify({ text: `CERIN_TOKEN=${token}\nBearer ${token}\tS=${skills}` })
 
     expect(JSON.parse(redactSignedTokens(frame))).toEqual({
-      text: 'NUPHOS_TOKEN=[redacted]\nBearer [redacted]\tS=[redacted]',
+      text: 'CERIN_TOKEN=[redacted]\nBearer [redacted]\tS=[redacted]',
     })
   })
 

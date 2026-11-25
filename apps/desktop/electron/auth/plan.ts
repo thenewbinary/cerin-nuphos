@@ -38,9 +38,9 @@ export async function socialProviders(api: string = apiUrl()): Promise<SocialOpt
   }
   if (!response.ok) return []
 
-  const oidcName = response.headers.get('X-Nuphos-Social-Oidc-Name') || 'SSO'
+  const oidcName = response.headers.get('X-Cerin-Social-Oidc-Name') || 'SSO'
 
-  return (response.headers.get('X-Nuphos-Social-Providers') ?? '')
+  return (response.headers.get('X-Cerin-Social-Providers') ?? '')
     .split(',')
     .filter((p): p is SocialProvider => p === 'google' || p === 'apple' || p === 'oidc')
     .map((provider) => ({

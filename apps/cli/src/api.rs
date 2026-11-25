@@ -11,7 +11,7 @@ use reqwest::StatusCode;
 use serde_json::{json, Value};
 use tokio::sync::mpsc::UnboundedSender;
 
-const CLIENT: &str = concat!("nuphos-cli/", env!("CARGO_PKG_VERSION"));
+const CLIENT: &str = concat!("cerin-cli/", env!("CARGO_PKG_VERSION"));
 /// The backend heartbeats every ~5 s; this much silence means a dead socket.
 const IDLE_TIMEOUT: Duration = Duration::from_secs(45);
 
@@ -369,8 +369,8 @@ impl Api {
             return Err(error.message);
         };
 
-        // `NUPHOS_DEBUG_FRAMES=<file>` appends every event, for debugging.
-        let mut debug = std::env::var_os("NUPHOS_DEBUG_FRAMES").and_then(|path| {
+        // `CERIN_DEBUG_FRAMES=<file>` appends every event, for debugging.
+        let mut debug = std::env::var_os("CERIN_DEBUG_FRAMES").and_then(|path| {
             let mut options = std::fs::OpenOptions::new();
             options.create(true).append(true);
             // It holds whole conversations, like cli.yaml holds the token.

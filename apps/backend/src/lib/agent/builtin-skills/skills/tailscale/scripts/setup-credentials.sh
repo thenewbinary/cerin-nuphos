@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 if [ "$#" -lt 2 ]; then
@@ -10,7 +10,7 @@ if [ "$#" -lt 2 ]; then
 Usage: setup-credentials.sh <teamId> <clientId>
 
 Fetches a short-lived Tailscale OAuth access token from Cerin backend and
-writes ~/.tailscale/nuphos.env for later Tailscale API calls.
+writes ~/.tailscale/cerin.env for later Tailscale API calls.
 USAGE
   exit 2
 fi
@@ -18,8 +18,8 @@ fi
 team_id="$1"
 client_id="$2"
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is required" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is required" >&2
   exit 1
 fi
 
@@ -28,7 +28,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}/teams/${team_id}/tailscale-clients/${client_id}/credentials"
 
@@ -39,7 +39,7 @@ cleanup() {
 trap cleanup EXIT
 
 status="$(curl -fsS -w '%{http_code}' -o "$tmp" \
-  -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+  -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
   "$url" || true)"
 
 if [ "$status" != "200" ]; then
@@ -51,7 +51,7 @@ fi
 mkdir -p "$HOME/.tailscale"
 chmod 700 "$HOME/.tailscale"
 
-python3 - "$tmp" "$HOME/.tailscale/nuphos.env" <<'PY'
+python3 - "$tmp" "$HOME/.tailscale/cerin.env" <<'PY'
 import json
 import shlex
 import sys
@@ -79,7 +79,7 @@ with open(dest, "w", encoding="utf-8") as f:
     f.write("\n".join(lines))
 PY
 
-chmod 600 "$HOME/.tailscale/nuphos.env"
+chmod 600 "$HOME/.tailscale/cerin.env"
 
-echo "Wrote Tailscale credentials to ~/.tailscale/nuphos.env"
-echo "Run: source ~/.tailscale/nuphos.env"
+echo "Wrote Tailscale credentials to ~/.tailscale/cerin.env"
+echo "Run: source ~/.tailscale/cerin.env"

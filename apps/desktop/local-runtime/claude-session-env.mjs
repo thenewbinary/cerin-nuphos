@@ -1,21 +1,21 @@
 import {
-  constants as nuphosDesktopFs,
-  mkdirSync as nuphosDesktopMkdir,
-  writeFileSync as nuphosDesktopWrite,
+  constants as cerinDesktopFs,
+  mkdirSync as cerinDesktopMkdir,
+  writeFileSync as cerinDesktopWrite,
 } from 'node:fs'
-import { join as nuphosDesktopJoin } from 'node:path'
+import { join as cerinDesktopJoin } from 'node:path'
 
 /** macOS needs the host HOME for Keychain; only tool commands get the session HOME. */
-export function nuphosDesktopClaudeEnv(
+export function cerinDesktopClaudeEnv(
   isolated,
   runtimeEnv = process.env,
   platform = process.platform,
 ) {
   if (platform !== 'darwin' || !isolated.HOME) return isolated
   const quote = (value) => `'${String(value).replaceAll("'", "'\\''")}'`
-  const wrapper = nuphosDesktopJoin(isolated.HOME, 'tool-shell.sh')
-  nuphosDesktopMkdir(isolated.HOME, { recursive: true, mode: 0o700 })
-  nuphosDesktopWrite(
+  const wrapper = cerinDesktopJoin(isolated.HOME, 'tool-shell.sh')
+  cerinDesktopMkdir(isolated.HOME, { recursive: true, mode: 0o700 })
+  cerinDesktopWrite(
     wrapper,
     '#!/bin/sh\n' +
       Object.entries(isolated)
@@ -25,10 +25,10 @@ export function nuphosDesktopClaudeEnv(
     {
       mode: 0o700,
       flag:
-        nuphosDesktopFs.O_WRONLY |
-        nuphosDesktopFs.O_CREAT |
-        nuphosDesktopFs.O_TRUNC |
-        nuphosDesktopFs.O_NOFOLLOW,
+        cerinDesktopFs.O_WRONLY |
+        cerinDesktopFs.O_CREAT |
+        cerinDesktopFs.O_TRUNC |
+        cerinDesktopFs.O_NOFOLLOW,
     },
   )
   return {

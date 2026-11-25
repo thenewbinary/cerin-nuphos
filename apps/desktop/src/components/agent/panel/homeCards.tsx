@@ -171,12 +171,12 @@ export function GithubCard({
   card,
   onChange,
   onRemove,
-  onOpenNuphosLink,
+  onOpenCerinLink,
 }: {
   teamId: string
   card: HomeGithubCard
   onChange: (card: HomeGithubCard) => void
-  onOpenNuphosLink?: (href: string) => boolean
+  onOpenCerinLink?: (href: string) => boolean
   onRemove: () => void
 }) {
   const repoPath = (item: WithRepo<unknown>) =>
@@ -205,7 +205,7 @@ export function GithubCard({
       <PullRows
         pulls={shown.slice(0, MAX_ROWS)}
         onOpen={(pr) => {
-          onOpenNuphosLink?.(`${repoPath(pr)}/pull-requests/${String(pr.number)}?state=all`)
+          onOpenCerinLink?.(`${repoPath(pr)}/pull-requests/${String(pr.number)}?state=all`)
         }}
       />
     )
@@ -219,7 +219,7 @@ export function GithubCard({
       <RunRows
         runs={shown.slice(0, MAX_ROWS)}
         onOpen={(run) => {
-          onOpenNuphosLink?.(`${repoPath(run)}/workflows/${String(run.id)}`)
+          onOpenCerinLink?.(`${repoPath(run)}/workflows/${String(run.id)}`)
         }}
       />
     )

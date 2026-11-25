@@ -19,7 +19,7 @@ import type { Hono } from 'hono'
 
 /**
  * The IAM principal the customer grants Service Account Token Creator to — the
- * one Nuphos-side value the onboarding wizard asks them to paste. Team-scoped
+ * one Cerin-side value the onboarding wizard asks them to paste. Team-scoped
  * and non-secret: it names our pool and this team's subject, and confers nothing
  * without a grant on the customer's own service account.
  *

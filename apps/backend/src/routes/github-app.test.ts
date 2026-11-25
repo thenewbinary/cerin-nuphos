@@ -191,7 +191,7 @@ describe('GitHub installation flow', () => {
     expect(bindings.githubInstallations?.map((b) => b.installationId)).toEqual([OWN_INSTALLATION])
   })
 
-  test.each(['nuphos:', 'zeabur-atlas:', 'cerin:'])(
+  test.each(['cerin:', 'zeabur-atlas:', 'cerin:'])(
     'returns to cerin://github-callback when the setup redirect uses %s',
     async (scheme) => {
       const saved = config.byos.github.setupRedirect
@@ -231,7 +231,7 @@ describe('GitHub installation flow', () => {
   test('confirming needs the same browser', async () => {
     const { done } = await runFlow(OWN_INSTALLATION)
 
-    expect((await confirm(await done.text(), 'nuphos_github_install=other')).status).toBe(400)
+    expect((await confirm(await done.text(), 'cerin_github_install=other')).status).toBe(400)
     expect(bindings).toBeNull()
   })
 

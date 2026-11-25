@@ -12,7 +12,7 @@ function harness() {
       create: async (...args) => {
         calls.push(args)
 
-        return { roleId: 'created-id', roleArn: 'arn:aws:iam::123456789012:role/Nuphos' }
+        return { roleId: 'created-id', roleArn: 'arn:aws:iam::123456789012:role/Cerin' }
       },
     },
     { publish: async () => {} },
@@ -23,7 +23,7 @@ function harness() {
 
 test('connects directly using the authenticated actor and team', async () => {
   const { calls, handler } = harness()
-  const connector = { provider: 'aws', roleArn: 'arn:aws:iam::123456789012:role/Nuphos' }
+  const connector = { provider: 'aws', roleArn: 'arn:aws:iam::123456789012:role/Cerin' }
   const result = await handler({ label: 'Connect the AWS role', connector })
 
   expect(result.isError).not.toBe(true)
@@ -35,7 +35,7 @@ test('connects directly using the authenticated actor and team', async () => {
 
 test('rejects cross-team input, retired purposes, secrets, and malformed identifiers', async () => {
   const { calls, handler } = harness()
-  const connector = { provider: 'aws', roleArn: 'arn:aws:iam::123456789012:role/Nuphos' }
+  const connector = { provider: 'aws', roleArn: 'arn:aws:iam::123456789012:role/Cerin' }
 
   for (const args of [
     { connector, teamId: 'other-team' },

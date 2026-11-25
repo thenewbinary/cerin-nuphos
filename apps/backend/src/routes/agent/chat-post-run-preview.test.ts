@@ -98,7 +98,7 @@ async function logsOfTurnEndingWith(id: string, error: Error) {
       run,
       chatCtx: {
         userId: 'user-1',
-        nuphosToken: 'tok',
+        cerinToken: 'tok',
         requestId: 'r',
         streamId: `stream-${id}`,
       } as InternalChatCtx,
@@ -156,7 +156,7 @@ describe('launchAcceptedChatTurn on the Claude Code runtime', () => {
       run,
       chatCtx: {
         userId: 'teammate',
-        nuphosToken: 'tok',
+        cerinToken: 'tok',
         requestId: 'r',
         streamId: 'stream-1',
       } as InternalChatCtx,
@@ -208,7 +208,7 @@ describe('launchAcceptedChatTurn on the Claude Code runtime', () => {
       run,
       chatCtx: {
         userId: 'user-1',
-        nuphosToken: 'tok',
+        cerinToken: 'tok',
         requestId: 'r-fail',
         streamId: 'stream-persist-fail',
       } as InternalChatCtx,
@@ -243,7 +243,7 @@ describe('launchAcceptedChatTurn on the Claude Code runtime', () => {
       run,
       chatCtx: {
         userId: 'user-1',
-        nuphosToken: 'tok',
+        cerinToken: 'tok',
         requestId: 'r-stored',
         streamId: 'stream-stored',
       } as InternalChatCtx,
@@ -305,7 +305,7 @@ describe('launchAcceptedChatTurn on the Claude Code runtime', () => {
       run,
       chatCtx: {
         userId: 'user-1',
-        nuphosToken: 'tok',
+        cerinToken: 'tok',
         requestId: 'r',
         streamId: 'stream-reply',
       } as InternalChatCtx,
@@ -313,7 +313,7 @@ describe('launchAcceptedChatTurn on the Claude Code runtime', () => {
       body: {
         id: 'conv-reply',
         messages,
-        decisionReplyTo: 'nuphos-q1',
+        decisionReplyTo: 'cerin-q1',
       },
       teamId: 'team-1',
       messages,
@@ -327,7 +327,7 @@ describe('launchAcceptedChatTurn on the Claude Code runtime', () => {
     })
 
     await settled(() => seen.previewArgs.length === 1)
-    expect(seen.previewArgs[0]).toMatchObject({ decisionReplyTo: 'nuphos-q1' })
+    expect(seen.previewArgs[0]).toMatchObject({ decisionReplyTo: 'cerin-q1' })
   })
 
   test('a new chat’s first-turn pick is recorded as the person’s, from the app that sent it', async () => {
@@ -352,7 +352,7 @@ describe('launchAcceptedChatTurn on the Claude Code runtime', () => {
       run,
       chatCtx: {
         userId: 'user-1',
-        nuphosToken: 'tok',
+        cerinToken: 'tok',
         requestId: 'r',
         streamId: 'stream-first',
         client: 'ios',

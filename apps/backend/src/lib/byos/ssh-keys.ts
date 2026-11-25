@@ -36,7 +36,7 @@ function b64urlToBuf(s: string): Buffer {
 // Generates an ephemeral RSA SSH keypair. Returns the private key as a PKCS8
 // PEM (works with /usr/bin/ssh -i) and the public key in OpenSSH `ssh-rsa`
 // wire format suitable for AWS EC2 Instance Connect / GCP OS Login.
-export function generateEphemeralSshKey(comment = 'nuphos'): EphemeralSshKey {
+export function generateEphemeralSshKey(comment = 'cerin'): EphemeralSshKey {
   const { publicKey, privateKey } = generateKeyPairSync('rsa', { modulusLength: 3072 })
 
   const privateKeyPem = privateKey.export({ type: 'pkcs8', format: 'pem' })

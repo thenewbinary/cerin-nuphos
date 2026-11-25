@@ -124,7 +124,7 @@ describe('local_browser', () => {
     expect(fake.opened).toHaveLength(0)
   })
 
-  test("opens on the user's own screen when a Nuphos computer is also selected", async () => {
+  test("opens on the user's own screen when a Cerin computer is also selected", async () => {
     const targets: string[] = []
     const fake = device(null)
     const connect: DeviceToolDeps['connect'] = (c, deviceId, owner, purpose) => {
@@ -245,7 +245,7 @@ describe('local_browser fill', () => {
   const VALUE = 'A123-secret-value-456'
   const SITE = 'www.clinic.example'
   // eslint-disable-next-line sonarjs/publicly-writable-directories -- A path the tool is given as text; no file is opened.
-  const path = '/tmp/nuphos-secret-Ab12Cd/0/NATIONAL_ID'
+  const path = '/tmp/cerin-secret-Ab12Cd/0/NATIONAL_ID'
   const filled = {
     content: [{ type: 'text' as const, text: '[{"selector":"#id","filled":true}]' }],
   }
@@ -320,7 +320,7 @@ describe('local_browser fill', () => {
     )
 
     // eslint-disable-next-line sonarjs/publicly-writable-directories -- Paths the tool must refuse, given as text; no file is opened.
-    for (const other of ['/workspace/.env', '/etc/passwd', '/tmp/nuphos-secret-x/NAME', 'NAME'])
+    for (const other of ['/workspace/.env', '/etc/passwd', '/tmp/cerin-secret-x/NAME', 'NAME'])
       expect(
         (await handler({ action: 'fill', tab: 7, fields: [{ selector: '#id', path: other }] }))
           .isError,

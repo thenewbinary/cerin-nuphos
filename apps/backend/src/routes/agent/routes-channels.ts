@@ -237,11 +237,7 @@ channelRoutes.post('/conversations/:sessionId/channel-messages', async (c) => {
   // A client id makes a resend the same message; the transcript skips ids it has.
   const id = typeof body.id === 'string' && body.id.length <= 100 ? body.id : randomUUID()
   const [metadata, mentions] = await Promise.all([
-    createMessageMetadata(
-      userId,
-      'nuphos',
-      c.req.header('X-Nuphos-Device-Id')?.trim() || undefined,
-    ),
+    createMessageMetadata(userId, 'cerin', c.req.header('X-Cerin-Device-Id')?.trim() || undefined),
     resolveMentions(teamId, body.mentions, userId),
   ])
 

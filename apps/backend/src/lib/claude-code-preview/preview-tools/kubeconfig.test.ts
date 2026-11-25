@@ -64,7 +64,7 @@ describe('get_kubeconfig', () => {
     expect(lastFresh).toBe(true)
   })
 
-  test('rewrites exec contexts to a plugin that carries no Nuphos credential', async () => {
+  test('rewrites exec contexts to a plugin that carries no Cerin credential', async () => {
     contexts = [
       {
         contextName: 'aws/123456789012/prod',
@@ -87,7 +87,7 @@ describe('get_kubeconfig', () => {
     // skills script, a general bearer, or a token written into the file.
     expect(payload.kubeconfig).toContain('exec-credential')
     expect(payload.kubeconfig).not.toContain('get-credential.sh')
-    expect(payload.kubeconfig).toContain('OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN')
+    expect(payload.kubeconfig).toContain('OPENAB_CREDENTIALS_DIR/CERIN_TOKEN')
     expect(payload.kubeconfig).not.toMatch(/eyJ[\w-]+\.[\w-]+\./)
     expect(payload.kubeconfig).not.toContain('env:')
     expect(payload.kubeconfig).toContain('--fail-with-body')

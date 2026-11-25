@@ -7,7 +7,7 @@ description: Run Alibaba Cloud CLI (aliyun) commands from the sandbox to inspect
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -45,7 +45,7 @@ If `aliyun: command not found` (cold start without the runtime image), install i
 curl -fsSL https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz | tar xz && sudo mv aliyun /usr/local/bin/
 ```
 
-Cerin uses OIDC web-identity federation here (like AWS): the customer registers Cerin as a RAM OIDC identity provider and creates a RAM role trusting it, then Cerin calls `sts:AssumeRoleWithOIDC` to get short-lived credentials — no long-lived keys are stored. `setup-credentials.sh` calls `GET /teams/:teamId/aliyun-accounts/:accountId/credentials` on the Cerin backend with the user's `NUPHOS_TOKEN` and writes an `StsToken`-mode profile (AccessKeyId/AccessKeySecret + `sts_token`). These expire (assumed-role session), so re-run the script to refresh. The credentials carry exactly the role's permissions.
+Cerin uses OIDC web-identity federation here (like AWS): the customer registers Cerin as a RAM OIDC identity provider and creates a RAM role trusting it, then Cerin calls `sts:AssumeRoleWithOIDC` to get short-lived credentials — no long-lived keys are stored. `setup-credentials.sh` calls `GET /teams/:teamId/aliyun-accounts/:accountId/credentials` on the Cerin backend with the user's `CERIN_TOKEN` and writes an `StsToken`-mode profile (AccessKeyId/AccessKeySecret + `sts_token`). These expire (assumed-role session), so re-run the script to refresh. The credentials carry exactly the role's permissions.
 
 Always run `aliyun sts GetCallerIdentity` first to confirm which account you are about to operate on, and tell the user before doing anything mutating.
 

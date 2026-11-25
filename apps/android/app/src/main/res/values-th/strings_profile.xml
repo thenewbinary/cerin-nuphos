@@ -66,7 +66,7 @@
     <string name="profile_two_factor_remove">นำออก</string>
     <string name="profile_two_factor_add_passkey">เพิ่มพาสคีย์</string>
     <string name="profile_two_factor_turn_on">เปิด</string>
-    <string name="profile_two_factor_setup_step_add">1. เพิ่ม Nuphos ลงในแอปยืนยันตัวตนของคุณ</string>
+    <string name="profile_two_factor_setup_step_add">1. เพิ่ม Cerin ลงในแอปยืนยันตัวตนของคุณ</string>
     <string name="profile_two_factor_open_authenticator">เปิดในแอปยืนยันตัวตน</string>
     <string name="profile_two_factor_enter_key">หรือป้อนคีย์นี้:</string>
     <string name="profile_two_factor_setup_step_code">2. ป้อนรหัส 6 หลักที่แอปแสดง</string>

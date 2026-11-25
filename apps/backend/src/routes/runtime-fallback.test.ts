@@ -6,7 +6,7 @@ import { deviceAccessDeps } from '@/lib/agent/devices/box-access'
 import { errorHandler } from '@/lib/errors'
 import { useModels } from '@/lib/test/doubles/models'
 
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 import type { TeamAuthVariables } from '@/middleware/auth'
 
 const TEAM_ID = new ObjectId()
@@ -34,7 +34,7 @@ useModels({
 const { runtimeFallbackRoutes } = await import('@/routes/runtime-fallback')
 
 let userId = 'owner'
-let teamRole: NuphosTeamRole = 'EDITOR'
+let teamRole: CerinTeamRole = 'EDITOR'
 const app = new Hono<{ Variables: TeamAuthVariables }>()
 
 app.use('*', async (c, next) => {

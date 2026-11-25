@@ -12,7 +12,7 @@ import { createInterface } from 'node:readline'
 const binary = process.argv[2]
 
 if (!binary) throw new Error('Usage: node test/codex-resume-env-smoke.mjs <codex binary>')
-const base = mkdtempSync(join(tmpdir(), 'nuphos-codex-resume-smoke-'))
+const base = mkdtempSync(join(tmpdir(), 'cerin-codex-resume-smoke-'))
 
 mkdirSync(join(base, '.codex'))
 const child = spawn(resolve(binary), ['app-server'], {
@@ -57,7 +57,7 @@ const rpc = async (method, params) => {
   return result.result
 }
 const config = (actor) => ({
-  shell_environment_policy: { inherit: 'core', set: { NUPHOS_SMOKE_ACTOR: actor } },
+  shell_environment_policy: { inherit: 'core', set: { CERIN_SMOKE_ACTOR: actor } },
 })
 const out = join(base, 'actor')
 // The actor a shell in the thread sees, through the thread's own environment.
@@ -65,7 +65,7 @@ const actorOf = async (threadId) => {
   rmSync(out, { force: true })
   await rpc('thread/shellCommand', {
     threadId,
-    command: `printf %s "$NUPHOS_SMOKE_ACTOR" > ${out}`,
+    command: `printf %s "$CERIN_SMOKE_ACTOR" > ${out}`,
   })
   for (let i = 0; i < 100 && !(existsSync(out) && readFileSync(out, 'utf8')); i++)
     await new Promise((settle) => setTimeout(settle, 100))
@@ -74,7 +74,7 @@ const actorOf = async (threadId) => {
 }
 
 try {
-  await rpc('initialize', { clientInfo: { name: 'nuphos-resume-smoke', version: '1' } })
+  await rpc('initialize', { clientInfo: { name: 'cerin-resume-smoke', version: '1' } })
   const { thread } = await rpc('thread/start', { cwd: base, config: config('owner') })
 
   assert.equal(await actorOf(thread.id), 'owner')

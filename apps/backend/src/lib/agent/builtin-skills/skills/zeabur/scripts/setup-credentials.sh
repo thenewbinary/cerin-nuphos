@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 usage() {
@@ -10,7 +10,7 @@ usage() {
 Usage: setup-credentials.sh <teamId> <zeaburId>
 
 Fetches a Zeabur API token from the Cerin backend (using the user's
-NUPHOS_TOKEN) for a selected Cerin-bound Zeabur provider, then writes a private
+CERIN_TOKEN) for a selected Cerin-bound Zeabur provider, then writes a private
 env file so plain GraphQL/curl calls and the \`zeabur\` CLI work in later tool
 calls.
 
@@ -18,10 +18,10 @@ Arguments:
   teamId    Cerin team id (24-char hex)
   zeaburId  Zeabur identity id (the user or team id bound in Cerin)
 
-Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
+Required env: CERIN_TOKEN. Optional env: CERIN_BACKEND_URL (defaults to https://api.cerin.ai).
 
 After running, source the env file before each GraphQL/CLI call:
-  source ~/.zeabur/nuphos.env
+  source ~/.zeabur/cerin.env
 EOF
   exit 1
 }
@@ -31,8 +31,8 @@ if [ "$#" -lt 2 ]; then usage; fi
 team_id="$1"
 zeabur_id="$2"
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set in this sandbox" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is not set in this sandbox" >&2
   exit 1
 fi
 if ! command -v python3 >/dev/null 2>&1; then
@@ -40,7 +40,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 url="${base}/teams/${team_id}/zeabur-providers/${zeabur_id}/credentials"
 
@@ -50,7 +50,7 @@ trap 'rm -f "$tmp"' EXIT
 http_code="$(curl --http1.1 -sS -o "$tmp" -w '%{http_code}' \
   --connect-timeout 10 \
   --max-time 30 \
-  -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+  -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
   -H 'Accept: application/json' \
   "$url")"
 
@@ -62,7 +62,7 @@ if [ "$http_code" != "200" ]; then
 fi
 
 env_dir="$HOME/.zeabur"
-env_path="$env_dir/nuphos.env"
+env_path="$env_dir/cerin.env"
 mkdir -p "$env_dir"
 chmod 700 "$env_dir"
 
@@ -93,6 +93,6 @@ if command -v zeabur >/dev/null 2>&1; then
     || echo "zeabur CLI present but token login failed; use GraphQL over curl instead" >&2
 fi
 
-echo "Wrote Zeabur credentials to ~/.zeabur/nuphos.env"
+echo "Wrote Zeabur credentials to ~/.zeabur/cerin.env"
 echo "  zeaburId: ${zeabur_id}"
-echo "Next: source ~/.zeabur/nuphos.env  # exports ZEABUR_TOKEN for GraphQL/CLI calls"
+echo "Next: source ~/.zeabur/cerin.env  # exports ZEABUR_TOKEN for GraphQL/CLI calls"

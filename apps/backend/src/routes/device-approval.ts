@@ -12,7 +12,7 @@ import type { Quota } from '@/lib/identity/device-login-quota'
 import type { SocialProvider } from '@/lib/identity/social'
 import type { Context } from 'hono'
 
-/** Where `nuphos login` sends people on a server with its own OIDC provider. */
+/** Where `cerin login` sends people on a server with its own OIDC provider. */
 export const DEVICE_PAGE_PATH = '/auth/social/device'
 
 const STYLE =
@@ -33,7 +33,7 @@ export function providerName(provider: SocialProvider) {
 }
 
 async function signedInUser(c: Context) {
-  const token = getCookie(c, '__Host-nuphos-social')
+  const token = getCookie(c, '__Host-cerin-social')
 
   return token ? ((await authenticateToken(token))?.user ?? null) : null
 }

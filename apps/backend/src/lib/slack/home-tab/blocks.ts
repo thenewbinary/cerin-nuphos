@@ -1,15 +1,15 @@
 import { escapeSlackMrkdwn } from '@/lib/slack/mrkdwn'
 
-import type { NuphosTeamRole } from '@/lib/identity'
+import type { CerinTeamRole } from '@/lib/identity'
 
 // ─── App Home (Home tab) ─────────────────────────────────────────────────────
 // The Home tab is published per user via views.publish on app_home_opened, so
-// it can show the viewer's own state: which Nuphos team this Slack workspace is
-// connected to, whether THEIR Slack account is linked to a Nuphos user, and
+// it can show the viewer's own state: which Cerin team this Slack workspace is
+// connected to, whether THEIR Slack account is linked to a Cerin user, and
 // which of the team's cloud credentials their allowlists actually grant.
 
 // Re-publishes the Home view with fresh data (block_actions in /interactions).
-export const HOME_REFRESH_ACTION = 'nuphos_home_refresh'
+export const HOME_REFRESH_ACTION = 'cerin_home_refresh'
 
 export type SlackHomeCredentialGroup = { provider: string; entries: string[] }
 
@@ -20,7 +20,7 @@ export type SlackHomeViewModel = {
   // Null when the viewer's Slack account has no enabled mapping to a current
   // team member — the view then explains how linking works instead of showing
   // member-scoped data.
-  viewer: { name: string; email: string; role: NuphosTeamRole | null } | null
+  viewer: { name: string; email: string; role: CerinTeamRole | null } | null
   linkedChannelIds: string[]
   credentials: SlackHomeCredentialGroup[]
 }
@@ -152,13 +152,13 @@ export function linkedChannelBlocks(model: SlackHomeViewModel): unknown[] {
     },
     {
       type: 'actions',
-      block_id: 'nuphos_home_actions',
+      block_id: 'cerin_home_actions',
       elements: [
         ...(canLinkChannels
           ? [
               {
                 type: 'conversations_select',
-                action_id: 'nuphos_link_channel',
+                action_id: 'cerin_link_channel',
                 placeholder: { type: 'plain_text', text: 'Link a channel' },
                 filter: { include: ['public', 'private'] },
               },

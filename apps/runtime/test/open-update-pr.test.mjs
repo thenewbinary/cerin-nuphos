@@ -11,7 +11,7 @@ const script = new URL('../scripts/open-update-pr.sh', import.meta.url).pathname
 // openPr for `pr list` (what gh prints after --jq), and a URL for `pr create`.
 // The GraphQL request is kept in `graphql` for the commit-message assertions.
 function run(openPr, title) {
-  const bin = mkdtempSync(join(tmpdir(), 'nuphos-update-pr-'))
+  const bin = mkdtempSync(join(tmpdir(), 'cerin-update-pr-'))
   const calls = join(bin, 'calls')
   writeFileSync(join(bin, 'open-pr'), openPr)
   writeFileSync(
@@ -20,7 +20,7 @@ function run(openPr, title) {
 echo "$*" >> ${calls}
 case "$*" in
   "pr list"*) cat ${bin}/open-pr ;;
-  "pr create"*) echo https://github.com/nuphos/nuphos/pull/410 ;;
+  "pr create"*) echo https://github.com/thenewbinary/cerin-platform/pull/410 ;;
   "api users/github-actions[bot]"*) echo 41898282 ;;
   *graphql*) cat > ${bin}/graphql ;;
 esac
@@ -31,7 +31,7 @@ esac
   const result = spawnSync('bash', [script, 'runtime/update', title, 'apps/runtime/package.json'], {
     env: {
       PATH: `${bin}:${process.env.PATH}`,
-      GITHUB_REPOSITORY: 'nuphos/nuphos',
+      GITHUB_REPOSITORY: 'thenewbinary/cerin-platform',
       GITHUB_WORKFLOW: 'Update Claude SDK',
       GITHUB_SERVER_URL: 'https://github.com',
       GITHUB_RUN_ID: '1',
@@ -52,7 +52,9 @@ test('a stale update pull request is closed before its branch is reset to main',
   const reset = log.findIndex((call) => call.includes('git/refs/heads/runtime/update'))
   const create = log.findIndex((call) => call.startsWith('pr create'))
   const comment = log.findIndex((call) =>
-    call.startsWith('pr comment 403 --repo nuphos/nuphos --body Superseded by https://'),
+    call.startsWith(
+      'pr comment 403 --repo thenewbinary/cerin-platform --body Superseded by https://',
+    ),
   )
   assert.ok(close !== -1 && close < reset && reset < create && create < comment, log.join('\n'))
   assert.match(log[0], /--app github-actions/)

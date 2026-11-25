@@ -33,7 +33,7 @@ function expireAndCite(stack: Stack, marker: string, refused: string, deleted: s
     import { MongoClient, ObjectId } from 'mongodb'
     const [uri, teamId, marker, refused, deleted] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const past = new Date(Date.now() - 60_000)
     await db.collection('file_transfer_groups').updateOne({ _id: new ObjectId(refused) }, { $set: { expiresAt: past } })
     await db.collection('file_transfer_groups').deleteOne({ _id: new ObjectId(deleted) })
@@ -42,7 +42,7 @@ function expireAndCite(stack: Stack, marker: string, refused: string, deleted: s
     const messages = db.collection('agent_messages')
     const index = await messages.countDocuments({ sessionId, userId })
     const now = new Date()
-    const text = 'Here are the screenshot and the walkthrough:\\n\\n![Screenshot](https://nuphos.ai/_reply-images/' + deleted + ')\\n\\n![Walkthrough](https://nuphos.ai/_reply-images/' + refused + ')'
+    const text = 'Here are the screenshot and the walkthrough:\\n\\n![Screenshot](https://platform.cerin.ai/_reply-images/' + deleted + ')\\n\\n![Walkthrough](https://platform.cerin.ai/_reply-images/' + refused + ')'
     await messages.insertOne({ sessionId, userId, messageId: 'reply-files', index, role: 'assistant', parts: [{ type: 'text', text }], createdAt: now, updatedAt: now })
     await db.collection('agent_conversations').updateOne({ sessionId, userId }, { $set: { messageCount: index + 1, transcriptUpdatedAt: now, lastActiveAt: now } })
     await client.close()`

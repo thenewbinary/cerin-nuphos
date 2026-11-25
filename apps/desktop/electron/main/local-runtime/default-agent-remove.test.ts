@@ -13,7 +13,7 @@ import type { LocalRuntimeControllerDeps } from './controller-types.ts'
 // A Box whose default agents are signed in: Claude in its own home, Codex through the
 // link to the Box user's ~/.codex/auth.json.
 function box(t: { after: (fn: () => void) => void }, ownsMachine: boolean) {
-  const root = mkdtempSync(path.join(os.tmpdir(), 'nuphos-default-remove-'))
+  const root = mkdtempSync(path.join(os.tmpdir(), 'cerin-default-remove-'))
   const owner = path.join(root, 'home', '.codex')
   const env = { PATH: '/mock', HOME: path.join(root, 'home') }
   const claudeLogin = path.join(root, 'users', 'alice', 'claude-home', '.credentials.json')

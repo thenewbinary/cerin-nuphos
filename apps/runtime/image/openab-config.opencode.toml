@@ -15,4 +15,4 @@
 working_dir = "/workspace"
 
 [agent.env]
-BASH_ENV = "/opt/nuphos-runtime/runtime-guard.sh"
+BASH_ENV = "/opt/cerin-runtime/runtime-guard.sh"

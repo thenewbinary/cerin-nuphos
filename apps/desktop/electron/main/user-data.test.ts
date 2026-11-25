@@ -11,7 +11,7 @@ const APP = 'Cerin'
 
 /** A throwaway appData directory, removed whether or not the test throws. */
 function withAppData(run: (appData: string) => void): void {
-  const appData = fs.mkdtempSync(path.join(os.tmpdir(), 'nuphos-user-data-'))
+  const appData = fs.mkdtempSync(path.join(os.tmpdir(), 'cerin-user-data-'))
 
   try {
     run(appData)

@@ -18,7 +18,7 @@ import type { InputRequest } from './db/pending-decision'
 
 export type { DecisionAnswer }
 
-const SENDER = 'nuphos:decision'
+const SENDER = 'cerin:decision'
 const BODY_EXCERPT = 600
 
 /** "Which regions? → us-east, eu-west", one line per question. */
@@ -98,7 +98,7 @@ export async function answerDecision(args: {
   if (request?.status !== 'open')
     throw new AppError(409, 'decision_already_answered', 'This question is no longer open')
   // A secret is typed in its masked card and a connection is made by selecting it: never as text here.
-  // An integration question naming nothing to select, e.g. a service Nuphos cannot connect, takes words.
+  // An integration question naming nothing to select, e.g. a service Cerin cannot connect, takes words.
   if (
     (request.category === 'integration' &&
       (Boolean(request.providers?.length) || Boolean(request.credentials?.length))) ||
@@ -196,7 +196,7 @@ async function wakeAsker(
 }
 
 /**
- * Tells each conversation the question was `about` the answer, as Nuphos, so
+ * Tells each conversation the question was `about` the answer, as Cerin, so
  * it need not ask again: only those the asker may message, as when it was
  * asked. The asker already has the answer, so a failure here is only logged.
  */

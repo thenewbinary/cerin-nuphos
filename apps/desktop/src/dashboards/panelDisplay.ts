@@ -1,8 +1,8 @@
-import type { DashboardPanel, NuphosDashboard } from './schema'
+import type { DashboardPanel, CerinDashboard } from './schema'
 
 /** The current successful run wins, including while a refresh response is
  * arriving ahead of the next detail poll. Otherwise keep the last good output. */
-export function panelDisplay(panel: DashboardPanel, range?: NuphosDashboard['timeRange']) {
+export function panelDisplay(panel: DashboardPanel, range?: CerinDashboard['timeRange']) {
   const snapshot =
     panel.currentSnapshot?.status === 'complete' && panel.currentSnapshot.output
       ? panel.currentSnapshot

@@ -20,7 +20,7 @@ export function store(stack: Stack, sessionId: string, id: string, metadata: obj
     import { MongoClient } from 'mongodb'
     const [uri, sessionId, id, metadata, text] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    const db = client.db('nuphos_e2e')
+    const db = client.db('cerin_e2e')
     const conversation = await db.collection('agent_conversations').findOne({ sessionId })
     const now = new Date()
     await db.collection('agent_messages').insertOne({

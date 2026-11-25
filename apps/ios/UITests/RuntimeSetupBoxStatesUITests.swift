@@ -29,7 +29,7 @@ final class RuntimeSetupBoxStatesUITests: XCTestCase {
     private func openGuide() -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "runtimes"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let add = app.buttons["Add computer"].firstMatch
         XCTAssertTrue(add.waitForExistence(timeout: 10), "Computers & runtimes did not open")
@@ -41,7 +41,7 @@ final class RuntimeSetupBoxStatesUITests: XCTestCase {
     func testAMemberIsToldOnlyAdministratorsRentOne() throws {
         try devices(["status": 200, "body": ["boxAvailable": true, "canCreateBox": false, "devices": []]])
         let app = openGuide()
-        XCTAssertTrue(app.staticTexts["Administrators rent computers from Nuphos."].waitForExistence(timeout: 10),
+        XCTAssertTrue(app.staticTexts["Administrators rent computers from Cerin."].waitForExistence(timeout: 10),
                       "A member is not told why there is no Box")
         XCTAssertFalse(app.buttons["new-box"].exists, "A member is offered a Box")
         shot(app, "member")
@@ -52,7 +52,7 @@ final class RuntimeSetupBoxStatesUITests: XCTestCase {
         let app = openGuide()
         let failed = app.staticTexts["Could not load computers."]
         XCTAssertTrue(failed.waitForExistence(timeout: 10), "A failed read says nothing")
-        XCTAssertFalse(app.staticTexts["Administrators rent computers from Nuphos."].exists, "A failed read blames the role")
+        XCTAssertFalse(app.staticTexts["Administrators rent computers from Cerin."].exists, "A failed read blames the role")
         shot(app, "failed-read")
         try devices(["status": 200, "body": ["boxAvailable": true, "canCreateBox": true, "devices": []]])
         app.buttons["Try again"].firstMatch.tap()
@@ -64,8 +64,8 @@ final class RuntimeSetupBoxStatesUITests: XCTestCase {
     func testADeploymentWithoutBoxesSaysNothingAboutThem() throws {
         try devices(["status": 200, "body": ["boxAvailable": false, "canCreateBox": false, "devices": []]])
         let app = openGuide()
-        XCTAssertTrue(app.links["Visit Nuphos"].waitForExistence(timeout: 10) || app.buttons["Visit Nuphos"].waitForExistence(timeout: 2))
-        XCTAssertFalse(app.staticTexts["Administrators rent computers from Nuphos."].exists, "A deployment without Boxes mentions renting one")
+        XCTAssertTrue(app.links["Visit Cerin"].waitForExistence(timeout: 10) || app.buttons["Visit Cerin"].waitForExistence(timeout: 2))
+        XCTAssertFalse(app.staticTexts["Administrators rent computers from Cerin."].exists, "A deployment without Boxes mentions renting one")
         XCTAssertFalse(app.staticTexts["Could not load computers."].exists)
     }
 

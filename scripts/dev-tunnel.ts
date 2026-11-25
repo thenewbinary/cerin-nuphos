@@ -33,7 +33,7 @@ function machineHasNamedTunnel(): boolean {
   try {
     const p = Bun.spawnSync(['cloudflared', 'tunnel', 'list'])
 
-    return p.success && p.stdout.toString().includes('nuphos-local-dev')
+    return p.success && p.stdout.toString().includes('cerin-local-dev')
   } catch {
     return false
   }
@@ -95,7 +95,7 @@ function spawnNamedTunnel() {
       'http2',
       '--no-autoupdate',
       'run',
-      'nuphos-local-dev',
+      'cerin-local-dev',
     ],
     { detached: true, stdio: ['ignore', out, out] },
   )
@@ -208,7 +208,7 @@ function applyQuickTunnelResult(url: string | null) {
 }
 
 // Bring up the tunnel for `port` and return the public URL to hand the backend
-// as NUPHOS_BACKEND_URL. Returns null when unavailable (backend still starts,
+// as CERIN_BACKEND_URL. Returns null when unavailable (backend still starts,
 // but sandbox callbacks fall back to PROD — surfaced loudly on the dashboard).
 export async function setupTunnel(port: number): Promise<string | null> {
   stopTunnel() // drop any quick tunnel from a previous (port-conflict) attempt

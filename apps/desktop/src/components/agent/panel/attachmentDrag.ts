@@ -5,7 +5,7 @@
  * type, so another chat attaches the same file instead of the browser dropping
  * the thumbnail's `<img>` into the editor as rich content.
  */
-export const ATTACHMENT_DRAG_TYPE = 'application/x-nuphos-attachment-paths'
+export const ATTACHMENT_DRAG_TYPE = 'application/x-cerin-attachment-paths'
 
 export function setAttachmentDragData(dt: DataTransfer, paths: string[]) {
   dt.setData(ATTACHMENT_DRAG_TYPE, JSON.stringify(paths))

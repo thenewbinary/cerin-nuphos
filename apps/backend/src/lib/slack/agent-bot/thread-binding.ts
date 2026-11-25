@@ -4,7 +4,7 @@ import { slackAgentThreads } from '@/lib/slack/agent-bot/collections'
 import type { SlackAgentThread } from '@/lib/slack/agent-bot/collections'
 
 /**
- * Bind a Slack root message to an existing Nuphos conversation. A session is
+ * Bind a Slack root message to an existing Cerin conversation. A session is
  * intentionally bound to at most one Slack root.
  */
 export async function bindSlackAgentThread(data: {

@@ -1,7 +1,7 @@
-// The fixture's Nuphos tools client: the streamable-HTTP MCP server each session was given.
+// The fixture's Cerin tools client: the streamable-HTTP MCP server each session was given.
 import { randomUUID } from 'node:crypto'
 
-// The Nuphos tools server each session was given, when the backend offers one.
+// The Cerin tools server each session was given, when the backend offers one.
 const tools = new Map()
 
 export const toolsServer = (sessionId) => tools.get(sessionId)
@@ -25,7 +25,7 @@ async function mcp(server, sessionHeader, method, params) {
   return { message: JSON.parse(data), session: response.headers.get('mcp-session-id') }
 }
 
-/** Calls one Nuphos tool the way a real agent does. */
+/** Calls one Cerin tool the way a real agent does. */
 export async function call(sessionId, name, args) {
   const server = tools.get(sessionId)
   const opened = await mcp(server, {}, 'initialize', {
@@ -51,8 +51,8 @@ export const reporting = (send) => async (sessionId, name, args) => {
 
   update({
     sessionUpdate: 'tool_call',
-    // Claude Code's name for a tool of the `nuphos-tools` server.
-    title: `mcp__nuphos-tools__${name}`,
+    // Claude Code's name for a tool of the `cerin-tools` server.
+    title: `mcp__cerin-tools__${name}`,
     kind: 'other',
     status: 'in_progress',
     rawInput: args,

@@ -84,7 +84,7 @@ function runtimeThreadStatus(payload: Record<string, unknown>): string | null {
   const meta = payload._meta
 
   if (!meta || typeof meta !== 'object') return null
-  const common = (meta as Record<string, unknown>)['ai.nuphos/sessionState']
+  const common = (meta as Record<string, unknown>)['ai.cerin/sessionState']
 
   if (
     common &&
@@ -182,7 +182,7 @@ function normalizeUpdate(payload: Record<string, unknown>): OpenAbSessionUpdate 
   }
   if (kind === 'session_info_update') {
     const suggestion = (payload._meta as Record<string, { suggestion?: unknown }> | undefined)?.[
-      'ai.nuphos/promptSuggestion'
+      'ai.cerin/promptSuggestion'
     ]?.suggestion
 
     if (typeof suggestion === 'string') return { kind: 'prompt-suggestion', suggestion }

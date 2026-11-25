@@ -19,7 +19,7 @@ function Value({ children }: { children: ReactNode }) {
 function Actor({ by }: { by: NonNullable<AgentTimelineEvent['by']> }) {
   if (by.type === 'person') return <Person person={by} />
   if (by.type === 'runtime') return <Runtime runtime={by} />
-  if (by.type === 'nuphos') return <Value>Cerin</Value>
+  if (by.type === 'cerin') return <Value>Cerin</Value>
 
   return (
     <>

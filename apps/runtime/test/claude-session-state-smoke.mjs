@@ -134,7 +134,7 @@ function harness(t) {
 
   const states = () =>
     updates
-      .map(({ update }) => update._meta?.['ai.nuphos/sessionState']?.state)
+      .map(({ update }) => update._meta?.['ai.cerin/sessionState']?.state)
       .filter((value) => value !== undefined)
 
   return {
@@ -257,7 +257,7 @@ test('loading a session publishes its state and records restoration phases', asy
   const conversation = randomUUID()
   const file = join(
     home,
-    '.nuphos',
+    '.cerin',
     'session-homes',
     createHash('sha256').update(conversation).digest('hex'),
     'session-restore.json',
@@ -284,7 +284,7 @@ test('loading a session publishes its state and records restoration phases', asy
       sessionId: SESSION,
       cwd: '/test',
       mcpServers: [],
-      _meta: { claudeCode: { options: { env: { NUPHOS_SESSION_ID: conversation } } } },
+      _meta: { claudeCode: { options: { env: { CERIN_SESSION_ID: conversation } } } },
     })
     const diagnostic = JSON.parse(await readFile(file, 'utf8'))
     assert.equal(diagnostic.status, 'completed')
@@ -293,7 +293,7 @@ test('loading a session publishes its state and records restoration phases', asy
     assert.ok(phases.includes('sdk-session'))
     assert.equal(phases.includes('history-replay'), method === 'loadSession')
     assert.deepEqual(
-      updates.map(({ update }) => update._meta?.['ai.nuphos/sessionState']?.state),
+      updates.map(({ update }) => update._meta?.['ai.cerin/sessionState']?.state),
       ['idle'],
       method,
     )
@@ -319,7 +319,7 @@ test('a prompt suggestion after the turn is forwarded as session info', async (t
     session_id: SESSION,
   })
   assert.deepEqual(
-    h.updates.map(({ update }) => update._meta?.['ai.nuphos/promptSuggestion']).filter(Boolean),
+    h.updates.map(({ update }) => update._meta?.['ai.cerin/promptSuggestion']).filter(Boolean),
     [{ suggestion: 'run the tests' }],
   )
 })

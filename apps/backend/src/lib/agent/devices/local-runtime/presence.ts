@@ -17,7 +17,7 @@ export type LocalRuntimePresence = {
   /** The tunnel connection currently holding the device; streams are addressed to it. */
   conn: string
   /** The app holding the tunnel, as it named itself in `x-atlas-client`
-   *  (`nuphos-desktop/0.94.0`). Absent from a host that sends no such header. */
+   *  (`cerin-desktop/0.94.0`). Absent from a host that sends no such header. */
   client?: string
   status?: LocalRuntimeStatus
   seenAt: number

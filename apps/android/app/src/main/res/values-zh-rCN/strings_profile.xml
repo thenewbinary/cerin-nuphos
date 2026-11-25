@@ -66,7 +66,7 @@
     <string name="profile_two_factor_remove">移除</string>
     <string name="profile_two_factor_add_passkey">添加通行密钥</string>
     <string name="profile_two_factor_turn_on">开启</string>
-    <string name="profile_two_factor_setup_step_add">1. 将 Nuphos 添加到你的验证器 App</string>
+    <string name="profile_two_factor_setup_step_add">1. 将 Cerin 添加到你的验证器 App</string>
     <string name="profile_two_factor_open_authenticator">在验证器 App 中打开</string>
     <string name="profile_two_factor_enter_key">或输入此密钥：</string>
     <string name="profile_two_factor_setup_step_code">2. 输入 App 显示的 6 位验证码</string>

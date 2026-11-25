@@ -6,15 +6,18 @@ import { githubRef, isBareGithubLink, turnGithubRefs } from './githubRefs.ts'
 import type { Part } from './parts.ts'
 
 test('githubRef reads pull requests and issues, including their tabs', () => {
-  assert.deepEqual(githubRef('https://github.com/nuphos/nuphos/pull/349/files#diff-1'), {
-    owner: 'nuphos',
-    repo: 'nuphos',
-    number: 349,
-    kind: 'pull',
-    url: 'https://github.com/nuphos/nuphos/pull/349',
-    // A deep link keeps its tab and anchor for navigation.
-    href: 'https://github.com/nuphos/nuphos/pull/349/files#diff-1',
-  })
+  assert.deepEqual(
+    githubRef('https://github.com/thenewbinary/cerin-platform/pull/349/files#diff-1'),
+    {
+      owner: 'thenewbinary',
+      repo: 'cerin-platform',
+      number: 349,
+      kind: 'pull',
+      url: 'https://github.com/thenewbinary/cerin-platform/pull/349',
+      // A deep link keeps its tab and anchor for navigation.
+      href: 'https://github.com/thenewbinary/cerin-platform/pull/349/files#diff-1',
+    },
+  )
   assert.equal(githubRef('https://github.com/a/b/issues/7')?.kind, 'issue')
 })
 

@@ -1,11 +1,11 @@
-# Nuphos
+# Cerin
 
-Electron desktop app for Nuphos — multi-cloud BYOS infra control plane.
+Electron desktop app for Cerin — multi-cloud BYOS infra control plane.
 
 ## Releases
 
 Release notes and version history are published on
-[GitHub Releases](https://github.com/zeabur/nuphos/releases).
+[GitHub Releases](https://github.com/thenewbinary/cerin-platform/releases).
 
 ## Develop
 
@@ -26,7 +26,7 @@ Each profile has its own login state. Do not launch Desktop separately.
 Local Codex automatically exposes `cua_repl` when the OpenAI App has installed
 an enabled `unified-computer-use` MCP manifest in the owner's Codex plugin cache.
 It uses the App's existing runtime, so that App and its Computer Use permissions
-must remain available; Nuphos does not download or install Computer Use itself.
+must remain available; Cerin does not download or install Computer Use itself.
 New or resumed conversations discover the installed runtime automatically.
 
 The agent keeps its isolated Codex home. Only the CUA server is imported, not
@@ -52,7 +52,7 @@ device with local exec allowed — and opens no debugging port.
 
 ### Box desktops
 
-On a Linux Box every conversation gets a `nuphos-desktop` MCP server
+On a Linux Box every conversation gets a `cerin-desktop` MCP server
 (`local-runtime/desktop-session.mjs`). It claims a display from the pool on its
 first tool call, not when the session starts. Agents open apps from the XFCE
 panel's launchers; their desktop guidance is in the backend runtime prompt, so a
@@ -64,7 +64,7 @@ newest runtime bundle, so nothing is built or kept by hand.
 
 ```bash
 pnpm electron:build
-open release/mac-arm64/Nuphos.app
+open release/mac-arm64/Cerin.app
 ```
 
 The unsigned `.app` works on the build machine, but macOS Gatekeeper will block
@@ -129,10 +129,10 @@ and every 6 hours). Updates are downloaded silently and installed on next quit.
    ```
 
    This signs, notarizes, builds `.dmg` + `.zip`, generates `latest-mac.yml`,
-   and uploads everything to `s3://nuphos-releases/desktop/`.
+   and uploads everything to `s3://cerin-releases/desktop/`.
 
 8. **Distribute** the `.dmg` URL for first-time installs:
-   `https://nuphos-releases.s3.amazonaws.com/desktop/Nuphos-<ver>-arm64.dmg`
+   `https://cerin-releases.s3.amazonaws.com/desktop/Cerin-<ver>-arm64.dmg`
 
 ### What end-users see
 
@@ -150,12 +150,12 @@ In **Settings → Local agent**, choose **Prevent Mac auto-sleep**:
   Approval waits count as part of an unfinished prompt; an idle conversation or
   a control/file connection does not. All tasks must finish before the assertion
   is released. Closing a stream or disconnecting clears its tracked activity.
-- **While signed in to Nuphos**: stay awake to receive new work, even while idle.
+- **While signed in to Cerin**: stay awake to receive new work, even while idle.
 
 **Only while connected to power** is enabled by default. Battery/power changes
 apply immediately. Preferences are stored in this Mac's Desktop app data, rather
 than your team or account settings. Signing out or quitting releases the sleep
-assertion. Closing a window keeps the policy only if Nuphos remains running.
+assertion. Closing a window keeps the policy only if Cerin remains running.
 
 The display may turn off and the screen may lock. This prevents **idle system
 sleep**; it does not guarantee operation with the lid closed, after choosing Sleep,
@@ -163,7 +163,7 @@ or during low-battery shutdown. Keeping a computer awake increases energy use.
 
 ### Verification on macOS
 
-Use `pmset -g assertions` to inspect Nuphos's `PreventUserIdleSystemSleep`
+Use `pmset -g assertions` to inspect Cerin's `PreventUserIdleSystemSleep`
 assertion (Electron may label it `NoIdleSleepAssertion`). Confirm it appears in host mode while signed in, disappears in Off
 mode/on sign-out/quit, and follows the power condition. In task mode, test two
 concurrent prompts and a failed/cancelled prompt, approval waits, a remote terminal,

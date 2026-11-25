@@ -143,7 +143,7 @@ integrationScoped.delete(
 // NOTE: there is deliberately NO team-scoped /credentials handout here, unlike
 // notion-integrations. Every other provider exposes one and lets the sandbox
 // fall back to it outside a session, which would let any sandbox holding a
-// NUPHOS_TOKEN fetch this key regardless of the conversation's selection —
+// CERIN_TOKEN fetch this key regardless of the conversation's selection —
 // defeating the per-session send gate entirely. The Resend key is handed out
 // only by the session-scoped route in agent-sessions.ts, which additionally
 // enforces requireSelectedResendAgentCredential().

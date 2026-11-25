@@ -11,7 +11,7 @@ import stylistic from '@stylistic/eslint-plugin'
 import prettier from 'eslint-config-prettier/flat'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
-import nuphos from '../../eslint-rules/index.js'
+import cerin from '../../eslint-rules/index.js'
 
 // Desktop lint policy. Mirrors apps/backend/eslint.config.js — same severity
 // philosophy and the same thresholds — plus the React and Electron specifics.
@@ -95,12 +95,12 @@ const blankLineDiscipline = {
 
 // Comment discipline — see apps/backend/eslint.config.js.
 const commentDiscipline = {
-  'nuphos/no-large-comment-block': ['warn', { max: 15 }],
-  'nuphos/no-duplicate-comment': ['warn', { max: 2, minWords: 4 }],
-  'nuphos/no-history-reference-comment': 'warn',
-  'nuphos/no-orphaned-doc-comment': 'warn',
+  'cerin/no-large-comment-block': ['warn', { max: 15 }],
+  'cerin/no-duplicate-comment': ['warn', { max: 2, minWords: 4 }],
+  'cerin/no-history-reference-comment': 'warn',
+  'cerin/no-orphaned-doc-comment': 'warn',
   // See apps/backend/eslint.config.js for why no-floating-promises misses this.
-  'nuphos/no-unawaited-async-assertion': 'error',
+  'cerin/no-unawaited-async-assertion': 'error',
 }
 
 const sharedPluginRules = {
@@ -244,7 +244,7 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    plugins: { unicorn, 'import-x': importX, '@stylistic': stylistic, nuphos },
+    plugins: { unicorn, 'import-x': importX, '@stylistic': stylistic, cerin },
     settings: {
       'import-x/resolver-next': [
         createTypeScriptImportResolver({ project: './tsconfig.app.json' }),

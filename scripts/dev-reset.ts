@@ -3,7 +3,7 @@
 import { connect, createServer } from 'node:net'
 
 export const RESET_LOCK_PORT = 48_871
-const IDENTITY = 'nuphos-dev-reset\n'
+const IDENTITY = 'cerin-dev-reset\n'
 
 export function acquireResetLock(port = RESET_LOCK_PORT): Promise<(() => void) | null> {
   return new Promise((resolve) => {

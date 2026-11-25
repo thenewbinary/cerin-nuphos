@@ -22,7 +22,7 @@ import type { TeamAuthVariables } from '@/middleware/auth'
 import type { ConversationTeamAuthVariables } from '@/routes/teams/conversation-auth'
 
 // What an agent may do in the team's Discord server. The bot token stays here;
-// agent-access confines every route to the channels enabled for Nuphos.
+// agent-access confines every route to the channels enabled for Cerin.
 export const discordAgentRoutes = new Hono<{
   Variables: TeamAuthVariables & ConversationTeamAuthVariables
 }>()

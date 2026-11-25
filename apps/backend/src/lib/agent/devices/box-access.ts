@@ -14,10 +14,10 @@ import {
 
 import type { HolderMessage } from './local-runtime/protocol'
 import type { AgentDevice } from './store'
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 
 /**
- * What a person may do with a computer: `use` runs its agents through Nuphos; `manage` also opens
+ * What a person may do with a computer: `use` runs its agents through Cerin; `manage` also opens
  * a shell on it, signs its agents in and out, and chooses who uses it.
  */
 export type DeviceAccessLevel = 'use' | 'manage' | 'owner'
@@ -113,7 +113,7 @@ export type DeviceAccessDeps = {
   listBoxes: typeof listTeamBoxes
   listGranted: typeof listDevicesGrantedInTeam
   findGranted: typeof findGrantedDevices
-  role: (actorId: string, teamId: string) => Promise<NuphosTeamRole | null>
+  role: (actorId: string, teamId: string) => Promise<CerinTeamRole | null>
 }
 export const deviceAccessDeps: DeviceAccessDeps = {
   getDevice: (owner, id) => getAgentDevice(owner, id),

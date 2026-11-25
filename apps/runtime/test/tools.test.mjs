@@ -23,13 +23,13 @@ import {
   relocateTree,
   renderLauncher,
   renderShim,
-} from '../image/tools/nuphos-tools.mjs'
+} from '../image/tools/cerin-tools.mjs'
 
 const manifest = loadManifest()
 const dockerfile = readFileSync(new URL('../image/Dockerfile', import.meta.url), 'utf8')
 const KINDS = new Set(['archive', 'binary', 'aws', 'apt', 'pip'])
 
-const scratch = () => mkdtempSync(join(tmpdir(), 'nuphos-tools-'))
+const scratch = () => mkdtempSync(join(tmpdir(), 'cerin-tools-'))
 
 test('every download is pinned by checksum for both published architectures', () => {
   for (const [name, tool] of Object.entries(manifest)) {
@@ -84,7 +84,7 @@ test('a shim runs the installed launcher directly once the tool is present', () 
   writeFileSync(join(bin, 'demo'), '#!/bin/sh\nprintf "%s|" "$@"\n')
   chmodSync(join(bin, 'demo'), 0o755)
   const out = execFileSync(shim, ['a b', 'c'], {
-    env: { NUPHOS_TOOLS_DIR: root, PATH: '/usr/bin:/bin' },
+    env: { CERIN_TOOLS_DIR: root, PATH: '/usr/bin:/bin' },
   })
   assert.equal(out.toString(), 'a b|c|')
 })
@@ -224,9 +224,9 @@ test('list --json reports every tool with its state for the runtime console', ()
   const root = scratch()
   const lazy = Object.entries(manifest).find(([, tool]) => !tool.baked)
   mkdirSync(join(root, lazy[0], lazy[1].version, '.bin'), { recursive: true })
-  const cli = new URL('../image/tools/nuphos-tools.mjs', import.meta.url).pathname
+  const cli = new URL('../image/tools/cerin-tools.mjs', import.meta.url).pathname
   const out = execFileSync(process.execPath, [cli, 'list', '--json'], {
-    env: { NUPHOS_TOOLS_DIR: root, PATH: '/usr/bin:/bin' },
+    env: { CERIN_TOOLS_DIR: root, PATH: '/usr/bin:/bin' },
   }).toString()
   const { tools } = JSON.parse(out)
   assert.deepEqual(
@@ -249,6 +249,6 @@ test('list --json reports every tool with its state for the runtime console', ()
 test('the image allowlists the tools job the console reads', () => {
   assert.match(
     dockerfile,
-    /^ENV OPENAB_RUNTIME_JOBS="[^"\n]*;tools=node \/opt\/nuphos-runtime\/tools\/nuphos-tools\.mjs list --json"/mu,
+    /^ENV OPENAB_RUNTIME_JOBS="[^"\n]*;tools=node \/opt\/cerin-runtime\/tools\/cerin-tools\.mjs list --json"/mu,
   )
 })

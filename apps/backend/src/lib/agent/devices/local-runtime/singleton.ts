@@ -4,7 +4,7 @@
  * reloaded modules must see the same bus and presence store.
  */
 export function processSingleton<T>(name: string, create: () => T): T {
-  const key = Symbol.for(`nuphos.localRuntime.${name}`)
+  const key = Symbol.for(`cerin.localRuntime.${name}`)
   const scope = globalThis as Record<symbol, unknown>
 
   scope[key] ??= create()

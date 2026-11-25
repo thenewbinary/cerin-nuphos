@@ -114,7 +114,7 @@ async function crossCheckMessages(bySession: Map<string, AuditEvent[]>) {
 
 await connectDb()
 try {
-  console.log('Nuphos audit journal verification')
+  console.log('Cerin audit journal verification')
   const scope = sessionFilter ? `conversation ${sessionFilter}` : 'all conversations'
 
   console.log(`scope: ${scope}\n`)

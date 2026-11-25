@@ -8,25 +8,25 @@ const build = readFileSync(
   'utf8',
 )
 
-const LOGIN_COMMAND = 'node /opt/nuphos-runtime/codex-login.mjs --install'
+const LOGIN_COMMAND = 'node /opt/cerin-runtime/codex-login.mjs --install'
 const AUTH_FILE = '/home/node/.codex/auth.json'
-const CLAUDE_LOGIN_COMMAND = 'node /opt/nuphos-runtime/claude-login.mjs --long-lived'
+const CLAUDE_LOGIN_COMMAND = 'node /opt/cerin-runtime/claude-login.mjs --long-lived'
 // An API key in Claude's own settings (`claude-login.mjs` stores it, and it outranks every
 // login), the one-year token `claude-login.mjs --long-lived` stores, then the login `claude
 // auth login` or `/login` stores, which the agent reads when no long-lived token is present.
 const CLAUDE_AUTH_FILE =
-  '/home/node/.claude/settings.json#/env/ANTHROPIC_API_KEY:/home/node/.claude/.nuphos-oauth-token.json:/home/node/.claude/.credentials.json'
-const GROK_LOGIN_COMMAND = 'node /opt/nuphos-runtime/grok-login.mjs'
+  '/home/node/.claude/settings.json#/env/ANTHROPIC_API_KEY:/home/node/.claude/.cerin-oauth-token.json:/home/node/.claude/.credentials.json'
+const GROK_LOGIN_COMMAND = 'node /opt/cerin-runtime/grok-login.mjs'
 const GROK_AUTH_FILE = '/home/node/.grok/auth.json'
-const ANTIGRAVITY_LOGIN_COMMAND = 'node /opt/nuphos-runtime/antigravity-login.mjs'
-const ANTIGRAVITY_AUTH_COMMAND = 'node /opt/nuphos-runtime/antigravity-status-cli.mjs'
-const OPENCODE_LOGIN_COMMAND = 'node /opt/nuphos-runtime/opencode-login.mjs'
+const ANTIGRAVITY_LOGIN_COMMAND = 'node /opt/cerin-runtime/antigravity-login.mjs'
+const ANTIGRAVITY_AUTH_COMMAND = 'node /opt/cerin-runtime/antigravity-status-cli.mjs'
+const OPENCODE_LOGIN_COMMAND = 'node /opt/cerin-runtime/opencode-login.mjs'
 const OPENCODE_AUTH_FILE = '/home/node/.local/share/opencode/auth.json'
 // OpenCode answers on its free models with no provider connected (#3602), so it is always signed in.
 const OPENCODE_AUTH_COMMAND = 'echo true'
-const HERMES_LOGIN_COMMAND = 'node /opt/nuphos-runtime/hermes-login.mjs'
+const HERMES_LOGIN_COMMAND = 'node /opt/cerin-runtime/hermes-login.mjs'
 const HERMES_AUTH_FILE = '/home/node/.hermes/auth.json'
-const DSH_LOGIN_COMMAND = 'node /opt/nuphos-runtime/dsh-login.mjs'
+const DSH_LOGIN_COMMAND = 'node /opt/cerin-runtime/dsh-login.mjs'
 const DSH_AUTH_FILE = '/home/node/.dsh/.credentials.yaml'
 
 test('the image hands OpenAB the sign-in command and the credential path', () => {
@@ -104,7 +104,7 @@ test('the password is the only variable an operator must set', () => {
   // entrypoint, with tini kept as PID 1 for signals and reaping.
   assert.match(
     dockerfile,
-    /^ENTRYPOINT \["tini", "--", "\/usr\/local\/bin\/nuphos-runtime-start"\]$/mu,
+    /^ENTRYPOINT \["tini", "--", "\/usr\/local\/bin\/cerin-runtime-start"\]$/mu,
   )
   assert.match(dockerfile, /^CMD \["openab", "run", "-c", "\/etc\/openab\/config\.toml"\]$/mu)
   // Nothing mounted means nothing at /workspace, and `node` cannot create it there.
@@ -122,7 +122,7 @@ test('the sign-in command names the flag that keeps the credential in the contai
 
 test('the Claude Code sign-in helper ships in the image and writes where the agent reads', () => {
   assert.match(dockerfile, /^COPY codex-login\.mjs claude-login\.mjs /mu)
-  assert.match(dockerfile, /test -r \/opt\/nuphos-runtime\/claude-login\.mjs/u)
+  assert.match(dockerfile, /test -r \/opt\/cerin-runtime\/claude-login\.mjs/u)
   const login = readFileSync(new URL('../image/claude-login.mjs', import.meta.url), 'utf8')
 
   // The login lands in the config dir the caller passed (default ~/.claude under the

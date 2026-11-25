@@ -18,7 +18,7 @@ export function modeItems(sections: Section[], mode: ConversationMode): Item[] {
       ]
 }
 
-const key = (teamId: string, mode: ConversationMode) => `nuphos.sidebar.selection.${teamId}.${mode}`
+const key = (teamId: string, mode: ConversationMode) => `cerin.sidebar.selection.${teamId}.${mode}`
 
 export function readModeSelection(teamId: string, mode: ConversationMode): string | null {
   try {

@@ -1,6 +1,6 @@
 # Google and Apple sign-in across clients
 
-Tracks https://github.com/nuphos/nuphos/issues/700.
+Tracks https://github.com/thenewbinary/cerin-platform/issues/700.
 
 ## Clients and contract
 
@@ -9,25 +9,25 @@ system browser, so the same provider flow works on desktop (macOS, Windows,
 Linux), iOS, Android and CLI. The native apps register
 `POST /auth/native/session` with an S256 challenge and open the chooser with the
 returned opaque `handle`. Desktop, Android and CLI retain their loopback listener;
-iOS uses the exact `nuphos://google-callback` URI with ASWebAuthenticationSession.
+iOS uses the exact `cerin://google-callback` URI with ASWebAuthenticationSession.
 Only a one-time delivery code and the original client state reach the callback.
 The process that registered the attempt redeems the code with its in-memory
 verifier. Session tokens never appear in native callback URLs.
 
 The browser-only entry point (no handle) authenticates using a Secure, HttpOnly,
-SameSite=Lax `__Host-nuphos-social` cookie. `/auth/social/session` returns the
+SameSite=Lax `__Host-cerin-social` cookie. `/auth/social/session` returns the
 current browser user, never the session token. This does not change the separate
-`nuphos-landingpage` repository or its existing session cookie contract. That
+`cerin-landingpage` repository or its existing session cookie contract. That
 website must integrate this endpoint before its own UI can offer Apple login.
 No cross-origin redirects or arbitrary return URLs are accepted.
 
-The chooser's `X-Nuphos-Social-Providers` header lists the configured providers
+The chooser's `X-Cerin-Social-Providers` header lists the configured providers
 (for example `google,apple`). The desktop reads it before registration, shows a
 "Continue with Google" button and, only when Apple is listed, a "Continue with
 Apple" button, and opens `/auth/social/<provider>/start?handle=...` directly.
-Without the header it offers no provider button, so a server without social sign-in never sends anyone to another server's sign-in. The CLI honors `NUPHOS_LOGIN_URL` as a
+Without the header it offers no provider button, so a server without social sign-in never sends anyone to another server's sign-in. The CLI honors `CERIN_LOGIN_URL` as a
 full provider chooser URL; its default now follows the selected API endpoint
-rather than `NUPHOS_WEB_URL`. iOS also reads the provider header, displays separate provider buttons, and opens the selected start URL directly. Email code and password sign-in remain available when provider discovery fails.
+rather than `CERIN_WEB_URL`. iOS also reads the provider header, displays separate provider buttons, and opens the selected start URL directly. Email code and password sign-in remain available when provider discovery fails.
 
 Deploy the backend before mobile/CLI
 updates; those clients require the new chooser.
@@ -56,7 +56,7 @@ is retained for compatibility and keeps its existing linking behavior.
 
 ## Provider setup and rollout
 
-1. Set `NUPHOS_AUTH_BASE_URL` to the public HTTPS backend origin. HTTPS is required
+1. Set `CERIN_AUTH_BASE_URL` to the public HTTPS backend origin. HTTPS is required
    for the browser-binding cookies, including local interactive testing.
 2. Configure `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` for a web OAuth
    client and register the exact backend callback

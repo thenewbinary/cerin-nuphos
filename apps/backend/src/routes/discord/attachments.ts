@@ -83,7 +83,7 @@ export async function ingestDiscordAttachments(args: {
 
 // Files the agent pushed to the transfer store during this turn are attached
 // to the thread. Best-effort and never rejects: a failed attachment must not
-// fail the turn, and the download card in the Nuphos app exists either way.
+// fail the turn, and the download card in the Cerin app exists either way.
 export async function postAgentProducedDiscordFiles(args: {
   channelId: string
   teamId: string

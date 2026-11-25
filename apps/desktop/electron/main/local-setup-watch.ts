@@ -78,7 +78,7 @@ function watch(dir: string, options: fsSync.WatchOptions, accept: (file: string)
 /**
  * Re-sync every team with "Keep in sync" on whenever one of its skill folders
  * or ~/.claude/CLAUDE.md changes, plus every half hour and once at start-up for
- * anything missed while Nuphos was closed. Idempotent.
+ * anything missed while Cerin was closed. Idempotent.
  */
 export function startLocalSetupWatcher() {
   if (periodic) return

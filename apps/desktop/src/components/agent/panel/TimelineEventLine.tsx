@@ -17,14 +17,14 @@ export function TimelineEventLine({
   event,
   reveal = false,
   teamId,
-  onOpenNuphosLink,
+  onOpenCerinLink,
 }: {
   event: AgentTimelineEvent
   reveal?: boolean
   teamId?: string
-  onOpenNuphosLink?: (href: string) => boolean
+  onOpenCerinLink?: (href: string) => boolean
 }) {
-  const line = <EventLine event={event} teamId={teamId} onOpenNuphosLink={onOpenNuphosLink} />
+  const line = <EventLine event={event} teamId={teamId} onOpenCerinLink={onOpenCerinLink} />
 
   return reveal ? <PlanRevealSection revealKey={event.at}>{line}</PlanRevealSection> : line
 }
@@ -32,11 +32,11 @@ export function TimelineEventLine({
 function EventLine({
   event,
   teamId,
-  onOpenNuphosLink,
+  onOpenCerinLink,
 }: {
   event: AgentTimelineEvent
   teamId?: string
-  onOpenNuphosLink?: (href: string) => boolean
+  onOpenCerinLink?: (href: string) => boolean
 }) {
   const title = new Date(event.at).toLocaleString()
   const { actor, target, from, to } = event
@@ -50,7 +50,7 @@ function EventLine({
         event={{ ...event, actor }}
         title={title}
         teamId={teamId}
-        onOpenNuphosLink={onOpenNuphosLink}
+        onOpenCerinLink={onOpenCerinLink}
       />
     )
   if (event.kind === 'runtime_fallback_stopped')
@@ -129,12 +129,12 @@ function ForkedLine({
   event,
   title,
   teamId,
-  onOpenNuphosLink,
+  onOpenCerinLink,
 }: {
   event: AgentTimelineEvent & { actor: NonNullable<AgentTimelineEvent['actor']> }
   title: string
   teamId?: string
-  onOpenNuphosLink?: (href: string) => boolean
+  onOpenCerinLink?: (href: string) => boolean
 }) {
   const viewerId = useCurrentUser()?.id
   const forkUrl =
@@ -152,10 +152,10 @@ function ForkedLine({
           actor: <Person person={event.actor} />,
         },
       )}
-      {forkUrl && onOpenNuphosLink && (
+      {forkUrl && onOpenCerinLink && (
         <button
           type="button"
-          onClick={() => onOpenNuphosLink(forkUrl)}
+          onClick={() => onOpenCerinLink(forkUrl)}
           className="shrink-0 font-medium text-secondary hover:underline"
         >
           {t('Open')}

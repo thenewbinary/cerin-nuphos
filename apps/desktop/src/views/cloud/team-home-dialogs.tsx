@@ -250,7 +250,7 @@ export function TeamHomeBindDialogs({
         onBound={() => {
           setBindDatabaseOpen(false)
           onChanged()
-          window.dispatchEvent(new Event('nuphos:databases-changed'))
+          window.dispatchEvent(new Event('cerin:databases-changed'))
         }}
       />
 

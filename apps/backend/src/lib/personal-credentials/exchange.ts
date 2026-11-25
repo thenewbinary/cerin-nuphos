@@ -23,7 +23,7 @@ export const NAMES: Record<PersonalCredentialProvider, string> = {
   'google-calendar': 'Google Calendar',
 }
 
-/** The callback is on the backend's public origin (NUPHOS_PUBLIC_BACKEND_URL). */
+/** The callback is on the backend's public origin (CERIN_PUBLIC_BACKEND_URL). */
 export function callbackUrl(provider: PersonalCredentialProvider): string | null {
   const base = publicBackendUrl()
 

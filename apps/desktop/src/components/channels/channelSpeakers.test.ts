@@ -13,7 +13,7 @@ test('a system notice is never a channel post', () => {
 })
 
 test("an answer to a question and a change of owner are a chat's records; other notices are not", () => {
-  assert.equal(isChannelRecord({ id: 'nuphos:decision' }), true)
-  assert.equal(isChannelRecord({ id: 'nuphos:chat' }), true)
-  assert.equal(isChannelRecord({ id: 'nuphos' }), false)
+  assert.equal(isChannelRecord({ id: 'cerin:decision' }), true)
+  assert.equal(isChannelRecord({ id: 'cerin:chat' }), true)
+  assert.equal(isChannelRecord({ id: 'cerin' }), false)
 })

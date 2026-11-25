@@ -35,7 +35,7 @@ test('isBareLocalLink keeps explicitly labelled links as links', () => {
   assert.equal(isBareLocalLink('http://localhost:5173/', 'http://localhost:5173'), true)
   assert.equal(isBareLocalLink('http://localhost:5173/', 'localhost:5173'), true)
   assert.equal(isBareLocalLink('http://localhost:5173/', 'the preview'), false)
-  assert.equal(isBareLocalLink('https://nuphos.ai/', 'https://nuphos.ai/'), false)
+  assert.equal(isBareLocalLink('https://platform.cerin.ai/', 'https://platform.cerin.ai/'), false)
 })
 
 const tool = (toolName: string, output: unknown): Part => ({
@@ -49,7 +49,7 @@ const tool = (toolName: string, output: unknown): Part => ({
 test('turnLocalUrls reads own-machine tools only', () => {
   const parts: Part[] = [
     tool('bash', '  ➜  Local:   http://localhost:5173/'),
-    tool('mcp__nuphos-tools__local_exec', '{"stdout":"serving http://127.0.0.1:8787/\\n"}'),
+    tool('mcp__cerin-tools__local_exec', '{"stdout":"serving http://127.0.0.1:8787/\\n"}'),
     tool('local_terminal', { output: 'Local: http://0.0.0.0:3000' }),
   ]
 

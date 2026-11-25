@@ -75,7 +75,7 @@ test('the gate runs only from main and returns the commit it verified', () => {
 
   assert.match(
     gate,
-    /^ {4}if: github\.repository == 'thenewbinary\/cerin-nuphos' && github\.ref == 'refs\/heads\/main'$/mu,
+    /^ {4}if: github\.repository == 'thenewbinary\/cerin-platform' && github\.ref == 'refs\/heads\/main'$/mu,
   )
   assert.match(gate, /^ {10}ref: main$/mu)
   assert.match(gate, /bash scripts\/verify-release-provenance\.sh "\$SHA"\n {10}echo "sha=\$SHA"/u)

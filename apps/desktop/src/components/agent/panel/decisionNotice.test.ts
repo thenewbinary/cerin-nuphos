@@ -9,7 +9,7 @@ const OWNER =
 test('a notice reads back as who answered what, without its ids', () => {
   const notice = parseDecisionNotice(
     [
-      'Your question (requestId nuphos-q1) was answered from the Inbox.',
+      'Your question (requestId cerin-q1) was answered from the Inbox.',
       OWNER,
       'Question: Which region?',
       'Context you gave: Two candidates.',
@@ -25,7 +25,7 @@ test('a notice reads back as who answered what, without its ids', () => {
   )
 
   assert.deepEqual(notice, {
-    requestId: 'nuphos-q1',
+    requestId: 'cerin-q1',
     answeredBy: 'Sam "S" Rivera',
     question: 'Which region?',
     body: 'Two candidates.\n\nAnswer:\n- one of them is cheaper',

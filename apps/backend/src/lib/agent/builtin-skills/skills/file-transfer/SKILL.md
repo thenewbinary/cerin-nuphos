@@ -39,16 +39,16 @@ gone. Pulling an upload likewise happens within the active turn.
 ft() {
   local method="$1" path="$2"; shift 2
   curl -fsSL -X "$method" \
-    -H @<(printf 'Authorization: Bearer %s\n' "$NUPHOS_TOKEN") \
+    -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") \
     -H "Content-Type: application/json" \
-    "${NUPHOS_BACKEND_URL:-https://api.cerin.ai}/agent-sessions/${NUPHOS_SESSION_ID}/teams/${TEAM}/file-transfers${path}" "$@"
+    "${CERIN_BACKEND_URL:-https://api.cerin.ai}/agent-sessions/${CERIN_SESSION_ID}/teams/${TEAM}/file-transfers${path}" "$@"
 }
 ```
 
-`$TEAM` is the team id — get it from the `nuphos-api` skill
-(`GET /teams`) if you don't already have it. `$NUPHOS_TOKEN` and
-`$NUPHOS_SESSION_ID` are already in the environment. Use `ft` or the
-scripts below rather than another HTTP client; see the `nuphos-api` skill for
+`$TEAM` is the team id — get it from the `cerin-api` skill
+(`GET /teams`) if you don't already have it. `$CERIN_TOKEN` and
+`$CERIN_SESSION_ID` are already in the environment. Use `ft` or the
+scripts below rather than another HTTP client; see the `cerin-api` skill for
 why.
 
 ## Pull user uploads into the sandbox

@@ -3,7 +3,7 @@
 // user's general session token: this HS256 JWT is accepted only by the
 // conversation-aware API middleware. It is accepted only when the requested
 // operation matches the (session, team) and explicit capability it was minted
-// for; it never becomes a general Nuphos session token.
+// for; it never becomes a general Cerin session token.
 //
 // With an internal-token signer configured, conversation tokens are ES256 JWTs
 // from the dedicated internal issuer (`@/lib/internal-token`) and carry `jti`
@@ -20,7 +20,7 @@ import {
 } from '@/lib/internal-token'
 import { logEvent } from '@/lib/observability'
 
-const AUDIENCE = 'nuphos-preview-mcp'
+const AUDIENCE = 'cerin-preview-mcp'
 const DEFAULT_TTL_SEC = 24 * 60 * 60
 
 /** RFC 8693 actor chain: the current actor, and whoever delegated to it. */
@@ -33,7 +33,7 @@ export type TokenActor = { sub: string; act?: TokenActor }
 export type CredentialLimit = Readonly<Record<string, readonly string[]>>
 
 export type PreviewMcpClaims = {
-  /** `nuphos-preview-mcp`, followed by `credential:<provider>/<id>` resources on exchanged tokens. */
+  /** `cerin-preview-mcp`, followed by `credential:<provider>/<id>` resources on exchanged tokens. */
   aud: typeof AUDIENCE | [typeof AUDIENCE, ...string[]]
   /** Execution actor. */
   sub: string
@@ -59,7 +59,7 @@ function secret(): string {
   const value = config.auth.jwtSecret
 
   if (!value) {
-    throw new AppError(503, 'jwt_secret_unavailable', 'NUPHOS_JWT_SECRET is required')
+    throw new AppError(503, 'jwt_secret_unavailable', 'CERIN_JWT_SECRET is required')
   }
 
   return value
@@ -193,7 +193,7 @@ export function scopedPathAllowed(
 }
 
 const SIGNED_TOKEN = /\beyJ[\w-]*\.[\w-]+\.[\w-]+/gu
-const SKILLS_TOKEN = /\bnuphos-runtime-skills-v1\.[^\s"'\\]+/gu
+const SKILLS_TOKEN = /\bcerin-runtime-skills-v1\.[^\s"'\\]+/gu
 
 /**
  * Replaces every token this backend signed (conversation, plan, skills) in

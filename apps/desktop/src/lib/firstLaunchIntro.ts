@@ -37,7 +37,7 @@ export function showFirstLaunchIntro() {
     setTimeout(() => frame.remove(), 500)
   }
   const onMessage = (event: MessageEvent) => {
-    if (event.source === frame.contentWindow && event.data === 'nuphos:introFinished') dismiss()
+    if (event.source === frame.contentWindow && event.data === 'cerin:introFinished') dismiss()
   }
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') dismiss()

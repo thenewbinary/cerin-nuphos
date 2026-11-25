@@ -74,13 +74,13 @@ async function askAndAnswer(text: string) {
     'task',
     'owner',
     [plan],
-    [{ toolCallId: 'nuphos-plan-7-1', output: { planId: '7' } }],
+    [{ toolCallId: 'cerin-plan-7-1', output: { planId: '7' } }],
   )
   await answerHumanTurn({
     sessionId: 'task',
     userId: 'owner',
     actorUserId: 'approver',
-    decisionReplyTo: 'nuphos-plan-7-1',
+    decisionReplyTo: 'cerin-plan-7-1',
     messages: said(text),
   })
 }
@@ -91,14 +91,14 @@ test('a proposed plan is asked about under its card id', async () => {
     'owner',
     [plan, { ...plan, id: '8', status: 'approved' }],
     [
-      { toolCallId: 'nuphos-plan-7-1', output: { planId: '7' } },
-      { toolCallId: 'nuphos-plan-8-1', output: { planId: '8' } },
+      { toolCallId: 'cerin-plan-7-1', output: { planId: '7' } },
+      { toolCallId: 'cerin-plan-8-1', output: { planId: '8' } },
     ],
   )
 
   expect(requests).toMatchObject([
     {
-      id: 'nuphos-plan-7-1',
+      id: 'cerin-plan-7-1',
       planId: '7',
       category: 'approval',
       question: 'Approve plan #7: Daily backup?',

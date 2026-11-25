@@ -4,10 +4,10 @@ import { applyImportBatch, newImportBatch } from './batch'
 import { botBundleSchema } from './manifest'
 
 const template = () => ({
-  format: 'nuphos-bot-bundle',
+  format: 'cerin-bot-bundle',
   version: 1,
   source: {
-    application: 'nuphos-template' as const,
+    application: 'cerin-template' as const,
     templateId: 'research-desk',
     version: '1.0.0',
   },

@@ -38,7 +38,7 @@ test("an agent's or a system's message is not the user's words: it never sets th
     user('1', '幫我看一下這個問題', {
       version: 1,
       sender: { type: 'user', id: 'u1', displayName: 'Owner' },
-      source: 'nuphos',
+      source: 'cerin',
       sentAt,
     }),
     user('2', 'From the parent agent: open an issue for this.', {

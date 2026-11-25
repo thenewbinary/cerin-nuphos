@@ -65,7 +65,7 @@ test('accepts a per-conversation runtime or an omitted preference', () => {
 })
 
 test('rejects invalid runtime preferences before accepting a chat', () => {
-  for (const agentRuntime of [null, 'nuphos', '', 'other', 1, {}]) {
+  for (const agentRuntime of [null, 'cerin', '', 'other', 1, {}]) {
     expect(() =>
       validateChatBody({
         id: 'new-chat',

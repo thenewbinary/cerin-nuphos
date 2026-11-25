@@ -4,15 +4,15 @@ import { db } from '@/lib/db'
 import type { UserMfa, UserMfaPending } from '@/lib/identity/mfa'
 import type { SignupSource } from '@/lib/identity/signup-source'
 import type {
-  NuphosTeam,
-  NuphosTeamRole,
-  NuphosUser,
+  CerinTeam,
+  CerinTeamRole,
+  CerinUser,
   TeamBilling,
   TeamBillingSummary,
 } from '@/lib/identity/types'
 import type { Collection, ObjectId } from 'mongodb'
 
-export type NuphosUserDoc = {
+export type CerinUserDoc = {
   _id: ObjectId
   email: string
   name: string
@@ -39,7 +39,7 @@ export type NuphosUserDoc = {
   deletedAt?: Date
 }
 
-export type NuphosTeamDoc = {
+export type CerinTeamDoc = {
   /** Approval claims serialize with team/member revocation on this document. */
   discordApprovalFence?: string
   _id: ObjectId
@@ -48,13 +48,13 @@ export type NuphosTeamDoc = {
   ownerID: ObjectId
   contactEmails: string[]
   allowedEmailDomains?: string[]
-  /** Stored value; the retired `nuphos` and absent both map to Claude Code. */
+  /** Stored value; the retired `cerin` and absent both map to Claude Code. */
   agentRuntime?: string
   /** Unset is `private`. */
   bindingShareDefault?: string
   members: {
     userId: ObjectId
-    role: NuphosTeamRole
+    role: CerinTeamRole
     joinedAt: Date
     deletedAt?: Date
   }[]
@@ -68,15 +68,15 @@ export type NuphosTeamDoc = {
   deletedAt?: Date
 }
 
-export const users = (): Collection<NuphosUserDoc> => db().collection<NuphosUserDoc>('users')
+export const users = (): Collection<CerinUserDoc> => db().collection<CerinUserDoc>('users')
 
-export const teams = (): Collection<NuphosTeamDoc> => db().collection<NuphosTeamDoc>('teams')
+export const teams = (): Collection<CerinTeamDoc> => db().collection<CerinTeamDoc>('teams')
 
 export function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-export function mapUser(user: NuphosUserDoc): NuphosUser {
+export function mapUser(user: CerinUserDoc): CerinUser {
   return {
     id: user._id.toHexString(),
     email: user.email,
@@ -88,7 +88,7 @@ export function mapUser(user: NuphosUserDoc): NuphosUser {
   }
 }
 
-export function mapTeam(team: NuphosTeamDoc): NuphosTeam {
+export function mapTeam(team: CerinTeamDoc): CerinTeam {
   return {
     id: team._id.toHexString(),
     name: team.name,

@@ -41,7 +41,7 @@ test(
   'the Claude desktop app copy of Claude Code is listed newest first and is app-managed',
   { skip: process.platform === 'win32' },
   (t) => {
-    const home = mkdtempSync(path.join(os.tmpdir(), 'nuphos-claude-desktop-'))
+    const home = mkdtempSync(path.join(os.tmpdir(), 'cerin-claude-desktop-'))
 
     t.after(() => rmSync(home, { recursive: true, force: true }))
     const env = { HOME: home, PATH: '' }
@@ -60,7 +60,7 @@ test(
   'without any other install, the probe runs the desktop app copy',
   { skip: process.platform === 'win32' || systemClaude !== null },
   async (t) => {
-    const home = mkdtempSync(path.join(os.tmpdir(), 'nuphos-claude-probe-'))
+    const home = mkdtempSync(path.join(os.tmpdir(), 'cerin-claude-probe-'))
 
     t.after(() => rmSync(home, { recursive: true, force: true }))
     const env = { HOME: home, PATH: path.join(home, 'empty') }
@@ -81,7 +81,7 @@ test(
   'a CLI on PATH wins over the desktop app copy and is not app-managed',
   { skip: process.platform === 'win32' },
   (t) => {
-    const home = mkdtempSync(path.join(os.tmpdir(), 'nuphos-claude-path-'))
+    const home = mkdtempSync(path.join(os.tmpdir(), 'cerin-claude-path-'))
 
     t.after(() => rmSync(home, { recursive: true, force: true }))
     const bin = path.join(home, 'bin')
@@ -120,7 +120,7 @@ test(
       findAgentCli('opencode', { HOME: os.tmpdir(), PATH: '' }) !== null,
   },
   (t) => {
-    const home = mkdtempSync(path.join(os.tmpdir(), 'nuphos-opencode-'))
+    const home = mkdtempSync(path.join(os.tmpdir(), 'cerin-opencode-'))
 
     t.after(() => rmSync(home, { recursive: true, force: true }))
     const env = { HOME: home, PATH: '' }
@@ -141,7 +141,7 @@ test(
       findAgentCli('grok', { HOME: os.tmpdir(), PATH: '' }) !== null,
   },
   (t) => {
-    const home = mkdtempSync(path.join(os.tmpdir(), 'nuphos-grok-'))
+    const home = mkdtempSync(path.join(os.tmpdir(), 'cerin-grok-'))
 
     t.after(() => rmSync(home, { recursive: true, force: true }))
     const env = { HOME: home, PATH: '' }
@@ -162,7 +162,7 @@ test(
       findAgentCli('opencode', { HOME: os.tmpdir(), PATH: '' }) !== null,
   },
   (t) => {
-    const home = mkdtempSync(path.join(os.tmpdir(), 'nuphos-opencode-app-'))
+    const home = mkdtempSync(path.join(os.tmpdir(), 'cerin-opencode-app-'))
 
     t.after(() => rmSync(home, { recursive: true, force: true }))
     const env = { HOME: home, PATH: '' }

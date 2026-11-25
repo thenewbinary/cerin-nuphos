@@ -8,8 +8,8 @@
 # so the agent sees the original directory structure.
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 if [ "$#" -lt 3 ] || [ "$#" -gt 4 ]; then
@@ -30,13 +30,13 @@ if [ "$#" -eq 4 ]; then
   fi
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
-token="${NUPHOS_TOKEN:-}"
-session="${NUPHOS_SESSION_ID:-}"
+token="${CERIN_TOKEN:-}"
+session="${CERIN_SESSION_ID:-}"
 
 if [ -z "$token" ] || [ -z "$session" ]; then
-  echo "NUPHOS_TOKEN and NUPHOS_SESSION_ID must be set" >&2
+  echo "CERIN_TOKEN and CERIN_SESSION_ID must be set" >&2
   exit 1
 fi
 
@@ -47,7 +47,7 @@ fetch() {
 }
 # An upload may still be travelling from the user's computer when its group id
 # arrives, so wait for it with short requests instead of one long one.
-wait_seconds="${NUPHOS_TRANSFER_WAIT_SECONDS:-90}"
+wait_seconds="${CERIN_TRANSFER_WAIT_SECONDS:-90}"
 resp="$(fetch)"
 pending='"status"[[:space:]]*:[[:space:]]*"pending"'
 while [[ "$resp" =~ $pending ]] && [ "$SECONDS" -lt "$wait_seconds" ]; do

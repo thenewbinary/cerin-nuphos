@@ -84,7 +84,7 @@ export class LocalAttachmentStream implements SocketLike {
     }
     const child = spawn(
       process.execPath,
-      [this.program, '--local-root', join(this.workspace, '.nuphos-attachments')],
+      [this.program, '--local-root', join(this.workspace, '.cerin-attachments')],
       {
         env: {
           ELECTRON_RUN_AS_NODE: '1',

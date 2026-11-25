@@ -43,7 +43,7 @@ def fail(message: str, code: int = 1) -> None:
 def env(name: str) -> str:
     value = os.environ.get(name, "").strip()
     if not value:
-        fail(f"{name} is not set; run setup-credentials.sh and `source ~/.posthog/nuphos.env` first.", 2)
+        fail(f"{name} is not set; run setup-credentials.sh and `source ~/.posthog/cerin.env` first.", 2)
     return value
 
 

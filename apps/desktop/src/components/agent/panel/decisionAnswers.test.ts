@@ -29,7 +29,7 @@ const reply = (text: string, sender?: { id: string; displayName: string }): Mess
     metadata: {
       version: 1,
       sender: { type: 'user', ...sender },
-      source: 'nuphos',
+      source: 'cerin',
       sentAt: '2026-10-30T06:00:00Z',
     },
   }),
@@ -47,7 +47,7 @@ test("a card shows the answer the server's notice records, by its request id", (
         toolName: 'request_user_decision',
         state: 'output-available',
         input: { category: 'approval', question: 'Install Xcode?', options: OPTIONS },
-        output: { requestId: 'nuphos-q1' },
+        output: { requestId: 'cerin-q1' },
       },
     ],
   }
@@ -70,17 +70,17 @@ test("a card shows the answer the server's notice records, by its request id", (
     ],
     metadata: {
       version: 1,
-      sender: { type: 'system', id: 'nuphos:decision', displayName: 'Nuphos' },
+      sender: { type: 'system', id: 'cerin:decision', displayName: 'Cerin' },
       source: 'agent.resource',
       sentAt: '2026-11-12T06:00:00Z',
     },
   })
 
-  assert.deepEqual(decisionAnswers([asked, notice('nuphos-q1')]).get('call-1'), {
+  assert.deepEqual(decisionAnswers([asked, notice('cerin-q1')]).get('call-1'), {
     option: 'Started the download',
   })
   // Another request's notice answers nothing here.
-  assert.equal(decisionAnswers([asked, notice('nuphos-q9')]).size, 0)
+  assert.equal(decisionAnswers([asked, notice('cerin-q9')]).size, 0)
 })
 
 test('a choice card is answered through the server, never by a reply in the transcript', () => {
@@ -107,12 +107,12 @@ test('a secret card is answered by its saved reply, never by other text or anoth
     secret('s1', 'OPENAI_API_KEY'),
     secret('s2', 'GITHUB_TOKEN'),
     reply('here it is'),
-    reply('🔒 OPENAI_API_KEY saved to /home/agent/.nuphos/secrets/OPENAI_API_KEY'),
+    reply('🔒 OPENAI_API_KEY saved to /home/agent/.cerin/secrets/OPENAI_API_KEY'),
   ])
 
   assert.equal(
     answers.get('s1')?.option,
-    '🔒 OPENAI_API_KEY saved to /home/agent/.nuphos/secrets/OPENAI_API_KEY',
+    '🔒 OPENAI_API_KEY saved to /home/agent/.cerin/secrets/OPENAI_API_KEY',
   )
   assert.equal(answers.has('s2'), false)
 })

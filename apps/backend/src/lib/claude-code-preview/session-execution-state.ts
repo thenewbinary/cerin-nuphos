@@ -264,7 +264,7 @@ export async function steerConversationRuntime(
   // The receipt comes back with only id and text, so it is put on record too.
   const metadata =
     steer.metadata ??
-    (await createMessageMetadata(steer.userId, 'nuphos', steer.deviceId, steer.cliToken))
+    (await createMessageMetadata(steer.userId, 'cerin', steer.deviceId, steer.cliToken))
   const client = await OpenAbAcpClient.connect({
     ...endpoint,
     connectTimeoutMs: 3_000,

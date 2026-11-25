@@ -41,14 +41,14 @@ describe('bigQueryReconcileSql', () => {
   test('takes the billing project from the caller and never from ambient gcloud state', () => {
     const sql = bigQueryReconcileSql({
       billingProject: 'zeabur-billing',
-      gcpProject: 'nuphos',
+      gcpProject: 'cerin-ai',
       exportTable: 'billing.gcp_billing_export_v1_0123',
       window,
       skuFilter: 'Claude Opus 5',
     })
 
     expect(sql).toContain('zeabur-billing')
-    expect(sql).toContain("project.id = 'nuphos'")
+    expect(sql).toContain("project.id = 'cerin-ai'")
     expect(sql).toContain('billing.gcp_billing_export_v1_0123')
     expect(sql).toContain('2026-08-01')
     expect(sql).toContain("service.description LIKE 'Claude%'")
@@ -60,7 +60,7 @@ describe('bigQueryReconcileSql', () => {
     expect(() =>
       bigQueryReconcileSql({
         billingProject: '',
-        gcpProject: 'nuphos',
+        gcpProject: 'cerin-ai',
         exportTable: 'billing.export',
         window,
         skuFilter: 'Claude Opus 5',
@@ -71,7 +71,7 @@ describe('bigQueryReconcileSql', () => {
   test('is read-only: no DML ever reaches BigQuery', () => {
     const sql = bigQueryReconcileSql({
       billingProject: 'zeabur-billing',
-      gcpProject: 'nuphos',
+      gcpProject: 'cerin-ai',
       exportTable: 'billing.export',
       window,
       skuFilter: 'Claude Opus 5',
@@ -133,10 +133,10 @@ describe('mongoReconcilePipeline', () => {
     const pipeline = mongoReconcilePipeline({
       window,
       provider: 'vertex.anthropic',
-      gcpProject: 'nuphos-prod',
+      gcpProject: 'cerin-prod',
     })
 
-    expect((pipeline[0] as any).$match.gcpProject).toBe('nuphos-prod')
+    expect((pipeline[0] as any).$match.gcpProject).toBe('cerin-prod')
   })
 })
 
@@ -248,7 +248,7 @@ describe('hostile and impossible CLI input', () => {
       expect(() =>
         bigQueryReconcileSql({
           billingProject: value,
-          gcpProject: 'nuphos',
+          gcpProject: 'cerin-ai',
           exportTable: 'billing.export',
           window,
           skuFilter: 'Claude Opus 5',
@@ -257,7 +257,7 @@ describe('hostile and impossible CLI input', () => {
       expect(() =>
         bigQueryReconcileSql({
           billingProject: 'zeabur-billing',
-          gcpProject: 'nuphos',
+          gcpProject: 'cerin-ai',
           exportTable: value,
           window,
           skuFilter: 'Claude Opus 5',
@@ -272,7 +272,7 @@ describe('hostile and impossible CLI input', () => {
     expect(() =>
       bigQueryReconcileSql({
         billingProject: 'zeabur-billing-1',
-        gcpProject: 'nuphos',
+        gcpProject: 'cerin-ai',
         exportTable: 'billing.gcp_billing_export_v1_0123AB_CD_EF',
         window,
         skuFilter: 'Claude Opus 5',
@@ -283,7 +283,7 @@ describe('hostile and impossible CLI input', () => {
   test('a quote in a VALUE is escaped rather than rejected, and cannot end the literal', () => {
     const sql = bigQueryReconcileSql({
       billingProject: 'zeabur-billing',
-      gcpProject: 'nuphos',
+      gcpProject: 'cerin-ai',
       exportTable: 'billing.export',
       window: reconcileDayWindow(new Date('2026-08-08T00:00:00Z'), '2026-08-01'),
       skuFilter: "Claude ' OR 1=1 --",
@@ -316,7 +316,7 @@ describe('BQ scoping is per resource project and per model', () => {
   const window = reconcileDayWindow(new Date('2026-08-08T00:00:00Z'), '2026-08-01')
   const sql = bigQueryReconcileSql({
     billingProject: 'zeabur-billing',
-    gcpProject: 'nuphos',
+    gcpProject: 'cerin-ai',
     exportTable: 'billing.gcp_billing_export_v1_0123',
     window,
     skuFilter: 'Claude Opus 5',
@@ -324,7 +324,7 @@ describe('BQ scoping is per resource project and per model', () => {
 
   test('the export host project only qualifies the table; project.id scopes the rows', () => {
     expect(sql).toContain('FROM `zeabur-billing.billing.gcp_billing_export_v1_0123`')
-    expect(sql).toContain("AND project.id = 'nuphos'")
+    expect(sql).toContain("AND project.id = 'cerin-ai'")
     // The reverse would silently reconcile the billing project's own usage.
     expect(sql).not.toContain("project.id = 'zeabur-billing'")
   })
@@ -339,7 +339,7 @@ describe('BQ scoping is per resource project and per model', () => {
     for (const missing of ['billingProject', 'gcpProject', 'skuFilter'] as const) {
       const args = {
         billingProject: 'zeabur-billing',
-        gcpProject: 'nuphos',
+        gcpProject: 'cerin-ai',
         exportTable: 'billing.export',
         window,
         skuFilter: 'Claude Opus 5',

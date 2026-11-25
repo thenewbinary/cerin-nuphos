@@ -43,7 +43,7 @@
     <string name="chat_triggers_refresh">刷新</string>
     <string name="chat_image_preparing">正在准备图片…</string>
     <string name="chat_image_share">分享图片</string>
-    <string name="chat_image_saved">已保存到 Pictures/Nuphos</string>
+    <string name="chat_image_saved">已保存到 Pictures/Cerin</string>
     <string name="chat_image_export_failed">无法导出图片，图片可能已过期。请重试。</string>
     <string name="chat_image_save">保存图片</string>
     <string name="chat_plan_loading">正在加载计划…</string>

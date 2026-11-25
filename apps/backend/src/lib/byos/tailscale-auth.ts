@@ -1,4 +1,4 @@
-import { mintNuphosOidcToken } from '@/lib/byos/aws-oidc'
+import { mintCerinOidcToken } from '@/lib/byos/aws-oidc'
 
 export const TAILSCALE_API = 'https://api.tailscale.com/api/v2'
 
@@ -9,8 +9,8 @@ export type TailscaleOAuthHandle = {
 
 /**
  * A binding that authenticates by workload identity federation: the customer
- * registers `https://nuphos.ai` as a trusted OIDC issuer on their tailnet, and
- * Nuphos proves who it is with a freshly signed JWT. Nothing long-lived is
+ * registers `https://platform.cerin.ai` as a trusted OIDC issuer on their tailnet, and
+ * Cerin proves who it is with a freshly signed JWT. Nothing long-lived is
  * stored on our side, which is the same posture the AWS/GCP/Azure connectors
  * already have.
  */
@@ -69,7 +69,7 @@ export async function mintTailscaleAccessToken(
   const body = federated
     ? new URLSearchParams({
         client_id: handle.clientId,
-        jwt: mintNuphosOidcToken(handle.teamId, handle.audience),
+        jwt: mintCerinOidcToken(handle.teamId, handle.audience),
       })
     : new URLSearchParams({
         client_id: handle.clientId,

@@ -13,7 +13,7 @@ describe('agent-sessions runtime mounts', () => {
     expect(source.indexOf("teamScoped.use('*', requireTeamMember())")).toBeLessThan(
       source.indexOf("teamScoped.post('/mcp-tools'"),
     )
-    expect(servers).toContain("name: 'nuphos-tools',")
+    expect(servers).toContain("name: 'cerin-tools',")
     expect(servers).toContain(': `${mount}/mcp-tools`')
   })
 })

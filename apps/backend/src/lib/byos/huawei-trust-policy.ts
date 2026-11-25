@@ -110,7 +110,7 @@ async function fetchAgencyTrustPolicy(
 /**
  * Confirm the trust agency's own policy restricts assumption to this team's
  * subject — a successful `AssumeAgencyWithOIDC` proves this team can assume
- * it, not that other Nuphos teams (who share the same issuer and audience)
+ * it, not that other Cerin teams (who share the same issuer and audience)
  * cannot. Runs once at bind time, with the credentials just obtained.
  */
 export async function verifyTeamSpecificTrust(
@@ -138,7 +138,7 @@ export async function verifyTeamSpecificTrust(
   // team's subject — one narrow statement is not enough if another, broader
   // Allow statement also grants the same shared provider unconditionally.
   // A Deny statement targeting this provider (any subject) means untrusted:
-  // Nuphos cannot know it doesn't apply to this team without evaluating the
+  // Cerin cannot know it doesn't apply to this team without evaluating the
   // full policy language, so it fails closed.
   const trusted =
     denies.length === 0 &&

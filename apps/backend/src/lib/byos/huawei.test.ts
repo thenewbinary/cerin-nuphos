@@ -8,8 +8,8 @@ const TEAM_ID = '68b0f1f77bcf86cd79943901'
 const OTHER_TEAM_ID = '68b0f1f77bcf86cd79943902'
 const IDENTITY = {
   domainId: '0a1b2c3d4e5f60718293a4b5c6d7e8f9',
-  idpId: 'nuphos',
-  agencyName: 'nuphos-readonly',
+  idpId: 'cerin',
+  agencyName: 'cerin-readonly',
 }
 
 const { privateKey } = generateKeyPairSync('rsa', {
@@ -36,7 +36,7 @@ await mock.module('@/config', () => ({
           ...realByos.aws,
           oidc: {
             ...realByos.aws.oidc,
-            issuer: 'https://api.nuphos.ai',
+            issuer: 'https://platform.cerin.ai',
             privateKey: oidcKey,
             privateKeyBase64: undefined,
           },
@@ -84,9 +84,9 @@ function validTrustPolicy(): string {
         },
         Condition: {
           StringEquals: {
-            'oidc:iss': ['https://api.nuphos.ai'],
+            'oidc:iss': ['https://platform.cerin.ai'],
             'oidc:aud': ['iam.myhuaweicloud.com'],
-            'oidc:sub': [`nuphos:team:${TEAM_ID}`],
+            'oidc:sub': [`cerin:team:${TEAM_ID}`],
           },
         },
       },
@@ -135,9 +135,9 @@ describe('huaweiOidcInfo', () => {
   test('is the exact triple the customer registers on the identity provider', () => {
     expect(huaweiOidcInfo(TEAM_ID)).toEqual({
       configured: true,
-      issuer: 'https://api.nuphos.ai',
+      issuer: 'https://platform.cerin.ai',
       audience: 'iam.myhuaweicloud.com',
-      subject: `nuphos:team:${TEAM_ID}`,
+      subject: `cerin:team:${TEAM_ID}`,
     })
   })
 
@@ -183,15 +183,15 @@ describe('assumeHuaweiIdentity', () => {
     expect(body.agency_urn).toBe(`iam::${IDENTITY.domainId}:agency:${IDENTITY.agencyName}`)
     expect(body.duration_seconds).toBe(3600)
 
-    // The ID token is the credential — signed by the shared Nuphos issuer for
+    // The ID token is the credential — signed by the shared Cerin issuer for
     // this team and no other.
     const claims = JSON.parse(
       Buffer.from(body.id_token.split('.')[1] ?? '', 'base64url').toString(),
     ) as { iss: string; sub: string; aud: string }
 
     expect(claims).toMatchObject({
-      iss: 'https://api.nuphos.ai',
-      sub: `nuphos:team:${TEAM_ID}`,
+      iss: 'https://platform.cerin.ai',
+      sub: `cerin:team:${TEAM_ID}`,
       aud: 'iam.myhuaweicloud.com',
     })
   })
@@ -235,7 +235,7 @@ describe('verifyHuaweiIdentity', () => {
     stubFetch(() => Response.json({ error_msg: 'invalid audience' }, { status: 400 }))
 
     await expect(verifyHuaweiIdentity(IDENTITY, TEAM_ID)).rejects.toThrow(
-      /identity provider "nuphos".*audience iam\.myhuaweicloud\.com.*trust agency named "nuphos-readonly"/su,
+      /identity provider "cerin".*audience iam\.myhuaweicloud\.com.*trust agency named "cerin-readonly"/su,
     )
   })
 
@@ -267,7 +267,7 @@ describe('verifyHuaweiIdentity', () => {
           Principal: { Federated: [`iam::${IDENTITY.domainId}:oidcProvider:${IDENTITY.idpId}`] },
           Condition: {
             StringEquals: {
-              'oidc:sub': [`nuphos:team:${TEAM_ID}`, `nuphos:team:${OTHER_TEAM_ID}`],
+              'oidc:sub': [`cerin:team:${TEAM_ID}`, `cerin:team:${OTHER_TEAM_ID}`],
             },
           },
         },
@@ -288,7 +288,7 @@ describe('verifyHuaweiIdentity', () => {
           Action: ['sts:agencies:assumeWithOIDC'],
           Effect: 'Allow',
           Principal: { Federated: [`iam::${IDENTITY.domainId}:oidcProvider:${IDENTITY.idpId}`] },
-          Condition: { StringEquals: { 'oidc:sub': [`nuphos:team:${OTHER_TEAM_ID}`] } },
+          Condition: { StringEquals: { 'oidc:sub': [`cerin:team:${OTHER_TEAM_ID}`] } },
         },
       ],
     })
@@ -304,7 +304,7 @@ describe('verifyHuaweiIdentity', () => {
     stubFetch(federationResponder)
 
     await expect(verifyHuaweiIdentity(IDENTITY, TEAM_ID)).rejects.toThrow(
-      /Could not find trust agency "nuphos-readonly"/,
+      /Could not find trust agency "cerin-readonly"/,
     )
   })
 
@@ -321,7 +321,7 @@ describe('verifyHuaweiIdentity', () => {
           Action: ['sts:agencies:assumeWithOIDC'],
           Effect: 'Allow',
           Principal: { Federated: [providerUrn] },
-          Condition: { StringEquals: { 'oidc:sub': [`nuphos:team:${TEAM_ID}`] } },
+          Condition: { StringEquals: { 'oidc:sub': [`cerin:team:${TEAM_ID}`] } },
         },
         {
           Action: ['sts:agencies:assumeWithOIDC'],
@@ -347,7 +347,7 @@ describe('verifyHuaweiIdentity', () => {
           Action: ['sts:agencies:assumeWithOIDC'],
           Effect: 'Allow',
           Principal: { Federated: [providerUrn] },
-          Condition: { StringEquals: { 'oidc:sub': [`nuphos:team:${TEAM_ID}`] } },
+          Condition: { StringEquals: { 'oidc:sub': [`cerin:team:${TEAM_ID}`] } },
         },
         {
           // Broader than the specific action, but still grants it — must
@@ -378,7 +378,7 @@ describe('verifyHuaweiIdentity', () => {
             Action: ['sts:agencies:assumeWithOIDC'],
             Effect: 'Allow',
             Principal: { Federated: [providerUrn] },
-            Condition: { StringEquals: { 'oidc:sub': [`nuphos:team:${TEAM_ID}`] } },
+            Condition: { StringEquals: { 'oidc:sub': [`cerin:team:${TEAM_ID}`] } },
           },
           {
             Action: [action],
@@ -405,7 +405,7 @@ describe('verifyHuaweiIdentity', () => {
           Action: ['sts:agencies:assumeWithOIDC'],
           Effect: 'Allow',
           Principal: { Federated: [providerUrn] },
-          Condition: { StringEquals: { 'oidc:sub': [`nuphos:team:${TEAM_ID}`] } },
+          Condition: { StringEquals: { 'oidc:sub': [`cerin:team:${TEAM_ID}`] } },
         },
         {
           Action: ['sts:agencies:assumeWithOIDC'],

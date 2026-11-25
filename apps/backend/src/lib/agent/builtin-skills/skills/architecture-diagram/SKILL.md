@@ -91,7 +91,7 @@ Every node is one of two kinds:
 
   `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/aws/<accountId>/clusters/<region>/<cluster>/workloads/deployments/namespaces/<ns>/resources/deployment/<name>`
 
-  Don't guess the path. Build it from the **same GUI route catalog** you use for markdown links: `rg -i "<resource keyword>" skills/nuphos-api/references/gui-routes.md` (e.g. `pod|deployment|service`, `s3|bucket`, `ec2|instance`) gives the URL template and the ids it needs. A non-`{{PUBLIC_WEB_URL}}` URL still works — it just opens in the external browser — but prefer the in-app page URL whenever the resource has one.
+  Don't guess the path. Build it from the **same GUI route catalog** you use for markdown links: `rg -i "<resource keyword>" skills/cerin-api/references/gui-routes.md` (e.g. `pod|deployment|service`, `s3|bucket`, `ec2|instance`) gives the URL template and the ids it needs. A non-`{{PUBLIC_WEB_URL}}` URL still works — it just opens in the external browser — but prefer the in-app page URL whenever the resource has one.
 
 - **Abstract** — a logical box with no real counterpart (a user, an external/third-party system, a conceptual boundary). Leave `url` unset and give it a sensible `kind` for colour.
 

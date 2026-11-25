@@ -9,8 +9,8 @@ final class DockPanelUITests: XCTestCase {
             .deletingLastPathComponent().deletingLastPathComponent()
             .appending(path: "tests/fixtures/dock-responses.json")
         let app = XCUIApplication()
-        app.launchArguments = ["-preview-home", "-preview-no-push", "-open-links", "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/dock-a"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchArguments = ["-preview-home", "-preview-no-push", "-open-links", "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/dock-a"]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         // A fresh simulator asks once about notifications.
         let allow = XCUIApplication(bundleIdentifier: "com.apple.springboard").buttons["Allow"].firstMatch

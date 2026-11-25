@@ -87,7 +87,7 @@ const USER = '62e6289482f5f9d9408f1a79'
 function awsBinding(overrides?: Partial<AwsRoleBinding>): AwsRoleBinding {
   return {
     id: new ObjectId(),
-    roleArn: 'arn:aws:iam::123456789012:role/nuphos-connector',
+    roleArn: 'arn:aws:iam::123456789012:role/cerin-connector',
     createdAt: new Date(),
     ...overrides,
   }
@@ -107,8 +107,8 @@ function tencentBinding(label: string): TencentAccountBinding {
   return {
     id: new ObjectId(),
     label,
-    roleArn: 'qcs::cam::uin/123456789:roleName/Nuphos',
-    providerId: 'nuphos',
+    roleArn: 'qcs::cam::uin/123456789:roleName/Cerin',
+    providerId: 'cerin',
     createdAt: new Date(),
   }
 }
@@ -184,13 +184,13 @@ describe('renderAgentKubeconfig', () => {
         endpoint: 'https://10.0.0.1:6443',
         caBase64: 'T05QUkVN',
         relayClusterKey: 'abc123',
-        proxyUrl: 'https://nr1_token:x@relay.nuphos.ai:8443',
+        proxyUrl: 'https://nr1_token:x@relay.platform.cerin.ai:8443',
         user: { token: 'sa-token' },
       },
     ])
 
     expect(yaml).toContain('server: "https://10.0.0.1:6443"')
-    expect(yaml).toContain('proxy-url: "https://nr1_token:x@relay.nuphos.ai:8443"')
+    expect(yaml).toContain('proxy-url: "https://nr1_token:x@relay.platform.cerin.ai:8443"')
   })
 
   test('omits proxy-url for clusters we can reach directly', () => {

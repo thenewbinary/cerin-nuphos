@@ -10,14 +10,14 @@ import { personalCredentialSubject } from './mcp-token'
 // The runtime image derives each turn's HOME from this env. Imported by path:
 // it ships with the runtime, not the backend.
 const SESSION_HOME = join(import.meta.dir, '../../../../runtime/image/session-home.mjs')
-const { nuphosSessionHomeEnv } = (await import(SESSION_HOME)) as {
-  nuphosSessionHomeEnv: (
+const { cerinSessionHomeEnv } = (await import(SESSION_HOME)) as {
+  cerinSessionHomeEnv: (
     sessionEnv: Record<string, string>,
     runtimeEnv: Record<string, string>,
   ) => Record<string, string>
 }
 
-const runtimeHome = mkdtempSync(join(tmpdir(), 'nuphos-home-'))
+const runtimeHome = mkdtempSync(join(tmpdir(), 'cerin-home-'))
 
 afterAll(() => rmSync(runtimeHome, { recursive: true, force: true }))
 
@@ -28,7 +28,7 @@ async function turn(actor: string, humanTurn: boolean) {
     humanTurn,
   })
   const env = access.runtimeEnv ?? {}
-  const home = nuphosSessionHomeEnv(env, { HOME: runtimeHome, PATH: '' })
+  const home = cerinSessionHomeEnv(env, { HOME: runtimeHome, PATH: '' })
   const authorization = access.mcpServers[0]?.headers[0]?.value
 
   return {
@@ -37,7 +37,7 @@ async function turn(actor: string, humanTurn: boolean) {
     subject: personalCredentialSubject(authorization),
     // Where the github and linear skills' setup scripts leave their logins.
     githubLogin: join(home.GH_CONFIG_DIR ?? '', 'hosts.yml'),
-    linearLogin: join(home.HOME ?? '', '.linear', 'nuphos.env'),
+    linearLogin: join(home.HOME ?? '', '.linear', 'cerin.env'),
   }
 }
 

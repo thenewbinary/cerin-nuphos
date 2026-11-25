@@ -1,11 +1,11 @@
 plugins { alias(libs.plugins.android.application) }
 android {
-    namespace = "ai.nuphos.sharefixture"
+    namespace = "ai.cerin.sharefixture"
     compileSdk = 37
     defaultConfig {
-        val persistent = providers.gradleProperty("nuphosIsolatedPersistentShareFixture").orNull == "true"
-        applicationId = if (persistent) "ai.nuphos.sharepersist1359.sender" else "ai.nuphos.shareinput1355.sender"
-        manifestPlaceholders["fixtureReceiver"] = if (persistent) "ai.nuphos.android.sharepersist1359" else "ai.nuphos.android.shareinput1355"
+        val persistent = providers.gradleProperty("cerinIsolatedPersistentShareFixture").orNull == "true"
+        applicationId = if (persistent) "ai.cerin.sharepersist1359.sender" else "ai.cerin.shareinput1355.sender"
+        manifestPlaceholders["fixtureReceiver"] = if (persistent) "ai.cerin.android.sharepersist1359" else "ai.cerin.android.shareinput1355"
         manifestPlaceholders["fixtureAuthority"] = "$applicationId.files"
         minSdk = 33
         targetSdk = 36

@@ -7,7 +7,7 @@ import { optionChip } from './composerMentionChips'
 
 import type { AgentConversation } from '../../../api'
 
-const dom = new Window({ url: 'https://nuphos.ai/' })
+const dom = new Window({ url: 'https://platform.cerin.ai/' })
 
 Object.assign(globalThis, { window: dom, document: dom.document, HTMLElement: dom.HTMLElement })
 

@@ -1,6 +1,6 @@
 # `bun run dev` layers this on docker-compose.yml and starts only mongo, rustfs
 # and runtime; the backend runs on the host with hot reload.
-name: nuphos-dev
+name: cerin-dev
 
 services:
   mongo:

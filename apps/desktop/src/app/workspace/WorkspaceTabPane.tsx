@@ -49,7 +49,7 @@ export const WorkspaceTabPane = memo(
     onPagePendingImportConsumed,
     pendingChatPrompt,
     onChatPromptConsumed,
-    onOpenNuphosLink,
+    onOpenCerinLink,
     onOpenNodeLink,
     onOpenPlanInChat,
     onOpenConversation,
@@ -195,8 +195,8 @@ export const WorkspaceTabPane = memo(
                             s3Detail={tab.s3Detail}
                             architectureDetail={tab.architectureDetail ?? null}
                             designDetail={tab.designDetail ?? null}
-                            nuphosDashboard={tab.nuphosDashboard ?? null}
-                            nuphosDashboards={tab.nuphosDashboards}
+                            cerinDashboard={tab.cerinDashboard ?? null}
+                            cerinDashboards={tab.cerinDashboards}
                             linearNav={tab.linearNav ?? null}
                             restoredTitle={tab.restoredTitle}
                             awsDetail={tab.awsDetail ?? null}
@@ -224,7 +224,7 @@ export const WorkspaceTabPane = memo(
                             isTeamAdmin={isTeamAdmin}
                             onOpenAuditConversation={onOpenAuditConversation}
                             onOpenNodeLink={onOpenNodeLink}
-                            onOpenNuphosLink={onOpenNuphosLink}
+                            onOpenCerinLink={onOpenCerinLink}
                           />
                         )}
                       </KubeContextProvider>
@@ -244,7 +244,7 @@ export const WorkspaceTabPane = memo(
                     onDockAgentToSidebar={onDockAgentToSidebar}
                     updateTab={updateTab}
                     onAgentSessionTitle={onAgentSessionTitle}
-                    onOpenNuphosLink={onOpenNuphosLink}
+                    onOpenCerinLink={onOpenCerinLink}
                     onOpenSettingsSection={onOpenSettingsSection}
                     onPagePendingImportConsumed={onPagePendingImportConsumed}
                     onChatPromptConsumed={onChatPromptConsumed}

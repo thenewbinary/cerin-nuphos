@@ -133,7 +133,7 @@ export function viaSkill(label: string, skill: string): EntryDetails {
 export function viaTeamApi(label: string, path: string): EntryDetails {
   return {
     label,
-    usage: `No raw value to fetch; call ${path} under $NUPHOS_BACKEND_URL/teams/$TEAM with $NUPHOS_TOKEN.`,
+    usage: `No raw value to fetch; call ${path} under $CERIN_BACKEND_URL/teams/$TEAM with $CERIN_TOKEN.`,
   }
 }
 

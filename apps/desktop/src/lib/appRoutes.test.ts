@@ -119,7 +119,7 @@ const CASES: { name: string; nav: NavigationSnapshot }[] = [
   {
     name: 'dashboard',
     nav: emptyNavigation({ kind: 'team', teamId: T }, 'team.dashboards', {
-      nuphosDashboard: { dashboardId: 'dash-1', dashboardName: 'Dashboard' },
+      cerinDashboard: { dashboardId: 'dash-1', dashboardName: 'Dashboard' },
     }),
   },
   {
@@ -270,7 +270,7 @@ const CASES: { name: string; nav: NavigationSnapshot }[] = [
         kind: 'aws-account',
         teamId: T,
         accountId: '682033483399',
-        roleArn: 'arn:aws:iam::682033483399:role/nuphos',
+        roleArn: 'arn:aws:iam::682033483399:role/cerin',
       },
       'aws.role',
     ),
@@ -951,7 +951,7 @@ test('custom resource routes restore every provider cluster scope', () => {
 // A pinned favourite (and any shared link) is stored as a produced path and
 // reopened by parsing it back, so the page a cluster URL was captured on has to
 // survive the round trip for every provider — see the `cluster` mention carve-out
-// in openNuphosLinkInNewTab, which exists for exactly this.
+// in openCerinLinkInNewTab, which exists for exactly this.
 test('cluster page paths round-trip their page for every provider', () => {
   const clusterScopes: Extract<Scope, { kind: 'cluster' }>[] = [
     {

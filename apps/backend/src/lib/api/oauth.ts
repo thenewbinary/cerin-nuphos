@@ -4,7 +4,7 @@ import type { ApiOperation } from './registry'
 
 const tokenExchangeRequestSchema = z.object({
   grant_type: z.literal('urn:ietf:params:oauth:grant-type:token-exchange'),
-  subject_token: z.string().describe('The conversation token (`NUPHOS_TOKEN`) to narrow.'),
+  subject_token: z.string().describe('The conversation token (`CERIN_TOKEN`) to narrow.'),
   subject_token_type: z
     .enum(['urn:ietf:params:oauth:token-type:jwt', 'urn:ietf:params:oauth:token-type:access_token'])
     .describe('The subject token is a JWT.'),
@@ -17,7 +17,7 @@ const tokenExchangeRequestSchema = z.object({
         "the subject's credentials. Devices, on-prem clusters and Vanta / Secureframe " +
         'integrations cannot be named: a limited token has no route to use them.',
     ),
-  audience: z.literal('nuphos-preview-mcp').optional(),
+  audience: z.literal('cerin-preview-mcp').optional(),
   team_id: z.string().optional().describe("Must match the subject token's team when given."),
   expires_in: z
     .string()

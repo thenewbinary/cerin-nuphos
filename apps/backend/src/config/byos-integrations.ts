@@ -54,7 +54,7 @@ export function byosIntegrationsConfig() {
       // Self-managed OAuth client (https://developers.cloudflare.com/fundamentals/oauth/).
       // Confidential client: backend holds the secret and runs the auth-code
       // exchange. setupRedirect is the backend callback registered on the client
-      // (e.g. https://api.nuphos.ai/cloudflare-app/setup).
+      // (e.g. https://platform.cerin.ai/cloudflare-app/setup).
       oauth: {
         clientId: optional('CLOUDFLARE_OAUTH_CLIENT_ID'),
         clientSecret: optional('CLOUDFLARE_OAUTH_CLIENT_SECRET'),
@@ -208,7 +208,7 @@ export function byosIntegrationsConfig() {
       // Trello, and Gmail / Google Drive for teams without their own Google
       // OAuth client. Each toolkit's Composio-managed auth config is found (or
       // created) in the project at first use.
-      apiKey: optional('NUPHOS_COMPOSIO_API_KEY'),
+      apiKey: optional('CERIN_COMPOSIO_API_KEY'),
     },
     linear: {
       // OAuth2 app the team authorises against. Linear has a single hosted

@@ -1,7 +1,7 @@
 import { isIP } from 'node:net'
 
 /**
- * Cloudflare sets CF-Connecting-IP to the real client. Hosted Nuphos (api.nuphos.ai) enforces
+ * Cloudflare sets CF-Connecting-IP to the real client. Hosted Cerin (platform.cerin.ai) enforces
  * Cloudflare Authenticated Origin Pulls, so there the header is trusted. Self-hosted, the
  * backend may be reachable directly and a caller bypassing Cloudflare can forge it, so it is
  * only advisory; without Cloudflare, fall back to the right-most X-Forwarded-For hop.
@@ -49,7 +49,7 @@ export function requestOrigin(
 export type SignInSource = Partial<RequestOrigin> & { client?: string; userAgent?: string }
 
 /**
- * The IP and place come only from Cloudflare: behind it (hosted Nuphos only
+ * The IP and place come only from Cloudflare: behind it (hosted Cerin only
  * accepts Cloudflare, via Authenticated Origin Pulls) CF-Connecting-IP is the
  * real client. X-Forwarded-For is whatever the caller sends, and the new
  * sign-in alert trusts this IP, so without Cloudflare the IP is unknown.
@@ -67,10 +67,10 @@ export function signInSource(header: (name: string) => string | undefined): Sign
 
 // A Map, so a client like `constructor/1` cannot reach Object.prototype.
 const APPS = new Map([
-  ['nuphos-desktop', 'Cerin Desktop'],
-  ['nuphos-ios', 'Cerin for iOS'],
-  ['nuphos-android', 'Cerin for Android'],
-  ['nuphos-cli', 'Cerin CLI'],
+  ['cerin-desktop', 'Cerin Desktop'],
+  ['cerin-ios', 'Cerin for iOS'],
+  ['cerin-android', 'Cerin for Android'],
+  ['cerin-cli', 'Cerin CLI'],
 ])
 const BROWSERS: [RegExp, string][] = [
   [/Edg\//, 'Edge'],
@@ -110,10 +110,10 @@ export function signInPlace(source: SignInSource): string | undefined {
 }
 
 const CLIENTS = new Map([
-  ['nuphos-desktop', 'desktop'],
-  ['nuphos-ios', 'ios'],
-  ['nuphos-android', 'android'],
-  ['nuphos-cli', 'cli'],
+  ['cerin-desktop', 'desktop'],
+  ['cerin-ios', 'ios'],
+  ['cerin-android', 'android'],
+  ['cerin-cli', 'cli'],
 ])
 
 /** Which app sent a request: one of ours by its header, else a browser (the web app) or the API. */

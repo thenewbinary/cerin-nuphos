@@ -5,18 +5,8 @@ import { IMAGE_PROVIDERS } from './runtime-provider'
 
 import type { OpenAbProvider } from './runtime-provider'
 
-export const RUNTIME_RELEASES_URL = 'https://github.com/nuphos/nuphos/releases'
-const legacyReleasesUrl = 'https://github.com/zeabur/nuphos-runtime/releases'
-
-export const NUPHOS_RUNTIME_REPOSITORY = 'ghcr.io/nuphos/runtime'
-export const LEGACY_RUNTIME_REPOSITORY = 'ghcr.io/zeabur/nuphos-runtime'
-
-/** Registry selection follows the trusted release feed, never an arbitrary body URL. */
-export function runtimeReleaseRepository(release: RuntimeRelease): string {
-  return release.url.startsWith(`${legacyReleasesUrl}/tag/`)
-    ? LEGACY_RUNTIME_REPOSITORY
-    : NUPHOS_RUNTIME_REPOSITORY
-}
+export const RUNTIME_RELEASES_URL = 'https://github.com/thenewbinary/cerin-platform/releases'
+export const CERIN_RUNTIME_REPOSITORY = 'ghcr.io/thenewbinary/cerin-runtime'
 
 export function stableRuntimeVersion(value: unknown): value is string {
   return typeof value === 'string' && /^\d+\.\d+\.\d+$/.test(value)
@@ -56,9 +46,7 @@ export function resetRuntimeReleaseCache(): void {
 
 /** A provider-only release must not advertise an image it did not publish. */
 function advertises(release: RuntimeRelease, provider: OpenAbProvider): boolean {
-  return release.body.includes(
-    `${runtimeReleaseRepository(release)}:${release.version}-${provider}`,
-  )
+  return release.body.includes(`${CERIN_RUNTIME_REPOSITORY}:${release.version}-${provider}`)
 }
 
 type GitHubRelease = { tag_name?: string; draft?: boolean; prerelease?: boolean; body?: string }
@@ -91,27 +79,16 @@ async function fetchReleases(): Promise<Map<OpenAbProvider, RuntimeRelease>> {
   for (let page = 1; ; page++) {
     if (found.size === IMAGE_PROVIDERS.length) break
     const response = await fetch(
-      `https://api.github.com/repos/nuphos/nuphos/releases?per_page=100&page=${String(page)}`,
+      `https://api.github.com/repos/thenewbinary/cerin-platform/releases?per_page=100&page=${String(page)}`,
       { headers, signal },
     )
 
-    // A feed that cannot be read is not a feed without releases: no legacy fallback.
+    // A feed that cannot be read is not a feed without releases.
     if (!response.ok) return found
     for (const item of (await response.json()) as GitHubRelease[])
       take(parseRelease(item, 'runtime-v', RUNTIME_RELEASES_URL))
     if (!response.headers.get('link')?.includes('rel="next"')) break
   }
-  if (found.size) return found
-
-  // The first monorepo image is published only after the migration is merged.
-  // Keep existing installations updatable until that cutover succeeds.
-  const response = await fetch(
-    'https://api.github.com/repos/zeabur/nuphos-runtime/releases/latest',
-    { headers, signal },
-  )
-
-  if (response.ok)
-    take(parseRelease((await response.json()) as GitHubRelease, 'v', legacyReleasesUrl))
 
   return found
 }

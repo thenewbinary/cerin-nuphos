@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ -n "${OPENAB_CREDENTIALS_DIR:-}" ]]; then
-  NUPHOS_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/NUPHOS_TOKEN" 2>/dev/null || true)
-  export NUPHOS_TOKEN
+  CERIN_TOKEN=$(cat "$OPENAB_CREDENTIALS_DIR/CERIN_TOKEN" 2>/dev/null || true)
+  export CERIN_TOKEN
 fi
 
 usage() {
@@ -10,7 +10,7 @@ usage() {
 Usage: setup-credentials.sh <teamId> <accountId> [region]
 
 Fetches the team's Volcengine IAM credentials from the Cerin backend (using
-the user's NUPHOS_TOKEN) for a Cerin-bound Volcengine account, then writes a
+the user's CERIN_TOKEN) for a Cerin-bound Volcengine account, then writes a
 sourceable env file at ~/.volc/credentials.env, exporting both naming schemes:
 VOLC_ACCESSKEY / VOLC_SECRETKEY / VOLC_SESSION_TOKEN / VOLC_REGION for the SDKs,
 and VOLCENGINE_ACCESS_KEY / VOLCENGINE_SECRET_KEY / VOLCENGINE_SESSION_TOKEN /
@@ -24,7 +24,7 @@ Arguments:
 
 After running:  source ~/.volc/credentials.env
 
-Required env: NUPHOS_TOKEN. Optional env: NUPHOS_BACKEND_URL (defaults to https://api.cerin.ai).
+Required env: CERIN_TOKEN. Optional env: CERIN_BACKEND_URL (defaults to https://api.cerin.ai).
 EOF
   exit 1
 }
@@ -37,8 +37,8 @@ team_id="$1"
 account_id="$2"
 region="${3:-}"
 
-if [ -z "${NUPHOS_TOKEN:-}" ]; then
-  echo "NUPHOS_TOKEN is not set in this sandbox" >&2
+if [ -z "${CERIN_TOKEN:-}" ]; then
+  echo "CERIN_TOKEN is not set in this sandbox" >&2
   exit 1
 fi
 if ! command -v python3 >/dev/null 2>&1; then
@@ -46,7 +46,7 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-base="${NUPHOS_BACKEND_URL:-https://api.cerin.ai}"
+base="${CERIN_BACKEND_URL:-https://api.cerin.ai}"
 base="${base%/}"
 # Conversation tokens are accepted by the ordinary team API; its auth
 # middleware applies the conversation's credential selection automatically.
@@ -63,7 +63,7 @@ for attempt in 1 2 3; do
   http_code="$(curl --http1.1 -sS -o "$tmp" -w '%{http_code}' \
     --connect-timeout 10 \
     --max-time 30 \
-    -H @<(printf 'Authorization: Bearer %s\n' "${NUPHOS_TOKEN}") \
+    -H @<(printf 'Authorization: Bearer %s\n' "${CERIN_TOKEN}") \
     -H 'Accept: application/json' \
     "$url")"
   curl_status=$?

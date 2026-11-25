@@ -3,21 +3,21 @@ import { Hono } from 'hono'
 import { DEVICE_CREDENTIAL_PREFIX, hashDeviceSecret } from '@/lib/agent/devices/join-tokens'
 import { findAgentDeviceByCredentialHash } from '@/lib/agent/devices/store'
 import { AppError } from '@/lib/errors'
-import { getNuphosUserForCredential } from '@/lib/identity'
+import { getCerinUserForCredential } from '@/lib/identity'
 import { requireAuth } from '@/middleware/auth'
 
 import type { AgentDevice } from '@/lib/agent/devices/store'
-import type { NuphosUser } from '@/lib/identity'
+import type { CerinUser } from '@/lib/identity'
 import type { AuthVariables } from '@/middleware/auth'
 import type { MiddlewareHandler } from 'hono'
 
 export type DeviceCredentialAuthDeps = {
   findDevice: (credentialHash: string) => Promise<AgentDevice | null>
-  getUser: (userId: string, issuedAt: Date) => Promise<NuphosUser | null>
+  getUser: (userId: string, issuedAt: Date) => Promise<CerinUser | null>
 }
 
 /**
- * A device credential from `nuphos agent --join` opens that device's own
+ * A device credential from `cerin agent --join` opens that device's own
  * runtime tunnel, and nothing else, until it is revoked. A person's computer
  * also stops when they sign out everywhere. A Box belongs to its team, so no
  * person's sessions take it offline. Every other credential goes through the
@@ -26,7 +26,7 @@ export type DeviceCredentialAuthDeps = {
 export function requireAuthOrDeviceCredential(
   deps: DeviceCredentialAuthDeps = {
     findDevice: findAgentDeviceByCredentialHash,
-    getUser: getNuphosUserForCredential,
+    getUser: getCerinUserForCredential,
   },
 ): MiddlewareHandler<{ Variables: AuthVariables }> {
   return async (c, next) => {

@@ -68,7 +68,7 @@ export async function claimDiscordApproval(
           guildId: decision.guildId,
           teamId: decision.teamId,
           discordUserId,
-          nuphosUserId: decision.actorUserId,
+          cerinUserId: decision.actorUserId,
           enabled: true,
         },
         update,

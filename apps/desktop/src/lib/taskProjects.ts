@@ -7,7 +7,7 @@ import { readAccountStorage, writeAccountStorage } from '../app/accountStorage.t
  * one, so this list only keeps folders added here before they have a task. It
  * lives where the folders do: on this computer, per account and team.
  */
-const storageKey = (teamId: string) => `nuphos.taskProjects.${teamId}`
+const storageKey = (teamId: string) => `cerin.taskProjects.${teamId}`
 const added = new Map<string, string[]>()
 const listeners = new Set<() => void>()
 let next: { teamId: string; path: string } | null = null

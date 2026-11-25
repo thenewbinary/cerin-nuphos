@@ -171,8 +171,8 @@ test('long bodies are truncated without splitting an emoji', () => {
 
 test('stripMarkdown keeps underscores inside a word', () => {
   assert.equal(
-    stripMarkdown('Set `NUPHOS_AGENT_HOME` to _your_ __home__ and **this**'),
-    'Set NUPHOS_AGENT_HOME to your home and this',
+    stripMarkdown('Set `CERIN_AGENT_HOME` to _your_ __home__ and **this**'),
+    'Set CERIN_AGENT_HOME to your home and this',
   )
 })
 

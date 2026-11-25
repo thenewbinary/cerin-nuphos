@@ -66,7 +66,7 @@
     <string name="profile_two_factor_remove">Hapus</string>
     <string name="profile_two_factor_add_passkey">Tambahkan kunci sandi</string>
     <string name="profile_two_factor_turn_on">Aktifkan</string>
-    <string name="profile_two_factor_setup_step_add">1. Tambahkan Nuphos ke aplikasi autentikator Anda</string>
+    <string name="profile_two_factor_setup_step_add">1. Tambahkan Cerin ke aplikasi autentikator Anda</string>
     <string name="profile_two_factor_open_authenticator">Buka di aplikasi autentikator</string>
     <string name="profile_two_factor_enter_key">Atau masukkan kunci ini:</string>
     <string name="profile_two_factor_setup_step_code">2. Masukkan kode 6 digit yang ditampilkan</string>

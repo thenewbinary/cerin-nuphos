@@ -136,7 +136,7 @@ test('a steering receipt keeps whichever acknowledgement carried the sender', as
   const metadata = {
     version: 1 as const,
     sender: { type: 'user' as const, id: 'u-ada', displayName: 'Ada' },
-    source: 'nuphos' as const,
+    source: 'cerin' as const,
     sentAt: '2026-09-29T00:00:00.000Z',
   }
   const bare = { type: 'data-steering' as const, data: { id: 'receipt', text: 'Focus on tests' } }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Weekly dependency updates under a seven-day release-age delay, run by .github/workflows/renovate.yml. The runtime image's agent SDKs move through runtime-update-*.yml, and ghcr.io/nuphos images through the release process, never through Renovate. See CONTRIBUTING.md, \"Dependencies\".",
+  "description": "Weekly dependency updates under a seven-day release-age delay, run by .github/workflows/renovate.yml. The runtime image's agent SDKs move through runtime-update-*.yml, and ghcr.io/thenewbinary/cerin-* images through the release process, never through Renovate. See CONTRIBUTING.md, \"Dependencies\".",
   "extends": [
     "config:recommended",
     ":semanticCommitTypeAll(chore)",
@@ -130,7 +130,7 @@
     {
       "description": "Our own images are versioned by the release process.",
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/nuphos/**", "nuphos-backend"],
+      "matchPackageNames": ["ghcr.io/thenewbinary/cerin-*", "cerin-backend"],
       "enabled": false
     }
   ]

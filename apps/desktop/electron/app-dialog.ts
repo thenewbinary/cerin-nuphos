@@ -55,7 +55,7 @@ export function showAppDialog(
       if (event.initiator !== win.webContents.mainFrame) return
       const url = new URL(event.url)
 
-      if (url.origin !== 'https://nuphos-dialog.invalid') return
+      if (url.origin !== 'https://cerin-dialog.invalid') return
       if (url.pathname === '/cancel') cancel()
       if (url.pathname === '/confirm' && options.confirmLabel) finish(true)
     })

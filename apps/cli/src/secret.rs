@@ -11,10 +11,10 @@
 use anyhow::Result;
 
 /// The CLI's item; the account names the user and backend.
-pub const SERVICE: &str = "ai.nuphos.cli.session";
+pub const SERVICE: &str = "ai.cerin.cli.session";
 
 /// The desktop app's item (`apps/desktop/electron/auth/token-store.ts`).
-pub const DESKTOP_SERVICE: &str = "ai.nuphos.desktop.session";
+pub const DESKTOP_SERVICE: &str = "ai.cerin.desktop.session";
 
 /// The credential store's name, for `cerin auth status`.
 pub const STORE_NAME: &str = if cfg!(target_os = "macos") {

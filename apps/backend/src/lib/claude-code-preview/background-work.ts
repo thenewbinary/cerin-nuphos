@@ -16,7 +16,7 @@ export const BACKGROUND_WORK_LOST_NOTICE =
   'plainly that nothing is watching it any more.'
 
 /**
- * Said when Nuphos only lost contact. The process may well have survived, so
+ * Said when Cerin only lost contact. The process may well have survived, so
  * the agent is told to check before repeating anything that already had an
  * effect, rather than to re-run on the assumption of death.
  */
@@ -65,7 +65,7 @@ export async function consumeBackgroundWorkLost(
 }
 
 /**
- * What Nuphos prompts with ahead of the user's own words, once this turn knows
+ * What Cerin prompts with ahead of the user's own words, once this turn knows
  * whether its inner session is new and what became of the conversation's
  * background work. The mark is consumed here, after runtime admission, so a
  * refused turn keeps it pending.

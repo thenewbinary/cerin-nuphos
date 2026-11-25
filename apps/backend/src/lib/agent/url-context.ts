@@ -173,6 +173,6 @@ export async function generateContextPrompt(urlContext: UrlContext): Promise<str
     '',
     ...lines,
     '',
-    'For Cerin GUI markdown links, do not guess route templates. Search `skills/nuphos-api/references/gui-routes.md` with `rg -i "<resource keyword>"` and use the matching row only when all required ids are available. The context above can supply defaults such as teamId, accountId/projectId, provider, clusterName, region, namespace, and view.',
+    'For Cerin GUI markdown links, do not guess route templates. Search `skills/cerin-api/references/gui-routes.md` with `rg -i "<resource keyword>"` and use the matching row only when all required ids are available. The context above can supply defaults such as teamId, accountId/projectId, provider, clusterName, region, namespace, and view.',
   ].join('\n')
 }

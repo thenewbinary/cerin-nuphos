@@ -4,7 +4,7 @@ import { getLastActiveByTeam, getLastActiveByUser } from '@/lib/agent/db/admin'
 import { escapeRegExp, mapTeam, mapUser, teams, users } from '@/lib/identity/shared'
 import { getMyTeams } from '@/lib/identity/teams'
 
-import type { NuphosTeam, NuphosTeamRole, NuphosUser } from '@/lib/identity/types'
+import type { CerinTeam, CerinTeamRole, CerinUser } from '@/lib/identity/types'
 
 export type DirectoryUserMatch = {
   id: string
@@ -68,7 +68,7 @@ export async function searchTeamsDirectory(q: string, limit = 8): Promise<Direct
 
 export async function getUserForAdmin(
   userId: string,
-): Promise<{ user: NuphosUser; teams: NuphosTeam[] } | null> {
+): Promise<{ user: CerinUser; teams: CerinTeam[] } | null> {
   if (!MongoObjectId.isValid(userId)) return null
   const doc = await users().findOne({
     _id: new MongoObjectId(userId),
@@ -80,10 +80,10 @@ export async function getUserForAdmin(
   return { user: mapUser(doc), teams: await getMyTeams(userId) }
 }
 
-export type TeamMemberForAdmin = NuphosUser & { role: NuphosTeamRole; joinedAt: string }
+export type TeamMemberForAdmin = CerinUser & { role: CerinTeamRole; joinedAt: string }
 
 export async function getTeamForAdmin(teamId: string): Promise<{
-  team: NuphosTeam & { memberCount: number }
+  team: CerinTeam & { memberCount: number }
   members: TeamMemberForAdmin[]
 } | null> {
   if (!MongoObjectId.isValid(teamId)) return null
@@ -128,7 +128,7 @@ export async function listUsersForAdmin(options?: {
   cursor?: string
   q?: string
 }): Promise<{
-  users: (NuphosUser & { lastActiveAt: string | null })[]
+  users: (CerinUser & { lastActiveAt: string | null })[]
   nextCursor: string | null
   hasMore: boolean
 }> {
@@ -169,7 +169,7 @@ export async function listTeamsForAdmin(options?: {
   cursor?: string
   q?: string
 }): Promise<{
-  teams: (NuphosTeam & { memberCount: number; lastActiveAt: string | null })[]
+  teams: (CerinTeam & { memberCount: number; lastActiveAt: string | null })[]
   nextCursor: string | null
   hasMore: boolean
 }> {

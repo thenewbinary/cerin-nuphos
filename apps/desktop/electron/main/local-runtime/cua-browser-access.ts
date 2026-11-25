@@ -53,10 +53,10 @@ export class BrowserAccessHost {
     this.turn = turn
     this.privateKey = privateKey
     if (process.platform === 'win32') {
-      pipe = `\\\\.\\pipe\\nuphos-browser-access-${randomBytes(16).toString('hex')}`
+      pipe = `\\\\.\\pipe\\cerin-browser-access-${randomBytes(16).toString('hex')}`
     } else {
       // mkdtemp's 0700 directory keeps other users off the socket.
-      this.dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-cua-'))
+      this.dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-cua-'))
       pipe = path.join(this.dir, 'access.sock')
     }
     this.env = {

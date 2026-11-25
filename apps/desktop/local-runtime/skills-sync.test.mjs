@@ -15,16 +15,16 @@ import { dirname, join } from 'node:path'
 import { test } from 'node:test'
 
 import { patchDesktopAdapter, patchDesktopShim } from './adapter-patches.mjs'
-import { nuphosLocalSyncSkills } from './skills-sync.mjs'
+import { cerinLocalSyncSkills } from './skills-sync.mjs'
 
 const params = {
   _meta: {
     claudeCode: {
       options: {
         env: {
-          NUPHOS_RUNTIME_SKILLS_URL:
+          CERIN_RUNTIME_SKILLS_URL:
             'https://api.example.com/internal/claude-code-runtime-skills/t1',
-          NUPHOS_RUNTIME_SKILLS_TOKEN: 'token',
+          CERIN_RUNTIME_SKILLS_TOKEN: 'token',
         },
       },
     },
@@ -32,7 +32,7 @@ const params = {
 }
 
 // Waits for the fetch the session itself never waits for.
-const sync = async (...args) => (await nuphosLocalSyncSkills(...args)).synced
+const sync = async (...args) => (await cerinLocalSyncSkills(...args)).synced
 
 function bundle(revision, files) {
   return new Response(JSON.stringify({ revision, files }), { status: 200 })
@@ -77,7 +77,7 @@ test('installs the team bundle into the workspace and skips an unchanged revisio
 })
 
 test('a prompt re-syncs the team skills, so a live session gets a skill added after it opened', async (t) => {
-  const codexParams = { _meta: { 'ai.nuphos/codex': { env: params._meta.claudeCode.options.env } } }
+  const codexParams = { _meta: { 'ai.cerin/codex': { env: params._meta.claudeCode.options.env } } }
 
   for (const [shape, opened] of [
     ['codex', codexParams],
@@ -102,13 +102,13 @@ test('a prompt re-syncs the team skills, so a live session gets a skill added af
     assert.equal(await sync(opened, { workspace, sessionHome }), true, shape)
     // Someone adds a team skill while the session stays open.
     revision = 'r2'
-    await globalThis.nuphosRefreshSkills(undefined, { sessionId: 's1' })
+    await globalThis.cerinRefreshSkills(undefined, { sessionId: 's1' })
     assert.equal(
       readFileSync(join(workspace, '.claude', 'skills', 'report', 'SKILL.md'), 'utf8'),
       '# Report',
       shape,
     )
-    delete globalThis.nuphosRefreshSkills
+    delete globalThis.cerinRefreshSkills
     t.mock.restoreAll()
   }
 })
@@ -126,19 +126,19 @@ test('the first session in a workspace starts with the team skills on disk', asy
     ),
   )
   // Not `.synced`: this is the moment the agent starts and reads its skills, once.
-  await nuphosLocalSyncSkills(structuredClone(params), { workspace, sessionHome })
+  await cerinLocalSyncSkills(structuredClone(params), { workspace, sessionHome })
   assert.equal(
     readFileSync(join(workspace, '.claude', 'skills', 'deploy', 'SKILL.md'), 'utf8'),
     '# Deploy',
   )
-  delete globalThis.nuphosRefreshSkills
+  delete globalThis.cerinRefreshSkills
 })
 
 test('a first session still opens when the team bundle cannot be fetched', async (t) => {
   const workspace = mkdtempSync(join(tmpdir(), 'skills-'))
 
   t.mock.method(globalThis, 'fetch', () => Promise.reject(new Error('offline')))
-  const { synced } = await nuphosLocalSyncSkills(params, { workspace })
+  const { synced } = await cerinLocalSyncSkills(params, { workspace })
 
   assert.equal(await synced, false)
 })
@@ -156,12 +156,12 @@ test('a session on an older team bundle starts with the newer one', async (t) =>
         : bundle(revision, [file(`${revision}/SKILL.md`, `# ${revision}`)]),
     ),
   )
-  await nuphosLocalSyncSkills(structuredClone(params), { workspace, sessionHome })
+  await cerinLocalSyncSkills(structuredClone(params), { workspace, sessionHome })
   revision = 'r2'
   // Not `.synced`: this is the moment the agent starts and reads its skills, once.
-  await nuphosLocalSyncSkills(structuredClone(params), { workspace, sessionHome })
+  await cerinLocalSyncSkills(structuredClone(params), { workspace, sessionHome })
   assert.equal(readFileSync(join(workspace, '.claude', 'skills', 'r2', 'SKILL.md'), 'utf8'), '# r2')
-  delete globalThis.nuphosRefreshSkills
+  delete globalThis.cerinRefreshSkills
 })
 
 test('a session opens once a fetch that never answers times out', async (t) => {
@@ -180,7 +180,7 @@ test('a session opens once a fetch that never answers times out', async (t) => {
   )
   // The fetch timeout does not hold the process open; the adapter's own handles do.
   const alive = setInterval(() => {}, 1_000)
-  const { synced } = await nuphosLocalSyncSkills(opened, {
+  const { synced } = await cerinLocalSyncSkills(opened, {
     workspace,
     sessionHome,
     timeoutMs: 50,
@@ -190,7 +190,7 @@ test('a session opens once a fetch that never answers times out', async (t) => {
   assert.deepEqual(opened._meta.claudeCode.options.additionalDirectories, [
     join(sessionHome, 'personal-skills'),
   ])
-  delete globalThis.nuphosRefreshSkills
+  delete globalThis.cerinRefreshSkills
 })
 
 test('each session offers the team skills, and only those, as a plugin of its own', async (t) => {
@@ -213,7 +213,7 @@ test('each session offers the team skills, and only those, as a plugin of its ow
   const plugins = async () => {
     const opened = structuredClone(params)
 
-    await nuphosLocalSyncSkills(opened, { workspace, sessionHome })
+    await cerinLocalSyncSkills(opened, { workspace, sessionHome })
 
     return opened._meta.claudeCode.options.plugins
   }
@@ -246,7 +246,7 @@ test('each session offers the team skills, and only those, as a plugin of its ow
   }
   // The next session gets wrappers of its own.
   assert.notEqual((await plugins())[0].path, first[0].path)
-  delete globalThis.nuphosRefreshSkills
+  delete globalThis.cerinRefreshSkills
 })
 
 test('a skill added after the sync is fetched over, and never offered', async (t) => {
@@ -276,8 +276,8 @@ test('a skill added after the sync is fetched over, and never offered', async (t
   const open = async () => {
     const opened = structuredClone(params)
 
-    await nuphosLocalSyncSkills(opened, { workspace, sessionHome })
-    delete globalThis.nuphosRefreshSkills
+    await cerinLocalSyncSkills(opened, { workspace, sessionHome })
+    delete globalThis.cerinRefreshSkills
 
     return opened._meta.claudeCode.options.plugins.map((plugin) =>
       plugin.path.split(/[\\/]/u).at(-1),
@@ -327,12 +327,12 @@ test('a wrapper goes with its session’s process, or with the next session afte
   const sessionHome = mkdtempSync(join(tmpdir(), 'home-'))
   // A process that has ended, and one that is still running (this one's parent).
   const ended = spawnSync(process.execPath, ['-e', '']).pid
-  const stale = mkdtempSync(join(tmpdir(), `nuphos-skill-plugins-${String(ended)}-`))
-  const live = mkdtempSync(join(tmpdir(), `nuphos-skill-plugins-${String(process.ppid)}-`))
+  const stale = mkdtempSync(join(tmpdir(), `cerin-skill-plugins-${String(ended)}-`))
+  const live = mkdtempSync(join(tmpdir(), `cerin-skill-plugins-${String(process.ppid)}-`))
 
   t.mock.method(globalThis, 'fetch', () => Promise.reject(new Error('offline')))
-  await nuphosLocalSyncSkills(structuredClone(params), { workspace, sessionHome })
-  delete globalThis.nuphosRefreshSkills
+  await cerinLocalSyncSkills(structuredClone(params), { workspace, sessionHome })
+  delete globalThis.cerinRefreshSkills
   assert.equal(lstatSync(stale, { throwIfNoEntry: false }), undefined)
   assert.ok(lstatSync(live))
   rmSync(live, { recursive: true })
@@ -344,9 +344,9 @@ test('a wrapper goes with its session’s process, or with the next session afte
       '--input-type=module',
       '-e',
       `globalThis.fetch = () => Promise.reject(new Error('offline'))
-      const { nuphosLocalSyncSkills } = await import(${JSON.stringify(new URL('./skills-sync.mjs', import.meta.url).href)})
+      const { cerinLocalSyncSkills } = await import(${JSON.stringify(new URL('./skills-sync.mjs', import.meta.url).href)})
       const opened = ${JSON.stringify(params)}
-      await nuphosLocalSyncSkills(opened, { workspace: ${JSON.stringify(workspace)}, sessionHome: ${JSON.stringify(sessionHome)} })
+      await cerinLocalSyncSkills(opened, { workspace: ${JSON.stringify(workspace)}, sessionHome: ${JSON.stringify(sessionHome)} })
       const wrapper = opened._meta.claudeCode.options.plugins[0].path
       console.log(wrapper)
       process.exit(0)`,
@@ -355,7 +355,7 @@ test('a wrapper goes with its session’s process, or with the next session afte
   )
   const wrapper = dirname(child.stdout.trim())
 
-  assert.match(wrapper, /nuphos-skill-plugins-/u)
+  assert.match(wrapper, /cerin-skill-plugins-/u)
   assert.equal(lstatSync(wrapper, { throwIfNoEntry: false }), undefined)
 })
 
@@ -396,16 +396,16 @@ test('does nothing without a skills credential', async () => {
 test('the adapter patch points the bridge and skills sync at the desktop bundle', () => {
   const source = [
     '#!/usr/bin/env node',
-    "      args: ['/opt/nuphos-runtime/mcp-http-bridge.mjs', server.url],",
+    "      args: ['/opt/cerin-runtime/mcp-http-bridge.mjs', server.url],",
     "      env: [{ name: 'OPENAB_CREDENTIALS_DIR', value: dir }],",
-    '    await nuphosSyncRuntimeSkills(params);',
+    '    await cerinSyncRuntimeSkills(params);',
   ].join('\n')
   const patched = patchDesktopAdapter(source)
 
-  assert.ok(patched.startsWith('#!/usr/bin/env node\nasync function nuphosLocalSyncSkills('))
-  assert.match(patched, /env\.NUPHOS_MCP_BRIDGE/u)
+  assert.ok(patched.startsWith('#!/usr/bin/env node\nasync function cerinLocalSyncSkills('))
+  assert.match(patched, /env\.CERIN_MCP_BRIDGE/u)
   assert.match(patched, /ELECTRON_RUN_AS_NODE/u)
-  assert.match(patched, /await nuphosLocalSyncSkills\(params\);/u)
+  assert.match(patched, /await cerinLocalSyncSkills\(params\);/u)
   assert.throws(() => patchDesktopAdapter('nothing to patch'))
 })
 
@@ -413,7 +413,7 @@ test('personal skills follow the turn’s credential and never land in the works
   const workspace = mkdtempSync(join(tmpdir(), 'skills-'))
   const sessionHome = mkdtempSync(join(tmpdir(), 'skills-home-'))
   const credentialsDir = mkdtempSync(join(tmpdir(), 'skills-credentials-'))
-  const credential = join(credentialsDir, 'NUPHOS_RUNTIME_SKILLS_TOKEN')
+  const credential = join(credentialsDir, 'CERIN_RUNTIME_SKILLS_TOKEN')
   const personal = join(sessionHome, 'personal-skills')
   const skills = join(personal, '.claude', 'skills')
   let failing = false
@@ -445,7 +445,7 @@ test('personal skills follow the turn’s credential and never land in the works
   const opened = structuredClone(params)
 
   opened.cwd = '/workspace'
-  opened._meta.claudeCode.options.env.NUPHOS_RUNTIME_SKILLS_TOKEN = 'p.owner.1.sig'
+  opened._meta.claudeCode.options.env.CERIN_RUNTIME_SKILLS_TOKEN = 'p.owner.1.sig'
   const calls = []
   const agent = {
     sessions: { s1: { configOptions: [] } },
@@ -460,7 +460,7 @@ test('personal skills follow the turn’s credential and never land in the works
     calls.length = 0
     if (token === undefined) rmSync(credential, { force: true })
     else writeFileSync(credential, `${token}\n`)
-    await globalThis.nuphosRefreshSkills(agent, { sessionId: 's1' })
+    await globalThis.cerinRefreshSkills(agent, { sessionId: 's1' })
 
     return [...calls]
   }
@@ -509,10 +509,10 @@ test('personal skills follow the turn’s credential and never land in the works
   writeFileSync(credential, 'p.none.10.sig\n')
   const reopened = structuredClone(opened)
 
-  reopened._meta.claudeCode.options.env.NUPHOS_RUNTIME_SKILLS_TOKEN = 'p.none.10.sig'
+  reopened._meta.claudeCode.options.env.CERIN_RUNTIME_SKILLS_TOKEN = 'p.none.10.sig'
   await sync(reopened, { workspace, sessionHome, credentialsDir })
   assert.deepEqual(readdirSync(skills), [])
-  delete globalThis.nuphosRefreshSkills
+  delete globalThis.cerinRefreshSkills
 })
 
 test('a reopened session never starts on another member’s personal skills', async (t) => {
@@ -528,10 +528,10 @@ test('a reopened session never starts on another member’s personal skills', as
   const open = async (who) => {
     const reopened = structuredClone(params)
 
-    reopened._meta.claudeCode.options.env.NUPHOS_RUNTIME_SKILLS_TOKEN = `p.${who}.1.sig`
-    writeFileSync(join(credentialsDir, 'NUPHOS_RUNTIME_SKILLS_TOKEN'), `p.${who}.1.sig\n`)
-    await nuphosLocalSyncSkills(reopened, { workspace, sessionHome, credentialsDir })
-    delete globalThis.nuphosRefreshSkills
+    reopened._meta.claudeCode.options.env.CERIN_RUNTIME_SKILLS_TOKEN = `p.${who}.1.sig`
+    writeFileSync(join(credentialsDir, 'CERIN_RUNTIME_SKILLS_TOKEN'), `p.${who}.1.sig\n`)
+    await cerinLocalSyncSkills(reopened, { workspace, sessionHome, credentialsDir })
+    delete globalThis.cerinRefreshSkills
   }
 
   // No fetch succeeds: whatever the session starts on is what was left on disk.
@@ -552,6 +552,6 @@ test('the staged ACP shim keeps its #! line first and syncs skills through the d
   const patched = patchDesktopShim(source)
 
   assert.ok(patched.startsWith('#!/usr/bin/env node\n'))
-  assert.ok(patched.includes('await nuphosLocalSyncSkills(message.params)'))
-  assert.ok(patched.includes(nuphosLocalSyncSkills.toString()))
+  assert.ok(patched.includes('await cerinLocalSyncSkills(message.params)'))
+  assert.ok(patched.includes(cerinLocalSyncSkills.toString()))
 })

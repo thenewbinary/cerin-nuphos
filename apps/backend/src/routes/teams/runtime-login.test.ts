@@ -5,10 +5,10 @@ import { errorHandler } from '@/lib/errors'
 
 import { loginRole } from './runtime-login'
 
-import type { NuphosTeamRole } from '@/lib/identity/types'
+import type { CerinTeamRole } from '@/lib/identity/types'
 import type { TeamAuthVariables } from '@/middleware/auth'
 
-function app(userId: string, teamRole: NuphosTeamRole) {
+function app(userId: string, teamRole: CerinTeamRole) {
   const teamScoped = new Hono<{ Variables: TeamAuthVariables }>()
 
   teamScoped.use('*', async (c, next) => {

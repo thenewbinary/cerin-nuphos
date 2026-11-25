@@ -1,0 +1,329 @@
+package ai.cerin.android
+
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
+import androidx.compose.material3.Text
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import android.view.KeyEvent
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import ai.cerin.android.data.Http
+import ai.cerin.android.data.JsonValue
+import ai.cerin.android.model.*
+import ai.cerin.android.session.AiAccess
+import ai.cerin.android.session.AuthSession
+import ai.cerin.android.session.AgentStore
+import ai.cerin.android.ui.LocalAuthSession
+import ai.cerin.android.ui.LocalAgentStore
+import ai.cerin.android.ui.chat.ConversationScreen
+import ai.cerin.android.ui.theme.CerinTheme
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.*
+import org.junit.runner.RunWith
+import java.util.concurrent.CopyOnWriteArrayList
+
+/** Device UI tests with synthetic transcripts and blocked HTTP. No backend writes occur. */
+@RunWith(AndroidJUnit4::class)
+class FixtureDeviceTest {
+    // Before the Activity starts: a fresh install's notification prompt would otherwise take over the first test.
+    init {
+        val instrumentation = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+        instrumentation.uiAutomation.grantRuntimePermission(instrumentation.targetContext.packageName, android.Manifest.permission.POST_NOTIFICATIONS)
+    }
+    @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    private val originals = mutableMapOf<String, OkHttpClient>()
+    private val requests = CopyOnWriteArrayList<String>()
+    private var triggerFixture: String? = null
+    private var status = 200
+    private var detail = AgentConversationDetail(title = "Synthetic acceptance fixture")
+    private lateinit var store: AgentStore
+    private lateinit var auth: AuthSession
+    private var savedAccess: Any? = null
+    @Suppress("UNCHECKED_CAST") private fun accessState() = AiAccess::class.java.getDeclaredField("state").also { it.isAccessible = true }.get(AiAccess) as MutableState<Any?>
+    private var returned = false
+    private var externalLink: String? = null
+
+    @Before fun blockNetwork() {
+        val mock = OkHttpClient.Builder().addInterceptor { chain ->
+            val request = chain.request()
+            requests += request.method + " " + request.url.encodedPath
+            val isDetail = request.url.encodedPath.endsWith("/fixture")
+            val body = if (request.url.encodedPath == "/agent/triggers" && triggerFixture != null) triggerFixture!!
+                else if (isDetail && status == 200) Http.json.encodeToString(AgentConversationDetail.serializer(), detail)
+                else if (isDetail) "{\"error\":{\"message\":\"Fixture conversation unavailable\"}}" else "{}"
+            Response.Builder().request(request).protocol(Protocol.HTTP_1_1).code(if (isDetail) status else 200)
+                .message("fixture").body(body.toResponseBody(Http.jsonMedia)).build()
+        }.build()
+        for (name in listOf("client", "chatClient")) {
+            val field = Http::class.java.getDeclaredField(name).also { it.isAccessible = true }
+            originals[name] = field.get(null) as OkHttpClient
+            field.set(null, mock)
+        }
+        compose.runOnIdle {
+            savedAccess = accessState().value
+            AiAccess.activate("synthetic-no-credentials")
+            AiAccess.grant("synthetic-no-credentials")
+            val app = compose.activity.application as CerinApplication
+            auth = AuthSession(app, app.tokenStore)
+            AuthSession::class.java.getDeclaredField("token").also { it.isAccessible = true }.set(auth, "synthetic-no-credentials")
+            @Suppress("UNCHECKED_CAST")
+            val state = AuthSession::class.java.getDeclaredField("state\$delegate").also { it.isAccessible = true }.get(auth) as MutableState<AuthSession.State>
+            state.value = AuthSession.State.SignedIn(CerinUser("acceptance-fixture", "acceptance@example.invalid", "Acceptance fixture"))
+        }
+        store = AgentStore("synthetic-no-credentials", compose.activity)
+        @Suppress("UNCHECKED_CAST")
+        val selected = AgentStore::class.java.getDeclaredField("selectedTeam\$delegate").also { it.isAccessible = true }.get(store) as MutableState<Team?>
+        selected.value = Team("synthetic-team", "Acceptance fixture")
+    }
+    @After fun restoreNetwork() {
+        compose.runOnIdle { compose.activity.setContent { }; store.disposeForConsent(); accessState().value = savedAccess }
+        for ((name, client) in originals) Http::class.java.getDeclaredField(name).also { it.isAccessible = true }.set(null, client)
+    }
+    private fun render(parts: List<ChatPart>, readOnly: Boolean = false) {
+        detail = detail.copy(messages = listOf(ChatMessage(id = "fixture-message", parts = parts)), readOnly = readOnly)
+        compose.runOnIdle {
+            compose.activity.setContent {
+                CerinTheme {
+                    CompositionLocalProvider(LocalAgentStore provides store, LocalAuthSession provides auth, LocalUriHandler provides object : UriHandler {
+                        override fun openUri(uri: String) { externalLink = uri }
+                    }) {
+                        val nav = rememberNavController()
+                        NavHost(nav, startDestination = "conversation") {
+                            composable("conversation") { ConversationScreen("fixture", false, { returned = true }, nav) }
+                            composable("plan/{id}") { Text("Fixture plan destination") }
+                        }
+                    }
+                }
+            }
+        }
+        waitFor(hasContentDescription("Back"))
+        compose.waitUntil(20_000) { store.session("fixture", "").loaded }
+    }
+    /** Saved under the app's files, `review-2030/`, for the PR's screenshots. */
+    private fun capture(name: String) {
+        compose.waitForIdle()
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+        Thread.sleep(300) // Wait for the actual window after the Compose idle frame.
+        val directory = java.io.File(InstrumentationRegistry.getInstrumentation().targetContext.getExternalFilesDir(null), "review-2030").apply { mkdirs() }
+        val bitmap = InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot() ?: error("Screenshot unavailable")
+        java.io.File(directory, "$name.png").outputStream().use { check(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it)) }
+    }
+
+    private fun tool() = ChatPart.Tool("fixture-tool", "terminal", false, ChatPart.Tool.State.OutputAvailable,
+        input = JsonValue.obj("command" to JsonValue.Str("printf FIXTURE_TOOL_INPUT")),
+        output = JsonValue.Str("FIXTURE_TOOL_OUTPUT"), title = "Fixture terminal")
+
+    @Test fun conversationTitleOpensTriggers() {
+        triggerFixture = """[{"id": "digest", "name": "Morning PR digest", "enabled": true, "triggerType": "cron", "cronExpression": "0 9 * * 1-5", "scheduleDescription": "Weekdays at 09:00 UTC", "nextRunAt": "2027-01-04T09:00:00.000Z", "canManage": true}, {"id": "watch", "name": "Production alerts", "enabled": true, "triggerType": "webhook", "scheduleDescription": "When a webhook arrives", "canManage": true}, {"id": "weekly", "name": "Weekly dependency review", "enabled": false, "triggerType": "cron", "cronExpression": "0 10 * * 1", "scheduleDescription": "Mondays at 10:00 UTC", "canManage": true}]"""
+        render(emptyList())
+        compose.onNodeWithContentDescription("Show task triggers").performClick()
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Morning PR digest").fetchSemanticsNodes().isNotEmpty() }
+        compose.waitForIdle() // The rows exist while the sheet is still animating in.
+        compose.onNodeWithText("Production alerts").assertIsDisplayed()
+        compose.onNodeWithText("Weekly dependency review").assertIsDisplayed()
+        capture("triggers-2096-android")
+    }
+
+    @Test fun readOnlyComposerPreventsSubmission() {
+        render(listOf(ChatPart.Text(text = "Read-only fixture")), readOnly = true)
+        // Read-only conversations disable drafting entirely, so nothing can be typed.
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+    }
+    @Test fun readOnlySessionRejectsDirectMutations() {
+        render(listOf(tool()), readOnly = true)
+        val session = store.session("fixture", "")
+        val before = requests.toList()
+        compose.runOnIdle {
+            Assert.assertFalse(session.send("Must stay unsent"))
+            session.updatePermissionMode(ai.cerin.android.model.PermissionMode.Bypass)
+            session.decide("fixture-tool", ai.cerin.android.session.ChatSession.ApprovalDecision.Once)
+            session.stop()
+        }
+        kotlinx.coroutines.runBlocking {
+            Assert.assertFalse(session.confirmProposedRule("fixture-rule"))
+            Assert.assertFalse(session.dismissProposedRule("fixture-rule"))
+        }
+        Assert.assertEquals(before, requests.toList())
+    }
+    @Test fun loadErrorDisablesDraftingAndSend() {
+        status = 404
+        render(emptyList())
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+        Assert.assertFalse(store.session("fixture", "").send("No request"))
+    }
+    @Test fun metadataRevocationAppliesWithUnchangedMessageCount() {
+        detail = detail.copy(isOwner = true)
+        render(listOf(ChatPart.Text(text = "Same history")))
+        val session = store.session("fixture", "")
+        Assert.assertTrue(session.canSubmit)
+        detail = detail.copy(readOnly = true, isOwner = false)
+        kotlinx.coroutines.runBlocking { session.reloadFromServer() }
+        compose.waitForIdle()
+        Assert.assertFalse(session.canSubmit)
+        Assert.assertFalse(session.canManage)
+        compose.onNodeWithContentDescription("Ask Cerin anything").assertIsNotEnabled()
+        compose.onNodeWithContentDescription("Send").assertIsNotEnabled()
+    }
+    @Test fun writableTeammateHasSendWithoutOwnerActions() {
+        detail = detail.copy(isOwner = false, canCancelRun = false, canRespondToRun = false)
+        render(listOf(ChatPart.Text(text = "Team fixture")))
+        val session = store.session("fixture", "")
+        Assert.assertTrue(session.canSubmit)
+        Assert.assertFalse(session.canManage)
+        Assert.assertFalse(session.canCancel)
+        compose.onNodeWithContentDescription("Task actions").performClick()
+        compose.onNodeWithText("Share").assertExists()
+        compose.onNodeWithText("Rename").assertDoesNotExist()
+        compose.onNodeWithText("Archive").assertDoesNotExist()
+    }
+    @Test fun completedToolShowsDetails() {
+        render(listOf(tool()))
+        compose.onNodeWithText("Fixture terminal").performScrollTo().performClick()
+        compose.onNodeWithText("FIXTURE_TOOL_OUTPUT", substring = true).assertIsDisplayed()
+        compose.onAllNodesWithText("FIXTURE_TOOL_INPUT", substring = true).onLast().assertIsDisplayed()
+        compose.onNodeWithText("Done").performClick()
+        compose.onNodeWithText("FIXTURE_TOOL_OUTPUT", substring = true).assertDoesNotExist()
+        compose.onNodeWithText("Fixture terminal").performClick()
+        // Back must reach the open sheet, not the Activity behind it.
+        compose.onNodeWithText("Done").assertIsDisplayed()
+        compose.waitForIdle()
+        InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+        compose.waitForIdle()
+        compose.onNodeWithText("FIXTURE_TOOL_OUTPUT", substring = true).assertDoesNotExist()
+        Assert.assertFalse(returned)
+    }
+    @Test fun workGroupExpandsAndCollapsesChildren() {
+        render(listOf(ChatPart.Reasoning(text = "Fixture reasoning"), tool(), ChatPart.Text(text = "Fixture final")))
+        compose.onNodeWithText("Worked through 2 steps").performScrollTo().performClick()
+        compose.onNodeWithText("Fixture terminal").assertIsDisplayed()
+        compose.onNodeWithText("Fixture terminal").performClick()
+        compose.onNodeWithText("FIXTURE_TOOL_OUTPUT", substring = true).assertIsDisplayed()
+        compose.onNodeWithText("Done").performClick()
+        compose.onNodeWithText("Worked through 2 steps").performClick()
+        compose.onNodeWithText("Fixture terminal").assertDoesNotExist()
+    }
+    @Test fun workGroupsExpandIndependently() {
+        render(listOf(ChatPart.Reasoning(text = "First reasoning"), tool(), ChatPart.Text(text = "First final"),
+            ChatPart.Reasoning(text = "Second reasoning"), tool().copy(toolCallId = "second-tool", title = "Second terminal"),
+            tool().copy(toolCallId = "third-tool", title = "Third terminal"), ChatPart.Text(text = "Second final")))
+        compose.onNodeWithText("Worked through 2 steps").performScrollTo().performClick()
+        compose.onNodeWithText("Fixture terminal").assertExists()
+        compose.onNodeWithText("Second terminal").assertDoesNotExist()
+        compose.onNodeWithText("Worked through 3 steps").performScrollTo().performClick()
+        // Two calls in a row fold into one line, named after the last.
+        compose.onNode(hasText("Third terminal") and hasText(" · 2 calls")).performScrollTo().performClick()
+        compose.onNodeWithText("Second terminal").assertExists()
+        compose.onNodeWithText("Worked through 2 steps").performScrollTo().performClick()
+        compose.onNodeWithText("Fixture terminal").assertDoesNotExist()
+        compose.onNodeWithText("Second terminal").assertExists()
+    }
+    @Test fun toolFailureAndMissingValuesStayReadable() {
+        render(listOf(tool().copy(input = null, output = null, state = ChatPart.Tool.State.OutputError, errorText = "FIXTURE_FAILURE")))
+        compose.onNodeWithText("Fixture terminal").performScrollTo().performClick()
+        compose.onNodeWithText("Failed").assertIsDisplayed()
+        compose.onNodeWithText("No input available").assertIsDisplayed()
+        compose.onNodeWithText("No output available").assertIsDisplayed()
+        compose.onNodeWithText("FIXTURE_FAILURE").assertIsDisplayed()
+    }
+    @Test fun deniedToolDoesNotClaimCompletion() {
+        render(listOf(tool().copy(output = null, state = ChatPart.Tool.State.OutputDenied)))
+        compose.onNodeWithText("Fixture terminal").performScrollTo().performClick()
+        compose.onNodeWithText("Denied").assertIsDisplayed()
+        compose.onNodeWithText("Execution was denied.").assertIsDisplayed()
+    }
+    @Test fun pendingToolShowsWaitingOutput() {
+        render(listOf(tool().copy(output = null, state = ChatPart.Tool.State.InputAvailable)))
+        compose.onNodeWithText("Fixture terminal").performScrollTo().performClick()
+        compose.onNodeWithText("Pending").assertIsDisplayed()
+        compose.onNodeWithText("No output available").assertIsDisplayed()
+    }
+    @Test fun longToolDetailsCanScrollAndClose() {
+        render(listOf(tool().copy(input = JsonValue.Str((1..80).joinToString("\n") { "Input line $it" }),
+            output = JsonValue.Str("FIXTURE_LONG_OUTPUT_END"))))
+        compose.onNodeWithText("Fixture terminal").performScrollTo().performClick()
+        compose.onNodeWithText("FIXTURE_LONG_OUTPUT_END").performScrollTo().assertIsDisplayed()
+        // Done stays at the top of the long sheet, so scroll back to it.
+        compose.onNodeWithText("Done").performScrollTo().assertIsDisplayed().performClick()
+        compose.onNodeWithText("Fixture terminal").assertIsDisplayed()
+    }
+    @Test fun reasoningExpandsAndCollapses() {
+        render(listOf(ChatPart.Reasoning(text = "Fixture reasoning"), ChatPart.Text(text = "Fixture final")))
+        compose.onNodeWithText("Fixture reasoning").assertDoesNotExist()
+        compose.onNodeWithText("Thought").performScrollTo().performClick()
+        compose.onNodeWithText("Fixture reasoning").assertIsDisplayed()
+        compose.onNodeWithText("Thought").performClick()
+        compose.onNodeWithText("Fixture reasoning").assertDoesNotExist()
+    }
+    @Test fun deniedAndDeletedConversationStillOfferBack() {
+        status = 403
+        render(emptyList())
+        val loadError = store.session("fixture", "").loadError
+        Assert.assertNotNull(loadError)
+        waitFor(hasText(loadError!!))
+        compose.onNodeWithText(loadError).assertIsDisplayed()
+        compose.onNodeWithContentDescription("Back").performClick()
+        Assert.assertTrue(returned)
+    }
+    @Test fun aFailedRunKeepsAOneLineHeaderAndFolds() {
+        val long = "printf 'first line'\necho " + "x".repeat(300) + "\nexit 1"
+        val first = tool().copy(toolCallId = "first-tool", title = "First terminal")
+        val failed = tool().copy(toolCallId = "failed-tool", title = null, state = ChatPart.Tool.State.OutputError,
+            input = JsonValue.obj("command" to JsonValue.Str(long)), output = null, errorText = "FIXTURE_FAILURE")
+        render(listOf(first, failed))
+        val header = compose.onNode(hasText(" · 2 calls · Failed"))
+        header.performScrollTo()
+        capture("failed-run")
+        val layouts = mutableListOf<androidx.compose.ui.text.TextLayoutResult>()
+        compose.onNode(hasText("printf 'first line'", substring = true), useUnmergedTree = true)
+            .performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.GetTextLayoutResult) { it(layouts) }
+        // One line, however long the command: the full command is in the run and the call's sheet.
+        Assert.assertEquals(1, layouts.single().lineCount)
+        // Only the label gives way: the count and the failure always show.
+        compose.onNode(hasText(" · 2 calls · Failed"), useUnmergedTree = true).assertIsDisplayed()
+        // A failure does not hold the run open: folded until tapped, and a tap folds it again.
+        compose.onNodeWithText("First terminal").assertDoesNotExist()
+        header.performClick()
+        compose.onNodeWithText("First terminal").assertExists()
+        capture("failed-run-open")
+        header.performClick()
+        compose.onNodeWithText("First terminal").assertDoesNotExist()
+    }
+    @Test fun aRunAwaitingAuthorizationOpensItself() {
+        detail = detail.copy(isOwner = true)
+        val approval = tool().copy(toolCallId = "approval-tool", title = "Approval terminal",
+            state = ChatPart.Tool.State.ApprovalRequested, approval = ChatPart.Tool.Approval("fixture-approval"))
+        render(listOf(tool(), approval))
+        compose.onNode(hasText("Approval terminal") and hasText(" · 2 calls · Authorization required")).assertExists()
+        compose.onNodeWithText("Fixture terminal").assertExists()
+    }
+    @Test fun alwaysAllowCancelDoesNotSaveRule() {
+        detail = detail.copy(isOwner = true)
+        val approval = tool().copy(state = ChatPart.Tool.State.ApprovalRequested, approval = ChatPart.Tool.Approval("fixture-approval"))
+        render(listOf(approval))
+        compose.onNodeWithText("Always allow…").performScrollTo().performClick()
+        compose.onNodeWithText("Always allow").assertIsDisplayed()
+        compose.onNodeWithText("Cancel").performClick()
+        compose.onNodeWithText("Always allow").assertDoesNotExist()
+        Assert.assertTrue(requests.none { it.startsWith("POST ") })
+    }
+    @Test fun markdownFormatsCodeAndTableText() {
+        render(listOf(ChatPart.Text(text = "**Fixture bold**\n\n- Fixture list\n\n```text\nFIXTURE_CODE\n```\n\n| Name | Value |\n| --- | --- |\n| Fixture cell | 42 |")))
+        for (text in listOf("Fixture bold", "Fixture list", "FIXTURE_CODE", "Fixture cell")) {
+            waitFor(hasText(text, substring = true))
+            compose.onNodeWithText(text, substring = true).assertIsDisplayed()
+        }
+    }
+    private fun waitFor(matcher: SemanticsMatcher) { compose.waitUntil(30_000) { runCatching { compose.onAllNodes(matcher).fetchSemanticsNodes().isNotEmpty() }.getOrDefault(false) } }
+}

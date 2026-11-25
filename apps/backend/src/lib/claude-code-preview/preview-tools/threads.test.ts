@@ -83,7 +83,7 @@ test.each([false, true])(
     }
 
     update({
-      title: 'mcp__nuphos-tools__send_message_to_thread',
+      title: 'mcp__cerin-tools__send_message_to_thread',
       status: 'pending',
       rawInput: input,
     })

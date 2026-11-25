@@ -14,7 +14,7 @@ type AdoptDeps = {
 
 /**
  * Starts from cli.yaml's sign-in, once. Where the token goes to the keychain
- * it leaves cli.yaml as well, and `nuphos login` then takes it from here.
+ * it leaves cli.yaml as well, and `cerin login` then takes it from here.
  */
 export async function adoptLegacySignIn(deps: AdoptDeps): Promise<StoredAccount | null> {
   const legacy = deps.legacyPath ? await readYaml<StoredAccount>(deps.legacyPath) : null

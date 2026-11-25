@@ -3,7 +3,7 @@ import test from 'node:test'
 
 import { canEditDashboard, moveTarget, splitByVisibility } from './visibility.ts'
 
-import type { NuphosDashboard } from '../schema'
+import type { CerinDashboard } from '../schema'
 
 const personal = { createdBy: 'me', visibility: 'personal' as const }
 const team = { createdBy: 'me', visibility: 'team' as const }
@@ -43,7 +43,7 @@ test('the list splits into personal dashboards and the team’s, older ones coun
     { id: 'a', ...personal },
     { id: 'b', ...team },
     { id: 'c', ...legacy },
-  ] as NuphosDashboard[]
+  ] as CerinDashboard[]
   const { personal: mine, team: shared } = splitByVisibility(rows)
 
   assert.deepEqual(

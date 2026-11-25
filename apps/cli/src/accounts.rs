@@ -114,11 +114,11 @@ mod tests {
     use crate::config::Session;
 
     const FILE: &str = "\
-api: https://api.nuphos.ai
-keychainAccount: alex@https://api.nuphos.ai
+api: https://platform.cerin.ai
+keychainAccount: alex@https://platform.cerin.ai
 userInfo: { id: alex, email: alex@example.com }
 accounts:
-  - api: https://nuphos.example.com/
+  - api: https://cerin.example.com/
     token: tok-self
     userInfo: { id: alex, email: alex@example.com }
   - token: tok-legacy
@@ -136,8 +136,8 @@ accounts:
         assert_eq!(
             rows,
             vec![
-                ("alex@https://api.nuphos.ai".into(), "https://api.nuphos.ai".into(), true),
-                ("alex@https://nuphos.example.com".into(), "https://nuphos.example.com".into(), false),
+                ("alex@https://platform.cerin.ai".into(), "https://platform.cerin.ai".into(), true),
+                ("alex@https://cerin.example.com".into(), "https://cerin.example.com".into(), false),
                 // From before the desktop recorded a backend; loopback as one host.
                 ("sam@http://127.0.0.1:3718".into(), "http://localhost:3718".into(), false),
             ]
@@ -146,37 +146,37 @@ accounts:
 
     #[test]
     fn an_account_is_named_by_its_key_or_an_email_only_one_has() {
-        let pick = |s: &str| find(desktop_accounts_in(FILE, "https://api.nuphos.ai"), s).map(|a| a.key);
-        assert_eq!(pick("SAM@example.com").unwrap(), "sam@https://api.nuphos.ai");
-        assert_eq!(pick("alex@https://nuphos.example.com").unwrap(), "alex@https://nuphos.example.com");
+        let pick = |s: &str| find(desktop_accounts_in(FILE, "https://platform.cerin.ai"), s).map(|a| a.key);
+        assert_eq!(pick("SAM@example.com").unwrap(), "sam@https://platform.cerin.ai");
+        assert_eq!(pick("alex@https://cerin.example.com").unwrap(), "alex@https://cerin.example.com");
         assert!(pick("alex@example.com").unwrap_err().to_string().contains("more than one backend"));
         assert!(pick("nobody@example.com").is_err());
     }
 
     #[test]
     fn a_signed_in_account_carries_its_own_backend() {
-        let accounts = desktop_accounts_in(FILE, "https://api.nuphos.ai");
+        let accounts = desktop_accounts_in(FILE, "https://platform.cerin.ai");
         let session = accounts[1].sign_in().unwrap();
         assert_eq!(session.token.as_deref(), Some("tok-self"));
-        assert_eq!(session.api.as_deref(), Some("https://nuphos.example.com"));
+        assert_eq!(session.api.as_deref(), Some("https://cerin.example.com"));
     }
 
     #[test]
     fn a_keychain_reference_alone_still_names_the_cli_account() {
         let session = Session {
-            keychain_account: Some("alex@https://api.nuphos.ai".into()),
-            api: Some("https://api.nuphos.ai".into()),
+            keychain_account: Some("alex@https://platform.cerin.ai".into()),
+            api: Some("https://platform.cerin.ai".into()),
             user_info: Some(serde_json::json!({ "id": "alex" })),
             ..Session::default()
         };
-        assert_eq!(key_of(&session).as_deref(), Some("alex@https://api.nuphos.ai"));
+        assert_eq!(key_of(&session).as_deref(), Some("alex@https://platform.cerin.ai"));
         assert_eq!(key_of(&Session::default()), None);
     }
 
     #[test]
     fn an_environment_endpoint_for_another_backend_blocks_a_switch() {
-        assert!(override_conflicts(Some("https://api.nuphos.ai"), "https://nuphos.example.com"));
+        assert!(override_conflicts(Some("https://platform.cerin.ai"), "https://cerin.example.com"));
         assert!(!override_conflicts(Some("http://localhost:3718/"), "http://127.0.0.1:3718"));
-        assert!(!override_conflicts(None, "https://nuphos.example.com"));
+        assert!(!override_conflicts(None, "https://cerin.example.com"));
     }
 }

@@ -114,7 +114,7 @@ const deps: LiveActivityDeps = {
   credentials: () => ({
     keyId: 'K',
     teamId: 'T',
-    bundleId: 'ai.nuphos.ios',
+    bundleId: 'ai.cerin.ios',
     privateKey: 'unused',
     environment: 'production',
   }),

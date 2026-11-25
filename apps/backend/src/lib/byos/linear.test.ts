@@ -7,7 +7,7 @@ describe('buildAuthorizeUrl', () => {
     const url = new URL(
       buildAuthorizeUrl({
         clientId: 'client-123',
-        redirectUri: 'https://api.nuphos.ai/linear-app/setup',
+        redirectUri: 'https://platform.cerin.ai/linear-app/setup',
         state: 'abc123',
         scope: 'read,write',
       }),
@@ -15,7 +15,7 @@ describe('buildAuthorizeUrl', () => {
 
     expect(url.origin + url.pathname).toBe('https://linear.app/oauth/authorize')
     expect(url.searchParams.get('client_id')).toBe('client-123')
-    expect(url.searchParams.get('redirect_uri')).toBe('https://api.nuphos.ai/linear-app/setup')
+    expect(url.searchParams.get('redirect_uri')).toBe('https://platform.cerin.ai/linear-app/setup')
     expect(url.searchParams.get('response_type')).toBe('code')
     expect(url.searchParams.get('state')).toBe('abc123')
     expect(url.searchParams.get('scope')).toBe('read,write')

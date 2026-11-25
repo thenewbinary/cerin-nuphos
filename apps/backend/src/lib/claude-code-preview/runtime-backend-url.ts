@@ -48,9 +48,9 @@ export function isAllowedRemoteOpenAbUrl(value: string): boolean {
 }
 
 /**
- * The base a runtime outside the cluster can reach. `NUPHOS_BACKEND_URL` is
+ * The base a runtime outside the cluster can reach. `CERIN_BACKEND_URL` is
  * documented as the in-cluster Service, so it qualifies only when it happens
- * to hold a public address; `NUPHOS_PUBLIC_BACKEND_URL` is the deliberate one.
+ * to hold a public address; `CERIN_PUBLIC_BACKEND_URL` is the deliberate one.
  *
  * TLS is required for the same reason `isAllowedRemoteOpenAbUrl` requires
  * `wss://`: what travels here is a bearer that vends the team's cloud
@@ -84,7 +84,7 @@ export function pickRuntimeBackendUrl(
 ): string | undefined {
   if (external) return pickPublicBackendUrl(sources)
   if (sources.podNamespace)
-    return `http://nuphos-backend.${sources.podNamespace}.svc:${String(sources.port)}`
+    return `http://cerin-backend.${sources.podNamespace}.svc:${String(sources.port)}`
 
   return sources.backendUrl
 }
@@ -116,7 +116,7 @@ export function requirePublicBackendUrl(): string {
     'public_backend_url_unconfigured',
     'This Cerin deployment has no publicly reachable backend URL, so a ' +
       'self-hosted agent could reach neither Cerin tools nor the skill ' +
-      'bundle. Set NUPHOS_PUBLIC_BACKEND_URL on the backend, then register ' +
+      'bundle. Set CERIN_PUBLIC_BACKEND_URL on the backend, then register ' +
       'the agent again.',
   )
 }

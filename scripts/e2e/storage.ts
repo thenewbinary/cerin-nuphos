@@ -5,7 +5,7 @@ import { spawn, until } from './processes.ts'
 
 // Keep the tag in step with deploy/compose/docker-compose.yml and the e2e workflow's pull.
 export const STORAGE_IMAGE = 'rustfs/rustfs:1.0.0'
-const BUCKET = 'nuphos-e2e-transfers'
+const BUCKET = 'cerin-e2e-transfers'
 const ACCESS_KEY = 'local-e2e-storage-access-key'
 const SECRET_KEY = 'local-e2e-storage-secret-key-not-a-production-credential'
 
@@ -54,9 +54,9 @@ export async function startStorage(port: number): Promise<Record<string, string>
   await until('the file-transfer bucket to exist', async () => createBucket(endpoint))
 
   return {
-    NUPHOS_FILE_TRANSFER_S3_BUCKET: BUCKET,
-    NUPHOS_FILE_TRANSFER_S3_ACCESS_KEY_ID: ACCESS_KEY,
-    NUPHOS_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: SECRET_KEY,
-    NUPHOS_FILE_TRANSFER_S3_ENDPOINT: endpoint,
+    CERIN_FILE_TRANSFER_S3_BUCKET: BUCKET,
+    CERIN_FILE_TRANSFER_S3_ACCESS_KEY_ID: ACCESS_KEY,
+    CERIN_FILE_TRANSFER_S3_SECRET_ACCESS_KEY: SECRET_KEY,
+    CERIN_FILE_TRANSFER_S3_ENDPOINT: endpoint,
   }
 }

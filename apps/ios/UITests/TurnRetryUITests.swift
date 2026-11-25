@@ -28,9 +28,9 @@ final class TurnRetryUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = [
             "-preview-home", "-preview-no-push",
-            "-open-links", "https://nuphos.ai/teams/\(teamId)/agent/\(sessionId)",
+            "-open-links", "https://platform.cerin.ai/teams/\(teamId)/agent/\(sessionId)",
         ]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
 
         let transcript = app.collectionViews["chat.transcript"]

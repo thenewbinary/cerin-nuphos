@@ -28,7 +28,7 @@ On import, the stored Trigger `userId` is derived from its remapped Task owner
 (the importer), so it can be listed, edited and deleted through the Task APIs.
 This does not restore an independent Trigger owner or source execution authority.
 
-The archive uses `manifest.json` with `format: "nuphos-team"` and
+The archive uses `manifest.json` with `format: "cerin-team"` and
 `formatVersion: 1`. It records the backend version, source team, export time,
 and record counts, uncompressed byte lengths and SHA-256 for every part.
 Structured records use NDJSON; settings, the member directory and the exclusion

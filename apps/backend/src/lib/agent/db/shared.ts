@@ -60,7 +60,7 @@ export type ConversationPreviewContext = {
 export type AgentConversation = ConversationTaskState & {
   _id?: ObjectId
   sessionId: string // Frontend-generated UUID
-  userId: string // Nuphos user id
+  userId: string // Cerin user id
   teamId?: string
   linkedResources?: SessionResource[]
   titleManuallySet?: boolean
@@ -235,7 +235,7 @@ export type AgentMessage = {
   /** A user turn a surface generated for a plan approval, not typed text. */
   turnKind?: 'plan-approval'
   // Where this specific message came in from, for messages that arrived over an
-  // external bridge. Absent for messages typed in Nuphos and for every message
+  // external bridge. Absent for messages typed in Cerin and for every message
   // written before this field existed — additive, so no migration.
   metadata?: MessageMetadata
   origin?: AgentMessageOrigin

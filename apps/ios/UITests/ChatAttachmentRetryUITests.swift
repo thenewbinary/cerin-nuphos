@@ -58,7 +58,7 @@ final class ChatAttachmentRetryUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         app.staticTexts["release-planning"].firstMatch.tap()
         return (app, write)

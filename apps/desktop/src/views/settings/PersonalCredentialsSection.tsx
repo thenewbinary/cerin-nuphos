@@ -34,7 +34,7 @@ const PROVIDERS: { provider: PersonalCredentialProvider; name: string; descripti
     provider: 'github',
     name: 'GitHub',
     description: t(
-      'Act as yourself on GitHub — commits, PRs and comments are authored by you instead of nuphos[bot]. Tasks scoped to one repository keep using nuphos[bot].',
+      'Act as yourself on GitHub — commits, PRs and comments are authored by you instead of cerin[bot]. Tasks scoped to one repository keep using cerin[bot].',
     ),
   },
   {
@@ -190,17 +190,19 @@ export function PersonalCredentialsSection({
                               },
                             )
                           : t('Needs a Google OAuth client in Team settings.')}{' '}
-                        <button
-                          type="button"
-                          className={INLINE_LINK}
-                          onClick={() => void api.appOpenExternal(GOOGLE_CLIENT_GUIDE_URL)}
-                        >
-                          {t('Setup guide')}
-                        </button>
+                        {GOOGLE_CLIENT_GUIDE_URL && (
+                          <button
+                            type="button"
+                            className={INLINE_LINK}
+                            onClick={() => void api.appOpenExternal(GOOGLE_CLIENT_GUIDE_URL)}
+                          >
+                            {t('Setup guide')}
+                          </button>
+                        )}
                         {/* Only admins can add the client; everyone else is told whom to ask. */}
                         {team?.role === 'ADMINISTRATOR' && onOpenSection && (
                           <>
-                            {' · '}
+                            {GOOGLE_CLIENT_GUIDE_URL && ' · '}
                             <button
                               type="button"
                               className={INLINE_LINK}

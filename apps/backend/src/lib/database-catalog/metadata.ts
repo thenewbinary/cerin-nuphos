@@ -93,7 +93,7 @@ export function boundedMetadataRecord(
   if (metadataByteSize(record) <= maxBytes) return { value: record, truncated: redacted.truncated }
 
   return {
-    value: { $nuphosMetadata: 'Metadata exceeded the safe response limit.' },
+    value: { $cerinMetadata: 'Metadata exceeded the safe response limit.' },
     truncated: true,
   }
 }

@@ -6,7 +6,7 @@ import {
   listAgentEvents,
 } from '@/lib/agent/db'
 import { AppError } from '@/lib/errors'
-import { signNuphosToken } from '@/lib/identity'
+import { signCerinToken } from '@/lib/identity'
 import { logError, logEvent } from '@/lib/observability'
 import {
   cleanQuery,
@@ -161,7 +161,7 @@ export function registerAdminAgentRoutes(adminRoutes: Hono<{ Variables: AdminVar
           userId: conversation.userId,
           // Short-lived token scoped to the session owner: the rewoken turn runs
           // with exactly the permissions the user's own retry would have had.
-          nuphosToken: signNuphosToken(conversation.userId, 60 * 60 * 2),
+          cerinToken: signCerinToken(conversation.userId, 60 * 60 * 2),
           teamId: conversation.teamId,
           sessionId,
           messages: uiMessages,

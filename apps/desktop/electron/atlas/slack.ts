@@ -16,7 +16,7 @@ export type SlackUserMapping = {
   slackWorkspaceId: string
   slackUserId: string
   teamId: string
-  nuphosUserId: string
+  cerinUserId: string
   enabled: boolean
   createdBy: string
   createdAt: string
@@ -178,7 +178,7 @@ export async function upsertSlackUserMapping(
   input: {
     slackWorkspaceId: string
     slackUserId: string
-    nuphosUserId: string
+    cerinUserId: string
     enabled?: boolean
   },
 ): Promise<SlackUserMapping> {

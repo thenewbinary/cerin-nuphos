@@ -16,7 +16,7 @@ const source = fileURLToPath(
     import.meta.url,
   ),
 )
-const base = mkdtempSync(join(tmpdir(), 'nuphos-codex-steering-'))
+const base = mkdtempSync(join(tmpdir(), 'cerin-codex-steering-'))
 const record = join(base, 'requests.jsonl')
 const helper = readFileSync(
   new URL('../image/codex-acp/session-config.mjs', import.meta.url),
@@ -72,7 +72,7 @@ before(async () => {
       PATH: process.env.PATH,
       HOME: base,
       CODEX_PATH: fileURLToPath(new URL('./fixtures/codex-app-server.mjs', import.meta.url)),
-      NUPHOS_SMOKE_RECORD: record,
+      CERIN_SMOKE_RECORD: record,
     },
     stdio: ['pipe', 'pipe', 'pipe'],
   })

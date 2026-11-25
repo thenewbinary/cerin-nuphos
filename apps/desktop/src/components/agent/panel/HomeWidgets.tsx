@@ -49,7 +49,7 @@ export function HomeWidgets({
   teamId,
   isTeamAdmin = false,
   onOpenConversation,
-  onOpenNuphosLink,
+  onOpenCerinLink,
   revealAt,
   replayKey,
 }: {
@@ -61,7 +61,7 @@ export function HomeWidgets({
   /** Administrators can make their layout the team default. */
   isTeamAdmin?: boolean
   /** Opens a conversation picked from a card. */
-  onOpenNuphosLink?: (href: string) => boolean
+  onOpenCerinLink?: (href: string) => boolean
   onOpenConversation?: (sessionId: string, title: string) => void
 }) {
   const home = useHomeLayout(teamId)
@@ -134,7 +134,7 @@ export function HomeWidgets({
         <GithubCard
           key={`gh:${card.id}`}
           teamId={teamId}
-          onOpenNuphosLink={onOpenNuphosLink}
+          onOpenCerinLink={onOpenCerinLink}
           card={card}
           onChange={(next) => setGithub(settings.github.map((c) => (c.id === card.id ? next : c)))}
           onRemove={() => setGithub(settings.github.filter((c) => c.id !== card.id))}
@@ -159,7 +159,7 @@ export function HomeWidgets({
         <DashboardPanelCard
           key={`panel:${panelKey(pin)}`}
           teamId={teamId}
-          onOpenNuphosLink={onOpenNuphosLink}
+          onOpenCerinLink={onOpenCerinLink}
           pin={pin}
           onUnpin={() => togglePanel(pin)}
           onGone={() => markGone(panelKey(pin))}

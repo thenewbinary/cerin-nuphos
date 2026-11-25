@@ -3,10 +3,10 @@ import { ObjectId } from 'mongodb'
 
 import { useDb } from '@/lib/test/doubles/db'
 
-import type { NuphosTeamDoc } from './shared'
+import type { CerinTeamDoc } from './shared'
 
 const teamId = new ObjectId()
-const team: NuphosTeamDoc = {
+const team: CerinTeamDoc = {
   _id: teamId,
   name: 'Runtime team',
   avatarUrl: '',
@@ -31,7 +31,7 @@ test('reads the selected provider and exposes it in the workspace API', async ()
 })
 
 test('legacy workspaces retain Claude Code and never restore the classic loop', async () => {
-  team.agentRuntime = 'nuphos'
+  team.agentRuntime = 'cerin'
   expect(await getTeamAgentRuntime(teamId.toHexString())).toBe('claude-code')
   expect(mapTeam(team).agentRuntime).toBe('claude-code')
   delete team.agentRuntime

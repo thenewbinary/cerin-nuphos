@@ -12,7 +12,7 @@ Object.assign(globalThis, {
 })
 Object.defineProperty(globalThis, 'localStorage', {
   configurable: true,
-  value: { getItem: (key: string) => (key === 'nuphos.locale' ? 'es' : null) },
+  value: { getItem: (key: string) => (key === 'cerin.locale' ? 'es' : null) },
 })
 
 const { t } = await import('../../../i18n/index.ts')

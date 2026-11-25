@@ -13,7 +13,7 @@ const owner: ImportOwner = {
 }
 const manifest = () =>
   botBundleSchema.parse({
-    format: 'nuphos-bot-bundle',
+    format: 'cerin-bot-bundle',
     version: 1,
     source: { application: 'grok-bot', exportedAt: '2026-11-11T00:00:00Z' },
     bots: [

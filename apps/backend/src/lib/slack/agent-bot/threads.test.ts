@@ -55,7 +55,7 @@ describe('appendSlackThreadMessage clipping', () => {
 
     await appendSlackThreadMessage(KEY, {
       ts: '2.0',
-      authorName: 'Nuphos',
+      authorName: 'Cerin',
       text,
       fromBot: true,
     })

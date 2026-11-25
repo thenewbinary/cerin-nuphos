@@ -13,7 +13,7 @@ function npmGlobal(withExe: boolean): {
   exe: string
   done: () => void
 } {
-  const root = mkdtempSync(path.join(os.tmpdir(), 'nuphos-npm-claude-'))
+  const root = mkdtempSync(path.join(os.tmpdir(), 'cerin-npm-claude-'))
   const npm = path.join(root, 'AppData', 'Roaming', 'npm')
   const exe = path.join(npm, 'node_modules', '@anthropic-ai', 'claude-code', 'bin', 'claude.exe')
   const shim = path.join(npm, 'claude.cmd')

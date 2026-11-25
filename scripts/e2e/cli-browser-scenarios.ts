@@ -1,4 +1,4 @@
-// #3887: a computer running only `nuphos agent` has a headless local_browser. The real host
+// #3887: a computer running only `cerin agent` has a headless local_browser. The real host
 // opens a page on this machine's Chromium, screenshots it, and records its traffic as a HAR that
 // comes back through the tunnel.
 import { randomUUID } from 'node:crypto'
@@ -65,7 +65,7 @@ async function servePage() {
     response.end(
       request.url === '/next'
         ? '<title>E2E next</title><h1>next</h1>'
-        : '<title>E2E headless page</title><h1 style="font-size:96px">Hello from nuphos agent</h1>',
+        : '<title>E2E headless page</title><h1 style="font-size:96px">Hello from cerin agent</h1>',
     )
   })
 
@@ -79,7 +79,7 @@ async function servePage() {
 
 export const cliBrowserScenarios: Scenario[] = [
   {
-    name: 'a computer running `nuphos agent` opens, screenshots and records a page headless',
+    name: 'a computer running `cerin agent` opens, screenshots and records a page headless',
     run: async (_page, stack) => {
       const site = await servePage()
       const computer = await startSecondComputer(stack, 'E2E headless browser')
@@ -94,7 +94,7 @@ export const cliBrowserScenarios: Scenario[] = [
             ['local_browser', { action: 'record_start', tab: 1 }],
             ['local_browser', { action: 'navigate', tab: 1, url: `${site.url}/next` }],
             ['local_browser', { action: 'record_stop', tab: 1 }],
-            ['local_exec', { command: 'cat "$NUPHOS_AGENT_HOME"/har/*.har' }],
+            ['local_exec', { command: 'cat "$CERIN_AGENT_HOME"/har/*.har' }],
           ],
         )
 

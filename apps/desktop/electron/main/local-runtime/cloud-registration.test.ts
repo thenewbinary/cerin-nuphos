@@ -6,9 +6,9 @@ import { after, mock, test } from 'node:test'
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dev-runtime-'))
 
-process.env.NUPHOS_CLI_CONFIG = path.join(dir, 'cli.yaml')
-process.env.NUPHOS_API_URL = 'http://127.0.0.1:3718'
-process.env.NUPHOS_LOCAL_RUNTIME_DIR = path.join(dir, 'unbundled')
+process.env.CERIN_CLI_CONFIG = path.join(dir, 'cli.yaml')
+process.env.CERIN_API_URL = 'http://127.0.0.1:3718'
+process.env.CERIN_LOCAL_RUNTIME_DIR = path.join(dir, 'unbundled')
 delete process.env.ATLAS_API_URL
 const requests: string[] = []
 const sockets: string[] = []
@@ -112,7 +112,7 @@ after(async () => {
 })
 
 test('Cloud sign-in stays usable without registering a dev device or opening its tunnel', async () => {
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   authSession.set(token, 'alice')
   initLocalRuntime()
   await settle()
@@ -133,7 +133,7 @@ test('switching endpoints ends the session, so hosting stops until a sign-in on 
   assert.equal(getLocalRuntimeState().userId, 'alice')
   assert.deepEqual(requests, ['/agent/devices'])
   assert.deepEqual(sockets, ['ws://127.0.0.1:3718/agent/devices/dev-device/runtime-tunnel'])
-  setApiUrl('https://api.nuphos.ai')
+  setApiUrl('https://platform.cerin.ai')
   await settle()
   assert.equal(getLocalRuntimeState().userId, null)
   assert.ok(stopped > 0)

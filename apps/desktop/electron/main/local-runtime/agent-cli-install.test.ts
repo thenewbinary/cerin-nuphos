@@ -47,7 +47,7 @@ test(
       file: '/bin/bash',
       args: ['-c', 'curl -fsSL https://x.ai/cli/install.sh | bash'],
     })
-    // Its setup asks for a provider in a terminal, which an install from Nuphos has none of.
+    // Its setup asks for a provider in a terminal, which an install from Cerin has none of.
     assert.deepEqual(installCommand('hermes', { PATH: '' }), {
       file: '/bin/bash',
       args: [

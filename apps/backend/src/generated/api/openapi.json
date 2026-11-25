@@ -16266,7 +16266,7 @@
                   },
                   "subject_token": {
                     "type": "string",
-                    "description": "The conversation token (`NUPHOS_TOKEN`) to narrow."
+                    "description": "The conversation token (`CERIN_TOKEN`) to narrow."
                   },
                   "subject_token_type": {
                     "type": "string",
@@ -16293,7 +16293,7 @@
                   "audience": {
                     "type": "string",
                     "enum": [
-                      "nuphos-preview-mcp"
+                      "cerin-preview-mcp"
                     ]
                   },
                   "team_id": {

@@ -14,7 +14,7 @@ export const signInScenarios: Scenario[] = [
       // Error toasts are aria-hidden until focused, so by label rather than role.
       const dismiss = page.getByLabel('Dismiss')
 
-      await page.evaluate(() => localStorage.setItem('nuphos.locale', 'en'))
+      await page.evaluate(() => localStorage.setItem('cerin.locale', 'en'))
       await page.reload()
       // The form lets this through; the backend refuses it.
       await page.locator('input[type=email]').fill('e2e..typo@example.com')

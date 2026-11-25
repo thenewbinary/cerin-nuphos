@@ -12,8 +12,8 @@ import type { RuntimeExecution } from './runtimeExecution.ts'
 
 test('decision tools are recognized with or without a provider prefix', () => {
   assert.equal(isDecisionToolName('request_user_decision'), true)
-  assert.equal(isDecisionToolName('mcp__nuphos-tools__request_user_decision'), true)
-  assert.equal(isDecisionToolName('nuphos-tools.request_user_decision'), true)
+  assert.equal(isDecisionToolName('mcp__cerin-tools__request_user_decision'), true)
+  assert.equal(isDecisionToolName('cerin-tools.request_user_decision'), true)
   assert.equal(isDecisionToolName('not_request_user_decision'), false)
   assert.equal(isDecisionToolName(undefined), false)
 })
@@ -31,7 +31,7 @@ test('stream frames of a decision call or a turn boundary refresh; other tools d
   noteInputRequestFrame({
     type: 'tool-input-start',
     toolCallId: 'ask',
-    toolName: 'mcp__nuphos-tools__request_user_decision',
+    toolName: 'mcp__cerin-tools__request_user_decision',
   })
   assert.equal(refreshes, 0)
   noteInputRequestFrame({ type: 'tool-input-available', toolCallId: 'ask' })

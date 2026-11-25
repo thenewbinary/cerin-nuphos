@@ -7,7 +7,7 @@ import { createCliRoutes } from '@/routes/cli'
 
 describe('GET /cli/latest', () => {
   test.each([
-    { env: undefined, repo: 'thenewbinary/cerin-nuphos' },
+    { env: undefined, repo: 'thenewbinary/cerin-platform' },
     { env: 'example/cerin-releases', repo: 'example/cerin-releases' },
   ])('reads CLI releases from $repo with env $env', async ({ env, repo }) => {
     const originalEnv = process.env.CERIN_CLI_RELEASES_REPO

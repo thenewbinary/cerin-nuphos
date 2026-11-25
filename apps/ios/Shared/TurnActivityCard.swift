@@ -10,7 +10,7 @@ struct TurnCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 6) {
                 TurnCardMark(size: 16)
-                Text("Nuphos").font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
+                Text("Cerin").font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
                 Spacer(minLength: 8)
                 TurnCardStatus(card: card).font(.subheadline.weight(.medium))
             }
@@ -51,7 +51,7 @@ struct TurnCardMark: View {
     let size: CGFloat
 
     var body: some View {
-        Image("NuphosMark").resizable().scaledToFit().frame(width: size, height: size)
+        Image("CerinMark").resizable().scaledToFit().frame(width: size, height: size)
     }
 }
 

@@ -46,7 +46,7 @@
     <string name="storetext_account_delete_password_or_code">Use either your password or an email code.</string>
     <string name="storetext_account_delete_password_length">Enter a password of at least 12 characters.</string>
     <string name="storetext_account_delete_code_length">Enter the six-character email code.</string>
-    <string name="storetext_signin_web">Web sign-in (nuphos.ai)</string>
+    <string name="storetext_signin_web">Web sign-in (platform.cerin.ai)</string>
     <string name="storetext_signin_browser_on_system">%1$s on %2$s</string>
     <string name="storetext_signin_browser_on">A browser on %1$s</string>
     <string name="storetext_signin_unknown_device">Unknown device</string>

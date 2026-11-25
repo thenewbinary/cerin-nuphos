@@ -7,7 +7,7 @@ description: Run Google Cloud SDK (gcloud) commands from the sandbox to inspect 
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -52,7 +52,7 @@ shred -u "$key" 2>/dev/null || rm -f "$key"
 CLOUDSDK_AUTH_ACCESS_TOKEN="ya29...." gcloud projects list
 ```
 
-`setup-credentials.sh` calls the ordinary `GET /teams/:teamId/gcp-projects/:projectId/credentials` API with `NUPHOS_TOKEN`. When the bearer is a conversation principal, the backend automatically restricts it to this conversation's selected service accounts. When `<serviceAccountId>` is provided, the script adds `?serviceAccountId=...` and impersonates that exact allowed binding; otherwise the backend selects an allowed operational service account for the project. The token inherits exactly that SA's permissions. Permission-admin (human-only, IAM-escalation) service accounts are never handed out through this path.
+`setup-credentials.sh` calls the ordinary `GET /teams/:teamId/gcp-projects/:projectId/credentials` API with `CERIN_TOKEN`. When the bearer is a conversation principal, the backend automatically restricts it to this conversation's selected service accounts. When `<serviceAccountId>` is provided, the script adds `?serviceAccountId=...` and impersonates that exact allowed binding; otherwise the backend selects an allowed operational service account for the project. The token inherits exactly that SA's permissions. Permission-admin (human-only, IAM-escalation) service accounts are never handed out through this path.
 
 After authenticating, confirm identity before doing anything mutating:
 
@@ -102,7 +102,7 @@ The local command shape is:
 gcloud iam service-accounts add-iam-policy-binding \
   <bound-service-account-email> \
   --project=<project-id> \
-  --member="principal://iam.googleapis.com/projects/<nuphos-project-number>/locations/global/workloadIdentityPools/<pool-id>/subject/nuphos:team:<team-id>" \
+  --member="principal://iam.googleapis.com/projects/<cerin-project-number>/locations/global/workloadIdentityPools/<pool-id>/subject/cerin:team:<team-id>" \
   --role="roles/iam.serviceAccountTokenCreator"
 ```
 
@@ -245,7 +245,7 @@ If the requested destination is Slack, call `slack_list_destinations` before cre
    cat > "$CHANNEL_FILE" <<'EOF'
    {
      "type": "webhook_tokenauth",
-     "displayName": "nuphos-<trigger name>",
+     "displayName": "cerin-<trigger name>",
      "labels": { "url": "<webhookUrl>?secret=<webhookSecret>" }
    }
    EOF
@@ -280,6 +280,6 @@ To tear down, confirm with the user, remove only the Cerin channel from the exac
 - **Read-only by default.** `list`, `describe`, `get-*` are safe.
 - **Confirm before mutating.** Anything with `create`, `delete`, `update`, `set-*`, `add-*`, `remove-*`, `apply`, `start`, `stop`, `reset`, `resize` requires the user's go-ahead, and you must summarize the exact resource and project first. A generated Watch prompt confirms additive wiring for an existing exact policy. It does not confirm creation of a new policy from a dashboard chart; that requires the mandatory later condition approval above. Once received, do not ask twice.
 - **Don't persist user-supplied keys.** Path (a) above stores an Cerin-minted **short-lived** token (no refresh secret) under `~/.config/gcloud/`, which is fine. For a service-account key the user pastes, use a tmpfile and `shred -u` after activation.
-- **Don't leak tokens.** Don't `cat ~/.config/gcloud/nuphos-access-token` back to the user, and don't print `gcloud auth print-access-token` output — pipe it directly into the next command.
+- **Don't leak tokens.** Don't `cat ~/.config/gcloud/cerin-access-token` back to the user, and don't print `gcloud auth print-access-token` output — pipe it directly into the next command.
 - **Be careful with `gcloud projects delete` and `gcloud container clusters delete`** — both are immediate and destructive.
 - **Re-auth if you see reauth errors.** Re-run `setup-credentials.sh` rather than asking the user for new credentials.

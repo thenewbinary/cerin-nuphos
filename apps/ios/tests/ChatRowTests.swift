@@ -30,7 +30,7 @@ enum ChatRowTests {
     }
 
     private static func rendersUploadedFilesWithoutTransportInstructions() {
-        let instruction = #"[The user uploaded 1 file(s) to the Nuphos file-transfer store (transfer group abc): report.pdf. To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull.sh "$TEAM" abc ./uploads]"#
+        let instruction = #"[The user uploaded 1 file(s) to the Cerin file-transfer store (transfer group abc): report.pdf. To work with them, load the file-transfer skill and pull them into the sandbox: bash skills/file-transfer/scripts/transfer-pull.sh "$TEAM" abc ./uploads]"#
         var message = ChatMessage.user("Summarize this.")
         message.parts.append(.text(.init(text: instruction)))
         // The bubble shows the files themselves, so the instruction drops out of the text.
@@ -95,7 +95,7 @@ enum ChatRowTests {
         }
         let agent = message("agent.thread", "agent", "s1", "Reviewer", runtime: "codex").event
         precondition(agent == .init(name: "Reviewer", logo: "logo-openai", text: "First line\n\nDetails", agentId: "s1", runtime: "codex"))
-        precondition(message("agent.thread", "agent", "nuphos", "Nuphos").event?.logo == nil)
+        precondition(message("agent.thread", "agent", "cerin", "Cerin").event?.logo == nil)
         precondition(message("agent.resource", "system", "GitHub", "GitHub").event?.logo == "logo-github")
         precondition(message("agent.resource", "system", "trigger:1", "Hourly scan").event?.logo == nil)
         precondition(message("agent.resource", "user", "github", "GitHub").event == nil)
@@ -126,10 +126,10 @@ enum ChatRowTests {
     /// The notice an answer wakes the agent with is read back for people:
     /// who answered what, with the card's own body and options, and no ids.
     private static func showsAnsweredQuestionsInsteadOfTheirNotice() {
-        func notice(_ lines: [String], sender: String = "nuphos:decision") -> ChatMessage {
+        func notice(_ lines: [String], sender: String = "cerin:decision") -> ChatMessage {
             var m = ChatMessage.user(lines.joined(separator: "\n"))
             m.metadata = .object(["version": .number(1), "source": .string("agent.resource"),
-                                  "sender": .object(["type": .string("system"), "id": .string(sender), "displayName": .string("Nuphos")])])
+                                  "sender": .object(["type": .string("system"), "id": .string(sender), "displayName": .string("Cerin")])])
             return m
         }
         let by = "Answered by: \"Sam \\\"S\\\" Rivera\", this conversation's owner: it is their own answer."
@@ -181,14 +181,14 @@ enum ChatRowTests {
             return .data(.init(name: "steering", data: .object(["id": .string(id), "text": .string(text), "metadata": metadata])))
         }
         let message = ChatMessage(id: "m", role: .assistant, parts: [
-            receipt("c", "New messages in a Nuphos channel.", source: "agent.resource", type: "system", name: "Nuphos channel"),
-            receipt("p", "Stop there", source: "nuphos", type: "user", name: "Yuanlin"),
+            receipt("c", "New messages in a Cerin channel.", source: "agent.resource", type: "system", name: "Cerin channel"),
+            receipt("p", "Stop there", source: "cerin", type: "user", name: "Yuanlin"),
         ])
         let rows = ChatRow.assistantRows(message, live: false, lastApprovalCallId: nil)
         guard rows.count == 2, case .event("steering.c", let event) = rows[0], case .user("steering.p", "m", "Stop there", _, let sender, _) = rows[1] else {
             preconditionFailure("\(rows)")
         }
-        precondition(event.name == "Nuphos channel" && sender?.name == "Yuanlin")
+        precondition(event.name == "Cerin channel" && sender?.name == "Yuanlin")
     }
 
     private static func preservesVerifiedSender() {
@@ -208,16 +208,16 @@ enum ChatRowTests {
             precondition(canonical.sender?.avatar == nil)
         }
         // A photo uploaded to the signed-in backend, a user's or an agent token's.
-        let api = URL(string: "https://api.nuphos.ai")!
-        let uploaded = "https://api.nuphos.ai/avatars/\(String(repeating: "a", count: 24))/\(String(repeating: "b", count: 64)).webp"
+        let api = URL(string: "https://platform.cerin.ai")!
+        let uploaded = "https://platform.cerin.ai/avatars/\(String(repeating: "a", count: 24))/\(String(repeating: "b", count: 64)).webp"
         precondition(ChatMessage.Sender(name: "Grok Bot", avatarURL: uploaded, apiBase: api).avatar != nil)
-        for bad in [uploaded + "?x=1", uploaded.replacingOccurrences(of: "api.nuphos.ai", with: "evil.example"), "https://api.nuphos.ai/avatars/x.webp", "https://api.nuphos.ai/teams/a/avatar.webp"] {
+        for bad in [uploaded + "?x=1", uploaded.replacingOccurrences(of: "platform.cerin.ai", with: "evil.example"), "https://platform.cerin.ai/avatars/x.webp", "https://platform.cerin.ai/teams/a/avatar.webp"] {
             precondition(ChatMessage.Sender(name: "Grok Bot", avatarURL: bad, apiBase: api).avatar == nil)
         }
         canonical.metadata = nil
         precondition(canonical.sender == nil)
         // An agent token's message names the bot and the user it acts for.
-        canonical.metadata = .object(["version": .number(1), "source": .string("nuphos"), "sender": .object([
+        canonical.metadata = .object(["version": .number(1), "source": .string("cerin"), "sender": .object([
             "type": .string("agent"), "id": .string("token"), "displayName": .string("Grok Bot"),
             "onBehalfOf": .object(["id": .string("u1"), "displayName": .string("Yuanlin Lin")])
         ])])
@@ -500,12 +500,12 @@ enum ChatRowTests {
         precondition(form([id], site: .string("localhost:5199")).secretRequest?.site == "localhost:5199")
         // Every client reads a reply that opens as a single secret's does as the request's saved answer.
         let reply = ChatPart.ToolPart.secretFieldsSavedReply("CLINIC_LOOKUP", saved: [
-            (name: "NATIONAL_ID", path: "/runtime/nuphos-secret-a/0/NATIONAL_ID"),
-            (name: "BIRTH_DATE", path: "/runtime/nuphos-secret-b/0/BIRTH_DATE"),
+            (name: "NATIONAL_ID", path: "/runtime/cerin-secret-a/0/NATIONAL_ID"),
+            (name: "BIRTH_DATE", path: "/runtime/cerin-secret-b/0/BIRTH_DATE"),
         ])
         precondition(reply.hasPrefix(ChatPart.ToolPart.secretSavedReply("CLINIC_LOOKUP")))
         precondition(reply.split(separator: "\n").dropFirst() == [
-            "NATIONAL_ID: /runtime/nuphos-secret-a/0/NATIONAL_ID", "BIRTH_DATE: /runtime/nuphos-secret-b/0/BIRTH_DATE",
+            "NATIONAL_ID: /runtime/cerin-secret-a/0/NATIONAL_ID", "BIRTH_DATE: /runtime/cerin-secret-b/0/BIRTH_DATE",
         ])
 
         let message = ChatMessage(id: "m", role: .assistant, parts: [tool("a"), tool("b"), .tool(secret), text("Use the card below.")])

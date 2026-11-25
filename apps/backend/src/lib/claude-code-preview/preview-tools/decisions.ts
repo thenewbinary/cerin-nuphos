@@ -207,7 +207,7 @@ function clientToolHandler(
         reason: 'no_desktop_session',
         instruction: CLIENT_TOOL_UNREACHABLE_INSTRUCTION,
       })
-    const toolCallId = `nuphos-${randomUUID()}`
+    const toolCallId = `cerin-${randomUUID()}`
     const streamId = await options.runStreamId(ctx).catch(() => {})
     const durableInput = JSON.stringify(args).length <= MAX_DURABLE_INPUT_CHARS
     const clientTool: PreviewClientToolCall = {

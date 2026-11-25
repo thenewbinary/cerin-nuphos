@@ -40,7 +40,7 @@ export function runtimeStatusView(
     : { label: t('Connecting…'), tone: 'pending' }
 }
 
-/** `…/nuphos-openab-runtime:0d6d5c8-1@sha256:8324d1…` → `0d6d5c8-1 (8324d13)`. */
+/** `…/cerin-openab-runtime:0d6d5c8-1@sha256:8324d1…` → `0d6d5c8-1 (8324d13)`. */
 export function imageVersion(image: string): string {
   const [ref, digest] = image.split('@sha256:')
   const name = ref?.slice(ref.lastIndexOf('/') + 1) ?? ''

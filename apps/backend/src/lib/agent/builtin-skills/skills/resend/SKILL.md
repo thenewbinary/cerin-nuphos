@@ -7,7 +7,7 @@ description: Send transactional email through a Resend account the user's team h
 
 ## Session isolation
 
-Keep CLI credentials and settings inside the current session's `HOME` (`NUPHOS_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `NUPHOS_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
+Keep CLI credentials and settings inside the current session's `HOME` (`CERIN_SESSION_HOME`) and respect the supplied CLI config environment variables. Do not copy another session's or the runtime owner's credentials. Without `CERIN_SESSION_HOME`, CLI defaults may use shared runtime configuration; be aware of the affected scope.
 
 Changing runtime-global settings is possible, but strongly discouraged unless the user understands the impact on other sessions and explicitly requests it. Explain the shared scope first; do not unset session isolation variables, write to the runtime owner's home, use a shared OS credential store, or modify shared shell startup files as routine setup. This is configuration isolation, not an OS security boundary.
 
@@ -48,10 +48,10 @@ another way to send.
 
 ```bash
 bash skills/resend/scripts/setup-credentials.sh <teamId> <integrationId>
-source ~/.resend/nuphos.env
+source ~/.resend/cerin.env
 ```
 
-That writes `~/.resend/nuphos.env` (mode 600) with `RESEND_API_KEY`,
+That writes `~/.resend/cerin.env` (mode 600) with `RESEND_API_KEY`,
 `RESEND_API_BASE_URL`, `RESEND_PERMISSION` and `RESEND_BINDING_ID`.
 
 If setup fails with **HTTP 403**, this Resend binding is not enabled for this

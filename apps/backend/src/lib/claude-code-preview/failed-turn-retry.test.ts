@@ -19,7 +19,7 @@ import type { MessageMetadata } from '@/lib/agent/message-metadata'
 const sender = (id: string, type: 'user' | 'agent' = 'user'): MessageMetadata => ({
   version: 1,
   sender: { type, id, displayName: id },
-  ...(type === 'user' ? { source: 'nuphos' } : { source: 'agent.thread', sourceSessionId: 'cto' }),
+  ...(type === 'user' ? { source: 'cerin' } : { source: 'agent.thread', sourceSessionId: 'cto' }),
   sentAt: '2026-11-16T00:00:00.000Z',
 })
 const asked = (text: string, metadata: MessageMetadata = sender('owner'), parts?: unknown[]) =>
@@ -61,11 +61,11 @@ test('anything else is left alone', () => {
     expect(
       failedPrompt([asked('Fix it'), { role: 'assistant', parts: [part] }], 'owner'),
     ).toBeNull()
-  // Nuphos's own message (an answer, a trigger, a GitHub event) is not resent: the
+  // Cerin's own message (an answer, a trigger, a GitHub event) is not resent: the
   // question it answers is open again, so the person decides what runs.
   const answer: MessageMetadata = {
     version: 1,
-    sender: { type: 'system', id: 'nuphos', displayName: 'Nuphos' },
+    sender: { type: 'system', id: 'cerin', displayName: 'Cerin' },
     source: 'agent.resource',
     sentAt: '2026-11-16T00:00:00.000Z',
   }

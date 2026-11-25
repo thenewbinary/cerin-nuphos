@@ -47,7 +47,7 @@ function binding(opts: {
     workspaceName: 'Zeabur',
     organizationUrlKey: 'zeabur',
     accountId: 'acct',
-    accountName: 'Nuphos',
+    accountName: 'Cerin',
     scope: 'read write',
     encryptedAccessToken: envelope(opts.accessToken),
     encryptedRefreshToken: refreshToken === null ? null : envelope(refreshToken),

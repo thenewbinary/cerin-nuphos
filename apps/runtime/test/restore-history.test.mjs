@@ -2,14 +2,14 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { PassThrough } from 'node:stream'
 import {
-  nuphosListenJsonLines,
-  nuphosOmitRestoreImages,
+  cerinListenJsonLines,
+  cerinOmitRestoreImages,
 } from '../image/codex-acp/restore-history.mjs'
 
 test('reader handles fragmented UTF-8 and large lines, and detaches on dispose', async () => {
   const input = new PassThrough()
   const messages = []
-  const reader = nuphosListenJsonLines(input, (m) => messages.push(m))
+  const reader = cerinListenJsonLines(input, (m) => messages.push(m))
   const value = {
     id: 1,
     result: {
@@ -60,7 +60,7 @@ test('restore omits inline images while retaining text, paths, URLs and tool met
       },
     ],
   }
-  const result = nuphosOmitRestoreImages(structuredClone(history))
+  const result = cerinOmitRestoreImages(structuredClone(history))
   const items = result.turns[0].items
   assert.equal(items[0].content[0].text, 'keep me')
   assert.equal(items[0].content[1].url, '[Image omitted during restore]')

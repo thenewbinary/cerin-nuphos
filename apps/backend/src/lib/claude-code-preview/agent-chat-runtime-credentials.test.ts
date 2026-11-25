@@ -29,7 +29,7 @@ const client = {
     runtime: PromptSessionContext['runtime'],
   ) => {
     calls.push('load')
-    loadedTokens.push(runtime?.env?.NUPHOS_TOKEN)
+    loadedTokens.push(runtime?.env?.CERIN_TOKEN)
 
     return { alive: true }
   },
@@ -74,7 +74,7 @@ function placeSession(contextDeliveredAt: number) {
     endpoint,
     client,
     mcpServers: [],
-    runtime: { provider: 'codex', env: { NUPHOS_TOKEN: 'turn-1' } },
+    runtime: { provider: 'codex', env: { CERIN_TOKEN: 'turn-1' } },
     contextDeliveredAt,
   })
 }
@@ -101,13 +101,13 @@ const run = (token: string) =>
     endpoint,
     mcpServers: [
       {
-        name: 'nuphos-tools',
+        name: 'cerin-tools',
         type: 'http',
         url: 'http://backend/mcp-tools',
         headers: [{ name: 'Authorization', value: `Bearer ${token}` }],
       },
     ],
-    runtime: { provider: 'codex', env: { NUPHOS_TOKEN: token } },
+    runtime: { provider: 'codex', env: { CERIN_TOKEN: token } },
     signal: new AbortController().signal,
     onTextDelta: noop,
   })
@@ -119,7 +119,7 @@ test('every prompt on a live session carries the turn’s fresh credentials', as
   await run('turn-3')
 
   expect(calls).toEqual(['prompt', 'prompt'])
-  expect(promptedContexts.map((context) => context?.runtime?.env?.NUPHOS_TOKEN)).toEqual([
+  expect(promptedContexts.map((context) => context?.runtime?.env?.CERIN_TOKEN)).toEqual([
     'turn-2',
     'turn-3',
   ])

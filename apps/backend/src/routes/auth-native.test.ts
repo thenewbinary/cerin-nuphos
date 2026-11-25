@@ -111,8 +111,8 @@ useDb({ db: (() => ({ collection })) as unknown as typeof dbActual.db })
 useIdentity({
   signInWithGoogleCode: ((code: string, redirectUri: string) =>
     googleSignIn(code, redirectUri)) as unknown as typeof identityActual.signInWithGoogleCode,
-  getNuphosUserById: (async (id: string) =>
-    id === USER.id ? USER : null) as unknown as typeof identityActual.getNuphosUserById,
+  getCerinUserById: (async (id: string) =>
+    id === USER.id ? USER : null) as unknown as typeof identityActual.getCerinUserById,
 })
 useIdentitySessions({
   createUserSession: async (userId: string, source?: { ip?: string }) => {
@@ -144,7 +144,7 @@ const post = (path: string, body: unknown) =>
 const VERIFIER = 'a'.repeat(64)
 const CHALLENGE = createHash('sha256').update(VERIFIER).digest('base64url')
 const REDIRECT = 'http://127.0.0.1:51000/callback'
-const NUPHOS_CALLBACK = 'https://nuphos.ai/api/google/callback'
+const CERIN_CALLBACK = 'https://platform.cerin.ai/api/google/callback'
 
 async function registerHandle(codeChallenge = CHALLENGE): Promise<string> {
   const res = await post('/auth/native/session', {
@@ -165,7 +165,7 @@ async function browserLeg(
 ): Promise<{ redirectUri: string; clientState?: string; code?: string }> {
   const res = await post('/auth/google/sign-in', {
     code: 'google-code',
-    redirectUri: NUPHOS_CALLBACK,
+    redirectUri: CERIN_CALLBACK,
     handle,
   })
 
@@ -191,7 +191,7 @@ describe('the native handoff', () => {
 
     const res = await post('/auth/google/sign-in', {
       code: 'google-code',
-      redirectUri: NUPHOS_CALLBACK,
+      redirectUri: CERIN_CALLBACK,
       handle,
     })
 
@@ -315,7 +315,7 @@ describe('the native handoff', () => {
 
     const res = await post('/auth/google/sign-in', {
       code: 'c',
-      redirectUri: NUPHOS_CALLBACK,
+      redirectUri: CERIN_CALLBACK,
       handle: 'not-a-real-handle',
     })
 
@@ -334,7 +334,7 @@ describe('the native handoff', () => {
 
     const res = await post('/auth/google/sign-in', {
       code: 'c',
-      redirectUri: NUPHOS_CALLBACK,
+      redirectUri: CERIN_CALLBACK,
       handle,
     })
 
@@ -363,7 +363,7 @@ describe('the native handoff', () => {
 
     const res = await post('/auth/google/sign-in', {
       code: 'c',
-      redirectUri: NUPHOS_CALLBACK,
+      redirectUri: CERIN_CALLBACK,
       handle,
     })
     const { nativeDelivery } = (await res.json()) as {
@@ -449,7 +449,7 @@ describe('an attacker who registered the handle', () => {
   // The one-click remote account takeover this design has to stop.
   //
   // Registration is unauthenticated, so an attacker can run step 1 from their
-  // own server, then send the victim a plain nuphos.ai link carrying the
+  // own server, then send the victim a plain platform.cerin.ai link carrying the
   // handle. The victim sees a genuine Google account chooser and picks their
   // own account, which binds *their* identity to the attacker's handle. The
   // attacker holds the handle and the PKCE verifier — PKCE proves who
@@ -468,7 +468,7 @@ describe('an attacker who registered the handle', () => {
     // and is exactly why the redemption side has to be the one that refuses.
     const res = await post('/auth/google/sign-in', {
       code: 'victim-code',
-      redirectUri: NUPHOS_CALLBACK,
+      redirectUri: CERIN_CALLBACK,
       handle,
     })
 
@@ -534,7 +534,7 @@ describe('the legacy path still works', () => {
   test('a sign-in without a handle returns the token and user as before', async () => {
     const res = await post('/auth/google/sign-in', {
       code: 'google-code',
-      redirectUri: NUPHOS_CALLBACK,
+      redirectUri: CERIN_CALLBACK,
     })
 
     expect(res.status).toBe(200)
@@ -550,7 +550,7 @@ describe('the legacy path still works', () => {
       throw new Error('Google token exchange failed: HTTP 400')
     }
 
-    const res = await post('/auth/google/sign-in', { code: 'bad', redirectUri: NUPHOS_CALLBACK })
+    const res = await post('/auth/google/sign-in', { code: 'bad', redirectUri: CERIN_CALLBACK })
 
     expect(res.status).toBe(400)
     const body = (await res.json()) as { nativeDelivery?: unknown; errors: { message: string }[] }
@@ -560,7 +560,7 @@ describe('the legacy path still works', () => {
   })
 
   test('missing code or redirectUri is still rejected the same way', async () => {
-    expect((await post('/auth/google/sign-in', { redirectUri: NUPHOS_CALLBACK })).status).toBe(400)
+    expect((await post('/auth/google/sign-in', { redirectUri: CERIN_CALLBACK })).status).toBe(400)
     expect((await post('/auth/google/sign-in', { code: 'c' })).status).toBe(400)
   })
 
@@ -569,7 +569,7 @@ describe('the legacy path still works', () => {
       throw new AppError(403, 'account_disabled', 'This account has been disabled')
     }
 
-    const res = await post('/auth/google/sign-in', { code: 'c', redirectUri: NUPHOS_CALLBACK })
+    const res = await post('/auth/google/sign-in', { code: 'c', redirectUri: CERIN_CALLBACK })
     const body = (await res.json()) as { errors: { extensions: { code?: string } }[] }
 
     expect(res.status).toBe(403)
@@ -581,7 +581,7 @@ test('a sign-in the website makes for a browser does not take the website’s ad
   const res = await app().request('/auth/google/sign-in', {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'CF-Connecting-IP': '198.51.100.7' },
-    body: JSON.stringify({ code: 'google-code', redirectUri: NUPHOS_CALLBACK }),
+    body: JSON.stringify({ code: 'google-code', redirectUri: CERIN_CALLBACK }),
   })
 
   expect(res.status).toBe(200)

@@ -4,7 +4,7 @@
 //
 // With `--install` the credential is written into this container's real `CODEX_HOME`
 // and the final frame carries no credential at all. That is the right shape for a
-// runtime Nuphos did not provision: the credential is minted inside the container and
+// runtime Cerin did not provision: the credential is minted inside the container and
 // nothing outside it needs a copy. Without the flag the credential rides the frame,
 // which is what the Kubernetes exec path still needs in order to store it in a Secret.
 import { spawn } from 'node:child_process'
@@ -38,7 +38,7 @@ export function loginChoice(line) {
   return null
 }
 
-export const CODEX_AUTH_DIRECTORY = process.env.NUPHOS_CODEX_AUTH_DIRECTORY ?? '/home/node/.codex'
+export const CODEX_AUTH_DIRECTORY = process.env.CERIN_CODEX_AUTH_DIRECTORY ?? '/home/node/.codex'
 
 /**
  * Move the credential into the directory the Codex CLI actually reads. The revision
@@ -53,7 +53,7 @@ export async function installAuthJson(authJson, directory = CODEX_AUTH_DIRECTORY
   await writeFile(staged, authJson, { mode: 0o600 })
   await chmod(staged, 0o600)
   await rename(staged, join(directory, 'auth.json'))
-  await writeFile(join(directory, '.nuphos-auth-revision'), revision, { mode: 0o600 })
+  await writeFile(join(directory, '.cerin-auth-revision'), revision, { mode: 0o600 })
 }
 
 /** Removes the login only when it is an API key; an account sign-in is left alone. */
@@ -61,7 +61,7 @@ export async function removeApiKey(directory = CODEX_AUTH_DIRECTORY) {
   const auth = await readFile(join(directory, 'auth.json'), 'utf8').then(JSON.parse, () => null)
   if (auth?.auth_mode !== 'apikey') return
   await rm(join(directory, 'auth.json'), { force: true })
-  await rm(join(directory, '.nuphos-auth-revision'), { force: true })
+  await rm(join(directory, '.cerin-auth-revision'), { force: true })
 }
 
 /**
@@ -71,7 +71,7 @@ export async function removeApiKey(directory = CODEX_AUTH_DIRECTORY) {
  */
 export async function runDeviceLogin({
   executable = process.execPath,
-  args = ['/opt/nuphos-codex-acp/node_modules/@openai/codex/bin/codex.js'],
+  args = ['/opt/cerin-codex-acp/node_modules/@openai/codex/bin/codex.js'],
   // The child's HOME is the caller's choice, so a test can keep the CLI off the real one.
   home,
   emit = (frame) => process.stdout.write(`${JSON.stringify(frame)}\n`),
@@ -84,7 +84,7 @@ export async function runDeviceLogin({
 }) {
   if (apiKey !== undefined && (!install || !loginChoice(apiKey)?.apiKey))
     throw new Error('Codex API key refused')
-  const directory = await mkdtemp(join(tmpdir(), 'nuphos-codex-login-'))
+  const directory = await mkdtemp(join(tmpdir(), 'cerin-codex-login-'))
   let choice
   let lines
   try {

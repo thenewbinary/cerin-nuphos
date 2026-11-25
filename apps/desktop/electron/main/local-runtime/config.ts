@@ -11,7 +11,7 @@ import type { LocalAgentProvider } from './providers.ts'
 export type LocalAgentAdapter = {
   /** The adapter's ACP entry point, run on Electron's own Node. */
   entry: string
-  /** nuphos-runtime's stdio bridge to the Nuphos MCP endpoints. */
+  /** cerin-runtime's stdio bridge to the Cerin MCP endpoints. */
   bridge: string
   version: string
 }
@@ -31,7 +31,7 @@ export type LocalRuntimeLaunch = {
   nodeExecPath: string
   /** The user's own `claude` or `codex`. */
   cliPath: string
-  /** A home of Nuphos's own that keeps only the user's login, so their personal config stays out. */
+  /** A home of Cerin's own that keeps only the user's login, so their personal config stays out. */
   agentHome: string
   workspace: string
   openabHome: string
@@ -39,7 +39,7 @@ export type LocalRuntimeLaunch = {
   authKey: string
   /** The user's own login environment, filtered to what a coding agent needs. */
   env: NodeJS.ProcessEnv
-  /** A machine Nuphos made (a Box, a managed runtime's pod), never a person's computer. */
+  /** A machine Cerin made (a Box, a managed runtime's pod), never a person's computer. */
   ownsMachine?: boolean
   /** A custom provider's key: in openab's environment, passed on by name, never in its config. */
   secretEnv?: Record<string, string>
@@ -69,15 +69,15 @@ const AGENT_ENV_PASSTHROUGH = [
   'SystemRoot',
   'ComSpec',
   'PATHEXT',
-  // A Linux Box with a desktop pool: the adapter adds a per-session nuphos-desktop server.
-  'NUPHOS_DESKTOP_SESSION',
-  'NUPHOS_DESKTOP_POOL',
-  'NUPHOS_DESKTOP_POOL_SIZE',
+  // A Linux Box with a desktop pool: the adapter adds a per-session cerin-desktop server.
+  'CERIN_DESKTOP_SESSION',
+  'CERIN_DESKTOP_POOL',
+  'CERIN_DESKTOP_POOL_SIZE',
 ]
 
-/** Must match `deriveRuntimeControlKey` in the backend and `nuphos-runtime-start`. */
+/** Must match `deriveRuntimeControlKey` in the backend and `cerin-runtime-start`. */
 export function deriveControlKey(authKey: string): string {
-  return createHmac('sha256', authKey).update('nuphos-runtime-control-v1').digest('hex')
+  return createHmac('sha256', authKey).update('cerin-runtime-control-v1').digest('hex')
 }
 
 function tomlString(value: string): string {
@@ -86,7 +86,7 @@ function tomlString(value: string): string {
 
 type AgentCliLaunch = Pick<LocalRuntimeLaunch, 'provider' | 'cliPath' | 'agentHome' | 'env'>
 
-/** Nuphos sessions run as the team's agent, never with the owner's personal config or connectors. */
+/** Cerin sessions run as the team's agent, never with the owner's personal config or connectors. */
 function providerEnv(launch: AgentCliLaunch): Record<string, string> {
   if (launch.provider === 'codex')
     return { CODEX_PATH: launch.cliPath, CODEX_HOME: launch.agentHome }
@@ -128,9 +128,9 @@ export function agentEnv(launch: LocalRuntimeLaunch): Record<string, string> {
     ...agentCliEnv(launch),
     MCP_TOOL_TIMEOUT: '1800000',
     MCP_TIMEOUT: '30000',
-    NUPHOS_MCP_BRIDGE: launch.adapter.bridge,
-    NUPHOS_CUA_PERMISSION_CLIENT: path.join(launch.bundle.root, 'cua-permission'),
-    NUPHOS_RUNTIME_WORKSPACE: launch.workspace,
+    CERIN_MCP_BRIDGE: launch.adapter.bridge,
+    CERIN_CUA_PERMISSION_CLIENT: path.join(launch.bundle.root, 'cua-permission'),
+    CERIN_RUNTIME_WORKSPACE: launch.workspace,
     ...shellGuardEnv(launch),
   }
 }
@@ -151,7 +151,7 @@ export function openabConfigToml(launch: LocalRuntimeLaunch): string {
 }
 
 /**
- * The agent's own sign-in, run by openab when Nuphos asks (the same dialog as a
+ * The agent's own sign-in, run by openab when Cerin asks (the same dialog as a
  * cloud agent). openab's child inherits openab's env, so this carries only the
  * command and the provider's config-dir variables, so the login lands in the
  * runtime's own login. `OPENAB_RUNTIME_LOGIN_COMMAND` is whitespace-split argv, so
@@ -174,7 +174,7 @@ export function agentLoginEnv(launch: LocalRuntimeLaunch): Record<string, string
   return {
     ...cliEnv,
     ...(launch.provider === 'codex'
-      ? { CODEX_EXECUTABLE: launch.cliPath, NUPHOS_CODEX_AUTH_DIRECTORY: launch.agentHome }
+      ? { CODEX_EXECUTABLE: launch.cliPath, CERIN_CODEX_AUTH_DIRECTORY: launch.agentHome }
       : {}),
     OPENAB_RUNTIME_LOGIN_COMMAND: [
       ...prefix,
@@ -217,7 +217,7 @@ export function openabEnv(launch: LocalRuntimeLaunch): Record<string, string> {
 /**
  * The jobs this runtime offers. Everywhere: the backend's fixed attachment program, bundled,
  * so a turn's files arrive as a list of signed URLs and no program text crosses the wire. On a
- * machine Nuphos made, also `panel`, which runs the script the backend sends, as the runtime
+ * machine Cerin made, also `panel`, which runs the script the backend sends, as the runtime
  * image does; never on a person's computer. openab clears a job's environment and splits its
  * command on whitespace, so Electron's run-as-Node switch rides in through `env`. A job that
  * cannot run that way is left out, and the backend reports the runtime as unable to do it.

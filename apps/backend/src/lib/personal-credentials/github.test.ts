@@ -11,7 +11,7 @@ const exchange = () =>
     clientId: 'Iv1.client',
     clientSecret: 'secret',
     code: 'code-1',
-    redirectUri: 'https://api.nuphos.ai/personal-credentials/github/callback',
+    redirectUri: 'https://platform.cerin.ai/personal-credentials/github/callback',
     codeVerifier: 'verifier-1',
   })
 
@@ -20,7 +20,7 @@ describe('githubAuthorizeUrl', () => {
     const url = new URL(
       githubAuthorizeUrl({
         clientId: 'Iv1.client',
-        redirectUri: 'https://api.nuphos.ai/personal-credentials/github/callback',
+        redirectUri: 'https://platform.cerin.ai/personal-credentials/github/callback',
         state: 'state-1',
         codeChallenge: 'challenge-1',
       }),
@@ -29,7 +29,7 @@ describe('githubAuthorizeUrl', () => {
     expect(url.origin + url.pathname).toBe('https://github.com/login/oauth/authorize')
     expect(Object.fromEntries(url.searchParams)).toEqual({
       client_id: 'Iv1.client',
-      redirect_uri: 'https://api.nuphos.ai/personal-credentials/github/callback',
+      redirect_uri: 'https://platform.cerin.ai/personal-credentials/github/callback',
       state: 'state-1',
       code_challenge: 'challenge-1',
       code_challenge_method: 'S256',

@@ -10,9 +10,9 @@ import {
 
 const composeEnv = parseEnvFile(`
 # comment
-S3_ACCESS_KEY=nuphos-local
+S3_ACCESS_KEY=cerin-local
 S3_SECRET_KEY='secret'
-NUPHOS_JWT_SECRET='local-test-signing-key'
+CERIN_JWT_SECRET='local-test-signing-key'
 RUNTIME_PORT=19000
 `)
 
@@ -21,7 +21,7 @@ test('reads the compose .env, defaulting the ports it leaves out', () => {
     mongoPort: 27117,
     rustfsPort: 9000,
     runtimePort: 19000,
-    s3AccessKey: 'nuphos-local',
+    s3AccessKey: 'cerin-local',
     s3SecretKey: 'secret',
     jwtSecret: 'local-test-signing-key',
   })
@@ -38,9 +38,9 @@ test('the backend env points every datastore at the local stack', () => {
   assert.equal(localRuntimeUrl(stack), 'ws://localhost:19000/acp')
   assert.equal(env.MONGODB_URI, 'mongodb://127.0.0.1:27117/?directConnection=true')
   assert.equal(env.ATLAS_REDIS_ENABLED, 'false')
-  assert.equal(env.NUPHOS_LOCAL_STACK, 'true')
+  assert.equal(env.CERIN_LOCAL_STACK, 'true')
   for (const key of [
-    'NUPHOS_FILE_TRANSFER_S3_ENDPOINT',
+    'CERIN_FILE_TRANSFER_S3_ENDPOINT',
     'ATLAS_SKILLS_S3_ENDPOINT',
     'JOURNAL_S3_ENDPOINT',
   ]) {
@@ -52,21 +52,21 @@ test('the local launcher overrides inherited TLS and the secondary HTTP listener
   const env = {
     ATLAS_DEV_TLS_CERT: '/legacy/cert.pem',
     ATLAS_DEV_TLS_KEY: '/legacy/key.pem',
-    NUPHOS_DEV_HTTP_PORT: '3818',
+    CERIN_DEV_HTTP_PORT: '3818',
     ...localBackendEnv(localStackFromEnv(composeEnv)!),
   }
 
   assert.equal(env.ATLAS_DEV_TLS_CERT, '')
   assert.equal(env.ATLAS_DEV_TLS_KEY, '')
-  assert.equal(env.NUPHOS_DEV_HTTP_PORT, '0')
+  assert.equal(env.CERIN_DEV_HTTP_PORT, '0')
 })
 
 test('the local signing key is required and overrides any inherited backend key', () => {
-  assert.equal(localStackFromEnv({ ...composeEnv, NUPHOS_JWT_SECRET: '' }), null)
+  assert.equal(localStackFromEnv({ ...composeEnv, CERIN_JWT_SECRET: '' }), null)
   const env = {
-    NUPHOS_JWT_SECRET: 'inherited-key',
+    CERIN_JWT_SECRET: 'inherited-key',
     ...localBackendEnv(localStackFromEnv(composeEnv)!),
   }
 
-  assert.equal(env.NUPHOS_JWT_SECRET, 'local-test-signing-key')
+  assert.equal(env.CERIN_JWT_SECRET, 'local-test-signing-key')
 })

@@ -86,7 +86,7 @@ useAgentDb({
   getConversationBySessionId: async () => stored,
   // A long session's whole transcript runs to hundreds of MB; a status check reads one message.
   getConversationWithMessages: async () => {
-    throw new Error('nuphos_check read the whole transcript')
+    throw new Error('cerin_check read the whole transcript')
   },
   getReadableConversation: async () => stored,
   getLatestAssistantMessage: async () => ({ index: 1, role: 'assistant', parts: lastParts }),
@@ -100,8 +100,8 @@ useAgentDb({
   },
 })
 
-const { nuphosListSessions, nuphosUpdateSession } = await import('./sessions')
-const { nuphosCheck } = await import('./check')
+const { cerinListSessions, cerinUpdateSession } = await import('./sessions')
+const { cerinCheck } = await import('./check')
 const ctx = { userId: 'u1' }
 const body = (result: { structuredContent?: unknown }) =>
   result.structuredContent as Record<string, any>
@@ -117,9 +117,9 @@ beforeEach(() => {
   lastParts = [{ type: 'text', text: 'Done so far.' }]
 })
 
-describe('nuphos_list_sessions', () => {
+describe('cerin_list_sessions', () => {
   test('lists the caller’s own sessions and says which wait for a person', async () => {
-    const result = body(await nuphosListSessions({ team_id: 't1', search: 'importer' }, ctx))
+    const result = body(await cerinListSessions({ team_id: 't1', search: 'importer' }, ctx))
 
     expect(listed?.viewer).toBe('u1')
     expect(listed?.options).toMatchObject({ teamId: 't1', scope: 'mine', search: 'importer' })
@@ -131,23 +131,23 @@ describe('nuphos_list_sessions', () => {
   })
 
   test('filters to waiting sessions and to shared ones', async () => {
-    await nuphosListSessions({ team_id: 't1', waiting_for_input: true, scope: 'shared' }, ctx)
+    await cerinListSessions({ team_id: 't1', waiting_for_input: true, scope: 'shared' }, ctx)
 
     expect(listed?.options).toMatchObject({ scope: 'shared', pendingDecision: true })
   })
 
   test("lists a Bot's Tasks whoever started them", async () => {
-    await nuphosListSessions({ team_id: 't1', parent_session_id: 'bot1' }, ctx)
+    await cerinListSessions({ team_id: 't1', parent_session_id: 'bot1' }, ctx)
 
     expect(listed?.viewer).toBe('u1')
     expect(listed?.options).toMatchObject({ parentSessionId: 'bot1', scope: 'team' })
   })
 })
 
-describe('nuphos_update_session', () => {
+describe('cerin_update_session', () => {
   test('sets model, effort and Full Access on the caller’s own session', async () => {
     const result = body(
-      await nuphosUpdateSession(
+      await cerinUpdateSession(
         { session_id: 's1', model: 'opus', effort: 'high', full_access: true },
         { ...ctx, client: { name: 'Claude Code' } },
       ),
@@ -165,14 +165,14 @@ describe('nuphos_update_session', () => {
 
   test('refuses a session the caller does not own, and changes nothing', async () => {
     stored = session({ userId: 'someone-else' })
-    const result = await nuphosUpdateSession({ session_id: 's1', full_access: true }, ctx)
+    const result = await cerinUpdateSession({ session_id: 's1', full_access: true }, ctx)
 
     expect(result.isError).toBe(true)
     expect(bypass).toBe(false)
   })
 
   test('a model the agent does not offer is a tool error, before Full Access changes', async () => {
-    const result = await nuphosUpdateSession(
+    const result = await cerinUpdateSession(
       { session_id: 's1', model: 'nope', full_access: true },
       ctx,
     )
@@ -182,10 +182,10 @@ describe('nuphos_update_session', () => {
   })
 })
 
-describe('nuphos_update_session on a Task under a Bot', () => {
+describe('cerin_update_session on a Task under a Bot', () => {
   test('Full Access is refused, naming the Bot, and nothing else changes', async () => {
     bot = 'bot1'
-    const result = await nuphosUpdateSession(
+    const result = await cerinUpdateSession(
       { session_id: 's1', model: 'opus', full_access: true },
       ctx,
     )
@@ -199,14 +199,14 @@ describe('nuphos_update_session on a Task under a Bot', () => {
   test('model and effort still change, and the result says whose mode it runs in', async () => {
     bot = 'bot1'
     bypass = true
-    const result = body(await nuphosUpdateSession({ session_id: 's1', effort: 'high' }, ctx))
+    const result = body(await cerinUpdateSession({ session_id: 's1', effort: 'high' }, ctx))
 
     expect(picked).toEqual({ effort: 'high' })
     expect(result).toMatchObject({ full_access: true, full_access_follows: 'bot1' })
   })
 })
 
-describe('nuphos_check', () => {
+describe('cerin_check', () => {
   test("a turn held on a tool call lists the caller's own approval, waiting_for_input", async () => {
     running = true
     const wait = (waitId: string, userId: string) =>
@@ -225,7 +225,7 @@ describe('nuphos_check', () => {
     wait('w1', 'u1')
     // A teammate's turn waits on them; the caller cannot decide it, so it is not theirs to see.
     wait('w2', 'u2')
-    const result = body(await nuphosCheck({ session_id: 's1' }, ctx))
+    const result = body(await cerinCheck({ session_id: 's1' }, ctx))
 
     expect(result).toMatchObject({ status: 'waiting_for_input', session_id: 's1' })
     expect(result.requests).toEqual([
@@ -241,7 +241,7 @@ describe('nuphos_check', () => {
 
   test('a session stopped on a question is waiting_for_input, with the question', async () => {
     stored = session({ inputRequests: [question] })
-    const result = body(await nuphosCheck({ session_id: 's1' }, ctx))
+    const result = body(await cerinCheck({ session_id: 's1' }, ctx))
 
     expect(result.status).toBe('waiting_for_input')
     expect(result.requests).toEqual([
@@ -256,7 +256,7 @@ describe('nuphos_check', () => {
 
   test('a running session reports what the turn has done so far', async () => {
     running = true
-    const result = body(await nuphosCheck({ session_id: 's1' }, ctx))
+    const result = body(await cerinCheck({ session_id: 's1' }, ctx))
 
     expect(result.status).toBe('running')
     expect(result.in_progress).toContain('[tool: bash]')
@@ -264,20 +264,20 @@ describe('nuphos_check', () => {
 
   test('a turn that ended on an error is failed, with the reason', async () => {
     lastParts = [{ type: 'turn-interrupted', reason: 'error', message: 'Sign-in expired' }]
-    const result = body(await nuphosCheck({ session_id: 's1' }, ctx))
+    const result = body(await cerinCheck({ session_id: 's1' }, ctx))
 
     expect(result.status).toBe('failed')
     expect(result.error).toMatchObject({ code: 'turn_interrupted', reason: 'error' })
   })
 
   test('from_index adds a page of the transcript', async () => {
-    const result = body(await nuphosCheck({ session_id: 's1', from_index: 0 }, ctx))
+    const result = body(await cerinCheck({ session_id: 's1', from_index: 0 }, ctx))
 
     expect(result.status).toBe('completed')
     expect(result.transcript).toEqual({
       lines: ['#0 user: hi', '#1 assistant: Done so far.'],
       next_index: null,
     })
-    expect(body(await nuphosCheck({ session_id: 's1' }, ctx)).transcript).toBeUndefined()
+    expect(body(await cerinCheck({ session_id: 's1' }, ctx)).transcript).toBeUndefined()
   })
 })

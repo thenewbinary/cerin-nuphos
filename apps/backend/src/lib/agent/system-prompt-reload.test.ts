@@ -17,7 +17,7 @@ import { loadTemplate, renderPromptTemplate } from './system-prompt'
 const dirs: string[] = []
 
 function scratch(): { dir: URL; write: (name: string, text: string) => void } {
-  const path = mkdtempSync(join(tmpdir(), 'nuphos-prompt-'))
+  const path = mkdtempSync(join(tmpdir(), 'cerin-prompt-'))
 
   dirs.push(path)
 

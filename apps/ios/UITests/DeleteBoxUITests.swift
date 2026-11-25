@@ -28,7 +28,7 @@ final class DeleteBoxUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "runtimes"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
 
         XCTAssertTrue(app.staticTexts["Shared Box"].waitForExistence(timeout: 30))

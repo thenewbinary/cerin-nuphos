@@ -1,5 +1,5 @@
 /** Whether the principal can introspect and/or modify its own permissions.
- *  Useful so the customer knows whether they can adjust Nuphos's scope from
+ *  Useful so the customer knows whether they can adjust Cerin's scope from
  *  this account itself, or have to go through a higher-privileged user.
  *  `inferred` means we couldn't run an authoritative check (e.g. AWS
  *  iam:SimulatePrincipalPolicy is denied) and fell back to scanning the

@@ -62,7 +62,7 @@
     <string name="agent_working">กำลังดำเนินการ…</string>
     <string name="agent_ok">ตกลง</string>
     <string name="agent_first_runtime_title">เชื่อมต่อรันไทม์แรกของคุณ</string>
-    <string name="agent_first_runtime_body">เปิด Nuphos บนคอมพิวเตอร์เพื่อเพิ่ม Box หรือเชื่อมต่อคอมพิวเตอร์ของคุณเอง หรือขอให้ผู้ดูแลเวิร์กสเปซเชื่อมต่อให้</string>
+    <string name="agent_first_runtime_body">เปิด Cerin บนคอมพิวเตอร์เพื่อเพิ่ม Box หรือเชื่อมต่อคอมพิวเตอร์ของคุณเอง หรือขอให้ผู้ดูแลเวิร์กสเปซเชื่อมต่อให้</string>
     <string name="agent_cloud">คลาวด์</string>
     <plurals name="agent_runtime_count">
         <item quantity="other">%1$d รันไทม์</item>
@@ -85,7 +85,7 @@
     <string name="agent_percent">%1$d%%</string>
     <string name="agent_couldnt_load_runtimes">โหลดรันไทม์ไม่ได้</string>
     <string name="agent_no_runtimes">ไม่มีรันไทม์</string>
-    <string name="agent_no_runtimes_body">เปิด Nuphos บนคอมพิวเตอร์เพื่อเชื่อมต่อและเพิ่มรันไทม์</string>
+    <string name="agent_no_runtimes_body">เปิด Cerin บนคอมพิวเตอร์เพื่อเชื่อมต่อและเพิ่มรันไทม์</string>
     <string name="agent_deleting">กำลังลบ</string>
     <string name="agent_disabled">ปิดใช้งาน</string>
     <string name="agent_offline">ออฟไลน์</string>
@@ -103,9 +103,9 @@
     <string name="agent_ask_admin_sign_in">ขอให้ผู้ดูแลลงชื่อเข้าใช้</string>
     <string name="agent_runtime_gone_body">รันไทม์นี้ไม่อยู่ในเวิร์กสเปซปัจจุบันแล้ว รีเฟรชรันไทม์ก่อนดำเนินการต่อ</string>
     <string name="agent_runtime_disabled_body">รันไทม์นี้ถูกปิดใช้งานหรือกำลังถูกนำออก ขอให้ผู้ดูแลตรวจสอบสถานะที่บันทึกไว้</string>
-    <string name="agent_teammate_sign_in_body">%1$s เป็นของเพื่อนร่วมทีม จึงมีเพียงเขาที่ลงชื่อเข้าใช้ได้ ขอให้เขาเปิด Nuphos บนเครื่องนั้นแล้วเลือกลงชื่อเข้าใช้ในหน้ารันไทม์</string>
-    <string name="agent_host_sign_in_body">บน %1$s ให้เปิด Nuphos ไปที่หน้ารันไทม์ แล้วเลือกลงชื่อเข้าใช้สำหรับรันไทม์นี้</string>
-    <string name="agent_admin_sign_in_body">ผู้ดูแลเวิร์กสเปซสามารถลงชื่อเข้าใช้ได้จากหน้ารันไทม์ใน Nuphos บนคอมพิวเตอร์ของตน</string>
+    <string name="agent_teammate_sign_in_body">%1$s เป็นของเพื่อนร่วมทีม จึงมีเพียงเขาที่ลงชื่อเข้าใช้ได้ ขอให้เขาเปิด Cerin บนเครื่องนั้นแล้วเลือกลงชื่อเข้าใช้ในหน้ารันไทม์</string>
+    <string name="agent_host_sign_in_body">บน %1$s ให้เปิด Cerin ไปที่หน้ารันไทม์ แล้วเลือกลงชื่อเข้าใช้สำหรับรันไทม์นี้</string>
+    <string name="agent_admin_sign_in_body">ผู้ดูแลเวิร์กสเปซสามารถลงชื่อเข้าใช้ได้จากหน้ารันไทม์ใน Cerin บนคอมพิวเตอร์ของตน</string>
     <string name="agent_back_to_runtimes">กลับไปที่รันไทม์</string>
     <string name="agent_runtime">รันไทม์</string>
     <string name="agent_runtime_removed">รันไทม์นี้ถูกนำออกแล้ว</string>
@@ -125,8 +125,8 @@
     <string name="agent_unreconciled">คำขออาจไปถึงเซิร์ฟเวอร์แล้ว รีเฟรชสถานะที่บันทึกไว้ก่อนทำการเปลี่ยนแปลงอื่น</string>
     <string name="agent_refresh_runtime">รีเฟรชรันไทม์</string>
     <string name="agent_remove_named">นำ %1$s ออกใช่ไหม</string>
-    <string name="agent_remove_managed_body">การดำเนินการนี้จะหยุดรันไทม์และลบไฟล์และการลงชื่อเข้าใช้อย่างถาวร ประวัติงานของคุณยังคงอยู่ใน Nuphos</string>
-    <string name="agent_remove_body">การดำเนินการนี้จะยกเลิกการเชื่อมต่อรันไทม์ งานของคุณยังคงอยู่ใน Nuphos</string>
+    <string name="agent_remove_managed_body">การดำเนินการนี้จะหยุดรันไทม์และลบไฟล์และการลงชื่อเข้าใช้อย่างถาวร ประวัติงานของคุณยังคงอยู่ใน Cerin</string>
+    <string name="agent_remove_body">การดำเนินการนี้จะยกเลิกการเชื่อมต่อรันไทม์ งานของคุณยังคงอยู่ใน Cerin</string>
     <string name="agent_runtime_details">รายละเอียดรันไทม์</string>
     <string name="agent_manage_runtimes">จัดการรันไทม์</string>
     <string name="agent_for_new_tasks">สำหรับงานใหม่ งานที่มีอยู่จะใช้รันไทม์ปัจจุบันต่อไป</string>

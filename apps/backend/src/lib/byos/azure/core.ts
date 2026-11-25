@@ -5,10 +5,10 @@ import {
   awsOidcSubjectForTeam,
   getAwsOidcIssuer,
   isAwsOidcConfigured,
-  mintNuphosOidcToken,
+  mintCerinOidcToken,
 } from '../aws-oidc'
 
-// OIDC workload identity federation reuses the shared Nuphos issuer (same signing
+// OIDC workload identity federation reuses the shared Cerin issuer (same signing
 // key, JWKS, and per-team subject as the AWS/Tencent/Aliyun/Volcengine connectors).
 
 /** Azure Resource Manager (ARM) base + AKS control-plane API version. */
@@ -31,7 +31,7 @@ export const AZURE_GUID_PATTERN =
 
 /**
  * A short-lived Azure ARM access token, obtained via OIDC workload identity
- * federation: Nuphos mints a per-team token and exchanges it at the Entra token
+ * federation: Cerin mints a per-team token and exchanges it at the Entra token
  * endpoint (grant_type=client_credentials + client_assertion) for a bearer token
  * scoped to `management.azure.com`. `subscriptionId` pins which subscription's
  * resources the token is used against.
@@ -50,8 +50,8 @@ export type AzureIdentity = {
 }
 
 /**
- * Whether the Nuphos OIDC issuer is configured (shared with the AWS connector —
- * one Nuphos IdP). Without a signing key we cannot mint the client assertion, so
+ * Whether the Cerin OIDC issuer is configured (shared with the AWS connector —
+ * one Cerin IdP). Without a signing key we cannot mint the client assertion, so
  * the Entra token exchange would have nothing to present.
  */
 export function azureOidcConfigured(): boolean {
@@ -79,7 +79,7 @@ export function azureOidcInfo(teamId: string): {
 }
 
 /**
- * Exchange a per-team Nuphos OIDC token for a short-lived Azure ARM access token.
+ * Exchange a per-team Cerin OIDC token for a short-lived Azure ARM access token.
  * Mirrors AssumeRoleWithWebIdentity on the STS clouds: the token is the
  * credential (client_assertion), no client secret is stored. Entra validates the
  * assertion against the app's federated credential (issuer + subject + audience)
@@ -97,7 +97,7 @@ export async function assumeAzureViaOidc(
       'The Cerin OIDC signing key (AWS_BYOS_OIDC_PRIVATE_KEY) is not configured, so Azure tokens cannot be minted.',
     )
   }
-  const assertion = mintNuphosOidcToken(teamId, config.byos.azure.oidc.audience)
+  const assertion = mintCerinOidcToken(teamId, config.byos.azure.oidc.audience)
   const body = new URLSearchParams({
     grant_type: 'client_credentials',
     client_id: identity.clientId,

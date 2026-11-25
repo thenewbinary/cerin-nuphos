@@ -110,14 +110,14 @@ test('an agent-thread or resource turn leaves the decision waiting for the perso
 })
 
 test('an explicit reply resolves the question it names when its turn is admitted', async () => {
-  await persistPreviewTurnContext(turn(true, true, 'nuphos-q1'), 'req-9')
+  await persistPreviewTurnContext(turn(true, true, 'cerin-q1'), 'req-9')
 
   // On the conversation owner's record, and only that question: others stay open.
-  expect(resolved).toEqual([['conv-1', 'u1', 'nuphos-q1']])
+  expect(resolved).toEqual([['conv-1', 'u1', 'cerin-q1']])
 })
 
 test('a turn that is not a person speaking resolves nothing, even naming a question', async () => {
-  await persistPreviewTurnContext(turn(true, false, 'nuphos-q1'), 'req-10')
+  await persistPreviewTurnContext(turn(true, false, 'cerin-q1'), 'req-10')
 
   expect(resolved).toEqual([])
 })

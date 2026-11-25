@@ -4,7 +4,7 @@ import type { AgentTimelineEvent } from '../../../api/agent-types'
 
 /** Tells the open transcript its timeline just changed, so it reads it back now
  *  instead of on its next catch-up poll (see useConversationCatchUp). */
-export const TIMELINE_CHANGED_EVENT = 'nuphos:conversation-timeline-changed'
+export const TIMELINE_CHANGED_EVENT = 'cerin:conversation-timeline-changed'
 
 export function announceTimelineChange(sessionId: string) {
   window.dispatchEvent(new CustomEvent(TIMELINE_CHANGED_EVENT, { detail: sessionId }))

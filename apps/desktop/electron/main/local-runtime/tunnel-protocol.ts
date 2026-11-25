@@ -81,7 +81,7 @@ export type LocalRuntimeTunnelStatus = {
   } & Partial<NonNullable<LocalRuntimeTunnelStatus['agents']['codex']>>)[]
   backendUrl?: string
   cliVersion?: string
-  /** This Nuphos Desktop and the update it found; its owner restarts into it with `method: 'update'`. */
+  /** This Cerin Desktop and the update it found; its owner restarts into it with `method: 'update'`. */
   app?: AppUpdateStatus
   /** Whether this computer installs updates by itself when idle; the card sets it with `method: 'autoInstall'`. */
   autoInstall?: boolean

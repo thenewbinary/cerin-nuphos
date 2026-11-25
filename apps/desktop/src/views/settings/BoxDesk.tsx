@@ -48,10 +48,10 @@ function Keyboard() {
 /** A Box carries Cerin's mark on its top. Other machines carry no maker's mark:
  * the desk draws their shape, not someone else's logo. */
 function Mark({ brand }: { brand: DeskModel['brand'] }) {
-  if (brand !== 'nuphos') return null
+  if (brand !== 'cerin') return null
 
   return (
-    <svg className="desk-mark is-nuphos" viewBox="0 0 128 128" aria-hidden>
+    <svg className="desk-mark is-cerin" viewBox="0 0 128 128" aria-hidden>
       <image href="/logo-dark-bg.svg" width="128" height="128" />
     </svg>
   )

@@ -23,7 +23,7 @@ export function readNote(channel: { agentSessionIds?: string[] }): string {
  */
 export function fromOwner(metadata: MessageMetadata | undefined, ownerId: string) {
   return (
-    (metadata?.source === 'nuphos' || (metadata?.source === 'slack' && !metadata.unattested)) &&
+    (metadata?.source === 'cerin' || (metadata?.source === 'slack' && !metadata.unattested)) &&
     metadata.sender.type === 'user' &&
     !metadata.sender.onBehalfOf &&
     metadata.sender.id === ownerId

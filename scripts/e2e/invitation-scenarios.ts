@@ -21,7 +21,7 @@ function markSent(mongoUri: string, invitationId: string, minutesAgo: number): v
     import { MongoClient, ObjectId } from 'mongodb'
     const [uri, id, minutes] = process.argv.slice(1)
     const client = await new MongoClient(uri).connect()
-    await client.db('nuphos_e2e').collection('team_invitations').updateOne(
+    await client.db('cerin_e2e').collection('team_invitations').updateOne(
       { _id: new ObjectId(id) },
       { $set: { lastSentAt: new Date(Date.now() - Number(minutes) * 60_000) } },
     )

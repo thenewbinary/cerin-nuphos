@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { executePanel, refreshDashboard } from '@/lib/dashboards/exec-service'
 import { AppError } from '@/lib/errors'
 import { zv } from '@/lib/validate'
-import { nuphosDashboards } from '@/models'
+import { cerinDashboards } from '@/models'
 
 import { loadDashboard, loadPanel, viewerOf } from './access'
 import { serializeSnapshot } from './serialize'
@@ -23,10 +23,10 @@ const forceSchema = z
   .transform((q) => ({ force: q.force === '1' || q.force === 'true' }))
 
 export function registerDashboardExecutionRoutes(
-  nuphosDashboardsRoutes: Hono<{ Variables: TeamAuthVariables }>,
+  cerinDashboardsRoutes: Hono<{ Variables: TeamAuthVariables }>,
 ): void {
   /** Re-execute every panel of the dashboard and return the resulting snapshots. */
-  nuphosDashboardsRoutes.post(
+  cerinDashboardsRoutes.post(
     '/:dashboardId/refresh',
     zv('query', dashboardViewSchema.and(forceSchema)),
     async (c) => {
@@ -50,7 +50,7 @@ export function registerDashboardExecutionRoutes(
   )
 
   /** Re-execute a single panel; `?force=1` bypasses snapshot dedupe. */
-  nuphosDashboardsRoutes.post(
+  cerinDashboardsRoutes.post(
     '/:dashboardId/panels/:panelId/execute',
     zv('query', dashboardViewSchema.and(forceSchema)),
     async (c) => {
@@ -61,7 +61,7 @@ export function registerDashboardExecutionRoutes(
         viewerOf(c),
         'edit',
       )
-      const dashboard = await nuphosDashboards().findOne({ _id: panel.dashboardId, teamId })
+      const dashboard = await cerinDashboards().findOne({ _id: panel.dashboardId, teamId })
 
       if (!dashboard) throw new AppError(404, 'dashboard_not_found', 'Dashboard not found')
       const query = c.req.valid('query')

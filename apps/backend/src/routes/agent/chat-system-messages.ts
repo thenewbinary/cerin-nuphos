@@ -81,10 +81,10 @@ export const API_ROUTING_MESSAGE = [
   '## Cerin backend API routing',
   '',
   'When calling Cerin backend APIs from the sandbox shell, never hard-code `https://api.cerin.ai`.',
-  'Always use the `ac` helper from the nuphos-api skill, or build URLs from `${NUPHOS_BACKEND_URL:-https://api.cerin.ai}`. Local dev injects `NUPHOS_BACKEND_URL` so approved agent commands route back through the developer tunnel to the same backend this chat is using.',
+  'Always use the `ac` helper from the cerin-api skill, or build URLs from `${CERIN_BACKEND_URL:-https://api.cerin.ai}`. Local dev injects `CERIN_BACKEND_URL` so approved agent commands route back through the developer tunnel to the same backend this chat is using.',
 ].join('\n')
 
-export function buildNuphosLinksMessage(
+export function buildCerinLinksMessage(
   teamId: string | undefined,
   options?: { nativeClaudeSkills?: boolean },
 ): string {
@@ -98,12 +98,12 @@ export function buildNuphosLinksMessage(
     'When any assistant prose you write mentions a concrete resource that has a Cerin GUI page and you know the identifiers needed for its URL, the first visible occurrence of that resource name/id MUST be a markdown link. This applies before, between, and after tool calls, inside paragraphs, bullet lists, markdown tables, and inline-code-looking identifiers in prose.',
     'Do not leave a supported Cerin resource as plain text in a result table when the same row or surrounding text contains the parent account/project/cluster/zone identifiers needed to build the URL.',
     nativeClaudeSkills
-      ? 'Do not memorize, guess, or reconstruct Cerin GUI routes. When a semantic script or Cerin API response provides canonical `_links`/resource paths, copy those values verbatim. Otherwise search `skills/nuphos-api/references/gui-routes.md` and use a route only when every required id is known.'
-      : 'Do not memorize or guess GUI routes. Search the injected route catalog with `rg -i "<resource keyword>" skills/nuphos-api/references/gui-routes.md` before constructing Cerin markdown links. The file is grep-friendly and lists route ids, keywords, required ids, URL templates, and suggested link text.',
+      ? 'Do not memorize, guess, or reconstruct Cerin GUI routes. When a semantic script or Cerin API response provides canonical `_links`/resource paths, copy those values verbatim. Otherwise search `skills/cerin-api/references/gui-routes.md` and use a route only when every required id is known.'
+      : 'Do not memorize or guess GUI routes. Search the injected route catalog with `rg -i "<resource keyword>" skills/cerin-api/references/gui-routes.md` before constructing Cerin markdown links. The file is grep-friendly and lists route ids, keywords, required ids, URL templates, and suggested link text.',
     ...(nativeClaudeSkills
       ? []
       : [
-          'Examples: `rg -i "s3|bucket" skills/nuphos-api/references/gui-routes.md`; `rg -i "ec2|instance" skills/nuphos-api/references/gui-routes.md`; `rg -i "grafana|dashboard" skills/nuphos-api/references/gui-routes.md`; `rg -i "pod|deployment|service" skills/nuphos-api/references/gui-routes.md`.',
+          'Examples: `rg -i "s3|bucket" skills/cerin-api/references/gui-routes.md`; `rg -i "ec2|instance" skills/cerin-api/references/gui-routes.md`; `rg -i "grafana|dashboard" skills/cerin-api/references/gui-routes.md`; `rg -i "pod|deployment|service" skills/cerin-api/references/gui-routes.md`.',
           `Use a catalog row only when you have every required id listed on that row. Use the exact displayed resource name/id as the markdown link text. Example: \`[prod-cluster](${publicWebUrl()}/teams/<teamId>/infra/aws/<accountId>/clusters/<region>/<clusterName>)\`.`,
         ]),
     nativeClaudeSkills

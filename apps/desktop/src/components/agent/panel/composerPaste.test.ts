@@ -3,19 +3,20 @@ import test from 'node:test'
 
 import { pastePieces } from './composerPaste.ts'
 
-const isUrl = (text: string) => text.startsWith('https://nuphos.ai/')
+const isUrl = (text: string) => text.startsWith('https://platform.cerin.ai/')
 const joined = (pieces: ReturnType<typeof pastePieces>) =>
   pieces.map((p) => ('url' in p ? p.url : p.text)).join('')
 
-test('Nuphos links become chips and the text around them stays as typed', () => {
-  const raw = 'see https://nuphos.ai/teams/t/plans/1 then https://nuphos.ai/teams/t/plans/2 ok'
+test('Cerin links become chips and the text around them stays as typed', () => {
+  const raw =
+    'see https://platform.cerin.ai/teams/t/plans/1 then https://platform.cerin.ai/teams/t/plans/2 ok'
   const pieces = pastePieces(raw, isUrl)
 
   assert.deepEqual(pieces, [
     { text: 'see ' },
-    { url: 'https://nuphos.ai/teams/t/plans/1' },
+    { url: 'https://platform.cerin.ai/teams/t/plans/1' },
     { text: ' then ' },
-    { url: 'https://nuphos.ai/teams/t/plans/2' },
+    { url: 'https://platform.cerin.ai/teams/t/plans/2' },
     { text: ' ok' },
   ])
   assert.equal(joined(pieces), raw)
@@ -26,7 +27,7 @@ test('a long paste is one insert, not one per word', () => {
   // that re-reads the editor; one per word froze the window for minutes on a
   // 1 MB paste. Counting the pieces counts the inserts, whatever the machine.
   const huge = 'const value = computeSomething(alpha, beta); // log line 12345\n'.repeat(16_000)
-  const withLinks = `${huge}https://nuphos.ai/teams/t/plans/1\n${huge}`
+  const withLinks = `${huge}https://platform.cerin.ai/teams/t/plans/1\n${huge}`
   const linked = pastePieces(withLinks, isUrl)
 
   assert.equal(pastePieces(huge, isUrl).length, 1)

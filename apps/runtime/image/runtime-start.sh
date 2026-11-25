@@ -39,10 +39,10 @@ memory_watch &
 # host joins with the token once, keeps the credential it gets on the home volume, dials
 # out to Cerin and runs the agent itself, so nothing below applies. A saved credential
 # wins over the token on every later start. Without a token the runtime starts as before.
-agent_home=${NUPHOS_AGENT_HOME:-${HOME:-}/.local/share/nuphos/agent}
-if [ -n "${NUPHOS_JOIN_TOKEN:-}" ]; then
-  export NUPHOS_AGENT_HOME="$agent_home"
-  exec node "${NUPHOS_LOCAL_RUNTIME_DIR:-/opt/cerin-agent}/host.mjs"
+agent_home=${CERIN_AGENT_HOME:-${HOME:-}/.local/share/cerin/agent}
+if [ -n "${CERIN_JOIN_TOKEN:-}" ]; then
+  export CERIN_AGENT_HOME="$agent_home"
+  exec node "${CERIN_LOCAL_RUNTIME_DIR:-/opt/cerin-agent}/host.mjs"
 fi
 # A credential an earlier join left names a device that is gone, so a later join starts afresh.
 rm -f "$agent_home/device-credential.json"
@@ -50,7 +50,7 @@ rm -f "$agent_home/device-credential.json"
 min_password_length=32
 
 fail() {
-  printf 'nuphos-runtime-start: %s\n' "$1" >&2
+  printf 'cerin-runtime-start: %s\n' "$1" >&2
   exit 1
 }
 
@@ -112,10 +112,10 @@ enabled() {
 # One set in the environment wins. With the runtime console on, openab owns the home
 # volume's credentials: it imports a password file left by an earlier version and
 # otherwise serves a setup page, so nothing is generated unless
-# NUPHOS_RUNTIME_AUTOGEN_PASSWORD asks for the old behaviour. With the console off, the
+# CERIN_RUNTIME_AUTOGEN_PASSWORD asks for the old behaviour. With the console off, the
 # runtime keeps its own password on the home volume, generated on first boot.
 if enabled "${OPENAB_ACP_ENABLED:-}"; then
-  default_key_file=/home/node/.nuphos-runtime/auth-key
+  default_key_file=/home/node/.cerin-runtime/auth-key
   key_file=${OPENAB_ACP_AUTH_KEY_FILE:-$default_key_file}
   if [ -n "${OPENAB_ACP_AUTH_KEY:-}" ]; then
     check_password OPENAB_ACP_AUTH_KEY
@@ -127,7 +127,7 @@ if enabled "${OPENAB_ACP_ENABLED:-}"; then
         || fail "cannot read the runtime password from $key_file."
       check_password "$key_file"
       unset OPENAB_ACP_AUTH_KEY
-    elif enabled "${NUPHOS_RUNTIME_AUTOGEN_PASSWORD:-}"; then
+    elif enabled "${CERIN_RUNTIME_AUTOGEN_PASSWORD:-}"; then
       generate_password
       unset OPENAB_ACP_AUTH_KEY
     else
@@ -158,7 +158,7 @@ if [ -n "${OPENAB_ACP_AUTH_KEY:-}" ]; then
       const { createHmac } = require("node:crypto");
       process.stdout.write(
         createHmac("sha256", process.env.OPENAB_ACP_AUTH_KEY)
-          .update("nuphos-runtime-control-v1")
+          .update("cerin-runtime-control-v1")
           .digest("hex"),
       );
     ')
@@ -175,7 +175,7 @@ fi
 # The workspace layout a provisioned pod's init container builds, so a self-hosted
 # runtime's skills land where each agent reads them. Idempotent, and never fatal: a
 # workspace that is not writable still lets the runtime chat.
-workspace=${NUPHOS_RUNTIME_WORKSPACE:-/workspace}
+workspace=${CERIN_RUNTIME_WORKSPACE:-/workspace}
 if mkdir -p "$workspace/.claude" 2>/dev/null; then
   [ -e "$workspace/skills" ] || ln -s .claude/skills "$workspace/skills" 2>/dev/null || true
   # Codex reads its own path. A symlink rather than a second copy, because it
@@ -194,13 +194,13 @@ rm -f "${CLAUDE_CONFIG_DIR:-${HOME:-/home/node}}"/.claude.json.tmp.* 2>/dev/null
 # Grok Build, Antigravity and OpenCode install on first use (see the Dockerfile). Start that
 # now, so the first conversation does not wait on a download; a session that comes
 # sooner waits on the same per-tool lock.
-if [ -n "${NUPHOS_RUNTIME_PREINSTALL:-}" ]; then
+if [ -n "${CERIN_RUNTIME_PREINSTALL:-}" ]; then
   # Progress stays quiet; a failure is logged, or a blocked download would surface
   # only later as a sign-in or chat that cannot start.
   (
-    output=$(nuphos-tools install $NUPHOS_RUNTIME_PREINSTALL 2>&1) \
+    output=$(cerin-tools install $CERIN_RUNTIME_PREINSTALL 2>&1) \
       || printf 'runtime-start: preinstalling %s failed; it is retried on first use: %s\n' \
-        "$NUPHOS_RUNTIME_PREINSTALL" "$(printf '%s' "$output" | tail -n 3)" >&2
+        "$CERIN_RUNTIME_PREINSTALL" "$(printf '%s' "$output" | tail -n 3)" >&2
   ) &
 fi
 

@@ -49,6 +49,6 @@ describe('buildChannelLinkedInteractionResponse', () => {
   })
 
   test('keeps a picker so more channels can be linked', () => {
-    expect(confirmationText('posted')).toContain('nuphos_link_channel')
+    expect(confirmationText('posted')).toContain('cerin_link_channel')
   })
 })

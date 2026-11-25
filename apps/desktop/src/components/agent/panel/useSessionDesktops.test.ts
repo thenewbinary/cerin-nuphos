@@ -54,7 +54,7 @@ test('the dock opens and focuses the desktop when a running turn starts driving 
 
   surfaceAgentDesktop({ ...tab, messages: [ask('u1'), reply('Bash')] })
   assert.deepEqual(dock().tabs, [])
-  surfaceAgentDesktop({ ...tab, messages: [ask('u1'), reply('mcp__nuphos-desktop__click')] })
+  surfaceAgentDesktop({ ...tab, messages: [ask('u1'), reply('mcp__cerin-desktop__click')] })
   assert.equal(dock().dockOpen, true)
   assert.equal(dock().activeTabId, 'desktop:chat:3')
   done()
@@ -63,16 +63,16 @@ test('the dock opens and focuses the desktop when a running turn starts driving 
 test('a desktop tab the user closed stays closed for the rest of that turn', () => {
   const { store, dock, done } = desktopDock()
   const turn = { sessionId: 'chat', streaming: true, runtimeState: holding }
-  const messages = [ask('u2'), reply('mcp__nuphos-desktop__list_apps')]
+  const messages = [ask('u2'), reply('mcp__cerin-desktop__list_apps')]
 
   surfaceAgentDesktop({ ...turn, messages })
   store.actions.closeTab('desktop:chat:3')
-  surfaceAgentDesktop({ ...turn, messages: [...messages, reply('mcp__nuphos-desktop__type_text')] })
+  surfaceAgentDesktop({ ...turn, messages: [...messages, reply('mcp__cerin-desktop__type_text')] })
   assert.deepEqual(dock().tabs, [])
   // The next turn that drives the desktop brings it back.
   surfaceAgentDesktop({
     ...turn,
-    messages: [...messages, ask('u3'), reply('nuphos-desktop.click')],
+    messages: [...messages, ask('u3'), reply('cerin-desktop.click')],
   })
   assert.equal(dock().activeTabId, 'desktop:chat:3')
   done()
@@ -80,7 +80,7 @@ test('a desktop tab the user closed stays closed for the rest of that turn', () 
 
 test('reopening a chat whose turn already ended, or someone else’s chat, opens nothing', () => {
   const { dock, done } = desktopDock()
-  const messages = [ask('u4'), reply('mcp__nuphos-desktop__click')]
+  const messages = [ask('u4'), reply('mcp__cerin-desktop__click')]
 
   surfaceAgentDesktop({ sessionId: 'chat', streaming: false, runtimeState: holding, messages })
   surfaceAgentDesktop({

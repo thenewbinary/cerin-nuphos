@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-// nuphos dev — the local docker compose stack, the backend with hot reload, and Desktop.
+// cerin dev — the local docker compose stack, the backend with hot reload, and Desktop.
 import { ensureBackendEnv, resetBackendRetries, startBackend } from './dev-backend.ts'
 import { BOLD, DIM, GREEN, RESET, enterAltScreen, leaveAltScreen, render } from './dev-dashboard.ts'
 import { claimDesktopPorts, desktopPorts, startDesktop } from './dev-desktop.ts'
@@ -39,7 +39,7 @@ function recordInstance(live = true) {
     backend: backend.port,
     vite: desktopPorts.vite,
     cdp: desktopPorts.cdp,
-    appData: electronAppData(`Nuphos Dev (${DESKTOP_SUFFIX})`),
+    appData: electronAppData(`Cerin Dev (${DESKTOP_SUFFIX})`),
     cliConfig: DEV_CLI_CONFIG,
     logDir: LOG_DIR,
     groups: live ? services.flatMap((s) => (s.proc?.pid ? [s.proc.pid] : [])) : [],
@@ -61,7 +61,7 @@ async function quit(code = 0, choice: QuitChoice = 'processes'): Promise<void> {
   stopTunnel()
   stopStorageTunnel()
   if (plan.killTunnel) stopOwnNamedTunnel()
-  process.stdout.write(`\n  ${BOLD}▲ nuphos dev${RESET} ${DIM}shutting down…${RESET}\n`)
+  process.stdout.write(`\n  ${BOLD}▲ cerin dev${RESET} ${DIM}shutting down…${RESET}\n`)
   const stopped: string[] = []
 
   await stopAllTrees((name, how) => {
@@ -209,7 +209,7 @@ async function main() {
   enterAltScreen()
   bindKeys()
 
-  if (!TTY) process.stdout.write(`▲ nuphos dev  (${INSTANCE})\n`)
+  if (!TTY) process.stdout.write(`▲ cerin dev  (${INSTANCE})\n`)
   render()
   setInterval(() => {
     if (consumeDirty()) render()

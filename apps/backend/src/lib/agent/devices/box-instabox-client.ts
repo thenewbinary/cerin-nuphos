@@ -31,10 +31,7 @@ const PATHS = 'export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"'
  * Runs `lines` holding the machine's install lock. The shell holds it and closes it in all it
  * starts, so a process an install leaves running never keeps the next install waiting.
  */
-export function oneInstallAtATime(
-  lines: string[],
-  lock = '"$HOME/.nuphos-install.lock"',
-): string[] {
+export function oneInstallAtATime(lines: string[], lock = '"$HOME/.cerin-install.lock"'): string[] {
   return [`exec 9>${lock} && flock 9`, '{', ...lines, '} 9>&-']
 }
 
@@ -62,7 +59,7 @@ export const BOX_INSTALL_COMMAND = [
     `( ${AGENTS.join('\n')}\n) & agents=$!`,
     // Always the newest CLI, so the same step installs a Box and updates one.
     'curl -fsSL https://cerin.ai/install | sh',
-    // So `nuphos` also works in the Box\'s own terminal, not only in the commands run here.
+    // So `cerin` also works in the Box\'s own terminal, not only in the commands run here.
     'grep -q .local/bin "$HOME/.profile" 2>/dev/null || echo \'export PATH="$HOME/.local/bin:$PATH"\' >> "$HOME/.profile"',
     'wait $agents',
   ]),
@@ -96,14 +93,14 @@ export const BOX_CLEAR_CACHES_COMMAND = [
 
 /**
  * Starts the host, which keeps the Box's own credential, as the systemd user service
- * `nuphos agent` installs on its first run, so it also starts again after a reboot.
+ * `cerin agent` installs on its first run, so it also starts again after a reboot.
  * A CLI from before the service runs the host itself, detached. Run with `background: true`.
  */
-export const AGENT_COMMAND = `export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"; systemctl --user start nuphos-agent 2>/dev/null || pgrep -f "[h]ost.mjs" >/dev/null || exec setsid nuphos agent >> "$HOME/nuphos-agent.log" 2>&1 < /dev/null`
+export const AGENT_COMMAND = `export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"; systemctl --user start cerin-agent 2>/dev/null || pgrep -f "[h]ost.mjs" >/dev/null || exec setsid cerin agent >> "$HOME/cerin-agent.log" 2>&1 < /dev/null`
 
 /** sha256 of each ~/AGENTS.md a Box image or instabox wrote; only these are emptied on update. */
 export const IMAGE_AGENTS_SHA256 = [
-  // The Nuphos Box image's notes.
+  // The Cerin Box image's notes.
   '280eb1f0d5a0830e1eb973b6da483f1f857796c9c11a4bcc87179f7804f3795b',
   // instabox's own, which it writes wherever ~/AGENTS.md is missing.
   '0553cda9f792bf91370755ed3db74481f082ba29449a0c7ec4d8af5c63311a30',
@@ -117,19 +114,19 @@ export const IMAGE_AGENTS_SHA256 = [
  */
 export const BOX_UPDATE_COMMAND = [
   // Stopped, not killed: the service would start it again on the old CLI mid-install.
-  'systemctl --user stop nuphos-agent 2>/dev/null',
+  'systemctl --user stop cerin-agent 2>/dev/null',
   'pkill -f "[h]ost.mjs"; for i in $(seq 30); do pgrep -f "[h]ost.mjs" >/dev/null || break; sleep 1; done',
   'pkill -9 -f "[h]ost.mjs"',
   '(',
   BOX_INSTALL_COMMAND,
   BOX_MOUNTS_COMMAND,
   // Only panels from before the browser launcher; ones that have it are the user's.
-  'grep -L web-browser.desktop "$HOME"/.nuphos/session-homes/*/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml | xargs -r rm -f',
+  'grep -L web-browser.desktop "$HOME"/.cerin/session-homes/*/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml | xargs -r rm -f',
   // The written AGENTS.md (sent agents to /data/workspace and MACHINE.md) is emptied, not
   // removed: instabox writes it again, links included, wherever it is missing. Only while it
   // is exactly what was written; an edit keeps it, and the agents' links stay as they are.
   `a=$(readlink -f "$HOME/AGENTS.md"); case "$(sha256sum "$a" 2>/dev/null | cut -d' ' -f1)" in ${IMAGE_AGENTS_SHA256.join('|')}) : > "$a" ;; esac`,
-  ') >> "$HOME/nuphos-update.log" 2>&1',
+  ') >> "$HOME/cerin-update.log" 2>&1',
   AGENT_COMMAND,
 ].join('\n')
 
@@ -156,7 +153,7 @@ export function boxBackendUrl(): string | undefined {
 
 /** The CLI and its runtime bundle come from the release, or from a mirror in development. */
 export function downloadEnv(): Record<string, string> {
-  return config.box.downloadUrl ? { NUPHOS_DOWNLOAD_URL: config.box.downloadUrl } : {}
+  return config.box.downloadUrl ? { CERIN_DOWNLOAD_URL: config.box.downloadUrl } : {}
 }
 
 export function requireBackendUrl(): string {
@@ -190,7 +187,7 @@ export function unavailable(what: string, error: unknown): AppError {
 /**
  * Why instabox did not make a Box, in words for whoever asked. Its own text can name the
  * account and its owner, so it stays in the server log. The deployment's account is
- * Nuphos's to fix, so only a team's own account gets the 4xx that asks the team to act.
+ * Cerin's to fix, so only a team's own account gets the 4xx that asks the team to act.
  */
 export function orderRefused(error: unknown, ownAccount: boolean): AppError {
   if (error instanceof AppError) return error

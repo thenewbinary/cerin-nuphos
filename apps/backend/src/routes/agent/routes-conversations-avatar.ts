@@ -170,7 +170,7 @@ agent.post('/conversations/:sessionId/bot', async (c) => {
     { ...conversation, avatar },
     MAKE_BOT_PROMPT,
     'agent.resource',
-    systemSender('nuphos:make-bot', 'Cerin'),
+    systemSender('cerin:make-bot', 'Cerin'),
   )
     .then(({ run }) => run)
     .catch((error: unknown) => {

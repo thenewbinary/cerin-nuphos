@@ -18,7 +18,7 @@ import type { TencentAccountBinding } from '@/models'
 
 export const tencentAccountsRoutes = new Hono<{ Variables: TeamAuthVariables }>()
 
-// OIDC federation details the customer needs to register Nuphos as a CAM OIDC
+// OIDC federation details the customer needs to register Cerin as a CAM OIDC
 // identity provider and pin their role's trust policy: issuer URL, audience
 // (client id), and this team's subject claim. Team-scoped; safe to expose.
 tencentAccountsRoutes.get('/oidc-info', (c) => {

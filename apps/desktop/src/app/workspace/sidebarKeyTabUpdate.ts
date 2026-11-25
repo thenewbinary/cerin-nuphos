@@ -75,7 +75,7 @@ export function sidebarKeyTabUpdate(
       active: key === 'team.accounts' ? 'team.integrations' : key,
       agentSessionId: key === 'team.agent' ? null : tab.agentSessionId,
       connectorDetail: null,
-      nuphosDashboard: null,
+      cerinDashboard: null,
       target: null,
       dashboardTarget: null,
       traceDatasourceTarget: null,
@@ -98,7 +98,7 @@ export function sidebarKeyTabUpdate(
     // basic-info drill-down, and any open dashboard so Dashboards shows
     // its list page.
     connectorDetail: null,
-    nuphosDashboard: null,
+    cerinDashboard: null,
     target: null,
     dashboardTarget: key === 'observability.dashboards' ? tab.dashboardTarget : null,
     traceDatasourceTarget: null,

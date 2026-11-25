@@ -10,7 +10,7 @@ const list = [
 
 test('the list page keeps the section title', () => {
   assert.equal(
-    dashboardsPageTitle({ nuphosDashboard: null, nuphosDashboards: list, restoredTitle: 'X' }),
+    dashboardsPageTitle({ cerinDashboard: null, cerinDashboards: list, restoredTitle: 'X' }),
     DASHBOARDS_TITLE,
   )
 })
@@ -18,8 +18,8 @@ test('the list page keeps the section title', () => {
 test('an open dashboard is titled by its name', () => {
   assert.equal(
     dashboardsPageTitle({
-      nuphosDashboard: { dashboardId: 'a', dashboardName: 'AWS spend' },
-      nuphosDashboards: list,
+      cerinDashboard: { dashboardId: 'a', dashboardName: 'AWS spend' },
+      cerinDashboards: list,
       restoredTitle: undefined,
     }),
     'AWS spend',
@@ -29,8 +29,8 @@ test('an open dashboard is titled by its name', () => {
 test('switching dashboards in the same tab follows the new one', () => {
   assert.equal(
     dashboardsPageTitle({
-      nuphosDashboard: { dashboardId: 'b', dashboardName: 'GCP spend' },
-      nuphosDashboards: list,
+      cerinDashboard: { dashboardId: 'b', dashboardName: 'GCP spend' },
+      cerinDashboards: list,
       restoredTitle: 'AWS spend',
     }),
     'GCP spend',
@@ -40,8 +40,8 @@ test('switching dashboards in the same tab follows the new one', () => {
 test('a rename reported by the dashboard list wins over the stale ref name', () => {
   assert.equal(
     dashboardsPageTitle({
-      nuphosDashboard: { dashboardId: 'a', dashboardName: 'AWS spend' },
-      nuphosDashboards: [{ id: 'a', name: 'AWS spend (prod)' }],
+      cerinDashboard: { dashboardId: 'a', dashboardName: 'AWS spend' },
+      cerinDashboards: [{ id: 'a', name: 'AWS spend (prod)' }],
       restoredTitle: undefined,
     }),
     'AWS spend (prod)',
@@ -49,27 +49,27 @@ test('a rename reported by the dashboard list wins over the stale ref name', () 
 })
 
 test('a restored tab shows its persisted title until the list loads', () => {
-  const nuphosDashboard = { dashboardId: 'a', dashboardName: 'Dashboard' }
+  const cerinDashboard = { dashboardId: 'a', dashboardName: 'Dashboard' }
 
   assert.equal(
-    dashboardsPageTitle({ nuphosDashboard, nuphosDashboards: undefined, restoredTitle: 'Old' }),
+    dashboardsPageTitle({ cerinDashboard, cerinDashboards: undefined, restoredTitle: 'Old' }),
     'Old',
   )
   assert.equal(
-    dashboardsPageTitle({ nuphosDashboard, nuphosDashboards: list, restoredTitle: 'Old' }),
+    dashboardsPageTitle({ cerinDashboard, cerinDashboards: list, restoredTitle: 'Old' }),
     'AWS spend',
   )
 })
 
 test('falls back to the ref name when nothing better is known', () => {
-  const nuphosDashboard = { dashboardId: 'new', dashboardName: 'Untitled dashboard' }
+  const cerinDashboard = { dashboardId: 'new', dashboardName: 'Untitled dashboard' }
 
   assert.equal(
-    dashboardsPageTitle({ nuphosDashboard, nuphosDashboards: undefined, restoredTitle: undefined }),
+    dashboardsPageTitle({ cerinDashboard, cerinDashboards: undefined, restoredTitle: undefined }),
     'Untitled dashboard',
   )
   assert.equal(
-    dashboardsPageTitle({ nuphosDashboard, nuphosDashboards: list, restoredTitle: 'Old' }),
+    dashboardsPageTitle({ cerinDashboard, cerinDashboards: list, restoredTitle: 'Old' }),
     'Untitled dashboard',
   )
 })

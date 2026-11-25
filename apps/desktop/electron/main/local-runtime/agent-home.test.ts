@@ -131,7 +131,7 @@ test('native cleanup preserves an existing root notify and is absent without the
 })
 
 test('Claude Code’s home keeps the owner’s CLAUDE.md files above the workspace out', () => {
-  const excludes = claudeHomeSettings('/Users/me/Library/Nuphos/users/u1/workspace')
+  const excludes = claudeHomeSettings('/Users/me/Library/Cerin/users/u1/workspace')
     .claudeMdExcludes as string[]
 
   for (const file of [
@@ -143,7 +143,7 @@ test('Claude Code’s home keeps the owner’s CLAUDE.md files above the workspa
   ])
     assert.ok(excludes.includes(file), file)
   assert.ok(
-    !excludes.some((file) => file.startsWith('/Users/me/Library/Nuphos/users/u1/workspace/')),
+    !excludes.some((file) => file.startsWith('/Users/me/Library/Cerin/users/u1/workspace/')),
   )
 })
 
@@ -154,7 +154,7 @@ test('Claude Code’s home turns off the owner’s claude.ai skills and plugins'
   assert.equal(settings.syncClaudeAiPlugins, false)
 })
 
-test('the prepared home holds only Nuphos’s own settings, readable by the owner alone', (t) => {
+test('the prepared home holds only Cerin’s own settings, readable by the owner alone', (t) => {
   const userDir = mkdtempSync(path.join(os.tmpdir(), 'claude-home-'))
 
   t.after(() => {
@@ -268,12 +268,12 @@ test('on Windows without the owner’s login nothing is linked', (t) => {
 })
 
 test('a hosted pod’s owner uses the pod’s own Claude login; other members keep theirs', (t) => {
-  const dir = mkdtempSync(path.join(os.tmpdir(), 'nuphos-pod-owner-'))
+  const dir = mkdtempSync(path.join(os.tmpdir(), 'cerin-pod-owner-'))
 
   t.after(() => rmSync(dir, { recursive: true, force: true }))
   const data = path.join(dir, 'agent')
   const home = path.join(dir, 'home')
-  const prepare = podOwnerAgentHome('owner-1', data, { NUPHOS_AGENT_OWNER_ID: 'owner-1' }, home)
+  const prepare = podOwnerAgentHome('owner-1', data, { CERIN_AGENT_OWNER_ID: 'owner-1' }, home)
   const member = (id: string) => path.join(data, 'users', id)
 
   assert.equal(

@@ -222,13 +222,13 @@ jobs:
         run: |
           set -euo pipefail
           IDENTITY=$(jq -er '
-            [.[] | select(.name | startswith("Developer ID Application:") and endswith("(6T873K59LQ)"))]
-            | if length == 1 then .[0].hash else error("Expected one Nuphos Developer ID identity") end
+            [.[] | select(.name | startswith("Developer ID Application:") and endswith("(MT4V6HEGSU)"))]
+            | if length == 1 then .[0].hash else error("Expected one Cerin Developer ID identity") end
           ' <<< "$SIGNING_IDENTITIES")
           for target in ${TARGETS//,/ }; do
             for helper in mac-screen-host cua-permission; do
               file="build/local-runtime/$target/$helper"
-              codesign --force --sign "$IDENTITY" --identifier "ai.nuphos.$helper" \
+              codesign --force --sign "$IDENTITY" --identifier "ai.cerin.$helper" \
                 --options runtime --timestamp "$file"
               codesign --verify --strict --verbose=2 "$file"
             done
@@ -244,16 +244,11 @@ jobs:
             dir="build/local-runtime/$target"
             bun build electron/main/local-runtime/cli-host.ts --target=node --format=esm --external @napi-rs/keyring --outfile "$dir/host.mjs"
             # The host must load under plain Node before it ships (#2749).
-            (env -u NUPHOS_AGENT_HOME node "$dir/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'NUPHOS_AGENT_HOME is not set'
+            (env -u CERIN_AGENT_HOME node "$dir/host.mjs" 2>&1 || true) | tee /dev/stderr | grep -qF 'CERIN_AGENT_HOME is not set'
             ASSET="cerin-agent-$target.tar.gz"
             tar -czf "$ASSET" -C "$dir" .
-            # Also under the old name, for anything that still downloads it by that name.
-            LEGACY="nuphos-agent-$target.tar.gz"
-            cp "$ASSET" "$LEGACY"
-            for file in "$ASSET" "$LEGACY"; do
-              if command -v sha256sum >/dev/null; then sha256sum "$file" > "$file.sha256"; else shasum -a 256 "$file" > "$file.sha256"; fi
-            done
-            gh release upload "$TAG" "$ASSET" "$ASSET.sha256" "$LEGACY" "$LEGACY.sha256" --repo "$GITHUB_REPOSITORY" --clobber
+            if command -v sha256sum >/dev/null; then sha256sum "$ASSET" > "$ASSET.sha256"; else shasum -a 256 "$ASSET" > "$ASSET.sha256"; fi
+            gh release upload "$TAG" "$ASSET" "$ASSET.sha256" --repo "$GITHUB_REPOSITORY" --clobber
           done
 
   publish:

@@ -6,7 +6,7 @@ import { instrumentMongoClient } from '@/otel/instrumentation/mongo'
 import type { ClientSession, Db } from 'mongodb'
 
 export const mongo = new MongoClient(config.mongoUri, {
-  appName: new URLSearchParams(config.mongoUri.split('?')[1]).get('appName') ?? 'nuphos-backend',
+  appName: new URLSearchParams(config.mongoUri.split('?')[1]).get('appName') ?? 'cerin-backend',
   // Surfaces commandStarted/Succeeded/Failed events used by the OTel mongo
   // instrumentation. We gate on the master OTEL_ENABLED flag so deploys that
   // never opt in don't pay the per-command APM event allocation — the driver

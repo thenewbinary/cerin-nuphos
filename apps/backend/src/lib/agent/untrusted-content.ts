@@ -4,7 +4,7 @@
  * Slack channel messages and past transcripts are written by people, so they
  * can contain anything a user felt like typing — including instructions aimed
  * at the agent. Fencing them keeps that text addressable as evidence without
- * letting it pose as policy: nobody should be able to talk Nuphos out of
+ * letting it pose as policy: nobody should be able to talk Cerin out of
  * paging by typing in the channel.
  */
 export function fenceUntrusted(tag: string, body: string, note: string): string {

@@ -73,14 +73,14 @@ function assertAllowedGoogleRedirectUri(raw: string): void {
 
   if (isLocal) return
 
-  const isNuphos =
+  const isCerin =
     url.protocol === 'https:' &&
     [new URL(config.auth.publicBaseUrl).origin, new URL(publicWebUrl()).origin].includes(
       url.origin,
     ) &&
     url.pathname === '/api/google/callback'
 
-  if (isNuphos) return
+  if (isCerin) return
 
   throw new Error('Google OAuth redirect URI is not allowed')
 }

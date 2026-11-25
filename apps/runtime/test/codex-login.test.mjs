@@ -14,7 +14,7 @@ import { deviceCodePrompt, loginChoice, runDeviceLogin } from '../image/codex-lo
 // write where they are told to, but on such a pod they do not spawn a CLI at all.
 const onManagedRuntime =
   process.env.HOME?.startsWith('/home/node') === true &&
-  Object.keys(process.env).some((name) => name.startsWith('NUPHOS_RUNTIME'))
+  Object.keys(process.env).some((name) => name.startsWith('CERIN_RUNTIME'))
 const spawnsCli = { skip: onManagedRuntime && 'never spawns a sign-in on a managed runtime' }
 
 const prompt =
@@ -123,7 +123,7 @@ test(
       // `seed-codex-auth.sh` compares this marker, so a self-installed credential has to
       // carry the same revision its own bytes would produce.
       assert.match(
-        await readFile(join(codexHome, '.nuphos-auth-revision'), 'utf8'),
+        await readFile(join(codexHome, '.cerin-auth-revision'), 'utf8'),
         /^[0-9a-f]{16}$/u,
       )
       await assert.rejects(readFile(join(codexHome, 'auth.json.new')), { code: 'ENOENT' })
@@ -282,7 +282,7 @@ test('`--api-key` reads the key from stdin and `--sign-out` removes it', spawnsC
           PATH: process.env.PATH,
           HOME: directory,
           CODEX_EXECUTABLE: cli,
-          NUPHOS_CODEX_AUTH_DIRECTORY: codexHome,
+          CERIN_CODEX_AUTH_DIRECTORY: codexHome,
         },
       })
       let out = ''

@@ -38,10 +38,10 @@ test('typed addresses resolve to a URL; plain words and searches do not', () => 
   for (const [input, expected] of [
     ['http://127.0.0.1:8787/index.html', 'http://127.0.0.1:8787/index.html'],
     ['localhost:3000', 'http://localhost:3000'],
-    ['nuphos.ai', 'https://nuphos.ai'],
-    [' docs.nuphos.ai/guide ', 'https://docs.nuphos.ai/guide'],
+    ['platform.cerin.ai', 'https://platform.cerin.ai'],
+    [' docs.platform.cerin.ai/guide ', 'https://docs.platform.cerin.ai/guide'],
   ])
     assert.equal(browserAddressUrl(input), expected)
-  for (const input of ['', 'terminal', 'aws billing', 'nuphos.ai docs', '999.168.1.1'])
+  for (const input of ['', 'terminal', 'aws billing', 'platform.cerin.ai docs', '999.168.1.1'])
     assert.equal(browserAddressUrl(input), null)
 })

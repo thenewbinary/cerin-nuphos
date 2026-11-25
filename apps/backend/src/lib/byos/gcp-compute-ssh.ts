@@ -39,7 +39,7 @@ function isTrueish(v: string | null): boolean {
 }
 
 // Imports an ephemeral SSH public key under the OS Login profile of the
-// service account Nuphos is impersonating. Returns the POSIX username that
+// service account Cerin is impersonating. Returns the POSIX username that
 // OS Login provisioned, the instance's reachable IP, and the matching
 // private key.
 export async function getGceInstanceSshAccess(

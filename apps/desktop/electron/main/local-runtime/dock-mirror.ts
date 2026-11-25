@@ -55,7 +55,7 @@ async function mirrors(call: BrowserCall) {
   const found: { window: BrowserWindow; mirror: DockMirror }[] = []
 
   for (const window of windows()) {
-    const mirror = await ask<DockMirror>(window, 'nuphosDockMirror', call.session, call.team)
+    const mirror = await ask<DockMirror>(window, 'cerinDockMirror', call.session, call.team)
 
     if (mirror) found.push({ window, mirror })
   }
@@ -116,7 +116,7 @@ export async function closeDockTab(call: BrowserCall): Promise<CuaToolResult> {
   const window = call.dockTab ? await windowWith(call) : undefined
 
   if (!window) return notInDock(call)
-  const closed = await ask<boolean>(window, 'nuphosCloseDockTab', call.session, call.dockTab)
+  const closed = await ask<boolean>(window, 'cerinCloseDockTab', call.session, call.dockTab)
 
   return closed ? text({ closed: call.dockTab }) : notInDock(call)
 }
@@ -131,7 +131,7 @@ export async function openDockTab(call: BrowserCall): Promise<CuaToolResult> {
 
   if (!target) return failed('href or page is required.')
   for (const window of windows()) {
-    const id = await ask<string>(window, 'nuphosOpenDockTab', call.session, call.team, target)
+    const id = await ask<string>(window, 'cerinOpenDockTab', call.session, call.team, target)
 
     if (id) return text({ id })
   }

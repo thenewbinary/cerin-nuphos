@@ -55,9 +55,9 @@ export const ROW_HEIGHT_ESTIMATE = 30
 export const EMPTY_KEYS: ReadonlySet<string> = new Set()
 // `tw3` holds user-dragged widths only. `tw2` held every width including the
 // computed defaults, which froze them permanently — it is dropped on mount.
-export const COLUMN_WIDTH_STORAGE_PREFIX = 'nuphos.tw3.'
-export const LEGACY_COLUMN_WIDTH_STORAGE_PREFIX = 'nuphos.tw2.'
-export const SORT_STORAGE_PREFIX = 'nuphos.tw2.sort.'
+export const COLUMN_WIDTH_STORAGE_PREFIX = 'cerin.tw3.'
+export const LEGACY_COLUMN_WIDTH_STORAGE_PREFIX = 'cerin.tw2.'
+export const SORT_STORAGE_PREFIX = 'cerin.tw2.sort.'
 
 /**
  * Flags, per edge, "there are columns hidden under the run pinned here" on the

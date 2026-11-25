@@ -167,9 +167,9 @@ const pull = (groupId: string, dest: string, backendUrl: string) =>
       env: {
         ...process.env,
         OPENAB_CREDENTIALS_DIR: '',
-        NUPHOS_BACKEND_URL: backendUrl,
-        NUPHOS_TOKEN: 'non-secret-fixture',
-        NUPHOS_SESSION_ID: scope.sessionId,
+        CERIN_BACKEND_URL: backendUrl,
+        CERIN_TOKEN: 'non-secret-fixture',
+        CERIN_SESSION_ID: scope.sessionId,
       },
       stdout: 'pipe',
       stderr: 'pipe',

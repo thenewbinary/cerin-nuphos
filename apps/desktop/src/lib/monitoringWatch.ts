@@ -14,14 +14,14 @@ export const PROVIDER_LABEL: Record<MonitoringOverviewRow['provider'], string> =
 }
 
 export type WatchDestination =
-  | { type: 'nuphos' }
+  | { type: 'cerin' }
   | { type: 'slack_dm' }
   | { type: 'slack_channel'; channelId: string; channelName: string }
 
 const promptData = (value: string): string => JSON.stringify(value)
 
 function watchDestinationCopy(destination: WatchDestination): string {
-  return destination.type === 'nuphos'
+  return destination.type === 'cerin'
     ? 'Cerin.'
     : destination.type === 'slack_dm'
       ? 'my Slack DM, with a replyable incident thread.'
@@ -45,7 +45,7 @@ export function slackDmRecipientCopy(mapping: SlackUserMapping): {
   const name = mapping.slackUser?.displayName || mapping.slackUserId
   const matchMethod =
     mapping.slackUser?.matchMethod ??
-    (mapping.createdBy === 'auto:nuphos-email' ? 'email' : 'manual')
+    (mapping.createdBy === 'auto:cerin-email' ? 'email' : 'manual')
   const source =
     matchMethod === 'email'
       ? t('matched by account email')

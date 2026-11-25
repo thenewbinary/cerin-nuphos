@@ -222,7 +222,7 @@ test('the code email says where the request came from', async () => {
       ip: '203.0.113.9',
       city: 'Taipei',
       country: 'TW',
-      client: 'nuphos-ios/2.1.0',
+      client: 'cerin-ios/2.1.0',
     })
   } finally {
     config.email.devLogOtp = devLog
@@ -261,7 +261,7 @@ test('a code email never repeats the request headers', async () => {
 
 test('a code email never repeats a version an app name carries', async () => {
   const devLog = config.email.devLogOtp
-  const phish = 'nuphos-desktop/1.verify-at.evil-phish.com'
+  const phish = 'cerin-desktop/1.verify-at.evil-phish.com'
 
   config.email.devLogOtp = false
   emailConfigured = true

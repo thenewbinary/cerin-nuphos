@@ -9,7 +9,7 @@ fail=0
 # No output plus exit 0 is how a PreToolUse hook says "not my business".
 decide() {
   local out
-  out=$(printf '%s' "$1" | NUPHOS_LINT_UNLOCK= bash "$guard")
+  out=$(printf '%s' "$1" | CERIN_LINT_UNLOCK= bash "$guard")
   if [ -z "$out" ]; then
     echo allow
   else
@@ -90,7 +90,7 @@ echo 'the guard stops at the project boundary'
 scoped() {
   local want="$1" name="$2" path="$3" got
   got=$(jq -nc --arg p "$path" '{tool_name:"Edit",tool_input:{file_path:$p}}' |
-    CLAUDE_PROJECT_DIR=/repo NUPHOS_LINT_UNLOCK= bash "$guard")
+    CLAUDE_PROJECT_DIR=/repo CERIN_LINT_UNLOCK= bash "$guard")
   [ -z "$got" ] && got=allow || got=$(printf '%s' "$got" | jq -r '.hookSpecificOutput.permissionDecision')
   if [ "$got" = "$want" ]; then
     pass=$((pass + 1))
@@ -106,14 +106,14 @@ scoped allow 'another checkout entirely' /Users/me/other-repo/eslint.config.mjs
 
 echo 'the unlock disables the guard'
 got=$(jq -nc '{tool_name:"Edit",tool_input:{file_path:"/repo/eslint.config.mjs"}}' |
-  NUPHOS_LINT_UNLOCK=1 bash "$guard")
+  CERIN_LINT_UNLOCK=1 bash "$guard")
 [ -z "$got" ] && got=allow
 if [ "$got" = "allow" ]; then
   pass=$((pass + 1))
-  printf '  ok   %-46s %s\n' 'NUPHOS_LINT_UNLOCK=1' "$got"
+  printf '  ok   %-46s %s\n' 'CERIN_LINT_UNLOCK=1' "$got"
 else
   fail=$((fail + 1))
-  printf '  FAIL %-46s want allow, got %s\n' 'NUPHOS_LINT_UNLOCK=1' "$got"
+  printf '  FAIL %-46s want allow, got %s\n' 'CERIN_LINT_UNLOCK=1' "$got"
 fi
 
 echo

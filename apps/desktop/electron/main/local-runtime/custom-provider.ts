@@ -1,7 +1,7 @@
 // A model provider of the user's own (a gateway, a proxy, another vendor's compatible API) for
 // this computer's Claude Code and Codex, wired the way each CLI already supports one. The base
 // URL and model ids are kept in a file; the key only in the OS credential store, and it reaches
-// the agent only through process environments, never a file Nuphos writes.
+// the agent only through process environments, never a file Cerin writes.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -27,12 +27,12 @@ export type KeyStore = {
 }
 
 /** The credential store's service the keys are kept under, one item per account and agent. */
-export const PROVIDER_KEYCHAIN_SERVICE = 'ai.nuphos.desktop.provider'
+export const PROVIDER_KEYCHAIN_SERVICE = 'ai.cerin.desktop.provider'
 
 /** Claude Code's gateway token, and the variable Codex's provider names as its `env_key`. */
 export const PROVIDER_KEY_ENV: Record<CustomProviderAgent, string> = {
   'claude-code': 'ANTHROPIC_AUTH_TOKEN',
-  codex: 'NUPHOS_CODEX_PROVIDER_KEY',
+  codex: 'CERIN_CODEX_PROVIDER_KEY',
 }
 
 const FILE = 'custom-providers.json'
@@ -224,9 +224,9 @@ export function claudeProviderSettings(userDir: string) {
   }
 }
 
-const BEGIN = '# Nuphos custom provider (begin)'
-const END = '# Nuphos custom provider (end)'
-const CODEX_PROVIDER_ID = 'nuphos-custom'
+const BEGIN = '# Cerin custom provider (begin)'
+const END = '# Cerin custom provider (end)'
+const CODEX_PROVIDER_ID = 'cerin-custom'
 
 /**
  * Codex's own `model_providers` entry, as root keys at the top of its config.toml: an inline

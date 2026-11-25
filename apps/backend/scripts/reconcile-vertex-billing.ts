@@ -10,7 +10,7 @@
  *   # 1. see the Mongo side + the query to run
  *   bun run scripts/reconcile-vertex-billing.ts \
  *     --billing-project my-billing-project \
- *     --gcp-project nuphos \
+ *     --gcp-project cerin \
  *     --export-table billing.gcp_billing_export_v1_0123 \
  *     --model-id claude-opus-5 \
  *     --sku-filter 'Claude Opus 5' \

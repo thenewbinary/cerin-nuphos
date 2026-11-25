@@ -5,7 +5,7 @@ in this repository. Only filenames were changed for the Android light/dark asset
 lookup. No external downloads or SVG transformations were used. Existing brand
 ownership and licensing remain unchanged.
 
-Exact source files (relative to `apps/ios/nuphos-ios/Assets.xcassets/Logos/`):
+Exact source files (relative to `apps/ios/cerin-ios/Assets.xcassets/Logos/`):
 
 - `logo-aliyun-light.svg`: `logo-aliyun.imageset/aliyun.svg`
 - `logo-asana-light.svg`: `logo-asana.imageset/asana.svg`
@@ -45,12 +45,12 @@ Exact source files (relative to `apps/ios/nuphos-ios/Assets.xcassets/Logos/`):
 Huawei currently has no matching mark in that iOS catalog and retains the explicit
 initials fallback. It is not represented by another provider’s logo.
 
-# Nuphos mark sources
+# Cerin mark sources
 
 `app/src/main/res/drawable/ic_notification.xml` (notification small icon) and
 `app/src/main/res/drawable/app_icon_b2_monochrome.xml` (themed-icon layer of the default
 app icon B2) share one traced path, not the brand master vector. The single-color mark on
-[nuphos.ai/brand](https://nuphos.ai/brand), `nuphos-icon-mono-white.svg`, wraps a
+[platform.cerin.ai/brand](https://platform.cerin.ai/brand), `cerin-icon-mono-white.svg`, wraps a
 1254 × 1254 PNG. The PNG's alpha channel was thresholded at 128 and traced with Potrace
 1.16 (`--turdsize 20 --alphamax 1.0 --opttolerance 0.4`). Both drawables keep Potrace's
 coordinates and place them with a group transform:

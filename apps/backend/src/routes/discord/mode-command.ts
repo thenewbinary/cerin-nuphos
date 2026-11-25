@@ -38,8 +38,7 @@ export async function handleDiscordModeCommand(
   const command = interaction.data?.options?.find((option) => option.type === 1)?.name
 
   if (
-    (interaction.data?.name !== config.discord.commandName &&
-      interaction.data?.name !== 'nuphos') ||
+    (interaction.data?.name !== config.discord.commandName && interaction.data?.name !== 'cerin') ||
     (command !== 'full-access' && command !== 'auto')
   )
     return null
@@ -69,12 +68,12 @@ export async function handleDiscordModeCommand(
   ])
 
   if (!installation || !channel) return 'Cerin is not enabled for this thread.'
-  if (!mapping || !(await getTeamMembership(mapping.nuphosUserId, thread.teamId))) {
+  if (!mapping || !(await getTeamMembership(mapping.cerinUserId, thread.teamId))) {
     return 'Link your Discord account to this Cerin workspace first.'
   }
   // Permission grants are actor scoped: nobody can disarm a teammate's gate.
   try {
-    await setSessionBypass(thread.sessionId, mapping.nuphosUserId, command === 'full-access')
+    await setSessionBypass(thread.sessionId, mapping.cerinUserId, command === 'full-access')
   } catch (error) {
     // A Task under a Bot follows the Bot's mode; the refusal says where to change it.
     if (error instanceof AppError) return error.message
@@ -86,7 +85,7 @@ export async function handleDiscordModeCommand(
     discord_guild_id: guildId,
     discord_channel_id: channelId,
     discord_user_id: discordUserId,
-    nuphos_user_id: mapping.nuphosUserId,
+    cerin_user_id: mapping.cerinUserId,
     mode: command,
   })
 

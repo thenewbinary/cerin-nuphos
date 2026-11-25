@@ -35,7 +35,7 @@ describe('dashboard panel token', () => {
     const [head, , signature] = mintDashboardPanelToken({ ...ids, panelId, ttlSec: 60 }).split('.')
     const forged = Buffer.from(
       JSON.stringify({
-        aud: 'nuphos-dashboard-panel',
+        aud: 'cerin-dashboard-panel',
         sub: ids.userId,
         tid: ids.teamId,
         pid: panelId,

@@ -72,7 +72,7 @@
 
     <!-- First runtime -->
     <string name="agent_first_runtime_title">Connect your first runtime</string>
-    <string name="agent_first_runtime_body">Open Nuphos on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one.</string>
+    <string name="agent_first_runtime_body">Open Cerin on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one.</string>
 
     <!-- Runtime list and inventory -->
     <string name="agent_cloud">Cloud</string>
@@ -99,7 +99,7 @@
     <string name="agent_percent">%1$d%%</string>
     <string name="agent_couldnt_load_runtimes">Couldn\'t load runtimes</string>
     <string name="agent_no_runtimes">No runtimes</string>
-    <string name="agent_no_runtimes_body">Open Nuphos on your computer to connect it and add a runtime.</string>
+    <string name="agent_no_runtimes_body">Open Cerin on your computer to connect it and add a runtime.</string>
     <string name="agent_deleting">Deleting</string>
     <string name="agent_disabled">Disabled</string>
     <string name="agent_offline">Offline</string>
@@ -119,9 +119,9 @@
     <string name="agent_ask_admin_sign_in">Ask an administrator to sign in</string>
     <string name="agent_runtime_gone_body">This runtime is no longer in the current workspace. Refresh runtimes before continuing.</string>
     <string name="agent_runtime_disabled_body">This runtime is disabled or being removed. Ask an administrator to check its saved state.</string>
-    <string name="agent_teammate_sign_in_body">%1$s belongs to a teammate, so only they can sign it in. Ask them to open Nuphos on it and choose Sign in on the Runtimes page.</string>
-    <string name="agent_host_sign_in_body">On %1$s, open Nuphos, go to the Runtimes page and choose Sign in for this runtime.</string>
-    <string name="agent_admin_sign_in_body">A workspace administrator can sign it in from the Runtimes page in Nuphos on their computer.</string>
+    <string name="agent_teammate_sign_in_body">%1$s belongs to a teammate, so only they can sign it in. Ask them to open Cerin on it and choose Sign in on the Runtimes page.</string>
+    <string name="agent_host_sign_in_body">On %1$s, open Cerin, go to the Runtimes page and choose Sign in for this runtime.</string>
+    <string name="agent_admin_sign_in_body">A workspace administrator can sign it in from the Runtimes page in Cerin on their computer.</string>
 
     <!-- Runtime details -->
     <string name="agent_back_to_runtimes">Back to runtimes</string>
@@ -143,8 +143,8 @@
     <string name="agent_unreconciled">A request may have reached the server. Refresh saved state before another change.</string>
     <string name="agent_refresh_runtime">Refresh runtime</string>
     <string name="agent_remove_named">Remove %1$s?</string>
-    <string name="agent_remove_managed_body">This stops the runtime and permanently deletes its files and sign-in. Your task history stays in Nuphos.</string>
-    <string name="agent_remove_body">This disconnects the runtime. Your tasks stay in Nuphos.</string>
+    <string name="agent_remove_managed_body">This stops the runtime and permanently deletes its files and sign-in. Your task history stays in Cerin.</string>
+    <string name="agent_remove_body">This disconnects the runtime. Your tasks stay in Cerin.</string>
 
     <!-- Runtime setup sheet -->
     <string name="agent_runtime_details">Runtime details</string>

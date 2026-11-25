@@ -32,11 +32,11 @@ for tool in git gh jq rg curl python3 kubectl zeabur bwrap socat tini flock; do
   command -v "$tool" >/dev/null || fail "$tool missing"
 done
 python3 -m venv /tmp/venv-check && rm -rf /tmp/venv-check
-nuphos-tools list
+cerin-tools list
 
 [ "${1:-}" = --tools ] || exit 0
 
-export NUPHOS_TOOLS_DIR=${NUPHOS_TOOLS_DIR:-/home/node/.nuphos-runtime/tools}
+export CERIN_TOOLS_DIR=${CERIN_TOOLS_DIR:-/home/node/.cerin-runtime/tools}
 
 timed() {
   local started=$SECONDS
@@ -48,7 +48,7 @@ step 'archive tool: first use installs, concurrent callers share one install'
 timed hcloud version &
 timed hcloud version &
 wait
-[ "$(find "$NUPHOS_TOOLS_DIR/hcloud" -mindepth 1 -maxdepth 1 | wc -l)" = 1 ] || fail 'hcloud installed twice'
+[ "$(find "$CERIN_TOOLS_DIR/hcloud" -mindepth 1 -maxdepth 1 | wc -l)" = 1 ] || fail 'hcloud installed twice'
 second=$(hcloud version 2>&1 >/dev/null)
 [ -z "$second" ] || fail "a second call wrote to stderr: $second"
 hcloud version | grep -qx 'hcloud [0-9.]*' || fail 'hcloud stdout carries installer output'

@@ -13,12 +13,12 @@ test('Claude recreates a live session when the turn runs in another session home
     '../image/claude-agent-acp/node_modules/@agentclientprotocol/claude-agent-acp/dist/acp-agent.js',
     import.meta.url,
   )
-  const instrumented = new URL(`./nuphos-home-reload-smoke-${process.pid}.js`, target)
+  const instrumented = new URL(`./cerin-home-reload-smoke-${process.pid}.js`, target)
   writeFileSync(
     instrumented,
-    `${readFileSync(target, 'utf8')}\nexport { computeSessionFingerprint as nuphosFingerprint };\n`,
+    `${readFileSync(target, 'utf8')}\nexport { computeSessionFingerprint as cerinFingerprint };\n`,
   )
-  const home = mkdtempSync(join(tmpdir(), 'nuphos-claude-reload-smoke-'))
+  const home = mkdtempSync(join(tmpdir(), 'cerin-claude-reload-smoke-'))
   t.after(() => {
     rmSync(instrumented)
     rmSync(home, { recursive: true, force: true })
@@ -29,18 +29,18 @@ test('Claude recreates a live session when the turn runs in another session home
       '--input-type=module',
       '-e',
       `
-    import { ClaudeAcpAgent, nuphosFingerprint } from ${JSON.stringify(instrumented.href)};
+    import { ClaudeAcpAgent, cerinFingerprint } from ${JSON.stringify(instrumented.href)};
     const agent = new ClaudeAcpAgent({ sessionUpdate: async () => {} }, { log() {}, error() {} });
     const calls = [];
     agent.teardownSession = async () => { calls.push('teardown') };
     agent.createSession = async (params, opts) => {
       calls.push('create');
-      agent.sessions[opts.resume] = { sessionFingerprint: nuphosFingerprint(params), modes: {}, configOptions: [] };
+      agent.sessions[opts.resume] = { sessionFingerprint: cerinFingerprint(params), modes: {}, configOptions: [] };
       return { sessionId: opts.resume };
     };
     const turn = (actor) => ({ cwd: process.env.HOME, sessionId: 'live', mcpServers: [],
-      _meta: { claudeCode: { options: { env: { NUPHOS_SESSION_ID: 'conv-1', NUPHOS_TOKEN: 'synthetic',
-        ...(actor ? { NUPHOS_SESSION_ACTOR: actor } : {}) } } } } });
+      _meta: { claudeCode: { options: { env: { CERIN_SESSION_ID: 'conv-1', CERIN_TOKEN: 'synthetic',
+        ...(actor ? { CERIN_SESSION_ACTOR: actor } : {}) } } } } });
     const steps = [];
     // owner, owner again, a teammate (#453), the owner, automated work, automated again
     for (const actor of [null, null, 'teammate-2', null, 'automated', 'automated']) {

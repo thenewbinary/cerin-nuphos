@@ -106,7 +106,7 @@ export async function createBox(
       },
       { preconnect: fetch.preconnect },
     ),
-    name: `nuphos-${deviceId.slice(0, 8)}`,
+    name: `cerin-${deviceId.slice(0, 8)}`,
     metadata: { teamId, deviceId, createdBy: userId },
     vault: false,
     ...size,
@@ -180,7 +180,7 @@ async function setUp(
       return install()
     })
     await sandbox.commands.run(AGENT_COMMAND, {
-      envs: { ...downloadEnv(), NUPHOS_JOIN_TOKEN: token, NUPHOS_API_URL: url },
+      envs: { ...downloadEnv(), CERIN_JOIN_TOKEN: token, CERIN_API_URL: url },
       background: true,
     })
     await sandbox.commands.run(BOX_MOUNTS_COMMAND, { background: true })

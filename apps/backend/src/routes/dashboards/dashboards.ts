@@ -18,7 +18,7 @@ import { AppError } from '@/lib/errors'
 import { parseObjectId } from '@/lib/objectid'
 import { zv } from '@/lib/validate'
 import {
-  nuphosDashboards,
+  cerinDashboards,
   dashboardPanelAlerts,
   dashboardPanels,
   dashboardPanelSnapshots,
@@ -29,7 +29,7 @@ import { serializeDashboard, serializePanel } from './serialize'
 import { dashboardForView, dashboardViewSchema } from './view-range'
 
 import type { TeamAuthVariables } from '@/middleware/auth'
-import type { NuphosDashboard, DashboardTimeRange } from '@/models'
+import type { CerinDashboard, DashboardTimeRange } from '@/models'
 import type { Hono } from 'hono'
 
 // ---------------------------------------------------------------------------
@@ -98,13 +98,13 @@ const updateDashboardSchema = z.object({
 })
 
 export function registerDashboardRoutes(
-  nuphosDashboardsRoutes: Hono<{ Variables: TeamAuthVariables }>,
+  cerinDashboardsRoutes: Hono<{ Variables: TeamAuthVariables }>,
 ): void {
-  nuphosDashboardsRoutes.get('/', async (c) => {
+  cerinDashboardsRoutes.get('/', async (c) => {
     const teamId = parseObjectId(c.get('teamId'), 'teamId')
     const viewer = viewerOf(c)
     const admin = viewer.role === 'ADMINISTRATOR'
-    const docs = await nuphosDashboards()
+    const docs = await cerinDashboards()
       .find(admin ? { teamId } : { teamId, ...readableFilter(viewer) })
       .sort({ updatedAt: -1 })
       .toArray()
@@ -124,7 +124,7 @@ export function registerDashboardRoutes(
     })
   })
 
-  nuphosDashboardsRoutes.post('/', zv('json', createDashboardSchema), async (c) => {
+  cerinDashboardsRoutes.post('/', zv('json', createDashboardSchema), async (c) => {
     const teamId = parseObjectId(c.get('teamId'), 'teamId')
     const input = c.req.valid('json')
     const visibility = input.visibility ?? 'team'
@@ -133,7 +133,7 @@ export function registerDashboardRoutes(
       throw new AppError(403, 'forbidden', WRITE_ROLES)
     }
     const now = new Date()
-    const doc: NuphosDashboard = {
+    const doc: CerinDashboard = {
       _id: new ObjectId(),
       teamId,
       name: input.name,
@@ -146,12 +146,12 @@ export function registerDashboardRoutes(
       updatedAt: now,
     }
 
-    await nuphosDashboards().insertOne(doc)
+    await cerinDashboards().insertOne(doc)
 
     return c.json(serializeDashboard(doc), 201)
   })
 
-  nuphosDashboardsRoutes.get('/:dashboardId', zv('query', dashboardViewSchema), async (c) => {
+  cerinDashboardsRoutes.get('/:dashboardId', zv('query', dashboardViewSchema), async (c) => {
     const viewer = viewerOf(c)
     const { teamId, dashboard, inTeam } = await loadDashboard(
       c.get('teamId'),
@@ -182,7 +182,7 @@ export function registerDashboardRoutes(
     })
   })
 
-  nuphosDashboardsRoutes.put('/:dashboardId', zv('json', updateDashboardSchema), async (c) => {
+  cerinDashboardsRoutes.put('/:dashboardId', zv('json', updateDashboardSchema), async (c) => {
     const viewer = viewerOf(c)
     const { teamId, dashboard, inTeam } = await loadDashboard(
       c.get('teamId'),
@@ -191,7 +191,7 @@ export function registerDashboardRoutes(
       'edit',
     )
     const input = c.req.valid('json')
-    const set: Partial<NuphosDashboard> = { updatedAt: new Date() }
+    const set: Partial<CerinDashboard> = { updatedAt: new Date() }
     const unset: Record<string, ''> = {}
 
     const visibility = visibilityUpdate(dashboard, viewer, input.visibility, inTeam)
@@ -231,7 +231,7 @@ export function registerDashboardRoutes(
       }))
     }
 
-    const updated = await nuphosDashboards().findOneAndUpdate(
+    const updated = await cerinDashboards().findOneAndUpdate(
       { _id: dashboard._id, teamId },
       Object.keys(unset).length ? { $set: set, $unset: unset } : { $set: set },
       { returnDocument: 'after' },
@@ -242,7 +242,7 @@ export function registerDashboardRoutes(
     return c.json(serializeDashboard(updated))
   })
 
-  nuphosDashboardsRoutes.delete('/:dashboardId', async (c) => {
+  cerinDashboardsRoutes.delete('/:dashboardId', async (c) => {
     const { teamId, dashboard } = await loadDashboard(
       c.get('teamId'),
       c.req.param('dashboardId'),
@@ -262,7 +262,7 @@ export function registerDashboardRoutes(
       ])
     }
     await dashboardPanels().deleteMany({ teamId, dashboardId: dashboard._id })
-    await nuphosDashboards().deleteOne({ _id: dashboard._id, teamId })
+    await cerinDashboards().deleteOne({ _id: dashboard._id, teamId })
 
     return c.body(null, 204)
   })

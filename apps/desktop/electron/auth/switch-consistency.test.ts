@@ -17,14 +17,14 @@ import type { MeProbe, UserInfo } from '../auth-status.ts'
 // A token must only ever be paired with the backend that issued it: in the
 // session, in desktop.yaml, and after a restart.
 
-const CLOUD = 'https://api.nuphos.ai'
-const SELF = 'https://nuphos.example.com'
+const CLOUD = 'https://platform.cerin.ai'
+const SELF = 'https://cerin.example.com'
 const ALICE: UserInfo = { id: 'alice', name: 'Alice', email: 'a@example.com', username: 'alice' }
 const BOB: UserInfo = { id: 'bob', name: 'Bob', email: 'b@example.com', username: 'bob' }
 const CAROL: UserInfo = { id: 'carol', name: 'Carol', email: 'c@example.com', username: 'carol' }
 
 async function harness({ failKeep = false } = {}) {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-switch-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-switch-'))
   const file = path.join(dir, 'desktop.yaml')
   const session = new AuthSession(CLOUD)
   const kept: string[] = []
@@ -40,7 +40,7 @@ async function harness({ failKeep = false } = {}) {
     },
   })
 
-  // Alice on Nuphos Cloud, waiting; Bob on a self-hosted backend, active.
+  // Alice on Cerin Cloud, waiting; Bob on a self-hosted backend, active.
   await config.write({ token: 'tok-alice', api: CLOUD, userInfo: ALICE })
   session.use(SELF, null, null)
   await config.park(CLOUD)
@@ -119,7 +119,7 @@ test('a switch whose account file cannot be written puts the backend back', asyn
 test('after a restart between the two writes, the stored account is not used on the wrong backend', async () => {
   const h = await harness()
   // As if the app stopped after saving Alice's backend but before her file:
-  // a new process on Nuphos Cloud finds Bob, whose token is the self-hosted one's.
+  // a new process on Cerin Cloud finds Bob, whose token is the self-hosted one's.
   const restarted = new AuthSession(CLOUD)
   const config = configFile({
     path: h.file,
@@ -176,7 +176,7 @@ test('a sign-in is saved only as the backend that issued it', async () => {
   const h = await harness()
   const before = await h.onDisk()
 
-  // A browser sign-in begun on Nuphos Cloud finishes after the endpoint moved.
+  // A browser sign-in begun on Cerin Cloud finishes after the endpoint moved.
   await assert.rejects(
     h.config.write({ token: 'tok-late', api: CLOUD, userInfo: ALICE }),
     OtherBackendError,
@@ -200,14 +200,14 @@ test('a switch on the same backend leaves the saved endpoint alone', async () =>
 })
 
 test('one backend spelt two ways is one account: not parked, not listed twice', async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nuphos-switch-'))
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'cerin-switch-'))
   const file = path.join(dir, 'desktop.yaml')
 
   await fs.writeFile(
     file,
     yaml.dump({ api: 'http://127.0.0.1:3718', token: 'tok-dev', userInfo: BOB }),
   )
-  // Launched as `NUPHOS_API_URL=http://localhost:3718/`.
+  // Launched as `CERIN_API_URL=http://localhost:3718/`.
   const session = new AuthSession('http://localhost:3718/')
   const config = configFile({
     path: file,

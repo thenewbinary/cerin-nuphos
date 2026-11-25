@@ -10,7 +10,7 @@ use crate::render::clean;
 pub const ADD_AGENT_HINT: &str =
     "Add a Box or connect your computer in Cerin, or pair a self-hosted runtime from /agents in the TUI.";
 
-/// `--team` (or `NUPHOS_TEAM`), the team used last time, then the first team.
+/// `--team` (or `CERIN_TEAM`), the team used last time, then the first team.
 pub fn pick_team(teams: &[Value], prefs: &Prefs, wanted: Option<&str>) -> Result<Value> {
     if teams.is_empty() {
         bail!("You are not a member of any Cerin team yet. Create one with `cerin team --create NAME`.");

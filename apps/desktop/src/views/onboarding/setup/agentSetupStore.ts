@@ -3,7 +3,7 @@ export type AgentSetupRequest =
   { kind: 'local'; teamId?: string } | { kind: 'runtime'; teamId: string; box?: boolean }
 
 /** A cloud computer made from a new user's setup: the Computers page opens, where its card adds runtimes. */
-export const OPEN_COMPUTERS = 'nuphos:open-computers'
+export const OPEN_COMPUTERS = 'cerin:open-computers'
 
 const listeners = new Set<() => void>()
 let request: AgentSetupRequest | null = null

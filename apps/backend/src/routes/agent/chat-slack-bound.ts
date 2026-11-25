@@ -1,7 +1,7 @@
 import { getConversationWithMessages } from '@/lib/agent/db'
 import { assertSingleNewUserMessage } from '@/lib/agent/message-input'
 import { parseMessageMetadata, senderLabel } from '@/lib/agent/message-metadata'
-// A Slack-bound conversation continued from the Nuphos app: the owner's turn
+// A Slack-bound conversation continued from the Cerin app: the owner's turn
 // runs through the normal /agent/chat pipeline (native SSE streaming,
 // attachments, local tools), while a Slack mirror posts the question and the
 // reply into the bound thread. A send takes the session queue like any other,
@@ -24,8 +24,8 @@ import type { AgentChatBody } from './types'
 import type { SlackAgentThread } from '@/lib/slack/agent-bot'
 import type { UIMessage } from 'ai'
 
-type BeginNuphosSlackTurn = (typeof import('@/routes/slack'))['beginNuphosSlackTurn']
-export type SlackBoundTurnDelivery = NonNullable<Awaited<ReturnType<BeginNuphosSlackTurn>>>
+type BeginCerinSlackTurn = (typeof import('@/routes/slack'))['beginCerinSlackTurn']
+export type SlackBoundTurnDelivery = NonNullable<Awaited<ReturnType<BeginCerinSlackTurn>>>
 
 /** The client's new user message to mirror into the bound thread. */
 export type SlackMirrorPayload = {
@@ -107,11 +107,11 @@ export async function beginSlackBoundTurnDelivery(
     attach?: (frameSink: SlackBoundTurnDelivery['frameSink']) => void
   },
   // Injected by tests, so they need not load the Slack route module.
-  begin?: BeginNuphosSlackTurn,
+  begin?: BeginCerinSlackTurn,
 ): Promise<SlackBoundTurnDelivery | null> {
   try {
-    const beginNuphosSlackTurn = begin ?? (await import('@/routes/slack')).beginNuphosSlackTurn
-    const delivery = await beginNuphosSlackTurn({
+    const beginCerinSlackTurn = begin ?? (await import('@/routes/slack')).beginCerinSlackTurn
+    const delivery = await beginCerinSlackTurn({
       thread: args.thread,
       userId: args.userId,
       userName: args.userName,
@@ -123,7 +123,7 @@ export async function beginSlackBoundTurnDelivery(
 
     return delivery
   } catch {
-    // beginNuphosSlackTurn logs its own failures; an import/setup throw here
+    // beginCerinSlackTurn logs its own failures; an import/setup throw here
     // still must not fail the turn.
     return null
   }

@@ -4,11 +4,11 @@ import { bool, boundedInt, optional, optionalList, required } from './env'
 // the settings the process cannot boot without.
 export function coreConfig() {
   const publicBaseUrl = (
-    optional('NUPHOS_AUTH_BASE_URL') ??
-    optional('NUPHOS_PUBLIC_URL') ??
+    optional('CERIN_AUTH_BASE_URL') ??
+    optional('CERIN_PUBLIC_URL') ??
     `http://localhost:${String(process.env.PORT ?? 3000)}`
   ).replace(/\/$/, '')
-  const publicWebUrl = optional('NUPHOS_PUBLIC_URL')?.replace(/\/$/, '')
+  const publicWebUrl = optional('CERIN_PUBLIC_URL')?.replace(/\/$/, '')
   const webOrigin = new URL(publicWebUrl ?? publicBaseUrl)
 
   return {
@@ -18,15 +18,15 @@ export function coreConfig() {
     nodeEnv: optional('NODE_ENV'),
     // Injected by the local dev launcher; never applies to production backends.
     devLauncherPid:
-      process.env.NODE_ENV === 'production' ? undefined : optional('NUPHOS_DEV_LAUNCHER_PID'),
+      process.env.NODE_ENV === 'production' ? undefined : optional('CERIN_DEV_LAUNCHER_PID'),
     // Set by deploy/compose and `bun run dev`: runtimes on this machine or the
     // compose network count as internal. Never applies to production backends.
-    localStack: process.env.NODE_ENV !== 'production' && bool('NUPHOS_LOCAL_STACK', false),
+    localStack: process.env.NODE_ENV !== 'production' && bool('CERIN_LOCAL_STACK', false),
     // Pod name in k8s (injected by the platform); unset on a dev machine. Used to
     // derive a stable replica identity for the redis pub/sub channel.
     hostname: optional('HOSTNAME'),
     mongoUri: required('MONGODB_URI'),
-    mongoDb: process.env.MONGODB_DB ?? 'atlas',
+    mongoDb: optional('MONGODB_DB') ?? 'cerin',
     admin: {
       // Admin access = membership in this team. No default: unset denies admin
       // access rather than handing it to whichever team a hardcoded id named.
@@ -34,30 +34,30 @@ export function coreConfig() {
       cookieNames: optionalList('ATLAS_ADMIN_COOKIE_NAMES'),
     },
     auth: {
-      jwtSecret: optional('NUPHOS_JWT_SECRET') ?? optional('JWT_SECRET_KEY'),
+      jwtSecret: optional('CERIN_JWT_SECRET') ?? optional('JWT_SECRET_KEY'),
       publicBaseUrl,
-      // Browser-facing links use NUPHOS_PUBLIC_URL, or the API base when unset.
+      // Browser-facing links use CERIN_PUBLIC_URL, or the API base when unset.
       publicWebUrl,
-      // Browser-facing OAuth authorize base (e.g. https://nuphos.ai, which
+      // Browser-facing OAuth authorize base (e.g. https://platform.cerin.ai, which
       // proxies /oauth/authorize* to the API). Empty = same as publicBaseUrl.
-      oauthAuthorizeBaseUrl: optional('NUPHOS_OAUTH_AUTHORIZE_BASE_URL')?.replace(/\/$/, ''),
+      oauthAuthorizeBaseUrl: optional('CERIN_OAUTH_AUTHORIZE_BASE_URL')?.replace(/\/$/, ''),
       // ES256 conversation tokens from a dedicated internal issuer, kept apart
       // from the cloud federation issuer. With no key set they stay HS256.
       internalTokens: {
         // Defaults to `<publicBaseUrl>/internal`.
-        issuer: optional('NUPHOS_INTERNAL_TOKEN_ISSUER')?.replace(/\/$/, ''),
+        issuer: optional('CERIN_INTERNAL_TOKEN_ISSUER')?.replace(/\/$/, ''),
         // Production: an AWS KMS ECC_NIST_P256 SIGN_VERIFY key, so the private
         // key never enters this process. Wins over the local key.
-        kmsKeyId: optional('NUPHOS_INTERNAL_TOKEN_KMS_KEY_ID'),
-        kmsRegion: optional('NUPHOS_INTERNAL_TOKEN_KMS_REGION'),
+        kmsKeyId: optional('CERIN_INTERNAL_TOKEN_KMS_KEY_ID'),
+        kmsRegion: optional('CERIN_INTERNAL_TOKEN_KMS_REGION'),
         // Or a Cloud KMS EC_SIGN_P256_SHA256 key version (full resource name),
         // called with Application Default Credentials. Set only one KMS.
-        gcpKmsKeyVersion: optional('NUPHOS_INTERNAL_TOKEN_GCP_KMS_KEY_VERSION'),
+        gcpKmsKeyVersion: optional('CERIN_INTERNAL_TOKEN_GCP_KMS_KEY_VERSION'),
         // Self-hosted / dev: a PKCS#8 P-256 private key PEM, base64-encoded.
-        privateKeyBase64: optional('NUPHOS_INTERNAL_TOKEN_PRIVATE_KEY_BASE64'),
+        privateKeyBase64: optional('CERIN_INTERNAL_TOKEN_PRIVATE_KEY_BASE64'),
         // Public key PEMs (base64, comma-separated) still served and accepted
         // after a rotation, until tokens signed with them have expired.
-        previousPublicKeysBase64: optionalList('NUPHOS_INTERNAL_TOKEN_PREVIOUS_PUBLIC_KEYS_BASE64'),
+        previousPublicKeysBase64: optionalList('CERIN_INTERNAL_TOKEN_PREVIOUS_PUBLIC_KEYS_BASE64'),
       },
       apple: {
         clientId: optional('APPLE_OAUTH_CLIENT_ID'),
@@ -91,9 +91,9 @@ export function coreConfig() {
       // Resend key and `from` must both be set for email OTP sign-in; `from`
       // must use a domain verified in Resend.
       resendApiKey: optional('RESEND_API_KEY'),
-      from: optional('NUPHOS_EMAIL_FROM'),
+      from: optional('CERIN_EMAIL_FROM'),
       // Local stacks only: print sign-in codes to the log instead of sending them.
-      devLogOtp: process.env.NODE_ENV !== 'production' && bool('NUPHOS_DEV_EMAIL_OTP_LOG', false),
+      devLogOtp: process.env.NODE_ENV !== 'production' && bool('CERIN_DEV_EMAIL_OTP_LOG', false),
     },
     server: {
       tlsCertPath: optional('ATLAS_DEV_TLS_CERT'),
@@ -103,7 +103,7 @@ export function coreConfig() {
       devHttpPort:
         process.env.NODE_ENV === 'production'
           ? 0
-          : boundedInt('NUPHOS_DEV_HTTP_PORT', 0, { min: 0, max: 65_535 }),
+          : boundedInt('CERIN_DEV_HTTP_PORT', 0, { min: 0, max: 65_535 }),
     },
   }
 }

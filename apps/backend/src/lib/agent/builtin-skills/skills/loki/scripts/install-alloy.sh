@@ -127,7 +127,7 @@ fi
 # Emit a marker line so the caller can verify end-to-end retrieval through
 # Loki. `logger` can be missing on minimal images — a failed marker must not
 # turn a successful install into a reported failure (set -e).
-logger -t nuphos-onboarding "loki onboarding marker host=$(hostname) at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" ||
+logger -t cerin-onboarding "loki onboarding marker host=$(hostname) at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" ||
   echo "warning: logger unavailable, onboarding marker not emitted — verify with a live log line instead" >&2
 
 echo "OK alloy=active loki=${LOKI_URL} labels=env:${ENV_LABEL},instance:$(hostname),service:${SERVICE_LABEL}"

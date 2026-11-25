@@ -1,6 +1,6 @@
 import { userAvatars } from '@/lib/identity/avatar-upload'
 import {
-  nuphosDashboards,
+  cerinDashboards,
   dashboardPanelAlerts,
   dashboardPanels,
   dashboardPanelSnapshots,
@@ -100,7 +100,7 @@ export async function setupCoreIndexes(): Promise<void> {
   } catch (err) {
     if ((err as { codeName?: string }).codeName !== 'IndexNotFound') throw err
   }
-  // A Lark custom app (by app_id) can only be connected to one Nuphos team.
+  // A Lark custom app (by app_id) can only be connected to one Cerin team.
   await teamByosBindings().createIndex(
     { 'larkApps.appId': 1 },
     {
@@ -109,7 +109,7 @@ export async function setupCoreIndexes(): Promise<void> {
       name: 'team_byos_lark_app_unique',
     },
   )
-  // A Slack workspace can only be connected to one Nuphos team. The partial
+  // A Slack workspace can only be connected to one Cerin team. The partial
   // filter keeps teams with no slackWorkspaces[] entries out of the index so
   // they don't collide on a null key.
   await teamByosBindings().createIndex(
@@ -121,7 +121,7 @@ export async function setupCoreIndexes(): Promise<void> {
     },
   )
   // A Huawei Cloud identity provider + trust agency can only be claimed by
-  // one Nuphos team — Huawei authorizes the federation by that triple alone,
+  // one Cerin team — Huawei authorizes the federation by that triple alone,
   // not by which team is asking, so a second team registering it could
   // otherwise assume the first team's credentials.
   await teamByosBindings().createIndex(
@@ -188,8 +188,8 @@ export async function setupCoreIndexes(): Promise<void> {
   await architectureDiagrams().createIndex({ teamId: 1 }, { background: true })
   await designs().createIndex({ teamId: 1, updatedAt: -1 }, { background: true })
   // ---- Dashboards (collections keep their cost_* names) ----
-  await nuphosDashboards().createIndex({ teamId: 1, updatedAt: -1 }, { background: true })
-  await nuphosDashboards().createIndex(
+  await cerinDashboards().createIndex({ teamId: 1, updatedAt: -1 }, { background: true })
+  await cerinDashboards().createIndex(
     { cadence: 1, nextRefreshAt: 1 },
     { partialFilterExpression: { nextRefreshAt: { $exists: true } }, background: true },
   )

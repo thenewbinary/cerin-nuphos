@@ -14,7 +14,7 @@ fn latest_url() -> String {
 pub async fn latest() -> Option<String> {
     let text = reqwest::Client::new()
         .get(latest_url())
-        .header("user-agent", concat!("nuphos-cli/", env!("CARGO_PKG_VERSION")))
+        .header("user-agent", concat!("cerin-cli/", env!("CARGO_PKG_VERSION")))
         .timeout(Duration::from_secs(5))
         .send()
         .await
@@ -44,9 +44,9 @@ pub fn is_newer(version: &str) -> bool {
     }
 }
 
-/// `NUPHOS_NO_UPDATE_CHECK=1` turns the check on start off.
+/// `CERIN_NO_UPDATE_CHECK=1` turns the check on start off.
 pub fn check_enabled() -> bool {
-    std::env::var_os("NUPHOS_NO_UPDATE_CHECK").is_none()
+    std::env::var_os("CERIN_NO_UPDATE_CHECK").is_none()
 }
 
 /// `cerin update`: installs the newest release over this binary.
@@ -63,10 +63,10 @@ pub async fn update() -> Result<i32> {
     let status = std::process::Command::new("sh")
         .arg("-c")
         .arg(format!(
-            "curl -fsSL https://raw.githubusercontent.com/thenewbinary/cerin-nuphos/cli-v{latest}/apps/cli/install.sh | sh"
+            "curl -fsSL https://raw.githubusercontent.com/thenewbinary/cerin-platform/cli-v{latest}/apps/cli/install.sh | sh"
         ))
-        .env("NUPHOS_INSTALL_DIR", dir)
-        .env("NUPHOS_VERSION", &latest)
+        .env("CERIN_INSTALL_DIR", dir)
+        .env("CERIN_VERSION", &latest)
         .status()?;
     if status.success() {
         crate::service::restart_if_active();

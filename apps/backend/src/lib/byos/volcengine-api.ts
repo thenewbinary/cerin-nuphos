@@ -7,7 +7,7 @@ import { assertCloudRegion } from './cloud-region'
 
 /**
  * Short-lived credentials used for VKE/ECS calls, obtained via OIDC web-identity
- * federation (like AWS): Nuphos mints a per-team token and calls
+ * federation (like AWS): Cerin mints a per-team token and calls
  * sts:AssumeRoleWithOIDC into the customer's role. The SessionToken accompanies
  * the temporary AK/SK.
  */

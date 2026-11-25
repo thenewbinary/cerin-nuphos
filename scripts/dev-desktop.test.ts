@@ -9,7 +9,7 @@ describe('Electron backend health protocol', () => {
     assert.deepEqual(
       parseElectronBackendHealth(
         JSON.stringify({
-          event: 'nuphos.dev.electron_backend_health',
+          event: 'cerin.dev.electron_backend_health',
           status: 'unhealthy',
           consecutiveFailures: 3,
           latencyMs: 3001,
@@ -17,7 +17,7 @@ describe('Electron backend health protocol', () => {
         }),
       ),
       {
-        event: 'nuphos.dev.electron_backend_health',
+        event: 'cerin.dev.electron_backend_health',
         status: 'unhealthy',
         consecutiveFailures: 3,
         latencyMs: 3001,
@@ -27,11 +27,11 @@ describe('Electron backend health protocol', () => {
   })
 
   test('ignores unrelated or malformed output', () => {
-    assert.equal(parseElectronBackendHealth('[nuphos-dev] electron window opened'), null)
+    assert.equal(parseElectronBackendHealth('[cerin-dev] electron window opened'), null)
     assert.equal(
       parseElectronBackendHealth(
         JSON.stringify({
-          event: 'nuphos.dev.electron_backend_health',
+          event: 'cerin.dev.electron_backend_health',
           status: 'unhealthy',
         }),
       ),
@@ -45,7 +45,7 @@ describe('Electron backend health protocol', () => {
 
     parseDesktop(
       JSON.stringify({
-        event: 'nuphos.dev.electron_backend_health',
+        event: 'cerin.dev.electron_backend_health',
         status: 'unhealthy',
         consecutiveFailures: 1,
         latencyMs: 3000,
@@ -58,7 +58,7 @@ describe('Electron backend health protocol', () => {
 
     parseDesktop(
       JSON.stringify({
-        event: 'nuphos.dev.electron_backend_health',
+        event: 'cerin.dev.electron_backend_health',
         status: 'healthy',
         consecutiveFailures: 0,
         latencyMs: 9,

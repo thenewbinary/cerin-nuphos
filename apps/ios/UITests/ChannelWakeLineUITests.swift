@@ -17,7 +17,7 @@ final class ChannelWakeLineUITests: XCTestCase {
         }
         let wake: [String: Any] = [
             "id": "wake-1", "role": "user", "createdAt": "2026-11-16T05:12:00Z",
-            "parts": [["type": "text", "text": "New messages in a Nuphos channel (channelId c-launch)."]],
+            "parts": [["type": "text", "text": "New messages in a Cerin channel (channelId c-launch)."]],
             "metadata": ["version": 1, "source": "agent.resource", "sentAt": "2026-11-16T05:12:00Z",
                          "sender": ["type": "system", "id": "channel:c-launch", "displayName": "launch-review"],
                          "channelPost": ["id": "p1", "text": "Staging deploy failed on the migrations step, can you look?", "more": 2,
@@ -36,8 +36,8 @@ final class ChannelWakeLineUITests: XCTestCase {
 
         let app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "agent", "-open-links",
-            "https://nuphos.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": live.path]
+            "https://platform.cerin.ai/teams/64b5f1c2e4b0a1d2c3e4f5a6/agent/push-a"]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": live.path]
         app.launch()
         let wakeLine = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS 'launch-review'")).firstMatch
         XCTAssertTrue(wakeLine.waitForExistence(timeout: 10))

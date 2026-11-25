@@ -19,7 +19,7 @@ const launch: LocalRuntimeLaunch = {
   provider: 'claude-code',
   bundle: { root: '/b', openab: '/b/openab', adapters: { 'claude-code': adapter } },
   adapter,
-  nodeExecPath: '/Applications/Nuphos.app/Contents/MacOS/Nuphos',
+  nodeExecPath: '/Applications/Cerin.app/Contents/MacOS/Cerin',
   cliPath: '/Users/me/.local/bin/claude',
   agentHome: '/data/users/u1/claude-home',
   workspace: '/data/users/u1/workspace',
@@ -29,7 +29,7 @@ const launch: LocalRuntimeLaunch = {
   env: { HOME: '/Users/me', PATH: '/usr/bin', AWS_SECRET_ACCESS_KEY: 'secret' },
 }
 
-test('Claude Code runs from a config dir of Nuphos’s own, with the platform credential store', () => {
+test('Claude Code runs from a config dir of Cerin’s own, with the platform credential store', () => {
   const env = agentEnv(launch)
 
   assert.equal(env.CLAUDE_CONFIG_DIR, '/data/users/u1/claude-home')
@@ -60,7 +60,7 @@ test('Claude keeps the host home for Keychain access and filters the owner’s e
   assert.equal(env.HOME, '/Users/me')
   assert.equal(env.CLAUDE_CODE_EXECUTABLE, launch.cliPath)
   assert.equal(env.ELECTRON_RUN_AS_NODE, '1')
-  assert.equal(env.NUPHOS_RUNTIME_WORKSPACE, launch.workspace)
+  assert.equal(env.CERIN_RUNTIME_WORKSPACE, launch.workspace)
   assert.equal(env.AWS_SECRET_ACCESS_KEY, undefined)
 })
 
@@ -74,7 +74,7 @@ test('openab listens on loopback only, with a control key it cannot confuse with
 
   assert.equal(
     deriveControlKey(transportKey),
-    createHmac('sha256', transportKey).update('nuphos-runtime-control-v1').digest('hex'),
+    createHmac('sha256', transportKey).update('cerin-runtime-control-v1').digest('hex'),
   )
   assert.equal(env.HOME, launch.openabHome)
 })
@@ -95,7 +95,7 @@ test('the runtime offers only its bundled attachment program as a job', () => {
     )
     // openab splits the command on whitespace, so a spaced path cannot run.
     assert.equal(
-      openabEnv({ ...bundled, nodeExecPath: '/Apps/Nuphos 2.app/Nuphos' }).OPENAB_RUNTIME_JOBS,
+      openabEnv({ ...bundled, nodeExecPath: '/Apps/Cerin 2.app/Cerin' }).OPENAB_RUNTIME_JOBS,
       undefined,
     )
   } finally {
@@ -103,7 +103,7 @@ test('the runtime offers only its bundled attachment program as a job', () => {
   }
 })
 
-test('only a machine Nuphos made also runs the panel scripts the backend sends', () => {
+test('only a machine Cerin made also runs the panel scripts the backend sends', () => {
   const root = mkdtempSync(path.join(tmpdir(), 'bundle-'))
   const bundled = { ...launch, bundle: { ...launch.bundle, root } }
   const node = `/usr/bin/env ELECTRON_RUN_AS_NODE=1 ${launch.nodeExecPath}`
@@ -140,7 +140,7 @@ test(
   'every bash the agent runs reads the current conversation token, not the spawn-time one',
   { skip: process.platform === 'win32' },
   () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'nuphos-guard-'))
+    const root = mkdtempSync(path.join(tmpdir(), 'cerin-guard-'))
     const credentials = path.join(root, 'credentials')
 
     try {
@@ -151,20 +151,20 @@ test(
       )
       const { BASH_ENV } = agentEnv({ ...launch, bundle: { ...launch.bundle, root } })
       const token = () =>
-        spawnSync('/bin/bash', ['-c', 'printf %s "$NUPHOS_TOKEN"'], {
+        spawnSync('/bin/bash', ['-c', 'printf %s "$CERIN_TOKEN"'], {
           env: {
             PATH: process.env.PATH,
             BASH_ENV,
             OPENAB_CREDENTIALS_DIR: credentials,
-            NUPHOS_TOKEN: 'spawn',
+            CERIN_TOKEN: 'spawn',
           },
           encoding: 'utf8',
           stdio: ['ignore', 'pipe', 'pipe'],
         }).stdout
 
-      writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), 'turn-1')
+      writeFileSync(path.join(credentials, 'CERIN_TOKEN'), 'turn-1')
       assert.equal(token(), 'turn-1')
-      writeFileSync(path.join(credentials, 'NUPHOS_TOKEN'), 'turn-2')
+      writeFileSync(path.join(credentials, 'CERIN_TOKEN'), 'turn-2')
       assert.equal(token(), 'turn-2')
     } finally {
       rmSync(root, { recursive: true, force: true })
@@ -205,7 +205,7 @@ test('an explicit default Keychain override wins over a custom terminal config',
 })
 
 test('tunnel sign-in uses bundled wrappers and each provider’s isolated credential directory', () => {
-  const root = mkdtempSync(path.join(tmpdir(), 'nuphos-login-wrappers-'))
+  const root = mkdtempSync(path.join(tmpdir(), 'cerin-login-wrappers-'))
   // macOS keeps the user's HOME for the Keychain; openab's own HOME stays isolated.
   const prefix =
     process.platform === 'darwin' ? '/usr/bin/env HOME=/Users/me USERPROFILE=/Users/me ' : ''
@@ -224,7 +224,7 @@ test('tunnel sign-in uses bundled wrappers and each provider’s isolated creden
       assert.equal(env.AWS_SECRET_ACCESS_KEY, undefined)
       if (provider === 'codex') {
         assert.equal(env.CODEX_EXECUTABLE, launch.cliPath)
-        assert.equal(env.NUPHOS_CODEX_AUTH_DIRECTORY, launch.agentHome)
+        assert.equal(env.CERIN_CODEX_AUTH_DIRECTORY, launch.agentHome)
       } else assert.equal(env.CLAUDE_CONFIG_DIR, launch.agentHome)
     }
     // Grok Build and OpenCode run the image's wrappers, told the CLI and the agent's home.
@@ -235,8 +235,8 @@ test('tunnel sign-in uses bundled wrappers and each provider’s isolated creden
       const env = agentLoginEnv({ ...launch, provider, bundle: { ...launch.bundle, root } })
 
       assert.equal(env.OPENAB_RUNTIME_LOGIN_COMMAND, `${prefix}${launch.nodeExecPath} ${wrapper}`)
-      assert.equal(env.NUPHOS_AGENT_EXECUTABLE, launch.cliPath)
-      assert.equal(env.NUPHOS_AGENT_HOME, launch.agentHome)
+      assert.equal(env.CERIN_AGENT_EXECUTABLE, launch.cliPath)
+      assert.equal(env.CERIN_AGENT_HOME, launch.agentHome)
     }
   } finally {
     rmSync(root, { recursive: true, force: true })
@@ -247,7 +247,7 @@ test(
   'macOS sign-in without a usable HOME is left to the computer',
   { skip: process.platform !== 'darwin' },
   () => {
-    const root = mkdtempSync(path.join(tmpdir(), 'nuphos-login-wrappers-'))
+    const root = mkdtempSync(path.join(tmpdir(), 'cerin-login-wrappers-'))
 
     try {
       writeFileSync(path.join(root, 'claude-login.mjs'), '')

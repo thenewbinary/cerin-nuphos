@@ -1,7 +1,7 @@
-// A computer that runs the `nuphos` CLI (a server, or a computer from Nuphos) keeps its Nuphos
+// A computer that runs the `cerin` CLI (a server, or a computer from Cerin) keeps its Cerin
 // current itself, the way the Desktop does (auto-update.ts): when a newer CLI is out, on unless
 // whoever manages the computer turned it off, and only once no task has run on it for a while.
-// `nuphos update` installs the release and restarts the service the host runs under.
+// `cerin update` installs the release and restarts the service the host runs under.
 //
 // Runtime imports stay free of Electron so this loads under plain `node --test`.
 
@@ -67,19 +67,19 @@ export function idleClock(now = () => Date.now()) {
 }
 
 export type CliAutoUpdateDeps = {
-  /** The CLI this host runs (`NUPHOS_CLI_VERSION`). */
+  /** The CLI this host runs (`CERIN_CLI_VERSION`). */
   version: string
   home: string
   latest: () => Promise<string | null>
   busy: () => boolean
   idleSeconds: () => number
-  /** Seconds without a task before it updates (idleThreshold: NUPHOS_AUTO_UPDATE_IDLE_SECONDS). */
+  /** Seconds without a task before it updates (idleThreshold: CERIN_AUTO_UPDATE_IDLE_SECONDS). */
   idleThreshold?: number
-  /** Starts `nuphos update`; false when it could not start. */
+  /** Starts `cerin update`; false when it could not start. */
   update: () => Promise<boolean>
 }
 
-/** One check: starts `nuphos update` and returns the release when it is time to. */
+/** One check: starts `cerin update` and returns the release when it is time to. */
 export async function checkCliUpdate(deps: CliAutoUpdateDeps): Promise<string | null> {
   const latest = await deps.latest().catch(() => null)
 
@@ -108,7 +108,7 @@ export async function checkCliUpdate(deps: CliAutoUpdateDeps): Promise<string | 
 /** A check on the timer: whatever goes wrong is logged, never thrown at the host. */
 export function tickCliUpdate(deps: CliAutoUpdateDeps): Promise<string | null> {
   return checkCliUpdate(deps).catch((error: unknown) => {
-    console.error(`Could not check for a Nuphos update: ${String(error)}`)
+    console.error(`Could not check for a Cerin update: ${String(error)}`)
 
     return null
   })
@@ -122,7 +122,7 @@ function readTried(file: string): string {
   }
 }
 
-/** The newest CLI release, as `nuphos update` asks for it. */
+/** The newest CLI release, as `cerin update` asks for it. */
 export async function latestCliRelease(apiUrl: string): Promise<string | null> {
   const response = await fetch(new URL('/cli/latest', apiUrl), {
     signal: AbortSignal.timeout(5_000),
@@ -131,7 +131,7 @@ export async function latestCliRelease(apiUrl: string): Promise<string | null> {
   return response.ok ? (await response.text()).trim() || null : null
 }
 
-/** `nuphos update`, apart from this host: the restart it ends with stops the host. */
+/** `cerin update`, apart from this host: the restart it ends with stops the host. */
 export function runCliUpdate(exe: string): Promise<boolean> {
   return new Promise((resolve) => {
     const child = spawn(exe, ['update'], { detached: true, stdio: 'ignore' })
@@ -146,9 +146,9 @@ export function runCliUpdate(exe: string): Promise<boolean> {
   })
 }
 
-/** `NUPHOS_AUTO_UPDATE_CHECK_SECONDS` checks sooner for testing; never more often than 5 s. */
+/** `CERIN_AUTO_UPDATE_CHECK_SECONDS` checks sooner for testing; never more often than 5 s. */
 export function checkInterval(env: NodeJS.ProcessEnv): number {
-  const seconds = Number(env.NUPHOS_AUTO_UPDATE_CHECK_SECONDS)
+  const seconds = Number(env.CERIN_AUTO_UPDATE_CHECK_SECONDS)
 
   return Number.isFinite(seconds) && seconds > 0
     ? Math.max(5, Math.floor(seconds)) * 1_000
@@ -209,10 +209,10 @@ export function writeCliAutoInstall(home: string, value: unknown): AutoInstallPr
  * requests the computer's card reads and changes the switch through. Checks start at once.
  */
 export function cliAutoUpdate(apiUrl: () => string, changed: () => void, env = process.env) {
-  const home = env.NUPHOS_AGENT_HOME
-  const version = env.NUPHOS_CLI_VERSION
+  const home = env.CERIN_AGENT_HOME
+  const version = env.CERIN_CLI_VERSION
   // Set only when the host runs as the service, whose restart brings the update up (agent.rs).
-  const exe = env.NUPHOS_CLI_EXE
+  const exe = env.CERIN_CLI_EXE
   const clock = idleClock()
 
   if (home && version && exe)

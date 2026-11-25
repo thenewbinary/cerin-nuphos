@@ -248,48 +248,48 @@
         }
       }
     },
-    "%@ belongs to a teammate, so only they can sign it in. Ask them to open Nuphos on it and choose Sign in on the Runtimes page." : {
+    "%@ belongs to a teammate, so only they can sign it in. Ask them to open Cerin on it and choose Sign in on the Runtimes page." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ pertenece a un compañero, así que solo esa persona puede iniciar sesión. Pídele que abra Nuphos en ese equipo y elija Iniciar sesión en la página Entornos de ejecución."
+            "value" : "%@ pertenece a un compañero, así que solo esa persona puede iniciar sesión. Pídele que abra Cerin en ese equipo y elija Iniciar sesión en la página Entornos de ejecución."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ milik rekan tim, jadi hanya mereka yang dapat memasukkannya. Minta mereka membuka Nuphos di sana dan memilih Masuk di halaman Runtime."
+            "value" : "%@ milik rekan tim, jadi hanya mereka yang dapat memasukkannya. Minta mereka membuka Cerin di sana dan memilih Masuk di halaman Runtime."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ はチームメイトのものなので、サインインできるのはその人だけです。そのコンピュータで Nuphos を開き、ランタイムのページでサインインを選ぶよう依頼してください。"
+            "value" : "%@ はチームメイトのものなので、サインインできるのはその人だけです。そのコンピュータで Cerin を開き、ランタイムのページでサインインを選ぶよう依頼してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@은(는) 팀원의 것이므로 그 팀원만 로그인할 수 있습니다. 해당 컴퓨터에서 Nuphos를 열고 런타임 페이지에서 로그인을 선택하도록 요청하세요."
+            "value" : "%@은(는) 팀원의 것이므로 그 팀원만 로그인할 수 있습니다. 해당 컴퓨터에서 Cerin를 열고 런타임 페이지에서 로그인을 선택하도록 요청하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ เป็นของเพื่อนร่วมทีม จึงมีเพียงเขาเท่านั้นที่ลงชื่อเข้าใช้ได้ ขอให้เขาเปิด Nuphos บนเครื่องนั้นแล้วเลือกลงชื่อเข้าใช้ในหน้ารันไทม์"
+            "value" : "%@ เป็นของเพื่อนร่วมทีม จึงมีเพียงเขาเท่านั้นที่ลงชื่อเข้าใช้ได้ ขอให้เขาเปิด Cerin บนเครื่องนั้นแล้วเลือกลงชื่อเข้าใช้ในหน้ารันไทม์"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 属于你的队友，只有对方可以登录。请对方在那台电脑上打开 Nuphos，并在“运行环境”页面选择登录。"
+            "value" : "%@ 属于你的队友，只有对方可以登录。请对方在那台电脑上打开 Cerin，并在“运行环境”页面选择登录。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 屬於你的隊友，只有對方可以登入。請對方在那台電腦上開啟 Nuphos，並在「執行環境」頁面選擇登入。"
+            "value" : "%@ 屬於你的隊友，只有對方可以登入。請對方在那台電腦上開啟 Cerin，並在「執行環境」頁面選擇登入。"
           }
         }
       }
@@ -1668,48 +1668,48 @@
         }
       }
     },
-    "1. Add Nuphos to your authenticator app" : {
+    "1. Add Cerin to your authenticator app" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. Añade Nuphos a tu app de autenticación"
+            "value" : "1. Añade Cerin a tu app de autenticación"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. Tambahkan Nuphos ke aplikasi autentikator Anda"
+            "value" : "1. Tambahkan Cerin ke aplikasi autentikator Anda"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. 認証アプリに Nuphos を追加"
+            "value" : "1. 認証アプリに Cerin を追加"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. 인증 앱에 Nuphos 추가"
+            "value" : "1. 인증 앱에 Cerin 추가"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. เพิ่ม Nuphos ในแอปยืนยันตัวตน"
+            "value" : "1. เพิ่ม Cerin ในแอปยืนยันตัวตน"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. 将 Nuphos 添加到你的验证器 App"
+            "value" : "1. 将 Cerin 添加到你的验证器 App"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. 將 Nuphos 加入你的驗證器 App"
+            "value" : "1. 將 Cerin 加入你的驗證器 App"
           }
         }
       }
@@ -1760,48 +1760,48 @@
         }
       }
     },
-    "1. Open Nuphos on your computer." : {
+    "1. Open Cerin on your computer." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. Abre Nuphos en tu ordenador."
+            "value" : "1. Abre Cerin en tu ordenador."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. Buka Nuphos di komputer Anda."
+            "value" : "1. Buka Cerin di komputer Anda."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. コンピュータで Nuphos を開きます。"
+            "value" : "1. コンピュータで Cerin を開きます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. 컴퓨터에서 Nuphos를 여세요."
+            "value" : "1. 컴퓨터에서 Cerin를 여세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. เปิด Nuphos บนคอมพิวเตอร์"
+            "value" : "1. เปิด Cerin บนคอมพิวเตอร์"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. 在电脑上打开 Nuphos。"
+            "value" : "1. 在电脑上打开 Cerin。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. 在電腦上開啟 Nuphos。"
+            "value" : "1. 在電腦上開啟 Cerin。"
           }
         }
       }
@@ -1991,48 +1991,48 @@
         }
       }
     },
-    "A Linux computer Nuphos runs, with Claude Code, Codex, OpenCode and more on it. Running computers count against your plan's vCPU; paused ones do not." : {
+    "A Linux computer Cerin runs, with Claude Code, Codex, OpenCode and more on it. Running computers count against your plan's vCPU; paused ones do not." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Una computadora Linux que ejecuta Nuphos, con Claude Code, Codex, OpenCode y más. Las computadoras en ejecución cuentan para los vCPU de tu plan; las pausadas no."
+            "value" : "Una computadora Linux que ejecuta Cerin, con Claude Code, Codex, OpenCode y más. Las computadoras en ejecución cuentan para los vCPU de tu plan; las pausadas no."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Komputer Linux yang dijalankan Nuphos, dengan Claude Code, Codex, OpenCode, dan lainnya. Komputer yang berjalan dihitung dalam vCPU paket Anda; yang dijeda tidak."
+            "value" : "Komputer Linux yang dijalankan Cerin, dengan Claude Code, Codex, OpenCode, dan lainnya. Komputer yang berjalan dihitung dalam vCPU paket Anda; yang dijeda tidak."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos が実行する、Claude Code、Codex、OpenCode などを搭載した Linux コンピューターです。実行中のコンピューターはプランの vCPU に含まれ、一時停止中のものは含まれません。"
+            "value" : "Cerin が実行する、Claude Code、Codex、OpenCode などを搭載した Linux コンピューターです。実行中のコンピューターはプランの vCPU に含まれ、一時停止中のものは含まれません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos가 실행하는, Claude Code, Codex, OpenCode 등이 설치된 Linux 컴퓨터입니다. 실행 중인 컴퓨터는 플랜의 vCPU에 포함되며, 일시 중지된 컴퓨터는 포함되지 않습니다."
+            "value" : "Cerin가 실행하는, Claude Code, Codex, OpenCode 등이 설치된 Linux 컴퓨터입니다. 실행 중인 컴퓨터는 플랜의 vCPU에 포함되며, 일시 중지된 컴퓨터는 포함되지 않습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คอมพิวเตอร์ Linux ที่ Nuphos รันให้ พร้อม Claude Code, Codex, OpenCode และอื่น ๆ คอมพิวเตอร์ที่กำลังทำงานจะนับรวมใน vCPU ของแพ็กเกจ ส่วนที่หยุดชั่วคราวจะไม่นับ"
+            "value" : "คอมพิวเตอร์ Linux ที่ Cerin รันให้ พร้อม Claude Code, Codex, OpenCode และอื่น ๆ คอมพิวเตอร์ที่กำลังทำงานจะนับรวมใน vCPU ของแพ็กเกจ ส่วนที่หยุดชั่วคราวจะไม่นับ"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由 Nuphos 运行、内置 Claude Code、Codex、OpenCode 等的 Linux 电脑。运行中的电脑会计入套餐的 vCPU 额度，已暂停的则不计入。"
+            "value" : "由 Cerin 运行、内置 Claude Code、Codex、OpenCode 等的 Linux 电脑。运行中的电脑会计入套餐的 vCPU 额度，已暂停的则不计入。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由 Nuphos 執行、內建 Claude Code、Codex、OpenCode 等的 Linux 電腦。執行中的電腦會計入方案的 vCPU 額度，已暫停的則不計入。"
+            "value" : "由 Cerin 執行、內建 Claude Code、Codex、OpenCode 等的 Linux 電腦。執行中的電腦會計入方案的 vCPU 額度，已暫停的則不計入。"
           }
         }
       }
@@ -2221,48 +2221,48 @@
         }
       }
     },
-    "A workspace administrator can sign it in from the Runtimes page in Nuphos on their computer." : {
+    "A workspace administrator can sign it in from the Runtimes page in Cerin on their computer." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un administrador del espacio de trabajo puede iniciar sesión desde la página Entornos de ejecución de Nuphos en su computadora."
+            "value" : "Un administrador del espacio de trabajo puede iniciar sesión desde la página Entornos de ejecución de Cerin en su computadora."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Administrator workspace dapat memasukkannya dari halaman Runtime di Nuphos pada komputer mereka."
+            "value" : "Administrator workspace dapat memasukkannya dari halaman Runtime di Cerin pada komputer mereka."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ワークスペースの管理者が、自分のコンピュータの Nuphos のランタイムのページからサインインできます。"
+            "value" : "ワークスペースの管理者が、自分のコンピュータの Cerin のランタイムのページからサインインできます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "워크스페이스 관리자가 자신의 컴퓨터에 있는 Nuphos의 런타임 페이지에서 로그인할 수 있습니다."
+            "value" : "워크스페이스 관리자가 자신의 컴퓨터에 있는 Cerin의 런타임 페이지에서 로그인할 수 있습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ผู้ดูแลเวิร์กสเปซลงชื่อเข้าใช้ได้จากหน้ารันไทม์ใน Nuphos บนคอมพิวเตอร์ของตน"
+            "value" : "ผู้ดูแลเวิร์กสเปซลงชื่อเข้าใช้ได้จากหน้ารันไทม์ใน Cerin บนคอมพิวเตอร์ของตน"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "工作区管理员可以在自己电脑上的 Nuphos“运行环境”页面登录它。"
+            "value" : "工作区管理员可以在自己电脑上的 Cerin“运行环境”页面登录它。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "工作區管理員可以在自己電腦上的 Nuphos「執行環境」頁面登入它。"
+            "value" : "工作區管理員可以在自己電腦上的 Cerin「執行環境」頁面登入它。"
           }
         }
       }
@@ -2911,48 +2911,48 @@
         }
       }
     },
-    "Administrators rent computers from Nuphos." : {
+    "Administrators rent computers from Cerin." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los administradores alquilan computadoras de Nuphos."
+            "value" : "Los administradores alquilan computadoras de Cerin."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Administrator menyewa komputer dari Nuphos."
+            "value" : "Administrator menyewa komputer dari Cerin."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos からのコンピューターのレンタルは管理者が行います。"
+            "value" : "Cerin からのコンピューターのレンタルは管理者が行います。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 컴퓨터 대여는 관리자가 합니다."
+            "value" : "Cerin 컴퓨터 대여는 관리자가 합니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ผู้ดูแลระบบเป็นผู้เช่าคอมพิวเตอร์จาก Nuphos"
+            "value" : "ผู้ดูแลระบบเป็นผู้เช่าคอมพิวเตอร์จาก Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由管理员向 Nuphos 租用电脑。"
+            "value" : "由管理员向 Cerin 租用电脑。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由管理員向 Nuphos 租用電腦。"
+            "value" : "由管理員向 Cerin 租用電腦。"
           }
         }
       }
@@ -4016,48 +4016,48 @@
         }
       }
     },
-    "Ask Nuphos anything…" : {
+    "Ask Cerin anything…" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pregúntale lo que sea a Nuphos…"
+            "value" : "Pregúntale lo que sea a Cerin…"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tanyakan apa saja ke Nuphos…"
+            "value" : "Tanyakan apa saja ke Cerin…"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos に何でも聞いてください…"
+            "value" : "Cerin に何でも聞いてください…"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에게 무엇이든 물어보세요…"
+            "value" : "Cerin에게 무엇이든 물어보세요…"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ถาม Nuphos ได้ทุกเรื่อง…"
+            "value" : "ถาม Cerin ได้ทุกเรื่อง…"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "问 Nuphos 任何问题…"
+            "value" : "问 Cerin 任何问题…"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "問 Nuphos 任何問題…"
+            "value" : "問 Cerin 任何問題…"
           }
         }
       }
@@ -5265,7 +5265,7 @@
         }
       }
     },
-    "By continuing, you agree to our [Terms of Service](https://nuphos.ai/terms) and [Privacy Policy](https://nuphos.ai/privacy)." : {
+    "By continuing, you agree to our [Terms of Service](https://platform.cerin.ai/terms) and [Privacy Policy](https://platform.cerin.ai/privacy)." : {
       "comment" : "Legal text",
       "shouldTranslate" : false
     },
@@ -5960,48 +5960,48 @@
         }
       }
     },
-    "Choose a plan in Nuphos on your computer." : {
+    "Choose a plan in Cerin on your computer." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elige un plan en Nuphos en tu computadora."
+            "value" : "Elige un plan en Cerin en tu computadora."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pilih paket di Nuphos pada komputer Anda."
+            "value" : "Pilih paket di Cerin pada komputer Anda."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "お使いのコンピューターの Nuphos でプランを選択してください。"
+            "value" : "お使いのコンピューターの Cerin でプランを選択してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "컴퓨터의 Nuphos에서 요금제를 선택하세요."
+            "value" : "컴퓨터의 Cerin에서 요금제를 선택하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เลือกแพ็กเกจใน Nuphos บนคอมพิวเตอร์ของคุณ"
+            "value" : "เลือกแพ็กเกจใน Cerin บนคอมพิวเตอร์ของคุณ"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请在电脑上的 Nuphos 中选择套餐。"
+            "value" : "请在电脑上的 Cerin 中选择套餐。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請在電腦上的 Nuphos 選擇方案。"
+            "value" : "請在電腦上的 Cerin 選擇方案。"
           }
         }
       }
@@ -7897,94 +7897,94 @@
         }
       }
     },
-    "Connect a computer to your team in Nuphos to use it here." : {
+    "Connect a computer to your team in Cerin to use it here." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conecta una computadora a tu equipo en Nuphos para usarla aquí."
+            "value" : "Conecta una computadora a tu equipo en Cerin para usarla aquí."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hubungkan komputer ke tim Anda di Nuphos untuk menggunakannya di sini."
+            "value" : "Hubungkan komputer ke tim Anda di Cerin untuk menggunakannya di sini."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos でコンピュータをチームに接続すると、ここで使えます。"
+            "value" : "Cerin でコンピュータをチームに接続すると、ここで使えます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에서 컴퓨터를 팀에 연결하면 여기에서 사용할 수 있습니다."
+            "value" : "Cerin에서 컴퓨터를 팀에 연결하면 여기에서 사용할 수 있습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เชื่อมต่อคอมพิวเตอร์กับทีมของคุณใน Nuphos เพื่อใช้งานที่นี่"
+            "value" : "เชื่อมต่อคอมพิวเตอร์กับทีมของคุณใน Cerin เพื่อใช้งานที่นี่"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 Nuphos 中将电脑连接到你的团队，即可在这里使用。"
+            "value" : "在 Cerin 中将电脑连接到你的团队，即可在这里使用。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 Nuphos 中將電腦連接到你的團隊，即可在這裡使用。"
+            "value" : "在 Cerin 中將電腦連接到你的團隊，即可在這裡使用。"
           }
         }
       }
     },
-    "Connect cloud accounts and integrations in Nuphos to use them here." : {
+    "Connect cloud accounts and integrations in Cerin to use them here." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conecta cuentas en la nube e integraciones en Nuphos para usarlas aquí."
+            "value" : "Conecta cuentas en la nube e integraciones en Cerin para usarlas aquí."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hubungkan akun cloud dan integrasi di Nuphos untuk menggunakannya di sini."
+            "value" : "Hubungkan akun cloud dan integrasi di Cerin untuk menggunakannya di sini."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos でクラウドアカウントと連携を接続すると、ここで使えます。"
+            "value" : "Cerin でクラウドアカウントと連携を接続すると、ここで使えます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에서 클라우드 계정과 통합을 연결하면 여기에서 사용할 수 있습니다."
+            "value" : "Cerin에서 클라우드 계정과 통합을 연결하면 여기에서 사용할 수 있습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เชื่อมต่อบัญชีคลาวด์และการผสานรวมใน Nuphos เพื่อใช้งานที่นี่"
+            "value" : "เชื่อมต่อบัญชีคลาวด์และการผสานรวมใน Cerin เพื่อใช้งานที่นี่"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 Nuphos 中连接云账号和集成服务，即可在这里使用。"
+            "value" : "在 Cerin 中连接云账号和集成服务，即可在这里使用。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 Nuphos 中連接雲端帳號與整合服務，即可在這裡使用。"
+            "value" : "在 Cerin 中連接雲端帳號與整合服務，即可在這裡使用。"
           }
         }
       }
@@ -11535,7 +11535,7 @@
         }
       }
     },
-    "Depending on your runtime and model, this includes Anthropic (Claude), OpenAI (Codex), xAI (Grok), Google (Antigravity), DeepSeek (DeepSeek Harness), the model provider an OpenCode runtime uses (OpenCode Zen when it is not signed in to one), or Amazon Web Services. When tracing is enabled, Nuphos stores AI execution traces, which can include conversation and tool content, for diagnostics and service improvement." : {
+    "Depending on your runtime and model, this includes Anthropic (Claude), OpenAI (Codex), xAI (Grok), Google (Antigravity), DeepSeek (DeepSeek Harness), the model provider an OpenCode runtime uses (OpenCode Zen when it is not signed in to one), or Amazon Web Services. When tracing is enabled, Cerin stores AI execution traces, which can include conversation and tool content, for diagnostics and service improvement." : {
       "comment" : "Legal text",
       "shouldTranslate" : false
     },
@@ -12460,48 +12460,48 @@
         }
       }
     },
-    "Enter a full URL, e.g. https://nuphos.example.com" : {
+    "Enter a full URL, e.g. https://cerin.example.com" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Introduce una URL completa, p. ej., https://nuphos.example.com"
+            "value" : "Introduce una URL completa, p. ej., https://cerin.example.com"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Masukkan URL lengkap, misalnya https://nuphos.example.com"
+            "value" : "Masukkan URL lengkap, misalnya https://cerin.example.com"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完全な URL を入力してください（例：https://nuphos.example.com）"
+            "value" : "完全な URL を入力してください（例：https://cerin.example.com）"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전체 URL을 입력하세요(예: https://nuphos.example.com)"
+            "value" : "전체 URL을 입력하세요(예: https://cerin.example.com)"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ป้อน URL แบบเต็ม เช่น https://nuphos.example.com"
+            "value" : "ป้อน URL แบบเต็ม เช่น https://cerin.example.com"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请输入完整网址，例如 https://nuphos.example.com"
+            "value" : "请输入完整网址，例如 https://cerin.example.com"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請輸入完整網址，例如 https://nuphos.example.com"
+            "value" : "請輸入完整網址，例如 https://cerin.example.com"
           }
         }
       }
@@ -14812,48 +14812,48 @@
         }
       }
     },
-    "Leave this unchanged to use Nuphos Cloud. Enter your server address to use a self-hosted instance." : {
+    "Leave this unchanged to use Cerin Cloud. Enter your server address to use a self-hosted instance." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déjalo sin cambios para usar Nuphos Cloud. Introduce la dirección de tu servidor para usar una instancia autoalojada."
+            "value" : "Déjalo sin cambios para usar Cerin Cloud. Introduce la dirección de tu servidor para usar una instancia autoalojada."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Biarkan tidak berubah untuk menggunakan Nuphos Cloud. Masukkan alamat server Anda untuk menggunakan instans yang di-host sendiri."
+            "value" : "Biarkan tidak berubah untuk menggunakan Cerin Cloud. Masukkan alamat server Anda untuk menggunakan instans yang di-host sendiri."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos Cloud を使う場合は変更しないでください。セルフホストのインスタンスを使う場合はサーバーのアドレスを入力してください。"
+            "value" : "Cerin Cloud を使う場合は変更しないでください。セルフホストのインスタンスを使う場合はサーバーのアドレスを入力してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos Cloud를 사용하려면 그대로 두세요. 자체 호스팅 인스턴스를 사용하려면 서버 주소를 입력하세요."
+            "value" : "Cerin Cloud를 사용하려면 그대로 두세요. 자체 호스팅 인스턴스를 사용하려면 서버 주소를 입력하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ไม่ต้องเปลี่ยนหากใช้ Nuphos Cloud ป้อนที่อยู่เซิร์ฟเวอร์ของคุณเพื่อใช้อินสแตนซ์ที่โฮสต์เอง"
+            "value" : "ไม่ต้องเปลี่ยนหากใช้ Cerin Cloud ป้อนที่อยู่เซิร์ฟเวอร์ของคุณเพื่อใช้อินสแตนซ์ที่โฮสต์เอง"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保持不变即使用 Nuphos Cloud。如需使用自托管实例，请输入你的服务器地址。"
+            "value" : "保持不变即使用 Cerin Cloud。如需使用自托管实例，请输入你的服务器地址。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保持不變即使用 Nuphos Cloud。若要使用自架服務，請輸入你的伺服器位址。"
+            "value" : "保持不變即使用 Cerin Cloud。若要使用自架服務，請輸入你的伺服器位址。"
           }
         }
       }
@@ -17950,327 +17950,327 @@
         }
       }
     },
-    "Nuphos" : {
+    "Cerin" : {
       "shouldTranslate" : false
     },
-    "Nuphos encrypts it on its way to the runtime, which keeps it; Nuphos does not keep a copy." : {
+    "Cerin encrypts it on its way to the runtime, which keeps it; Cerin does not keep a copy." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos lo cifra en su camino hacia el entorno de ejecución, que lo conserva; Nuphos no guarda ninguna copia."
+            "value" : "Cerin lo cifra en su camino hacia el entorno de ejecución, que lo conserva; Cerin no guarda ninguna copia."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos mengenkripsinya dalam perjalanan ke runtime, yang kemudian menyimpannya; Nuphos tidak menyimpan salinannya."
+            "value" : "Cerin mengenkripsinya dalam perjalanan ke runtime, yang kemudian menyimpannya; Cerin tidak menyimpan salinannya."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ランタイムへの送信時に Nuphos が暗号化し、ランタイムが保持します。Nuphos はコピーを保持しません。"
+            "value" : "ランタイムへの送信時に Cerin が暗号化し、ランタイムが保持します。Cerin はコピーを保持しません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos는 이 정보를 암호화하여 런타임에 전달하며, 런타임이 보관합니다. Nuphos는 사본을 보관하지 않습니다."
+            "value" : "Cerin는 이 정보를 암호화하여 런타임에 전달하며, 런타임이 보관합니다. Cerin는 사본을 보관하지 않습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos เข้ารหัสข้อมูลระหว่างส่งไปยังรันไทม์ซึ่งเป็นผู้เก็บไว้ Nuphos ไม่เก็บสำเนา"
+            "value" : "Cerin เข้ารหัสข้อมูลระหว่างส่งไปยังรันไทม์ซึ่งเป็นผู้เก็บไว้ Cerin ไม่เก็บสำเนา"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 会在传输到运行环境的过程中对其加密，由运行环境保存；Nuphos 不会保留副本。"
+            "value" : "Cerin 会在传输到运行环境的过程中对其加密，由运行环境保存；Cerin 不会保留副本。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 會在傳送至執行環境的過程中加密，並由執行環境保存；Nuphos 不會保留副本。"
+            "value" : "Cerin 會在傳送至執行環境的過程中加密，並由執行環境保存；Cerin 不會保留副本。"
           }
         }
       }
     },
-    "Nuphos logo" : {
+    "Cerin logo" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logotipo de Nuphos"
+            "value" : "Logotipo de Cerin"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logo Nuphos"
+            "value" : "Logo Cerin"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos ロゴ"
+            "value" : "Cerin ロゴ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 로고"
+            "value" : "Cerin 로고"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "โลโก้ Nuphos"
+            "value" : "โลโก้ Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 标志"
+            "value" : "Cerin 标志"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 標誌"
+            "value" : "Cerin 標誌"
           }
         }
       }
     },
-    "Nuphos returned an unexpected response (%lld)." : {
+    "Cerin returned an unexpected response (%lld)." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos devolvió una respuesta inesperada (%lld)."
+            "value" : "Cerin devolvió una respuesta inesperada (%lld)."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos mengembalikan respons yang tidak terduga (%lld)."
+            "value" : "Cerin mengembalikan respons yang tidak terduga (%lld)."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos から予期しない応答がありました（%lld）。"
+            "value" : "Cerin から予期しない応答がありました（%lld）。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에서 예기치 않은 응답을 반환했습니다(%lld)."
+            "value" : "Cerin에서 예기치 않은 응답을 반환했습니다(%lld)."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos ส่งการตอบกลับที่ไม่คาดคิด (%lld)"
+            "value" : "Cerin ส่งการตอบกลับที่ไม่คาดคิด (%lld)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 返回了意外的响应（%lld）。"
+            "value" : "Cerin 返回了意外的响应（%lld）。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 傳回了非預期的回應（%lld）。"
+            "value" : "Cerin 傳回了非預期的回應（%lld）。"
           }
         }
       }
     },
-    "Nuphos returned something we could not read." : {
+    "Cerin returned something we could not read." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos devolvió algo que no pudimos leer."
+            "value" : "Cerin devolvió algo que no pudimos leer."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos mengembalikan sesuatu yang tidak dapat kami baca."
+            "value" : "Cerin mengembalikan sesuatu yang tidak dapat kami baca."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos から読み取れない応答がありました。"
+            "value" : "Cerin から読み取れない応答がありました。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에서 읽을 수 없는 응답을 반환했습니다."
+            "value" : "Cerin에서 읽을 수 없는 응답을 반환했습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos ส่งข้อมูลที่อ่านไม่ได้กลับมา"
+            "value" : "Cerin ส่งข้อมูลที่อ่านไม่ได้กลับมา"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 返回了无法读取的内容。"
+            "value" : "Cerin 返回了无法读取的内容。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 傳回了無法讀取的內容。"
+            "value" : "Cerin 傳回了無法讀取的內容。"
           }
         }
       }
     },
-    "Nuphos returned status %lld." : {
+    "Cerin returned status %lld." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos devolvió el estado %lld."
+            "value" : "Cerin devolvió el estado %lld."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos mengembalikan status %lld."
+            "value" : "Cerin mengembalikan status %lld."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos がステータス %lld を返しました。"
+            "value" : "Cerin がステータス %lld を返しました。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에서 상태 %lld을(를) 반환했습니다."
+            "value" : "Cerin에서 상태 %lld을(를) 반환했습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos ส่งสถานะ %lld กลับมา"
+            "value" : "Cerin ส่งสถานะ %lld กลับมา"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 返回状态码 %lld。"
+            "value" : "Cerin 返回状态码 %lld。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 傳回狀態碼 %lld。"
+            "value" : "Cerin 傳回狀態碼 %lld。"
           }
         }
       }
     },
-    "Nuphos runs it for you, with Claude Code, Codex, OpenCode and more." : {
+    "Cerin runs it for you, with Claude Code, Codex, OpenCode and more." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos la ejecuta por ti, con Claude Code, Codex, OpenCode y más."
+            "value" : "Cerin la ejecuta por ti, con Claude Code, Codex, OpenCode y más."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos menjalankannya untuk Anda, dengan Claude Code, Codex, OpenCode, dan lainnya."
+            "value" : "Cerin menjalankannya untuk Anda, dengan Claude Code, Codex, OpenCode, dan lainnya."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos があなたのために実行します。Claude Code、Codex、OpenCode などを搭載しています。"
+            "value" : "Cerin があなたのために実行します。Claude Code、Codex、OpenCode などを搭載しています。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos가 대신 실행하며 Claude Code, Codex, OpenCode 등이 포함됩니다."
+            "value" : "Cerin가 대신 실행하며 Claude Code, Codex, OpenCode 등이 포함됩니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos รันให้คุณ พร้อม Claude Code, Codex, OpenCode และอื่น ๆ"
+            "value" : "Cerin รันให้คุณ พร้อม Claude Code, Codex, OpenCode และอื่น ๆ"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由 Nuphos 为你运行，内置 Claude Code、Codex、OpenCode 等。"
+            "value" : "由 Cerin 为你运行，内置 Claude Code、Codex、OpenCode 等。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由 Nuphos 為你執行，內建 Claude Code、Codex、OpenCode 等。"
+            "value" : "由 Cerin 為你執行，內建 Claude Code、Codex、OpenCode 等。"
           }
         }
       }
     },
-    "Nuphos sent passkey options this app could not read." : {
+    "Cerin sent passkey options this app could not read." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos envió opciones de llave de acceso que esta app no pudo leer."
+            "value" : "Cerin envió opciones de llave de acceso que esta app no pudo leer."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos mengirim opsi passkey yang tidak dapat dibaca aplikasi ini."
+            "value" : "Cerin mengirim opsi passkey yang tidak dapat dibaca aplikasi ini."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos から送られたパスキーの設定をこのアプリで読み取れませんでした。"
+            "value" : "Cerin から送られたパスキーの設定をこのアプリで読み取れませんでした。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에서 보낸 패스키 옵션을 이 앱에서 읽을 수 없습니다."
+            "value" : "Cerin에서 보낸 패스키 옵션을 이 앱에서 읽을 수 없습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "แอปนี้อ่านตัวเลือกพาสคีย์ที่ Nuphos ส่งมาไม่ได้"
+            "value" : "แอปนี้อ่านตัวเลือกพาสคีย์ที่ Cerin ส่งมาไม่ได้"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 发送的通行密钥选项无法被此 App 读取。"
+            "value" : "Cerin 发送的通行密钥选项无法被此 App 读取。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 傳來的通行密鑰選項無法被此 App 讀取。"
+            "value" : "Cerin 傳來的通行密鑰選項無法被此 App 讀取。"
           }
         }
       }
@@ -18505,48 +18505,48 @@
         }
       }
     },
-    "Offline · open Nuphos on that computer" : {
+    "Offline · open Cerin on that computer" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin conexión · abre Nuphos en esa computadora"
+            "value" : "Sin conexión · abre Cerin en esa computadora"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offline · buka Nuphos di komputer tersebut"
+            "value" : "Offline · buka Cerin di komputer tersebut"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オフライン · そのコンピュータで Nuphos を開いてください"
+            "value" : "オフライン · そのコンピュータで Cerin を開いてください"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오프라인 · 해당 컴퓨터에서 Nuphos를 여세요"
+            "value" : "오프라인 · 해당 컴퓨터에서 Cerin를 여세요"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ออฟไลน์ · เปิด Nuphos บนคอมพิวเตอร์เครื่องนั้น"
+            "value" : "ออฟไลน์ · เปิด Cerin บนคอมพิวเตอร์เครื่องนั้น"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "离线 · 请在那台电脑上打开 Nuphos"
+            "value" : "离线 · 请在那台电脑上打开 Cerin"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "離線 · 請在那台電腦上開啟 Nuphos"
+            "value" : "離線 · 請在那台電腦上開啟 Cerin"
           }
         }
       }
@@ -18597,48 +18597,48 @@
         }
       }
     },
-    "On %@, open Nuphos, go to the Runtimes page and choose Sign in for this runtime." : {
+    "On %@, open Cerin, go to the Runtimes page and choose Sign in for this runtime." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En %@, abre Nuphos, ve a la página Entornos de ejecución y elige Iniciar sesión para este entorno."
+            "value" : "En %@, abre Cerin, ve a la página Entornos de ejecución y elige Iniciar sesión para este entorno."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Di %@, buka Nuphos, buka halaman Runtime, lalu pilih Masuk untuk runtime ini."
+            "value" : "Di %@, buka Cerin, buka halaman Runtime, lalu pilih Masuk untuk runtime ini."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ で Nuphos を開き、ランタイムのページでこのランタイムのサインインを選んでください。"
+            "value" : "%@ で Cerin を開き、ランタイムのページでこのランタイムのサインインを選んでください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@에서 Nuphos를 열고 런타임 페이지로 이동해 이 런타임의 로그인을 선택하세요."
+            "value" : "%@에서 Cerin를 열고 런타임 페이지로 이동해 이 런타임의 로그인을 선택하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "บน %@ ให้เปิด Nuphos ไปที่หน้ารันไทม์ แล้วเลือกลงชื่อเข้าใช้สำหรับรันไทม์นี้"
+            "value" : "บน %@ ให้เปิด Cerin ไปที่หน้ารันไทม์ แล้วเลือกลงชื่อเข้าใช้สำหรับรันไทม์นี้"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 %@ 上打开 Nuphos，前往“运行环境”页面，为这个运行环境选择登录。"
+            "value" : "在 %@ 上打开 Cerin，前往“运行环境”页面，为这个运行环境选择登录。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 %@ 上開啟 Nuphos，前往「執行環境」頁面，為這個執行環境選擇登入。"
+            "value" : "在 %@ 上開啟 Cerin，前往「執行環境」頁面，為這個執行環境選擇登入。"
           }
         }
       }
@@ -19061,279 +19061,279 @@
         }
       }
     },
-    "Open Nuphos and select the workspace for this share." : {
+    "Open Cerin and select the workspace for this share." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Nuphos y selecciona el espacio de trabajo para compartir."
+            "value" : "Abre Cerin y selecciona el espacio de trabajo para compartir."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Nuphos dan pilih workspace untuk berbagi ini."
+            "value" : "Buka Cerin dan pilih workspace untuk berbagi ini."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos を開いて、この共有のワークスペースを選択してください。"
+            "value" : "Cerin を開いて、この共有のワークスペースを選択してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos를 열고 이 공유에 사용할 워크스페이스를 선택하세요."
+            "value" : "Cerin를 열고 이 공유에 사용할 워크스페이스를 선택하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เปิด Nuphos แล้วเลือกเวิร์กสเปซสำหรับการแชร์นี้"
+            "value" : "เปิด Cerin แล้วเลือกเวิร์กสเปซสำหรับการแชร์นี้"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请打开 Nuphos 并选择这次分享的工作区。"
+            "value" : "请打开 Cerin 并选择这次分享的工作区。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請開啟 Nuphos 並選擇這次分享的工作區。"
+            "value" : "請開啟 Cerin 並選擇這次分享的工作區。"
           }
         }
       }
     },
-    "Open Nuphos and sign in before sharing." : {
+    "Open Cerin and sign in before sharing." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Nuphos e inicia sesión antes de compartir."
+            "value" : "Abre Cerin e inicia sesión antes de compartir."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Nuphos dan masuk sebelum berbagi."
+            "value" : "Buka Cerin dan masuk sebelum berbagi."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "共有する前に Nuphos を開いてサインインしてください。"
+            "value" : "共有する前に Cerin を開いてサインインしてください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공유하기 전에 Nuphos를 열고 로그인하세요."
+            "value" : "공유하기 전에 Cerin를 열고 로그인하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เปิด Nuphos และลงชื่อเข้าใช้ก่อนแชร์"
+            "value" : "เปิด Cerin และลงชื่อเข้าใช้ก่อนแชร์"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分享前请先打开 Nuphos 并登录。"
+            "value" : "分享前请先打开 Cerin 并登录。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分享前請先開啟 Nuphos 並登入。"
+            "value" : "分享前請先開啟 Cerin 並登入。"
           }
         }
       }
     },
-    "Open Nuphos and sign in. Shared Keychain provisioning is required before real sending is available." : {
+    "Open Cerin and sign in. Shared Keychain provisioning is required before real sending is available." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Nuphos e inicia sesión. Se necesita configurar el llavero compartido antes de poder enviar."
+            "value" : "Abre Cerin e inicia sesión. Se necesita configurar el llavero compartido antes de poder enviar."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Nuphos dan masuk. Penyediaan Keychain bersama diperlukan sebelum pengiriman sebenarnya tersedia."
+            "value" : "Buka Cerin dan masuk. Penyediaan Keychain bersama diperlukan sebelum pengiriman sebenarnya tersedia."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos を開いてサインインしてください。実際に送信するには、共有キーチェーンのプロビジョニングが必要です。"
+            "value" : "Cerin を開いてサインインしてください。実際に送信するには、共有キーチェーンのプロビジョニングが必要です。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos를 열고 로그인하세요. 실제로 보내려면 공유 키체인 프로비저닝이 필요합니다."
+            "value" : "Cerin를 열고 로그인하세요. 실제로 보내려면 공유 키체인 프로비저닝이 필요합니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เปิด Nuphos แล้วลงชื่อเข้าใช้ ต้องตั้งค่าพวงกุญแจที่แชร์ก่อนจึงจะส่งได้จริง"
+            "value" : "เปิด Cerin แล้วลงชื่อเข้าใช้ ต้องตั้งค่าพวงกุญแจที่แชร์ก่อนจึงจะส่งได้จริง"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请打开 Nuphos 并登录。必须先配置共享钥匙串，才能实际发送。"
+            "value" : "请打开 Cerin 并登录。必须先配置共享钥匙串，才能实际发送。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請開啟 Nuphos 並登入。必須先設定共用鑰匙圈，才能實際傳送。"
+            "value" : "請開啟 Cerin 並登入。必須先設定共用鑰匙圈，才能實際傳送。"
           }
         }
       }
     },
-    "Open Nuphos on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one." : {
+    "Open Cerin on your computer to add a Box or connect your own computer, or ask a workspace administrator to connect one." : {
       "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Nuphos en tu computadora para añadir un Box o conectar tu propia computadora, o pide a un administrador del espacio de trabajo que conecte una."
+            "value" : "Abre Cerin en tu computadora para añadir un Box o conectar tu propia computadora, o pide a un administrador del espacio de trabajo que conecte una."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Nuphos di komputer Anda untuk menambahkan Box atau menghubungkan komputer Anda sendiri, atau minta administrator workspace untuk menghubungkannya."
+            "value" : "Buka Cerin di komputer Anda untuk menambahkan Box atau menghubungkan komputer Anda sendiri, atau minta administrator workspace untuk menghubungkannya."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "コンピュータで Nuphos を開いて Box を追加するか自分のコンピュータを接続するか、ワークスペースの管理者に接続を依頼してください。"
+            "value" : "コンピュータで Cerin を開いて Box を追加するか自分のコンピュータを接続するか、ワークスペースの管理者に接続を依頼してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "컴퓨터에서 Nuphos를 열어 Box를 추가하거나 자신의 컴퓨터를 연결하거나, 워크스페이스 관리자에게 연결을 요청하세요."
+            "value" : "컴퓨터에서 Cerin를 열어 Box를 추가하거나 자신의 컴퓨터를 연결하거나, 워크스페이스 관리자에게 연결을 요청하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เปิด Nuphos บนคอมพิวเตอร์ของคุณเพื่อเพิ่ม Box หรือเชื่อมต่อคอมพิวเตอร์ของคุณเอง หรือขอให้ผู้ดูแลเวิร์กสเปซเชื่อมต่อให้"
+            "value" : "เปิด Cerin บนคอมพิวเตอร์ของคุณเพื่อเพิ่ม Box หรือเชื่อมต่อคอมพิวเตอร์ของคุณเอง หรือขอให้ผู้ดูแลเวิร์กสเปซเชื่อมต่อให้"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的电脑上打开 Nuphos 添加 Box 或连接你自己的电脑，或请工作区管理员连接一台。"
+            "value" : "在你的电脑上打开 Cerin 添加 Box 或连接你自己的电脑，或请工作区管理员连接一台。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的電腦上開啟 Nuphos 新增 Box 或連接你自己的電腦，或請工作區管理員連接一台。"
+            "value" : "在你的電腦上開啟 Cerin 新增 Box 或連接你自己的電腦，或請工作區管理員連接一台。"
           }
         }
       }
     },
-    "Open Nuphos on your computer to add a Box or connect your own computer." : {
+    "Open Cerin on your computer to add a Box or connect your own computer." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Nuphos en tu computadora para añadir un Box o conectar tu propia computadora."
+            "value" : "Abre Cerin en tu computadora para añadir un Box o conectar tu propia computadora."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Nuphos di komputer Anda untuk menambahkan Box atau menghubungkan komputer Anda sendiri."
+            "value" : "Buka Cerin di komputer Anda untuk menambahkan Box atau menghubungkan komputer Anda sendiri."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "コンピュータで Nuphos を開いて、Box を追加するか自分のコンピュータを接続してください。"
+            "value" : "コンピュータで Cerin を開いて、Box を追加するか自分のコンピュータを接続してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "컴퓨터에서 Nuphos를 열어 Box를 추가하거나 자신의 컴퓨터를 연결하세요."
+            "value" : "컴퓨터에서 Cerin를 열어 Box를 추가하거나 자신의 컴퓨터를 연결하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เปิด Nuphos บนคอมพิวเตอร์ของคุณเพื่อเพิ่ม Box หรือเชื่อมต่อคอมพิวเตอร์ของคุณเอง"
+            "value" : "เปิด Cerin บนคอมพิวเตอร์ของคุณเพื่อเพิ่ม Box หรือเชื่อมต่อคอมพิวเตอร์ของคุณเอง"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的电脑上打开 Nuphos，添加 Box 或连接你自己的电脑。"
+            "value" : "在你的电脑上打开 Cerin，添加 Box 或连接你自己的电脑。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的電腦上開啟 Nuphos，新增 Box 或連接你自己的電腦。"
+            "value" : "在你的電腦上開啟 Cerin，新增 Box 或連接你自己的電腦。"
           }
         }
       }
     },
-    "Open Nuphos on your computer to connect it and add a runtime." : {
+    "Open Cerin on your computer to connect it and add a runtime." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Nuphos en tu computadora para conectarla y añadir un entorno de ejecución."
+            "value" : "Abre Cerin en tu computadora para conectarla y añadir un entorno de ejecución."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Nuphos di komputer Anda untuk menghubungkannya dan menambahkan runtime."
+            "value" : "Buka Cerin di komputer Anda untuk menghubungkannya dan menambahkan runtime."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "コンピュータで Nuphos を開いて接続し、ランタイムを追加してください。"
+            "value" : "コンピュータで Cerin を開いて接続し、ランタイムを追加してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "컴퓨터에서 Nuphos를 열어 연결하고 런타임을 추가하세요."
+            "value" : "컴퓨터에서 Cerin를 열어 연결하고 런타임을 추가하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เปิด Nuphos บนคอมพิวเตอร์ของคุณเพื่อเชื่อมต่อและเพิ่มรันไทม์"
+            "value" : "เปิด Cerin บนคอมพิวเตอร์ของคุณเพื่อเชื่อมต่อและเพิ่มรันไทม์"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的电脑上打开 Nuphos，连接它并添加运行环境。"
+            "value" : "在你的电脑上打开 Cerin，连接它并添加运行环境。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的電腦上開啟 Nuphos，連接它並新增執行環境。"
+            "value" : "在你的電腦上開啟 Cerin，連接它並新增執行環境。"
           }
         }
       }
@@ -20628,48 +20628,48 @@
         }
       }
     },
-    "Please update Nuphos to read the latest AI notice." : {
+    "Please update Cerin to read the latest AI notice." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualiza Nuphos para leer el aviso de IA más reciente."
+            "value" : "Actualiza Cerin para leer el aviso de IA más reciente."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Perbarui Nuphos untuk membaca pemberitahuan AI terbaru."
+            "value" : "Perbarui Cerin untuk membaca pemberitahuan AI terbaru."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最新の AI に関するお知らせを読むには Nuphos をアップデートしてください。"
+            "value" : "最新の AI に関するお知らせを読むには Cerin をアップデートしてください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "최신 AI 안내를 읽으려면 Nuphos를 업데이트하세요."
+            "value" : "최신 AI 안내를 읽으려면 Cerin를 업데이트하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "โปรดอัปเดต Nuphos เพื่ออ่านประกาศ AI ล่าสุด"
+            "value" : "โปรดอัปเดต Cerin เพื่ออ่านประกาศ AI ล่าสุด"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请更新 Nuphos 以阅读最新的 AI 告知事项。"
+            "value" : "请更新 Cerin 以阅读最新的 AI 告知事项。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請更新 Nuphos 以閱讀最新的 AI 告知事項。"
+            "value" : "請更新 Cerin 以閱讀最新的 AI 告知事項。"
           }
         }
       }
@@ -22244,48 +22244,48 @@
         }
       }
     },
-    "Rent a computer from Nuphos" : {
+    "Rent a computer from Cerin" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alquilar una computadora de Nuphos"
+            "value" : "Alquilar una computadora de Cerin"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sewa komputer dari Nuphos"
+            "value" : "Sewa komputer dari Cerin"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos からコンピューターを借りる"
+            "value" : "Cerin からコンピューターを借りる"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에서 컴퓨터 빌리기"
+            "value" : "Cerin에서 컴퓨터 빌리기"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เช่าคอมพิวเตอร์จาก Nuphos"
+            "value" : "เช่าคอมพิวเตอร์จาก Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "向 Nuphos 租一台电脑"
+            "value" : "向 Cerin 租一台电脑"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "向 Nuphos 租一台電腦"
+            "value" : "向 Cerin 租一台電腦"
           }
         }
       }
@@ -25703,48 +25703,48 @@
         }
       }
     },
-    "Shared sign-in is unavailable. Open Nuphos and sign in; both targets require matching shared Keychain provisioning." : {
+    "Shared sign-in is unavailable. Open Cerin and sign in; both targets require matching shared Keychain provisioning." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El inicio de sesión compartido no está disponible. Abre Nuphos e inicia sesión; ambos destinos necesitan la misma configuración de llavero compartido."
+            "value" : "El inicio de sesión compartido no está disponible. Abre Cerin e inicia sesión; ambos destinos necesitan la misma configuración de llavero compartido."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Masuk bersama tidak tersedia. Buka Nuphos dan masuk; kedua target memerlukan penyediaan Keychain bersama yang cocok."
+            "value" : "Masuk bersama tidak tersedia. Buka Cerin dan masuk; kedua target memerlukan penyediaan Keychain bersama yang cocok."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "共有サインインを利用できません。Nuphos を開いてサインインしてください。両方のターゲットに一致する共有キーチェーンのプロビジョニングが必要です。"
+            "value" : "共有サインインを利用できません。Cerin を開いてサインインしてください。両方のターゲットに一致する共有キーチェーンのプロビジョニングが必要です。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공유 로그인을 사용할 수 없습니다. Nuphos를 열고 로그인하세요. 두 타깃 모두 일치하는 공유 키체인 프로비저닝이 필요합니다."
+            "value" : "공유 로그인을 사용할 수 없습니다. Cerin를 열고 로그인하세요. 두 타깃 모두 일치하는 공유 키체인 프로비저닝이 필요합니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ใช้การลงชื่อเข้าใช้ที่แชร์ไม่ได้ เปิด Nuphos แล้วลงชื่อเข้าใช้ ทั้งสองเป้าหมายต้องตั้งค่าพวงกุญแจที่แชร์ให้ตรงกัน"
+            "value" : "ใช้การลงชื่อเข้าใช้ที่แชร์ไม่ได้ เปิด Cerin แล้วลงชื่อเข้าใช้ ทั้งสองเป้าหมายต้องตั้งค่าพวงกุญแจที่แชร์ให้ตรงกัน"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无法使用共享登录。请打开 Nuphos 并登录；两个 target 都需要匹配的共享钥匙串配置。"
+            "value" : "无法使用共享登录。请打开 Cerin 并登录；两个 target 都需要匹配的共享钥匙串配置。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無法使用共用登入。請開啟 Nuphos 並登入；兩個 target 都需要相符的共用鑰匙圈設定。"
+            "value" : "無法使用共用登入。請開啟 Cerin 並登入；兩個 target 都需要相符的共用鑰匙圈設定。"
           }
         }
       }
@@ -26899,49 +26899,49 @@
         }
       }
     },
-    "Sign out of Nuphos?" : {
+    "Sign out of Cerin?" : {
       "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿Cerrar la sesión de Nuphos?"
+            "value" : "¿Cerrar la sesión de Cerin?"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keluar dari Nuphos?"
+            "value" : "Keluar dari Cerin?"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos からサインアウトしますか？"
+            "value" : "Cerin からサインアウトしますか？"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에서 로그아웃할까요?"
+            "value" : "Cerin에서 로그아웃할까요?"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ออกจากระบบ Nuphos ใช่ไหม"
+            "value" : "ออกจากระบบ Cerin ใช่ไหม"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "要退出 Nuphos 吗？"
+            "value" : "要退出 Cerin 吗？"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "要登出 Nuphos 嗎？"
+            "value" : "要登出 Cerin 嗎？"
           }
         }
       }
@@ -29299,48 +29299,48 @@
         }
       }
     },
-    "The computer running this runtime is offline. Open Nuphos on it, or switch to another runtime." : {
+    "The computer running this runtime is offline. Open Cerin on it, or switch to another runtime." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La computadora que ejecuta este entorno está sin conexión. Abre Nuphos en ella o cambia a otro entorno de ejecución."
+            "value" : "La computadora que ejecuta este entorno está sin conexión. Abre Cerin en ella o cambia a otro entorno de ejecución."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Komputer yang menjalankan runtime ini sedang offline. Buka Nuphos di sana, atau beralih ke runtime lain."
+            "value" : "Komputer yang menjalankan runtime ini sedang offline. Buka Cerin di sana, atau beralih ke runtime lain."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このランタイムを実行しているコンピュータはオフラインです。そのコンピュータで Nuphos を開くか、別のランタイムに切り替えてください。"
+            "value" : "このランタイムを実行しているコンピュータはオフラインです。そのコンピュータで Cerin を開くか、別のランタイムに切り替えてください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 런타임을 실행하는 컴퓨터가 오프라인입니다. 해당 컴퓨터에서 Nuphos를 열거나 다른 런타임으로 전환하세요."
+            "value" : "이 런타임을 실행하는 컴퓨터가 오프라인입니다. 해당 컴퓨터에서 Cerin를 열거나 다른 런타임으로 전환하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คอมพิวเตอร์ที่รันรันไทม์นี้ออฟไลน์อยู่ เปิด Nuphos บนเครื่องนั้น หรือสลับไปใช้รันไทม์อื่น"
+            "value" : "คอมพิวเตอร์ที่รันรันไทม์นี้ออฟไลน์อยู่ เปิด Cerin บนเครื่องนั้น หรือสลับไปใช้รันไทม์อื่น"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "运行这个运行环境的电脑已离线。请在那台电脑上打开 Nuphos，或切换到其他运行环境。"
+            "value" : "运行这个运行环境的电脑已离线。请在那台电脑上打开 Cerin，或切换到其他运行环境。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "執行這個執行環境的電腦已離線。請在那台電腦上開啟 Nuphos，或切換到其他執行環境。"
+            "value" : "執行這個執行環境的電腦已離線。請在那台電腦上開啟 Cerin，或切換到其他執行環境。"
           }
         }
       }
@@ -29575,7 +29575,7 @@
         }
       }
     },
-    "The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Voice input is included with a Nuphos subscription; recordings are transcribed by OpenAI Whisper." : {
+    "The prompt sets the writing style and spells names Whisper doesn't know, such as products and services. Voice input is included with a Cerin subscription; recordings are transcribed by OpenAI Whisper." : {
       "comment" : "Legal text",
       "shouldTranslate" : false
     },
@@ -29901,48 +29901,48 @@
         }
       }
     },
-    "The shared sign-in no longer matches this account. Sign in again in Nuphos." : {
+    "The shared sign-in no longer matches this account. Sign in again in Cerin." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El inicio de sesión compartido ya no coincide con esta cuenta. Vuelve a iniciar sesión en Nuphos."
+            "value" : "El inicio de sesión compartido ya no coincide con esta cuenta. Vuelve a iniciar sesión en Cerin."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Masuk bersama tidak lagi cocok dengan akun ini. Masuk lagi di Nuphos."
+            "value" : "Masuk bersama tidak lagi cocok dengan akun ini. Masuk lagi di Cerin."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "共有サインインがこのアカウントと一致しなくなりました。Nuphos でもう一度サインインしてください。"
+            "value" : "共有サインインがこのアカウントと一致しなくなりました。Cerin でもう一度サインインしてください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공유 로그인이 더 이상 이 계정과 일치하지 않습니다. Nuphos에서 다시 로그인하세요."
+            "value" : "공유 로그인이 더 이상 이 계정과 일치하지 않습니다. Cerin에서 다시 로그인하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การลงชื่อเข้าใช้ที่แชร์ไม่ตรงกับบัญชีนี้แล้ว ลงชื่อเข้าใช้อีกครั้งใน Nuphos"
+            "value" : "การลงชื่อเข้าใช้ที่แชร์ไม่ตรงกับบัญชีนี้แล้ว ลงชื่อเข้าใช้อีกครั้งใน Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "共享登录与这个账号不再匹配。请在 Nuphos 中重新登录。"
+            "value" : "共享登录与这个账号不再匹配。请在 Cerin 中重新登录。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "共用登入與這個帳號不再相符。請在 Nuphos 中重新登入。"
+            "value" : "共用登入與這個帳號不再相符。請在 Cerin 中重新登入。"
           }
         }
       }
@@ -30453,48 +30453,48 @@
         }
       }
     },
-    "This computer asks for an account to show its screen. Update Nuphos on it to open its desktop without one." : {
+    "This computer asks for an account to show its screen. Update Cerin on it to open its desktop without one." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esta computadora pide una cuenta para mostrar su pantalla. Actualiza Nuphos en ella para abrir su escritorio sin cuenta."
+            "value" : "Esta computadora pide una cuenta para mostrar su pantalla. Actualiza Cerin en ella para abrir su escritorio sin cuenta."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Komputer ini meminta akun untuk menampilkan layarnya. Perbarui Nuphos di sana agar desktop dapat dibuka tanpa akun."
+            "value" : "Komputer ini meminta akun untuk menampilkan layarnya. Perbarui Cerin di sana agar desktop dapat dibuka tanpa akun."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このコンピュータは画面を表示するためにアカウントを求めています。そのコンピュータの Nuphos をアップデートすると、アカウントなしでデスクトップを開けます。"
+            "value" : "このコンピュータは画面を表示するためにアカウントを求めています。そのコンピュータの Cerin をアップデートすると、アカウントなしでデスクトップを開けます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 컴퓨터는 화면을 표시하려면 계정이 필요합니다. 해당 컴퓨터의 Nuphos를 업데이트하면 계정 없이 데스크톱을 열 수 있습니다."
+            "value" : "이 컴퓨터는 화면을 표시하려면 계정이 필요합니다. 해당 컴퓨터의 Cerin를 업데이트하면 계정 없이 데스크톱을 열 수 있습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คอมพิวเตอร์เครื่องนี้ต้องใช้บัญชีเพื่อแสดงหน้าจอ อัปเดต Nuphos บนเครื่องนั้นเพื่อเปิดเดสก์ท็อปโดยไม่ต้องใช้บัญชี"
+            "value" : "คอมพิวเตอร์เครื่องนี้ต้องใช้บัญชีเพื่อแสดงหน้าจอ อัปเดต Cerin บนเครื่องนั้นเพื่อเปิดเดสก์ท็อปโดยไม่ต้องใช้บัญชี"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这台电脑需要账号才能显示画面。请在那台电脑上更新 Nuphos，即可免账号打开桌面。"
+            "value" : "这台电脑需要账号才能显示画面。请在那台电脑上更新 Cerin，即可免账号打开桌面。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這台電腦需要帳號才能顯示畫面。請在那台電腦上更新 Nuphos，即可免帳號開啟桌面。"
+            "value" : "這台電腦需要帳號才能顯示畫面。請在那台電腦上更新 Cerin，即可免帳號開啟桌面。"
           }
         }
       }
@@ -30683,48 +30683,48 @@
         }
       }
     },
-    "This disconnects the runtime. Your tasks stay in Nuphos." : {
+    "This disconnects the runtime. Your tasks stay in Cerin." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esto desconecta el entorno de ejecución. Tus tareas se quedan en Nuphos."
+            "value" : "Esto desconecta el entorno de ejecución. Tus tareas se quedan en Cerin."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ini memutuskan runtime. Tugas Anda tetap di Nuphos."
+            "value" : "Ini memutuskan runtime. Tugas Anda tetap di Cerin."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ランタイムとの接続を解除します。タスクは Nuphos に残ります。"
+            "value" : "ランタイムとの接続を解除します。タスクは Cerin に残ります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "런타임 연결을 해제합니다. 태스크는 Nuphos에 남습니다."
+            "value" : "런타임 연결을 해제합니다. 태스크는 Cerin에 남습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การดำเนินการนี้จะตัดการเชื่อมต่อรันไทม์ งานของคุณยังอยู่ใน Nuphos"
+            "value" : "การดำเนินการนี้จะตัดการเชื่อมต่อรันไทม์ งานของคุณยังอยู่ใน Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这会断开运行环境的连接。你的任务会保留在 Nuphos 中。"
+            "value" : "这会断开运行环境的连接。你的任务会保留在 Cerin 中。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這會中斷執行環境的連接。你的任務會保留在 Nuphos 中。"
+            "value" : "這會中斷執行環境的連接。你的任務會保留在 Cerin 中。"
           }
         }
       }
@@ -30867,48 +30867,48 @@
         }
       }
     },
-    "This permanently deletes the computer, its files and its runtimes' sign-ins, and stops tasks running on it. Your task history stays in Nuphos." : {
+    "This permanently deletes the computer, its files and its runtimes' sign-ins, and stops tasks running on it. Your task history stays in Cerin." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esto elimina de forma permanente la computadora, sus archivos y los inicios de sesión de sus entornos de ejecución, y detiene las tareas que se ejecutan en ella. Tu historial de tareas se conserva en Nuphos."
+            "value" : "Esto elimina de forma permanente la computadora, sus archivos y los inicios de sesión de sus entornos de ejecución, y detiene las tareas que se ejecutan en ella. Tu historial de tareas se conserva en Cerin."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ini menghapus komputer, file-nya, dan info masuk runtime-nya secara permanen, serta menghentikan tugas yang berjalan di sana. Riwayat tugas Anda tetap ada di Nuphos."
+            "value" : "Ini menghapus komputer, file-nya, dan info masuk runtime-nya secara permanen, serta menghentikan tugas yang berjalan di sana. Riwayat tugas Anda tetap ada di Cerin."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "コンピュータ、そのファイル、ランタイムのサインイン情報を完全に削除し、実行中のタスクを停止します。タスク履歴は Nuphos に残ります。"
+            "value" : "コンピュータ、そのファイル、ランタイムのサインイン情報を完全に削除し、実行中のタスクを停止します。タスク履歴は Cerin に残ります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "컴퓨터와 파일, 런타임의 로그인 정보가 영구적으로 삭제되며 컴퓨터에서 실행 중인 작업이 중지됩니다. 작업 기록은 Nuphos에 유지됩니다."
+            "value" : "컴퓨터와 파일, 런타임의 로그인 정보가 영구적으로 삭제되며 컴퓨터에서 실행 중인 작업이 중지됩니다. 작업 기록은 Cerin에 유지됩니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การดำเนินการนี้จะลบคอมพิวเตอร์ ไฟล์ และการลงชื่อเข้าใช้ของรันไทม์บนเครื่องอย่างถาวร และหยุดงานที่ทำงานอยู่บนเครื่อง ประวัติงานของคุณยังคงอยู่ใน Nuphos"
+            "value" : "การดำเนินการนี้จะลบคอมพิวเตอร์ ไฟล์ และการลงชื่อเข้าใช้ของรันไทม์บนเครื่องอย่างถาวร และหยุดงานที่ทำงานอยู่บนเครื่อง ประวัติงานของคุณยังคงอยู่ใน Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此操作将永久删除该电脑、其文件及其运行环境的登录信息，并停止在其上运行的任务。你的任务历史记录会保留在 Nuphos 中。"
+            "value" : "此操作将永久删除该电脑、其文件及其运行环境的登录信息，并停止在其上运行的任务。你的任务历史记录会保留在 Cerin 中。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這會永久刪除這台電腦、其檔案及執行環境的登入資訊，並停止其上執行中的任務。你的任務歷史記錄會保留在 Nuphos 中。"
+            "value" : "這會永久刪除這台電腦、其檔案及執行環境的登入資訊，並停止其上執行中的任務。你的任務歷史記錄會保留在 Cerin 中。"
           }
         }
       }
@@ -30959,48 +30959,48 @@
         }
       }
     },
-    "This runtime is signed out. Sign it in from Nuphos on the computer it runs on, or switch to another runtime." : {
+    "This runtime is signed out. Sign it in from Cerin on the computer it runs on, or switch to another runtime." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este entorno de ejecución cerró sesión. Inicia sesión desde Nuphos en la computadora donde se ejecuta o cambia a otro entorno."
+            "value" : "Este entorno de ejecución cerró sesión. Inicia sesión desde Cerin en la computadora donde se ejecuta o cambia a otro entorno."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Runtime ini sudah keluar. Masukkan dari Nuphos di komputer tempatnya berjalan, atau beralih ke runtime lain."
+            "value" : "Runtime ini sudah keluar. Masukkan dari Cerin di komputer tempatnya berjalan, atau beralih ke runtime lain."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このランタイムはサインアウトしています。実行しているコンピュータの Nuphos からサインインするか、別のランタイムに切り替えてください。"
+            "value" : "このランタイムはサインアウトしています。実行しているコンピュータの Cerin からサインインするか、別のランタイムに切り替えてください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 런타임은 로그아웃되었습니다. 실행 중인 컴퓨터의 Nuphos에서 로그인하거나 다른 런타임으로 전환하세요."
+            "value" : "이 런타임은 로그아웃되었습니다. 실행 중인 컴퓨터의 Cerin에서 로그인하거나 다른 런타임으로 전환하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "รันไทม์นี้ออกจากระบบแล้ว ลงชื่อเข้าใช้จาก Nuphos บนคอมพิวเตอร์ที่รันอยู่ หรือสลับไปใช้รันไทม์อื่น"
+            "value" : "รันไทม์นี้ออกจากระบบแล้ว ลงชื่อเข้าใช้จาก Cerin บนคอมพิวเตอร์ที่รันอยู่ หรือสลับไปใช้รันไทม์อื่น"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这个运行环境已退出登录。请在运行它的电脑上从 Nuphos 登录，或切换到其他运行环境。"
+            "value" : "这个运行环境已退出登录。请在运行它的电脑上从 Cerin 登录，或切换到其他运行环境。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這個執行環境已登出。請在執行它的電腦上從 Nuphos 登入，或切換到其他執行環境。"
+            "value" : "這個執行環境已登出。請在執行它的電腦上從 Cerin 登入，或切換到其他執行環境。"
           }
         }
       }
@@ -31143,48 +31143,48 @@
         }
       }
     },
-    "This stops the runtime and permanently deletes its files and sign-in. Your tasks' history stays in Nuphos." : {
+    "This stops the runtime and permanently deletes its files and sign-in. Your tasks' history stays in Cerin." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esto detiene el entorno de ejecución y elimina de forma permanente sus archivos y su inicio de sesión. El historial de tus tareas se queda en Nuphos."
+            "value" : "Esto detiene el entorno de ejecución y elimina de forma permanente sus archivos y su inicio de sesión. El historial de tus tareas se queda en Cerin."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ini menghentikan runtime dan menghapus file serta info masuknya secara permanen. Riwayat tugas Anda tetap di Nuphos."
+            "value" : "Ini menghentikan runtime dan menghapus file serta info masuknya secara permanen. Riwayat tugas Anda tetap di Cerin."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ランタイムを停止し、そのファイルとサインイン情報を完全に削除します。タスクの履歴は Nuphos に残ります。"
+            "value" : "ランタイムを停止し、そのファイルとサインイン情報を完全に削除します。タスクの履歴は Cerin に残ります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "런타임을 중지하고 파일과 로그인 정보를 영구적으로 삭제합니다. 태스크 기록은 Nuphos에 남습니다."
+            "value" : "런타임을 중지하고 파일과 로그인 정보를 영구적으로 삭제합니다. 태스크 기록은 Cerin에 남습니다."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การดำเนินการนี้จะหยุดรันไทม์และลบไฟล์และการลงชื่อเข้าใช้ของรันไทม์อย่างถาวร ประวัติงานของคุณยังอยู่ใน Nuphos"
+            "value" : "การดำเนินการนี้จะหยุดรันไทม์และลบไฟล์และการลงชื่อเข้าใช้ของรันไทม์อย่างถาวร ประวัติงานของคุณยังอยู่ใน Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这会停止运行环境，并永久删除它的文件和登录信息。你的任务记录会保留在 Nuphos 中。"
+            "value" : "这会停止运行环境，并永久删除它的文件和登录信息。你的任务记录会保留在 Cerin 中。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這會停止執行環境，並永久刪除它的檔案與登入資訊。你的任務紀錄會保留在 Nuphos 中。"
+            "value" : "這會停止執行環境，並永久刪除它的檔案與登入資訊。你的任務紀錄會保留在 Cerin 中。"
           }
         }
       }
@@ -33033,48 +33033,48 @@
         }
       }
     },
-    "Use Nuphos Cloud" : {
+    "Use Cerin Cloud" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar Nuphos Cloud"
+            "value" : "Usar Cerin Cloud"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gunakan Nuphos Cloud"
+            "value" : "Gunakan Cerin Cloud"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos Cloud を使用"
+            "value" : "Cerin Cloud を使用"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos Cloud 사용"
+            "value" : "Cerin Cloud 사용"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ใช้ Nuphos Cloud"
+            "value" : "ใช้ Cerin Cloud"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用 Nuphos Cloud"
+            "value" : "使用 Cerin Cloud"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用 Nuphos Cloud"
+            "value" : "使用 Cerin Cloud"
           }
         }
       }
@@ -33820,48 +33820,48 @@
         }
       }
     },
-    "Visit Nuphos" : {
+    "Visit Cerin" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visitar Nuphos"
+            "value" : "Visitar Cerin"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunjungi Nuphos"
+            "value" : "Kunjungi Cerin"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos を開く"
+            "value" : "Cerin を開く"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos 방문"
+            "value" : "Cerin 방문"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ไปที่ Nuphos"
+            "value" : "ไปที่ Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "前往 Nuphos"
+            "value" : "前往 Cerin"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "前往 Nuphos"
+            "value" : "前往 Cerin"
           }
         }
       }
@@ -34418,48 +34418,48 @@
         }
       }
     },
-    "We could not reach Nuphos. Check your connection and try again." : {
+    "We could not reach Cerin. Check your connection and try again." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No pudimos conectar con Nuphos. Comprueba tu conexión e inténtalo de nuevo."
+            "value" : "No pudimos conectar con Cerin. Comprueba tu conexión e inténtalo de nuevo."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kami tidak dapat menjangkau Nuphos. Periksa koneksi Anda dan coba lagi."
+            "value" : "Kami tidak dapat menjangkau Cerin. Periksa koneksi Anda dan coba lagi."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos に接続できませんでした。接続を確認してもう一度お試しください。"
+            "value" : "Cerin に接続できませんでした。接続を確認してもう一度お試しください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에 연결할 수 없습니다. 연결을 확인하고 다시 시도하세요."
+            "value" : "Cerin에 연결할 수 없습니다. 연결을 확인하고 다시 시도하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เชื่อมต่อ Nuphos ไม่ได้ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง"
+            "value" : "เชื่อมต่อ Cerin ไม่ได้ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无法连接到 Nuphos。请检查网络连接后重试。"
+            "value" : "无法连接到 Cerin。请检查网络连接后重试。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無法連線到 Nuphos。請檢查網路連線後再試一次。"
+            "value" : "無法連線到 Cerin。請檢查網路連線後再試一次。"
           }
         }
       }
@@ -34652,94 +34652,94 @@
       "comment" : "Legal text",
       "shouldTranslate" : false
     },
-    "Web sign-in (nuphos.ai)" : {
+    "Web sign-in (platform.cerin.ai)" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inicio de sesión web (nuphos.ai)"
+            "value" : "Inicio de sesión web (platform.cerin.ai)"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Masuk via web (nuphos.ai)"
+            "value" : "Masuk via web (platform.cerin.ai)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Web サインイン（nuphos.ai）"
+            "value" : "Web サインイン（platform.cerin.ai）"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "웹 로그인(nuphos.ai)"
+            "value" : "웹 로그인(platform.cerin.ai)"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ลงชื่อเข้าใช้ผ่านเว็บ (nuphos.ai)"
+            "value" : "ลงชื่อเข้าใช้ผ่านเว็บ (platform.cerin.ai)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "网页登录（nuphos.ai）"
+            "value" : "网页登录（platform.cerin.ai）"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "網頁登入（nuphos.ai）"
+            "value" : "網頁登入（platform.cerin.ai）"
           }
         }
       }
     },
-    "Welcome to Nuphos" : {
+    "Welcome to Cerin" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te damos la bienvenida a Nuphos"
+            "value" : "Te damos la bienvenida a Cerin"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selamat datang di Nuphos"
+            "value" : "Selamat datang di Cerin"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos へようこそ"
+            "value" : "Cerin へようこそ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nuphos에 오신 것을 환영합니다"
+            "value" : "Cerin에 오신 것을 환영합니다"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ยินดีต้อนรับสู่ Nuphos"
+            "value" : "ยินดีต้อนรับสู่ Cerin"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "欢迎使用 Nuphos"
+            "value" : "欢迎使用 Cerin"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "歡迎使用 Nuphos"
+            "value" : "歡迎使用 Cerin"
           }
         }
       }
@@ -35721,48 +35721,48 @@
         }
       }
     },
-    "Your Bots and tasks need a runtime to work. Connect your computer with Nuphos Desktop, or ask a workspace administrator to share a runtime." : {
+    "Your Bots and tasks need a runtime to work. Connect your computer with Cerin Desktop, or ask a workspace administrator to share a runtime." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus Bots y tareas necesitan un entorno de ejecución. Conecta tu ordenador con Nuphos Desktop o pide a un administrador del espacio de trabajo que comparta uno."
+            "value" : "Tus Bots y tareas necesitan un entorno de ejecución. Conecta tu ordenador con Cerin Desktop o pide a un administrador del espacio de trabajo que comparta uno."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bot dan tugas Anda membutuhkan runtime. Hubungkan komputer dengan Nuphos Desktop, atau minta administrator ruang kerja membagikan runtime."
+            "value" : "Bot dan tugas Anda membutuhkan runtime. Hubungkan komputer dengan Cerin Desktop, atau minta administrator ruang kerja membagikan runtime."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bot とタスクにはランタイムが必要です。Nuphos Desktop でコンピュータを接続するか、ワークスペース管理者にランタイムの共有を依頼してください。"
+            "value" : "Bot とタスクにはランタイムが必要です。Cerin Desktop でコンピュータを接続するか、ワークスペース管理者にランタイムの共有を依頼してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bot과 작업에는 런타임이 필요합니다. Nuphos Desktop으로 컴퓨터를 연결하거나 워크스페이스 관리자에게 런타임 공유를 요청하세요."
+            "value" : "Bot과 작업에는 런타임이 필요합니다. Cerin Desktop으로 컴퓨터를 연결하거나 워크스페이스 관리자에게 런타임 공유를 요청하세요."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bot และงานต้องใช้รันไทม์ เชื่อมต่อคอมพิวเตอร์ด้วย Nuphos Desktop หรือขอให้ผู้ดูแลเวิร์กสเปซแชร์รันไทม์"
+            "value" : "Bot และงานต้องใช้รันไทม์ เชื่อมต่อคอมพิวเตอร์ด้วย Cerin Desktop หรือขอให้ผู้ดูแลเวิร์กสเปซแชร์รันไทม์"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bot 和任务需要运行环境才能工作。请使用 Nuphos Desktop 连接电脑，或请工作区管理员共享运行环境。"
+            "value" : "Bot 和任务需要运行环境才能工作。请使用 Cerin Desktop 连接电脑，或请工作区管理员共享运行环境。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bot 與任務需要執行環境才能工作。請使用 Nuphos Desktop 連接電腦，或請工作區管理員共用執行環境。"
+            "value" : "Bot 與任務需要執行環境才能工作。請使用 Cerin Desktop 連接電腦，或請工作區管理員共用執行環境。"
           }
         }
       }
@@ -36149,7 +36149,7 @@
     "http://localhost…" : {
       "shouldTranslate" : false
     },
-    "https://nuphos.example.com" : {
+    "https://cerin.example.com" : {
       "shouldTranslate" : false
     },
     "judged safe" : {

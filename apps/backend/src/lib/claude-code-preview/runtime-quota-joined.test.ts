@@ -6,7 +6,7 @@ import { reportedQuota } from './runtime-quota-probe'
 import type { RuntimeInstance } from './runtime-instances'
 import type { LocalRuntimePresence } from '@/lib/agent/devices/local-runtime/presence'
 
-const tunnelUrl = 'nuphos-device://runtime/admin/pod-device?team=team-a'
+const tunnelUrl = 'cerin-device://runtime/admin/pod-device?team=team-a'
 const usageAt = '2026-10-20T00:20:00.000Z'
 const claude: RuntimeInstance = {
   id: 'claude-1',

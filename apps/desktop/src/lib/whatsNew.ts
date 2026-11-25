@@ -1,8 +1,8 @@
 import type { ChangelogEntry } from '../types/team'
 
 // Keep in sync with apps/desktop/electron/main/changelog-feed.ts
-export const CHANGELOG_INDEX_URL = 'https://nuphos.ai/changelog'
-export const LAST_SEEN_KEY = 'nuphos.whats-new.last-seen-slug'
+export const CHANGELOG_INDEX_URL = 'https://platform.cerin.ai/changelog'
+export const LAST_SEEN_KEY = 'cerin.whats-new.last-seen-slug'
 
 export function hasUnread(entries: ChangelogEntry[], lastSeenSlug: string | null): boolean {
   const latest = entries.at(0)

@@ -12,7 +12,7 @@ final class DesktopPanelContrastUITests: XCTestCase {
             .appending(path: "tests/fixtures/bot-desktop-responses.json")
         app = XCUIApplication()
         app.launchArguments = ["-preview-home", "-preview-no-push", "-page", "chats"]
-        app.launchEnvironment = ["NUPHOS_PREVIEW_RESPONSES": fixture.path]
+        app.launchEnvironment = ["CERIN_PREVIEW_RESPONSES": fixture.path]
         app.launch()
         app.staticTexts["Sign-in helper"].firstMatch.tap()
         let button = app.buttons["chat.desktop"]

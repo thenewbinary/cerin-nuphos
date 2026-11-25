@@ -18,12 +18,12 @@ before(async () => {
 })
 
 test('opens web, mail and Slack links', async () => {
-  await openExternal('https://nuphos.ai/teams')
+  await openExternal('https://platform.cerin.ai/teams')
   await openExternal(' HTTP://Example.com')
   await openExternal('mailto:dev@example.com')
   await openExternal('slack://user?team=T1&id=U1')
   assert.deepEqual(opened, [
-    'https://nuphos.ai/teams',
+    'https://platform.cerin.ai/teams',
     'http://example.com/',
     'mailto:dev@example.com',
     'slack://user?team=T1&id=U1',
@@ -40,7 +40,7 @@ test('refuses other schemes and malformed URLs', async () => {
     'data:text/html,<script>alert(1)</script>',
     'vscode://file/tmp/x',
     'ms-msdt:/id PCWDiagnostic',
-    'cerin://open?url=https://nuphos.ai',
+    'cerin://open?url=https://platform.cerin.ai',
     ' file:///etc/passwd',
     '//example.com',
     'not a url',

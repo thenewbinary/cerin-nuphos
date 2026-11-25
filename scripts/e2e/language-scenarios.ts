@@ -1,4 +1,4 @@
-// #3469: the language Nuphos tells an agent to write in, where no person wrote to it.
+// #3469: the language Cerin tells an agent to write in, where no person wrote to it.
 import { agentLog } from './agent-log.ts'
 import { must } from './binding-access-scenarios.ts'
 import { until } from './processes.ts'

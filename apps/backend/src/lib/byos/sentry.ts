@@ -164,6 +164,6 @@ export function invalidateSentryAccessToken(teamId: ObjectId, bindingId: ObjectI
 
 // NOTE: Sentry exposes no OAuth revocation endpoint — unlike Asana/GitLab there
 // is no server-side way to kill a grant on unbind. Removing the binding stops
-// Nuphos handing the token out, but any token already delivered to a sandbox
+// Cerin handing the token out, but any token already delivered to a sandbox
 // stays valid at Sentry until it expires (~30d). Users who want the grant gone
 // immediately must revoke it at Settings → Account → Authorized Applications.

@@ -215,7 +215,7 @@ export const teamChannels = {
     input: {
       slackWorkspaceId: string
       slackUserId: string
-      nuphosUserId: string
+      cerinUserId: string
       enabled?: boolean
     },
   ) => atlas.upsertSlackUserMapping(teamId, input),

@@ -55,7 +55,7 @@ function normalizeSetupRedirect(target: string): URL {
       'GITHUB_APP_SETUP_REDIRECT must be a valid absolute URL',
     )
   }
-  if (url.protocol === 'zeabur-atlas:' || url.protocol === 'nuphos:') url.protocol = 'cerin:'
+  if (url.protocol === 'zeabur-atlas:' || url.protocol === 'cerin:') url.protocol = 'cerin:'
 
   return url
 }
@@ -100,7 +100,7 @@ githubAppRoutes.get('/setup', async (c) => {
     throw new AppError(
       503,
       'github_oauth_not_configured',
-      'GITHUB_APP_CLIENT_ID, GITHUB_APP_CLIENT_SECRET and NUPHOS_PUBLIC_BACKEND_URL are required',
+      'GITHUB_APP_CLIENT_ID, GITHUB_APP_CLIENT_SECRET and CERIN_PUBLIC_BACKEND_URL are required',
     )
   }
 
