@@ -97,11 +97,7 @@ team_get() {
     --retry-delay 1 \
     "$@" \
     -H @<(printf 'Authorization: Bearer %s\n' "$CERIN_TOKEN") \
-<<<<<<< origin/main
-    "${CERIN_BACKEND_URL:-https://api.cerin.ai}/teams/$team_id/$1"
-=======
-    "${CERIN_BACKEND_URL:-https://platform.cerin.ai}/teams/$team_id/$path"
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
+    "${CERIN_BACKEND_URL:-https://api.cerin.ai}/teams/$team_id/$path"
 }
 
 # Print the body on failure: a 409 personal_credential_account_required lists the accounts.

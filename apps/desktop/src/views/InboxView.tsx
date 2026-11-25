@@ -8,14 +8,7 @@ import { t } from '../i18n'
 import { answerInboxWithUndo } from './inbox/answerInboxWithUndo'
 import { ChannelMentions } from './inbox/ChannelMentions'
 import { DecisionCard } from './inbox/DecisionCard'
-<<<<<<< origin/main
 import { snoozeQuestion } from './inbox/dismissQuestion'
-import { openQuestion } from './inbox/inboxItems'
-import { selectInboxQuestion, useInboxSelection } from './inbox/inboxSelection'
-import { openListed } from './inbox/openListed'
-import { useChannelMentions } from './inbox/useChannelMentions'
-import { sendHeldAnswer } from './inbox/useInbox'
-=======
 import { openQuestion, shownQuestions } from './inbox/inboxItems'
 import {
   selectInboxQuestion,
@@ -25,9 +18,7 @@ import {
 } from './inbox/inboxSelection'
 import { openListed } from './inbox/openListed'
 import { useChannelMentions } from './inbox/useChannelMentions'
-import { snoozeQuestion } from './inbox/dismissQuestion'
-import { replyInInbox } from './inbox/useInbox'
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
+import { sendHeldAnswer } from './inbox/useInbox'
 import { useInboxQuestions } from './inbox/useInboxQuestions'
 
 import type { InboxQuestion } from './inbox/inboxItems'
@@ -45,8 +36,9 @@ type Props = {
  * Teammates asking to use the viewer's own computer and channel @mentions,
  * above one open question at a time, the one the sidebar's Inbox list opens:
  * only the matches of the search above that list.
- * Answering or dismissing it opens the next and wakes the agent that asked at once.
- * Snooze sets it aside until a time. ↑ ↓ move between them. Who asked opens from the question's source line, where the sidebar lists it.
+ * Answering or dismissing opens the next, and wakes the agent once its Undo window
+ * passes, or at once when the viewer leaves. Snooze sets it aside until a time.
+ * ↑ ↓ move between them. Who asked opens from the source line, where the sidebar lists it.
  */
 export function InboxView({ teamId, refreshKey, onCount, onLoading, onOpenConversation }: Props) {
   const { isActive } = useWorkspaceTab()
@@ -100,22 +92,20 @@ export function InboxView({ teamId, refreshKey, onCount, onLoading, onOpenConver
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [keys, rows, at, move])
 
+  // Leaving the Inbox sends the answer still waiting out its Undo window.
+  useEffect(() => {
+    if (!isActive) return
+
+    return sendHeldAnswer
+  }, [isActive])
+
   const answer = (row: InboxQuestion, reply: InboxReply) => {
     // The answered question leaves the list, and the one that takes its place opens.
     move(rows?.at(at + 1) ?? rows?.at(at - 1))
-<<<<<<< origin/main
     answerInboxWithUndo(teamId, row, reply, () => {
       // Once sent, the answer stays: the question is not opened again.
       selectInboxQuestion(teamId, row.request.id)
     })
-=======
-    replyInInbox(teamId, row.conversation.sessionId, row.request.id, reply, (reason) =>
-      toast.error(
-        dismissed ? t('Could not dismiss question') : t('Could not send your answer'),
-        reason,
-      ),
-    )
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   }
 
   const caughtUp = all?.length === 0 && mentions.length === 0

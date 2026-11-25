@@ -52,11 +52,7 @@ export default defineRailway(() => {
     },
   })
   const backend = service('backend', {
-<<<<<<< origin/main
     source: image('ghcr.io/thenewbinary/cerin-backend:v0.145.8'),
-=======
-    source: image('ghcr.io/thenewbinary/cerin-backend:v0.155.3'),
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
     replicas: { 'us-west2': 1 },
     deploy: { restartPolicyType: 'ALWAYS' },
     healthcheck: '/health/ready',

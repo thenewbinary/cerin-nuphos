@@ -4,15 +4,11 @@ import { toast } from '../../components/ui/toast.ts'
 import { t } from '../../i18n/index.ts'
 import { isGoogle } from '../../types.ts'
 
-<<<<<<< origin/main
 import type {
   PersonalCredential,
   PersonalCredentialDeepLinkPayload,
   PersonalCredentialProvider,
 } from '../../types.ts'
-=======
-import type { PersonalCredentialDeepLinkPayload, PersonalCredentialProvider } from '../../types'
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 
 /** Fired after the main process claims an OAuth grant, so an open section refetches. */
 export const PERSONAL_CREDENTIALS_CHANGED = 'personal-credentials:changed'
@@ -29,7 +25,6 @@ export function nameOf(provider: PersonalCredentialProvider): string {
   return NAMES[provider]
 }
 
-<<<<<<< origin/main
 export const PERSONAL_CREDENTIALS_SECTION = 'account.personalCredentials'
 
 const PERSONAL_CREDENTIAL_TIMEOUT_MS = 10 * 60_000
@@ -53,9 +48,6 @@ function settlePersonalCredential(provider: PersonalCredentialProvider) {
 }
 
 /** Starts signing in to the member's own account and waits for its bounded browser return. */
-=======
-/** Starts signing in to the member's own account in the browser; a failure says why. */
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 export async function connectPersonalCredential(
   provider: PersonalCredentialProvider,
   teamId: string | undefined,
@@ -101,6 +93,17 @@ export async function connectPersonalCredential(
       toast.apiError(t('Could not connect {name}', { name: nameOf(provider) }), err)
     }
   }
+}
+
+/** The credential that applies in this team: Google grants are per team. */
+export function credentialFor(
+  credentials: PersonalCredential[] | null,
+  provider: PersonalCredentialProvider,
+  teamId: string | undefined,
+): PersonalCredential | undefined {
+  return credentials?.find(
+    (c) => c.provider === provider && (!isGoogle(provider) || c.teamId === teamId),
+  )
 }
 
 /** The personal entries the Connectors page lists, with the words people search them by. */

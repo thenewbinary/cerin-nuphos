@@ -33,7 +33,7 @@ import type { MorningPaperOutcomes } from './morningPaperOutcomes.ts'
 import type { AgentConversation } from '../../api/agent-types.ts'
 import type { RuntimeExecution } from '../../lib/runtimeExecution.ts'
 import type { InboxQuestion } from '../inbox/inboxItems.ts'
-import type { HeldReply } from '../inbox/useInbox.ts'
+import type { InboxReply } from '../inbox/useInbox.ts'
 
 type Props = {
   teamId: string
@@ -181,7 +181,7 @@ export function MorningPaperView({ teamId, teamName, currentUserId, onOpenConver
     now: visit.enteredAt,
   })
   const loading = sessions.data === undefined || questions === null
-  const answer = (row: InboxQuestion, reply: HeldReply) => answerInboxWithUndo(teamId, row, reply)
+  const answer = (row: InboxQuestion, reply: InboxReply) => answerInboxWithUndo(teamId, row, reply)
   const refresh = () => {
     setRefreshing(true)
     void Promise.all([

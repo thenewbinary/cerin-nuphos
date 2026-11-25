@@ -19,14 +19,6 @@ export function showFirstLaunchIntro() {
   const intro = document.createElement('div')
   const icon = document.createElement('img')
 
-<<<<<<< origin/main
-  url.searchParams.set('theme', light ? 'light' : 'dark')
-  frame.src = url.href
-  frame.title = t('Welcome to Cerin')
-  frame.setAttribute('sandbox', 'allow-scripts allow-same-origin')
-  frame.className = 'first-launch-intro'
-  frame.style.background = light ? '#F7F7F8' : '#0E0E10'
-=======
   icon.src = '/cerin-icon.png'
   icon.alt = ''
   intro.append(icon)
@@ -34,7 +26,6 @@ export function showFirstLaunchIntro() {
   intro.setAttribute('aria-label', t('Welcome to Cerin'))
   intro.className = 'first-launch-intro'
   intro.style.background = light ? '#fcfcfd' : '#18181b'
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   let dismissing = false
   const dismiss = () => {
     clearTimeout(timeout)

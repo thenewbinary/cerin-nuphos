@@ -4,12 +4,12 @@ import { t } from '../../i18n/index.ts'
 import { ANSWER_UNDO_MS, holdAnswer } from './useInbox.ts'
 
 import type { InboxQuestion } from './inboxItems.ts'
-import type { HeldReply } from './useInbox.ts'
+import type { InboxReply } from './useInbox.ts'
 
 export function answerInboxWithUndo(
   teamId: string,
   row: InboxQuestion,
-  reply: HeldReply,
+  reply: InboxReply,
   onUndo?: () => void,
 ) {
   const dismissed = 'dismissed' in reply

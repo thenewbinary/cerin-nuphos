@@ -17,10 +17,14 @@ const answers: unknown[][] = []
 const dismissals: unknown[][] = []
 let answerFails = false
 let answerError = 'This question is no longer open'
+let pagehide: (() => void) | undefined
 
 Object.defineProperty(globalThis, 'window', {
   configurable: true,
   value: {
+    addEventListener: (type: string, listener: () => void) => {
+      if (type === 'pagehide') pagehide = listener
+    },
     api: {
       onAgentEvent: (listener: Listener) => {
         listeners.add(listener)
@@ -159,4 +163,22 @@ test('an Inbox dismissal leaves at once and is sent at once with its reason', ()
   inbox.replyInInbox('team', 'agent', 'd1', { dismissed: true, reason: 'Not now' }, () => {})
   assert.equal(count(), 0)
   assert.deepEqual(dismissals, [['agent', 'd1', 'team', 'dismissed', 'Not now']])
+})
+
+test('an answer can be undone, and leaving flushes the next pending answer', () => {
+  publish([waiting('undo'), waiting('flush')])
+  const before = answers.length
+  const undo = inbox.holdAnswer('team', 'agent', 'undo', { choices: ['Wait'] }, () => {})
+
+  assert.equal(count(), 1)
+  assert.equal(undo(), true)
+  assert.equal(count(), 2)
+  assert.equal(undo(), false)
+  assert.equal(answers.length, before)
+  inbox.holdAnswer('team', 'agent', 'flush', { choices: ['Ship'] }, () => {})
+  assert.equal(count(), 1)
+  pagehide?.()
+  assert.deepEqual(answers.slice(before), [
+    ['agent', 'flush', 'team', { choices: ['Ship'], answeredIn: 'inbox' }],
+  ])
 })

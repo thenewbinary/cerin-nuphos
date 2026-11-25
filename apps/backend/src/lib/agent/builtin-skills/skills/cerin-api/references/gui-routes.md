@@ -111,11 +111,11 @@ cloudflare.dnsRecord | cloudflare dns record | teamId, accountId, zoneId, record
 
 ## Other providers
 
-<<<<<<< origin/main
 linode.instances | linode akamai instance instances | teamId, accountId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/linode/<accountId>/instances` | Linodes
 linode.lkeClusters | linode akamai lke kubernetes cluster clusters | teamId, accountId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/linode/<accountId>/lke` | LKE clusters
 hetzner.servers | hetzner cloud server servers | teamId, accountId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/hetzner/<accountId>/servers` | Servers
 betterstack.monitors | betterstack uptime monitor monitors | teamId, integrationId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/betterstack/<integrationId>/monitors` | Monitors
+uptimeKuma.monitors | uptime kuma monitor monitors | teamId, instanceId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/uptime-kuma/<instanceId>/monitors` | Monitors
 betterstack.incidents | betterstack incident incidents | teamId, integrationId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/betterstack/<integrationId>/incidents` | Incidents
 betterstack.sources | betterstack telemetry source sources logs | teamId, integrationId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/betterstack/<integrationId>/sources` | Sources
 betterstack.dashboards | betterstack dashboard dashboards | teamId, integrationId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/betterstack/<integrationId>/dashboards` | Dashboards
@@ -131,6 +131,7 @@ k8s.cluster.events | k8s kubernetes events | teamId, provider, parentId, region,
 k8s.cluster.nodes | k8s kubernetes nodes | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/nodes` | Nodes
 k8s.helm.releases | k8s kubernetes helm releases | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/helm/releases` | Helm releases
 k8s.workloads.pods | k8s kubernetes pods | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/pods` | Pods
+k8s.onprem.pods | k8s kubernetes on-prem onprem cluster pods | teamId, clusterId | `{{PUBLIC_WEB_URL}}/teams/<teamId>/k8s/onprem/<clusterId>/onprem/<clusterId>/workloads/pods` | cluster label or clusterId
 k8s.workloads.deployments | k8s kubernetes deployments | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/deployments` | Deployments
 k8s.workloads.replicasets | k8s kubernetes replicasets replica sets | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/replicasets` | ReplicaSets
 k8s.workloads.statefulsets | k8s kubernetes statefulsets | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/statefulsets` | StatefulSets
@@ -153,51 +154,6 @@ k8s.storage.persistentVolumes | k8s kubernetes persistent volumes pv persistentv
 k8s.storage.persistentVolumeClaims | k8s kubernetes persistent volume claims pvc persistentvolumeclaims | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/storage/persistent-volume-claims` | PVCs
 k8s.custom.crds | k8s kubernetes custom resource definitions crd crds | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/custom/crds` | CRDs
 k8s.custom.resources | k8s kubernetes custom resources cr | teamId, provider, parentId, region, clusterName | `{{PUBLIC_WEB_URL}}/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/custom/resources` | Custom Resources
-=======
-linode.instances | linode akamai instance instances | teamId, accountId | `https://platform.cerin.ai/teams/<teamId>/infra/linode/<accountId>/instances` | Linodes
-linode.lkeClusters | linode akamai lke kubernetes cluster clusters | teamId, accountId | `https://platform.cerin.ai/teams/<teamId>/infra/linode/<accountId>/lke` | LKE clusters
-hetzner.servers | hetzner cloud server servers | teamId, accountId | `https://platform.cerin.ai/teams/<teamId>/infra/hetzner/<accountId>/servers` | Servers
-betterstack.monitors | betterstack uptime monitor monitors | teamId, integrationId | `https://platform.cerin.ai/teams/<teamId>/infra/betterstack/<integrationId>/monitors` | Monitors
-uptimeKuma.monitors | uptime kuma monitor monitors | teamId, instanceId | `https://platform.cerin.ai/teams/<teamId>/infra/uptime-kuma/<instanceId>/monitors` | Monitors
-betterstack.incidents | betterstack incident incidents | teamId, integrationId | `https://platform.cerin.ai/teams/<teamId>/infra/betterstack/<integrationId>/incidents` | Incidents
-betterstack.sources | betterstack telemetry source sources logs | teamId, integrationId | `https://platform.cerin.ai/teams/<teamId>/infra/betterstack/<integrationId>/sources` | Sources
-betterstack.dashboards | betterstack dashboard dashboards | teamId, integrationId | `https://platform.cerin.ai/teams/<teamId>/infra/betterstack/<integrationId>/dashboards` | Dashboards
-tailscale.devices | tailscale device devices | teamId, clientId | `https://platform.cerin.ai/teams/<teamId>/infra/tailscale/<clientId>/devices` | Devices
-zeabur.projects | zeabur project projects | teamId, zeaburId | `https://platform.cerin.ai/teams/<teamId>/infra/zeabur/<zeaburId>/projects` | Projects
-zeabur.servers | zeabur server servers | teamId, zeaburId | `https://platform.cerin.ai/teams/<teamId>/infra/zeabur/<zeaburId>/servers` | Servers
-
-## Kubernetes cluster pages
-
-k8s.cluster.base | k8s kubernetes cluster base aws gcp linode | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>` | clusterName
-k8s.cluster.overview | k8s kubernetes cluster overview | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/overview` | clusterName
-k8s.cluster.events | k8s kubernetes events | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/events` | Events
-k8s.cluster.nodes | k8s kubernetes nodes | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/nodes` | Nodes
-k8s.helm.releases | k8s kubernetes helm releases | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/helm/releases` | Helm releases
-k8s.workloads.pods | k8s kubernetes pods | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/pods` | Pods
-k8s.onprem.pods | k8s kubernetes on-prem onprem cluster pods | teamId, clusterId | `https://platform.cerin.ai/teams/<teamId>/k8s/onprem/<clusterId>/onprem/<clusterId>/workloads/pods` | cluster label or clusterId
-k8s.workloads.deployments | k8s kubernetes deployments | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/deployments` | Deployments
-k8s.workloads.replicasets | k8s kubernetes replicasets replica sets | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/replicasets` | ReplicaSets
-k8s.workloads.statefulsets | k8s kubernetes statefulsets | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/statefulsets` | StatefulSets
-k8s.workloads.daemonsets | k8s kubernetes daemonsets | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/daemonsets` | DaemonSets
-k8s.workloads.jobs | k8s kubernetes jobs | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/jobs` | Jobs
-k8s.workloads.cronjobs | k8s kubernetes cronjobs | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/workloads/cronjobs` | CronJobs
-k8s.networking.services | k8s kubernetes services | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/networking/services` | Services
-k8s.networking.ingresses | k8s kubernetes ingresses ingress | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/networking/ingresses` | Ingresses
-k8s.networking.endpointSlices | k8s kubernetes endpoint slices endpointslices | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/networking/endpoint-slices` | Endpoint Slices
-k8s.networking.networkPolicies | k8s kubernetes network policies networkpolicies | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/networking/network-policies` | Network Policies
-k8s.access.serviceAccounts | k8s kubernetes service accounts serviceaccounts | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/access/service-accounts` | Service Accounts
-k8s.access.roles | k8s kubernetes roles | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/access/roles` | Roles
-k8s.access.roleBindings | k8s kubernetes role bindings rolebindings | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/access/role-bindings` | Role Bindings
-k8s.access.clusterRoles | k8s kubernetes cluster roles clusterroles | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/access/cluster-roles` | Cluster Roles
-k8s.access.clusterRoleBindings | k8s kubernetes cluster role bindings clusterrolebindings | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/access/cluster-role-bindings` | Cluster Role Bindings
-k8s.config.configmaps | k8s kubernetes configmaps | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/config/configmaps` | ConfigMaps
-k8s.config.secrets | k8s kubernetes secrets | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/config/secrets` | Secrets
-k8s.storage.storageClasses | k8s kubernetes storage classes storageclasses | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/storage/storage-classes` | Storage Classes
-k8s.storage.persistentVolumes | k8s kubernetes persistent volumes pv persistentvolumes | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/storage/persistent-volumes` | Persistent Volumes
-k8s.storage.persistentVolumeClaims | k8s kubernetes persistent volume claims pvc persistentvolumeclaims | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/storage/persistent-volume-claims` | PVCs
-k8s.custom.crds | k8s kubernetes custom resource definitions crd crds | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/custom/crds` | CRDs
-k8s.custom.resources | k8s kubernetes custom resources cr | teamId, provider, parentId, region, clusterName | `https://platform.cerin.ai/teams/<teamId>/infra/<provider>/<parentId>/clusters/<region>/<clusterName>/custom/resources` | Custom Resources
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 
 ## Kubernetes resource details
 

@@ -266,12 +266,9 @@
   "Add this computer": "이 컴퓨터 추가",
   "Add this page to a design canvas": "이 페이지를 디자인 캔버스에 추가",
   "Add to Cerin": "Cerin에 추가",
-<<<<<<< origin/main
   "Add to Favorites": "즐겨찾기에 추가",
-=======
   "Add to Vault": "Vault에 추가",
   "Add to Vault…": "Vault에 추가…",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Add to chat": "채팅에 추가",
   "Add to design": "디자인에 추가",
   "Add to task": "작업에 추가",
@@ -808,11 +805,8 @@
   "Choose {value}.": "{value}을(를) 선택합니다.",
   "Claim": "클레임",
   "Class": "클래스",
-<<<<<<< origin/main
   "Claude Code and Codex on this computer, with your own sign-in. Your own Bots and tasks use them, and so do teammates you share this computer with. Always on while Cerin is open.": "내 로그인 정보로 실행되는 이 컴퓨터의 Claude Code와 Codex입니다. 내 봇과 작업, 그리고 이 컴퓨터를 공유한 팀원이 사용할 수 있습니다. Cerin가 열려 있는 동안 항상 켜져 있습니다.",
-=======
   "Classic": "클래식",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Claude Code session": "Claude Code 세션",
   "Claude Code sessions": "Claude Code 세션",
   "Clear all": "모두 해제",
@@ -2333,10 +2327,7 @@
   "Install Cerin in Slack, pick channels from the bot DM, then @mention Cerin in those channels.": "Slack에 Cerin를 설치하고 봇 DM에서 채널을 선택한 후, 해당 채널에서 Cerin를 @멘션하세요.",
   "Install Discord Bot": "Discord 봇 설치",
   "Install GitHub App": "GitHub 앱 설치",
-<<<<<<< origin/main
-=======
   "Install Cerin in Slack, connect channels here, and choose the Bot that answers in each one.": "Slack에 Cerin를 설치하고, 여기에서 채널을 연결한 뒤 채널마다 응답할 Bot을 선택하세요.",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Install OpenSSH, or run the command on the machine yourself.": "OpenSSH를 설치하거나 머신에서 직접 명령을 실행하세요.",
   "Install Slack App": "Slack 앱 설치",
   "Install from GitHub": "GitHub에서 설치",
@@ -3235,8 +3226,6 @@
   "Notion workspace": "Notion 워크스페이스",
   "Now": "지금",
   "Numeric operational metrics only. Query text, result values, credentials, current operations, and profiler documents are not collected.": "숫자형 운영 지표만 수집합니다. 쿼리 텍스트, 결과 값, 자격 증명, 현재 작업, 프로파일러 문서는 수집하지 않습니다.",
-<<<<<<< origin/main
-=======
   "Cerin can only send from a {domain}, set up under {page}.": "Cerin는 {page}에서 설정한 {domain}에서만 메일을 보낼 수 있습니다.",
   "Cerin cannot reach its own relay right now — this one is on us.": "Cerin가 현재 자체 릴레이에 연결할 수 없습니다. 저희 쪽 문제입니다.",
   "Cerin couldn’t find {command} on this computer. If it’s installed, add it to your login shell’s PATH, then reopen Cerin.": "이 컴퓨터에서 {command}을(를) 찾지 못했습니다. 설치되어 있다면 로그인 셸의 PATH에 추가한 다음 Cerin를 다시 여세요.",
@@ -3275,7 +3264,6 @@
   "Cerin {version} is ready. Restart to finish updating.": "Cerin {version}이(가) 준비되었습니다. 재시작하면 업데이트가 완료됩니다.",
   "Cerin's OIDC connector isn't configured on this backend yet — binding will fail until it is.": "이 백엔드에 Cerin의 OIDC 커넥터가 아직 구성되지 않았습니다. 구성되기 전까지는 연결에 실패합니다.",
   "Cerin's own": "Cerin 자체의 ID",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "OAuth Client Secret": "OAuth 클라이언트 시크릿",
   "OAuth app": "OAuth 앱",
   "OAuth application ID": "OAuth 애플리케이션 ID",
@@ -3349,11 +3337,8 @@
   "Only {name} can change the plan.": "{name}만 요금제를 변경할 수 있습니다.",
   "Only {name} can change this.": "{name}만 변경할 수 있습니다.",
   "Open": "열기",
-<<<<<<< origin/main
-=======
   "Open Connectors": "커넥터 열기",
   "Open IAM in Google Cloud Console": "Google Cloud 콘솔에서 IAM 열기",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Open Cerin at login": "로그인 시 Cerin 열기",
   "Open Cerin on it and let the update download, then quit it fully (⌘Q on a Mac) and reopen it.": "해당 컴퓨터에서 Cerin를 열어 업데이트가 다운로드되면, 완전히 종료(Mac에서는 ⌘Q)한 뒤 다시 여세요.",
   "Open Cerin when you sign in to this computer, so its local runtime is back online after a restart.": "이 컴퓨터에 로그인하면 Cerin를 열어 재시작 후에도 로컬 런타임이 다시 온라인 상태가 되도록 합니다.",

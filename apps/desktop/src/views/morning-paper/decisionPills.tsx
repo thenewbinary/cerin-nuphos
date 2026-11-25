@@ -10,7 +10,7 @@ import { inboxSource } from '../inbox/inboxItems.ts'
 
 import type { AgentInputRequest } from '../../api/agent-types.ts'
 import type { InboxQuestion } from '../inbox/inboxItems.ts'
-import type { HeldReply } from '../inbox/useInbox.ts'
+import type { InboxReply } from '../inbox/useInbox.ts'
 
 const ACTION_BUTTON =
   'inline-flex h-8 max-w-full cursor-pointer items-center justify-center rounded-full px-3.5 text-[12px] font-medium outline-none transition-[background-color,color,opacity,transform] duration-150 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-1 focus-visible:ring-offset-surface-raised'
@@ -23,7 +23,7 @@ export function DecisionPulseCard({
   onOpenConversation,
 }: {
   rows: readonly InboxQuestion[]
-  onAnswer: (row: InboxQuestion, reply: HeldReply) => void
+  onAnswer: (row: InboxQuestion, reply: InboxReply) => void
   onOpenConversation: (sessionId: string) => void
 }) {
   const [selected, setSelected] = useState(0)

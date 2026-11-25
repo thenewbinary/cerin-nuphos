@@ -428,13 +428,15 @@ dependencies = [
 
 [[package]]
 name = "cerin-cli"
-version = "0.28.1"
+version = "0.28.2"
 dependencies = [
+ "aes-gcm",
  "anyhow",
  "base64 0.22.1",
  "clap",
  "crossterm",
  "futures-util",
+ "hpke",
  "keyring-core",
  "open",
  "rand 0.8.8",
@@ -1842,43 +1844,12 @@ dependencies = [
 ]
 
 [[package]]
-<<<<<<< origin/main
-=======
 name = "num_threads"
 version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cabcc654086861f9e1bc5115258de62ef92c79b20f4615a1b0cc57c4e82027d4"
 dependencies = [
  "libc",
-]
-
-[[package]]
-name = "cerin-cli"
-version = "0.30.2"
-dependencies = [
- "aes-gcm",
- "anyhow",
- "base64 0.22.1",
- "clap",
- "crossterm",
- "futures-util",
- "hpke",
- "keyring-core",
- "open",
- "rand 0.8.8",
- "ratatui",
- "reqwest",
- "security-framework",
- "serde",
- "serde_json",
- "serde_yaml",
- "sha2 0.10.9",
- "tokio",
- "unicode-width",
- "url",
- "uuid",
- "windows-native-keyring-store",
- "zbus-secret-service-keyring-store",
 ]
 
 [[package]]
@@ -1891,7 +1862,6 @@ dependencies = [
 ]
 
 [[package]]
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 name = "once_cell"
 version = "1.21.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -36,14 +36,9 @@ try {
   await page.screenshot({ path: `${artifacts}/new-user-onboarding.png` })
   // No Claude Code or Codex on this computer: setting them up waits.
   await page.getByRole('button', { name: 'Set up later' }).click()
-<<<<<<< origin/main
-  await page.getByRole('button', { name: 'Open workspace' }).click()
+  await page.getByRole('button', { name: 'Open team' }).click()
   // their first Bot, from the Bots page (sign-in opens Home),
   await page.getByRole('tab', { name: 'Bots' }).click()
-=======
-  await page.getByRole('button', { name: 'Open team' }).click()
-  // their first Bot,
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   await page.getByRole('button', { name: 'New Bot', exact: true }).click()
   await page.getByRole('textbox', { name: 'Bot name' }).fill('E2E Bot')
   await page.getByRole('button', { name: 'Create', exact: true }).click()

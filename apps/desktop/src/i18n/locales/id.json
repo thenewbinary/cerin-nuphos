@@ -266,12 +266,9 @@
   "Add this computer": "Tambahkan komputer ini",
   "Add this page to a design canvas": "Tambahkan halaman ini ke kanvas desain",
   "Add to Cerin": "Tambahkan ke Cerin",
-<<<<<<< origin/main
   "Add to Favorites": "Tambahkan ke Favorit",
-=======
   "Add to Vault": "Tambahkan ke Vault",
   "Add to Vault…": "Tambahkan ke Vault…",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Add to chat": "Tambahkan ke obrolan",
   "Add to design": "Tambahkan ke desain",
   "Add to task": "Tambahkan ke tugas",
@@ -808,11 +805,8 @@
   "Choose {value}.": "Pilih {value}.",
   "Claim": "Claim",
   "Class": "Kelas",
-<<<<<<< origin/main
   "Claude Code and Codex on this computer, with your own sign-in. Your own Bots and tasks use them, and so do teammates you share this computer with. Always on while Cerin is open.": "Claude Code dan Codex di komputer ini, dengan akun Anda sendiri. Dipakai oleh Bot dan tugas Anda sendiri, dan juga oleh rekan tim yang Anda beri akses ke komputer ini. Selalu aktif selama Cerin terbuka.",
-=======
   "Classic": "Klasik",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Claude Code session": "Sesi Claude Code",
   "Claude Code sessions": "Sesi Claude Code",
   "Clear all": "Hapus semua",
@@ -2333,10 +2327,7 @@
   "Install Cerin in Slack, pick channels from the bot DM, then @mention Cerin in those channels.": "Instal Cerin di Slack, pilih kanal dari DM bot, lalu @mention Cerin di kanal tersebut.",
   "Install Discord Bot": "Instal Bot Discord",
   "Install GitHub App": "Instal GitHub App",
-<<<<<<< origin/main
-=======
   "Install Cerin in Slack, connect channels here, and choose the Bot that answers in each one.": "Instal Cerin di Slack, hubungkan kanal di sini, lalu pilih Bot yang menjawab di setiap kanal.",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Install OpenSSH, or run the command on the machine yourself.": "Instal OpenSSH, atau jalankan perintah itu sendiri di mesin tersebut.",
   "Install Slack App": "Instal Aplikasi Slack",
   "Install from GitHub": "Pasang dari GitHub",
@@ -3235,8 +3226,6 @@
   "Notion workspace": "Workspace Notion",
   "Now": "Sekarang",
   "Numeric operational metrics only. Query text, result values, credentials, current operations, and profiler documents are not collected.": "Hanya metrik operasional numerik. Teks kueri, nilai hasil, kredensial, operasi saat ini, dan dokumen profiler tidak dikumpulkan.",
-<<<<<<< origin/main
-=======
   "Cerin can only send from a {domain}, set up under {page}.": "Cerin hanya dapat mengirim dari {domain}, yang disiapkan di {page}.",
   "Cerin cannot reach its own relay right now — this one is on us.": "Cerin tidak dapat menjangkau relay-nya sendiri saat ini — ini kesalahan kami.",
   "Cerin couldn’t find {command} on this computer. If it’s installed, add it to your login shell’s PATH, then reopen Cerin.": "Cerin tidak menemukan {command} di komputer ini. Jika sudah terpasang, tambahkan ke PATH shell login Anda, lalu buka ulang Cerin.",
@@ -3275,7 +3264,6 @@
   "Cerin {version} is ready. Restart to finish updating.": "Cerin {version} siap. Mulai ulang untuk menyelesaikan pembaruan.",
   "Cerin's OIDC connector isn't configured on this backend yet — binding will fail until it is.": "Konektor OIDC Cerin belum dikonfigurasi di backend ini — pengikatan akan gagal sampai dikonfigurasi.",
   "Cerin's own": "milik Cerin sendiri",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "OAuth Client Secret": "OAuth Client Secret",
   "OAuth app": "Aplikasi OAuth",
   "OAuth application ID": "ID aplikasi OAuth",
@@ -3349,11 +3337,8 @@
   "Only {name} can change the plan.": "Hanya {name} yang dapat mengubah paket.",
   "Only {name} can change this.": "Hanya {name} yang dapat mengubah ini.",
   "Open": "Buka",
-<<<<<<< origin/main
-=======
   "Open Connectors": "Buka Konektor",
   "Open IAM in Google Cloud Console": "Buka IAM di Google Cloud Console",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Open Cerin at login": "Buka Cerin saat login",
   "Open Cerin on it and let the update download, then quit it fully (⌘Q on a Mac) and reopen it.": "Buka Cerin di sana dan biarkan pembaruan terunduh, lalu tutup sepenuhnya (⌘Q di Mac) dan buka lagi.",
   "Open Cerin when you sign in to this computer, so its local runtime is back online after a restart.": "Buka Cerin saat Anda masuk ke komputer ini, agar runtime lokalnya kembali online setelah komputer dimulai ulang.",

@@ -492,12 +492,6 @@ jobs:
       matrix:
         part: ['1', '2', bots, standalone]
     needs: changes
-<<<<<<< origin/main
-    # On dispatch `changes` is skipped, which skips this job unless the condition says otherwise.
-    if: ${{ !cancelled() && (github.event_name == 'workflow_dispatch' || needs.changes.outputs.e2e == 'true') }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 60
-=======
     # On dispatch and push `changes` is skipped, which skips this job unless the condition says
     # otherwise. Not in the merge queue: one flaky run there ejects the PR and rebuilds every
     # group behind it. It is not a required check either (#2930), so a PR can merge before
@@ -515,7 +509,6 @@ jobs:
     # cache, the Bot chats about 12 and the standalone leg about 6. A change to prepare.mjs or the
     # openab source misses that cache until it lands on main, and compiling openab adds about 6 minutes.
     timeout-minutes: 50
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
     permissions:
       contents: read
       attestations: read
@@ -557,18 +550,9 @@ jobs:
       - name: Typecheck the scenarios
         run: ./node_modules/.bin/tsc -p scripts/tsconfig.json
       # The scenarios' 60 s wait for MongoDB must not include a cold image pull (#3102).
-<<<<<<< origin/main
-      # Keep the tags in step with MONGO_IMAGE in scripts/e2e/stack.ts and STORAGE_IMAGE in storage.ts.
-      # Ubuntu 24.04 blocks the unprivileged user namespaces Chromium's sandbox needs, so the
-      # headless Chromium `cerin agent` launches exits at once.
-      - name: Let Chromium start its sandbox
-        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      - name: Pull the MongoDB and file store images
-=======
       # Keep the tags in step with MONGO_IMAGE in scripts/e2e/stack.ts, STORAGE_IMAGE in storage.ts
       # and REDIS_IMAGE in replicas.ts.
       - name: Pull the MongoDB, file store and Redis images
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
         run: |
           docker pull mongo:8.0.32
           docker pull rustfs/rustfs:1.0.0

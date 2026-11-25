@@ -1,10 +1,6 @@
 {
   "name": "cerin-backend",
-<<<<<<< origin/main
   "version": "0.145.8",
-=======
-  "version": "0.155.3",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "private": true,
   "type": "module",
   "scripts": {

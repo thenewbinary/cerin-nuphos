@@ -45,24 +45,11 @@ function Keyboard() {
   )
 }
 
-<<<<<<< origin/main
-/** A Box carries Cerin's mark on its top. Other machines carry no maker's mark:
- * the desk draws their shape, not someone else's logo. */
-function Mark({ brand }: { brand: DeskModel['brand'] }) {
-  if (brand !== 'cerin') return null
-
-  return (
-    <svg className="desk-mark is-cerin" viewBox="0 0 128 128" aria-hidden>
-      <image href="/logo-dark-bg.svg" width="128" height="128" />
-    </svg>
-  )
-=======
 /** Only a Cerin Box carries a maker's mark, the app icon; the desk draws other machines' shape, not someone else's logo. */
 function Mark({ brand }: { brand: DeskModel['brand'] }) {
   if (brand !== 'cerin') return null
 
   return <img className="desk-mark is-cerin" src="/cerin-icon.png" alt="" aria-hidden />
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 }
 
 /** Folded shut under the viewer; the lid swings up as the view turns to face it. */

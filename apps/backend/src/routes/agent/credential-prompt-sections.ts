@@ -1,4 +1,3 @@
-import { publicWebUrl } from '@/lib/public-urls'
 import { stripPromptControlChars } from '@/lib/agent/prompt-text'
 
 import type { AgentCredentialOptions } from './types'
@@ -13,10 +12,6 @@ export function appendAwsRoleLines(lines: string[], awsRoles: Options['awsRoles'
   if (awsRoles.length === 0) return
   lines.push('', 'AWS roles:')
   for (const role of awsRoles) {
-<<<<<<< origin/main
-    const accountBase = `${publicWebUrl()}/teams/${encodeURIComponent(teamId)}/infra/aws/${encodeURIComponent(role.accountId)}`
-=======
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
     const accountLabel = role.accountAlias
       ? `${role.accountAlias} (${role.accountId})`
       : role.accountId
@@ -36,10 +31,6 @@ export function appendGcpServiceAccountLines(
   lines.push('', 'GCP service accounts:')
   for (const account of gcpServiceAccounts) {
     const projectBase = `/teams/${teamId}/gcp-projects/${account.projectId}`
-<<<<<<< origin/main
-    const guiBase = `${publicWebUrl()}/teams/${encodeURIComponent(teamId)}/infra/gcp/${encodeURIComponent(account.projectId)}`
-=======
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 
     lines.push(
       `- projectId=${account.projectId}; serviceAccountId=${account.serviceAccountId}; serviceAccountEmail=${account.serviceAccountEmail}; setupCommand="bash skills/gcloud/scripts/setup-credentials.sh ${teamId} ${account.projectId} ${account.serviceAccountId}"; firebaseProjectEndpoint="${projectBase}/firebase/project"; firebaseAppsEndpoint="${projectBase}/firebase/apps"; gceInstancesEndpoint="${projectBase}/gce-instances"; clustersEndpoint="${projectBase}/clusters"; vpcsEndpoint="${projectBase}/vpcs"; firewallsEndpoint="${projectBase}/firewalls"`,
@@ -54,11 +45,6 @@ export function appendOnpremClusterLines(lines: string[], clusters: Options['onp
     'On-prem Kubernetes clusters (each is a context in the kubeconfig `get_kubeconfig` returns; use its contextName):',
   )
   for (const cluster of clusters) {
-<<<<<<< origin/main
-    const guiBase = `${publicWebUrl()}/teams/${encodeURIComponent(teamId)}/k8s/onprem/${encodeURIComponent(cluster.clusterId)}/onprem/${encodeURIComponent(cluster.clusterId)}/workloads/pods`
-
-=======
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
     lines.push(
       `- clusterId=${cluster.clusterId}; label=${safePromptField(cluster.label)}; contextName=${cluster.contextName}`,
     )
@@ -209,10 +195,6 @@ export function appendUptimeKumaInstanceLines(
   lines.push('', 'Uptime Kuma instances:')
   for (const instance of uptimeKumaInstances) {
     const base = `/teams/${teamId}/uptime-kuma-instances/${instance.instanceId}`
-<<<<<<< origin/main
-    const guiBase = `${publicWebUrl()}/teams/${encodeURIComponent(teamId)}/infra/uptime-kuma/${encodeURIComponent(instance.instanceId)}`
-=======
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
     const label = safePromptField(instance.label)
     const baseUrl = safePromptField(instance.baseUrl)
 

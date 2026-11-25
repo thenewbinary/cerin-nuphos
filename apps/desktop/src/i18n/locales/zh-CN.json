@@ -266,12 +266,9 @@
   "Add this computer": "加入这台电脑",
   "Add this page to a design canvas": "把此页面添加到设计画布",
   "Add to Cerin": "添加到 Cerin",
-<<<<<<< origin/main
   "Add to Favorites": "添加到收藏",
-=======
   "Add to Vault": "加入 Vault",
   "Add to Vault…": "加入 Vault…",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Add to chat": "加入聊天",
   "Add to design": "加入设计",
   "Add to task": "添加到任务",
@@ -808,11 +805,8 @@
   "Choose {value}.": "选择 {value}。",
   "Claim": "声明",
   "Class": "类别",
-<<<<<<< origin/main
   "Claude Code and Codex on this computer, with your own sign-in. Your own Bots and tasks use them, and so do teammates you share this computer with. Always on while Cerin is open.": "此电脑上的 Claude Code 和 Codex，使用你自己的登录。你自己的 Bot 和任务可以使用，你共享此电脑的队友也可以使用。Cerin 打开期间始终可用。",
-=======
   "Classic": "经典",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Claude Code session": "Claude Code 会话",
   "Claude Code sessions": "Claude Code 会话",
   "Clear all": "全部清除",
@@ -2333,10 +2327,7 @@
   "Install Cerin in Slack, pick channels from the bot DM, then @mention Cerin in those channels.": "在 Slack 中安装 Cerin，从机器人私信中选择频道，然后在这些频道中 @提及 Cerin。",
   "Install Discord Bot": "安装 Discord 机器人",
   "Install GitHub App": "安装 GitHub 应用",
-<<<<<<< origin/main
-=======
   "Install Cerin in Slack, connect channels here, and choose the Bot that answers in each one.": "在 Slack 中安装 Cerin，在这里连接频道，并为每个频道选择负责回复的 Bot。",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Install OpenSSH, or run the command on the machine yourself.": "请安装 OpenSSH，或自行在该机器上运行命令。",
   "Install Slack App": "安装 Slack 应用",
   "Install from GitHub": "从 GitHub 安装",
@@ -3235,8 +3226,6 @@
   "Notion workspace": "Notion 工作区",
   "Now": "现在",
   "Numeric operational metrics only. Query text, result values, credentials, current operations, and profiler documents are not collected.": "仅采集数值型运维指标，不会采集查询文本、结果值、凭据、当前操作和 profiler 文档。",
-<<<<<<< origin/main
-=======
   "Cerin can only send from a {domain}, set up under {page}.": "Cerin 只能使用在 {page} 中设置的{domain}发送邮件。",
   "Cerin cannot reach its own relay right now — this one is on us.": "Cerin 目前无法连接自己的中继，这是我们这边的问题。",
   "Cerin couldn’t find {command} on this computer. If it’s installed, add it to your login shell’s PATH, then reopen Cerin.": "Cerin 在这台电脑上找不到 {command}。如果已安装，请将它加入登录 shell 的 PATH，然后重新打开 Cerin。",
@@ -3275,7 +3264,6 @@
   "Cerin {version} is ready. Restart to finish updating.": "Cerin {version} 已就绪，重启即可完成更新。",
   "Cerin's OIDC connector isn't configured on this backend yet — binding will fail until it is.": "此后端尚未配置 Cerin 的 OIDC 连接器，配置完成前绑定都会失败。",
   "Cerin's own": "Cerin 自己的",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "OAuth Client Secret": "OAuth 客户端密钥",
   "OAuth app": "OAuth 应用",
   "OAuth application ID": "OAuth 应用 ID",
@@ -3349,11 +3337,8 @@
   "Only {name} can change the plan.": "只有 {name} 可以更改套餐。",
   "Only {name} can change this.": "只有 {name} 可以更改此项。",
   "Open": "打开",
-<<<<<<< origin/main
-=======
   "Open Connectors": "打开连接器",
   "Open IAM in Google Cloud Console": "在 Google Cloud 控制台中打开 IAM",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Open Cerin at login": "登录时打开 Cerin",
   "Open Cerin on it and let the update download, then quit it fully (⌘Q on a Mac) and reopen it.": "在那台电脑上打开 Cerin，等更新下载完成，再完全退出它（Mac 按 ⌘Q）并重新打开。",
   "Open Cerin when you sign in to this computer, so its local runtime is back online after a restart.": "登录这台电脑时打开 Cerin，让本机运行环境在重启后恢复在线。",

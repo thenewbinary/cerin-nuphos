@@ -54,7 +54,6 @@ function matches(doc: Doc, query: Doc): boolean {
     return Array.isArray(actual) ? actual.includes(expected) : actual === expected
   })
 }
-<<<<<<< origin/main
 
 function setDottedValue(doc: Doc, parts: string[], value: unknown): void {
   const [head = '', ...rest] = parts
@@ -71,7 +70,8 @@ function setDottedValue(doc: Doc, parts: string[], value: unknown): void {
   }
   doc[head] ??= {}
   setDottedValue(doc[head], rest, value)
-=======
+}
+
 // The aggregation operators the backend's pipeline updates use.
 function evaluate(doc: Doc, expr: any): any {
   if (typeof expr === 'string' && expr.startsWith('$')) return doc[expr.slice(1)]
@@ -90,7 +90,6 @@ function evaluate(doc: Doc, expr: any): any {
   }
 
   return Object.fromEntries(Object.entries(expr).map(([k, v]) => [k, evaluate(doc, v)]))
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 }
 
 function update(doc: Doc, query: Doc, mutation: Doc) {

@@ -266,12 +266,9 @@
   "Add this computer": "このコンピューターを追加",
   "Add this page to a design canvas": "このページをデザインキャンバスに追加",
   "Add to Cerin": "Cerin に追加",
-<<<<<<< origin/main
   "Add to Favorites": "お気に入りに追加",
-=======
   "Add to Vault": "Vault に追加",
   "Add to Vault…": "Vault に追加…",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Add to chat": "チャットに追加",
   "Add to design": "デザインに追加",
   "Add to task": "タスクに追加",
@@ -808,11 +805,8 @@
   "Choose {value}.": "{value} を選択します。",
   "Claim": "クレーム",
   "Class": "クラス",
-<<<<<<< origin/main
   "Claude Code and Codex on this computer, with your own sign-in. Your own Bots and tasks use them, and so do teammates you share this computer with. Always on while Cerin is open.": "このコンピュータ上の Claude Code と Codex を、ご自身のサインイン情報で使用します。自分のボットやタスクに加え、このコンピュータを共有したチームメンバーも使用できます。Cerin を開いている間は常に有効です。",
-=======
   "Classic": "クラシック",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Claude Code session": "Claude Code セッション",
   "Claude Code sessions": "Claude Code セッション",
   "Clear all": "すべてクリア",
@@ -2333,10 +2327,7 @@
   "Install Cerin in Slack, pick channels from the bot DM, then @mention Cerin in those channels.": "Slack に Cerin をインストールし、ボットの DM でチャンネルを選んでから、そのチャンネルで Cerin を @メンションします。",
   "Install Discord Bot": "Discord ボットをインストール",
   "Install GitHub App": "GitHub App をインストール",
-<<<<<<< origin/main
-=======
   "Install Cerin in Slack, connect channels here, and choose the Bot that answers in each one.": "Slack に Cerin をインストールし、ここでチャンネルを接続して、各チャンネルで応答する Bot を選びます。",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Install OpenSSH, or run the command on the machine yourself.": "OpenSSH をインストールするか、マシン上で自分でコマンドを実行してください。",
   "Install Slack App": "Slack アプリをインストール",
   "Install from GitHub": "GitHub からインストール",
@@ -3235,8 +3226,6 @@
   "Notion workspace": "Notion ワークスペース",
   "Now": "現在",
   "Numeric operational metrics only. Query text, result values, credentials, current operations, and profiler documents are not collected.": "数値の運用メトリクスのみを収集します。クエリテキスト、結果の値、認証情報、現在の操作、プロファイラーのドキュメントは収集しません。",
-<<<<<<< origin/main
-=======
   "Cerin can only send from a {domain}, set up under {page}.": "Cerin は、{page} で設定した{domain}からのみ送信できます。",
   "Cerin cannot reach its own relay right now — this one is on us.": "現在 Cerin 自身のリレーに到達できません。これは当方側の問題です。",
   "Cerin couldn’t find {command} on this computer. If it’s installed, add it to your login shell’s PATH, then reopen Cerin.": "このコンピュータで {command} が見つかりませんでした。インストール済みの場合は、ログインシェルの PATH に追加してから Cerin を開き直してください。",
@@ -3275,7 +3264,6 @@
   "Cerin {version} is ready. Restart to finish updating.": "Cerin {version} の準備ができました。再起動するとアップデートが完了します。",
   "Cerin's OIDC connector isn't configured on this backend yet — binding will fail until it is.": "このバックエンドでは Cerin の OIDC コネクタがまだ設定されていません。設定されるまで紐付けは失敗します。",
   "Cerin's own": "Cerin 自身のもの",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "OAuth Client Secret": "OAuth クライアントシークレット",
   "OAuth app": "OAuth アプリ",
   "OAuth application ID": "OAuth アプリケーション ID",
@@ -3349,11 +3337,8 @@
   "Only {name} can change the plan.": "プランを変更できるのは {name} だけです。",
   "Only {name} can change this.": "これを変更できるのは {name} だけです。",
   "Open": "開く",
-<<<<<<< origin/main
-=======
   "Open Connectors": "コネクタを開く",
   "Open IAM in Google Cloud Console": "Google Cloud コンソールで IAM を開く",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Open Cerin at login": "ログイン時に Cerin を開く",
   "Open Cerin on it and let the update download, then quit it fully (⌘Q on a Mac) and reopen it.": "そのコンピューターで Cerin を開いてアップデートのダウンロードを待ち、完全に終了（Mac では ⌘Q）してから開き直してください。",
   "Open Cerin when you sign in to this computer, so its local runtime is back online after a restart.": "このコンピュータにサインインしたときに Cerin を開き、再起動後もローカルランタイムをオンラインに戻します。",

@@ -266,12 +266,9 @@
   "Add this computer": "เพิ่มคอมพิวเตอร์นี้",
   "Add this page to a design canvas": "เพิ่มหน้านี้ลงในแคนวาสดีไซน์",
   "Add to Cerin": "เพิ่มลงใน Cerin",
-<<<<<<< origin/main
   "Add to Favorites": "เพิ่มในรายการโปรด",
-=======
   "Add to Vault": "เพิ่มใน Vault",
   "Add to Vault…": "เพิ่มใน Vault…",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Add to chat": "เพิ่มในแชท",
   "Add to design": "เพิ่มลงในดีไซน์",
   "Add to task": "เพิ่มในงาน",
@@ -808,11 +805,8 @@
   "Choose {value}.": "เลือก {value}",
   "Claim": "Claim",
   "Class": "คลาส",
-<<<<<<< origin/main
   "Claude Code and Codex on this computer, with your own sign-in. Your own Bots and tasks use them, and so do teammates you share this computer with. Always on while Cerin is open.": "Claude Code และ Codex บนคอมพิวเตอร์นี้ ใช้การลงชื่อเข้าใช้ของคุณเอง บอทและงานของคุณเองและเพื่อนร่วมทีมที่คุณแชร์คอมพิวเตอร์นี้ให้ใช้ได้ เปิดอยู่เสมอขณะที่ Cerin เปิดอยู่",
-=======
   "Classic": "คลาสสิก",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Claude Code session": "เซสชัน Claude Code",
   "Claude Code sessions": "เซสชัน Claude Code",
   "Clear all": "ล้างทั้งหมด",
@@ -2333,10 +2327,7 @@
   "Install Cerin in Slack, pick channels from the bot DM, then @mention Cerin in those channels.": "ติดตั้ง Cerin ใน Slack เลือกช่องจาก DM ของบอท แล้ว @mention Cerin ในช่องเหล่านั้น",
   "Install Discord Bot": "ติดตั้งบอท Discord",
   "Install GitHub App": "ติดตั้ง GitHub App",
-<<<<<<< origin/main
-=======
   "Install Cerin in Slack, connect channels here, and choose the Bot that answers in each one.": "ติดตั้ง Cerin ใน Slack เชื่อมต่อช่องที่นี่ แล้วเลือก Bot ที่ตอบในแต่ละช่อง",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Install OpenSSH, or run the command on the machine yourself.": "ติดตั้ง OpenSSH หรือรันคำสั่งบนเครื่องนั้นด้วยตนเอง",
   "Install Slack App": "ติดตั้งแอป Slack",
   "Install from GitHub": "ติดตั้งจาก GitHub",
@@ -3235,8 +3226,6 @@
   "Notion workspace": "เวิร์กสเปซ Notion",
   "Now": "ตอนนี้",
   "Numeric operational metrics only. Query text, result values, credentials, current operations, and profiler documents are not collected.": "เก็บเฉพาะเมตริกการทำงานที่เป็นตัวเลข จะไม่เก็บข้อความคิวรี ค่าผลลัพธ์ ข้อมูลรับรอง การดำเนินการปัจจุบัน และเอกสารของ profiler",
-<<<<<<< origin/main
-=======
   "Cerin can only send from a {domain}, set up under {page}.": "Cerin ส่งอีเมลได้จาก{domain}ที่ตั้งค่าไว้ใน {page} เท่านั้น",
   "Cerin cannot reach its own relay right now — this one is on us.": "ขณะนี้ Cerin เข้าถึงรีเลย์ของตัวเองไม่ได้ — ปัญหานี้อยู่ที่ฝั่งเรา",
   "Cerin couldn’t find {command} on this computer. If it’s installed, add it to your login shell’s PATH, then reopen Cerin.": "Cerin ไม่พบ {command} บนคอมพิวเตอร์เครื่องนี้ หากติดตั้งแล้ว ให้เพิ่มลงใน PATH ของล็อกอินเชลล์ แล้วเปิด Cerin ใหม่",
@@ -3275,7 +3264,6 @@
   "Cerin {version} is ready. Restart to finish updating.": "Cerin {version} พร้อมแล้ว รีสตาร์ทเพื่ออัปเดตให้เสร็จ",
   "Cerin's OIDC connector isn't configured on this backend yet — binding will fail until it is.": "แบ็กเอนด์นี้ยังไม่ได้กำหนดค่าตัวเชื่อมต่อ OIDC ของ Cerin — การผูกจะล้มเหลวจนกว่าจะกำหนดค่า",
   "Cerin's own": "ของ Cerin เอง",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "OAuth Client Secret": "OAuth Client Secret",
   "OAuth app": "แอป OAuth",
   "OAuth application ID": "ID แอปพลิเคชัน OAuth",
@@ -3349,11 +3337,8 @@
   "Only {name} can change the plan.": "มีเพียง {name} ที่เปลี่ยนแพ็กเกจได้",
   "Only {name} can change this.": "มีเพียง {name} ที่เปลี่ยนค่านี้ได้",
   "Open": "เปิด",
-<<<<<<< origin/main
-=======
   "Open Connectors": "เปิดตัวเชื่อมต่อ",
   "Open IAM in Google Cloud Console": "เปิด IAM ใน Google Cloud Console",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Open Cerin at login": "เปิด Cerin เมื่อเข้าสู่ระบบ",
   "Open Cerin on it and let the update download, then quit it fully (⌘Q on a Mac) and reopen it.": "เปิด Cerin บนเครื่องนั้นแล้วรอให้อัปเดตดาวน์โหลดเสร็จ จากนั้นปิดให้สนิท (⌘Q บน Mac) แล้วเปิดใหม่",
   "Open Cerin when you sign in to this computer, so its local runtime is back online after a restart.": "เปิด Cerin เมื่อคุณเข้าสู่ระบบคอมพิวเตอร์เครื่องนี้ เพื่อให้รันไทม์ภายในเครื่องกลับมาออนไลน์หลังรีสตาร์ต",

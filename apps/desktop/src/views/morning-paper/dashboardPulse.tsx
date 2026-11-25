@@ -7,7 +7,7 @@ import { DecisionPulseCard } from './decisionPills.tsx'
 
 import type { AgentConversation } from '../../api/agent-types.ts'
 import type { InboxQuestion } from '../inbox/inboxItems.ts'
-import type { HeldReply } from '../inbox/useInbox.ts'
+import type { InboxReply } from '../inbox/useInbox.ts'
 
 export function DashboardPulse({
   title,
@@ -31,7 +31,7 @@ export function DashboardPulse({
   bots: readonly AgentConversation[]
   workingBots: readonly AgentConversation[]
   decisions: readonly InboxQuestion[]
-  onAnswer: (row: InboxQuestion, reply: HeldReply) => void
+  onAnswer: (row: InboxQuestion, reply: InboxReply) => void
   onOpenConversation: (sessionId: string) => void
 }) {
   return (

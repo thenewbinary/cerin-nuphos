@@ -185,6 +185,53 @@ export function replyInInbox(
   })
 }
 
+/** How long an Inbox answer waits, its question already gone, before it is sent: its Undo window. */
+export const ANSWER_UNDO_MS = 5_000
+
+// The one Inbox answer waiting out its Undo window: sent with true, undone with false.
+let held: ((send: boolean) => boolean) | undefined
+
+/** Sends the Inbox answer waiting out its Undo window now, if there is one. */
+export function sendHeldAnswer() {
+  held?.(true)
+}
+
+// Closing the window must not lose an answer the viewer already gave.
+if (typeof window !== 'undefined') window.addEventListener('pagehide', sendHeldAnswer)
+
+/**
+ * Answers an Inbox question after {@link ANSWER_UNDO_MS}: it leaves at once, and
+ * the returned undo brings it back unsent until then, and says whether it did. The answer still waiting
+ * goes at once when another is given, or with {@link sendHeldAnswer}. The viewer has moved on by
+ * the time it is sent, so `onFailed` hears why it was refused.
+ */
+export function holdAnswer(
+  teamId: string,
+  sessionId: string,
+  requestId: string,
+  answer: InboxReply,
+  onFailed: (reason: string | undefined) => void,
+): () => boolean {
+  sendHeldAnswer()
+  answered.set(requestId, Infinity)
+  failures.delete(requestId)
+  emit()
+  const finish = (send: boolean): boolean => {
+    clearTimeout(timer)
+    if (held !== finish) return false
+    held = undefined
+    if (send) replyInInbox(teamId, sessionId, requestId, answer, onFailed)
+    else if (answered.delete(requestId)) emit()
+
+    return true
+  }
+  const timer = setTimeout(() => finish(true), ANSWER_UNDO_MS)
+
+  held = finish
+
+  return () => finish(false)
+}
+
 /** Why the last reply to this question failed, if it did. */
 export const answerFailure = (requestId: string) => failures.get(requestId)
 

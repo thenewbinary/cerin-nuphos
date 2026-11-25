@@ -2,13 +2,8 @@ apiVersion: v2
 name: cerin
 description: Self-hosted Cerin backend with MongoDB, RustFS and an optional Claude Code runtime.
 type: application
-<<<<<<< origin/main
 version: 0.3.41
 appVersion: '0.145.8'
-=======
-version: 0.3.72
-appVersion: '0.155.3'
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
 home: https://github.com/thenewbinary/cerin-platform
 sources:
   - https://github.com/thenewbinary/cerin-platform

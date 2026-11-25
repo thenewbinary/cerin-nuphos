@@ -266,12 +266,9 @@
   "Add this computer": "Añadir este equipo",
   "Add this page to a design canvas": "Añadir esta página a un lienzo de diseño",
   "Add to Cerin": "Añadir a Cerin",
-<<<<<<< origin/main
   "Add to Favorites": "Añadir a Favoritos",
-=======
   "Add to Vault": "Añadir al Vault",
   "Add to Vault…": "Añadir al Vault…",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Add to chat": "Agregar al chat",
   "Add to design": "Añadir al diseño",
   "Add to task": "Añadir a la tarea",
@@ -808,11 +805,8 @@
   "Choose {value}.": "Elige {value}.",
   "Claim": "Claim",
   "Class": "Clase",
-<<<<<<< origin/main
   "Claude Code and Codex on this computer, with your own sign-in. Your own Bots and tasks use them, and so do teammates you share this computer with. Always on while Cerin is open.": "Claude Code y Codex en esta computadora, con tu propio inicio de sesión. Los usan tus propios Bots y tareas y también los compañeros con quienes compartes esta computadora. Siempre activos mientras Cerin esté abierto.",
-=======
   "Classic": "Clásico",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Claude Code session": "Sesión de Claude Code",
   "Claude Code sessions": "Sesiones de Claude Code",
   "Clear all": "Borrar todo",
@@ -2333,10 +2327,7 @@
   "Install Cerin in Slack, pick channels from the bot DM, then @mention Cerin in those channels.": "Instala Cerin en Slack, elige canales desde el DM del bot y luego @menciona a Cerin en esos canales.",
   "Install Discord Bot": "Instalar el bot de Discord",
   "Install GitHub App": "Instalar la GitHub App",
-<<<<<<< origin/main
-=======
   "Install Cerin in Slack, connect channels here, and choose the Bot that answers in each one.": "Instala Cerin en Slack, conecta canales aquí y elige el Bot que responde en cada uno.",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Install OpenSSH, or run the command on the machine yourself.": "Instala OpenSSH o ejecuta el comando tú mismo en la máquina.",
   "Install Slack App": "Instalar app de Slack",
   "Install from GitHub": "Instalar desde GitHub",
@@ -3235,8 +3226,6 @@
   "Notion workspace": "Espacio de trabajo de Notion",
   "Now": "Ahora",
   "Numeric operational metrics only. Query text, result values, credentials, current operations, and profiler documents are not collected.": "Solo métricas operativas numéricas. No se recopilan el texto de las consultas, los valores de resultados, las credenciales, las operaciones actuales ni los documentos del profiler.",
-<<<<<<< origin/main
-=======
   "Cerin can only send from a {domain}, set up under {page}.": "Cerin solo puede enviar desde un {domain}, configurado en {page}.",
   "Cerin cannot reach its own relay right now — this one is on us.": "Cerin no puede acceder a su propio relay en este momento; el problema es nuestro.",
   "Cerin couldn’t find {command} on this computer. If it’s installed, add it to your login shell’s PATH, then reopen Cerin.": "Cerin no encontró {command} en esta computadora. Si está instalado, agrégalo al PATH de tu shell de inicio de sesión y vuelve a abrir Cerin.",
@@ -3275,7 +3264,6 @@
   "Cerin {version} is ready. Restart to finish updating.": "Cerin {version} está listo. Reinicia para terminar de actualizar.",
   "Cerin's OIDC connector isn't configured on this backend yet — binding will fail until it is.": "El conector OIDC de Cerin aún no está configurado en este servidor: la vinculación fallará hasta que lo esté.",
   "Cerin's own": "la de Cerin",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "OAuth Client Secret": "Secreto de cliente OAuth",
   "OAuth app": "App OAuth",
   "OAuth application ID": "ID de la aplicación OAuth",
@@ -3349,11 +3337,8 @@
   "Only {name} can change the plan.": "Solo {name} puede cambiar el plan.",
   "Only {name} can change this.": "Solo {name} puede cambiar esto.",
   "Open": "Abrir",
-<<<<<<< origin/main
-=======
   "Open Connectors": "Abrir Conectores",
   "Open IAM in Google Cloud Console": "Abrir IAM en la consola de Google Cloud",
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
   "Open Cerin at login": "Abrir Cerin al iniciar sesión",
   "Open Cerin on it and let the update download, then quit it fully (⌘Q on a Mac) and reopen it.": "Abre Cerin en él y deja que se descargue la actualización; luego ciérralo por completo (⌘Q en un Mac) y vuelve a abrirlo.",
   "Open Cerin when you sign in to this computer, so its local runtime is back online after a restart.": "Abre Cerin cuando inicias sesión en este equipo, para que su entorno de ejecución local vuelva a estar en línea después de reiniciar.",

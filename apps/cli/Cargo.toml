@@ -1,10 +1,6 @@
 [package]
 name = "cerin-cli"
-<<<<<<< origin/main
-version = "0.28.1"
-=======
-version = "0.30.2"
->>>>>>> a52b7a082b4734d1c39a5ca7777f07f38a4bec6c
+version = "0.28.2"
 edition = "2021"
 rust-version = "1.88"
 license = "Apache-2.0"
