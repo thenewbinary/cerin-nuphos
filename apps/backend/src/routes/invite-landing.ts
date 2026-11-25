@@ -33,6 +33,7 @@ function escapeHtml(value: string): string {
 }
 
 const OPEN_APP_URL = 'cerin://open'
+const DOWNLOAD_URL = 'https://cerin.ai/download'
 
 // Builder with no network calls, so copy and escaping are
 // unit-testable (same split as desktop-callback-page / buildInvitationEmail).
@@ -61,7 +62,7 @@ export function inviteLandingPage(teamName: string | null): string {
   invitation was sent to — your invitation will be waiting. Don't have the app yet?
   Download it first.</p>
   <a class="btn" href="${OPEN_APP_URL}">Open Cerin</a>
-  <a class="btn secondary" href="${escapeHtml(publicWebUrl())}/download">Download Cerin</a>
+  <a class="btn secondary" href="${escapeHtml(DOWNLOAD_URL)}">Download Cerin</a>
 </div>
 <script>location.href = ${JSON.stringify(OPEN_APP_URL)}</script>
 </body></html>`
