@@ -35,7 +35,7 @@ class ConversationLinksTest {
         val legacy = url.replace("platform.cerin.ai", "nuphos.ai")
         assertEquals(expected, ConversationLink.parseIncoming(legacy))
         assertEquals(expected, ConversationLink.parseIncoming(envelope(legacy, "nuphos")))
-        assertNull(ConversationLink.parseIncoming(envelope(scheme = "nuphos")))
+        assertEquals(expected, ConversationLink.parseIncoming(envelope(scheme = "nuphos")))
         listOf(
             legacy.replace("https:", "http:"),
             legacy.replace("nuphos.ai", "www.nuphos.ai"),

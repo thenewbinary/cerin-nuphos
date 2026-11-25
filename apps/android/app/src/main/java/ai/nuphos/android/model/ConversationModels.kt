@@ -346,7 +346,7 @@ object PlanLink {
             if (selfHosted) {
                 if (uri.scheme != own.scheme || uri.rawAuthority != own.rawAuthority) return null
             } else if (host != "platform.cerin.ai" && !host.endsWith(".platform.cerin.ai") &&
-                uri.rawAuthority?.lowercase() != "nuphos.ai") return null
+                !(uri.scheme == "https" && uri.rawAuthority?.lowercase() == "nuphos.ai")) return null
         } else if (uri.scheme != null) {
             return null
         }
