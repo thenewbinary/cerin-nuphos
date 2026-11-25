@@ -62,9 +62,9 @@ describe('skill bundle delivery over the session', () => {
       'https://unit-test.invalid/internal/claude-code-runtime-skills/team-1',
     )
     // An owner's own turn may load their personal skills.
-    expect(
-      verifyRuntimeSkillsToken(external.runtimeEnv?.CERIN_RUNTIME_SKILLS_TOKEN ?? ''),
-    ).toEqual({ teamId: 'team-1', userId: 'user-1' })
+    expect(verifyRuntimeSkillsToken(external.runtimeEnv?.CERIN_RUNTIME_SKILLS_TOKEN ?? '')).toEqual(
+      { teamId: 'team-1', userId: 'user-1' },
+    )
     // A guest's turn names nobody: neither the guest's skills nor the owner's.
     const guest = await previewSessionAccess('conv-1', 'team-1', 'user-2', 'user-1', {
       external: true,

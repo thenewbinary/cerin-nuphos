@@ -294,19 +294,19 @@ test('Agents behind the ACP shim get one shim-facing shape with the instructions
   const { sessionMeta } = await import('./openab-acp-session')
 
   for (const provider of ['grok', 'antigravity', 'opencode'] as const)
-    expect(
-      sessionMeta('Cerin context', { provider, env: { CERIN_TOKEN: 'actor-token' } }),
-    ).toEqual({
-      _meta: {
-        'ai.cerin/runtimeAuthority': 2,
-        'dev.openab/permissionPolicy': 'relay',
-        'dev.openab/credentials': { CERIN_TOKEN: 'actor-token' },
-        'ai.cerin/session': {
-          systemPrompt: 'Cerin context',
-          env: { CERIN_TOKEN: 'actor-token' },
+    expect(sessionMeta('Cerin context', { provider, env: { CERIN_TOKEN: 'actor-token' } })).toEqual(
+      {
+        _meta: {
+          'ai.cerin/runtimeAuthority': 2,
+          'dev.openab/permissionPolicy': 'relay',
+          'dev.openab/credentials': { CERIN_TOKEN: 'actor-token' },
+          'ai.cerin/session': {
+            systemPrompt: 'Cerin context',
+            env: { CERIN_TOKEN: 'actor-token' },
+          },
         },
       },
-    })
+    )
 })
 
 const ME = 'me'

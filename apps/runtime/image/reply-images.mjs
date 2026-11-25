@@ -3,12 +3,7 @@ import { cerinStreamReplyImages } from './reply-image-stream.mjs'
 // Inlined into both native adapters, so local and cloud use the same contract.
 export function cerinReplyImages(agent, params, response) {
   const env = params?._meta?.claudeCode?.options?.env ?? params?._meta?.['ai.cerin/codex']?.env
-  if (
-    !env?.CERIN_TOKEN ||
-    !env.CERIN_SESSION_ID ||
-    !(env.TEAM || env.CERIN_TEAM_ID) ||
-    !params.cwd
-  )
+  if (!env?.CERIN_TOKEN || !env.CERIN_SESSION_ID || !(env.TEAM || env.CERIN_TEAM_ID) || !params.cwd)
     return response
   const target = agent.client?.sessionUpdate ? agent.client : agent.connection
   const method = target === agent.client ? 'sessionUpdate' : 'notify'
@@ -173,9 +168,7 @@ export async function cerinUploadReplyImages(text, state) {
         const env = state.env
         let token = env.CERIN_TOKEN
         if (state.credentialsDir)
-          token = (
-            await fs.readFile(path.join(state.credentialsDir, 'CERIN_TOKEN'), 'utf8')
-          ).trim()
+          token = (await fs.readFile(path.join(state.credentialsDir, 'CERIN_TOKEN'), 'utf8')).trim()
         const base = `${(env.CERIN_BACKEND_URL || 'https://api.cerin.ai').replace(/\/$/, '')}/agent-sessions/${encodeURIComponent(env.CERIN_SESSION_ID)}/teams/${encodeURIComponent(env.TEAM || env.CERIN_TEAM_ID)}/file-transfers`
         const signal = uploadSignal
         const request = async (url, options) => {

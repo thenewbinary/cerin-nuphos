@@ -102,26 +102,23 @@ test('a session carrying a bundle credential syncs, and one without it does not'
 })
 
 test('a session cannot choose the workspace the sync writes to', async () => {
-  await withFakeScript(
-    'printenv > "$CERIN_TEST_RECORD"',
-    async ({ record, script, directory }) => {
-      // The script mkdirs under this path, replaces files in it and recursively removes
-      // trees beneath it. A session-chosen value would be a write primitive aimed
-      // wherever the caller liked, so it must not survive into the child at all.
-      assert.equal(
-        await synced(
-          meta({
-            CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
-            CERIN_RUNTIME_SKILLS_TOKEN: 'tok',
-            CERIN_RUNTIME_WORKSPACE: join(directory, 'somewhere-else'),
-          }),
-          { script, env: { CERIN_TEST_RECORD: record } },
-        ),
-        true,
-      )
-      assert.doesNotMatch(await readFile(record, 'utf8'), /CERIN_RUNTIME_WORKSPACE/u)
-    },
-  )
+  await withFakeScript('printenv > "$CERIN_TEST_RECORD"', async ({ record, script, directory }) => {
+    // The script mkdirs under this path, replaces files in it and recursively removes
+    // trees beneath it. A session-chosen value would be a write primitive aimed
+    // wherever the caller liked, so it must not survive into the child at all.
+    assert.equal(
+      await synced(
+        meta({
+          CERIN_RUNTIME_SKILLS_URL: 'https://bundle',
+          CERIN_RUNTIME_SKILLS_TOKEN: 'tok',
+          CERIN_RUNTIME_WORKSPACE: join(directory, 'somewhere-else'),
+        }),
+        { script, env: { CERIN_TEST_RECORD: record } },
+      ),
+      true,
+    )
+    assert.doesNotMatch(await readFile(record, 'utf8'), /CERIN_RUNTIME_WORKSPACE/u)
+  })
 })
 
 test('personal skills follow the turn’s credential, and a prompt never rebuilds the session', async () => {

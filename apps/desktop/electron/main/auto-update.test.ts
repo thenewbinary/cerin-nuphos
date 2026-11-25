@@ -48,8 +48,5 @@ test('the idle wait can be shortened for testing, but not below 30 seconds', () 
   assert.equal(idleThreshold({}), AUTO_INSTALL_IDLE_SECONDS)
   assert.equal(idleThreshold({ CERIN_AUTO_UPDATE_IDLE_SECONDS: '45' }), 45)
   assert.equal(idleThreshold({ CERIN_AUTO_UPDATE_IDLE_SECONDS: '5' }), 30)
-  assert.equal(
-    idleThreshold({ CERIN_AUTO_UPDATE_IDLE_SECONDS: 'soon' }),
-    AUTO_INSTALL_IDLE_SECONDS,
-  )
+  assert.equal(idleThreshold({ CERIN_AUTO_UPDATE_IDLE_SECONDS: 'soon' }), AUTO_INSTALL_IDLE_SECONDS)
 })

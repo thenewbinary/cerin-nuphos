@@ -558,7 +558,6 @@ ghcr.io/thenewbinary/cerin-runtime@sha256:...
 Publishing an image rolls nothing out. Each runtime is moved to a new digest
 deliberately.
 
-
 ## Relationship to openabdev/openab
 
 [`openab/`](openab) is the gateway, vendored from

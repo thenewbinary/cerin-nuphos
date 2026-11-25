@@ -163,10 +163,34 @@ export async function migrateStoredProductValues(): Promise<number> {
   )
   modified += await rewritePrefix('agent_messages', 'metadata.sender.id', `${OLD}:`, 'cerin:')
   modified += await rewriteExact('agent_conversations', 'agentRuntime', OLD, 'cerin')
-  modified += await rewriteInArray('agent_conversations', 'settingsHistory', 'runtime.from.provider', OLD, 'cerin')
-  modified += await rewriteInArray('agent_conversations', 'settingsHistory', 'runtime.to.provider', OLD, 'cerin')
-  modified += await rewriteInArray('agent_conversations', 'timelineEvents', 'fromProvider', OLD, 'cerin')
-  modified += await rewriteInArray('agent_conversations', 'timelineEvents', 'toProvider', OLD, 'cerin')
+  modified += await rewriteInArray(
+    'agent_conversations',
+    'settingsHistory',
+    'runtime.from.provider',
+    OLD,
+    'cerin',
+  )
+  modified += await rewriteInArray(
+    'agent_conversations',
+    'settingsHistory',
+    'runtime.to.provider',
+    OLD,
+    'cerin',
+  )
+  modified += await rewriteInArray(
+    'agent_conversations',
+    'timelineEvents',
+    'fromProvider',
+    OLD,
+    'cerin',
+  )
+  modified += await rewriteInArray(
+    'agent_conversations',
+    'timelineEvents',
+    'toProvider',
+    OLD,
+    'cerin',
+  )
   modified += await rewriteExact('teams', 'agentRuntime', OLD, 'cerin')
   modified += await rewritePrefix(
     'agent_conversations',
