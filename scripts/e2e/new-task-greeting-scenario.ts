@@ -2,7 +2,7 @@ import { join } from 'node:path'
 
 import { LAPTOP, laptopOnline } from './laptop-fixture.ts'
 import { artifacts, until } from './processes.ts'
-import { newTask, pickInSubmenu } from './ui.ts'
+import { newTask, pickAgent, pickInRow } from './ui.ts'
 
 import type { Scenario } from './ui.ts'
 
@@ -15,8 +15,7 @@ export const newTaskGreetingScenario: Scenario = {
     try {
       await newTask(page)
       await page.getByRole('button', { name: /^Runtime:/ }).click()
-      await page.getByRole('menu').getByText(LAPTOP).first().click()
-      await pickInSubmenu(page, page.getByRole('menuitem', { name: /Claude Code/ }).last())
+      await pickInRow(page, LAPTOP, /Claude Code/)
       const banner = page.getByRole('status').filter({ hasText: `${LAPTOP}’s disk is almost full` })
 
       await banner.waitFor()
@@ -31,12 +30,7 @@ export const newTaskGreetingScenario: Scenario = {
         })
         await page.screenshot({ path: join(artifacts, `new-task-notice-${String(width)}.png`) })
       }
-      await page.getByRole('button', { name: /^Runtime:/ }).click()
-      await page.getByRole('menu').getByText('E2E fixture agent').click()
-      await pickInSubmenu(
-        page,
-        page.getByRole('menuitem', { name: /^E2E fixture agent.*Claude Code/ }),
-      )
+      await pickAgent(page, 'E2E fixture agent')
     } finally {
       if (size) await page.setViewportSize(size)
       goOffline()
