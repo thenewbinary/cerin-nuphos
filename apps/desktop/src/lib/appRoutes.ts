@@ -57,7 +57,6 @@ export type {
   RepoProvider,
   SshTerminalLocation,
 } from './app-routes/types.ts'
-
 /**
  * Path segments that follow `/teams/<id>/agent/` and are *pages*, not agent
  * session ids. Anything not listed here is read as a session id — by this
