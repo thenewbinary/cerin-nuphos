@@ -7,6 +7,7 @@ import * as composioClient from '@/lib/composio'
 import { errorHandler } from '@/lib/errors'
 import { useIdentity } from '@/lib/test/doubles/identity'
 import { useModels } from '@/lib/test/doubles/models'
+import { emptyTeamByosBindings } from '@/models'
 
 import type { TeamAuthVariables } from '@/middleware/auth'
 import type { ComposioConnectorPendingOAuth, ConnectorOAuthReady } from '@/models'
@@ -21,6 +22,15 @@ useIdentity({ getTeamMembership: async () => null })
 let pending: ComposioConnectorPendingOAuth[]
 let ready: ConnectorOAuthReady[]
 let stored: Record<string, Record<string, unknown>[]>
+let bindingsExist: boolean
+
+type BindingUpdate = {
+  $push?: Record<string, Record<string, unknown>>
+  $pull?: Record<string, { id?: ObjectId; accountId?: string }>
+  $set?: Record<string, unknown>
+  $setOnInsert?: Record<string, unknown>
+}
+let updates: BindingUpdate[]
 let deleted: string[]
 let linkCounts: Record<string, number>
 let linkCallbacks: string[]
@@ -57,11 +67,17 @@ useModels({
     },
   }),
   teamByosBindings: () => ({
-    findOne: async () => stored,
-    updateOne: async (_filter: unknown, update: Record<string, unknown>) => {
-      const push = update.$push as Record<string, Record<string, unknown>> | undefined
-      const pull = update.$pull as Record<string, { id?: ObjectId; accountId?: string }> | undefined
-      const set = update.$set as Record<string, unknown> | undefined
+    findOne: async () => (bindingsExist ? stored : null),
+    updateOne: async (_filter: unknown, update: BindingUpdate, options?: { upsert?: boolean }) => {
+      updates.push(update)
+      if (!bindingsExist) {
+        if (!options?.upsert) return { matchedCount: 0, modifiedCount: 0 }
+        for (const [field, value] of Object.entries(update.$setOnInsert ?? {})) {
+          if (Array.isArray(value)) stored[field] = value as Record<string, unknown>[]
+        }
+        bindingsExist = true
+      }
+      const { $push: push, $pull: pull, $set: set } = update
 
       if (push) {
         for (const [field, binding] of Object.entries(push)) {
@@ -288,6 +304,8 @@ beforeEach(() => {
   pending = []
   ready = []
   stored = {}
+  bindingsExist = false
+  updates = []
   deleted = []
   linkCounts = {}
   linkCallbacks = []
@@ -435,6 +453,33 @@ async function connect(connector: Connector) {
 
 for (const connector of connectors) {
   describe(`${connector.name} Composio lifecycle`, () => {
+    test('creates its first binding and all other default arrays on a team with no document', async () => {
+      expect(bindingsExist).toBe(false)
+      await connect(connector)
+
+      expect(bindingsExist).toBe(true)
+      for (const field of Object.keys(emptyTeamByosBindings())) {
+        if (field !== connector.field) expect(stored[field]).toEqual([])
+      }
+      for (const update of updates) {
+        for (const field of Object.keys({ ...update.$push, ...update.$set })) {
+          expect(update.$setOnInsert ?? {}).not.toHaveProperty(field)
+        }
+      }
+    })
+
+    test('appends to an existing document without resetting its other bindings or defaults', async () => {
+      bindingsExist = true
+      const existing = { id: new ObjectId(), label: 'Existing AWS role' }
+
+      stored = { awsRoles: [existing] }
+      await connect(connector)
+      expect(stored).toEqual({
+        awsRoles: [existing],
+        [connector.field]: [expect.objectContaining(connector.expected)],
+      })
+    })
+
     test.each(['http://127.0.0.1:3718', 'http://localhost:3718'])(
       'uses the off-cluster loopback backend %s for its callback',
       async (base) => {

@@ -103,13 +103,15 @@ upstashAccountsRoutes.post(
     // pre-check and the $push. When the account is already bound the filter
     // misses, upsert then tries to insert a second doc with this _id, and Mongo
     // rejects it with a duplicate-key error — which is the 409.
+    const { upstashAccounts: _pushed, ...insertDefaults } = emptyTeamByosBindings()
+
     await teamByosBindings()
       .updateOne(
         { _id: teamId, 'upstashAccounts.email': { $ne: email } },
         {
           $push: { upstashAccounts: binding },
           $set: { updatedAt: now },
-          $setOnInsert: emptyTeamByosBindings(),
+          $setOnInsert: insertDefaults,
         },
         { upsert: true },
       )

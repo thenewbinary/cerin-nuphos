@@ -211,16 +211,19 @@ export async function persistComposioConnectorBinding<B extends ComposioBindingB
         logError(`${spec.provider}.previous_connection_cleanup_failed`, error)
       })
     }
-  } else
+  } else {
+    const { [field]: _pushed, ...insertDefaults } = emptyTeamByosBindings()
+
     await teamByosBindings().updateOne(
       { _id: teamId },
       {
         $push: { [field]: binding },
         $set: { updatedAt: new Date() },
-        $setOnInsert: emptyTeamByosBindings(),
+        $setOnInsert: insertDefaults,
       },
       { upsert: true },
     )
+  }
 
   return {
     binding_id: binding.id.toHexString(),
