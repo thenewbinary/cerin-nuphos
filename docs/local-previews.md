@@ -32,9 +32,4 @@ live local fixture page in the production BrowserView, not a drawn mockup.
 These are not installed-app captures. The neutral page source is
 [available here](examples/local-preview.html). No product or customer material is used.
 
-![Before and after, light](images/local-previews/local-preview-before-after.png)
-![Before and after, dark](images/local-previews/local-preview-dark.png)
-![390px](images/local-previews/local-preview-mobile.png)
-![Unavailable page](images/local-previews/local-preview-unavailable.png)
-
 ![Native browser capture](images/local-previews/local-preview-browser.png)
