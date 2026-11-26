@@ -444,7 +444,7 @@
           "fileName": "crash.png",
           "contentType": "image/png",
           "status": "ready",
-          "downloadUrl": "file://$FIXTURE_DIR/../../cerin-ios/Assets.xcassets/AppIcon-B1.appiconset/icon-1024.png"
+          "downloadUrl": "file://$FIXTURE_DIR/../../cerin-ios/Assets.xcassets/AppIcon-A.appiconset/icon-1024.png"
         }
       ]
     }

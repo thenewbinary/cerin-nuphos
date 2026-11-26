@@ -77,14 +77,14 @@ class ProfileLayoutDeviceTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         fun state(id: String) = context.packageManager.getComponentEnabledSetting(ComponentName(context, "ai.cerin.android.Icon$id"))
         compose.onNodeWithContentDescription("Son of Man, Peek").performScrollTo()
-        compose.onNodeWithContentDescription("Napoleon, Bleed").assertIsSelected()
+        compose.onNodeWithContentDescription("Cerin").assertIsSelected()
         capture("app-icon")
+        compose.onNodeWithContentDescription("Pearl Earring, Bleed").performClick()
+        assertEquals(PackageManager.COMPONENT_ENABLED_STATE_ENABLED, state("C2"))
+        assertEquals(PackageManager.COMPONENT_ENABLED_STATE_DISABLED, state("A"))
         compose.onNodeWithContentDescription("Cerin").performClick()
         assertEquals(PackageManager.COMPONENT_ENABLED_STATE_ENABLED, state("A"))
-        assertEquals(PackageManager.COMPONENT_ENABLED_STATE_DISABLED, state("B2"))
-        compose.onNodeWithContentDescription("Napoleon, Bleed").performClick()
-        assertEquals(PackageManager.COMPONENT_ENABLED_STATE_ENABLED, state("B2"))
-        assertEquals(PackageManager.COMPONENT_ENABLED_STATE_DISABLED, state("A"))
+        assertEquals(PackageManager.COMPONENT_ENABLED_STATE_DISABLED, state("C2"))
     }
     @Test fun busyConsentCannotInvokeWithdrawal() {
         render(busy = true)

@@ -91,7 +91,6 @@
     <string name="profile_edit_image_unreadable">この画像を読み込めませんでした。</string>
     <string name="profile_edit_photo_failed">写真を更新できませんでした。もう一度お試しください。</string>
     <string name="profile_edit_save_failed">プロフィールを保存できませんでした。もう一度お試しください。</string>
-    <string name="profile_app_icon_napoleon">ナポレオン</string>
     <string name="profile_app_icon_pearl_earring">真珠の耳飾りの少女</string>
     <string name="profile_app_icon_van_gogh">ゴッホ</string>
     <string name="profile_app_icon_the_scream">叫び</string>

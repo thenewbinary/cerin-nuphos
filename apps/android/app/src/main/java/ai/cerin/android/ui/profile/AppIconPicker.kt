@@ -36,28 +36,34 @@ import ai.cerin.android.R
 import androidx.compose.ui.res.stringResource
 
 // Each icon is a launcher activity-alias `.Icon<id>` in the manifest; the art comes from
-// apps/desktop/scripts/render-app-icons.mjs. B2 is the default; A is the original mark.
+// apps/desktop/scripts/render-app-icons.mjs. A is the default and the original mark.
 private val APP_ICONS = listOf(
     "A" to listOf(R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground),
-    "B1" to listOf(R.drawable.app_icon_b1), "B2" to listOf(R.drawable.app_icon_b2), "B3" to listOf(R.drawable.app_icon_b3),
     "C1" to listOf(R.drawable.app_icon_c1), "C2" to listOf(R.drawable.app_icon_c2), "C3" to listOf(R.drawable.app_icon_c3),
     "D1" to listOf(R.drawable.app_icon_d1), "D2" to listOf(R.drawable.app_icon_d2), "D3" to listOf(R.drawable.app_icon_d3),
     "E1" to listOf(R.drawable.app_icon_e1), "E2" to listOf(R.drawable.app_icon_e2), "E3" to listOf(R.drawable.app_icon_e3),
     "F1" to listOf(R.drawable.app_icon_f1), "F2" to listOf(R.drawable.app_icon_f2), "F3" to listOf(R.drawable.app_icon_f3),
 )
-private val NAMES = listOf(R.string.profile_app_icon_napoleon, R.string.profile_app_icon_pearl_earring, R.string.profile_app_icon_van_gogh,
+private val NAMES = listOf(R.string.profile_app_icon_pearl_earring, R.string.profile_app_icon_van_gogh,
     R.string.profile_app_icon_the_scream, R.string.profile_app_icon_son_of_man)
 private val LAYOUTS = listOf(R.string.profile_app_icon_layout_classic, R.string.profile_app_icon_layout_bleed, R.string.profile_app_icon_layout_peek)
 
 @Composable
 private fun iconName(id: String) =
-    if (id == "A") "Cerin" else "${stringResource(NAMES["BCDEF".indexOf(id[0])])}, ${stringResource(LAYOUTS[id[1].digitToInt() - 1])}"
+    if (id == "A") "Cerin" else "${stringResource(NAMES["CDEF".indexOf(id[0])])}, ${stringResource(LAYOUTS[id[1].digitToInt() - 1])}"
 
 private fun alias(context: Context, id: String) = ComponentName(context, "ai.cerin.android.Icon$id")
 
-private fun currentAppIcon(context: Context): String = APP_ICONS.map { it.first }.firstOrNull {
+internal fun launcherIconForEnabledAliases(enabledIds: List<String>): String {
+    val enabled = enabledIds.toSet()
+    return APP_ICONS.map { it.first }.firstOrNull { it in enabled } ?: "A"
+}
+
+private fun explicitlyEnabledAppIcons(context: Context): List<String> = APP_ICONS.map { it.first }.filter {
     context.packageManager.getComponentEnabledSetting(alias(context, it)) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-} ?: "B2"
+}
+
+private fun currentAppIcon(context: Context): String = launcherIconForEnabledAliases(explicitlyEnabledAppIcons(context))
 
 private fun setAppIcon(context: Context, id: String) {
     // Enable the new entry first so the launcher never has none.
@@ -65,6 +71,19 @@ private fun setAppIcon(context: Context, id: String) {
         val state = if (other == id) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED
         context.packageManager.setComponentEnabledSetting(alias(context, other), state, PackageManager.DONT_KILL_APP)
     }
+}
+
+internal fun reconcileAppIcon(context: Context) {
+    val states = APP_ICONS.map { it.first }.associateWith {
+        context.packageManager.getComponentEnabledSetting(alias(context, it))
+    }
+    val explicitlyEnabled = states.filterValues { it == PackageManager.COMPONENT_ENABLED_STATE_ENABLED }.keys.toList()
+    val launcherEntries = states.count { (id, state) ->
+        state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED ||
+            (id == "A" && state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+    }
+    if (launcherEntries == 1) return
+    setAppIcon(context, launcherIconForEnabledAliases(explicitlyEnabled))
 }
 
 @OptIn(ExperimentalLayoutApi::class)

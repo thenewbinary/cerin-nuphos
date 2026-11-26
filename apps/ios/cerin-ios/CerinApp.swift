@@ -6,6 +6,9 @@ struct CerinApp: App {
     #if canImport(UIKit)
     @UIApplicationDelegateAdaptor(PushAppDelegate.self) private var pushDelegate
     #endif
+    #if os(iOS)
+    @Environment(\.scenePhase) private var scenePhase
+    #endif
     @State private var session = AuthSession()
 
     #if DEBUG
@@ -29,6 +32,11 @@ struct CerinApp: App {
                 .environment(session)
             #endif
         }
+        #if os(iOS)
+        .onChange(of: scenePhase, initial: true) { _, phase in
+            if phase == .active { AppIconPicker.resetRemovedAlternateIconIfNeeded() }
+        }
+        #endif
         .commands { NewChatCommand() }
     }
 }

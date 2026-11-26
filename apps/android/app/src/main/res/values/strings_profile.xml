@@ -98,7 +98,6 @@
     <string name="profile_edit_image_unreadable">This image could not be read.</string>
     <string name="profile_edit_photo_failed">We could not update your photo. Please try again.</string>
     <string name="profile_edit_save_failed">We could not save your profile. Please try again.</string>
-    <string name="profile_app_icon_napoleon">Napoleon</string>
     <string name="profile_app_icon_pearl_earring">Pearl Earring</string>
     <string name="profile_app_icon_van_gogh">Van Gogh</string>
     <string name="profile_app_icon_the_scream">The Scream</string>

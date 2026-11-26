@@ -22,9 +22,9 @@
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/app_icon_b2"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/app_icon_b2"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Cerin"
         android:usesCleartextTraffic="false"
@@ -82,46 +82,10 @@
         <!-- The launcher entry, one per app icon (Account > App icon); exactly one is enabled. -->
         <activity-alias
             android:name=".IconA"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:targetActivity=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".IconB1"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/app_icon_b1"
-            android:roundIcon="@mipmap/app_icon_b1"
-            android:targetActivity=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".IconB2"
-            android:enabled="true"
-            android:exported="true"
-            android:icon="@mipmap/app_icon_b2"
-            android:roundIcon="@mipmap/app_icon_b2"
-            android:targetActivity=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".IconB3"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/app_icon_b3"
-            android:roundIcon="@mipmap/app_icon_b3"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -281,6 +245,11 @@
         </provider>
         <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
         <receiver android:name=".notifications.NotificationReplyReceiver" android:exported="false" />
+        <receiver android:name=".ui.profile.AppIconUpdateReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
         <service android:name=".notifications.CerinMessagingService" android:exported="false">
             <intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT" /></intent-filter>
         </service>
