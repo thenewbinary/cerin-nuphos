@@ -18,12 +18,6 @@ const byok = (env: string) => [env, LINODE, CLOUDFLARE]
  * the rewrap script uses these names to pick the sealer for each stored field.
  */
 export const sealers = {
-  asana: createSealer({
-    subject: 'Asana credentials',
-    keyEnvs: ['ASANA_TOKEN_ENCRYPTION_KEY'],
-    keyId: () => config.byos.asana.encryptionKeyId,
-    recovery: 'Re-bind the Asana account.',
-  }),
   betterStack: createSealer({
     subject: 'Better Stack credentials',
     keyEnvs: ['BETTERSTACK_BYOK_ENCRYPTION_KEY'],
@@ -42,12 +36,6 @@ export const sealers = {
     keyId: () => config.byos.github.encryptionKeyId,
     recovery: 'Reconnect GitHub in Connectors.',
   }),
-  gitlab: createSealer({
-    subject: 'GitLab credentials',
-    keyEnvs: ['GITLAB_TOKEN_ENCRYPTION_KEY'],
-    keyId: () => config.byos.gitlab.encryptionKeyId,
-    recovery: 'Re-bind the GitLab account.',
-  }),
   grafana: createSealer({
     subject: 'Grafana credentials',
     keyEnvs: byok('GRAFANA_BYOK_ENCRYPTION_KEY'),
@@ -65,12 +53,6 @@ export const sealers = {
     keyEnvs: [LINODE, CLOUDFLARE],
     keyId: () => config.byos.instabox.encryptionKeyId,
     recovery: 'Re-bind the instabox account.',
-  }),
-  jira: createSealer({
-    subject: 'Jira credentials',
-    keyEnvs: ['JIRA_TOKEN_ENCRYPTION_KEY'],
-    keyId: () => config.byos.jira.encryptionKeyId,
-    recovery: 'Re-bind the Jira site.',
   }),
   lark: createSealer({
     subject: 'Lark credentials',
@@ -134,12 +116,6 @@ export const sealers = {
     keyId: () => config.byos.secureframe.encryptionKeyId,
     recovery: 'Re-bind the Secureframe integration.',
   }),
-  sentry: createSealer({
-    subject: 'Sentry credentials',
-    keyEnvs: ['SENTRY_TOKEN_ENCRYPTION_KEY'],
-    keyId: () => config.byos.sentry.encryptionKeyId,
-    recovery: 'Re-bind the Sentry account.',
-  }),
   slack: createSealer({
     subject: 'Slack credentials',
     keyEnvs: ['SLACK_TOKEN_ENCRYPTION_KEY', LINEAR],
@@ -193,15 +169,12 @@ export const sealers = {
 
 export type SealerName = keyof typeof sealers
 
-export const { seal: encryptAsanaSecret, open: decryptAsanaSecret } = sealers.asana
 export const { seal: encryptBetterStackToken, open: decryptBetterStackToken } = sealers.betterStack
 export const { seal: encryptCloudflareApiKey, open: decryptCloudflareApiKey } = sealers.cloudflare
 export const { seal: encryptGithubSecret, open: decryptGithubSecret } = sealers.github
-export const { seal: encryptGitlabSecret, open: decryptGitlabSecret } = sealers.gitlab
 export const { seal: encryptGrafanaSecret, open: decryptGrafanaSecret } = sealers.grafana
 export const { seal: encryptHetznerToken, open: decryptHetznerToken } = sealers.hetzner
 export const { seal: encryptInstaboxSecret, open: decryptInstaboxSecret } = sealers.instabox
-export const { seal: encryptJiraSecret, open: decryptJiraSecret } = sealers.jira
 export const { seal: encryptLarkSecret, open: decryptLarkSecret } = sealers.lark
 export const { seal: encryptLinearSecret, open: decryptLinearSecret } = sealers.linear
 export const { seal: encryptLinodeToken, open: decryptLinodeToken } = sealers.linode
@@ -212,7 +185,6 @@ export const { seal: encryptPosthogSecret, open: decryptPosthogSecret } = sealer
 export const { seal: encryptResendSecret, open: decryptResendSecret } = sealers.resend
 export const { seal: encryptSecureframeSecret, open: decryptSecureframeSecret } =
   sealers.secureframe
-export const { seal: encryptSentrySecret, open: decryptSentrySecret } = sealers.sentry
 export const { seal: encryptSlackSecret, open: decryptSlackSecret } = sealers.slack
 export const { seal: encryptSonarqubeSecret, open: decryptSonarqubeSecret } = sealers.sonarqube
 export const { seal: encryptTailscaleClientSecret, open: decryptTailscaleClientSecret } =

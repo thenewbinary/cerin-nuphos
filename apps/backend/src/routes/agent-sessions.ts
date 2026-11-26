@@ -29,11 +29,13 @@ import {
 } from '@/routes/agent-sessions/cloud-accounts'
 import { cnCloudScoped } from '@/routes/agent-sessions/cn-clouds'
 import { projectScoped } from '@/routes/agent-sessions/gcp'
+import { gitlabScoped } from '@/routes/agent-sessions/gitlab'
 import { asanaScoped, jiraScoped, linearScoped } from '@/routes/agent-sessions/issue-trackers'
 import { plaudScoped } from '@/routes/agent-sessions/plaud'
 import { posthogScoped } from '@/routes/agent-sessions/posthog'
 import { resendScoped, sentryScoped } from '@/routes/agent-sessions/resend-sentry'
 import { requireCloudCredentialRole } from '@/routes/agent-sessions/shared'
+import { slackScoped } from '@/routes/agent-sessions/slack'
 import { tailscaleScoped } from '@/routes/agent-sessions/tailscale'
 import { trelloScoped } from '@/routes/agent-sessions/trello'
 import { uptimeKumaScoped } from '@/routes/agent-sessions/uptime-kuma'
@@ -213,7 +215,7 @@ teamScoped.get('/mcp-tools', sseUnsupported)
 //     aws-accounts/:accountId/credentials
 //     aws-accounts/:accountId/clusters/:name/kubeconfig
 //     gcp-projects/:projectId/clusters/:name/kubeconfig
-//     cloudflare-accounts/:accountId/credentials
+//     cloudflare-accounts/:accountId/proxy
 //     linode-accounts/:accountId/credentials
 //     betterstack-integrations/:integrationId/credentials
 //     uptime-kuma-instances/:instanceId/monitors
@@ -230,8 +232,10 @@ teamScoped.route('/uptime-kuma-instances/:instanceId', uptimeKumaScoped)
 teamScoped.route('/linear-workspaces/:bindingId', linearScoped)
 teamScoped.route('/jira-sites/:bindingId', jiraScoped)
 teamScoped.route('/asana-accounts/:bindingId', asanaScoped)
+teamScoped.route('/gitlab-bindings/:bindingId', gitlabScoped)
 teamScoped.route('/resend-integrations/:integrationId', resendScoped)
 teamScoped.route('/trello-integrations/:integrationId', trelloScoped)
+teamScoped.route('/slack-integrations/:integrationId', slackScoped)
 teamScoped.route('/sentry-accounts/:bindingId', sentryScoped)
 teamScoped.route('/posthog-integrations/:integrationId', posthogScoped)
 teamScoped.route('/plaud-accounts/:bindingId', plaudScoped)

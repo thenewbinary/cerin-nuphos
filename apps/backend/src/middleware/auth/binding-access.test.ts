@@ -63,11 +63,11 @@ describe('bindingAccessPrincipals', () => {
 
 describe('Cloudflare binding member list', () => {
   test('a binding without a list stays open to the team', async () => {
-    expect((await app(undefined, { userId: 'u2' }).request('/credentials')).status).toBe(200)
+    expect((await app(undefined, { userId: 'u2' }).request('/')).status).toBe(200)
   })
 
   test('refuses an editor who is not on the list', async () => {
-    const response = await app(['u1'], { userId: 'u2' }).request('/credentials')
+    const response = await app(['u1'], { userId: 'u2' }).request('/')
 
     expect(response.status).toBe(403)
     expect(await response.json()).toMatchObject({
@@ -76,7 +76,7 @@ describe('Cloudflare binding member list', () => {
   })
 
   test('serves an editor on the list', async () => {
-    expect((await app(['u1'], { userId: 'u1' }).request('/credentials')).status).toBe(200)
+    expect((await app(['u1'], { userId: 'u1' }).request('/')).status).toBe(200)
   })
 
   test('refuses a conversation whose owner is not on the list, even when the sender is', async () => {
@@ -85,8 +85,8 @@ describe('Cloudflare binding member list', () => {
       conversationAgent: { userId: 'u1', sessionId: 's', conversationOwnerUserId: 'u2' },
     }
 
-    expect((await app(['u1'], caller).request('/credentials')).status).toBe(403)
-    expect((await app(['u1', 'u2'], caller).request('/credentials')).status).toBe(200)
+    expect((await app(['u1'], caller).request('/')).status).toBe(403)
+    expect((await app(['u1', 'u2'], caller).request('/')).status).toBe(200)
   })
 
   test('lets an admin who is not on the list read the list', async () => {
@@ -105,13 +105,13 @@ describe('Cloudflare binding member list', () => {
   test('lets an admin off the list use a binding shared with specific people', async () => {
     const admin = { role: 'ADMINISTRATOR' as const, userId: 'admin' }
 
-    expect((await app(['u1', 'u2'], admin).request('/credentials')).status).toBe(200)
+    expect((await app(['u1', 'u2'], admin).request('/')).status).toBe(200)
   })
 
   test("refuses an admin another member's private binding", async () => {
     const admin = { role: 'ADMINISTRATOR' as const, userId: 'admin' }
 
-    expect((await app(['u1'], admin).request('/credentials')).status).toBe(403)
+    expect((await app(['u1'], admin).request('/')).status).toBe(403)
   })
 
   test('gives a conversation token no admin exception', async () => {
@@ -121,6 +121,6 @@ describe('Cloudflare binding member list', () => {
       conversationAgent: { userId: 'admin', sessionId: 's' },
     }
 
-    expect((await app(['u1', 'u2'], caller).request('/credentials')).status).toBe(403)
+    expect((await app(['u1', 'u2'], caller).request('/')).status).toBe(403)
   })
 })

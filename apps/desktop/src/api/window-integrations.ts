@@ -16,6 +16,7 @@ import type {
   ZeaburServer,
 } from '../types/infra-integrations.ts'
 import type { BindingAccess } from '../types/k8s-core.ts'
+import type { SlackBindResult, SlackIntegration } from '../types/messaging.ts'
 import type {
   AliyunAccount,
   AliyunOidcInfo,
@@ -166,6 +167,10 @@ export type WindowIntegrationsApi = {
   ): Promise<BindingAccess>
   atlasListResendIntegrations(teamId: string): Promise<ResendIntegration[]>
   atlasListTrelloIntegrations(teamId: string): Promise<TrelloIntegration[]>
+  atlasStartSlackIntegrationOAuth(teamId: string, share?: BindingShare): Promise<SlackBindResult>
+  atlasCancelSlackIntegrationOAuth(teamId: string): Promise<void>
+  atlasListSlackIntegrations(teamId: string): Promise<SlackIntegration[]>
+  atlasUnbindSlackIntegration(teamId: string, integrationId: string): Promise<void>
   atlasBindResendIntegration(
     teamId: string,
     label: string,

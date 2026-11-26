@@ -104,6 +104,7 @@ export function useWorkspaceTeamResources(a: Args) {
             plaud: bundle.plaud ?? [],
             discordConnection: bundle.discord ?? null,
             slackInstallation: bundle.slack?.installation ?? null,
+            slackIntegrations: bundle.slackIntegrations ?? [],
             slackLinkedChannels: bundle.slack?.linkedChannels ?? null,
             larkInstallation: bundle.lark?.installation ?? null,
           }),

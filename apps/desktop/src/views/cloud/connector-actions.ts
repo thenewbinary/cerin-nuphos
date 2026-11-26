@@ -8,14 +8,12 @@ export type ConnectorAddAction = { label: string; mode: BindMode }
 
 /**
  * What the "add" affordance does for a connector kind that already has a
- * connection. Most kinds accept any number of connections; Slack re-runs its
- * OAuth flow against the same workspace, and Lark holds exactly one app per
- * team, so their add action replaces the stored credentials.
+ * connection. Most kinds accept any number of connections; Lark holds exactly
+ * one app per team, so its add action replaces the stored credentials.
  */
 export function installedConnectorAddAction(
   provider: AddIntegrationKey,
 ): ConnectorAddAction | null {
-  if (provider === 'slack') return { label: t('Reinstall'), mode: 'reinstall' }
   if (provider === 'lark') return { label: t('Reconfigure'), mode: 'reinstall' }
 
   return { label: t('Add'), mode: 'install' }

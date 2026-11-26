@@ -18,7 +18,7 @@ export function appendLinearWorkspaceLines(
     const name = safePromptField(workspace.workspaceName)
 
     lines.push(
-      `- workspaceId=${workspace.workspaceId}; label=${label}; workspaceName=${name}; setupCommand="bash skills/linear/scripts/setup-credentials.sh ${teamId} ${workspace.workspaceId}"`,
+      `- workspaceId=${workspace.workspaceId}; label=${label}; workspaceName=${name}; use the linear skill's session proxy for team ${teamId}`,
     )
   }
 }
@@ -38,7 +38,7 @@ export function appendJiraSiteLines(
     const siteUrl = safePromptField(site.siteUrl)
 
     lines.push(
-      `- siteId=${site.siteId}; label=${label}; siteUrl=${siteUrl}; setupCommand="bash skills/jira/scripts/setup-credentials.sh ${teamId} ${site.siteId}"`,
+      `- siteId=${site.siteId}; label=${label}; siteUrl=${siteUrl}; cloudId=${site.cloudId}; use the jira skill's session proxy for team ${teamId}`,
     )
   }
 }
@@ -58,7 +58,7 @@ export function appendAsanaAccountLines(
     const email = safePromptField(account.accountEmail ?? '')
 
     lines.push(
-      `- accountId=${account.accountId}; label=${label}; email=${email}; setupCommand="bash skills/asana/scripts/setup-credentials.sh ${teamId} ${account.accountId}"`,
+      `- accountId=${account.accountId}; label=${label}; email=${email}; use the asana skill's session proxy for team ${teamId}`,
     )
   }
 }
@@ -71,14 +71,11 @@ export function appendSentryAccountLines(
   if (sentryAccounts.length === 0) return
   lines.push('', 'Sentry accounts:')
   for (const account of sentryAccounts) {
-    // label/email come from the Sentry account and land in a high-authority
-    // system message; strip control chars so a newline can't inject prompt
-    // lines that rewrite the credential instructions.
     const label = safePromptField(account.label)
-    const email = safePromptField(account.userEmail ?? '')
+    const organization = safePromptField(account.organizationName ?? '')
 
     lines.push(
-      `- accountId=${account.accountId}; label=${label}; email=${email}; setupCommand="bash skills/sentry/scripts/setup-credentials.sh ${teamId} ${account.accountId}"`,
+      `- accountId=${account.accountId}; label=${label}; organization=${organization}; use the sentry skill's session proxy for team ${teamId}`,
     )
   }
 }

@@ -1,18 +1,11 @@
 import { z } from 'zod'
 
 import { registerBindingAccessRoutes } from '@/lib/byos/access-routes'
-import {
-  invalidateAccessToken,
-  getAccessTokenWithExpiry,
-  listMergeRequests,
-  listNamespaces,
-  listPipelines,
-  listProjects,
-} from '@/lib/byos/gitlab'
+import { listMergeRequests, listNamespaces, listPipelines, listProjects } from '@/lib/byos/gitlab'
+import { deleteComposioAccountBestEffort } from '@/lib/composio-connect'
 import { parseObjectId } from '@/lib/objectid'
 import { zv } from '@/lib/validate'
 import { disconnectBinding, requireCanDisconnect, requireTeamRole } from '@/middleware/auth'
-import { teamByosBindings } from '@/models'
 import { handleGitlabError, publicView } from '@/routes/gitlab-bindings/shared'
 
 import type { GitlabBindingVariables } from '@/middleware/auth'
@@ -53,7 +46,9 @@ export function registerGitlabBindingAdminRoutes(
       const binding = c.get('gitlabBinding')
 
       await disconnectBinding(c, teamId, 'gitlabAccounts', { id: binding.id })
-      invalidateAccessToken(teamId, binding.id)
+      // After the guarded pull, best effort: the binding is already gone, and a
+      // failure only leaves an unreferenced Composio account.
+      await deleteComposioAccountBestEffort('gitlab', binding.composioAccountId)
 
       return c.body(null, 204)
     },
@@ -69,33 +64,6 @@ export function registerGitlabBindingScopedRoutes(
     const binding = c.get('gitlabBinding')
 
     return c.json(publicView(binding))
-  })
-
-  // Agent credential handout, mirroring github-installations /token: the
-  // sandbox exchanges its CERIN_TOKEN for the binding's short-lived (~2 h,
-  // auto-refreshed) OAuth access token and talks to GitLab directly.
-  bindingScoped.get('/token', requireTeamRole('ADMINISTRATOR', 'EDITOR'), async (c) => {
-    const teamId = parseObjectId(c.get('teamId'), 'teamId')
-    const binding = c.get('gitlabBinding')
-
-    try {
-      const { token, expiresAt } = await getAccessTokenWithExpiry(teamId, binding)
-
-      if (expiresAt) c.header('X-Credentials-Expires-At', expiresAt.toISOString())
-      // A reusable bearer token over GET must never be cached by intermediaries.
-      c.header('Cache-Control', 'no-store, private')
-      c.header('Pragma', 'no-cache')
-
-      return c.json({
-        token,
-        expiresAt: expiresAt?.toISOString() ?? null,
-        hostUrl: binding.hostUrl,
-        username: binding.username,
-        scope: binding.scope,
-      })
-    } catch (e) {
-      handleGitlabError(e, 'Failed to obtain GitLab access token')
-    }
   })
 
   bindingScoped.get('/namespaces', async (c) => {

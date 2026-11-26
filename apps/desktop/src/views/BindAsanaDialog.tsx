@@ -80,7 +80,7 @@ export function BindAsanaDialog({ open, teamId, onClose, onBound }: Props) {
       onClose={close}
       title={t('Connect {name}', { name: 'Asana' })}
       description={t(
-        'Authorize Cerin to read and create tasks in your Asana account so it can open, comment on, and complete them.',
+        'Connect Asana through Composio so Cerin can read, create, comment on, and complete tasks. Access starts with the authorizing member only.',
       )}
       width={460}
     >

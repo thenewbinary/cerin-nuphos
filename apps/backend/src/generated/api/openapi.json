@@ -513,6 +513,33 @@
                       },
                       "default": []
                     },
+                    "slackIntegrations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "integrationId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{24}$"
+                          },
+                          "label": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "teamName": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "integrationId",
+                          "label",
+                          "teamName"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "default": []
+                    },
                     "resendIntegrations": {
                       "type": "array",
                       "items": {
@@ -794,6 +821,14 @@
                         },
                         "default": []
                       },
+                      "slackIntegrationIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{24}$"
+                        },
+                        "default": []
+                      },
                       "githubInstallationIds": {
                         "type": "array",
                         "items": {
@@ -855,8 +890,7 @@
                         "items": {
                           "type": "string",
                           "enum": [
-                            "github",
-                            "linear"
+                            "github"
                           ]
                         }
                       },
@@ -866,7 +900,6 @@
                           "type": "string",
                           "enum": [
                             "github",
-                            "linear",
                             "gmail",
                             "google-drive",
                             "google-calendar"
@@ -1037,6 +1070,13 @@
                             "pattern": "^[a-f0-9]{24}$"
                           }
                         },
+                        "slackIntegrationIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{24}$"
+                          }
+                        },
                         "githubInstallationIds": {
                           "type": "array",
                           "items": {
@@ -1098,8 +1138,7 @@
                           "items": {
                             "type": "string",
                             "enum": [
-                              "github",
-                              "linear"
+                              "github"
                             ]
                           }
                         },
@@ -1109,7 +1148,6 @@
                             "type": "string",
                             "enum": [
                               "github",
-                              "linear",
                               "gmail",
                               "google-drive",
                               "google-calendar"
@@ -1617,6 +1655,33 @@
                           },
                           "default": []
                         },
+                        "slackIntegrations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "integrationId": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{24}$"
+                              },
+                              "label": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "teamName": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "integrationId",
+                              "label",
+                              "teamName"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "default": []
+                        },
                         "resendIntegrations": {
                           "type": "array",
                           "items": {
@@ -1995,102 +2060,6 @@
         }
       }
     },
-    "/agent-sessions/{sessionId}/teams/{teamId}/cloudflare-accounts/{accountId}/credentials": {
-      "get": {
-        "operationId": "agentSessions.cloudflareCredentials.get",
-        "tags": [
-          "Agent sessions",
-          "Cloudflare credentials"
-        ],
-        "summary": "Fetch Cloudflare credentials for an agent session",
-        "description": "Return the Cloudflare API token for a Cloudflare account bound to the team.",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "sessionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Agent conversation/session id."
-            }
-          },
-          {
-            "name": "teamId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{24}$",
-              "description": "Cerin team id."
-            }
-          },
-          {
-            "name": "accountId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{32}$",
-              "description": "Cloudflare account id."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "accountId": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "accountName": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "apiKey": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "authType": {
-                      "type": "string",
-                      "enum": [
-                        "api_token"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "accountId",
-                    "accountName",
-                    "apiKey",
-                    "authType"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        }
-      }
-    },
     "/agent-sessions/{sessionId}/teams/{teamId}/tailscale-clients/{clientId}/credentials": {
       "get": {
         "operationId": "agentSessions.tailscaleCredentials.get",
@@ -2383,91 +2352,6 @@
                     "projectId",
                     "serviceAccountEmail",
                     "expiresAt"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        }
-      }
-    },
-    "/teams/{teamId}/cloudflare-accounts/{accountId}/credentials": {
-      "get": {
-        "operationId": "teams.cloudflareCredentials.get",
-        "tags": [
-          "Cloudflare credentials"
-        ],
-        "summary": "Fetch Cloudflare credentials",
-        "description": "Return the Cloudflare API token for a Cloudflare account bound to the team.",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "teamId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{24}$",
-              "description": "Cerin team id."
-            }
-          },
-          {
-            "name": "accountId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{32}$",
-              "description": "Cloudflare account id."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "accountId": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "accountName": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "apiKey": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "authType": {
-                      "type": "string",
-                      "enum": [
-                        "api_token"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "accountId",
-                    "accountName",
-                    "apiKey",
-                    "authType"
                   ],
                   "additionalProperties": false
                 }

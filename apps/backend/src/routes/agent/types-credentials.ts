@@ -23,6 +23,7 @@ export type AgentCredentialSelection = {
   secureframeIntegrationIds?: string[]
   resendIntegrationIds?: string[]
   trelloIntegrationIds?: string[]
+  slackIntegrationIds?: string[]
   posthogIntegrationIds?: string[]
   plaudAccountIds?: string[]
   githubInstallationIds?: string[]
@@ -34,7 +35,7 @@ export type AgentCredentialSelection = {
   cloudflareAccountIds?: string[]
   instaboxAccountIds?: string[]
   deviceIds?: string[]
-  teamIdentity?: ('github' | 'linear')[]
+  teamIdentity?: 'github'[]
   /** The owner's own Personal Credentials this conversation may use, without a team binding. */
   personalCredentialIds?: PersonalCredentialProvider[]
   allCredentials?: boolean
@@ -113,6 +114,7 @@ export type AgentCredentialOptions = {
     siteId: string
     label: string
     siteUrl: string
+    cloudId: string
   }[]
   asanaAccounts: {
     accountId: string
@@ -122,7 +124,7 @@ export type AgentCredentialOptions = {
   sentryAccounts: {
     accountId: string
     label: string
-    userEmail: string | null
+    organizationName: string | null
   }[]
   tailscaleClients: {
     clientId: string
@@ -145,6 +147,7 @@ export type AgentCredentialOptions = {
     region: 'us' | 'uk'
   }[]
   trelloIntegrations?: { integrationId: string; label: string; username: string }[]
+  slackIntegrations?: { integrationId: string; label: string; teamName: string | null }[]
   resendIntegrations: {
     integrationId: string
     label: string

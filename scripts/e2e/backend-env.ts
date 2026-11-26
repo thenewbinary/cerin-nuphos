@@ -16,13 +16,6 @@ export function backendEnv(port: number, apiUrl: string, mongoUri: string) {
     ATLAS_REDIS_ENABLED: 'false',
     CERIN_DEV_EMAIL_OTP_LOG: 'true',
     CERIN_LOCAL_STACK: 'true',
-    // Cloudflare is never reached: a scenario answers for it on this redirect.
-    CLOUDFLARE_OAUTH_CLIENT_ID: 'e2e-cloudflare-client',
-    CLOUDFLARE_OAUTH_CLIENT_SECRET: 'e2e-cloudflare-secret-not-a-production-credential',
-    CLOUDFLARE_OAUTH_SETUP_REDIRECT: `${apiUrl}/cloudflare-app/setup`,
-    // GitLab: a scenario serves the instance on this computer and answers its redirect.
-    GITLAB_OAUTH_SETUP_REDIRECT: `${apiUrl}/gitlab-app/setup`,
-    GITLAB_TOKEN_ENCRYPTION_KEY: 'bG9jYWwtZTJlLWdpdGxhYi1rZXktbm90LXByb2R1Y3Q=',
     OUTBOUND_ALLOW_PRIVATE_HOSTS: 'true',
     // Seals two-factor secrets (sealers.mfa).
     LINODE_BYOK_ENCRYPTION_KEY: 'bG9jYWwtZTJlLWxpbm9kZS1rZXktbm90LXByb2R1Y3Q=',

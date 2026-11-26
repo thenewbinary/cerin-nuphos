@@ -11,8 +11,6 @@ import { open } from './seal'
 
 import type { PersonalCredential, PersonalCredentialProvider } from '@/models'
 
-const LINEAR_REVOKE_URL = 'https://api.linear.app/oauth/revoke'
-
 async function revokeAtProvider(doc: PersonalCredential): Promise<void> {
   if (doc.composioAccountId) return deleteComposioAccount(doc.composioAccountId)
   if (!doc.encryptedAccessToken) return
@@ -20,11 +18,6 @@ async function revokeAtProvider(doc: PersonalCredential): Promise<void> {
 
   if (doc.provider === 'github') return revokeGithubToken(token)
   if (isGoogleProvider(doc.provider)) return revokeGoogleToken(token)
-  await fetch(LINEAR_REVOKE_URL, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    signal: AbortSignal.timeout(10_000),
-  })
 }
 
 /** Best-effort: deletes the grant at its provider. */

@@ -3,109 +3,30 @@ import { db } from '@/lib/db'
 import type { BindingAccess, BindingShareChoice, EncryptedEnvelope } from '@/models/common'
 import type { Collection, ObjectId } from 'mongodb'
 
-export type GitlabPendingOAuth = {
-  // The state token returned to the desktop and echoed back by GitLab.
-  _id: string
-  teamId: ObjectId
-  requesterUserId: string
-  share?: BindingShareChoice
-  hostUrl: string
-  clientId: string
-  // null when the binding will use the server-default gitlab.com OAuth app.
-  encryptedClientSecret: EncryptedEnvelope | null
-  // Mongo TTL index removes expired pending records 10 min after expiresAt.
-  expiresAt: Date
-}
-
-export const gitlabPendingOAuth = (): Collection<GitlabPendingOAuth> =>
-  db().collection<GitlabPendingOAuth>('gitlab_oauth_pending')
-
-export type CloudflarePendingOAuth = {
-  // The state token returned to the desktop and echoed back by Cloudflare.
-  _id: string
-  teamId: ObjectId
-  requesterUserId: string
-  share?: BindingShareChoice
-  // Mongo TTL index removes expired pending records once expiresAt passes.
-  expiresAt: Date
-}
-
-export const cloudflarePendingOAuth = (): Collection<CloudflarePendingOAuth> =>
-  db().collection<CloudflarePendingOAuth>('cloudflare_oauth_pending')
+/**
+ * Connectors whose provider grant lives in a Composio connected account
+ * (Trello keeps its own pending collection; these seven share this one).
+ */
+export type ComposioConnectorProvider =
+  'trello' | 'linear' | 'jira' | 'asana' | 'sentry' | 'gitlab' | 'cloudflare' | 'slack'
 
 /**
- * Result of a completed Cloudflare OAuth callback, keyed by the same `state`
- * token the desktop holds. The desktop polls this so the bind completes, or
- * fails with Cloudflare's reason, even when the `cerin://` deep link is
- * captured by another app instance. Holds only non-sensitive metadata (never
- * tokens); a Mongo TTL index reaps it.
+ * A started Composio Connect Link flow, keyed by the one-time state token.
+ * The account id comes from the flow's start, never the callback URL.
+ * Mongo TTL index removes expired pending records once expiresAt passes.
  */
-export type CloudflareOAuthResult = {
+export type ComposioConnectorPendingOAuth = {
   _id: string
-  teamId: ObjectId
-  expiresAt: Date
-  // Set on a bind.
-  bindingId?: ObjectId
-  accountId?: string
-  accountName?: string | null
-  // Set when Cloudflare rejected the attempt instead.
-  error?: string
-  errorDescription?: string
-}
-
-export const cloudflareOAuthResult = (): Collection<CloudflareOAuthResult> =>
-  db().collection<CloudflareOAuthResult>('cloudflare_oauth_result')
-export type LinearPendingOAuth = {
-  // The state token returned to the desktop and echoed back by Linear.
-  _id: string
+  provider: ComposioConnectorProvider
   teamId: ObjectId
   requesterUserId: string
   share?: BindingShareChoice
-  // Mongo TTL index removes expired pending records 10 min after expiresAt.
+  composioAccountId: string
   expiresAt: Date
 }
 
-export const linearPendingOAuth = (): Collection<LinearPendingOAuth> =>
-  db().collection<LinearPendingOAuth>('linear_oauth_pending')
-
-export type JiraPendingOAuth = {
-  // The state token returned to the desktop and echoed back by Atlassian.
-  _id: string
-  teamId: ObjectId
-  requesterUserId: string
-  share?: BindingShareChoice
-  // Mongo TTL index removes expired pending records 10 min after expiresAt.
-  expiresAt: Date
-}
-
-export const jiraPendingOAuth = (): Collection<JiraPendingOAuth> =>
-  db().collection<JiraPendingOAuth>('jira_oauth_pending')
-
-export type AsanaPendingOAuth = {
-  // The state token returned to the desktop and echoed back by Asana.
-  _id: string
-  teamId: ObjectId
-  requesterUserId: string
-  share?: BindingShareChoice
-  // Mongo TTL index removes expired pending records 10 min after expiresAt.
-  expiresAt: Date
-}
-
-export const asanaPendingOAuth = (): Collection<AsanaPendingOAuth> =>
-  db().collection<AsanaPendingOAuth>('asana_oauth_pending')
-
-export type SentryPendingOAuth = {
-  // The state token returned to the desktop and echoed back by Sentry.
-  _id: string
-  teamId: ObjectId
-  requesterUserId: string
-  share?: BindingShareChoice
-  // Mongo TTL index removes expired pending records 10 min after expiresAt.
-  expiresAt: Date
-}
-
-export const sentryPendingOAuth = (): Collection<SentryPendingOAuth> =>
-  db().collection<SentryPendingOAuth>('sentry_oauth_pending')
+export const composioConnectorPendingOAuth = (): Collection<ComposioConnectorPendingOAuth> =>
+  db().collection<ComposioConnectorPendingOAuth>('composio_connector_oauth_pending')
 
 export type SlackPendingOAuth = {
   _id: string

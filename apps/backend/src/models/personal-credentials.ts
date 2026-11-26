@@ -11,10 +11,9 @@ export {
 } from './personal-credential-providers'
 
 /**
- * A member's own GitHub (user-to-server), Linear (actor=user) or Google OAuth
- * grant. One per user and provider. The GitHub and Linear handouts return it in
- * place of the team token when this member sent the turn's message; Gmail and
- * Google Drive have no team token and are only ever the member's own.
+ * A member's own GitHub (user-to-server) or Google OAuth grant. The GitHub
+ * handout returns it in place of the team token when this member sent the
+ * turn's message; Google grants are only ever the member's own.
  */
 export type PersonalCredential = {
   _id: ObjectId
@@ -22,9 +21,7 @@ export type PersonalCredential = {
   provider: PersonalCredentialProvider
   providerUserId: string
   login: string
-  /** Linear only: the organization this grant belongs to. */
-  workspaceId?: string
-  /** Linear: the organization's name. Gmail / Google Drive: the Cerin team's name. */
+  /** Google grants may retain a display/workspace name from the issuing team. */
   workspaceName?: string
   /** Gmail / Google Drive only: the team whose OAuth client (or Composio) issued this grant. */
   teamId?: string

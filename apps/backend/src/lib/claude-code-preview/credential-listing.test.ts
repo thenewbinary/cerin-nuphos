@@ -71,9 +71,10 @@ function oneOfEach(): AgentCredentialOptions {
     ],
     uptimeKumaInstances: [{ instanceId: ID, label, baseUrl: 'https://k', authType: 'token' }],
     linearWorkspaces: [{ workspaceId: ID, label, workspaceName: 'w' }],
-    jiraSites: [{ siteId: ID, label, siteUrl: 'https://j' }],
+    jiraSites: [{ siteId: ID, label, siteUrl: 'https://j', cloudId: 'cloud-fixture' }],
     asanaAccounts: [{ accountId: ID, label, accountEmail: null }],
-    sentryAccounts: [{ accountId: ID, label, userEmail: null }],
+    sentryAccounts: [{ accountId: ID, label, organizationName: 'fixture-org' }],
+    slackIntegrations: [{ integrationId: ID, label, teamName: 'fixture-team' }],
     tailscaleClients: [{ clientId: ID, label, oauthClientId: 'o' }],
     zeaburProviders: [{ zeaburId: ID, kind: 'team', name: label }],
     vantaIntegrations: [{ integrationId: ID, label, authType: 'client_credentials' }],
@@ -112,12 +113,11 @@ const VENDED_CLOUDS = [
   'volcengineAccountIds',
   'azureAccountIds',
   'huaweiAccountIds',
-  'cloudflareAccountIds',
   'posthogIntegrationIds',
   'plaudAccountIds',
 ]
 
-// teamIdentity picks who GitHub/Linear act as; it is not a credential to list.
+// teamIdentity picks who GitHub acts as; it is not a credential to list.
 // Choices about the selection, not credential lists.
 const NOT_LISTED = new Set(['teamIdentity', 'allCredentials', 'allDevices'])
 const credentialKeys = Object.keys(agentCredentialSelectionSchema.shape).filter(
@@ -254,7 +254,7 @@ describe('usage notes', () => {
     ])
   })
 
-  test('point skill-backed connectors at their skill', () => {
+  test('point connector credentials at their proxy or skill', () => {
     const entries = flattenSelectedCredentials(
       {
         githubInstallationIds: [ID],
@@ -274,7 +274,10 @@ describe('usage notes', () => {
 
     expect(entries.map((entry) => [entry.provider, entry.usage])).toEqual([
       ['github', 'No raw value to fetch; use the github skill with this id.'],
-      ['gitlab', 'No raw value to fetch; use the gitlab skill with this id.'],
+      [
+        'gitlab',
+        `No raw value to fetch; call POST /gitlab-bindings/${ID}/proxy under $CERIN_BACKEND_URL/teams/$TEAM with $CERIN_TOKEN.`,
+      ],
       ['grafana', 'No raw value to fetch; use the grafana skill with this id.'],
       ['sonarqube', 'No raw value to fetch; use the sonarqube skill with this id.'],
     ])
@@ -326,7 +329,7 @@ describe('flattenSelectedCredentials', () => {
     ])
   })
 
-  test('lists every Cloudflare account when the conversation stores no selection', () => {
+  test('does not expose Cloudflare accounts when the conversation stores no selection', () => {
     const options = emptyOptions()
 
     options.cloudflareAccounts = [
@@ -334,22 +337,7 @@ describe('flattenSelectedCredentials', () => {
       { accountId: 'cf-2', accountName: '' },
     ]
 
-    expect(flattenSelectedCredentials({}, options)).toEqual([
-      {
-        provider: 'cloudflare',
-        id: 'cf-1',
-        label: 'Acme',
-        credentialPath: 'cloudflare-accounts/cf-1/credentials',
-        hint: 'Use the cloudflare skill: bash skills/cloudflare/scripts/setup-credentials.sh $TEAM cf-1; see skills/cloudflare/SKILL.md.',
-      },
-      {
-        provider: 'cloudflare',
-        id: 'cf-2',
-        label: 'cf-2',
-        credentialPath: 'cloudflare-accounts/cf-2/credentials',
-        hint: 'Use the cloudflare skill: bash skills/cloudflare/scripts/setup-credentials.sh $TEAM cf-2; see skills/cloudflare/SKILL.md.',
-      },
-    ])
+    expect(flattenSelectedCredentials({}, options)).toEqual([])
   })
 
   test('narrows Cloudflare to the stored selection once one is present', () => {
@@ -365,8 +353,8 @@ describe('flattenSelectedCredentials', () => {
         provider: 'cloudflare',
         id: 'cf-2',
         label: 'Other',
-        credentialPath: 'cloudflare-accounts/cf-2/credentials',
-        hint: 'Use the cloudflare skill: bash skills/cloudflare/scripts/setup-credentials.sh $TEAM cf-2; see skills/cloudflare/SKILL.md.',
+        usage:
+          'No raw value to fetch; call POST /cloudflare-accounts/cf-2/proxy under $CERIN_BACKEND_URL/teams/$TEAM with $CERIN_TOKEN.',
       },
     ])
     expect(flattenSelectedCredentials({ cloudflareAccountIds: [] }, options)).toEqual([])
@@ -406,8 +394,8 @@ describe('flattenSelectedCredentials', () => {
         provider: 'linear',
         id: 'linear-1',
         label: 'Linear prod',
-        credentialPath: 'linear-workspaces/linear-1/credentials',
-        identityPreference: { kind: 'team' },
+        usage:
+          'No raw value to fetch; call POST /linear-workspaces/linear-1/proxy under $CERIN_BACKEND_URL/teams/$TEAM with $CERIN_TOKEN.',
       },
       {
         provider: 'resend',
@@ -436,34 +424,29 @@ describe('device listing', () => {
 })
 
 describe('partitionCredentials', () => {
-  test.each(['github', 'linear'] as const)(
-    'reports the selected %s personal identity without granting standalone access',
-    (provider) => {
-      const options = emptyOptions()
+  test('reports the selected GitHub personal identity without granting standalone access', () => {
+    const options = emptyOptions()
 
-      options.personalCredentials = [{ id: 'c1', provider, login: 'octo' }]
-      options.githubInstallations = [
-        { installationId: ID, accountLogin: 'org', accountType: 'Organization' },
-      ]
-      options.linearWorkspaces = [{ workspaceId: ID, label: 'Workspace', workspaceName: 'w' }]
-      const key = provider === 'github' ? 'githubInstallationIds' : 'linearWorkspaceIds'
-      const { selected, unselected } = partitionCredentials(
-        { [key]: [ID], personalCredentialIds: [] },
-        options,
-      )
+    options.personalCredentials = [{ id: 'c1', provider: 'github', login: 'octo' }]
+    options.githubInstallations = [
+      { installationId: ID, accountLogin: 'org', accountType: 'Organization' },
+    ]
+    const { selected, unselected } = partitionCredentials(
+      { githubInstallationIds: [ID], personalCredentialIds: [] },
+      options,
+    )
 
-      expect(selected.find((entry) => entry.provider === provider)?.identityPreference).toEqual({
-        kind: 'personal',
-        login: 'octo',
-      })
-      expect(unselected.find((entry) => entry.provider === 'personal')).toMatchObject({
-        id: provider,
-        selected: false,
-        hint: expect.stringContaining('adds no permissions'),
-      })
-      expect(selected.some((entry) => entry.provider === 'personal')).toBe(false)
-    },
-  )
+    expect(selected.find((entry) => entry.provider === 'github')?.identityPreference).toEqual({
+      kind: 'personal',
+      login: 'octo',
+    })
+    expect(unselected.find((entry) => entry.provider === 'personal')).toMatchObject({
+      id: 'github',
+      selected: false,
+      hint: expect.stringContaining('adds no permissions'),
+    })
+    expect(selected.some((entry) => entry.provider === 'personal')).toBe(false)
+  })
 
   test('keeps team identity and standalone personal access independent', () => {
     const options = oneOfEach()
@@ -547,11 +530,11 @@ describe('partitionCredentials', () => {
   test('an unset team-wide connector selection leaves nothing unselected', () => {
     const options = emptyOptions()
 
-    options.cloudflareAccounts = [{ accountId: 'cf-1', accountName: 'Acme' }]
+    options.notionIntegrations = [{ integrationId: 'notion-1', label: 'Acme', workspaceName: null }]
 
     expect(partitionCredentials({}, options).unselected).toEqual([])
-    expect(partitionCredentials({ cloudflareAccountIds: [] }, options).unselected).toEqual([
-      expect.objectContaining({ provider: 'cloudflare', id: 'cf-1', selected: false }),
+    expect(partitionCredentials({ notionIntegrationIds: [] }, options).unselected).toEqual([
+      expect.objectContaining({ provider: 'notion', id: 'notion-1', selected: false }),
     ])
   })
 })

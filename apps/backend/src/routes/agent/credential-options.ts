@@ -217,6 +217,7 @@ export async function getAgentCredentialOptions(
       siteId: binding.id.toHexString(),
       label: binding.label,
       siteUrl: binding.siteUrl,
+      cloudId: binding.cloudId,
     }))
   const asanaAccounts = (doc?.asanaAccounts ?? [])
     .filter((binding) => canUseAllowList(binding.access?.memberAllowList, userId))
@@ -230,7 +231,7 @@ export async function getAgentCredentialOptions(
     .map((binding) => ({
       accountId: binding.id.toHexString(),
       label: binding.label,
-      userEmail: binding.userEmail,
+      organizationName: binding.organizationName,
     }))
   const tailscaleClients = (doc?.tailscaleClients ?? [])
     .filter((binding) => canUseAllowList(binding.access?.memberAllowList, userId))

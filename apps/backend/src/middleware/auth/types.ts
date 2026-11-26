@@ -22,6 +22,7 @@ import type {
   JiraSiteBinding,
   AsanaAccountBinding,
   SentryAccountBinding,
+  SlackIntegrationBinding,
   TailscaleSandboxAccess,
   ZeaburProviderBinding,
 } from '@/models'
@@ -126,11 +127,8 @@ export type SentryAccountVariables = TeamAuthVariables & {
 export type CloudflareAccountVariables = TeamAuthVariables & {
   cloudflareAccountId: string
   cloudflareAccountName: string | null
-  /** The full binding — the route layer resolves a bearer token from it
-   *  (decrypt static api token, or refresh the OAuth access token). */
+  /** Composio connected-account ids; no Cloudflare API token is stored here. */
   cloudflareBinding: CloudflareAccountBinding
-  /** Present only for legacy api_token bindings. Null for OAuth bindings. */
-  cloudflareEncryptedApiKey: CloudflareEncryptedSecret | null
   /** R2 S3 credentials, present only when bound for the object browser. */
   cloudflareR2S3: {
     accessKeyId: string
@@ -266,4 +264,11 @@ export type TrelloIntegrationVariables = TeamAuthVariables & {
   trelloIntegrationLabel: string
   trelloAccess?: BindingAccess
   trelloBinding: TrelloIntegrationBinding
+}
+
+export type SlackIntegrationVariables = TeamAuthVariables & {
+  slackIntegrationId: string
+  slackIntegrationLabel: string
+  slackAccess?: BindingAccess
+  slackBinding: SlackIntegrationBinding
 }

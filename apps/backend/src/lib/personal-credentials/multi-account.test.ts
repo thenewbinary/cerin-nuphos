@@ -5,12 +5,7 @@ import { useByosSecrets } from '@/lib/test/doubles/byos-secrets'
 import { useModels } from '@/lib/test/doubles/models'
 import { usePersonalCredentialsGithub } from '@/lib/test/doubles/personal-credentials-github'
 
-import {
-  googleCredentialFor,
-  personalGithubToken,
-  personalLinearToken,
-  personalOwnToken,
-} from './handout'
+import { googleCredentialFor, personalGithubToken, personalOwnToken } from './handout'
 
 import type { EncryptedSecret } from '@/lib/byos/secrets'
 import type { PersonalCredential } from '@/models'
@@ -43,7 +38,11 @@ usePersonalCredentialsGithub({
   githubUserInstallationIds: (token: string) => Promise.resolve(visible[token] ?? []),
 })
 
-const account = (provider: 'github' | 'linear', login: string, extra = {}): PersonalCredential => ({
+const account = (
+  provider: 'github',
+  login: string,
+  extra: Partial<PersonalCredential> = {},
+): PersonalCredential => ({
   _id: new ObjectId(),
   userId: 'user-1',
   provider,
@@ -110,32 +109,6 @@ describe('several GitHub accounts', () => {
     expect(await personalOwnToken('user-1', 'github', ids(home)[0])).toMatchObject({
       login: 'home',
     })
-  })
-})
-
-describe('several Linear workspaces', () => {
-  test('each binding uses the account of its own workspace', async () => {
-    const one = account('linear', 'one', { workspaceId: 'org-1' })
-    const two = account('linear', 'two', { workspaceId: 'org-2' })
-
-    rows = [one, two]
-
-    expect(await personalLinearToken('user-1', 'org-1')).toMatchObject({
-      login: 'one',
-    })
-    expect(await personalLinearToken('user-1', 'org-2')).toMatchObject({
-      login: 'two',
-    })
-  })
-
-  test('a provider-only selection reaches each workspace', async () => {
-    rows = [
-      account('linear', 'one', { workspaceId: 'org-1' }),
-      account('linear', 'two', { workspaceId: 'org-2' }),
-    ]
-
-    expect(await personalLinearToken('user-1', 'org-1')).toMatchObject({ login: 'one' })
-    expect(await personalLinearToken('user-1', 'org-2')).toMatchObject({ login: 'two' })
   })
 })
 

@@ -1,71 +1,71 @@
+// Linear through Composio: the managed Linear OAuth app holds the grant and
+// Cerin calls api.linear.app through Composio Proxy Execute. Only the GraphQL
+// endpoint is exposed, and no Linear token is ever stored or handed out.
 import { createHmac, timingSafeEqual } from 'node:crypto'
 
 import { config } from '@/config'
-import { LINEAR_GRAPHQL_URL, LinearApiError, linearFetch, USER_AGENT } from '@/lib/byos/linear-http'
+import { composioProxyExecute } from '@/lib/composio-connect'
+import { AppError } from '@/lib/errors'
 
-export { LinearApiError, LinearOAuthNotConfigured } from '@/lib/byos/linear-http'
-export {
-  buildAuthorizeUrl,
-  exchangeCodeForTokens,
-  parseTokenResponse,
-} from '@/lib/byos/linear-oauth'
-export type { AuthorizeUrlInput, ExchangedTokens } from '@/lib/byos/linear-oauth'
-export {
-  getAccessToken,
-  getAccessTokenWithExpiry,
-  getDefaultClientCredentials,
-  invalidateAccessToken,
-  LinearReconnectRequired,
-  withLinearAccessToken,
-} from '@/lib/byos/linear-tokens'
+import type { ComposioConnectorSpec, ComposioProxySpec } from '@/lib/composio-connect'
+import type { LinearWorkspaceBinding } from '@/models'
 
-export function getSetupRedirect(): string | null {
-  return config.byos.linear.setupRedirect ?? null
+export const LINEAR_CONNECTOR: ComposioConnectorSpec = {
+  provider: 'linear',
+  displayName: 'Linear',
+  toolkitSlug: 'linear',
 }
 
-export function isLinearConfigured(): boolean {
-  // All three must be set: without the encryption key, /linear-app/setup
-  // throws mid-handler in encryptLinearSecret and the desktop install promise
-  // waits out its full timeout instead of redirecting back into the app.
-  return Boolean(
-    config.byos.linear.clientId &&
-    config.byos.linear.clientSecret &&
-    config.byos.linear.setupRedirect &&
-    config.byos.linear.encryptionKey,
-  )
+export const LINEAR_PROXY: ComposioProxySpec = {
+  ...LINEAR_CONNECTOR,
+  baseUrl: 'https://api.linear.app',
+  methods: ['POST'],
+  allowPath: (path) => path === '/graphql',
 }
 
-// ── GraphQL ──
+export class LinearApiError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
+    super(message)
+  }
+}
+
+export type LinearConnection = Pick<LinearWorkspaceBinding, 'composioAccountId' | 'composioUserId'>
+
+export function linearProxy(
+  connection: LinearConnection,
+  args: { method: string; path: string; body?: unknown; query?: Record<string, string> },
+): Promise<{ status: number; data: unknown }> {
+  return composioProxyExecute(LINEAR_PROXY, {
+    accountId: connection.composioAccountId,
+    userId: connection.composioUserId,
+    ...args,
+  })
+}
 
 export async function linearGraphql<T>(
-  token: string,
+  connection: LinearConnection,
   query: string,
   variables?: Record<string, unknown>,
 ): Promise<T> {
-  const res = await linearFetch(LINEAR_GRAPHQL_URL, {
+  const { status, data } = await linearProxy(connection, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'User-Agent': USER_AGENT,
-    },
-    body: JSON.stringify({ query, variables: variables ?? {} }),
+    path: '/graphql',
+    body: { query, variables: variables ?? {} },
   })
-  const payload = (await res.json().catch(() => null)) as {
-    data?: T
-    errors?: { message?: string }[]
-  } | null
+  const payload = data as { data?: T; errors?: { message?: string }[] } | null
 
-  if (!res.ok) {
+  if (status < 200 || status >= 300) {
     const detail = payload?.errors
       ?.map((e) => e.message)
       .filter(Boolean)
       .join('; ')
 
     throw new LinearApiError(
-      res.status,
-      `Linear GraphQL failed: ${String(res.status)} ${detail ?? ''}`.trim(),
+      status,
+      `Linear GraphQL failed: ${String(status)} ${detail ?? ''}`.trim(),
     )
   }
   if (payload?.errors?.length) {
@@ -81,19 +81,17 @@ export async function linearGraphql<T>(
   return payload.data
 }
 
-export type LinearViewerInfo = {
+// Identifies the authorising user + their organization (workspace) at setup so
+// the binding can be labelled and deduped, mirroring the native viewer probe.
+export async function linearViewer(connection: LinearConnection): Promise<{
   user: { id: string; name: string | null }
   organization: { id: string; name: string; urlKey: string | null }
-}
-
-// Identifies the authorising user + their organization (workspace) so the bind
-// route can label the binding and store the workspace id.
-export async function getViewer(accessToken: string): Promise<LinearViewerInfo> {
+}> {
   const data = await linearGraphql<{
     viewer: { id: string; name: string | null } | null
     organization: { id: string; name: string; urlKey: string | null } | null
   }>(
-    accessToken,
+    connection,
     `query CerinViewer {
       viewer { id name }
       organization { id name urlKey }
@@ -101,13 +99,10 @@ export async function getViewer(accessToken: string): Promise<LinearViewerInfo> 
   )
 
   if (!data.viewer || !data.organization) {
-    throw new LinearApiError(502, 'Linear viewer/organization query returned no data')
+    throw new AppError(502, 'linear_invalid_profile', 'Linear profile is unavailable')
   }
 
-  return {
-    user: data.viewer,
-    organization: data.organization,
-  }
+  return { user: data.viewer, organization: data.organization }
 }
 
 // ── Webhook signature ──

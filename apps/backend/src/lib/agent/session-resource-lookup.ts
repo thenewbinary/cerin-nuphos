@@ -6,7 +6,6 @@ import { getInstallationToken } from '@/lib/byos/github'
 import { GITHUB_API, githubFetch } from '@/lib/byos/github-http'
 import { GitlabApiError, apiRequest as gitlabApi } from '@/lib/byos/gitlab'
 import { linearGraphql } from '@/lib/byos/linear'
-import { withLinearAccessToken } from '@/lib/byos/linear-tokens'
 import { AppError } from '@/lib/errors'
 import { getTeamMembership } from '@/lib/identity'
 import { logEvent } from '@/lib/observability'
@@ -158,19 +157,17 @@ export async function resolveResource(
   const binding = await findLinearWorkspace(team, new ObjectId(input.workspaceId))
 
   if (!binding) throw new AppError(404, 'not_found', 'Linear workspace was disconnected')
-  const result = await withLinearAccessToken(team, binding, (token) =>
-    linearGraphql<{
-      issue: {
-        id: string
-        identifier: string
-        title: string
-        url: string
-        state: { name: string; type: string }
-      } | null
-    }>(token, 'query($id:String!){issue(id:$id){id identifier title url state{name type}}}', {
-      id: input.issueId,
-    }),
-  )
+  const result = await linearGraphql<{
+    issue: {
+      id: string
+      identifier: string
+      title: string
+      url: string
+      state: { name: string; type: string }
+    } | null
+  }>(binding, 'query($id:String!){issue(id:$id){id identifier title url state{name type}}}', {
+    id: input.issueId,
+  })
   const issue = result.issue
 
   if (!issue?.url.startsWith('https://linear.app/'))

@@ -45,10 +45,18 @@ export function selectionScopedConnectorBinding(path: string): ScopedConnectorBi
   return key ? { collection, bindingId, key } : null
 }
 
+const TEAM_WIDE_WHEN_UNSET = new Set<ConnectorSelectionKey>([
+  'githubInstallationIds',
+  'grafanaInstanceIds',
+  'sonarqubeIntegrationIds',
+  'notionIntegrationIds',
+  'upstashAccountIds',
+])
+
 /**
- * An absent array means the conversation was created before this connector
- * carried a per-conversation selection, and keeps its team-wide reach. A
- * present array is authoritative, including when it is empty.
+ * Legacy connectors keep team-wide reach only where their selection contract
+ * explicitly allows it. New and cloud-account bindings fail closed when unset;
+ * a present array is always authoritative, including when it is empty.
  */
 export function connectorSelectionAllows(
   selection: ConnectorSelection,
@@ -56,7 +64,7 @@ export function connectorSelectionAllows(
 ): boolean {
   const ids = selection[scoped.key]
 
-  return ids === undefined || ids.includes(scoped.bindingId)
+  return ids === undefined ? TEAM_WIDE_WHEN_UNSET.has(scoped.key) : ids.includes(scoped.bindingId)
 }
 
 export function assertConnectorSelectionAllowed(

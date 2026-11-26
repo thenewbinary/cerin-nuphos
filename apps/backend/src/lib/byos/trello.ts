@@ -1,8 +1,17 @@
 import { z } from 'zod'
 
-import { config } from '@/config'
-import { composioAuthConfigId, composioRequest } from '@/lib/composio'
+import { composioConnectLink, verifyComposioConnection } from '@/lib/composio-connect'
+import { composioRequest } from '@/lib/composio'
 import { AppError } from '@/lib/errors'
+
+import type { ComposioConnectorSpec } from '@/lib/composio-connect'
+
+const TRELLO_CONNECTOR: ComposioConnectorSpec = {
+  provider: 'trello',
+  displayName: 'Trello',
+  toolkitSlug: 'trello',
+  verificationErrorMessage: 'Trello connection is inactive or does not match this authorization',
+}
 
 const VERSION = '20261104_00'
 
@@ -116,71 +125,12 @@ export function trelloToolArguments(tool: string, args: Record<string, unknown>)
   return Object.fromEntries(Object.entries(parsed.data).map(([key, value]) => [key, String(value)]))
 }
 
-function trelloAuthConfig(): Promise<string> {
-  if (!config.byos.composio.apiKey) {
-    throw new AppError(
-      503,
-      'trello_not_configured',
-      'Trello connection is not configured on this server',
-    )
-  }
-
-  return composioAuthConfigId('trello')
-}
-
 export async function trelloConnectLink(userId: string, callbackUrl: string) {
-  const link = await composioRequest<{ redirect_url: string; connected_account_id: string }>(
-    'POST',
-    '/connected_accounts/link',
-    { auth_config_id: await trelloAuthConfig(), user_id: userId, callback_url: callbackUrl },
-  )
-
-  if (
-    typeof link.connected_account_id !== 'string' ||
-    !/^ca_[A-Za-z0-9_-]+$/u.test(link.connected_account_id)
-  )
-    throw new AppError(502, 'trello_invalid_account', 'Invalid Trello connected account')
-  let redirect: URL
-
-  try {
-    redirect = new URL(link.redirect_url)
-  } catch {
-    throw new AppError(502, 'trello_invalid_link', 'Invalid Trello connection link')
-  }
-
-  if (
-    redirect.protocol !== 'https:' ||
-    redirect.hostname !== 'connect.composio.dev' ||
-    redirect.port ||
-    redirect.username ||
-    redirect.password
-  ) {
-    throw new AppError(502, 'trello_invalid_link', 'Invalid Trello connection link')
-  }
-
-  return { authorizeUrl: redirect.href, accountId: link.connected_account_id }
+  return composioConnectLink(TRELLO_CONNECTOR, userId, callbackUrl)
 }
 
 export async function verifyTrelloConnection(accountId: string, userId: string) {
-  const account = await composioRequest<{
-    user_id?: string
-    status?: string
-    toolkit?: { slug?: string }
-    auth_config?: { id?: string }
-  }>('GET', `/connected_accounts/${encodeURIComponent(accountId)}`)
-
-  if (
-    account.status !== 'ACTIVE' ||
-    account.user_id !== userId ||
-    account.toolkit?.slug !== 'trello' ||
-    account.auth_config?.id !== (await trelloAuthConfig())
-  ) {
-    throw new AppError(
-      403,
-      'trello_reconnect_required',
-      'Trello connection is inactive or does not match this authorization',
-    )
-  }
+  return verifyComposioConnection(TRELLO_CONNECTOR, accountId, userId)
 }
 
 export async function executeTrelloTool(

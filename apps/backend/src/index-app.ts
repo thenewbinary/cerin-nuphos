@@ -49,6 +49,7 @@ import { rootRedirects } from '@/routes/root-redirects'
 import { sentryAppRoutes } from '@/routes/sentry-app'
 import { slackRoutes } from '@/routes/slack'
 import { slackAppRoutes } from '@/routes/slack-app'
+import { slackIntegrationAppRoutes } from '@/routes/slack-integration-app'
 import { teamsRoutes } from '@/routes/teams'
 import { trelloAppRoutes } from '@/routes/trello-app'
 import { vaultRoutes } from '@/routes/vault'
@@ -144,6 +145,7 @@ app.route('/plaud-app', plaudAppRoutes)
 app.route('/posthog-app', posthogAppRoutes)
 app.route('/sentry-app', sentryAppRoutes)
 app.route('/slack-app', slackAppRoutes)
+app.route('/slack-integration-app', slackIntegrationAppRoutes)
 app.route('/discord-app', discordAppRoutes)
 app.route('/discord', discordRoutes)
 app.route('/slack', slackRoutes)

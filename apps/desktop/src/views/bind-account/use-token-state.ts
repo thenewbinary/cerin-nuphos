@@ -1,10 +1,7 @@
 import { useState } from 'react'
 
-import { CLOUDFLARE_DEFAULT_SCOPE_ACCESS } from './constants'
-
 export function useTokenProviderState() {
   const [cloudflareConnecting, setCloudflareConnecting] = useState(false)
-  const [cfScopeAccess, setCfScopeAccess] = useState(CLOUDFLARE_DEFAULT_SCOPE_ACCESS)
   const [linodeLabel, setLinodeLabel] = useState('')
   const [linodeToken, setLinodeToken] = useState('')
   const [hetznerLabel, setHetznerLabel] = useState('')
@@ -40,7 +37,6 @@ export function useTokenProviderState() {
   const [instaboxApiKey, setInstaboxApiKey] = useState('')
 
   function resetTokenState() {
-    setCfScopeAccess(CLOUDFLARE_DEFAULT_SCOPE_ACCESS)
     setLinodeLabel('')
     setLinodeToken('')
     setHetznerLabel('')
@@ -79,8 +75,6 @@ export function useTokenProviderState() {
   return {
     cloudflareConnecting,
     setCloudflareConnecting,
-    cfScopeAccess,
-    setCfScopeAccess,
     linodeLabel,
     setLinodeLabel,
     linodeToken,

@@ -91,6 +91,7 @@ describe('conversation team API capabilities', () => {
       'sonarqube-integrations',
       'notion-integrations',
       'upstash-accounts',
+      'slack-integrations',
       'slack-installations',
       'lark-installations',
     ]
@@ -107,7 +108,6 @@ describe('conversation team API capabilities', () => {
     const paths = [
       '/github-installations/123456/token',
       '/github-installations/123456/repositories',
-      '/gitlab-bindings/binding-1/token',
       '/gitlab-bindings/binding-1/projects',
       '/notion-integrations/notion-1/credentials',
       '/upstash-accounts/upstash-1/credentials',
@@ -125,6 +125,30 @@ describe('conversation team API capabilities', () => {
         '/grafana-instances/grafana-1/proxy/api/ds/query',
       ),
     ).toBe(true)
+  })
+
+  test('allows only the session proxy for every Composio connector', () => {
+    const collections = [
+      'slack-integrations',
+      'linear-workspaces',
+      'jira-sites',
+      'asana-accounts',
+      'sentry-accounts',
+      'gitlab-bindings',
+      'cloudflare-accounts',
+    ]
+
+    for (const collection of collections) {
+      expect(conversationTeamApiRoute('POST', `/${collection}/binding-1/proxy`), collection).toBe(
+        'session',
+      )
+      for (const method of ['GET', 'PUT', 'PATCH', 'DELETE']) {
+        expect(
+          conversationTeamApiRoute(method, `/${collection}/binding-1/proxy`),
+          `${method} ${collection}`,
+        ).toBeNull()
+      }
+    }
   })
 
   test('allows the read-only cloud instance and cluster lists', () => {
@@ -225,7 +249,6 @@ describe('conversation team API capabilities', () => {
     const selectedCredentialPaths = [
       '/aws-accounts/123456789012/credentials',
       '/gcp-projects/project-1/credentials',
-      '/cloudflare-accounts/cloudflare-1/credentials',
       '/linode-accounts/linode-1/credentials',
       '/hetzner-accounts/hetzner-1/credentials',
       '/tencent-accounts/tencent-1/credentials',
@@ -233,11 +256,7 @@ describe('conversation team API capabilities', () => {
       '/volcengine-accounts/volcengine-1/credentials',
       '/azure-accounts/azure-1/credentials',
       '/betterstack-integrations/betterstack-1/credentials',
-      '/linear-workspaces/linear-1/credentials',
-      '/jira-sites/jira-1/credentials',
-      '/asana-accounts/asana-1/credentials',
       '/resend-integrations/resend-1/credentials',
-      '/sentry-accounts/sentry-1/credentials',
       '/tailscale-clients/tailscale-1/credentials',
       '/zeabur-providers/zeabur-1/credentials',
     ]
@@ -247,11 +266,26 @@ describe('conversation team API capabilities', () => {
     }
     for (const path of [
       '/github-installations/123456/token',
-      '/gitlab-bindings/gitlab-1/token',
       '/notion-integrations/notion-1/credentials',
       '/upstash-accounts/upstash-1/credentials',
     ]) {
       expect(conversationTeamApiRoute('GET', path), path).toBe('canonical')
+    }
+  })
+
+  test('denies every removed Composio provider token handout', () => {
+    const paths = [
+      '/linear-workspaces/linear-1/credentials',
+      '/jira-sites/jira-1/credentials',
+      '/asana-accounts/asana-1/credentials',
+      '/sentry-accounts/sentry-1/credentials',
+      '/gitlab-bindings/gitlab-1/token',
+      '/cloudflare-accounts/cloudflare-1/credentials',
+      '/slack-integrations/slack-1/credentials',
+    ]
+
+    for (const path of paths) {
+      expect(conversationTeamApiRoute('GET', path), path).toBeNull()
     }
   })
 
@@ -310,7 +344,7 @@ describe('conversation connector selection scope', () => {
       ['/sonarqube-integrations/sonar-1/issues', 'sonarqubeIntegrationIds'],
       ['/notion-integrations/notion-1/credentials', 'notionIntegrationIds'],
       ['/upstash-accounts/upstash-1/databases', 'upstashAccountIds'],
-      ['/cloudflare-accounts/cf-1/credentials', 'cloudflareAccountIds'],
+      ['/cloudflare-accounts/cf-1/proxy', 'cloudflareAccountIds'],
       ['/tencent-accounts/tencent-1/clusters', 'tencentAccountIds'],
       ['/aliyun-accounts/aliyun-1/ecs-instances', 'aliyunAccountIds'],
       ['/volcengine-accounts/volcengine-1/ecs-instances', 'volcengineAccountIds'],
@@ -377,6 +411,16 @@ describe('conversation connector selection scope', () => {
     expect(connectorSelectionAllows({}, scoped)).toBe(true)
     expect(connectorSelectionAllows({ gitlabBindingIds: [] }, scoped)).toBe(true)
     expect(() => assertConnectorSelectionAllowed({}, scoped)).not.toThrow()
+  })
+
+  test('fails closed for unselected Composio proxy bindings', () => {
+    const cloudflare = scopedOf('/cloudflare-accounts/cf-1/proxy')
+    const gitlab = scopedOf('/gitlab-bindings/gitlab-1/projects')
+
+    expect(connectorSelectionAllows({}, cloudflare)).toBe(false)
+    expect(connectorSelectionAllows({}, gitlab)).toBe(false)
+    expect(connectorSelectionAllows({ cloudflareAccountIds: ['cf-1'] }, cloudflare)).toBe(true)
+    expect(connectorSelectionAllows({ gitlabBindingIds: ['gitlab-1'] }, gitlab)).toBe(true)
   })
 })
 

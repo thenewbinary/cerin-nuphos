@@ -1,27 +1,14 @@
 export { listMergeRequests, listPipelines } from './gitlab/activity'
 export type { GitlabMergeRequest, GitlabPipeline } from './gitlab/activity'
 export {
+  apiRequest,
+  GITLAB_CONNECTOR,
+  GITLAB_HOST_URL,
+  GITLAB_PROXY,
   GitlabApiError,
-  GitlabOAuthNotConfigured,
-  isDefaultHost,
-  normalizeHostUrl,
+  gitlabProxy,
 } from './gitlab/http'
-export {
-  buildAuthorizeUrl,
-  exchangeCodeForTokens,
-  getDefaultClientCredentials,
-  getSetupRedirect,
-  isGitlabConfigured,
-  resolveOAuthClient,
-  verifyWebhookToken,
-} from './gitlab/oauth'
-export type { AuthorizeUrlInput, ExchangedTokens, OAuthClientResolution } from './gitlab/oauth'
+export type { GitlabConnection } from './gitlab/http'
 export { getCurrentUser, listNamespaces, listProjects } from './gitlab/resources'
 export type { GitlabNamespace, GitlabProject, GitlabUserInfo } from './gitlab/resources'
-export {
-  apiRequest,
-  evictCachedAccessToken,
-  getAccessToken,
-  getAccessTokenWithExpiry,
-  invalidateAccessToken,
-} from './gitlab/tokens'
+export { verifyWebhookToken } from './gitlab/webhook'

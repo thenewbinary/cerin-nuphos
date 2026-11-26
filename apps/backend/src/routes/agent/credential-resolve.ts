@@ -141,6 +141,11 @@ function selectedCredentialAccess(
       options.trelloIntegrations ?? [],
       byIntegrationId,
     ),
+    slackIntegrationIds: keep(
+      selection.slackIntegrationIds,
+      options.slackIntegrations ?? [],
+      byIntegrationId,
+    ),
     resendIntegrationIds: keep(
       selection.resendIntegrationIds,
       options.resendIntegrations,

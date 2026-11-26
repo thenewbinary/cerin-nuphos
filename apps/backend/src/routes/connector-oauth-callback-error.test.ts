@@ -21,7 +21,6 @@ function pending(name: string) {
 
   return () =>
     ({
-      // Reading which attempt the error belongs to is fine; changing it is not.
       findOne: () => Promise.resolve(null),
       deleteOne: record('deleteOne'),
       deleteMany: record('deleteMany'),
@@ -31,30 +30,18 @@ function pending(name: string) {
 }
 
 useModels({
-  asanaPendingOAuth: pending('asana'),
-  cloudflarePendingOAuth: pending('cloudflare'),
-  gitlabPendingOAuth: pending('gitlab'),
-  jiraPendingOAuth: pending('jira'),
-  linearPendingOAuth: pending('linear'),
   plaudPendingOAuth: pending('plaud'),
   posthogPendingOAuth: pending('posthog'),
-  sentryPendingOAuth: pending('sentry'),
   slackPendingOAuth: pending('slack'),
 })
 
 const callbacks: [string, () => Promise<Hono>, string][] = [
-  ['asana', async () => (await import('./asana-app')).asanaAppRoutes, '/setup'],
-  ['cloudflare', async () => (await import('./cloudflare-app')).cloudflareAppRoutes, '/setup'],
-  ['gitlab', async () => (await import('./gitlab-app')).gitlabAppRoutes, '/setup'],
-  ['jira', async () => (await import('./jira-app')).jiraAppRoutes, '/setup'],
-  ['linear', async () => (await import('./linear-app')).linearAppRoutes, '/setup'],
   ['plaud', async () => (await import('./plaud-app')).plaudAppRoutes, '/callback'],
   ['posthog', async () => (await import('./posthog-app')).posthogAppRoutes, '/callback'],
-  ['sentry', async () => (await import('./sentry-app')).sentryAppRoutes, '/setup'],
   ['slack', async () => (await import('./slack-app')).slackAppRoutes, '/setup'],
 ]
 
-describe('connector OAuth callbacks with error=', () => {
+describe('native connector OAuth callbacks with error=', () => {
   test.each(callbacks)('%s leaves the pending request in place', async (_name, routes, path) => {
     touched.length = 0
     const app = await routes()

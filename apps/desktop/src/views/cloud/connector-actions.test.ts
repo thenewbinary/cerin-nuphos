@@ -12,12 +12,12 @@ test('multi-connection kinds keep a plain Add', () => {
     'github',
     'grafana',
     'mongodb',
+    'slack',
   ] as const) {
     assert.deepEqual(installedConnectorAddAction(key), { label: 'Add', mode: 'install' })
   }
 })
 
-test('single-app messaging kinds reconfigure or reinstall instead', () => {
-  assert.deepEqual(installedConnectorAddAction('slack'), { label: 'Reinstall', mode: 'reinstall' })
+test('single-app Lark reconfigures instead', () => {
   assert.deepEqual(installedConnectorAddAction('lark'), { label: 'Reconfigure', mode: 'reinstall' })
 })

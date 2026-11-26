@@ -1,142 +1,49 @@
 import { Hono } from 'hono'
-import { ObjectId } from 'mongodb'
 
 import { config } from '@/config'
 import { applyLinearIssueWebhook } from '@/lib/agent/linear-issue-webhook'
+import { LINEAR_CONNECTOR, linearViewer, verifyWebhookSignature } from '@/lib/byos/linear'
 import {
-  exchangeCodeForTokens,
-  getDefaultClientCredentials,
-  getSetupRedirect,
-  getViewer,
-  invalidateAccessToken,
-  verifyWebhookSignature,
-} from '@/lib/byos/linear'
-import { encryptLinearSecret } from '@/lib/byos/secrets'
-import { finishConnectorOAuth, reboundAccess } from '@/lib/connector-oauth'
-import { desktopCallbackResponse } from '@/lib/desktop-callback-page'
+  handleComposioConnectorCallback,
+  persistComposioConnectorBinding,
+} from '@/lib/composio-connect'
 import { AppError } from '@/lib/errors'
 import { logEvent } from '@/lib/observability'
-import { linearPendingOAuth, teamByosBindings } from '@/models'
 
 import type { BindingAccess, LinearWorkspaceBinding } from '@/models'
-import type { Context } from 'hono'
+import type { ObjectId } from 'mongodb'
 
 export const linearAppRoutes = new Hono()
 
-// The Electron deep-link target. Matches GITHUB_PROTOCOL / gitlab-callback —
-// same scheme, different hostname so the desktop can route by it.
-const DESKTOP_CALLBACK = 'cerin://linear-callback'
+// The Electron deep-link target: same cerin:// scheme as the other connectors,
+// a distinct hostname so the desktop can route by it.
+linearAppRoutes.get('/setup', async (c) =>
+  handleComposioConnectorCallback(c, {
+    spec: LINEAR_CONNECTOR,
+    deepLink: 'cerin://linear-callback',
+    identity: async (pending, composioUserId) => {
+      const viewer = await linearViewer({
+        composioAccountId: pending.composioAccountId,
+        composioUserId,
+      })
 
-const desktopCallback = (c: Context, params: Record<string, string>) =>
-  desktopCallbackResponse(c, DESKTOP_CALLBACK, params)
-
-linearAppRoutes.get('/setup', async (c) => {
-  const state = c.req.query('state') ?? ''
-  const code = c.req.query('code') ?? ''
-  const errorParam = c.req.query('error')
-
-  if (!state) {
-    throw new AppError(400, 'invalid_state', 'Missing state from Linear redirect')
-  }
-
-  if (errorParam) {
-    return desktopCallback(c, {
-      state,
-      error: errorParam,
-      error_description: c.req.query('error_description') ?? '',
-    })
-  }
-
-  if (!code) {
-    throw new AppError(400, 'invalid_code', 'Missing code from Linear redirect')
-  }
-
-  const pending = await linearPendingOAuth().findOneAndDelete({ _id: state })
-
-  if (!pending) {
-    return desktopCallback(c, {
-      state,
-      error: 'unknown_state',
-      error_description: 'OAuth state did not match a pending request (expired or already used)',
-    })
-  }
-  if (pending.expiresAt.getTime() < Date.now()) {
-    return desktopCallback(c, {
-      state,
-      error: 'expired',
-      error_description: 'OAuth request expired before approval',
-    })
-  }
-
-  const redirectUri = getSetupRedirect()
-  const credentials = getDefaultClientCredentials()
-
-  if (!redirectUri || !credentials) {
-    return desktopCallback(c, {
-      state,
-      error: 'not_configured',
-      error_description: 'Linear OAuth is no longer configured on the server',
-    })
-  }
-
-  let tokens
-
-  try {
-    tokens = await exchangeCodeForTokens(
-      credentials.clientId,
-      credentials.clientSecret,
-      code,
-      redirectUri,
-    )
-  } catch (e) {
-    return desktopCallback(c, {
-      state,
-      error: 'exchange_failed',
-      error_description: e instanceof Error ? e.message : 'Token exchange failed',
-    })
-  }
-
-  let viewer
-
-  try {
-    viewer = await getViewer(tokens.accessToken)
-  } catch (e) {
-    return desktopCallback(c, {
-      state,
-      error: 'viewer_fetch_failed',
-      error_description: e instanceof Error ? e.message : 'Failed to fetch Linear workspace',
-    })
-  }
-
-  const draft: LinearBindingDraft = {
-    workspaceId: viewer.organization.id,
-    workspaceName: viewer.organization.name,
-    organizationUrlKey: viewer.organization.urlKey,
-    accountId: viewer.user.id,
-    accountName: viewer.user.name,
-    scope: tokens.scope,
-    encryptedAccessToken: encryptLinearSecret(tokens.accessToken),
-    encryptedRefreshToken: tokens.refreshToken ? encryptLinearSecret(tokens.refreshToken) : null,
-    accessTokenExpiresAt: tokens.expiresAt,
-  }
-
-  return desktopCallback(
-    c,
-    await finishConnectorOAuth({
-      provider: 'linear',
-      state,
-      teamId: pending.teamId,
-      requesterUserId: pending.requesterUserId,
-      share: pending.share,
-      draft,
-      persist: persistLinearBinding,
-    }),
-  )
-})
+      return {
+        workspaceId: viewer.organization.id,
+        workspaceName: viewer.organization.name,
+        organizationUrlKey: viewer.organization.urlKey,
+        accountId: viewer.user.id,
+        accountName: viewer.user.name,
+        composioAccountId: pending.composioAccountId,
+        composioUserId,
+      }
+    },
+    persist: persistLinearBinding,
+  }),
+)
 
 type LinearBindingDraft = Omit<LinearWorkspaceBinding, 'id' | 'label' | 'createdAt' | 'access'>
 
-// Re-binding the same workspace replaces the existing binding's credentials
+// Re-binding the same workspace replaces the existing binding's connection
 // instead of accumulating duplicates. The original binding id is preserved so
 // references stay valid.
 export async function persistLinearBinding(
@@ -144,55 +51,16 @@ export async function persistLinearBinding(
   draft: LinearBindingDraft,
   access: BindingAccess,
 ): Promise<Record<string, string>> {
-  const existingDoc = await teamByosBindings().findOne(
-    { _id: teamId },
-    { projection: { linearWorkspaces: 1 } },
-  )
-  const existing = existingDoc?.linearWorkspaces?.find((w) => w.workspaceId === draft.workspaceId)
-  const bindingId = existing?.id ?? new ObjectId()
-  const binding: LinearWorkspaceBinding = {
-    ...draft,
-    id: bindingId,
-    label: existing?.label ?? draft.workspaceName,
-    createdAt: existing?.createdAt ?? new Date(),
-    ...reboundAccess(existing, access),
-  }
-
-  if (existing) {
-    await teamByosBindings().updateOne(
-      { _id: teamId },
-      {
-        $set: { 'linearWorkspaces.$[el]': binding, updatedAt: new Date() },
-      },
-      { arrayFilters: [{ 'el.id': existing.id }] },
-    )
-    // The binding id is reused, so the superseded grant's token is still sitting
-    // in the handout cache under this key.
-    invalidateAccessToken(teamId, existing.id)
-  } else {
-    await teamByosBindings().updateOne(
-      { _id: teamId },
-      {
-        $push: { linearWorkspaces: binding },
-        $set: { updatedAt: new Date() },
-        $setOnInsert: {
-          awsRoles: [],
-          gcpServiceAccounts: [],
-          grafanaInstances: [],
-          githubInstallations: [],
-          gitlabAccounts: [],
-          cloudflareAccounts: [],
-        },
-      },
-      { upsert: true },
-    )
-  }
-
-  return {
-    binding_id: bindingId.toHexString(),
-    team_id: teamId.toHexString(),
-    workspace_name: draft.workspaceName,
-  }
+  return persistComposioConnectorBinding<LinearWorkspaceBinding>({
+    spec: LINEAR_CONNECTOR,
+    field: 'linearWorkspaces',
+    teamId,
+    draft,
+    access,
+    matches: (existing) => existing.workspaceId === draft.workspaceId,
+    label: draft.workspaceName,
+    result: { workspace_name: draft.workspaceName },
+  })
 }
 
 type LinearWebhookPayload = {

@@ -1,13 +1,11 @@
 import { Hono } from 'hono'
 
-import { agentSubjectId } from '@/lib/agents/identity'
-import {
-  getAccessTokenWithExpiry as getAsanaAccessTokenWithExpiry,
-  ASANA_API_BASE_URL,
-} from '@/lib/byos/asana'
-import { getAccessTokenWithExpiry as getJiraAccessTokenWithExpiry } from '@/lib/byos/jira'
+import { asanaProxy } from '@/lib/byos/asana'
+import { jiraProxy } from '@/lib/byos/jira'
+import { linearProxy } from '@/lib/byos/linear'
+import { composioProxyBodySchema } from '@/lib/composio-connect'
 import { AppError } from '@/lib/errors'
-import { parseObjectId } from '@/lib/objectid'
+import { zv } from '@/lib/validate'
 import {
   requireLinearWorkspace,
   requireLinearMemberAccess,
@@ -17,45 +15,24 @@ import {
   requireAsanaMemberAccess,
 } from '@/middleware/auth'
 import { getAgentCredentialAccess } from '@/routes/agent-sessions/shared'
-import { handOutLinearToken } from '@/routes/linear-workspaces/graphql'
 
 import type { AgentAsanaVars, AgentJiraVars, AgentLinearVars } from '@/routes/agent-sessions/shared'
 import type { MiddlewareHandler } from 'hono'
 
+// Each connector exposes one session-scoped proxy instead of a token handout:
+// the sandbox names an allow-listed method + relative path, and the backend
+// executes it through Composio with the binding's connected account. The
+// provider token never leaves Composio.
 export const linearScoped = new Hono<{ Variables: AgentLinearVars }>()
 
 linearScoped.use('*', requireLinearWorkspace())
 linearScoped.use('*', requireLinearMemberAccess())
 linearScoped.use('*', requireSelectedLinearAgentCredential())
 
-linearScoped.get('/credentials', async (c) => {
-  const agent = c.get('agent')
-  const teamId = parseObjectId(c.get('teamId'), 'teamId')
-  const binding = c.get('linearBinding')
-  const { token, expiresAt, personalLogin } = await handOutLinearToken(
-    teamId,
-    binding,
-    c.req.header('Authorization'),
-    c.req.query('identity'),
-  )
-
-  c.header('X-Atlas-Agent', agentSubjectId(agent))
-  if (expiresAt) c.header('X-Credentials-Expires-At', expiresAt.toISOString())
-  // A reusable bearer token over GET must never be cached by intermediaries.
+linearScoped.post('/proxy', zv('json', composioProxyBodySchema), async (c) => {
   c.header('Cache-Control', 'no-store, private')
-  c.header('Pragma', 'no-cache')
 
-  return c.json({
-    bindingId: c.get('linearWorkspaceId'),
-    workspaceId: binding.workspaceId,
-    workspaceName: binding.workspaceName,
-    organizationUrlKey: binding.organizationUrlKey,
-    scope: binding.scope,
-    accessToken: token,
-    expiresAt: expiresAt?.toISOString() ?? null,
-    authType: 'oauth_bearer',
-    actor: personalLogin ? { kind: 'personal', login: personalLogin } : { kind: 'team' },
-  })
+  return c.json(await linearProxy(c.get('linearBinding'), c.req.valid('json')))
 })
 
 export const jiraScoped = new Hono<{ Variables: AgentJiraVars }>()
@@ -64,28 +41,10 @@ jiraScoped.use('*', requireJiraSite())
 jiraScoped.use('*', requireJiraMemberAccess())
 jiraScoped.use('*', requireSelectedJiraAgentCredential())
 
-jiraScoped.get('/credentials', async (c) => {
-  const agent = c.get('agent')
-  const teamId = parseObjectId(c.get('teamId'), 'teamId')
-  const binding = c.get('jiraBinding')
-  const { token, expiresAt } = await getJiraAccessTokenWithExpiry(teamId, binding)
-
-  c.header('X-Atlas-Agent', agentSubjectId(agent))
-  if (expiresAt) c.header('X-Credentials-Expires-At', expiresAt.toISOString())
-  // A reusable bearer token over GET must never be cached by intermediaries.
+jiraScoped.post('/proxy', zv('json', composioProxyBodySchema), async (c) => {
   c.header('Cache-Control', 'no-store, private')
-  c.header('Pragma', 'no-cache')
 
-  return c.json({
-    bindingId: c.get('jiraSiteId'),
-    cloudId: binding.cloudId,
-    siteName: binding.siteName,
-    siteUrl: binding.siteUrl,
-    scope: binding.scope,
-    accessToken: token,
-    expiresAt: expiresAt?.toISOString() ?? null,
-    authType: 'oauth_bearer',
-  })
+  return c.json(await jiraProxy(c.get('jiraBinding'), c.req.valid('json')))
 })
 
 export const asanaScoped = new Hono<{ Variables: AgentAsanaVars }>()
@@ -94,29 +53,10 @@ asanaScoped.use('*', requireAsanaAccount())
 asanaScoped.use('*', requireAsanaMemberAccess())
 asanaScoped.use('*', requireSelectedAsanaAgentCredential())
 
-asanaScoped.get('/credentials', async (c) => {
-  const agent = c.get('agent')
-  const teamId = parseObjectId(c.get('teamId'), 'teamId')
-  const binding = c.get('asanaBinding')
-  const { token, expiresAt } = await getAsanaAccessTokenWithExpiry(teamId, binding)
-
-  c.header('X-Atlas-Agent', agentSubjectId(agent))
-  if (expiresAt) c.header('X-Credentials-Expires-At', expiresAt.toISOString())
-  // A reusable bearer token over GET must never be cached by intermediaries.
+asanaScoped.post('/proxy', zv('json', composioProxyBodySchema), async (c) => {
   c.header('Cache-Control', 'no-store, private')
-  c.header('Pragma', 'no-cache')
 
-  return c.json({
-    bindingId: c.get('asanaAccountId'),
-    accountGid: binding.accountGid,
-    accountName: binding.accountName,
-    accountEmail: binding.accountEmail,
-    apiBaseUrl: ASANA_API_BASE_URL,
-    scope: binding.scope,
-    accessToken: token,
-    expiresAt: expiresAt?.toISOString() ?? null,
-    authType: 'oauth_bearer',
-  })
+  return c.json(await asanaProxy(c.get('asanaBinding'), c.req.valid('json')))
 })
 
 function requireSelectedLinearAgentCredential(): MiddlewareHandler<{ Variables: AgentLinearVars }> {

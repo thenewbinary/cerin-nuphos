@@ -9,10 +9,6 @@ export type GitlabBinding = {
   username: string
   displayName: string | null
   avatarUrl: string | null
-  clientId: string
-  isDefaultClient: boolean
-  scope: string
-  accessTokenExpiresAt: string | null
   createdAt?: string
 }
 
@@ -57,7 +53,6 @@ export type GitlabPipeline = {
 export type GitlabOAuthStart = {
   authorizeUrl: string
   state: string
-  hostUrl: string
   expiresAt: string
 }
 
@@ -91,19 +86,12 @@ export async function listGitlabBindings(teamId: string): Promise<GitlabBinding[
 
 export async function startGitlabOAuth(
   teamId: string,
-  hostUrl: string,
-  clientId?: string,
-  clientSecret?: string,
-  scopes?: string[],
   share?: BindingShare,
 ): Promise<GitlabOAuthStart> {
   return call<GitlabOAuthStart>(
     'POST',
     `/teams/${teamId}/gitlab-bindings/start-oauth`,
-    withShare(
-      { hostUrl, clientId, clientSecret, ...(scopes && scopes.length > 0 ? { scopes } : {}) },
-      share,
-    ),
+    withShare({}, share),
     { retry: false },
   )
 }

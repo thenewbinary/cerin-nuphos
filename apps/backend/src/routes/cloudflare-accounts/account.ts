@@ -8,12 +8,8 @@ import {
   listCloudflareZones,
   updateCloudflareDnsRecord,
 } from '@/lib/byos/cloudflare'
-import {
-  getCloudflareIamPermissions,
-  getCloudflareOauthConnection,
-} from '@/lib/byos/cloudflare-iam'
-import { invalidateCloudflareAccessToken } from '@/lib/byos/cloudflare-oauth'
-import { decryptCloudflareApiKey } from '@/lib/byos/secrets'
+import { getCloudflareIamPermissions } from '@/lib/byos/cloudflare-iam'
+import { deleteComposioAccountBestEffort } from '@/lib/composio-connect'
 import { parseObjectId } from '@/lib/objectid'
 import { zv } from '@/lib/validate'
 import { disconnectBinding, requireCanDisconnect, requireTeamRole } from '@/middleware/auth'
@@ -79,7 +75,7 @@ export function registerCloudflareAdminRoutes(
       const binding = c.get('cloudflareBinding')
 
       await disconnectBinding(c, teamId, 'cloudflareAccounts', { accountId })
-      invalidateCloudflareAccessToken(teamId, binding.id)
+      await deleteComposioAccountBestEffort('cloudflare', binding.composioAccountId)
 
       return c.body(null, 204)
     },
@@ -100,31 +96,6 @@ export function registerCloudflareAccountRoutes(
     })
   })
 
-  accountScoped.use('/credentials', requireTeamRole('ADMINISTRATOR', 'EDITOR'))
-  accountScoped.get('/credentials', (c) => {
-    // OAuth access tokens stay server-side — they are broader than a scoped API
-    // token and the backend already proxies every Cloudflare call. Only legacy
-    // api_token bindings export their (user-scoped) key.
-    const binding = c.get('cloudflareBinding')
-
-    if (binding.oauth) {
-      return c.json({
-        accountId: c.get('cloudflareAccountId'),
-        accountName: c.get('cloudflareAccountName'),
-        authType: 'oauth' as const,
-      })
-    }
-
-    return c.json({
-      accountId: c.get('cloudflareAccountId'),
-      accountName: c.get('cloudflareAccountName'),
-      authType: 'api_token' as const,
-      ...(binding.encryptedApiKey
-        ? { apiKey: decryptCloudflareApiKey(binding.encryptedApiKey) }
-        : {}),
-    })
-  })
-
   accountScoped.get('/zones', async (c) => {
     const zones = await listCloudflareZones(await accountHandleFor(c))
 
@@ -132,42 +103,7 @@ export function registerCloudflareAccountRoutes(
   })
 
   accountScoped.get('/iam-permissions', async (c) => {
-    const binding = c.get('cloudflareBinding')
-
-    // OAuth bindings (current bind flow) have no inspectable API token — report
-    // the granted scopes + connection health instead of token policies. A failed
-    // token refresh degrades to connectionStatus 'error' rather than a 500 so
-    // the page can tell the user to reconnect.
-    if (binding.oauth) {
-      const warnings: string[] = []
-      let handle = null
-
-      try {
-        handle = await accountHandleFor(c)
-      } catch (e) {
-        warnings.push(
-          `Could not refresh the OAuth access token: ${e instanceof Error ? e.message : String(e)}`,
-        )
-      }
-
-      return c.json(
-        await getCloudflareOauthConnection(
-          handle,
-          {
-            accountId: binding.accountId,
-            accountName: binding.accountName,
-            clientId: binding.oauth.clientId,
-            scope: binding.oauth.scope,
-            accessTokenExpiresAt: binding.oauth.accessTokenExpiresAt,
-            hasRefreshToken: Boolean(binding.oauth.encryptedRefreshToken),
-          },
-          warnings,
-        ),
-      )
-    }
-    const result = await getCloudflareIamPermissions(await accountHandleFor(c))
-
-    return c.json({ ...result, authType: 'api_token' as const })
+    return c.json(await getCloudflareIamPermissions(await accountHandleFor(c)))
   })
 
   accountScoped.get('/zones/:zoneId/dns-records', async (c) => {

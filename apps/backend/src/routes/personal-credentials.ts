@@ -184,14 +184,11 @@ personalCredentialTokenRoutes.get('/:provider/token', async (c) => {
   const provider = c.req.param('provider')
   const authorization = c.req.header('Authorization') ?? ''
 
-  if (provider === 'github' || provider === 'linear') {
+  if (provider === 'github') {
     const claims = await ownerClaims(authorization, provider)
     const personal = await personalOwnToken(claims.own, provider, c.req.query('connectionId'))
 
     if (!personal) throw notConnected(NAMES[provider])
-    // In the shape each skill's setup script already reads for the team handout.
-    if (provider === 'linear')
-      return c.json({ ...handedOut(personal), accessToken: personal.token })
     const owner = await getCerinUserById(claims.own)
 
     return c.json({

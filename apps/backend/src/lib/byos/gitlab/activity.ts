@@ -1,4 +1,4 @@
-import { apiRequest } from './tokens'
+import { apiRequest } from './http'
 
 import type { GitlabBinding } from '@/models'
 import type { ObjectId } from 'mongodb'

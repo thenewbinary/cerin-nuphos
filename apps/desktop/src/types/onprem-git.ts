@@ -106,10 +106,6 @@ export type GitlabBinding = {
   username: string
   displayName: string | null
   avatarUrl: string | null
-  clientId: string
-  isDefaultClient: boolean
-  scope: string
-  accessTokenExpiresAt: string | null
   createdAt?: string
 }
 

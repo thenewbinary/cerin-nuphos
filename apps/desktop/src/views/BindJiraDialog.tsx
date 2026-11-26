@@ -80,7 +80,7 @@ export function BindJiraDialog({ open, teamId, onClose, onBound }: Props) {
       onClose={close}
       title={t('Connect {name}', { name: 'Jira' })}
       description={t(
-        'Authorize Cerin to read and create issues in your Jira site so it can open, comment on, and transition tickets.',
+        'Connect Jira through Composio so Cerin can read, create, comment on, and transition issues. Access starts with the authorizing member only.',
       )}
       width={460}
     >

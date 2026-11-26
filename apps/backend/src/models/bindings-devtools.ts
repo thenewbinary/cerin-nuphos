@@ -25,25 +25,19 @@ export type GithubInstallationBinding = {
 
 export type GitlabBinding = {
   id: ObjectId
-  // Normalized host without trailing slash, e.g. "https://gitlab.com" or
-  // "https://gitlab.mycompany.com". Used as the API base for this binding.
+  label: string
+  // Always "https://gitlab.com": Composio's managed GitLab app covers
+  // gitlab.com only, so self-managed instances are not supported.
   hostUrl: string
-  // GitLab user id + login that authorised the OAuth grant.
+  // GitLab user id + login that authorised the grant.
   accountId: number
   username: string
   displayName: string | null
   avatarUrl: string | null
-  // OAuth client used for this binding. clientId is plaintext; clientSecret is
-  // null when the server-default gitlab.com app was used (i.e. clientId equals
-  // the configured GITLAB_OAUTH_CLIENT_ID).
-  clientId: string
-  encryptedClientSecret: EncryptedEnvelope | null
-  scope: string
-  encryptedAccessToken: EncryptedEnvelope
-  encryptedRefreshToken: EncryptedEnvelope | null
-  // Wall-clock expiry of the stored access token. The library refreshes
-  // ~60s ahead of this.
-  accessTokenExpiresAt: Date | null
+  // The Composio connected account holding the grant. No provider token is
+  // stored here; API calls go through Composio Proxy Execute.
+  composioAccountId: string
+  composioUserId: string
   createdAt: Date
   access?: BindingAccess
 }
@@ -51,7 +45,7 @@ export type GitlabBinding = {
 export type LinearWorkspaceBinding = {
   id: ObjectId
   label: string
-  // Linear organization (workspace) the OAuth grant is scoped to.
+  // Linear organization (workspace) the grant is scoped to.
   workspaceId: string
   workspaceName: string
   // urlKey is the slug in linear.app/<urlKey>/… deep links.
@@ -59,13 +53,10 @@ export type LinearWorkspaceBinding = {
   // Linear user who authorised the grant.
   accountId: string
   accountName: string | null
-  scope: string
-  // Linear access tokens live ~24h and the refresh token rotates on every use,
-  // so both are stored encrypted and refreshed ~60s ahead of expiry. Bindings
-  // created before refresh support have neither field.
-  encryptedAccessToken: EncryptedEnvelope
-  encryptedRefreshToken?: EncryptedEnvelope | null
-  accessTokenExpiresAt?: Date | null
+  // The Composio connected account holding the grant. No provider token is
+  // stored here; API calls go through Composio Proxy Execute.
+  composioAccountId: string
+  composioUserId: string
   createdAt: Date
   access?: BindingAccess
 }
@@ -73,7 +64,7 @@ export type LinearWorkspaceBinding = {
 export type JiraSiteBinding = {
   id: ObjectId
   label: string
-  // Atlassian site (cloudId) the OAuth grant is scoped to. Jira REST calls go
+  // Atlassian site (cloudId) the grant is scoped to. Jira REST calls go
   // to api.atlassian.com/ex/jira/<cloudId>/rest/api/3/…
   cloudId: string
   siteName: string
@@ -82,12 +73,10 @@ export type JiraSiteBinding = {
   // Atlassian account that authorised the grant.
   accountId: string
   accountName: string | null
-  scope: string
-  // Atlassian access tokens are short-lived (~1h) and refresh tokens rotate on
-  // every use, so both are stored encrypted and refreshed ~60s ahead of expiry.
-  encryptedAccessToken: EncryptedEnvelope
-  encryptedRefreshToken: EncryptedEnvelope | null
-  accessTokenExpiresAt: Date | null
+  // The Composio connected account holding the grant. No provider token is
+  // stored here; API calls go through Composio Proxy Execute.
+  composioAccountId: string
+  composioUserId: string
   createdAt: Date
   access?: BindingAccess
 }
@@ -95,19 +84,16 @@ export type JiraSiteBinding = {
 export type AsanaAccountBinding = {
   id: ObjectId
   label: string
-  // Asana user (gid) that authorised the grant. OAuth is account-wide, so a
+  // Asana user (gid) that authorised the grant. The grant is account-wide, so a
   // binding represents the connected Asana account, not a single workspace —
   // the agent selects the workspace at query time via the Asana API.
   accountGid: string
   accountName: string | null
   accountEmail: string | null
-  scope: string
-  // Asana access tokens are short-lived (~1h). The refresh token is long-lived
-  // and (unlike Atlassian) does NOT rotate, so both are stored encrypted and
-  // the access token is refreshed ~60s ahead of expiry (mirrors GitLab/Jira).
-  encryptedAccessToken: EncryptedEnvelope
-  encryptedRefreshToken: EncryptedEnvelope | null
-  accessTokenExpiresAt: Date | null
+  // The Composio connected account holding the grant. No provider token is
+  // stored here; API calls go through Composio Proxy Execute.
+  composioAccountId: string
+  composioUserId: string
   createdAt: Date
   access?: BindingAccess
 }
@@ -115,19 +101,16 @@ export type AsanaAccountBinding = {
 export type SentryAccountBinding = {
   id: ObjectId
   label: string
-  // Sentry user that authorised the grant. OAuth is account-wide, so a binding
-  // represents the connected Sentry account, not a single organization — the
-  // agent selects the org at query time via GET /organizations/.
-  userId: string
-  userName: string | null
-  userEmail: string | null
-  scope: string
-  // Sentry access tokens live ~30 days and the refresh token IS rotated on every
-  // refresh, so both are stored encrypted and the rotated pair is persisted when
-  // the access token is refreshed ~60s ahead of expiry (mirrors GitLab/Jira).
-  encryptedAccessToken: EncryptedEnvelope
-  encryptedRefreshToken: EncryptedEnvelope | null
-  accessTokenExpiresAt: Date | null
+  // The organizations the grant could see at setup, via GET /api/0/organizations/.
+  // The grant is account-wide, so the agent selects the org at query time; the
+  // sorted slug list is also the binding's dedup key on reconnect.
+  organizationSlugs: string[]
+  // Display name of the first organization, for labelling.
+  organizationName: string | null
+  // The Composio connected account holding the grant. No provider token is
+  // stored here; API calls go through Composio Proxy Execute.
+  composioAccountId: string
+  composioUserId: string
   createdAt: Date
   access?: BindingAccess
 }

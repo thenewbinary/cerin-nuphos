@@ -208,6 +208,7 @@ export type AgentCredentialAccess = {
   // Optional for docs written before Resend joined the session-isolation tier.
   resendIntegrationIds?: string[]
   trelloIntegrationIds?: string[]
+  slackIntegrationIds?: string[]
   posthogIntegrationIds?: string[]
   plaudAccountIds?: string[]
   // Optional for docs written before these left self-discovery for selection.
@@ -221,8 +222,8 @@ export type AgentCredentialAccess = {
   instaboxAccountIds?: string[]
   // Optional for docs older than device selection; devices are user-owned, never team-shared.
   deviceIds?: string[]
-  teamIdentity?: ('github' | 'linear')[] // act as the team, not a member's Personal Credential
-  personalCredentialIds?: PersonalCredentialProvider[] // the owner's own, with no team binding
+  teamIdentity?: 'github'[]
+  personalCredentialIds?: PersonalCredentialProvider[]
   updatedAt: Date
   updatedBy: string
 } & CredentialAllFlags
@@ -258,11 +259,8 @@ export type AgentMessageFeedback = {
   updatedAt: Date
 }
 
-// Persistent agent event trail — first-class data alongside conversations and
-// messages (no TTL). One document per event; `event` is a namespaced key
-// ('sandbox.created', 'memory.updated', 'credentials.accessed', …) and
-// domain-specific payload lives under `data`, so new event families need no
-// schema change.
+// Persistent agent event trail (no TTL). `event` is a namespaced key and
+// domain-specific payload lives under `data`, so new families need no schema change.
 export type AgentEventDoc = {
   _id?: ObjectId
   conversationId: string

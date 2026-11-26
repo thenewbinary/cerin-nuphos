@@ -68,16 +68,13 @@ export function BindAccountDialog({
     onClose()
   }
 
-  async function connectCloudflareOAuth(scopes?: string[]) {
+  async function connectCloudflareOAuth() {
     const attempt = ++cloudflareAttempt.current
 
     st.setCloudflareConnecting(true)
     try {
-      // Resolves when Cloudflare redirects back through the backend and the
-      // desktop receives the cerin://cloudflare-callback deep link.
       await api.atlasStartCloudflareConnect(
         teamId,
-        scopes,
         shareList ? shareFromAllowList(shareList) : undefined,
       )
       if (attempt !== cloudflareAttempt.current) return
@@ -156,7 +153,7 @@ export function BindAccountDialog({
             cloudflareShareField={
               provider === 'cloudflare' && !cloudflareConnecting ? shareField : undefined
             }
-            onConnectCloudflare={(scopes) => void connectCloudflareOAuth(scopes)}
+            onConnectCloudflare={() => void connectCloudflareOAuth()}
           />
         )}
         {showFooter && SHAREABLE_PROVIDERS.has(provider) && shareField}

@@ -47,7 +47,7 @@ describe('isCloudCredentialPath', () => {
   })
 
   test.each([
-    '/s/teams/t/linear-workspaces/w/credentials',
+    '/s/teams/t/cloudflare-accounts/a/proxy',
     '/s/teams/t/aws-accounts/123/iam-permissions',
     '/s/teams/t/selected-credentials',
   ])('ignores %s', (path) => {

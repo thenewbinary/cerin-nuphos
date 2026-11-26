@@ -161,7 +161,6 @@ export function requireCloudflareAccount(): MiddlewareHandler<{
     c.set('cloudflareAccountId', normalizedAccountId)
     c.set('cloudflareAccountName', binding.accountName)
     c.set('cloudflareBinding', binding)
-    c.set('cloudflareEncryptedApiKey', binding.encryptedApiKey ?? null)
     c.set('cloudflareR2S3', binding.r2S3 ?? null)
     await next()
   }

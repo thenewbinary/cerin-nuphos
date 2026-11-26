@@ -104,14 +104,10 @@ export function BindingsList({
       ),
     },
     {
-      key: 'app',
-      header: t('OAuth app'),
-      width: 140,
-      render: (b) => (
-        <span className="text-tertiary text-[11.5px]">
-          {b.isDefaultClient ? t('Zeabur default') : t('Custom')}
-        </span>
-      ),
+      key: 'authorization',
+      header: t('Authorization'),
+      width: 160,
+      render: () => <span className="text-tertiary text-[11.5px]">{t('Composio managed')}</span>,
     },
     {
       key: 'age',
@@ -201,7 +197,7 @@ export function BindingsList({
           open
           title={t('Disconnect GitLab account')}
           description={t(
-            'Atlas will lose access to @{username} on {host}. The OAuth grant remains on the GitLab side — revoke it there separately to fully invalidate the tokens.',
+            'Cerin will lose access to @{username} on {host}. Cerin will request deletion of the Composio connected account. The GitLab authorization grant may remain — revoke it separately in GitLab if needed.',
             { username: unbindTarget.username, host: hostLabel(unbindTarget.hostUrl) },
           )}
           confirmLabel={t('Disconnect')}

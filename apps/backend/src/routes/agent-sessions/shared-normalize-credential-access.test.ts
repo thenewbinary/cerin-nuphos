@@ -73,7 +73,7 @@ describe('a panel with no selection, held to a conversation with a stored null l
 
     expect(access.awsRoleIds).toEqual(['role-2'])
     expect(access.githubInstallationIds).toEqual([])
-    expect(access.gitlabBindingIds).toBeUndefined()
+    expect(access.gitlabBindingIds).toEqual([])
   })
 })
 

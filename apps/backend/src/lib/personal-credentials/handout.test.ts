@@ -6,12 +6,7 @@ import { useByosSecrets } from '@/lib/test/doubles/byos-secrets'
 import { useModels } from '@/lib/test/doubles/models'
 import { usePersonalCredentialsGithub } from '@/lib/test/doubles/personal-credentials-github'
 
-import {
-  ownPersonalCredentialOptions,
-  personalGithubToken,
-  personalGoogleToken,
-  personalLinearToken,
-} from './handout'
+import { ownPersonalCredentialOptions, personalGithubToken, personalGoogleToken } from './handout'
 
 import type { ProviderTokens } from './github'
 import type { EncryptedSecret } from '@/lib/byos/secrets'
@@ -155,29 +150,12 @@ describe('personalGithubToken', () => {
   })
 })
 
-describe('personalLinearToken', () => {
-  test('applies only to the workspace the member connected', async () => {
-    rows = [
-      credential({
-        provider: 'linear',
-        workspaceId: 'org-1',
-        encryptedAccessToken: sealed('lin_access'),
-        accessTokenExpiresAt: null,
-      }),
-    ]
-
-    expect(await personalLinearToken('user-1', 'org-1')).toMatchObject({ token: 'lin_access' })
-    expect(await personalLinearToken('user-1', 'org-2')).toBeNull()
-  })
-})
-
 describe('ownPersonalCredentialOptions', () => {
   test('offers every own credential, Google ones only in the team that issued them', async () => {
     const other = new ObjectId().toHexString()
 
     rows = [
       credential({ provider: 'github', login: 'octocat' }),
-      credential({ provider: 'linear', login: 'Octo Cat' }),
       credential({ provider: 'gmail', login: 'octo@example.com', teamId: TEAM }),
       credential({ provider: 'google-calendar', login: 'octo@example.com', teamId: TEAM }),
       credential({ provider: 'google-drive', login: 'octo@example.com', teamId: other }),
@@ -188,7 +166,6 @@ describe('ownPersonalCredentialOptions', () => {
 
     expect(options.map(({ provider, login }) => ({ provider, login }))).toEqual([
       { provider: 'github', login: 'octocat' },
-      { provider: 'linear', login: 'Octo Cat' },
       { provider: 'gmail', login: 'octo@example.com' },
       { provider: 'google-calendar', login: 'octo@example.com' },
     ])

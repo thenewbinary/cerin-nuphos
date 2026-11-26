@@ -71,6 +71,40 @@ describe('composioAuthConfigId', () => {
     })
   })
 
+  test('Cloudflare uses the oldest custom API_KEY config, not managed OAuth or another scheme', async () => {
+    respond({
+      body: {
+        items: [
+          { id: 'ac_oauth', created_at: '2026-10-01T00:00:00Z', auth_scheme: 'OAUTH2' },
+          { id: 'ac_new', created_at: '2026-10-02T00:00:00Z', auth_scheme: 'API_KEY' },
+          { id: 'ac_old', created_at: '2026-10-03T00:00:00Z', auth_scheme: 'API_KEY' },
+        ],
+      },
+    })
+
+    expect(await composioAuthConfigId('cloudflare-existing', 'apiKey')).toBe('ac_new')
+    expect(calls[0]?.path).toBe(
+      '/auth_configs?toolkit_slug=cloudflare-existing&is_composio_managed=false&limit=200',
+    )
+    respond(
+      { body: { items: [] } },
+      { status: 201, body: { auth_config: { id: 'ac_created' } } },
+      {
+        body: {
+          items: [
+            { id: 'ac_created', created_at: '2026-10-02T00:00:00Z', auth_scheme: 'API_KEY' },
+            { id: 'ac_race', created_at: '2026-10-01T00:00:00Z', auth_scheme: 'API_KEY' },
+          ],
+        },
+      },
+    )
+    expect(await composioAuthConfigId('cloudflare-created', 'apiKey')).toBe('ac_race')
+    expect(calls[1]?.body).toEqual({
+      toolkit: { slug: 'cloudflare-created' },
+      auth_config: { type: 'use_custom_auth', authScheme: 'API_KEY', credentials: {} },
+    })
+  })
+
   test('does not remember a failure', async () => {
     respond({ status: 503, body: {} })
     await expect(composioAuthConfigId('googledrive')).rejects.toThrow('HTTP 503')

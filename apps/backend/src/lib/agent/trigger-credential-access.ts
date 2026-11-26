@@ -33,6 +33,7 @@ const CREDENTIAL_ARRAY_KEYS = [
   'secureframeIntegrationIds',
   'resendIntegrationIds',
   'trelloIntegrationIds',
+  'slackIntegrationIds',
   'githubInstallationIds',
   'gitlabBindingIds',
   'grafanaInstanceIds',

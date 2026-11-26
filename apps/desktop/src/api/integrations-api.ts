@@ -120,6 +120,13 @@ export const integrationsApi = {
   ) => window.api.atlasUpdateTrelloAccess(teamId, id, input),
   atlasListResendIntegrations: (teamId: string) => window.api.atlasListResendIntegrations(teamId),
   atlasListTrelloIntegrations: (teamId: string) => window.api.atlasListTrelloIntegrations(teamId),
+  atlasStartSlackIntegrationOAuth: (teamId: string, share?: BindingShare) =>
+    window.api.atlasStartSlackIntegrationOAuth(teamId, share),
+  atlasCancelSlackIntegrationOAuth: (teamId: string) =>
+    window.api.atlasCancelSlackIntegrationOAuth(teamId),
+  atlasListSlackIntegrations: (teamId: string) => window.api.atlasListSlackIntegrations(teamId),
+  atlasUnbindSlackIntegration: (teamId: string, integrationId: string) =>
+    window.api.atlasUnbindSlackIntegration(teamId, integrationId),
   atlasBindResendIntegration: (
     teamId: string,
     label: string,

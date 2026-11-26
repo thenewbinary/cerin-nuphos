@@ -7,7 +7,7 @@ export function describeCredentialIdentities(
   options: AgentCredentialOptions,
 ): SessionCredentials {
   const selected = credentials.selected.map((entry) => {
-    if (entry.provider !== 'github' && entry.provider !== 'linear') return entry
+    if (entry.provider !== 'github') return entry
     const provider = entry.provider
     const personal = options.personalCredentials.find(
       (credential) => credential.provider === provider,

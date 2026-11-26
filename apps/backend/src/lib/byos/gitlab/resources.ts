@@ -1,6 +1,6 @@
-import { GitlabApiError, USER_AGENT, gitlabFetch, normalizeHostUrl } from './http'
-import { apiRequest } from './tokens'
+import { apiRequest, GitlabApiError, gitlabProxy } from './http'
 
+import type { GitlabConnection } from './http'
 import type { GitlabBinding } from '@/models'
 import type { ObjectId } from 'mongodb'
 
@@ -20,25 +20,18 @@ type RawGitlabUser = {
   avatar_url?: string | null
 }
 
-export async function getCurrentUser(
-  hostUrl: string,
-  accessToken: string,
-): Promise<GitlabUserInfo> {
-  const host = normalizeHostUrl(hostUrl)
-  const res = await gitlabFetch(`${host}/api/v4/user`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: 'application/json',
-      'User-Agent': USER_AGENT,
-    },
-  })
+/** The authorising gitlab.com user, from GET /api/v4/user at setup. */
+export async function getCurrentUser(connection: GitlabConnection): Promise<GitlabUserInfo> {
+  const { status, data } = await gitlabProxy(connection, { method: 'GET', path: '/user' })
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => '')
-
-    throw new GitlabApiError(res.status, `GitLab /user failed: ${String(res.status)} ${text}`)
+  if (status < 200 || status >= 300) {
+    throw new GitlabApiError(status, `GitLab /user failed: ${String(status)}`)
   }
-  const raw = (await res.json()) as RawGitlabUser
+  const raw = data as RawGitlabUser
+
+  if (typeof raw?.id !== 'number' || typeof raw.username !== 'string' || !raw.username) {
+    throw new GitlabApiError(502, 'GitLab /user returned an unexpected profile')
+  }
 
   return {
     id: raw.id,

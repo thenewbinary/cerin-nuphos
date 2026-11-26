@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-team_id=""
+if [[ $# -lt 2 ]]; then
+  printf 'usage: issue-create.sh CERIN_TEAM_ID BINDING_ID --team ID --title TITLE [--assignee ID] [--state ID] [--priority 0-4] [--description-file PATH]\n' >&2
+  exit 2
+fi
+
+cerin_team_id=$1
+binding_id=$2
+shift 2
+linear_team_id=""
 title=""
 assignee_id=""
 state_id=""
 priority=""
 description_file="-"
-env_path="${LINEAR_ENV_PATH:-$HOME/.linear/cerin.env}"
 
 usage() {
   cat >&2 <<'EOF'
-Usage: issue-create.sh --team ID --title TITLE [--assignee ID] [--state ID] [--priority 0-4] [--description-file PATH]
+Usage: issue-create.sh CERIN_TEAM_ID BINDING_ID --team ID --title TITLE [--assignee ID] [--state ID] [--priority 0-4] [--description-file PATH]
 
 The issue description is read from stdin unless --description-file is given.
 EOF
@@ -20,7 +27,7 @@ EOF
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
-    --team) [ "$#" -ge 2 ] || usage; team_id="$2"; shift 2 ;;
+    --team) [ "$#" -ge 2 ] || usage; linear_team_id="$2"; shift 2 ;;
     --title) [ "$#" -ge 2 ] || usage; title="$2"; shift 2 ;;
     --assignee) [ "$#" -ge 2 ] || usage; assignee_id="$2"; shift 2 ;;
     --state) [ "$#" -ge 2 ] || usage; state_id="$2"; shift 2 ;;
@@ -30,7 +37,7 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-[ -n "$team_id" ] || usage
+[ -n "$linear_team_id" ] || usage
 [ -n "$title" ] || usage
 if [ "$description_file" != "-" ] && [ ! -r "$description_file" ]; then
   echo "Issue description is not readable: $description_file" >&2
@@ -41,21 +48,13 @@ if [ -n "$priority" ] && [[ ! "$priority" =~ ^[0-4]$ ]]; then
   exit 2
 fi
 
-if [ -r "$env_path" ]; then
-  # setup-credentials.sh owns this mode-0600 file. The GraphQL helper sources
-  # it again independently; this read is for the Cerin team id used in links.
-  # shellcheck disable=SC1090
-  source "$env_path"
-fi
-cerin_team_id="${LINEAR_CERIN_TEAM_ID:-}"
 cerin_session_id="${CERIN_SESSION_ID:-}"
-
-script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-payload="$(mktemp)"
-response="$(mktemp)"
-description_tmp="$(mktemp)"
-attachment_payload="$(mktemp)"
-attachment_response="$(mktemp)"
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+payload=$(mktemp)
+response=$(mktemp)
+description_tmp=$(mktemp)
+attachment_payload=$(mktemp)
+attachment_response=$(mktemp)
 trap 'rm -f "$payload" "$response" "$description_tmp" "$attachment_payload" "$attachment_response"' EXIT
 
 if [ "$description_file" = "-" ]; then
@@ -63,19 +62,11 @@ if [ "$description_file" = "-" ]; then
   description_file="$description_tmp"
 fi
 
-python3 - "$payload" "$description_file" "$team_id" "$title" "$assignee_id" "$state_id" "$priority" <<'PY'
+python3 - "$payload" "$description_file" "$linear_team_id" "$title" "$assignee_id" "$state_id" "$priority" <<'PY'
 import json
 import sys
 
-(
-    payload_path,
-    description_path,
-    team_id,
-    title,
-    assignee_id,
-    state_id,
-    priority,
-) = sys.argv[1:]
+payload_path, description_path, team_id, title, assignee_id, state_id, priority = sys.argv[1:]
 with open(description_path) as src:
     description = src.read()
 
@@ -93,41 +84,33 @@ query = """mutation CreateIssue($input: IssueCreateInput!) {
   issueCreate(input: $input) {
     success
     issue {
-      id
-      identifier
-      title
-      url
-      priority
+      id identifier title url priority
       state { id name type }
       assignee { id name displayName email }
       team { id key name }
     }
   }
 }"""
-
 with open(payload_path, "w") as dst:
     json.dump({"query": query, "variables": {"input": issue_input}}, dst)
 PY
 
-bash "$script_dir/graphql.sh" "$payload" > "$response"
-
-issue_id="$(python3 - "$response" <<'PY'
+bash "$script_dir/graphql.sh" "$cerin_team_id" "$binding_id" "@$payload" > "$response"
+issue_id=$(python3 - "$response" <<'PY'
 import json
 import sys
 
 with open(sys.argv[1]) as src:
     result = json.load(src)["data"]["issueCreate"]
-
 if not result.get("success") or not result.get("issue"):
     print(json.dumps(result, ensure_ascii=False, indent=2), file=sys.stderr)
     raise SystemExit(1)
-
 print(result["issue"]["id"])
 PY
-)"
+)
 
-if [ -n "$cerin_team_id" ] && [ -n "$cerin_session_id" ]; then
-  session_url="${CERIN_PUBLIC_URL:-${CERIN_BACKEND_URL:-https://api.cerin.ai}}/teams/${cerin_team_id}/agent/${cerin_session_id}"
+if [ -n "$cerin_session_id" ]; then
+  session_url="${CERIN_PUBLIC_URL:-https://api.cerin.ai}/teams/${cerin_team_id}/agent/${cerin_session_id}"
   python3 - "$attachment_payload" "$issue_id" "$session_url" "$cerin_session_id" <<'PY'
 import json
 import sys
@@ -150,7 +133,7 @@ with open(payload_path, "w") as dst:
     json.dump({"query": query, "variables": {"input": attachment_input}}, dst)
 PY
 
-  if ! bash "$script_dir/graphql.sh" "$attachment_payload" > "$attachment_response"; then
+  if ! bash "$script_dir/graphql.sh" "$cerin_team_id" "$binding_id" "@$attachment_payload" > "$attachment_response"; then
     python3 - "$response" "$session_url" <<'PY'
 import json
 import sys
@@ -172,7 +155,6 @@ import sys
 
 with open(sys.argv[1]) as src:
     issue = json.load(src)["data"]["issueCreate"]["issue"]
-
 if os.path.getsize(sys.argv[2]):
     with open(sys.argv[2]) as src:
         attachment_result = json.load(src)["data"]["attachmentCreate"]
@@ -180,6 +162,5 @@ if os.path.getsize(sys.argv[2]):
         print(json.dumps(attachment_result, ensure_ascii=False, indent=2), file=sys.stderr)
         raise SystemExit(1)
     issue["sourceLink"] = attachment_result["attachment"]
-
 print(json.dumps(issue, ensure_ascii=False, indent=2))
 PY

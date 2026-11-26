@@ -27,6 +27,7 @@ import type {
   SecureframeIntegration,
   SentryAccount,
   SlackInstallation,
+  SlackIntegration,
   SlackLinkedChannelsSummary,
   SonarqubeIntegration,
   TailscaleOAuthClient,
@@ -75,6 +76,7 @@ export type TeamHomeViewProps = {
   plaudAccounts: PlaudAccount[]
   discordConnection?: DiscordConnection | null
   slackInstallation: SlackInstallation | null
+  slackIntegrations: SlackIntegration[]
   larkInstallation: LarkInstallation | null
   slackLinkedChannels: SlackLinkedChannelsSummary | null
   /** True until the team's aggregated connectors bundle has arrived. */

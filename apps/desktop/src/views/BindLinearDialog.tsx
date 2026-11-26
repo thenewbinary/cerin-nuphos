@@ -81,7 +81,7 @@ export function BindLinearDialog({ open, teamId, onClose, onBound }: Props) {
       onClose={close}
       title={t('Connect {name}', { name: 'Linear' })}
       description={t(
-        'Authorize Cerin to read and create issues in your Linear workspace so it can open and close tickets.',
+        'Connect Linear through Composio so Cerin can read and create issues in your workspace. Access starts with the authorizing member only.',
       )}
       width={460}
     >

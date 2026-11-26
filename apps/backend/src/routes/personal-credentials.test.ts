@@ -136,12 +136,7 @@ Object.assign(config.byos.github, {
   setupRedirect: 'cerin://github-callback',
   encryptionKey: 'k',
 })
-Object.assign(config.byos.linear, {
-  clientId: 'lin-client',
-  clientSecret: 'lin-secret',
-  setupRedirect: 'https://elsewhere.test/linear-app/setup',
-  encryptionKey: 'k',
-})
+Object.assign(config.byos.linear, { encryptionKey: 'k' })
 afterAll(() => {
   Object.assign(config.byos.github, saveConfig.github)
   Object.assign(config.byos.linear, saveConfig.linear)
@@ -162,17 +157,6 @@ fetchSpy.mockImplementation(((input: string | URL | Request, init?: RequestInit)
       Response.json({ access_token: 'ghu_v', refresh_token: 'ghr_v', expires_in: 28_800 }),
     )
   if (url.endsWith('/user')) return Promise.resolve(Response.json({ id: 9, login: 'victim' }))
-  if (url.includes('linear.app/oauth/token'))
-    return Promise.resolve(Response.json({ access_token: 'lin_v', expires_in: 3600 }))
-  if (url.includes('linear.app/graphql'))
-    return Promise.resolve(
-      Response.json({
-        data: {
-          viewer: { id: 'u9', name: 'victim' },
-          organization: { id: 'org-1', name: 'Acme', urlKey: 'acme' },
-        },
-      }),
-    )
 
   if (url.includes('oauth2.googleapis.com/token')) {
     googleTokenRequest = new URLSearchParams((init?.body as string | undefined) ?? '')
@@ -256,7 +240,7 @@ beforeEach(() => {
   }
 })
 
-describe.each(['github', 'linear', 'gmail', 'google-drive', 'google-calendar'])(
+describe.each(['github', 'gmail', 'google-drive', 'google-calendar'])(
   '%s Personal Credential OAuth',
   (provider) => {
     test('the starter claims the staged grant with the callback code', async () => {
@@ -624,7 +608,7 @@ describe('Google token handout', () => {
   })
 })
 
-describe('GitHub and Linear handout without a team binding', () => {
+describe('GitHub handout without a team binding', () => {
   const handout = new Hono()
 
   handout.onError((error, c) =>
@@ -649,27 +633,18 @@ describe('GitHub and Linear handout without a team binding', () => {
   })
 
   beforeEach(() => {
-    saved.push(
-      grant('owner', 'github', 'owner-gh'),
-      grant('owner', 'linear', 'owner-lin'),
-      grant('teammate', 'github', 'teammate-gh'),
-    )
+    saved.push(grant('owner', 'github', 'owner-gh'), grant('teammate', 'github', 'teammate-gh'))
     conversation = {
       userId: 'owner',
-      credentialAccess: { personalCredentialIds: ['github', 'linear'] },
+      credentialAccess: { personalCredentialIds: ['github'] },
     }
   })
 
   test('the owner gets their own token once the conversation selected it', async () => {
-    for (const [provider, token] of [
-      ['github', 'owner-gh'],
-      ['linear', 'owner-lin'],
-    ] as const) {
-      const res = await fetchToken(provider, await turn('owner', true))
+    const res = await fetchToken('github', await turn('owner', true))
 
-      expect(res.status).toBe(200)
-      expect(await res.json()).toMatchObject({ token, login: `owner-${provider}` })
-    }
+    expect(res.status).toBe(200)
+    expect(await res.json()).toMatchObject({ token: 'owner-gh', login: 'owner-github' })
   })
 
   test('a teammate’s message in the owner’s conversation gets nothing, not even their own', async () => {
@@ -686,15 +661,15 @@ describe('GitHub and Linear handout without a team binding', () => {
   })
 
   test('nothing without the conversation’s selection', async () => {
-    conversation = { userId: 'owner', credentialAccess: { personalCredentialIds: ['linear'] } }
+    conversation = { userId: 'owner', credentialAccess: { personalCredentialIds: ['gmail'] } }
     expect((await fetchToken('github', await turn('owner', true))).status).toBe(403)
     conversation = { userId: 'owner', credentialAccess: { personalCredentialIds: [] } }
-    expect((await fetchToken('linear', await turn('owner', true))).status).toBe(403)
+    expect((await fetchToken('github', await turn('owner', true))).status).toBe(403)
   })
 
   test('as for connectors, a conversation with no list keeps its reach', async () => {
     conversation = { userId: 'owner', credentialAccess: {} }
-    expect((await fetchToken('linear', await turn('owner', true))).status).toBe(200)
+    expect((await fetchToken('github', await turn('owner', true))).status).toBe(200)
   })
 
   test('a conversation owned by someone else never hands out the token’s owner grant', async () => {
@@ -719,7 +694,7 @@ describe('GitHub and Linear handout without a team binding', () => {
   })
 
   test('404 when the owner has not connected that provider', async () => {
-    saved.splice(0, saved.length, grant('owner', 'linear', 'owner-lin'))
+    saved.length = 0
     const res = await fetchToken('github', await turn('owner', true))
 
     expect(res.status).toBe(404)

@@ -5,12 +5,10 @@
  */
 export const TEAM_WIDE_WHEN_UNSET = [
   'githubInstallationIds',
-  'gitlabBindingIds',
   'grafanaInstanceIds',
   'sonarqubeIntegrationIds',
   'notionIntegrationIds',
   'upstashAccountIds',
-  'cloudflareAccountIds',
   'instaboxAccountIds',
   'personalCredentialIds',
 ] as const

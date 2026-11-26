@@ -35,20 +35,6 @@ export const agentSessionGcpProjectPathSchema = agentSessionTeamPathSchema.exten
   projectId: z.string().min(1).describe('GCP project id.'),
 })
 
-export const cloudflareAccountPathSchema = teamPathSchema.extend({
-  accountId: z
-    .string()
-    .regex(/^[a-f0-9]{32}$/i)
-    .describe('Cloudflare account id.'),
-})
-
-export const agentSessionCloudflareAccountPathSchema = agentSessionTeamPathSchema.extend({
-  accountId: z
-    .string()
-    .regex(/^[a-f0-9]{32}$/i)
-    .describe('Cloudflare account id.'),
-})
-
 export const linodeAccountPathSchema = teamPathSchema.extend({
   accountId: objectIdStringSchema.describe('Cerin Linode account binding id.'),
 })

@@ -88,6 +88,23 @@ export type SlackInstallation = {
   createdAt: string
 }
 
+export type SlackIntegration = {
+  id: string
+  label: string
+  slackTeamId: string
+  slackTeamName: string
+  slackUserId: string
+  slackUserName: string | null
+  authorizedBy: string
+  createdAt: string
+}
+
+export type SlackBindResult = {
+  bindingId: string
+  teamId: string
+  accountName: string
+}
+
 export type SlackOAuthStart = {
   authorizeUrl: string
   state: string

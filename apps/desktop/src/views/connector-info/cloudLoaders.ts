@@ -31,7 +31,32 @@ export const cloudLoaders: ConnectorInfoLoaders = {
       externalLabel: t('Open {name}', { name: 'Discord' }),
     }
   },
-  slack: async (teamId) => {
+  slack: async (teamId, connectorId) => {
+    if (connectorId !== 'slack' && connectorId !== 'linked-channels') {
+      const integration = (await api.atlasListSlackIntegrations(teamId)).find(
+        (item) => item.id === connectorId,
+      )
+
+      if (!integration) return null
+
+      return {
+        name: integration.slackTeamName,
+        fields: [
+          { label: t('Workspace'), value: integration.slackTeamName },
+          { label: t('Workspace ID'), value: integration.slackTeamId, mono: true },
+          {
+            label: t('Connected Slack user'),
+            value: integration.slackUserName ?? integration.slackUserId,
+          },
+          { label: t('Authorization'), value: t('Composio managed OAuth') },
+          { label: t('Connected'), value: new Date(integration.createdAt).toLocaleString() },
+          { label: t('Connector ID'), value: integration.id, mono: true },
+        ],
+        externalUrl: `https://app.slack.com/client/${encodeURIComponent(integration.slackTeamId)}`,
+        externalLabel: t('Open {name}', { name: 'Slack' }),
+        slackConnector: true,
+      }
+    }
     const { installation } = await api.atlasGetSlackInstallation(teamId)
 
     // No installation still renders the settings view: the team may have
@@ -250,4 +275,16 @@ export const cloudLoaders: ConnectorInfoLoaders = {
       externalLabel: t('Open {name}', { name: 'Volcengine' }),
     }
   },
+}
+
+export async function slackConnectorIds(teamId: string): Promise<string[]> {
+  const [nativeInstallation, integrations] = await Promise.all([
+    api.atlasGetSlackInstallation(teamId),
+    api.atlasListSlackIntegrations(teamId),
+  ])
+
+  return [
+    ...(nativeInstallation.installation ? ['slack'] : []),
+    ...integrations.map((item) => item.id),
+  ]
 }

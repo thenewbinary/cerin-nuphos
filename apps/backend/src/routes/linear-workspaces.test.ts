@@ -1,17 +1,17 @@
-import { afterEach, describe, expect, test } from 'bun:test'
+import { afterAll, afterEach, describe, expect, test } from 'bun:test'
 import { Hono } from 'hono'
 import { ObjectId } from 'mongodb'
 
 import { config } from '@/config'
 import { errorHandler } from '@/lib/errors'
-import { useByosSecrets } from '@/lib/test/doubles/byos-secrets'
 import { useModels } from '@/lib/test/doubles/models'
 
 import type { TeamAuthVariables } from '@/middleware/auth'
 
-useByosSecrets({
-  decryptLinearSecret: () => 'test-access-token',
-})
+const savedComposioKey = config.byos.composio.apiKey
+
+Object.assign(config.byos.composio, { apiKey: 'composio-fixture-key' })
+afterAll(() => Object.assign(config.byos.composio, { apiKey: savedComposioKey }))
 
 const TEAM_ID = new ObjectId()
 const BINDING_ID = new ObjectId()
@@ -25,10 +25,8 @@ function binding(overrides: Record<string, unknown> = {}) {
     organizationUrlKey: 'cerin',
     accountId: 'account-1',
     accountName: 'Yuanlin',
-    scope: 'read,write',
-    encryptedAccessToken: 'test-access-token',
-    encryptedRefreshToken: undefined,
-    accessTokenExpiresAt: new Date(Date.now() + 60 * 60 * 1000),
+    composioAccountId: 'ca_linear',
+    composioUserId: 'composio-user',
     access: { memberAllowList: ['*'], updatedAt: new Date(), updatedBy: 'admin-user' },
     createdAt: new Date(),
     ...overrides,
@@ -59,12 +57,29 @@ app.onError(errorHandler)
 const realFetch = globalThis.fetch
 
 function installLinearGraphql(handler: (body: { query: string; variables: unknown }) => unknown) {
-  globalThis.fetch = (async (_input: string | URL | Request, init?: RequestInit) => {
-    const body = typeof init?.body === 'string' ? JSON.parse(init.body) : {}
+  globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+    const url = new URL(String(input instanceof Request ? input.url : input))
 
-    return new Response(JSON.stringify(handler(body)), {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    if (url.origin !== 'https://backend.composio.dev') throw new Error(`Unexpected ${url.href}`)
+    if (url.pathname === '/api/v3.1/auth_configs') {
+      return Response.json({ items: [{ id: 'ac_linear', created_at: '2026-01-01' }] })
+    }
+    if (url.pathname === '/api/v3.1/connected_accounts/ca_linear') {
+      return Response.json({
+        status: 'ACTIVE',
+        user_id: 'composio-user',
+        toolkit: { slug: 'linear' },
+        auth_config: { id: 'ac_linear' },
+      })
+    }
+    if (url.pathname === '/api/v3.1/tools/execute/proxy') {
+      const request = JSON.parse(init?.body as string) as {
+        body: { query: string; variables: unknown }
+      }
+
+      return Response.json({ status: 200, data: handler(request.body) })
+    }
+    throw new Error(`Unexpected Composio request ${init?.method ?? 'GET'} ${url.pathname}`)
   }) as typeof fetch
 }
 
@@ -325,7 +340,7 @@ describe('GET /:bindingId/teams/:linearTeamId/issues', () => {
 })
 
 describe('revoked Linear authorization', () => {
-  test('a 401 with nothing to refresh from answers linear_reconnect_required', async () => {
+  test('a 401 from Composio answers linear_reconnect_required', async () => {
     const revokedId = new ObjectId()
 
     stored = { linearWorkspaces: [binding({ id: revokedId })] }
@@ -341,38 +356,5 @@ describe('revoked Linear authorization', () => {
     const json = (await res.json()) as { error: { code: string } }
 
     expect(json.error.code).toBe('linear_reconnect_required')
-  })
-
-  test('a credential handout whose refresh token Linear rejects answers linear_reconnect_required', async () => {
-    const revokedId = new ObjectId()
-    const saved = { ...config.byos.linear }
-
-    config.byos.linear.clientId = 'client'
-    config.byos.linear.clientSecret = 'secret'
-    stored = {
-      linearWorkspaces: [
-        binding({
-          id: revokedId,
-          encryptedRefreshToken: 'test-refresh-token',
-          accessTokenExpiresAt: new Date(Date.now() - 1000),
-        }),
-      ],
-    }
-    globalThis.fetch = (async () =>
-      new Response(JSON.stringify({ error: 'invalid_grant' }), {
-        status: 400,
-      })) as unknown as typeof fetch
-
-    try {
-      const res = await app.request(`/${revokedId.toHexString()}/credentials`)
-
-      expect(res.status).toBe(409)
-      const json = (await res.json()) as { error: { code: string } }
-
-      expect(json.error.code).toBe('linear_reconnect_required')
-    } finally {
-      config.byos.linear.clientId = saved.clientId
-      config.byos.linear.clientSecret = saved.clientSecret
-    }
   })
 })

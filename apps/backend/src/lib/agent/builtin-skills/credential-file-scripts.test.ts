@@ -69,6 +69,17 @@ describe('skill scripts prefer the per-turn credential file over the spawn-time 
   const cases: [string, string[], string?][] = [
     ['Cerin API helper', [join(skills, '_runtime/scripts/cerin-api.sh'), 'GET', '/teams']],
     [
+      'Composio proxy',
+      [
+        join(skills, '_runtime/scripts/composio-proxy.sh'),
+        'jira-sites',
+        '0123456789abcdef01234567',
+        '76543210fedcba9876543210',
+        'GET',
+        '/ex/jira/cloud/rest/api/3/myself',
+      ],
+    ],
+    [
       'file transfer',
       [join(skills, 'file-transfer/scripts/transfer-pull.sh'), 'team', 'group', 'out'],
     ],
@@ -103,18 +114,9 @@ test('no skill script or doc passes a bearer token as a curl argument', () => {
   expect(offenders).toEqual([])
 })
 
-const tokenLookupScripts = [
-  'asana',
-  'betterstack',
-  'jira',
-  'linear',
-  'notion',
-  'plaud',
-  'posthog',
-  'resend',
-  'sentry',
-  'upstash',
-].map((skill) => join(skills, skill, 'scripts/setup-credentials.sh'))
+const tokenLookupScripts = ['betterstack', 'notion', 'plaud', 'posthog', 'resend', 'upstash'].map(
+  (skill) => join(skills, skill, 'scripts/setup-credentials.sh'),
+)
 
 async function authorizationWithEnv(script: string, env: Record<string, string>) {
   const dir = mkdtempSync(join(tmpdir(), 'cerin-token-lookup-'))

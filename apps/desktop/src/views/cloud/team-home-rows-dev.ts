@@ -16,6 +16,7 @@ import type {
   PosthogIntegration,
   SentryAccount,
   SlackInstallation,
+  SlackIntegration,
   SlackLinkedChannelsSummary,
 } from '../../types'
 
@@ -32,6 +33,7 @@ export function buildDevConnectorRows({
   grafanaInstances,
   discordConnection,
   slackInstallation,
+  slackIntegrations,
   slackLinkedChannels,
   larkInstallation,
   onOpenConnectorInfo,
@@ -48,6 +50,7 @@ export function buildDevConnectorRows({
   grafanaInstances: GrafanaInstance[]
   discordConnection?: DiscordConnection | null
   slackInstallation: SlackInstallation | null
+  slackIntegrations: SlackIntegration[]
   slackLinkedChannels: SlackLinkedChannelsSummary | null
   larkInstallation: LarkInstallation | null
   onOpenConnectorInfo: OpenConnectorInfo
@@ -199,6 +202,20 @@ export function buildDevConnectorRows({
           },
         ]
       : []),
+    ...slackIntegrations.map((integration) => ({
+      key: `slack-integration:${integration.id}`,
+      provider: 'slack' as const,
+      account: integration.label || integration.slackTeamName,
+      principal: integration.slackUserName ?? integration.slackTeamId,
+      status: t('Slack API access'),
+      onAction: () =>
+        onOpenConnectorInfo({
+          provider: 'slack',
+          connectorId: integration.id,
+          name: integration.slackTeamName,
+        }),
+      onDelete: () => api.atlasUnbindSlackIntegration(teamId, integration.id),
+    })),
     ...(slackInstallation
       ? [
           {
@@ -206,11 +223,11 @@ export function buildDevConnectorRows({
             provider: 'slack' as const,
             account: slackInstallation.slackTeamName,
             principal: slackInstallation.slackTeamId,
-            status: t('Slack workspace'),
+            status: t('Slack bot'),
             onAction: () =>
               onOpenConnectorInfo({
                 provider: 'slack',
-                connectorId: slackInstallation.id,
+                connectorId: 'slack',
                 name: slackInstallation.slackTeamName,
               }),
             onDelete: () => api.atlasDisconnectSlack(teamId),

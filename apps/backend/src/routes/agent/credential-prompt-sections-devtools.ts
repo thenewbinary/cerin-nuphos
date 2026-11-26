@@ -36,7 +36,7 @@ export function appendGitlabBindingLines(
     const username = safePromptField(binding.username)
 
     lines.push(
-      `- bindingId=${binding.bindingId}; hostUrl=${hostUrl}; username=${username}; setupCommand="bash skills/gitlab/scripts/setup-credentials.sh ${teamId} ${binding.bindingId}"`,
+      `- bindingId=${binding.bindingId}; hostUrl=${hostUrl}; username=${username}; proxyCommand="bash skills/gitlab/scripts/proxy.sh ${teamId} ${binding.bindingId} METHOD PATH [BODY_JSON] [QUERY_JSON]"`,
     )
   }
 }
@@ -82,7 +82,7 @@ export function appendCloudflareAccountLines(
   lines.push('', 'Cloudflare accounts:')
   for (const account of cloudflareAccounts) {
     lines.push(
-      `- accountId=${account.accountId}; ${optionalField('accountName', account.accountName)}setupCommand="bash skills/cloudflare/scripts/setup-credentials.sh ${teamId} ${account.accountId}"`,
+      `- accountId=${account.accountId}; ${optionalField('accountName', account.accountName)}proxyCommand="bash skills/cloudflare/scripts/proxy.sh ${teamId} ${account.accountId} METHOD PATH [BODY_JSON] [QUERY_JSON]"`,
     )
   }
 }

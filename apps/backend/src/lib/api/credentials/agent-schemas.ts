@@ -23,6 +23,7 @@ export const agentCredentialSelectionSchema = z.object({
   secureframeIntegrationIds: z.array(objectIdStringSchema).default([]),
   resendIntegrationIds: z.array(objectIdStringSchema).default([]),
   trelloIntegrationIds: z.array(objectIdStringSchema).default([]),
+  slackIntegrationIds: z.array(objectIdStringSchema).default([]),
   // Left optional on purpose: undefined means "not narrowed", which for these
   // connectors is still team-wide reach, unlike an explicit empty list.
   githubInstallationIds: z.array(z.string().min(1)).optional(),
@@ -33,7 +34,7 @@ export const agentCredentialSelectionSchema = z.object({
   upstashAccountIds: z.array(objectIdStringSchema).optional(),
   cloudflareAccountIds: z.array(z.string().min(1)).optional(),
   instaboxAccountIds: z.array(objectIdStringSchema).optional(),
-  teamIdentity: z.array(z.enum(['github', 'linear'])).optional(),
+  teamIdentity: z.array(z.enum(['github'])).optional(),
   personalCredentialIds: z.array(z.enum(PERSONAL_CREDENTIAL_PROVIDERS)).optional(),
   deviceIds: z.array(z.string().min(1)).default([]),
   // Everything the owner can use when read, including what is added later.
@@ -60,6 +61,7 @@ const agentCredentialAccessSchema = z.object({
   secureframeIntegrationIds: z.array(objectIdStringSchema),
   resendIntegrationIds: z.array(objectIdStringSchema).optional(),
   trelloIntegrationIds: z.array(objectIdStringSchema).optional(),
+  slackIntegrationIds: z.array(objectIdStringSchema).optional(),
   githubInstallationIds: z.array(z.string().min(1)).optional(),
   gitlabBindingIds: z.array(objectIdStringSchema).optional(),
   grafanaInstanceIds: z.array(objectIdStringSchema).optional(),
@@ -68,7 +70,7 @@ const agentCredentialAccessSchema = z.object({
   upstashAccountIds: z.array(objectIdStringSchema).optional(),
   cloudflareAccountIds: z.array(z.string().min(1)).optional(),
   instaboxAccountIds: z.array(objectIdStringSchema).optional(),
-  teamIdentity: z.array(z.enum(['github', 'linear'])).optional(),
+  teamIdentity: z.array(z.enum(['github'])).optional(),
   personalCredentialIds: z.array(z.enum(PERSONAL_CREDENTIAL_PROVIDERS)).optional(),
   deviceIds: z.array(z.string().min(1)).optional(),
   allCredentials: z.boolean().optional(),
@@ -201,6 +203,15 @@ export const agentCredentialOptionsSchema = z.object({
       }),
     )
     .default([]),
+  slackIntegrations: z
+    .array(
+      z.object({
+        integrationId: objectIdStringSchema,
+        label: z.string().min(1),
+        teamName: z.string().nullable(),
+      }),
+    )
+    .default([]),
   resendIntegrations: z.array(
     z.object({
       integrationId: objectIdStringSchema,
@@ -254,13 +265,6 @@ export const gcpCredentialsSchema = z.object({
   projectId: z.string().min(1),
   serviceAccountEmail: z.string().email(),
   expiresAt: z.string().datetime(),
-})
-
-export const cloudflareCredentialsSchema = z.object({
-  accountId: z.string().min(1),
-  accountName: z.string().nullable(),
-  apiKey: z.string().min(1),
-  authType: z.literal('api_token'),
 })
 
 export const tailscaleCredentialsSchema = z.object({

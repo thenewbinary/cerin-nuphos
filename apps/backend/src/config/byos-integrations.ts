@@ -1,8 +1,7 @@
 import { bool, optional, optionalList } from './env'
 
 // Per-team SaaS connectors. Most bind with a credential the team pastes, so the
-// only server-side setting is the BYOK key that encrypts it at rest; the OAuth
-// ones additionally need the app's client id/secret and callback URL.
+// only server-side setting is the BYOK key that encrypts it at rest.
 export function byosIntegrationsConfig() {
   return {
     github: {
@@ -20,18 +19,7 @@ export function byosIntegrationsConfig() {
       encryptionKeyId: 'default',
     },
     gitlab: {
-      // OAuth app defaults used when binding gitlab.com. Self-hosted bindings
-      // must supply their own clientId/clientSecret per binding (each GitLab
-      // instance hosts its own OAuth registrations).
-      clientId: optional('GITLAB_OAUTH_CLIENT_ID'),
-      clientSecret: optional('GITLAB_OAUTH_CLIENT_SECRET'),
-      setupRedirect: optional('GITLAB_OAUTH_SETUP_REDIRECT'),
       webhookSecret: optional('GITLAB_WEBHOOK_SECRET'),
-      encryptionKey: optional('GITLAB_TOKEN_ENCRYPTION_KEY'),
-      // Rotation metadata: fixed until key rotation is actually implemented.
-      // (Cloudflare below keeps an env override — prod sealed data with a
-      // non-default id there.)
-      encryptionKeyId: 'default',
     },
     outbound: {
       // Escape hatch for lib/net/safe-outbound: let team-configured hosts
@@ -49,24 +37,9 @@ export function byosIntegrationsConfig() {
         : ['34.118.224.0/20'],
     },
     cloudflare: {
+      // Cloudflare R2 secret access keys still use this shared BYOK sealer.
       encryptionKey: optional('CLOUDFLARE_BYOK_ENCRYPTION_KEY'),
       encryptionKeyId: process.env.CLOUDFLARE_BYOK_ENCRYPTION_KEY_ID ?? 'default',
-      // Self-managed OAuth client (https://developers.cloudflare.com/fundamentals/oauth/).
-      // Confidential client: backend holds the secret and runs the auth-code
-      // exchange. setupRedirect is the backend callback registered on the client
-      // (e.g. https://platform.cerin.ai/cloudflare-app/setup).
-      oauth: {
-        clientId: optional('CLOUDFLARE_OAUTH_CLIENT_ID'),
-        clientSecret: optional('CLOUDFLARE_OAUTH_CLIENT_SECRET'),
-        setupRedirect: optional('CLOUDFLARE_OAUTH_SETUP_REDIRECT'),
-        // Scopes requested at authorize time (subset of what the client is
-        // registered with). Cloudflare uses dot+hyphen scope strings, not
-        // wrangler's underscore/colon form. Overridable so the exact strings
-        // can be tuned without a deploy; the desktop normally sends a subset.
-        scopes:
-          optional('CLOUDFLARE_OAUTH_SCOPES') ??
-          'account-settings.read user-details.read memberships.read zone.read dns.write workers-scripts.write workers-routes.write workers-kv-storage.write d1.write page.write workers-r2.write offline_access',
-      },
     },
     linode: {
       encryptionKey:
@@ -204,69 +177,22 @@ export function byosIntegrationsConfig() {
     // code. Off until Desktop, iOS and Android builds that confirm have shipped.
     connectorOAuthDeferredBind: bool('CONNECTOR_OAUTH_DEFERRED_BIND', false),
     composio: {
-      // A Composio project's API key. When set, every Composio connector is on:
-      // Trello, and Gmail / Google Drive for teams without their own Google
-      // OAuth client. Each toolkit's Composio-managed auth config is found (or
-      // created) in the project at first use.
+      // A Composio project's API key enables Trello, Slack, Linear, Jira, Asana,
+      // Sentry, GitLab and Cloudflare, plus Gmail / Google Drive for teams
+      // without their own Google OAuth client. Auth configs are found or created
+      // on first use; Cloudflare uses a custom API-key config instead of OAuth.
       apiKey: optional('CERIN_COMPOSIO_API_KEY'),
     },
     linear: {
-      // OAuth2 app the team authorises against. Linear has a single hosted
-      // instance, so unlike GitLab there are no per-binding client overrides.
-      clientId: optional('LINEAR_OAUTH_CLIENT_ID'),
-      clientSecret: optional('LINEAR_OAUTH_CLIENT_SECRET'),
-      // Public HTTPS URL of the backend's /linear-app/setup callback; must
-      // match the redirect URI registered on the Linear OAuth app.
-      setupRedirect: optional('LINEAR_OAUTH_SETUP_REDIRECT'),
       // Signing secret of the Linear app's webhook. The /linear-app/webhook
       // endpoint verifies the Linear-Signature HMAC against it. Reverse-sync
       // (Linear → agent) is not implemented yet; the endpoint only acks so the
       // webhook can be wired up in the Linear app ahead of that work.
       webhookSecret: optional('LINEAR_WEBHOOK_SECRET'),
+      // This legacy-named key also seals team Google OAuth clients and personal
+      // credential PKCE verifiers, so it remains independent of Linear connect.
       encryptionKey: optional('LINEAR_TOKEN_ENCRYPTION_KEY'),
       encryptionKeyId: 'default',
-    },
-    jira: {
-      // Atlassian OAuth 2.0 (3LO) app the team authorises against. Jira Cloud is
-      // a single hosted instance; per-site access is resolved post-auth via the
-      // accessible-resources endpoint (cloudId), not a per-binding client.
-      clientId: optional('JIRA_OAUTH_CLIENT_ID'),
-      clientSecret: optional('JIRA_OAUTH_CLIENT_SECRET'),
-      // Public HTTPS URL of the backend's /jira-app/setup callback; must match
-      // the callback URL registered on the Atlassian OAuth app.
-      setupRedirect: optional('JIRA_OAUTH_SETUP_REDIRECT'),
-      // Atlassian access tokens expire (~1h) and rotate refresh tokens; both are
-      // encrypted at rest with this key (mirrors GitLab).
-      encryptionKey: optional('JIRA_TOKEN_ENCRYPTION_KEY'),
-      encryptionKeyId: 'default',
-    },
-    asana: {
-      // Asana OAuth 2.0 app the team authorises against. Asana is a single
-      // hosted instance (app.asana.com); a binding represents the connected
-      // Asana account, and the agent picks a workspace at query time.
-      clientId: optional('ASANA_OAUTH_CLIENT_ID'),
-      clientSecret: optional('ASANA_OAUTH_CLIENT_SECRET'),
-      // Public HTTPS URL of the backend's /asana-app/setup callback; must match
-      // the redirect URL registered on the Asana OAuth app.
-      setupRedirect: optional('ASANA_OAUTH_SETUP_REDIRECT'),
-      // Asana access tokens expire (~1h); the long-lived refresh token does not
-      // rotate. Both are encrypted at rest with this key (mirrors Jira).
-      encryptionKey: optional('ASANA_TOKEN_ENCRYPTION_KEY'),
-      encryptionKeyId: 'default',
-    },
-    sentry: {
-      // Sentry OAuth 2.0 application the team authorises against. Sentry is a
-      // single hosted instance (sentry.io); a binding represents the connected
-      // Sentry account, and the agent picks an organization at query time.
-      clientId: optional('SENTRY_OAUTH_CLIENT_ID'),
-      clientSecret: optional('SENTRY_OAUTH_CLIENT_SECRET'),
-      // Public HTTPS URL of the backend's /sentry-app/setup callback; must match
-      // a redirect URL registered on the Sentry OAuth application.
-      setupRedirect: optional('SENTRY_OAUTH_SETUP_REDIRECT'),
-      // Sentry access tokens expire (~30d) and the refresh token rotates on use.
-      // Both are encrypted at rest with this key (mirrors Jira).
-      encryptionKey: optional('SENTRY_TOKEN_ENCRYPTION_KEY'),
-      encryptionKeyId: process.env.SENTRY_TOKEN_ENCRYPTION_KEY_ID ?? 'default',
     },
   }
 }
