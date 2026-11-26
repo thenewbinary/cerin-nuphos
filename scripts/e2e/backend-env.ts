@@ -22,8 +22,6 @@ export function backendEnv(port: number, apiUrl: string, mongoUri: string) {
     SONARQUBE_BYOK_ENCRYPTION_KEY: 'bG9jYWwtZTJlLXNvbmFycXViZS1rZXktbm90LXByb2Q=',
     // Where the agent reaches the backend's tools, as a runtime on this computer would.
     CERIN_BACKEND_URL: apiUrl,
-    // Connect Link callbacks must name a public HTTPS backend; scenarios drive them locally instead.
-    CERIN_PUBLIC_BACKEND_URL: 'https://api.cerin.test',
     // Voice input as on Cerin Cloud, for a subscription the e2e team lacks; never reached.
     CERIN_BILLING_URL: `${apiUrl}/e2e-billing`,
     OPENAI_API_KEY: 'e2e-openai-key-not-a-production-credential',

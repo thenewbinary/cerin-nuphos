@@ -31,7 +31,8 @@ export async function startComposioConnectorOAuth(
   const expiresAt = new Date(Date.now() + COMPOSIO_PENDING_TTL_MS)
   const base = publicBackendUrl()
 
-  if (!base?.startsWith('https://'))
+  // The shared selector requires HTTPS, except for off-cluster loopback development.
+  if (!base)
     throw new AppError(
       503,
       `${spec.provider}_not_configured`,

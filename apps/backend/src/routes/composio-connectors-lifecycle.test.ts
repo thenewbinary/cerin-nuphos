@@ -23,6 +23,7 @@ let ready: ConnectorOAuthReady[]
 let stored: Record<string, Record<string, unknown>[]>
 let deleted: string[]
 let linkCounts: Record<string, number>
+let linkCallbacks: string[]
 let disconnectRace: boolean
 let cleanupFails: boolean
 
@@ -244,6 +245,7 @@ const saved = {
   apiKey: config.byos.composio.apiKey,
   publicBackendUrl: config.agent.publicBackendUrl,
   backendUrl: config.agent.backendUrl,
+  podNamespace: config.otel.podNamespace,
 }
 const authConfigSpy = spyOn(composioClient, 'composioAuthConfigId').mockImplementation(
   async (toolkit) => `ac_${toolkit}`,
@@ -287,17 +289,21 @@ beforeEach(() => {
   stored = {}
   deleted = []
   linkCounts = {}
+  linkCallbacks = []
   disconnectRace = false
   cleanupFails = false
   config.byos.composio.apiKey = 'fixture-key'
   config.agent.publicBackendUrl = 'https://api.cerin.test'
   config.agent.backendUrl = undefined
+  config.otel = { ...config.otel, podNamespace: undefined }
   globalThis.fetch = (async (input: FetchInput, init?: RequestInit) => {
     const url = new URL(input instanceof Request ? input.url : input.toString())
     const body = init?.body ? (JSON.parse(init.body as string) as Record<string, unknown>) : null
 
     if (url.pathname.endsWith('/connected_accounts/link')) {
       const callback = String(body?.callback_url)
+
+      linkCallbacks.push(callback)
       const connector =
         connectors.find((item) => callback.includes(`/${item.name}-app/setup`)) ??
         (callback.includes('/slack-integration-app/setup') ? connectors[6] : undefined)
@@ -354,6 +360,7 @@ afterAll(() => {
   config.byos.composio.apiKey = saved.apiKey
   config.agent.publicBackendUrl = saved.publicBackendUrl
   config.agent.backendUrl = saved.backendUrl
+  config.otel = { ...config.otel, podNamespace: saved.podNamespace }
 })
 
 async function start(connector: Connector): Promise<string> {
@@ -425,6 +432,41 @@ async function connect(connector: Connector) {
 
 for (const connector of connectors) {
   describe(`${connector.name} Composio lifecycle`, () => {
+    test.each(['http://127.0.0.1:3718', 'http://localhost:3718'])(
+      'uses the off-cluster loopback backend %s for its callback',
+      async (base) => {
+        config.agent.publicBackendUrl = undefined
+        config.agent.backendUrl = base
+        const state = await start(connector)
+
+        expect(linkCallbacks).toEqual([`${base}/${callbackBase(connector)}/setup?state=${state}`])
+      },
+    )
+
+    test.each([
+      ['plaintext remote backend', undefined, 'http://api.cerin.test', undefined],
+      ['plaintext public override', 'http://api.cerin.test', undefined, undefined],
+      ['loopback in a pod', 'http://127.0.0.1:3718', undefined, 'cerin'],
+      ['cluster service', 'https://cerin-backend.cerin.svc', undefined, 'cerin'],
+      ['missing backend', undefined, undefined, undefined],
+    ])('rejects a %s before requesting a Connect Link', async (_name, publicUrl, backend, pod) => {
+      config.agent.publicBackendUrl = publicUrl
+      config.agent.backendUrl = backend
+      config.otel = { ...config.otel, podNamespace: pod }
+      const response = await app.request(`/${connector.base}/start-oauth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
+      })
+
+      expect(response.status).toBe(503)
+      expect(await response.json()).toMatchObject({
+        error: { code: `${connector.name}_not_configured` },
+      })
+      expect(linkCallbacks).toHaveLength(0)
+      expect(pending).toHaveLength(0)
+    })
+
     test('connects with verified identity and reconnects without changing binding id or ACL', async () => {
       await connect(connector)
       const original = stored[connector.field]![0]!
