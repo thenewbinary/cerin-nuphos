@@ -4,7 +4,12 @@ import type {
   UptimeKumaInstance,
   ZeaburProvider,
 } from './infra-integrations.ts'
-import type { DiscordConnection, LarkInstallation, SlackInstallation } from './messaging'
+import type {
+  DiscordConnection,
+  LarkInstallation,
+  SlackInstallation,
+  SlackIntegration,
+} from './messaging'
 import type {
   AsanaAccount,
   GithubInstallation,
@@ -143,6 +148,7 @@ export type TeamConnectorsBundle = {
     // served by other workspaces' installations (grantWorkspaces).
     linkedChannels?: SlackLinkedChannelsSummary
   }
+  slackIntegrations: SlackIntegration[]
   lark: { installation: LarkInstallation | null }
 }
 

@@ -279,3 +279,18 @@ export type TrelloIntegrationBinding = {
   createdAt: Date
   access?: BindingAccess
 }
+
+/** Agent API access through Composio, distinct from Cerin's inbound Slack bot. */
+export type SlackIntegrationBinding = {
+  id: ObjectId
+  label: string
+  slackTeamId: string
+  slackTeamName: string
+  slackUserId: string
+  slackUserName: string | null
+  composioAccountId: string
+  composioUserId: string
+  authorizedBy: string
+  createdAt: Date
+  access?: BindingAccess
+}

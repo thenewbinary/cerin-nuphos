@@ -7,6 +7,7 @@ export type ConnectorInfo = {
   externalUrl: string | null
   externalLabel: string
   tailscaleSandboxAccess?: TailscaleSandboxAccess | null
+  slackConnector?: boolean
 }
 
 export type ConnectorInfoLoader = (

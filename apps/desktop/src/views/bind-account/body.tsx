@@ -24,7 +24,7 @@ export function BindDialogBody({
   cloudflareShareField?: ReactNode
   st: BindState
   teamId: string
-  onConnectCloudflare: (scopes: string[]) => void
+  onConnectCloudflare: () => void
 }) {
   const { provider, purpose } = st
 
@@ -50,7 +50,7 @@ export function BindDialogBody({
         />
       ) : provider === 'cloudflare' ? (
         <CloudflareConnect
-          st={st}
+          connecting={st.cloudflareConnecting}
           onConnect={onConnectCloudflare}
           shareField={cloudflareShareField}
         />

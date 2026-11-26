@@ -2,17 +2,15 @@ import { Hono } from 'hono'
 
 import { agentSubjectId } from '@/lib/agents/identity'
 import { canPrincipalsUseAllowList } from '@/lib/byos/access'
-import { getCloudflareOAuthAccessToken } from '@/lib/byos/cloudflare-oauth'
-import {
-  decryptCloudflareApiKey,
-  decryptLinodeToken,
-  decryptHetznerToken,
-} from '@/lib/byos/secrets'
+import { cloudflareProxy } from '@/lib/byos/cloudflare'
+import { decryptLinodeToken, decryptHetznerToken } from '@/lib/byos/secrets'
+import { composioProxyBodySchema } from '@/lib/composio-connect'
 import { AppError } from '@/lib/errors'
-import { parseObjectId } from '@/lib/objectid'
+import { zv } from '@/lib/validate'
 import {
   canRequestUseBinding,
   requireCloudflareAccount,
+  requireCloudflareMemberAccess,
   requireHetznerAccount,
   requireLinodeAccount,
 } from '@/middleware/auth'
@@ -25,36 +23,13 @@ import type { MiddlewareHandler } from 'hono'
 export const cloudflareScoped = new Hono<{ Variables: AgentVars & CloudflareAccountVariables }>()
 
 cloudflareScoped.use('*', requireCloudflareAccount())
+cloudflareScoped.use('*', requireCloudflareMemberAccess())
 cloudflareScoped.use('*', requireSelectedCloudflareAgentCredential())
 
-cloudflareScoped.get('/credentials', async (c) => {
-  // The agent calls the Cloudflare API directly, so it needs a usable bearer:
-  // a short-lived OAuth access token for OAuth bindings, or the decrypted
-  // scoped API token for legacy bindings.
-  const binding = c.get('cloudflareBinding')
+cloudflareScoped.post('/proxy', zv('json', composioProxyBodySchema), async (c) => {
+  c.header('Cache-Control', 'no-store, private')
 
-  if (binding.oauth) {
-    const teamId = parseObjectId(c.get('teamId'), 'teamId')
-
-    return c.json({
-      accountId: c.get('cloudflareAccountId'),
-      accountName: c.get('cloudflareAccountName'),
-      apiKey: await getCloudflareOAuthAccessToken(teamId, binding),
-      authType: 'oauth',
-    })
-  }
-  const encryptedApiKey = c.get('cloudflareEncryptedApiKey')
-
-  if (!encryptedApiKey) {
-    throw new AppError(500, 'cloudflare_no_credentials', 'Cloudflare binding has no credentials')
-  }
-
-  return c.json({
-    accountId: c.get('cloudflareAccountId'),
-    accountName: c.get('cloudflareAccountName'),
-    apiKey: decryptCloudflareApiKey(encryptedApiKey),
-    authType: 'api_token',
-  })
+  return c.json(await cloudflareProxy(c.get('cloudflareBinding'), c.req.valid('json')))
 })
 
 export const linodeScoped = new Hono<{ Variables: AgentLinodeVars }>()
@@ -102,10 +77,7 @@ function requireSelectedCloudflareAgentCredential(): MiddlewareHandler<{
     const credentialAccess = await getAgentCredentialAccess(agent, teamId)
     const selectedAccountIds = credentialAccess.cloudflareAccountIds
 
-    // Conversations created before Cloudflare joined the selected-credential
-    // tier store no id list at all; those keep their team-wide reach. Once a
-    // client writes the list, an empty one means "none selected".
-    if (selectedAccountIds && !selectedAccountIds.includes(c.get('cloudflareAccountId'))) {
+    if (!selectedAccountIds.includes(c.get('cloudflareAccountId'))) {
       throw new AppError(
         403,
         'cloudflare_account_agent_access_denied',

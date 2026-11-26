@@ -38,6 +38,7 @@ export const CONNECTABLE_PROVIDERS = {
   upstash: 'upstashAccountIds',
   resend: 'resendIntegrationIds',
   trello: 'trelloIntegrationIds',
+  slack: 'slackIntegrationIds',
   cloudflare: 'cloudflareAccountIds',
   betterstack: 'betterStackIntegrationIds',
   'uptime-kuma': 'uptimeKumaInstanceIds',

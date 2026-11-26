@@ -1,116 +1,106 @@
-import { encryptJiraSecret, decryptJiraSecret } from '@/lib/byos/secrets'
-import { tokenStillFresh } from '@/lib/byos/token-freshness'
-import { teamByosBindings } from '@/models'
+// Jira through Composio: the managed Atlassian OAuth app holds the grant and
+// Cerin calls api.atlassian.com through Composio Proxy Execute. Every binding
+// call stays under that binding's cloudId; no Atlassian token is stored.
+import { composioProxyExecute, ComposioConnectorCallbackError } from '@/lib/composio-connect'
+import { AppError } from '@/lib/errors'
 
-import { getDefaultClientCredentials, JiraOAuthNotConfigured, refreshTokens } from './jira-oauth'
-
+import type { ComposioConnectorSpec, ComposioProxySpec } from '@/lib/composio-connect'
 import type { JiraSiteBinding } from '@/models'
-import type { ObjectId } from 'mongodb'
 
-export {
-  buildAuthorizeUrl,
-  exchangeCodeForTokens,
-  getAccessibleResources,
-  getDefaultClientCredentials,
-  getSetupRedirect,
-  isJiraConfigured,
-  JiraApiError,
-  JiraOAuthNotConfigured,
-} from './jira-oauth'
-export type { AtlassianSite, AuthorizeUrlInput, ExchangedTokens } from './jira-oauth'
-
-// ── Token refresh on demand (credential handout) ──
-
-const cacheKey = (teamId: ObjectId, bindingId: ObjectId) =>
-  `${teamId.toHexString()}:${bindingId.toHexString()}`
-
-type CachedToken = { token: string; expiresAt: Date | null }
-const accessTokenCache = new Map<string, CachedToken>()
-const accessTokenInflight = new Map<string, Promise<string>>()
-
-// Drop any cached access token for a binding. Call after a re-bind (which
-// replaces the stored tokens under the same binding id) or an unbind, so the
-// next handout doesn't serve the pre-change token for up to ~1h (mirrors
-// Asana's invalidateAsanaAccessToken).
-export function invalidateAccessToken(teamId: ObjectId, bindingId: ObjectId): void {
-  const key = cacheKey(teamId, bindingId)
-
-  accessTokenCache.delete(key)
-  accessTokenInflight.delete(key)
+export const JIRA_CONNECTOR: ComposioConnectorSpec = {
+  provider: 'jira',
+  displayName: 'Jira',
+  toolkitSlug: 'jira',
 }
 
-// Returns a valid Jira access token for the binding, refreshing (and persisting
-// the rotated refresh token) when the stored one is within 60s of expiry.
-export async function getAccessToken(teamId: ObjectId, binding: JiraSiteBinding): Promise<string> {
-  const key = cacheKey(teamId, binding.id)
-  const canRefresh = Boolean(binding.encryptedRefreshToken)
-  const cached = accessTokenCache.get(key)
+export type JiraConnection = Pick<JiraSiteBinding, 'composioAccountId' | 'composioUserId'>
 
-  if (cached && tokenStillFresh(cached.expiresAt, canRefresh)) return cached.token
+export const JIRA_API_BASE = 'https://api.atlassian.com'
 
-  if (!cached && tokenStillFresh(binding.accessTokenExpiresAt, canRefresh)) {
-    const token = decryptJiraSecret(binding.encryptedAccessToken)
-    const out: CachedToken = { token, expiresAt: binding.accessTokenExpiresAt }
+function proxySpec(allowPath: (path: string) => boolean): ComposioProxySpec {
+  return {
+    ...JIRA_CONNECTOR,
+    baseUrl: JIRA_API_BASE,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowPath,
+  }
+}
 
-    accessTokenCache.set(key, out)
+/** Every request a binding makes is scoped to its own Atlassian site. */
+export function jiraProxySpec(cloudId: string): ComposioProxySpec {
+  if (!/^[A-Za-z0-9-]{1,128}$/u.test(cloudId))
+    throw new AppError(500, 'jira_invalid_binding', 'Jira binding has an invalid cloudId')
 
-    return token
+  return proxySpec((path) => path.startsWith(`/ex/jira/${cloudId}/`))
+}
+
+export function jiraProxy(
+  binding: Pick<JiraSiteBinding, 'cloudId' | 'composioAccountId' | 'composioUserId'>,
+  args: { method: string; path: string; body?: unknown; query?: Record<string, string> },
+): Promise<{ status: number; data: unknown }> {
+  return composioProxyExecute(jiraProxySpec(binding.cloudId), {
+    accountId: binding.composioAccountId,
+    userId: binding.composioUserId,
+    ...args,
+  })
+}
+
+export type AtlassianSite = { id: string; name: string; url: string }
+
+/**
+ * The site and account a fresh grant can reach. The grant must span exactly
+ * one Jira site — picking arbitrarily among several could bind the wrong
+ * tenant, so the member narrows the grant on Atlassian's consent screen.
+ */
+export async function jiraIdentity(connection: JiraConnection): Promise<{
+  site: AtlassianSite
+  accountId: string
+  accountName: string | null
+}> {
+  const call = (path: string, allowPath: (p: string) => boolean) =>
+    composioProxyExecute(proxySpec(allowPath), {
+      accountId: connection.composioAccountId,
+      userId: connection.composioUserId,
+      method: 'GET',
+      path,
+    })
+  const resources = await call(
+    '/oauth/token/accessible-resources',
+    (p) => p === '/oauth/token/accessible-resources',
+  )
+  const sites = (Array.isArray(resources.data) ? resources.data : []) as AtlassianSite[]
+  const site = sites[0]
+
+  if (!site || typeof site.id !== 'string' || !site.id) {
+    throw new ComposioConnectorCallbackError(
+      'no_jira_site',
+      'The Atlassian grant has no accessible Jira sites',
+    )
+  }
+  if (sites.length > 1) {
+    throw new ComposioConnectorCallbackError(
+      'multiple_jira_sites',
+      `This Atlassian grant spans ${String(sites.length)} Jira sites. Re-authorize and grant access to a single site.`,
+    )
+  }
+  if (typeof site.name !== 'string' || !site.name || typeof site.url !== 'string' || !site.url) {
+    throw new AppError(502, 'jira_invalid_profile', 'Jira site details are unavailable')
+  }
+  const myself = await composioProxyExecute(jiraProxySpec(site.id), {
+    accountId: connection.composioAccountId,
+    userId: connection.composioUserId,
+    method: 'GET',
+    path: `/ex/jira/${site.id}/rest/api/3/myself`,
+  })
+  const account = myself.data as { accountId?: unknown; displayName?: unknown } | null
+
+  if (typeof account?.accountId !== 'string' || !account.accountId) {
+    throw new AppError(502, 'jira_invalid_profile', 'Jira profile is unavailable')
   }
 
-  const inflight = accessTokenInflight.get(key)
-
-  if (inflight) return inflight
-
-  const refreshing = (async (): Promise<string> => {
-    if (!binding.encryptedRefreshToken) {
-      // No refresh token (offline_access not granted). Hand back the stored
-      // access token; the agent surfaces a re-connect prompt if it's expired.
-      return decryptJiraSecret(binding.encryptedAccessToken)
-    }
-    const credentials = getDefaultClientCredentials()
-
-    if (!credentials) throw new JiraOAuthNotConfigured()
-    const refreshToken = decryptJiraSecret(binding.encryptedRefreshToken)
-    const fresh = await refreshTokens(credentials.clientId, credentials.clientSecret, refreshToken)
-    const encryptedAccessToken = encryptJiraSecret(fresh.accessToken)
-    const encryptedRefreshToken = fresh.refreshToken
-      ? encryptJiraSecret(fresh.refreshToken)
-      : binding.encryptedRefreshToken
-
-    await teamByosBindings().updateOne(
-      { _id: teamId, 'jiraSites.id': binding.id },
-      {
-        $set: {
-          'jiraSites.$.encryptedAccessToken': encryptedAccessToken,
-          'jiraSites.$.encryptedRefreshToken': encryptedRefreshToken,
-          'jiraSites.$.accessTokenExpiresAt': fresh.expiresAt,
-          'jiraSites.$.scope': fresh.scope || binding.scope,
-          updatedAt: new Date(),
-        },
-      },
-    )
-    accessTokenCache.set(key, { token: fresh.accessToken, expiresAt: fresh.expiresAt })
-
-    return fresh.accessToken
-  })().finally(() => {
-    // Only retract our own entry — a re-bind can clear the map mid-flight and
-    // let a newer refresh take the slot (see linear.ts for the full rationale).
-    if (accessTokenInflight.get(key) === refreshing) accessTokenInflight.delete(key)
-  })
-
-  accessTokenInflight.set(key, refreshing)
-
-  return refreshing
-}
-
-export async function getAccessTokenWithExpiry(
-  teamId: ObjectId,
-  binding: JiraSiteBinding,
-): Promise<{ token: string; expiresAt: Date | null }> {
-  const token = await getAccessToken(teamId, binding)
-  // A cached entry always describes the token just handed back, including when
-  // its expiry is null; only fall back to the binding when there is no entry.
-  const cached = accessTokenCache.get(cacheKey(teamId, binding.id))
-
-  return { token, expiresAt: cached ? cached.expiresAt : (binding.accessTokenExpiresAt ?? null) }
+  return {
+    site: { id: site.id, name: site.name, url: site.url },
+    accountId: account.accountId,
+    accountName: typeof account.displayName === 'string' ? account.displayName : null,
+  }
 }

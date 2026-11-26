@@ -31,7 +31,7 @@ export function ConnectorManagementSection({
 }) {
   const accessProvider = ACCESS_EDITABLE_PROVIDERS[provider]
 
-  if (provider === 'slack') {
+  if (provider === 'slack' && !info.slackConnector) {
     return (
       <SlackSettingsView
         teamId={teamId}

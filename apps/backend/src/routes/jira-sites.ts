@@ -1,38 +1,25 @@
-import crypto from 'node:crypto'
-
 import { Hono } from 'hono'
 
-import { requestedBindingShare } from '@/lib/byos/initial-access'
 import { registerBindingAccessRoutes } from '@/lib/byos/access-routes'
+import { JIRA_CONNECTOR } from '@/lib/byos/jira'
 import {
-  buildAuthorizeUrl,
-  getAccessTokenWithExpiry,
-  getDefaultClientCredentials,
-  getSetupRedirect,
-  invalidateAccessToken,
-  isJiraConfigured,
-} from '@/lib/byos/jira'
-import { AppError } from '@/lib/errors'
+  cancelComposioConnectorOAuth,
+  deleteComposioAccountBestEffort,
+  startComposioConnectorOAuth,
+} from '@/lib/composio-connect'
 import { parseObjectId } from '@/lib/objectid'
 import {
   disconnectBinding,
   requireCanDisconnect,
-  requireJiraMemberAccess,
   requireJiraSite,
   requireTeamRole,
 } from '@/middleware/auth'
-import { jiraPendingOAuth, teamByosBindings } from '@/models'
+import { teamByosBindings } from '@/models'
 
 import type { TeamAuthVariables, JiraSiteVariables } from '@/middleware/auth'
 import type { JiraSiteBinding } from '@/models'
 
 export const jiraSitesRoutes = new Hono<{ Variables: TeamAuthVariables }>()
-
-// read:jira-work/write:jira-work cover reading + creating/updating issues and
-// comments; read:jira-user resolves assignees; offline_access yields the
-// rotating refresh token the backend stores to keep the access token fresh.
-const DEFAULT_SCOPE = 'read:jira-work write:jira-work read:jira-user offline_access'
-const OAUTH_PENDING_TTL_MS = 10 * 60 * 1000
 
 export function publicView(b: JiraSiteBinding) {
   return {
@@ -42,7 +29,6 @@ export function publicView(b: JiraSiteBinding) {
     siteName: b.siteName,
     siteUrl: b.siteUrl,
     accountName: b.accountName,
-    scope: b.scope,
     createdAt: b.createdAt,
   }
 }
@@ -56,63 +42,15 @@ jiraSitesRoutes.get('/', async (c) => {
   })
 })
 
-jiraSitesRoutes.post('/start-oauth', requireTeamRole('ADMINISTRATOR'), async (c) => {
-  if (!isJiraConfigured()) {
-    throw new AppError(
-      503,
-      'jira_oauth_not_configured',
-      'Jira OAuth is not configured on the server (set JIRA_OAUTH_CLIENT_ID/SECRET, JIRA_OAUTH_SETUP_REDIRECT, JIRA_TOKEN_ENCRYPTION_KEY)',
-    )
-  }
-  const credentials = getDefaultClientCredentials()
-  const setupRedirect = getSetupRedirect()
+// A Composio Connect Link: the member approves Composio's managed Atlassian
+// app on the hosted page; no JIRA_OAUTH_* app is needed on this server.
+jiraSitesRoutes.post('/start-oauth', requireTeamRole('ADMINISTRATOR'), async (c) =>
+  startComposioConnectorOAuth(c, JIRA_CONNECTOR, '/jira-app/setup'),
+)
 
-  if (!credentials || !setupRedirect) {
-    throw new AppError(503, 'jira_oauth_not_configured', 'Jira OAuth is not fully configured')
-  }
-
-  const teamId = parseObjectId(c.get('teamId'), 'teamId')
-  const requesterUserId = c.get('userId')
-
-  const state = crypto.randomBytes(24).toString('hex')
-  const expiresAt = new Date(Date.now() + OAUTH_PENDING_TTL_MS)
-
-  await jiraPendingOAuth().insertOne({
-    ...(await requestedBindingShare(c)),
-    _id: state,
-    teamId,
-    requesterUserId,
-    expiresAt,
-  })
-
-  const authorizeUrl = buildAuthorizeUrl({
-    clientId: credentials.clientId,
-    redirectUri: setupRedirect,
-    state,
-    scope: DEFAULT_SCOPE,
-  })
-
-  return c.json({
-    authorizeUrl,
-    state,
-    expiresAt: expiresAt.toISOString(),
-  })
-})
-
-jiraSitesRoutes.delete('/start-oauth/:state', requireTeamRole('ADMINISTRATOR'), async (c) => {
-  // Allow the desktop to cancel a pending grant if the user closes the dialog
-  // before authorising in the browser. Idempotent.
-  const state = c.req.param('state')
-
-  if (!state || !/^[a-f0-9]{1,128}$/i.test(state)) {
-    throw new AppError(400, 'invalid_state', 'Invalid state token')
-  }
-  const teamId = parseObjectId(c.get('teamId'), 'teamId')
-
-  await jiraPendingOAuth().deleteOne({ _id: state, teamId })
-
-  return c.body(null, 204)
-})
+jiraSitesRoutes.delete('/start-oauth/:state', requireTeamRole('ADMINISTRATOR'), async (c) =>
+  cancelComposioConnectorOAuth(c, JIRA_CONNECTOR),
+)
 
 const bindingScoped = new Hono<{ Variables: JiraSiteVariables }>()
 
@@ -132,36 +70,12 @@ bindingScoped.delete(
     const binding = c.get('jiraBinding')
 
     await disconnectBinding(c, teamId, 'jiraSites', { id: binding.id })
-    invalidateAccessToken(teamId, binding.id)
+    // After the guarded pull, best effort: the binding is already gone, and a
+    // failure only leaves an unreferenced Composio account.
+    await deleteComposioAccountBestEffort('jira', binding.composioAccountId)
 
     return c.body(null, 204)
   },
 )
-
-// Agent credential handout, mirroring linear-workspaces /credentials: the
-// sandbox exchanges its CERIN_TOKEN for a fresh (auto-refreshed) Atlassian
-// access token + cloudId and calls api.atlassian.com/ex/jira/<cloudId> directly.
-// Gated by the per-binding member allow-list.
-bindingScoped.get('/credentials', requireJiraMemberAccess(), async (c) => {
-  const teamId = parseObjectId(c.get('teamId'), 'teamId')
-  const binding = c.get('jiraBinding')
-  const { token, expiresAt } = await getAccessTokenWithExpiry(teamId, binding)
-
-  if (expiresAt) c.header('X-Credentials-Expires-At', expiresAt.toISOString())
-  // A reusable bearer token over GET must never be cached by intermediaries.
-  c.header('Cache-Control', 'no-store, private')
-  c.header('Pragma', 'no-cache')
-
-  return c.json({
-    bindingId: binding.id.toHexString(),
-    cloudId: binding.cloudId,
-    siteName: binding.siteName,
-    siteUrl: binding.siteUrl,
-    scope: binding.scope,
-    accessToken: token,
-    expiresAt: expiresAt?.toISOString() ?? null,
-    authType: 'oauth_bearer',
-  })
-})
 
 jiraSitesRoutes.route('/:bindingId', bindingScoped)

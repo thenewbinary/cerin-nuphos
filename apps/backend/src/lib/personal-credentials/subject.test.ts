@@ -7,7 +7,7 @@ import { personalCredentialSubjectFor } from './handout'
 
 import type { AgentConversation } from '@/lib/agent/db'
 
-let teamIdentity: ('github' | 'linear')[] | undefined
+let teamIdentity: 'github'[] | undefined
 
 useAgentDb({
   getConversationBySessionId: (sessionId: string) =>
@@ -43,7 +43,7 @@ describe('personalCredentialSubjectFor', () => {
     expect(
       await personalCredentialSubjectFor('github', await turn('teammate', true)),
     ).toMatchObject({ userId: 'teammate' })
-    expect(await personalCredentialSubjectFor('linear', await turn('owner', false))).toMatchObject({
+    expect(await personalCredentialSubjectFor('github', await turn('owner', false))).toMatchObject({
       userId: 'owner',
     })
   })
@@ -54,10 +54,6 @@ describe('personalCredentialSubjectFor', () => {
     expect(await personalCredentialSubjectFor('github', await turn('owner', true))).toBeNull()
     expect(await personalCredentialSubjectFor('github', await turn('owner', false))).toBeNull()
     expect(await personalCredentialSubjectFor('github', await turn('teammate', true))).toBeNull()
-    // Per provider: Linear still acts as the member.
-    expect(await personalCredentialSubjectFor('linear', await turn('owner', false))).toMatchObject({
-      userId: 'owner',
-    })
   })
 
   test('the agent’s explicit team request still wins', async () => {

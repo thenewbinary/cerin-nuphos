@@ -19,16 +19,10 @@ import {
   fileTransferAdmissions,
 } from '@/models/diagrams'
 import {
-  asanaPendingOAuth,
+  composioConnectorPendingOAuth,
   trelloPendingOAuth,
-  cloudflareOAuthResult,
-  cloudflarePendingOAuth,
-  gitlabPendingOAuth,
-  jiraPendingOAuth,
-  linearPendingOAuth,
   plaudPendingOAuth,
   posthogPendingOAuth,
-  sentryPendingOAuth,
   slackPendingOAuth,
   connectorOAuthReady,
 } from '@/models/oauth'
@@ -41,37 +35,13 @@ export async function setupCoreIndexes(): Promise<void> {
     { expiresAt: 1 },
     { expireAfterSeconds: 0, name: 'connector_oauth_ready_ttl' },
   )
-  await gitlabPendingOAuth().createIndex(
+  await composioConnectorPendingOAuth().createIndex(
     { expiresAt: 1 },
-    { expireAfterSeconds: 0, name: 'gitlab_oauth_pending_ttl' },
-  )
-  await cloudflarePendingOAuth().createIndex(
-    { expiresAt: 1 },
-    { expireAfterSeconds: 0, name: 'cloudflare_oauth_pending_ttl' },
-  )
-  await cloudflareOAuthResult().createIndex(
-    { expiresAt: 1 },
-    { expireAfterSeconds: 0, name: 'cloudflare_oauth_result_ttl' },
-  )
-  await linearPendingOAuth().createIndex(
-    { expiresAt: 1 },
-    { expireAfterSeconds: 0, name: 'linear_oauth_pending_ttl' },
-  )
-  await jiraPendingOAuth().createIndex(
-    { expiresAt: 1 },
-    { expireAfterSeconds: 0, name: 'jira_oauth_pending_ttl' },
-  )
-  await asanaPendingOAuth().createIndex(
-    { expiresAt: 1 },
-    { expireAfterSeconds: 0, name: 'asana_oauth_pending_ttl' },
+    { expireAfterSeconds: 0, name: 'composio_connector_oauth_pending_ttl' },
   )
   await trelloPendingOAuth().createIndex(
     { expiresAt: 1 },
     { expireAfterSeconds: 0, name: 'trello_oauth_pending_ttl' },
-  )
-  await sentryPendingOAuth().createIndex(
-    { expiresAt: 1 },
-    { expireAfterSeconds: 0, name: 'sentry_oauth_pending_ttl' },
   )
   await posthogPendingOAuth().createIndex(
     { expiresAt: 1 },

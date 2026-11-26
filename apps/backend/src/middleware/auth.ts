@@ -10,3 +10,4 @@ export * from '@/middleware/auth/types'
 export * from '@/middleware/auth/workspaces'
 
 export * from '@/middleware/auth/trello'
+export * from '@/middleware/auth/slack-integrations'

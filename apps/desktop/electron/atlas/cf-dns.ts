@@ -103,15 +103,9 @@ export async function deleteCloudflareDnsRecord(
   )
 }
 
-// ===========================================================================
-// Cloudflare Workers / R2 / Pages / D1 / KV
-// ===========================================================================
-
 export function cfBase(teamId: string, accountId: string): string {
   return `/teams/${teamId}/cloudflare-accounts/${accountId}`
 }
-
-// --- Workers ---------------------------------------------------------------
 
 export type CloudflareOAuthStart = {
   authorizeUrl: string
@@ -121,13 +115,12 @@ export type CloudflareOAuthStart = {
 
 export async function startCloudflareOAuth(
   teamId: string,
-  scopes?: string[],
   share?: BindingShare,
 ): Promise<CloudflareOAuthStart> {
   return call<CloudflareOAuthStart>(
     'POST',
     `/teams/${teamId}/cloudflare-accounts/start-oauth`,
-    withShare(scopes && scopes.length > 0 ? { scopes } : {}, share),
+    withShare({}, share),
     { retry: false },
   )
 }
@@ -136,29 +129,6 @@ export async function cancelCloudflareOAuth(teamId: string, state: string): Prom
   await call<void>(
     'DELETE',
     `/teams/${teamId}/cloudflare-accounts/start-oauth/${encodeURIComponent(state)}`,
-    undefined,
-    { retry: false },
-  )
-}
-
-export type CloudflareOAuthResult =
-  // `error` is set once Cloudflare rejected the attempt (e.g. invalid_scope).
-  | { ready: false; error?: string; errorDescription?: string }
-  | {
-      ready: true
-      bindingId: string
-      teamId: string
-      accountId: string
-      accountName: string | null
-    }
-
-// Polling fallback for the OAuth bind: returns the result keyed by `state` once
-// the backend callback has completed, even if the cerin:// deep link was
-// captured by another app instance. One-shot on the server, so never retry.
-export async function pollCloudflareOAuthResult(state: string): Promise<CloudflareOAuthResult> {
-  return call<CloudflareOAuthResult>(
-    'GET',
-    `/cloudflare-app/result/${encodeURIComponent(state)}`,
     undefined,
     { retry: false },
   )

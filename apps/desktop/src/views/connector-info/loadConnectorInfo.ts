@@ -5,7 +5,7 @@ import {
   githubRepoAccessLabel,
 } from '../cloud/github-installation-display'
 
-import { cloudLoaders } from './cloudLoaders'
+import { cloudLoaders, slackConnectorIds } from './cloudLoaders'
 import { devToolLoaders } from './devToolLoaders'
 import { gcpConnectorInfo, infrastructureLoaders } from './infrastructureLoaders'
 
@@ -125,7 +125,7 @@ const opsLoaders: ConnectorInfoLoaders = {
           value: `${item.hostUrl.replace(/^https?:\/\//, '')}/${item.username}`,
           mono: true,
         },
-        { label: t('OAuth scope'), value: item.scope, mono: true },
+        { label: t('Authorization'), value: t('Composio managed OAuth') },
         { label: t('Connector ID'), value: item.id, mono: true },
       ],
       externalUrl: `${item.hostUrl.replace(/\/$/, '')}/${item.username}`,
@@ -197,6 +197,7 @@ async function listConnectorIds(
   if (provider === 'posthog') {
     return (await api.atlasListPosthogIntegrations(teamId)).map((item) => item.id)
   }
+  if (provider === 'slack') return slackConnectorIds(teamId)
   switch (provider) {
     case 'aws':
       return unique((await api.atlasListAwsAccounts(teamId)).map((item) => item.accountId))
@@ -261,7 +262,6 @@ async function listConnectorIds(
     // These providers have one team-scoped installation rather than an ID
     // collection. Their loaders decide whether an installation is available.
     case 'discord':
-    case 'slack':
     case 'lark':
       return [provider]
   }

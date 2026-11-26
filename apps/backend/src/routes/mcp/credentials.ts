@@ -50,6 +50,7 @@ function credentialAccessPayload(access: {
   secureframeIntegrationIds: string[]
   resendIntegrationIds?: string[]
   trelloIntegrationIds?: string[]
+  slackIntegrationIds?: string[]
   githubInstallationIds?: string[]
   personalCredentialIds?: string[]
   teamIdentity?: string[]
@@ -71,6 +72,7 @@ function credentialAccessPayload(access: {
     secureframe_integration_ids: access.secureframeIntegrationIds,
     resend_integration_ids: access.resendIntegrationIds ?? [],
     trello_integration_ids: access.trelloIntegrationIds ?? [],
+    slack_integration_ids: access.slackIntegrationIds ?? [],
     github_installation_ids: access.githubInstallationIds,
     personal_credential_ids: access.personalCredentialIds ?? [],
     team_identity: access.teamIdentity ?? [],
@@ -138,6 +140,7 @@ const NAMED_CATEGORIES = {
   secureframeIntegrationIds: 'secureframe_integration_ids',
   resendIntegrationIds: 'resend_integration_ids',
   trelloIntegrationIds: 'trello_integration_ids',
+  slackIntegrationIds: 'slack_integration_ids',
 } as const
 
 // These newer fields follow PATCH semantics: omission keeps the stored selection.

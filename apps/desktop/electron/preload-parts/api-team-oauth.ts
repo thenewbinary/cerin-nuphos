@@ -5,26 +5,11 @@ import type { BindingShare } from '../../src/lib/bindingShare'
 export const teamOAuthApi = {
   atlasStartGithubInstall: (teamId: string, share?: BindingShare) =>
     ipcRenderer.invoke('atlas:startGithubInstall', teamId, share),
-  atlasStartGitlabOAuth: (
-    teamId: string,
-    hostUrl: string,
-    clientId?: string,
-    clientSecret?: string,
-    scopes?: string[],
-    share?: BindingShare,
-  ) =>
-    ipcRenderer.invoke(
-      'atlas:startGitlabOAuth',
-      teamId,
-      hostUrl,
-      clientId,
-      clientSecret,
-      scopes,
-      share,
-    ),
+  atlasStartGitlabOAuth: (teamId: string, share?: BindingShare) =>
+    ipcRenderer.invoke('atlas:startGitlabOAuth', teamId, share),
   atlasCancelGitlabOAuth: (teamId: string) => ipcRenderer.invoke('atlas:cancelGitlabOAuth', teamId),
-  atlasStartCloudflareConnect: (teamId: string, scopes?: string[], share?: BindingShare) =>
-    ipcRenderer.invoke('atlas:startCloudflareConnect', teamId, scopes, share),
+  atlasStartCloudflareConnect: (teamId: string, share?: BindingShare) =>
+    ipcRenderer.invoke('atlas:startCloudflareConnect', teamId, share),
   atlasCancelCloudflareConnect: (teamId: string) =>
     ipcRenderer.invoke('atlas:cancelCloudflareConnect', teamId),
   atlasStartLinearOAuth: (teamId: string, share?: BindingShare) =>

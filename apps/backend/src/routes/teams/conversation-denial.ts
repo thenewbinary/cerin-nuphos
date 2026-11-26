@@ -22,6 +22,7 @@ export const CONNECTOR_COLLECTIONS = new Set([
   'secureframe-integrations',
   'resend-integrations',
   'trello-integrations',
+  'slack-integrations',
   'posthog-integrations',
   'plaud-accounts',
   'github-installations',

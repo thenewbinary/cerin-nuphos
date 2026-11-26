@@ -1,8 +1,29 @@
-import { AppError } from '@/lib/errors'
-import { blockedUrlReason, OutboundBlockedError, pinnedFetch } from '@/lib/net/safe-outbound'
+// GitLab through Composio: the managed gitlab.com OAuth app holds the grant
+// and Cerin calls gitlab.com/api/v4 through Composio Proxy Execute. Composio's
+// managed app covers gitlab.com only — self-managed instances are not
+// supported — and no GitLab token is stored or handed out, so git clone/push
+// over HTTPS is not available through this connector.
+import { composioProxyExecute } from '@/lib/composio-connect'
 
-export const USER_AGENT = 'cerin-backend'
-export const GITLAB_FETCH_TIMEOUT_MS = 30_000
+import type { ComposioConnectorSpec, ComposioProxySpec } from '@/lib/composio-connect'
+import type { GitlabBinding } from '@/models'
+import type { ObjectId } from 'mongodb'
+
+export const GITLAB_CONNECTOR: ComposioConnectorSpec = {
+  provider: 'gitlab',
+  displayName: 'GitLab',
+  toolkitSlug: 'gitlab',
+}
+
+export const GITLAB_HOST_URL = 'https://gitlab.com'
+
+export const GITLAB_PROXY: ComposioProxySpec = {
+  ...GITLAB_CONNECTOR,
+  baseUrl: `${GITLAB_HOST_URL}/api/v4`,
+  // Reads, plus the writes the skill documents (open/update merge requests,
+  // comment). Nothing here retries a write.
+  methods: ['GET', 'POST', 'PUT'],
+}
 
 export class GitlabApiError extends Error {
   constructor(
@@ -13,76 +34,51 @@ export class GitlabApiError extends Error {
   }
 }
 
-export class GitlabOAuthNotConfigured extends Error {
-  constructor() {
-    super('GitLab OAuth defaults are not configured (set GITLAB_OAUTH_CLIENT_ID/SECRET)')
-  }
+export type GitlabConnection = Pick<GitlabBinding, 'composioAccountId' | 'composioUserId'>
+
+export function gitlabProxy(
+  connection: GitlabConnection,
+  args: { method: string; path: string; body?: unknown; query?: Record<string, string> },
+): Promise<{ status: number; data: unknown }> {
+  return composioProxyExecute(GITLAB_PROXY, {
+    accountId: connection.composioAccountId,
+    userId: connection.composioUserId,
+    ...args,
+  })
 }
 
-export async function gitlabFetch(url: string, init: RequestInit): Promise<Response> {
-  const { body } = init
-
-  if (body != null && typeof body !== 'string' && !(body instanceof URLSearchParams)) {
-    throw new GitlabApiError(500, 'GitLab request body must be a string or URLSearchParams')
-  }
-  try {
-    return await pinnedFetch(url, {
-      method: init.method,
-      headers: init.headers,
-      body: body == null ? undefined : String(body),
-      signal: init.signal ?? AbortSignal.timeout(GITLAB_FETCH_TIMEOUT_MS),
-    })
-  } catch (e) {
-    if (e instanceof OutboundBlockedError) {
-      if (e.status === 400) throw refusedHost(e.message)
-      throw new GitlabApiError(e.status, `GitLab host refused: ${e.message}`)
-    }
-    const name = (e as { name?: string }).name
-
-    if (name === 'TimeoutError' || name === 'AbortError') {
-      throw new GitlabApiError(
-        504,
-        `GitLab request timed out after ${String(GITLAB_FETCH_TIMEOUT_MS)}ms`,
-      )
-    }
-    const message = e instanceof Error ? e.message : 'unknown transport error'
-
-    throw new GitlabApiError(502, `GitLab request failed: ${message}`)
-  }
+type GitlabRequestInit = {
+  method?: string
+  body?: string
 }
 
-/** A host the outbound guard refuses is the caller's input, never a GitLab failure. */
-function refusedHost(reason: string): AppError {
-  return new AppError(
-    400,
-    'gitlab_host_refused',
-    `Cerin can't connect to this GitLab host (${reason}). Use a GitLab URL that is reachable from the internet.`,
+/**
+ * The single choke point every server-side GitLab call goes through, now on
+ * the proxy. `path` is relative to /api/v4 and may carry a query string, as
+ * before. Non-2xx answers raise GitlabApiError, like the native client.
+ */
+export async function apiRequest<T>(
+  _teamId: ObjectId,
+  binding: GitlabBinding,
+  path: string,
+  init?: GitlabRequestInit,
+): Promise<T> {
+  const question = path.indexOf('?')
+  const pathname = question === -1 ? path : path.slice(0, question)
+  const query = Object.fromEntries(
+    new URLSearchParams(question === -1 ? '' : path.slice(question + 1)),
   )
-}
+  const { status, data } = await gitlabProxy(binding, {
+    method: init?.method ?? 'GET',
+    path: pathname,
+    ...(init?.body === undefined ? {} : { body: JSON.parse(init.body) as unknown }),
+    ...(Object.keys(query).length ? { query } : {}),
+  })
 
-export function normalizeHostUrl(input: string): string {
-  let url: URL
-
-  try {
-    url = new URL(input)
-  } catch {
-    throw new AppError(400, 'invalid_gitlab_host', `Invalid GitLab host URL: ${input}`)
+  if (status < 200 || status >= 300) {
+    throw new GitlabApiError(status, `GitLab API ${pathname} failed: ${String(status)}`)
   }
-  if (url.protocol !== 'https:' && url.protocol !== 'http:') {
-    throw new AppError(
-      400,
-      'invalid_gitlab_host',
-      `GitLab host URL must use http or https (got ${url.protocol})`,
-    )
-  }
-  const reason = blockedUrlReason(url.origin)
+  if (status === 204) return undefined as T
 
-  if (reason) throw refusedHost(reason)
-
-  // Strip trailing slashes + the path; we only want origin.
-  return url.origin
-}
-
-export function isDefaultHost(hostUrl: string): boolean {
-  return normalizeHostUrl(hostUrl) === 'https://gitlab.com'
+  return data as T
 }

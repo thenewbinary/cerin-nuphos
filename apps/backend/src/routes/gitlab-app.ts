@@ -1,230 +1,69 @@
 import { Hono } from 'hono'
-import { ObjectId } from 'mongodb'
 
 import { config } from '@/config'
 import {
-  evictCachedAccessToken,
-  exchangeCodeForTokens,
   getCurrentUser,
-  getDefaultClientCredentials,
-  getSetupRedirect,
+  GITLAB_CONNECTOR,
+  GITLAB_HOST_URL,
   verifyWebhookToken,
 } from '@/lib/byos/gitlab'
-import { decryptGitlabSecret, encryptGitlabSecret } from '@/lib/byos/secrets'
-import { finishConnectorOAuth, reboundAccess } from '@/lib/connector-oauth'
-import { desktopCallbackResponse } from '@/lib/desktop-callback-page'
+import {
+  handleComposioConnectorCallback,
+  persistComposioConnectorBinding,
+} from '@/lib/composio-connect'
 import { AppError } from '@/lib/errors'
-import { gitlabPendingOAuth, teamByosBindings } from '@/models'
 
 import type { BindingAccess, GitlabBinding } from '@/models'
-import type { Context } from 'hono'
+import type { ObjectId } from 'mongodb'
 
 export const gitlabAppRoutes = new Hono()
 
-// The Electron deep-link target. Matches GITHUB_PROTOCOL — same scheme,
-// different hostname so the desktop can route by it.
-const DESKTOP_CALLBACK = 'cerin://gitlab-callback'
-
-const desktopCallback = (c: Context, params: Record<string, string>) =>
-  desktopCallbackResponse(c, DESKTOP_CALLBACK, params)
-
-gitlabAppRoutes.get('/setup', async (c) => {
-  const state = c.req.query('state') ?? ''
-  const code = c.req.query('code') ?? ''
-  const errorParam = c.req.query('error')
-
-  if (!state) {
-    throw new AppError(400, 'invalid_state', 'Missing state from GitLab redirect')
-  }
-
-  if (errorParam) {
-    return desktopCallback(c, {
-      state,
-      error: errorParam,
-      error_description: c.req.query('error_description') ?? '',
-    })
-  }
-
-  if (!code) {
-    throw new AppError(400, 'invalid_code', 'Missing code from GitLab redirect')
-  }
-
-  const pending = await gitlabPendingOAuth().findOneAndDelete({ _id: state })
-
-  if (!pending) {
-    return desktopCallback(c, {
-      state,
-      error: 'unknown_state',
-      error_description: 'OAuth state did not match a pending request (expired or already used)',
-    })
-  }
-  if (pending.expiresAt.getTime() < Date.now()) {
-    return desktopCallback(c, {
-      state,
-      error: 'expired',
-      error_description: 'OAuth request expired before approval',
-    })
-  }
-
-  const redirectUri = getSetupRedirect()
-
-  if (!redirectUri) {
-    return desktopCallback(c, {
-      state,
-      error: 'not_configured',
-      error_description: 'GITLAB_OAUTH_SETUP_REDIRECT is no longer set',
-    })
-  }
-
-  let clientSecret: string | null
-
-  if (pending.encryptedClientSecret) {
-    try {
-      clientSecret = decryptGitlabSecret(pending.encryptedClientSecret)
-    } catch (e) {
-      return desktopCallback(c, {
-        state,
-        error: 'decrypt_failed',
-        error_description:
-          e instanceof Error ? e.message : 'Failed to decrypt stored client secret',
+// The Electron deep-link target: same cerin:// scheme as the other connectors,
+// a distinct hostname so the desktop can route by it.
+gitlabAppRoutes.get('/setup', async (c) =>
+  handleComposioConnectorCallback(c, {
+    spec: GITLAB_CONNECTOR,
+    deepLink: 'cerin://gitlab-callback',
+    identity: async (pending, composioUserId) => {
+      const user = await getCurrentUser({
+        composioAccountId: pending.composioAccountId,
+        composioUserId,
       })
-    }
-  } else {
-    // Default-app path — re-resolve from env so an operator rotation takes
-    // effect even if the pending row was created with an older value.
-    const defaults = getDefaultClientCredentials()
 
-    if (!defaults) {
-      return desktopCallback(c, {
-        state,
-        error: 'not_configured',
-        error_description: 'GITLAB_OAUTH_CLIENT_SECRET is no longer set',
-      })
-    }
-    clientSecret = defaults.clientSecret
-  }
+      return {
+        hostUrl: GITLAB_HOST_URL,
+        accountId: user.id,
+        username: user.username,
+        displayName: user.name,
+        avatarUrl: user.avatarUrl,
+        composioAccountId: pending.composioAccountId,
+        composioUserId,
+      }
+    },
+    persist: persistGitlabBinding,
+  }),
+)
 
-  let tokens
+type GitlabBindingDraft = Omit<GitlabBinding, 'id' | 'label' | 'createdAt' | 'access'>
 
-  try {
-    tokens = await exchangeCodeForTokens(
-      pending.hostUrl,
-      pending.clientId,
-      clientSecret,
-      code,
-      redirectUri,
-    )
-  } catch (e) {
-    return desktopCallback(c, {
-      state,
-      error: 'exchange_failed',
-      error_description: e instanceof Error ? e.message : 'Token exchange failed',
-    })
-  }
-
-  let user
-
-  try {
-    user = await getCurrentUser(pending.hostUrl, tokens.accessToken)
-  } catch (e) {
-    return desktopCallback(c, {
-      state,
-      error: 'user_fetch_failed',
-      error_description: e instanceof Error ? e.message : 'Failed to fetch GitLab user',
-    })
-  }
-
-  const draft: GitlabBindingDraft = {
-    hostUrl: pending.hostUrl,
-    accountId: user.id,
-    username: user.username,
-    displayName: user.name,
-    avatarUrl: user.avatarUrl,
-    clientId: pending.clientId,
-    encryptedClientSecret: pending.encryptedClientSecret,
-    scope: tokens.scope,
-    encryptedAccessToken: encryptGitlabSecret(tokens.accessToken),
-    encryptedRefreshToken: tokens.refreshToken ? encryptGitlabSecret(tokens.refreshToken) : null,
-    accessTokenExpiresAt: tokens.expiresAt,
-  }
-
-  return desktopCallback(
-    c,
-    await finishConnectorOAuth({
-      provider: 'gitlab',
-      state,
-      teamId: pending.teamId,
-      requesterUserId: pending.requesterUserId,
-      share: pending.share,
-      draft,
-      persist: persistGitlabBinding,
-    }),
-  )
-})
-
-type GitlabBindingDraft = Omit<GitlabBinding, 'id' | 'createdAt' | 'access'>
-
-// Re-binding the same GitLab account (same host + user id) replaces the
-// existing binding's credentials instead of accumulating duplicates. The
-// original binding id is preserved so references stay valid.
+// Re-binding the same GitLab account replaces the existing binding's
+// connection instead of accumulating duplicates. The original binding id is
+// preserved so references stay valid.
 export async function persistGitlabBinding(
   teamId: ObjectId,
   draft: GitlabBindingDraft,
   access: BindingAccess,
 ): Promise<Record<string, string>> {
-  const existingDoc = await teamByosBindings().findOne(
-    { _id: teamId },
-    { projection: { gitlabAccounts: 1 } },
-  )
-  const existing = existingDoc?.gitlabAccounts?.find(
-    (a) => a.hostUrl === draft.hostUrl && a.accountId === draft.accountId,
-  )
-
-  const bindingId = existing?.id ?? new ObjectId()
-  const binding: GitlabBinding = {
-    ...draft,
-    id: bindingId,
-    createdAt: existing?.createdAt ?? new Date(),
-    // Reauthorizing renews the grant; who may use the binding stays as set.
-    ...reboundAccess(existing, access),
-  }
-
-  if (existing) {
-    await teamByosBindings().updateOne(
-      { _id: teamId },
-      {
-        $set: { 'gitlabAccounts.$[el]': binding, updatedAt: new Date() },
-      },
-      { arrayFilters: [{ 'el.id': existing.id }] },
-    )
-    // The binding id is reused, so the superseded grant's token is still sitting
-    // in the handout cache under this key — including a re-bind done purely to
-    // widen scopes, which would otherwise silently keep the old scopes.
-    evictCachedAccessToken(teamId, existing.id)
-  } else {
-    await teamByosBindings().updateOne(
-      { _id: teamId },
-      {
-        $push: { gitlabAccounts: binding },
-        $set: { updatedAt: new Date() },
-        $setOnInsert: {
-          awsRoles: [],
-          gcpServiceAccounts: [],
-          grafanaInstances: [],
-          githubInstallations: [],
-          cloudflareAccounts: [],
-        },
-      },
-      { upsert: true },
-    )
-  }
-
-  return {
-    binding_id: bindingId.toHexString(),
-    team_id: teamId.toHexString(),
-    host_url: draft.hostUrl,
-    username: draft.username,
-  }
+  return persistComposioConnectorBinding<GitlabBinding>({
+    spec: GITLAB_CONNECTOR,
+    field: 'gitlabAccounts',
+    teamId,
+    draft,
+    access,
+    matches: (existing) => existing.accountId === draft.accountId,
+    label: draft.username,
+    result: { host_url: draft.hostUrl, username: draft.username },
+  })
 }
 
 type GitlabWebhookPayload = {
@@ -255,7 +94,7 @@ gitlabAppRoutes.post('/webhook', async (c) => {
   const kind = payload.object_kind ?? payload.event_name ?? 'unknown'
   const delivery = c.req.header('X-Gitlab-Event-UUID') ?? '?'
 
-  // Today we only log events; the binding lifecycle is driven by the OAuth
+  // Today we only log events; the binding lifecycle is driven by the connect
   // flow + explicit unbind. This handler exists so operators can wire up a
   // System Hook without us 404'ing.
   console.log(`[gitlab-webhook] ${delivery} ${kind} acknowledged`)

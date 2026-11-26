@@ -2,14 +2,10 @@
 import assert from 'node:assert/strict'
 import { writeFileSync } from 'node:fs'
 
+import { composioDeletedAccounts } from './composio-stub.ts'
 import { artifacts, until } from './processes.ts'
 
 import type { Scenario } from './ui.ts'
-
-// What Cloudflare's authorize endpoint sends back, before any sign-in, for a
-// scope the OAuth client is not registered for.
-const REJECTION =
-  "The requested scope is invalid, unknown, or malformed. The OAuth 2.0 Client is not allowed to request scope 'dns-firewall.read'."
 
 export const connectorScenarios: Scenario[] = [
   {
@@ -83,10 +79,9 @@ export const connectorScenarios: Scenario[] = [
     },
   },
   {
-    // #2918: Cloudflare's rejection reached only the cerin:// deep link; when the app did
-    // not receive it, the dialog waited ten minutes and people retried.
     name: 'Cloudflare rejecting the authorization shows its reason in the app',
-    run: async (page, stack) => {
+    run: async (page, stack, desktop) => {
+      assert(desktop)
       await page.getByRole('button', { name: 'Connectors' }).click()
       await page.getByLabel('Add Cloudflare').click()
       const share = page.getByRole('button', { name: 'All members', exact: true })
@@ -104,26 +99,41 @@ export const connectorScenarios: Scenario[] = [
       )
       await share.click()
       await page.screenshot({ path: `${artifacts}/cloudflare-connect-sharing.png` })
+      const deletedBefore = composioDeletedAccounts().length
+
       await connect.click()
       await page.getByText('Waiting for browser authorization…').waitFor()
       assert.deepEqual(stack.cloudflareShare(), { mode: 'team', memberIds: [] })
       await page.screenshot({ path: `${artifacts}/cloudflare-waiting.png` })
-      // Cloudflare's redirect, answered in place of it. No deep link reaches the app.
-      const query = new URLSearchParams({
-        state: stack.cloudflareState(),
-        error: 'invalid_scope',
-        error_description: REJECTION,
-      })
+      // Composio's failed redirect, with its desktop deep link delivered as the browser would.
+      const query = new URLSearchParams({ state: stack.cloudflareState(), status: 'failed' })
       const response = await fetch(`${stack.apiUrl}/cloudflare-app/setup?${query.toString()}`)
+      const html = await response.text()
 
       if (!response.ok) throw new Error(`The callback answered ${String(response.status)}`)
-      await page
-        .getByRole('region', { name: 'Notifications' })
-        .getByText(/not allowed to request scope 'dns-firewall\.read'/)
-        .waitFor()
+      const serialized = /location\.href = ("(?:\\.|[^"\\])*")/u.exec(html)?.[1]
+
+      assert(serialized, 'the callback to contain its desktop deep link')
+      await desktop.openDeepLink(JSON.parse(serialized) as string)
+      const notifications = page.getByRole('region', { name: 'Notifications' })
+      const rejection = notifications.getByText('Cloudflare OAuth failed: access_denied', {
+        exact: true,
+      })
+
+      await rejection.waitFor()
+      await connect.waitFor()
+      await page.waitForTimeout(500)
+      assert.equal(await rejection.count(), 1, 'one terminal authorization error')
+      assert.equal(stack.cloudflareState(), '', 'the failed authorization is consumed')
+      assert.equal(
+        composioDeletedAccounts().length,
+        deletedBefore + 1,
+        'the failed Composio account is deleted once, without a retry',
+      )
       await page.screenshot({ path: `${artifacts}/cloudflare-rejected.png` })
       await page.keyboard.press('Escape')
       await page.getByRole('dialog', { name: 'Connect Cloudflare' }).waitFor({ state: 'detached' })
+      assert.equal(composioDeletedAccounts().length, deletedBefore + 1)
       // Leave Connectors closed for the next scenario.
       const connectors = page.getByRole('dialog', { name: 'Connectors' })
 

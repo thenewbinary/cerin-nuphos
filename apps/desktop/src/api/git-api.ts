@@ -43,17 +43,11 @@ export const gitApi = {
     page: number,
   ) => window.api.atlasListGithubActionRuns(teamId, installationId, owner, repo, page),
   atlasListGitlabBindings: (teamId: string) => window.api.atlasListGitlabBindings(teamId),
-  atlasStartGitlabOAuth: (
-    teamId: string,
-    hostUrl: string,
-    clientId?: string,
-    clientSecret?: string,
-    scopes?: string[],
-    share?: BindingShare,
-  ) => window.api.atlasStartGitlabOAuth(teamId, hostUrl, clientId, clientSecret, scopes, share),
+  atlasStartGitlabOAuth: (teamId: string, share?: BindingShare) =>
+    window.api.atlasStartGitlabOAuth(teamId, share),
   atlasCancelGitlabOAuth: (teamId: string) => window.api.atlasCancelGitlabOAuth(teamId),
-  atlasStartCloudflareConnect: (teamId: string, scopes?: string[], share?: BindingShare) =>
-    window.api.atlasStartCloudflareConnect(teamId, scopes, share),
+  atlasStartCloudflareConnect: (teamId: string, share?: BindingShare) =>
+    window.api.atlasStartCloudflareConnect(teamId, share),
   atlasCancelCloudflareConnect: (teamId: string) => window.api.atlasCancelCloudflareConnect(teamId),
   atlasUnbindGitlab: (teamId: string, bindingId: string) =>
     window.api.atlasUnbindGitlab(teamId, bindingId),

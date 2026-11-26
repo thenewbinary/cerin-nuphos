@@ -1,6 +1,4 @@
-// The OAuth code exchange shared by the GitHub, Linear and Google team-client flows.
-import { getDefaultClientCredentials, getViewer } from '@/lib/byos/linear'
-import { exchangeCodeForTokens } from '@/lib/byos/linear-oauth'
+// The OAuth code exchange shared by the GitHub and Google team-client flows.
 import { publicBackendUrl } from '@/lib/claude-code-preview/runtime-backend-url'
 import { AppError } from '@/lib/errors'
 
@@ -17,7 +15,6 @@ import type {
 
 export const NAMES: Record<PersonalCredentialProvider, string> = {
   github: 'GitHub',
-  linear: 'Linear',
   gmail: 'Gmail',
   'google-drive': 'Google Drive',
   'google-calendar': 'Google Calendar',
@@ -40,10 +37,7 @@ export function notConfigured(provider: PersonalCredentialProvider): AppError {
   )
 }
 
-type Identity = Pick<
-  PersonalCredential,
-  'providerUserId' | 'login' | 'workspaceId' | 'workspaceName' | 'teamId'
->
+type Identity = Pick<PersonalCredential, 'providerUserId' | 'login' | 'workspaceName' | 'teamId'>
 
 /** Trades the provider's code for a grant, ready to stage. */
 export async function exchangeGrant(
@@ -77,18 +71,7 @@ export async function exchangeGrant(
       identity = { ...identity, teamId, workspaceName: membership.team.name }
     }
   } else {
-    const client = getDefaultClientCredentials()
-
-    if (!client || !redirectUri) throw notConfigured(provider)
-    tokens = await exchangeCodeForTokens(client.clientId, client.clientSecret, code, redirectUri)
-    const viewer = await getViewer(tokens.accessToken)
-
-    identity = {
-      providerUserId: viewer.user.id,
-      login: viewer.user.name ?? viewer.user.id,
-      workspaceId: viewer.organization.id,
-      workspaceName: viewer.organization.name,
-    }
+    throw notConfigured(provider)
   }
 
   return {

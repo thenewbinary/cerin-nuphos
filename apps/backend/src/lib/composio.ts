@@ -1,10 +1,8 @@
 import { config } from '@/config'
 import { AppError } from '@/lib/errors'
 
-const API = 'https://backend.composio.dev/api/v3.1'
-
 export async function composioRequest<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${API}${path}`, {
+  const res = await fetch(`${config.byos.composio.apiBaseUrl}${path}`, {
     method,
     headers: { 'x-api-key': config.byos.composio.apiKey ?? '', 'Content-Type': 'application/json' },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
@@ -34,25 +32,38 @@ export async function composioRequest<T>(method: string, path: string, body?: un
   return json
 }
 
-type AuthConfig = { id: string; created_at?: string }
+type AuthConfig = { id: string; created_at?: string; auth_scheme?: string }
+
+/** Managed = Composio's own OAuth app; apiKey = our custom API_KEY config (Cloudflare). */
+export type ComposioAuthConfigKind = 'managed' | 'apiKey'
 
 const oldest = (items: AuthConfig[]) =>
   items.toSorted(
     (a, b) => (a.created_at ?? '').localeCompare(b.created_at ?? '') || a.id.localeCompare(b.id),
   )[0]?.id
 
-async function resolveAuthConfigId(toolkitSlug: string): Promise<string> {
+async function resolveAuthConfigId(
+  toolkitSlug: string,
+  kind: ComposioAuthConfigKind,
+): Promise<string> {
   const list = () =>
     composioRequest<{ items: AuthConfig[] }>(
       'GET',
-      `/auth_configs?toolkit_slug=${encodeURIComponent(toolkitSlug)}&is_composio_managed=true&limit=200`,
-    ).then((res) => oldest(res.items))
+      `/auth_configs?toolkit_slug=${encodeURIComponent(toolkitSlug)}&is_composio_managed=${kind === 'managed' ? 'true' : 'false'}&limit=200`,
+    ).then((res) =>
+      oldest(kind === 'apiKey' ? res.items.filter((c) => c.auth_scheme === 'API_KEY') : res.items),
+    )
   const existing = await list()
 
   if (existing) return existing
   await composioRequest('POST', '/auth_configs', {
     toolkit: { slug: toolkitSlug },
-    auth_config: { type: 'use_composio_managed_auth' },
+    auth_config:
+      kind === 'apiKey'
+        ? // The user pastes their provider API token on the hosted Connect Link page;
+          // no credential of theirs is ever configured here.
+          { type: 'use_custom_auth', authScheme: 'API_KEY', credentials: {} }
+        : { type: 'use_composio_managed_auth' },
   })
   // Another process may have created one at the same moment: every process settles on the oldest.
   const created = await list()
@@ -69,14 +80,20 @@ const authConfigIds = new Map<string, Promise<string>>()
 /**
  * The project's Composio-managed auth config for a toolkit: the oldest one,
  * created when there is none. Every connection is made and checked against it.
+ * For an API-key toolkit (Cloudflare) it is instead the oldest non-managed
+ * API_KEY config, since Composio has no managed app for those.
  */
-export function composioAuthConfigId(toolkitSlug: string): Promise<string> {
-  let id = authConfigIds.get(toolkitSlug)
+export function composioAuthConfigId(
+  toolkitSlug: string,
+  kind: ComposioAuthConfigKind = 'managed',
+): Promise<string> {
+  const key = `${kind}:${toolkitSlug}`
+  let id = authConfigIds.get(key)
 
   if (!id) {
-    id = resolveAuthConfigId(toolkitSlug)
-    id.catch(() => authConfigIds.delete(toolkitSlug))
-    authConfigIds.set(toolkitSlug, id)
+    id = resolveAuthConfigId(toolkitSlug, kind)
+    id.catch(() => authConfigIds.delete(key))
+    authConfigIds.set(key, id)
   }
 
   return id

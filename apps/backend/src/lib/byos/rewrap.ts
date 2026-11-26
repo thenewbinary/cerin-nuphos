@@ -10,18 +10,14 @@ import type { Collection, Document } from 'mongodb'
 
 /** The sealer for the envelopes in each team_byos_bindings array. */
 export const BINDING_SEALERS: Partial<Record<string, SealerName>> = {
-  asanaAccounts: 'asana',
   betterStackIntegrations: 'betterStack',
   cloudflareAccounts: 'cloudflare',
-  gitlabAccounts: 'gitlab',
   // Google OAuth client secrets share the key of the grants they issue.
   googleOAuthClient: 'linear',
   grafanaInstances: 'grafana',
   hetznerAccounts: 'hetzner',
   instaboxAccounts: 'instabox',
-  jiraSites: 'jira',
   larkApps: 'lark',
-  linearWorkspaces: 'linear',
   linodeAccounts: 'linode',
   notionIntegrations: 'notion',
   onpremClusters: 'onprem',
@@ -29,7 +25,6 @@ export const BINDING_SEALERS: Partial<Record<string, SealerName>> = {
   posthogIntegrations: 'posthog',
   resendIntegrations: 'resend',
   secureframeIntegrations: 'secureframe',
-  sentryAccounts: 'sentry',
   slackWorkspaces: 'slack',
   sonarqubeIntegrations: 'sonarqube',
   tailscaleClients: 'tailscale',

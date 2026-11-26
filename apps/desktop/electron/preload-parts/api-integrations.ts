@@ -1,15 +1,17 @@
-import type { BindingShare } from '../../src/lib/bindingShare'
 import { ipcRenderer } from 'electron'
 
+import type { BindingShare } from '../../src/lib/bindingShare'
 import type { BindingAccess } from '../../src/types/k8s-core.ts'
+
+import { slackIntegrationsApi } from './api-slack-integrations'
 
 let appShortcutsSuspended = false
 
 export const integrationsApi = {
+  ...slackIntegrationsApi,
   atlasStartTrelloOAuth: (teamId: string, share?: BindingShare) =>
     ipcRenderer.invoke('atlas:startTrelloOAuth', teamId, share),
   atlasCancelTrelloOAuth: (teamId: string) => ipcRenderer.invoke('atlas:cancelTrelloOAuth', teamId),
-
   onAgentPlanUpdated: (cb: (payload: { plan: unknown }) => void) => {
     const handler = (_e: unknown, payload: { plan: unknown }) => cb(payload)
 

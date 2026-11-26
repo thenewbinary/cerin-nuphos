@@ -73,18 +73,10 @@ export type WindowGitApi = {
     page: number,
   ): Promise<{ runs: GithubWorkflowRun[]; totalCount: number }>
   atlasListGitlabBindings(teamId: string): Promise<GitlabBinding[]>
-  atlasStartGitlabOAuth(
-    teamId: string,
-    hostUrl: string,
-    clientId?: string,
-    clientSecret?: string,
-    scopes?: string[],
-    share?: BindingShare,
-  ): Promise<GitlabBindResult>
+  atlasStartGitlabOAuth(teamId: string, share?: BindingShare): Promise<GitlabBindResult>
   atlasCancelGitlabOAuth(teamId: string): Promise<void>
   atlasStartCloudflareConnect(
     teamId: string,
-    scopes?: string[],
     share?: BindingShare,
   ): Promise<{
     bindingId: string

@@ -106,31 +106,18 @@ export type CloudflareAccountBinding = {
   id: ObjectId
   accountId: string
   accountName: string | null
-  /** How this account authenticates. Defaults to 'api_token' for legacy
-   *  bindings that predate OAuth (encryptedApiKey present, authType absent). */
-  authType?: 'api_token' | 'oauth'
-  /** Present for api_token bindings (a scoped Cloudflare API token). */
-  encryptedApiKey?: {
-    v: 1
-    alg: 'A256GCM'
-    keyId: string
-    iv: string
-    authTag: string
-    ciphertext: string
-  }
-  /** Present for oauth bindings. Short-lived access token is auto-refreshed
-   *  from the refresh token before it expires (see cloudflare-oauth.ts). */
-  oauth?: {
-    clientId: string
-    scope: string
-    encryptedAccessToken: EncryptedEnvelope
-    encryptedRefreshToken: EncryptedEnvelope | null
-    accessTokenExpiresAt: Date | null
-  }
+  /**
+   * The Composio connected account holding the user's Cloudflare API token
+   * (entered on Composio's hosted Connect Link page against our custom
+   * API_KEY auth config). No Cloudflare credential is stored here; API calls
+   * go through Composio Proxy Execute.
+   */
+  composioAccountId: string
+  composioUserId: string
   /**
    * Optional R2 S3-compatible credentials, bound separately from the account API
    * token. Needed only for the R2 object browser (list/upload/download/delete
-   * objects); bucket-level operations use the account API token above.
+   * objects); bucket-level operations use the Composio connection above.
    */
   r2S3?: {
     accessKeyId: string

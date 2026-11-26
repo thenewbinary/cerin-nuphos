@@ -252,6 +252,7 @@ function ConnectorsList({
       plaudAccounts={accounts?.plaud ?? []}
       discordConnection={accounts?.discordConnection ?? null}
       slackInstallation={accounts?.slackInstallation ?? null}
+      slackIntegrations={accounts?.slackIntegrations ?? []}
       slackLinkedChannels={accounts?.slackLinkedChannels ?? null}
       larkInstallation={accounts?.larkInstallation ?? null}
       loading={!accounts}

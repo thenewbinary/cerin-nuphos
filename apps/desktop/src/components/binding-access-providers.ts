@@ -27,6 +27,7 @@ export type BindingAccessProvider =
   | 'jira'
   | 'asana'
   | 'sentry'
+  | 'slack'
   | 'notion'
   | 'resend'
   | 'sonarqube'
@@ -129,6 +130,7 @@ export const PROVIDERS: Record<BindingAccessProvider, ProviderConfig> = {
   jira: generic('jira-sites', t('Jira site')),
   asana: generic('asana-accounts', t('Asana account')),
   sentry: generic('sentry-accounts', t('Sentry account')),
+  slack: generic('slack-integrations', t('Slack workspace')),
   notion: generic('notion-integrations', t('Notion integration')),
   resend: generic('resend-integrations', t('Resend integration')),
   sonarqube: generic('sonarqube-integrations', t('SonarQube integration')),

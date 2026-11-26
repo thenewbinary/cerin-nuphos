@@ -29,7 +29,7 @@ import type {
 import type { AwsEc2Instance, Firewall, Nacl, Vpc } from '../types/compute.ts'
 import type {
   AwsIamPermissions,
-  CloudflareIamInfo,
+  CloudflareIamPermissions,
   GcpIamPermissions,
   PermissionGrantProposalView,
 } from '../types/iam.ts'
@@ -61,7 +61,10 @@ export type WindowAwsApi = {
     projectId: string,
     serviceAccountId?: string,
   ): Promise<GcpIamPermissions>
-  atlasGetCloudflareIamPermissions(teamId: string, accountId: string): Promise<CloudflareIamInfo>
+  atlasGetCloudflareIamPermissions(
+    teamId: string,
+    accountId: string,
+  ): Promise<CloudflareIamPermissions>
   atlasListGcpVpcs(teamId: string, projectId: string, serviceAccountId?: string): Promise<Vpc[]>
   atlasListGcpFirewalls(
     teamId: string,

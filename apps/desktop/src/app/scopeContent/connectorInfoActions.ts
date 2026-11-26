@@ -261,6 +261,7 @@ function connectorInfoRow(ctx: ConnectorInfoContext, connectorId: string) {
       grafanaInstances: ctx.grafanaInstances,
       discordConnection: accounts.discordConnection,
       slackInstallation: accounts.slackInstallation,
+      slackIntegrations: accounts.slackIntegrations,
       slackLinkedChannels: accounts.slackLinkedChannels,
       larkInstallation: accounts.larkInstallation,
       onOpenConnectorInfo: ignoreOpen,

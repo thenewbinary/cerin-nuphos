@@ -26,6 +26,7 @@ export const ACCESS_EDITABLE_PROVIDERS: Partial<
   jira: 'jira',
   asana: 'asana',
   sentry: 'sentry',
+  slack: 'slack',
   notion: 'notion',
   resend: 'resend',
   sonarqube: 'sonarqube',

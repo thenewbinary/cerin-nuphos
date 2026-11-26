@@ -109,22 +109,6 @@ export type CloudflareIamPermissions = {
   selfCapabilities: SelfCapabilities
 }
 
-// OAuth-bound accounts (the current bind flow): the meaningful facts are the
-// granted scopes and connection health, not API-token policies.
-export type CloudflareOauthConnection = {
-  authType: 'oauth'
-  accountId: string
-  accountName: string | null
-  clientId: string
-  scopes: string[]
-  accessTokenExpiresAt: string | null
-  hasRefreshToken: boolean
-  connectionStatus: 'ok' | 'error'
-  warnings: string[]
-}
-
-export type CloudflareIamInfo = CloudflareIamPermissions | CloudflareOauthConnection
-
 export type CloudflareZone = {
   id: string
   name: string

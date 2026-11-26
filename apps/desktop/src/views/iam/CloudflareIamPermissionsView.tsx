@@ -1,13 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { ShieldCheck } from 'lucide-react'
-import { useState } from 'react'
 
 import { SectionHeader } from '../../components/SectionHeader'
-import { Button } from '../../components/ui/button'
 import { t } from '../../i18n'
 import { useRefreshKey, useTabPollMs } from '../../lib/query/tabQuery'
-import { BindAccountDialog } from '../BindAccountDialog'
 
 import { formatExpiry } from './common'
 import { cloudflarePermissionsQuery } from './iamQueries'
@@ -22,7 +19,6 @@ export function CloudflareIamPermissionsView({
   refreshKey,
   onLoading,
 }: CommonProps & { accountId: string }) {
-  const [reauthorizing, setReauthorizing] = useState(false)
   const query = useQuery({
     ...cloudflarePermissionsQuery(teamId, accountId),
     refetchInterval: useTabPollMs(),
@@ -33,12 +29,7 @@ export function CloudflareIamPermissionsView({
 
   useRefreshKey(query, refreshKey, onLoading)
 
-  // The current bind flow is Cloudflare OAuth — render scopes + connection
-  // health. The token-policy layout below only survives for legacy API-token
-  // bindings that predate it.
-  if (!data || data.authType === 'oauth') {
-    const oauth = data?.authType === 'oauth' ? data : null
-
+  if (!data) {
     return (
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex-1 overflow-y-auto scrollbar-thin">
@@ -47,89 +38,8 @@ export function CloudflareIamPermissionsView({
               {error}
             </div>
           )}
-          {loading && !oauth && (
+          {loading && (
             <div className="px-6 py-5 text-[12.5px] text-tertiary">{t('Checking connection…')}</div>
-          )}
-          {oauth && (
-            <>
-              <ProviderSummaryCard
-                provider="cloudflare"
-                title={oauth.accountName ?? oauth.accountId}
-                subtitle={oauth.accountId}
-                rows={[
-                  { label: t('Account ID'), value: oauth.accountId, mono: true },
-                  { label: t('Auth'), value: 'Cloudflare OAuth' },
-                  {
-                    label: t('Connection'),
-                    value:
-                      oauth.connectionStatus === 'ok' ? t('Connected') : t('Broken — reconnect'),
-                    status: oauth.connectionStatus === 'ok' ? 'success' : 'error',
-                  },
-                  {
-                    label: t('Access token'),
-                    value: !oauth.hasRefreshToken
-                      ? t('No refresh token — expires without renewal')
-                      : oauth.accessTokenExpiresAt
-                        ? t('Auto-refreshed · current expires {time}', {
-                            time: new Date(oauth.accessTokenExpiresAt).toLocaleString(),
-                          })
-                        : t('Auto-refreshed'),
-                    status: oauth.hasRefreshToken ? undefined : 'error',
-                  },
-                  { label: t('OAuth client'), value: oauth.clientId, mono: true },
-                ]}
-              />
-              <Warnings warnings={oauth.warnings} />
-              <section className="px-6 py-4">
-                <SectionHeader
-                  icon={<ShieldCheck className="w-4 h-4 text-primary" strokeWidth={1.8} />}
-                  title={t('Granted scopes')}
-                  hint={
-                    oauth.scopes.length === 1
-                      ? t('{n} scope on this OAuth grant', { n: oauth.scopes.length })
-                      : t('{n} scopes on this OAuth grant', { n: oauth.scopes.length })
-                  }
-                />
-                {oauth.scopes.length === 0 ? (
-                  <EmptyHint
-                    message={t(
-                      'The OAuth grant reports no scopes — reconnect the account to re-authorize.',
-                    )}
-                  />
-                ) : (
-                  <div className="flex flex-wrap gap-1.5">
-                    {oauth.scopes.map((scope) => (
-                      <span
-                        key={scope}
-                        className="px-2 py-1 rounded-md border border-line-control bg-surface-canvas font-mono text-[11.5px] text-secondary"
-                      >
-                        {scope}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <div className="mt-3 flex items-center gap-3">
-                  <div className="flex-1 text-[11.5px] text-tertiary">
-                    {t(
-                      'Scopes are fixed by the Cloudflare OAuth grant. Re-authorize this account to change them.',
-                    )}
-                  </div>
-                  <Button variant="secondary" size="sm" onClick={() => setReauthorizing(true)}>
-                    {t('Update scopes')}
-                  </Button>
-                </div>
-              </section>
-              <BindAccountDialog
-                open={reauthorizing}
-                teamId={teamId}
-                initialProvider="cloudflare"
-                onClose={() => setReauthorizing(false)}
-                onBound={() => {
-                  setReauthorizing(false)
-                  void query.refetch()
-                }}
-              />
-            </>
           )}
         </div>
       </div>

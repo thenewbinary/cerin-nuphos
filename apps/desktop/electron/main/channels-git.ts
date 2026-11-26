@@ -96,22 +96,11 @@ export const gitChannels = {
     page: number,
   ) => atlas.listGithubActionRuns(teamId, installationId, owner, repo, page),
   'atlas:listGitlabBindings': (_e: unknown, teamId: string) => atlas.listGitlabBindings(teamId),
-  'atlas:startGitlabOAuth': (
-    _e: unknown,
-    teamId: string,
-    hostUrl: string,
-    clientId?: string,
-    clientSecret?: string,
-    scopes?: string[],
-    share?: BindingShare,
-  ) => gitlabInstall.startInstall(teamId, hostUrl, clientId, clientSecret, scopes, share),
+  'atlas:startGitlabOAuth': (_e: unknown, teamId: string, share?: BindingShare) =>
+    gitlabInstall.startInstall(teamId, share),
   'atlas:cancelGitlabOAuth': (_e: unknown, teamId: string) => gitlabInstall.cancelPending(teamId),
-  'atlas:startCloudflareConnect': (
-    _e: unknown,
-    teamId: string,
-    scopes?: string[],
-    share?: BindingShare,
-  ) => cloudflareInstall.startInstall(teamId, scopes, share),
+  'atlas:startCloudflareConnect': (_e: unknown, teamId: string, share?: BindingShare) =>
+    cloudflareInstall.startInstall(teamId, share),
   'atlas:cancelCloudflareConnect': (_e: unknown, teamId: string) =>
     cloudflareInstall.cancelPending(teamId),
   'atlas:unbindGitlab': (_e: unknown, teamId: string, bindingId: string) =>

@@ -1,11 +1,7 @@
-// The agent's GitHub and Linear handouts call personalGithubToken /
-// personalLinearToken with the turn's sender and fall back to the team token
-// when they return null. Gmail and Google Drive have no team token: their
-// handout returns personalGoogleToken or nothing. Refreshes rotate the stored
-// grant in place.
+// The agent's GitHub handout falls back to the team token when the sender has
+// no personal grant. Gmail and Google Drive have no team token: their handout
+// returns personalGoogleToken or nothing. Refreshes rotate grants in place.
 import { credentialSource, getConversationBySessionId } from '@/lib/agent/db'
-import { getDefaultClientCredentials } from '@/lib/byos/linear'
-import { refreshTokens } from '@/lib/byos/linear-oauth'
 import {
   personalCredentialSubject,
   verifyPreviewMcpToken,
@@ -15,7 +11,7 @@ import { personalCredentials } from '@/models'
 
 import { accountRequired, chooseCredential } from './choose'
 import { githubUserInstallationIds, refreshGithubToken } from './github'
-import { isGoogleProvider, refreshGoogleToken, teamGoogleClient } from './google'
+import { refreshGoogleToken, teamGoogleClient } from './google'
 import { open, seal } from './seal'
 
 import type { ProviderTokens } from './github'
@@ -48,17 +44,12 @@ async function refresh(doc: PersonalCredential): Promise<PersonalToken | null> {
   try {
     if (doc.provider === 'github') {
       tokens = await refreshGithubToken(refreshToken)
-    } else if (isGoogleProvider(doc.provider)) {
+    } else {
       const client = doc.teamId ? await teamGoogleClient(doc.teamId) : null
 
       // Without the team's client there is nothing to refresh with yet.
       if (!client) return null
       tokens = await refreshGoogleToken(client, refreshToken)
-    } else {
-      const client = getDefaultClientCredentials()
-
-      if (!client) return null
-      tokens = await refreshTokens(client.clientId, client.clientSecret, refreshToken)
     }
   } catch (error) {
     // Another replica may have rotated the refresh token first.
@@ -163,12 +154,12 @@ async function seesInstallation(
 }
 
 /**
- * The member's own GitHub or Linear token, for a conversation with no team binding to go through.
+ * The member's own GitHub token, for a conversation with no team binding to go through.
  * With several accounts the call names one with `connectionId`.
  */
 export async function personalOwnToken(
   userId: string,
-  provider: 'github' | 'linear',
+  provider: 'github',
   connectionId?: string,
 ): Promise<PersonalToken | null> {
   const docs = await personalCredentials().find({ userId, provider }).toArray()
@@ -189,17 +180,6 @@ export async function ownPersonalCredentialOptions(userId: string, teamId: strin
   return docs
     .filter((doc) => !doc.teamId || doc.teamId === teamId)
     .map((doc) => ({ id: doc._id.toHexString(), provider: doc.provider, login: doc.login }))
-}
-
-/** The sender's Linear token, when they connected the same workspace as this binding. */
-export async function personalLinearToken(
-  userId: string,
-  workspaceId: string,
-): Promise<PersonalToken | null> {
-  const docs = await personalCredentials().find({ userId, provider: 'linear' }).toArray()
-  const doc = docs.find((candidate) => candidate.workspaceId === workspaceId)
-
-  return doc ? currentToken(doc) : null
 }
 
 /**
@@ -247,7 +227,7 @@ export async function personalGoogleToken(
  * credential selection has the team act for this provider.
  */
 export async function personalCredentialSubjectFor(
-  provider: 'github' | 'linear',
+  provider: 'github',
   authorization: string | undefined,
   identity?: string,
 ): Promise<{ userId: string } | null> {

@@ -2,12 +2,10 @@ import { Hono } from 'hono'
 
 import { agentSubjectId } from '@/lib/agents/identity'
 import { apiKeyFromBinding, RESEND_API_BASE_URL } from '@/lib/byos/resend'
-import {
-  getAccessTokenWithExpiry as getSentryAccessTokenWithExpiry,
-  SENTRY_API_BASE_URL,
-} from '@/lib/byos/sentry'
+import { sentryProxy } from '@/lib/byos/sentry'
+import { composioProxyBodySchema } from '@/lib/composio-connect'
 import { AppError } from '@/lib/errors'
-import { parseObjectId } from '@/lib/objectid'
+import { zv } from '@/lib/validate'
 import {
   requireResendIntegration,
   requireResendMemberAccess,
@@ -56,29 +54,12 @@ sentryScoped.use('*', requireSentryAccount())
 sentryScoped.use('*', requireSentryMemberAccess())
 sentryScoped.use('*', requireSelectedSentryAgentCredential())
 
-sentryScoped.get('/credentials', async (c) => {
-  const agent = c.get('agent')
-  const teamId = parseObjectId(c.get('teamId'), 'teamId')
-  const binding = c.get('sentryBinding')
-  const { token, expiresAt } = await getSentryAccessTokenWithExpiry(teamId, binding)
-
-  c.header('X-Atlas-Agent', agentSubjectId(agent))
-  if (expiresAt) c.header('X-Credentials-Expires-At', expiresAt.toISOString())
-  // A reusable bearer token over GET must never be cached by intermediaries.
+// The sandbox investigates Sentry through this session-scoped proxy, never a
+// handed-out token: only read methods on sentry.io/api/0 paths are allowed.
+sentryScoped.post('/proxy', zv('json', composioProxyBodySchema), async (c) => {
   c.header('Cache-Control', 'no-store, private')
-  c.header('Pragma', 'no-cache')
 
-  return c.json({
-    bindingId: c.get('sentryAccountId'),
-    userId: binding.userId,
-    userName: binding.userName,
-    userEmail: binding.userEmail,
-    apiBaseUrl: SENTRY_API_BASE_URL,
-    scope: binding.scope,
-    accessToken: token,
-    expiresAt: expiresAt?.toISOString() ?? null,
-    authType: 'oauth_bearer',
-  })
+  return c.json(await sentryProxy(c.get('sentryBinding'), c.req.valid('json')))
 })
 
 function requireSelectedSentryAgentCredential(): MiddlewareHandler<{ Variables: AgentSentryVars }> {

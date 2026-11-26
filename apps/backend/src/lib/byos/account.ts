@@ -33,6 +33,7 @@ export {
   findVantaIntegration,
   removeGithubInstallationFromAllTeams,
 } from './account-integrations'
+export { findSlackIntegration } from './account-slack'
 export {
   findZeaburProvider,
   findZeaburProviderByZeaburId,

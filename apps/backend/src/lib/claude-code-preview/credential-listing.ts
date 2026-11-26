@@ -1,9 +1,3 @@
-// Flattens a conversation's selected credentials into a provider-agnostic list
-// the Claude Code runtime's MCP can render and then fetch by (provider, id),
-// alongside the ones the actor may use but the conversation has not selected.
-// The `credentialPath` is the provider route suffix shared by the ordinary
-// team API and the legacy agent-session compatibility mount. Both reuse the
-// same selection gate + vending logic.
 import { getAgentCredentialOptions } from '@/routes/agent/credential-options'
 import { getAgentCredentialAccess } from '@/routes/agent-sessions/shared'
 
@@ -26,8 +20,6 @@ export type {
   UnselectedCredentialEntry,
 } from './credential-lister'
 
-// Keyed by every selection field, so a new selectable type cannot compile
-// without deciding how list_credentials shows it.
 export const CREDENTIAL_LISTERS: Record<SelectionKey, Lister> = {
   awsRoleIds: lister({
     provider: 'aws',
@@ -89,16 +81,26 @@ export const CREDENTIAL_LISTERS: Record<SelectionKey, Lister> = {
     provider: 'linear',
     available: (o) => o.linearWorkspaces,
     idOf: (w) => w.workspaceId,
-    details: (w, id) => ({ label: w.label, credentialPath: `linear-workspaces/${id}/credentials` }),
+    details: (w, id) => viaTeamApi(w.label, `POST /linear-workspaces/${id}/proxy`),
   }),
   jiraSiteIds: lister({
     provider: 'jira',
     available: (o) => o.jiraSites,
     idOf: (s) => s.siteId,
-    details: (s, id) => ({ label: s.label, credentialPath: `jira-sites/${id}/credentials` }),
+    details: (s, id) => viaTeamApi(s.label, `POST /jira-sites/${id}/proxy`),
   }),
-  asanaAccountIds: vendedAccount('asana', 'asana-accounts', (o) => o.asanaAccounts),
-  sentryAccountIds: vendedAccount('sentry', 'sentry-accounts', (o) => o.sentryAccounts),
+  asanaAccountIds: lister({
+    provider: 'asana',
+    available: (o) => o.asanaAccounts,
+    idOf: (a) => a.accountId,
+    details: (a, id) => viaTeamApi(a.label, `POST /asana-accounts/${id}/proxy`),
+  }),
+  sentryAccountIds: lister({
+    provider: 'sentry',
+    available: (o) => o.sentryAccounts,
+    idOf: (a) => a.accountId,
+    details: (a, id) => viaTeamApi(a.label, `POST /sentry-accounts/${id}/proxy`),
+  }),
   tailscaleClientIds: lister({
     provider: 'tailscale',
     available: (o) => o.tailscaleClients,
@@ -138,6 +140,12 @@ export const CREDENTIAL_LISTERS: Record<SelectionKey, Lister> = {
     idOf: (i) => i.integrationId,
     details: (i, id) => viaTeamApi(i.label, `POST /trello-integrations/${id}/execute`),
   }),
+  slackIntegrationIds: lister({
+    provider: 'slack',
+    available: (o) => o.slackIntegrations ?? [],
+    idOf: (i) => i.integrationId,
+    details: (i, id) => viaTeamApi(i.label, `POST /slack-integrations/${id}/proxy`),
+  }),
   posthogIntegrationIds: lister({
     provider: 'posthog',
     available: (o) => o.posthogIntegrations,
@@ -169,8 +177,8 @@ export const CREDENTIAL_LISTERS: Record<SelectionKey, Lister> = {
     provider: 'gitlab',
     available: (o) => o.gitlabBindings,
     idOf: (b) => b.bindingId,
-    details: (b) => viaSkill(`${b.username} @ ${b.hostUrl}`, 'gitlab'),
-    unsetMeansAll: true,
+    details: (b, id) =>
+      viaTeamApi(`${b.username} @ ${b.hostUrl}`, `POST /gitlab-bindings/${id}/proxy`),
   }),
   grafanaInstanceIds: lister({
     provider: 'grafana',
@@ -204,12 +212,11 @@ export const CREDENTIAL_LISTERS: Record<SelectionKey, Lister> = {
     provider: 'cloudflare',
     available: (o) => o.cloudflareAccounts,
     idOf: (a) => a.accountId,
-    details: (a, id) => ({
-      label: a.accountName?.trim() ? a.accountName : id,
-      credentialPath: `cloudflare-accounts/${id}/credentials`,
-      hint: vendedAccountHint('cloudflare', id),
-    }),
-    unsetMeansAll: true,
+    details: (a, id) =>
+      viaTeamApi(
+        a.accountName?.trim() ? a.accountName : id,
+        `POST /cloudflare-accounts/${id}/proxy`,
+      ),
   }),
   instaboxAccountIds: lister({
     provider: 'instabox',

@@ -6,7 +6,6 @@ import { useModels } from '@/lib/test/doubles/models'
 const TEAM = new ObjectId()
 const CF_BINDING = new ObjectId()
 const envelope = { alg: 'A256GCM', keyId: 'k', iv: 'i', authTag: 't', ciphertext: 'c' }
-const results: unknown[] = []
 let slackUpdateError: Error | null = null
 
 useModels({
@@ -15,21 +14,21 @@ useModels({
       findOne: (filter: Record<string, unknown>) =>
         Promise.resolve(
           'cloudflareAccounts.accountId' in filter
-            ? { cloudflareAccounts: [{ id: CF_BINDING }] }
+            ? {
+                cloudflareAccounts: [
+                  {
+                    id: CF_BINDING,
+                    createdAt: new Date(0),
+                    composioAccountId: 'ca_previous_fixture',
+                  },
+                ],
+              }
             : { slackWorkspaces: [] },
         ),
       updateOne: () =>
         slackUpdateError
           ? Promise.reject(slackUpdateError)
           : Promise.resolve({ matchedCount: 1, modifiedCount: 1 }),
-    }) as never,
-  cloudflareOAuthResult: () =>
-    ({
-      replaceOne: (filter: unknown, update: unknown) => {
-        results.push({ filter, update })
-
-        return Promise.resolve({ acknowledged: true })
-      },
     }) as never,
 })
 
@@ -38,7 +37,6 @@ const { persistCloudflareBinding } = await import('./cloudflare-app')
 const { persistDiscordBinding } = await import('./discord-app')
 
 afterEach(() => {
-  results.length = 0
   slackUpdateError = null
 })
 
@@ -61,20 +59,14 @@ describe('connector persist functions', () => {
     expect(params.error).toBe('workspace_taken')
   })
 
-  test('cloudflare: rebinds in place and records the polling result', async () => {
+  test('cloudflare: rebinds in place without a polling result', async () => {
     const params = await persistCloudflareBinding(
       TEAM,
       {
-        state: 's1',
         accountId: 'acc1',
         accountName: 'Acme',
-        oauth: {
-          clientId: 'cid',
-          scope: 'read',
-          encryptedAccessToken: envelope as never,
-          encryptedRefreshToken: null,
-          accessTokenExpiresAt: null,
-        },
+        composioAccountId: 'ca_cloudflare_fixture',
+        composioUserId: 'cloudflare_user_fixture',
       },
       ACCESS,
     )
@@ -85,8 +77,6 @@ describe('connector persist functions', () => {
       account_id: 'acc1',
       account_name: 'Acme',
     })
-    expect(results).toHaveLength(1)
-    expect((results[0] as { filter: unknown }).filter).toEqual({ _id: 's1' })
   })
 
   test('discord: refuses a draft staged for another team', async () => {

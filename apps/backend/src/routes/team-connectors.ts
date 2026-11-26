@@ -35,6 +35,7 @@ import { posthogPublicView } from '@/routes/posthog-integrations'
 import { publicView as resendIntegrationView } from '@/routes/resend-integrations'
 import { publicView as secureframeIntegrationView } from '@/routes/secureframe-integrations'
 import { publicView as sentryAccountView } from '@/routes/sentry-accounts'
+import { publicView as slackIntegrationView } from '@/routes/slack-integrations'
 import { sonarqubePublicView } from '@/routes/sonarqube-integrations'
 import { publicView as tailscaleClientView } from '@/routes/tailscale-clients'
 import { tencentAccountsView } from '@/routes/tencent-accounts'
@@ -150,6 +151,7 @@ teamConnectorsRoutes.get('/', async (c) => {
       oauthAvailable: isSlackOAuthConfigured(),
       linkedChannels: slackLinkedChannels,
     },
+    slackIntegrations: connectorViews('slack', doc?.slackIntegrations, slackIntegrationView),
     lark: {
       installation: larkBinding ? publicLarkInstallationView(larkBinding) : null,
     },

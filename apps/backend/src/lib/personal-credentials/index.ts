@@ -1,19 +1,16 @@
-// Personal Credentials: a member's own GitHub / Linear / Google grant. Connect,
+// Personal Credentials: a member's own GitHub / Google grant. Connect,
 // list and disconnect live here; the agent-facing handout is in ./handout.
 import { createHash, randomBytes } from 'node:crypto'
 
 import { ObjectId } from 'mongodb'
 
-import { config } from '@/config'
-import { getDefaultClientCredentials } from '@/lib/byos/linear'
-import { buildAuthorizeUrl } from '@/lib/byos/linear-oauth'
 import { AppError } from '@/lib/errors'
 import { getTeamMembership } from '@/lib/identity'
 import { personalCredentialPendingOAuth, personalCredentials } from '@/models'
 
 import { stagedComposioConnection, startComposioConnection } from './composio'
 import { callbackUrl, exchangeGrant, notConfigured } from './exchange'
-import { GOOGLE_PROVIDERS, googleTeamFor, isGoogleProvider } from './google'
+import { GOOGLE_PROVIDERS, googleComposioEnabled, googleTeamFor, isGoogleProvider } from './google'
 import { pkceFlow } from './pkce'
 import { revokeQuietly } from './revoke'
 import { seal } from './seal'
@@ -25,9 +22,8 @@ import type {
 } from '@/models'
 
 const PENDING_TTL_MS = 10 * 60 * 1000
-const LINEAR_SCOPE = 'read,write'
 
-export const PERSONAL_CREDENTIAL_PROVIDERS = ['github', 'linear', ...GOOGLE_PROVIDERS] as const
+export const PERSONAL_CREDENTIAL_PROVIDERS = ['github', ...GOOGLE_PROVIDERS] as const
 
 export type PersonalCredentialSummary = {
   /** The connection's own id: what a tool call names when a member has several accounts. */
@@ -104,21 +100,7 @@ export async function startPersonalCredentialOAuth(
       }),
     }
   }
-  const client = getDefaultClientCredentials()
-
-  if (!client || !redirectUri || !config.byos.linear.encryptionKey) throw notConfigured(provider)
-  await personalCredentialPendingOAuth().insertOne({ _id: state, userId, provider, expiresAt })
-
-  return {
-    state,
-    authorizeUrl: buildAuthorizeUrl({
-      clientId: client.clientId,
-      redirectUri,
-      state,
-      scope: LINEAR_SCOPE,
-      actor: 'user',
-    }),
-  }
+  throw notConfigured(provider)
 }
 
 /**
@@ -200,6 +182,7 @@ export async function claimPersonalCredential(
   if (!ready?.staged) {
     throw new AppError(404, 'oauth_not_ready', 'No approved connection is waiting for this request')
   }
+  if (ready.staged.composioAccountId && !googleComposioEnabled()) throw notConfigured(provider)
   const now = new Date()
   // Switching between a team-client grant and a Composio connection drops the other's fields.
   const other: Record<string, ''> = ready.staged.composioAccountId
@@ -257,6 +240,5 @@ export {
   googleCredentialFor,
   personalGoogleToken,
   personalGoogleTokenOf,
-  personalLinearToken,
 } from './handout'
 export type { PersonalToken } from './handout'

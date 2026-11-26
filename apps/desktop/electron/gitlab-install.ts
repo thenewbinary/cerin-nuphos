@@ -30,20 +30,9 @@ export const hasPending = (state: string) => pending.has(state)
 
 export async function startInstall(
   teamId: string,
-  hostUrl: string,
-  clientId?: string,
-  clientSecret?: string,
-  scopes?: string[],
   share?: atlas.BindingShare,
 ): Promise<GitlabBindResult> {
-  const { authorizeUrl, state } = await atlas.startGitlabOAuth(
-    teamId,
-    hostUrl,
-    clientId,
-    clientSecret,
-    scopes,
-    share,
-  )
+  const { authorizeUrl, state } = await atlas.startGitlabOAuth(teamId, share)
 
   return new Promise<GitlabBindResult>((resolve, reject) => {
     const timeout = setTimeout(() => {

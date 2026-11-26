@@ -1,10 +1,9 @@
 import { Hono } from 'hono'
 import { z } from 'zod'
 
-import { config } from '@/config'
 import { encryptLinearSecret } from '@/lib/byos/secrets'
 import { parseObjectId } from '@/lib/objectid'
-import { GOOGLE_PROVIDERS } from '@/lib/personal-credentials/google'
+import { GOOGLE_PROVIDERS, googleComposioEnabled } from '@/lib/personal-credentials/google'
 import { revokeQuietly } from '@/lib/personal-credentials/revoke'
 import { zv } from '@/lib/validate'
 import { requireTeamRole } from '@/middleware/auth'
@@ -57,7 +56,7 @@ googleOAuthClientRoutes.get('/', async (c) => {
   // Without a client of its own, members can still connect through Composio when it is configured.
   return c.json({
     clientId: doc?.googleOAuthClient?.clientId ?? null,
-    composio: Boolean(config.byos.composio.apiKey),
+    composio: googleComposioEnabled(),
   })
 })
 

@@ -60,6 +60,7 @@ import { sentryAccountsRoutes } from '@/routes/sentry-accounts'
 import { sidebarFavoritesRoutes } from '@/routes/sidebar-favorites'
 import { teamSlackMappings } from '@/routes/slack/mappings'
 import { slackInstallationsRoutes } from '@/routes/slack-installations'
+import { slackIntegrationsRoutes } from '@/routes/slack-integrations'
 import { sonarqubeIntegrationsRoutes } from '@/routes/sonarqube-integrations'
 import { tailscaleClientsRoutes } from '@/routes/tailscale-clients'
 import { teamConnectorsRoutes } from '@/routes/team-connectors'
@@ -88,10 +89,8 @@ import { vantaIntegrationsRoutes } from '@/routes/vanta-integrations'
 import { voiceTranscriptionsRoutes } from '@/routes/voice-transcriptions'
 import { volcengineAccountsRoutes } from '@/routes/volcengine-accounts'
 import { zeaburProvidersRoutes } from '@/routes/zeabur-providers'
-
 import { registerRuntimeLoginRoutes } from './teams/runtime-login'
 import { registerSignInRequestRoutes } from './teams/sign-in-requests'
-
 import type { UsageDimension } from '@/lib/agent/usage-query'
 import type { TeamAuthVariables } from '@/middleware/auth'
 import type { ConversationTeamAuthVariables } from '@/routes/teams/conversation-auth'
@@ -285,6 +284,7 @@ teamScoped.route('/notion-integrations', notionIntegrationsRoutes)
 teamScoped.route('/upstash-accounts', upstashAccountsRoutes)
 teamScoped.route('/resend-integrations', resendIntegrationsRoutes)
 teamScoped.route('/trello-integrations', trelloIntegrationsRoutes)
+teamScoped.route('/slack-integrations', slackIntegrationsRoutes)
 teamScoped.route('/instabox-accounts', instaboxAccountsRoutes)
 teamScoped.route('/posthog-integrations', posthogIntegrationsRoutes)
 teamScoped.route('/plaud-accounts', plaudAccountsRoutes)

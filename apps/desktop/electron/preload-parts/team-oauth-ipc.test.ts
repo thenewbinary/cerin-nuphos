@@ -19,11 +19,13 @@ test('starting team OAuth forwards the selected sharing scope through IPC', asyn
 
   await teamOAuthApi.atlasStartLinearOAuth('team-a', share)
   await teamOAuthApi.atlasStartGithubInstall('team-a', share)
-  await teamOAuthApi.atlasStartCloudflareConnect('team-a', ['dns.read'], share)
+  await teamOAuthApi.atlasStartCloudflareConnect('team-a', share)
+  await teamOAuthApi.atlasStartGitlabOAuth('team-a', share)
 
   assert.deepEqual(calls, [
     ['atlas:startLinearOAuth', 'team-a', share],
     ['atlas:startGithubInstall', 'team-a', share],
-    ['atlas:startCloudflareConnect', 'team-a', ['dns.read'], share],
+    ['atlas:startCloudflareConnect', 'team-a', share],
+    ['atlas:startGitlabOAuth', 'team-a', share],
   ])
 })

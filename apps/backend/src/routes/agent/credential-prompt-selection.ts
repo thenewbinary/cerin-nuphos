@@ -25,6 +25,7 @@ export type AgentCredentialAccessSelection = Pick<
   | 'secureframeIntegrationIds'
   | 'resendIntegrationIds'
   | 'trelloIntegrationIds'
+  | 'slackIntegrationIds'
   | 'posthogIntegrationIds'
   | 'plaudAccountIds'
   | 'githubInstallationIds'
@@ -60,6 +61,11 @@ export function selectAgentCredentials(
     trelloIntegrations: pick(
       options.trelloIntegrations,
       access.trelloIntegrationIds,
+      (i) => i.integrationId,
+    ),
+    slackIntegrations: pick(
+      options.slackIntegrations,
+      access.slackIntegrationIds,
       (i) => i.integrationId,
     ),
     awsRoles: pick(options.awsRoles, access.awsRoleIds, (role) => role.roleId),

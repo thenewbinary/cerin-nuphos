@@ -42,6 +42,11 @@ export function isGoogleProvider(provider: string): provider is GoogleProvider {
 
 export type GoogleClient = { clientId: string; clientSecret: string }
 
+/** Whether this server supports Google grants through Composio. */
+export function googleComposioEnabled(): boolean {
+  return Boolean(config.byos.composio.apiKey) && config.byos.composio.googleEnabled
+}
+
 /** The team's own OAuth client, or null when its admins have not added one. */
 export async function teamGoogleClient(teamId: string): Promise<GoogleClient | null> {
   const doc = await teamByosBindings().findOne(
@@ -63,7 +68,7 @@ export async function googleTeamFor(userId: string, teamId: string | undefined):
   if (!teamId || !(await getTeamMembership(userId, teamId))) {
     throw new AppError(403, 'forbidden', 'Connect a Google account from a team you belong to')
   }
-  if (!config.byos.composio.apiKey && !(await teamGoogleClient(teamId))) {
+  if (!googleComposioEnabled() && !(await teamGoogleClient(teamId))) {
     throw new AppError(
       409,
       'google_oauth_client_not_configured',

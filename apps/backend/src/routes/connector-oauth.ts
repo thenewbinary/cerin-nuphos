@@ -13,6 +13,7 @@ import { persistPlaudBinding } from '@/routes/plaud-app'
 import { persistPosthogBinding } from '@/routes/posthog-app'
 import { persistSentryBinding } from '@/routes/sentry-app'
 import { persistSlackBinding } from '@/routes/slack-app'
+import { persistSlackIntegration } from '@/routes/slack-integration-app'
 import { persistTrelloBinding } from '@/routes/trello-integrations'
 
 import type { ConnectorBindPersist } from '@/lib/connector-oauth'
@@ -30,6 +31,7 @@ const PERSISTS = {
   posthog: persistPosthogBinding,
   sentry: persistSentryBinding,
   slack: persistSlackBinding,
+  slackIntegration: persistSlackIntegration,
 } as Record<string, ConnectorBindPersist<never>>
 
 export const connectorOAuthRoutes = new Hono<{ Variables: TeamAuthVariables }>()

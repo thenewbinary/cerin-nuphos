@@ -35,6 +35,7 @@ import type {
   ResendIntegrationBinding,
   TrelloIntegrationBinding,
   SecureframeIntegrationBinding,
+  SlackIntegrationBinding,
   SlackWorkspaceBinding,
   TailscaleOAuthClientBinding,
   UptimeKumaInstanceBinding,
@@ -112,6 +113,8 @@ export type TeamByosBindings = {
   // Optional for the same reason; readers use `doc.resendIntegrations ?? []`.
   resendIntegrations?: ResendIntegrationBinding[]
   trelloIntegrations?: TrelloIntegrationBinding[]
+  // Optional: Composio-managed Slack connections for the agent (not the bot).
+  slackIntegrations?: SlackIntegrationBinding[]
   posthogIntegrations?: PosthogIntegrationBinding[]
   plaudAccounts?: PlaudAccountBinding[]
   instaboxAccounts?: InstaboxAccountBinding[]
@@ -149,6 +152,7 @@ export function emptyTeamByosBindings(): Omit<TeamByosBindings, '_id' | 'updated
     jiraSites: [],
     asanaAccounts: [],
     slackWorkspaces: [],
+    slackIntegrations: [],
     vantaIntegrations: [],
     secureframeIntegrations: [],
     sonarqubeIntegrations: [],

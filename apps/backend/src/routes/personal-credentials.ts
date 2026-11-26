@@ -1,7 +1,6 @@
 import { Hono } from 'hono'
 import { z } from 'zod'
 
-import { config } from '@/config'
 import { credentialSource, getConversationBySessionId } from '@/lib/agent/db'
 import { verifyPreviewMcpToken } from '@/lib/claude-code-preview/mcp-token'
 import { desktopCallbackResponse } from '@/lib/desktop-callback-page'
@@ -25,8 +24,12 @@ import {
   composioUserId,
   executeComposioTool,
 } from '@/lib/personal-credentials/composio'
-import { NAMES } from '@/lib/personal-credentials/exchange'
-import { isGoogleProvider, teamGoogleClient } from '@/lib/personal-credentials/google'
+import { NAMES, notConfigured } from '@/lib/personal-credentials/exchange'
+import {
+  googleComposioEnabled,
+  isGoogleProvider,
+  teamGoogleClient,
+} from '@/lib/personal-credentials/google'
 import { zv } from '@/lib/validate'
 import { requireAuth } from '@/middleware/auth'
 
@@ -184,14 +187,11 @@ personalCredentialTokenRoutes.get('/:provider/token', async (c) => {
   const provider = c.req.param('provider')
   const authorization = c.req.header('Authorization') ?? ''
 
-  if (provider === 'github' || provider === 'linear') {
+  if (provider === 'github') {
     const claims = await ownerClaims(authorization, provider)
     const personal = await personalOwnToken(claims.own, provider, c.req.query('connectionId'))
 
     if (!personal) throw notConnected(NAMES[provider])
-    // In the shape each skill's setup script already reads for the team handout.
-    if (provider === 'linear')
-      return c.json({ ...handedOut(personal), accessToken: personal.token })
     const owner = await getCerinUserById(claims.own)
 
     return c.json({
@@ -208,13 +208,6 @@ personalCredentialTokenRoutes.get('/:provider/token', async (c) => {
   // The conversation token is only valid under its own /teams/:teamId.
   const teamId = claims.tid
 
-  if (!config.byos.composio.apiKey && !(await teamGoogleClient(teamId))) {
-    throw new AppError(
-      409,
-      'google_oauth_client_not_configured',
-      'This team has not added a Google OAuth client. An administrator can add one in Team settings.',
-    )
-  }
   const credential = await googleCredentialFor(
     claims.own,
     provider,
@@ -229,7 +222,16 @@ personalCredentialTokenRoutes.get('/:provider/token', async (c) => {
       'This member connected through Composio: run Google tools with POST /teams/:teamId/composio/execute',
     )
   }
-  const personal = credential && (await personalGoogleTokenOf(credential))
+  // Without a grant, direct OAuth still needs team setup before connecting can work.
+  if ((credential || !googleComposioEnabled()) && !(await teamGoogleClient(teamId))) {
+    throw new AppError(
+      409,
+      'google_oauth_client_not_configured',
+      'This team has not added a Google OAuth client. An administrator can add one in Team settings.',
+    )
+  }
+  if (!credential) throw notConnected(NAMES[provider])
+  const personal = await personalGoogleTokenOf(credential)
 
   if (!personal) throw notConnected(NAMES[provider])
 
@@ -267,6 +269,7 @@ composioRoutes.post('/execute', zv('json', executeSchema), async (c) => {
   if (!credential?.composioAccountId) {
     throw notConnected(NAMES[provider])
   }
+  if (!googleComposioEnabled()) throw notConfigured(provider)
 
   return c.json(
     await executeComposioTool({

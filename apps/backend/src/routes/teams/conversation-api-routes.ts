@@ -2,6 +2,10 @@ import { CONNECTOR_COLLECTIONS } from './conversation-denial'
 
 const ROUTES: { method: string; path: RegExp }[] = [
   { method: 'POST', path: /^\/trello-integrations\/[^/]+\/execute$/u },
+  {
+    method: 'POST',
+    path: /^\/(?:slack-integrations|linear-workspaces|jira-sites|asana-accounts|sentry-accounts|gitlab-bindings|cloudflare-accounts)\/[^/]+\/proxy$/u,
+  },
   { method: 'GET', path: /^\/gcp-projects\/[^/]+\/firebase\/(?:project|apps)$/u },
   { method: 'GET', path: /^\/aws-accounts\/[^/]+\/credentials$/u },
   {
@@ -15,7 +19,7 @@ const ROUTES: { method: string; path: RegExp }[] = [
   },
   {
     method: 'GET',
-    path: /^\/(?:cloudflare|linode|hetzner)-accounts\/[^/]+\/credentials$/u,
+    path: /^\/(?:linode|hetzner)-accounts\/[^/]+\/credentials$/u,
   },
   {
     method: 'GET',
@@ -23,7 +27,7 @@ const ROUTES: { method: string; path: RegExp }[] = [
   },
   {
     method: 'GET',
-    path: /^\/(?:betterstack-integrations|linear-workspaces|jira-sites|asana-accounts|resend-integrations|sentry-accounts|posthog-integrations|plaud-accounts)\/[^/]+\/credentials$/u,
+    path: /^\/(?:betterstack-integrations|resend-integrations|posthog-integrations|plaud-accounts)\/[^/]+\/credentials$/u,
   },
   {
     method: '*',
@@ -37,12 +41,9 @@ const ROUTES: { method: string; path: RegExp }[] = [
   },
 ]
 
-const CONNECTOR_DEEP_READ_COLLECTIONS = new Set([
-  'github-installations',
-  'gitlab-bindings',
-  'sonarqube-integrations',
-])
+const CONNECTOR_DEEP_READ_COLLECTIONS = new Set(['github-installations', 'sonarqube-integrations'])
 const CONNECTOR_DEEP_READ_PATHS = [
+  /^gitlab-bindings\/[^/]+\/(?:namespaces|projects|projects\/[^/]+\/(?:merge-requests|pipelines))$/u,
   /^notion-integrations\/[^/]+\/credentials$/u,
   /^upstash-accounts\/[^/]+\/(?:credentials|databases)$/u,
   /^vanta-integrations\/[^/]+\/tests$/u,

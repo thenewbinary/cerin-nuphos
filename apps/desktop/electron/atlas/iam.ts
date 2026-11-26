@@ -90,22 +90,6 @@ export type CloudflareIamPermissions = {
   selfCapabilities: SelfCapabilities
 }
 
-// OAuth-bound accounts (the current bind flow): scopes + connection health
-// instead of token policies.
-export type CloudflareOauthConnection = {
-  authType: 'oauth'
-  accountId: string
-  accountName: string | null
-  clientId: string
-  scopes: string[]
-  accessTokenExpiresAt: string | null
-  hasRefreshToken: boolean
-  connectionStatus: 'ok' | 'error'
-  warnings: string[]
-}
-
-export type CloudflareIamInfo = CloudflareIamPermissions | CloudflareOauthConnection
-
 export async function getAwsIamPermissions(
   teamId: string,
   accountId: string,
@@ -134,8 +118,8 @@ export async function getGcpIamPermissions(
 export async function getCloudflareIamPermissions(
   teamId: string,
   accountId: string,
-): Promise<CloudflareIamInfo> {
-  return call<CloudflareIamInfo>(
+): Promise<CloudflareIamPermissions> {
+  return call<CloudflareIamPermissions>(
     'GET',
     `/teams/${teamId}/cloudflare-accounts/${accountId}/iam-permissions`,
   )

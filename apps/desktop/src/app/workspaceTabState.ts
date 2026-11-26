@@ -38,6 +38,7 @@ import type {
   PlaudAccount,
   PosthogIntegration,
   SlackInstallation,
+  SlackIntegration,
   SlackLinkedChannelsSummary,
   SonarqubeIntegration,
   TailscaleOAuthClient,
@@ -95,6 +96,7 @@ export type AccountSet = {
   plaud: PlaudAccount[]
   discordConnection?: DiscordConnection | null
   slackInstallation: SlackInstallation | null
+  slackIntegrations: SlackIntegration[]
   slackLinkedChannels: SlackLinkedChannelsSummary | null
   larkInstallation: LarkInstallation | null
 }

@@ -80,7 +80,7 @@ export function BindSentryDialog({ open, teamId, onClose, onBound }: Props) {
       onClose={close}
       title={t('Connect {name}', { name: 'Sentry' })}
       description={t(
-        'Authorize Cerin to read issues, events, and releases from your Sentry account so it can investigate errors. Read-only — it cannot resolve or change issues.',
+        'Connect Sentry through Composio so Cerin can read issues, events, and releases. Read-only — it cannot resolve or change issues. Access starts with the authorizing member only.',
       )}
       width={460}
     >

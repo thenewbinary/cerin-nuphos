@@ -11,7 +11,7 @@ import { BindLinearDialog } from '../BindLinearDialog'
 import { BindOnpremClusterDialog } from '../BindOnpremClusterDialog'
 import { BindPosthogDialog } from '../BindPosthogDialog'
 import { BindSentryDialog } from '../BindSentryDialog'
-import { BindSlackDialog } from '../BindSlackDialog'
+import { BindSlackConnectorDialog } from '../BindSlackConnectorDialog'
 import { BindSonarqubeDialog } from '../BindSonarqubeDialog'
 
 import { useDialogsClosed } from './useDialogsClosed'
@@ -254,10 +254,9 @@ export function TeamHomeBindDialogs({
         }}
       />
 
-      <BindSlackDialog
+      <BindSlackConnectorDialog
         open={bindSlackOpen}
         teamId={teamId}
-        mode={bindMode}
         onClose={() => setBindSlackOpen(false)}
         onBound={() => {
           setBindSlackOpen(false)

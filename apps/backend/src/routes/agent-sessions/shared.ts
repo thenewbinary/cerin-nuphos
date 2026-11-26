@@ -25,6 +25,7 @@ import type {
   PosthogIntegrationVariables,
   ResendIntegrationVariables,
   TrelloIntegrationVariables,
+  SlackIntegrationVariables,
   SentryAccountVariables,
   TailscaleClientVariables,
   TeamAuthVariables,
@@ -50,6 +51,7 @@ export type AgentAsanaVars = AgentVars & AsanaAccountVariables
 export type AgentPosthogVars = AgentVars & PosthogIntegrationVariables
 export type AgentResendVars = AgentVars & ResendIntegrationVariables
 export type AgentTrelloVars = AgentVars & TrelloIntegrationVariables
+export type AgentSlackVars = AgentVars & SlackIntegrationVariables
 export type AgentSentryVars = AgentVars & SentryAccountVariables
 export type AgentTailscaleVars = AgentVars & TailscaleClientVariables
 export type AgentZeaburVars = AgentVars & ZeaburProviderVariables
@@ -241,17 +243,18 @@ export function normalizeCredentialAccess(
     secureframeIntegrationIds: credentialIds(access?.secureframeIntegrationIds),
     resendIntegrationIds: credentialIds(access?.resendIntegrationIds),
     trelloIntegrationIds: credentialIds(access?.trelloIntegrationIds),
+    slackIntegrationIds: credentialIds(access?.slackIntegrationIds),
     posthogIntegrationIds: credentialIds(access?.posthogIntegrationIds),
     plaudAccountIds: credentialIds(access?.plaudAccountIds),
     // Left undefined when unset rather than defaulted to []: for these
     // connectors an absent selection still means team-wide reach.
     githubInstallationIds: optionalCredentialIds(access?.githubInstallationIds),
-    gitlabBindingIds: optionalCredentialIds(access?.gitlabBindingIds),
+    gitlabBindingIds: credentialIds(access?.gitlabBindingIds),
     grafanaInstanceIds: optionalCredentialIds(access?.grafanaInstanceIds),
     sonarqubeIntegrationIds: optionalCredentialIds(access?.sonarqubeIntegrationIds),
     notionIntegrationIds: optionalCredentialIds(access?.notionIntegrationIds),
     upstashAccountIds: optionalCredentialIds(access?.upstashAccountIds),
-    cloudflareAccountIds: optionalCredentialIds(access?.cloudflareAccountIds),
+    cloudflareAccountIds: credentialIds(access?.cloudflareAccountIds),
     instaboxAccountIds: optionalCredentialIds(access?.instaboxAccountIds),
     personalCredentialIds: optionalCredentialIds(access?.personalCredentialIds)?.filter(
       (id): id is PersonalCredentialProvider =>
@@ -283,9 +286,6 @@ export function requireAgentWriteRole(): MiddlewareHandler<{
   }
 }
 
-/** Cloud credential and kubeconfig vending is write-level: refuse it when the
- * sender or the conversation owner is a team viewer (dashboard panels act as
- * their author). */
 export function requireCloudCredentialRole(): MiddlewareHandler<{
   Variables: AgentVars & TeamAuthVariables
 }> {

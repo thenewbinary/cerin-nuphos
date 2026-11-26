@@ -78,6 +78,7 @@ import * as posthogInstall from './posthog-install'
 import * as sentryInstall from './sentry-install'
 import { resolveShellEnv } from './shell-env'
 import * as slackInstall from './slack-install'
+import * as slackIntegrationInstall from './slack-integration-install'
 import * as terminal from './terminal'
 
 export type { UpdaterState } from './main/updater'
@@ -186,6 +187,7 @@ teardownOnQuit(app, () => {
   posthogInstall.cancelAllPending()
   plaudInstall.cancelAllPending()
   slackInstall.cancelAllPending()
+  slackIntegrationInstall.cancelAllPending()
   discordInstall.cancelAllPending()
   k8s.stopAllPortForwards()
   terminal.closeAllSshSessions()

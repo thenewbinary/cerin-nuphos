@@ -4,10 +4,13 @@ import type { CloudflareAccountHandle } from './cloudflare-client'
 
 export type { CloudflareAccountHandle } from './cloudflare-client'
 export {
+  CLOUDFLARE_CONNECTOR,
+  CLOUDFLARE_PROXY,
+  cloudflareIdentity,
   cloudflarePaginatedRequest,
+  cloudflareProxy,
   cloudflareRawRequest,
   cloudflareRequest,
-  verifyCloudflareAccount,
 } from './cloudflare-client'
 
 type CloudflareZoneResult = {

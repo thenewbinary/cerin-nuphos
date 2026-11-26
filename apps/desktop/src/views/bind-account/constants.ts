@@ -1,4 +1,3 @@
-import { CLOUDFLARE_SCOPE_CATEGORIES } from './cloudflare-scopes'
 import { parseAtlasError } from '../../api'
 
 export type Provider =
@@ -22,44 +21,6 @@ export type Provider =
   | 'volcengine'
   | 'huawei'
   | 'azure'
-
-// Each Cloudflare scope category gets one Off / Read / Write choice. Read
-// requests the category's read-only scopes; Write requests every scope in it.
-export type CloudflareScopeAccess = 'off' | 'read' | 'write'
-
-export type CloudflareScopeKey = (typeof CLOUDFLARE_SCOPE_CATEGORIES)[number]['key']
-
-export const CLOUDFLARE_DEFAULT_SCOPE_ACCESS = Object.fromEntries(
-  CLOUDFLARE_SCOPE_CATEGORIES.map((c) => [
-    c.key,
-    c.key === 'dns_and_zones' || c.key === 'developer_platform' ? 'write' : 'off',
-  ]),
-) as Record<CloudflareScopeKey, CloudflareScopeAccess>
-
-const READ_ONLY_SCOPE = /\.(read|metadata_read)$/
-
-// Always-requested baseline: account/user/memberships for account discovery,
-// zone.read so the DNS view can list zones, plus offline_access (added
-// server-side) for refresh tokens.
-const CLOUDFLARE_BASELINE_SCOPES = [
-  'account-settings.read',
-  'user-details.read',
-  'memberships.read',
-  'zone.read',
-]
-
-export function cloudflareScopesFor(
-  access: Record<CloudflareScopeKey, CloudflareScopeAccess>,
-): string[] {
-  const selected = CLOUDFLARE_SCOPE_CATEGORIES.flatMap((c): readonly string[] => {
-    if (access[c.key] === 'write') return c.scopes
-    if (access[c.key] === 'read') return c.scopes.filter((s) => READ_ONLY_SCOPE.test(s))
-
-    return []
-  })
-
-  return [...new Set([...selected, ...CLOUDFLARE_BASELINE_SCOPES])]
-}
 
 // Volcengine role TRN, e.g. trn:iam::2100000000:role/CerinConnector.
 export const TRN_PATTERN = /^trn:iam::\d+:role\/.+$/

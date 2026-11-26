@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, test } from 'bun:test'
 
+import { config } from '@/config'
+
 import { composioAuthConfigId, composioRequest } from './composio'
 import type { AppError } from './errors'
 
@@ -71,12 +73,67 @@ describe('composioAuthConfigId', () => {
     })
   })
 
+  test('Cloudflare uses the oldest custom API_KEY config, not managed OAuth or another scheme', async () => {
+    respond({
+      body: {
+        items: [
+          { id: 'ac_oauth', created_at: '2026-10-01T00:00:00Z', auth_scheme: 'OAUTH2' },
+          { id: 'ac_new', created_at: '2026-10-02T00:00:00Z', auth_scheme: 'API_KEY' },
+          { id: 'ac_old', created_at: '2026-10-03T00:00:00Z', auth_scheme: 'API_KEY' },
+        ],
+      },
+    })
+
+    expect(await composioAuthConfigId('cloudflare-existing', 'apiKey')).toBe('ac_new')
+    expect(calls[0]?.path).toBe(
+      '/auth_configs?toolkit_slug=cloudflare-existing&is_composio_managed=false&limit=200',
+    )
+    respond(
+      { body: { items: [] } },
+      { status: 201, body: { auth_config: { id: 'ac_created' } } },
+      {
+        body: {
+          items: [
+            { id: 'ac_created', created_at: '2026-10-02T00:00:00Z', auth_scheme: 'API_KEY' },
+            { id: 'ac_race', created_at: '2026-10-01T00:00:00Z', auth_scheme: 'API_KEY' },
+          ],
+        },
+      },
+    )
+    expect(await composioAuthConfigId('cloudflare-created', 'apiKey')).toBe('ac_race')
+    expect(calls[1]?.body).toEqual({
+      toolkit: { slug: 'cloudflare-created' },
+      auth_config: { type: 'use_custom_auth', authScheme: 'API_KEY', credentials: {} },
+    })
+  })
+
   test('does not remember a failure', async () => {
     respond({ status: 503, body: {} })
     await expect(composioAuthConfigId('googledrive')).rejects.toThrow('HTTP 503')
 
     respond({ body: { items: [{ id: 'ac_drive', created_at: '2026-10-01T00:00:00Z' }] } })
     expect(await composioAuthConfigId('googledrive')).toBe('ac_drive')
+  })
+})
+
+describe('composioRequest', () => {
+  test('uses the configured API base URL', async () => {
+    const saved = config.byos.composio.apiBaseUrl
+    let requested = ''
+
+    config.byos.composio.apiBaseUrl = 'https://composio.e2e.test/api/v3.1'
+    globalThis.fetch = (async (input: string | URL | Request) => {
+      requested = input instanceof Request ? input.url : input.toString()
+
+      return Response.json({})
+    }) as typeof fetch
+
+    try {
+      await composioRequest('GET', '/connected_accounts/ca_e2e')
+      expect(requested).toBe('https://composio.e2e.test/api/v3.1/connected_accounts/ca_e2e')
+    } finally {
+      config.byos.composio.apiBaseUrl = saved
+    }
   })
 })
 

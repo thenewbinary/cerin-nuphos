@@ -1,61 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-env_path="${LINEAR_ENV_PATH:-$HOME/.linear/cerin.env}"
-graphql_url="https://api.linear.app/graphql"
-payload_path="${1:--}"
-
-if [ ! -r "$env_path" ]; then
-  echo "Linear credentials are not loaded. Run the exact setupCommand from the session credential context first." >&2
-  exit 1
-fi
-
-# setup-credentials.sh creates this file with mode 0600 and shell-quoted values.
-# Load it inside every invocation because agent shell calls do not share state.
-# shellcheck disable=SC1090
-source "$env_path"
-
-if [ -z "${LINEAR_ACCESS_TOKEN:-}" ]; then
-  echo "LINEAR_ACCESS_TOKEN is missing from $env_path; run setup-credentials.sh again." >&2
-  exit 1
-fi
-
-if [ "$payload_path" != "-" ] && [ ! -r "$payload_path" ]; then
-  echo "GraphQL payload is not readable: $payload_path" >&2
+if [[ $# -lt 2 || $# -gt 3 ]]; then
+  printf 'usage: graphql.sh CERIN_TEAM_ID BINDING_ID [GRAPHQL_JSON|@FILE|-]\n' >&2
   exit 2
 fi
 
-response="$(mktemp)"
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+response=$(mktemp)
 trap 'rm -f "$response"' EXIT
-
-http_status="$({
-  /usr/bin/curl -sS \
-    --connect-timeout 10 \
-    --max-time 45 \
-    -o "$response" \
-    -w '%{http_code}' \
-    -H @<(printf 'Authorization: Bearer %s\n' "${LINEAR_ACCESS_TOKEN}") \
-    -H 'Content-Type: application/json' \
-    --data-binary "@${payload_path}" \
-    "$graphql_url"
-} || true)"
-
-if [[ ! "$http_status" =~ ^2[0-9][0-9]$ ]]; then
-  echo "Linear GraphQL HTTP ${http_status:-request-failed}" >&2
-  python3 -m json.tool "$response" >&2 2>/dev/null || sed -n '1,40p' "$response" >&2
-  exit 1
-fi
-
+bash "$script_dir/proxy.sh" "$1" "$2" POST /graphql "${3:--}" >"$response"
 python3 - "$response" <<'PY'
 import json
+import pathlib
 import sys
 
-with open(sys.argv[1]) as src:
-    data = json.load(src)
-
-if data.get("errors"):
-    print(json.dumps({"errors": data["errors"]}, ensure_ascii=False, indent=2), file=sys.stderr)
+result = json.loads(pathlib.Path(sys.argv[1]).read_text())
+if result.get("errors"):
+    print(json.dumps({"errors": result["errors"]}, ensure_ascii=False, indent=2), file=sys.stderr)
     raise SystemExit(1)
-
-print(json.dumps(data, ensure_ascii=False, indent=2))
+print(json.dumps(result, ensure_ascii=False, indent=2))
 PY

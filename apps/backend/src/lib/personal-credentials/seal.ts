@@ -8,7 +8,7 @@ import {
 import type { EncryptedSecret, SealerName } from '@/lib/byos/secrets'
 import type { PersonalCredentialProvider } from '@/models'
 
-/** GitHub grants use the GitHub key; Linear and Google grants share the Linear key. */
+/** GitHub grants use the GitHub key; Google grants use the existing shared Google/Linear key. */
 export const sealerOf = (provider: PersonalCredentialProvider): SealerName =>
   provider === 'github' ? 'github' : 'linear'
 

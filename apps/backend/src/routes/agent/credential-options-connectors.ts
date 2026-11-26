@@ -13,6 +13,7 @@ type ConnectorKeys =
   | 'posthogIntegrations'
   | 'plaudAccounts'
   | 'trelloIntegrations'
+  | 'slackIntegrations'
   | 'cloudflareAccounts'
   | 'instaboxAccounts'
 
@@ -29,6 +30,7 @@ export type ConnectorCredentialOptions = Pick<
   | 'posthogIntegrations'
   | 'plaudAccounts'
   | 'trelloIntegrations'
+  | 'slackIntegrations'
   | 'cloudflareAccounts'
   | 'instaboxAccounts'
 >
@@ -43,6 +45,7 @@ export const emptyConnectorCredentialOptions = (): ConnectorCredentialOptions =>
   posthogIntegrations: [],
   plaudAccounts: [],
   trelloIntegrations: [],
+  slackIntegrations: [],
   cloudflareAccounts: [],
   instaboxAccounts: [],
 })
@@ -57,6 +60,7 @@ export const connectorCredentialOptionsProjection = {
   posthogIntegrations: 1,
   plaudAccounts: 1,
   trelloIntegrations: 1,
+  slackIntegrations: 1,
   cloudflareAccounts: 1,
   instaboxAccounts: 1,
 } as const
@@ -124,6 +128,13 @@ export function connectorCredentialOptions(
       label: binding.label,
       username: binding.username,
     }))
+  const slackIntegrations = (doc?.slackIntegrations ?? [])
+    .filter((binding) => canUseAllowList(binding.access?.memberAllowList ?? [], userId))
+    .map((binding) => ({
+      integrationId: binding.id.toHexString(),
+      label: binding.label,
+      teamName: binding.slackTeamName,
+    }))
   const plaudAccounts = (doc?.plaudAccounts ?? [])
     .filter((binding) => canUseAllowList(binding.access?.memberAllowList, userId))
     .map((binding) => ({ bindingId: binding.id.toHexString(), label: binding.label }))
@@ -151,6 +162,7 @@ export function connectorCredentialOptions(
     posthogIntegrations,
     plaudAccounts,
     trelloIntegrations,
+    slackIntegrations,
     cloudflareAccounts,
     instaboxAccounts,
   }

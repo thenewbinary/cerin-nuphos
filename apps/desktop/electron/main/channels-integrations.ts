@@ -2,12 +2,14 @@ import * as atlas from '../atlas'
 
 import { bindingAccessChannels } from './channels-binding-access'
 import { plaudChannels } from './channels-plaud'
+import { slackIntegrationChannels } from './channels-slack-integrations'
 import { vpsChannels } from './channels-vps'
 
 export const integrationsChannels = {
   ...plaudChannels,
   ...bindingAccessChannels,
   ...vpsChannels,
+  ...slackIntegrationChannels,
   'atlas:listVantaIntegrations': (_e: unknown, teamId: string) =>
     atlas.listVantaIntegrations(teamId),
   'atlas:bindVantaIntegration': (

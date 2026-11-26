@@ -89,14 +89,8 @@ function binding(id = new ObjectId()): CloudflareAccountBinding {
     id,
     accountId: '0123456789abcdef0123456789abcdef',
     accountName: 'Acme Cloudflare',
-    encryptedApiKey: {
-      v: 1,
-      alg: 'A256GCM',
-      keyId: 'test',
-      iv: 'secret-iv',
-      authTag: 'secret-tag',
-      ciphertext: 'secret-ciphertext',
-    },
+    composioAccountId: 'ca_cloudflare_fixture',
+    composioUserId: 'cloudflare_user_fixture',
     createdAt: new Date(),
   }
 }

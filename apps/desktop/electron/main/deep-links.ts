@@ -17,6 +17,7 @@ import * as plaudInstall from '../plaud-install'
 import * as posthogInstall from '../posthog-install'
 import * as sentryInstall from '../sentry-install'
 import * as slackInstall from '../slack-install'
+import * as slackIntegrationInstall from '../slack-integration-install'
 import * as trelloInstall from '../trello-install'
 
 import { openInTeamAccount } from './account-for-link'
@@ -38,6 +39,7 @@ const CONNECTOR_CALLBACKS = [
   ['plaud_callback', plaudInstall, 'Plaud'],
   ['posthog_callback', posthogInstall, 'PostHog'],
   ['slack_callback', slackInstall, 'Slack'],
+  ['slack_integration_callback', slackIntegrationInstall, 'Slack'],
   ['discord_callback', discordInstall, 'Discord'],
 ] as const
 
