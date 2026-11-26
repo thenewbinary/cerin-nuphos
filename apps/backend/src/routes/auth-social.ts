@@ -19,6 +19,7 @@ import {
   findPendingNativeSession,
 } from '@/lib/native-auth'
 import { generateOpaqueToken, hashToken, safeEqualStr } from '@/lib/oauth/tokens'
+import { logEvent } from '@/lib/observability'
 import { deviceApproval, escapeHtml, providerName, safeNext } from '@/routes/device-approval'
 
 import type { SocialProvider } from '@/lib/identity/social'
@@ -135,17 +136,22 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
 
   if (attempt.handle && !delivery)
     throw new AppError(400, 'invalid_handle', 'Start sign-in again from the app')
+  let step = 'provider_response'
+
   try {
     if (typeof input.code !== 'string' || !input.code || input.error)
       throw new Error('Provider sign-in was cancelled')
-    const identity = await signInSocial(
-      provider,
-      await exchangeSocialCode(provider, input.code, attempt.nonce),
-    )
+    step = 'exchange_code'
+    const claims = await exchangeSocialCode(provider, input.code, attempt.nonce)
 
+    step = 'sign_in_social'
+    const identity = await signInSocial(provider, claims)
+
+    step = 'record_signup_source'
     await recordSignupSource(identity.user, provider, attempt.firstTouch)
 
     if (attempt.handle && delivery) {
+      step = 'complete_native_session'
       const completed = await completeNativeSession(attempt.handle, identity.user.id)
 
       if (!completed) throw new Error('Sign-in expired')
@@ -156,6 +162,7 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
 
       return c.redirect(target.toString())
     }
+    step = 'start_session'
     const session = await startSession(c, identity.user)
 
     setCookie(c, '__Host-cerin-social', session.token, {
@@ -170,7 +177,18 @@ socialAuth.on(['GET', 'POST'], '/:provider/callback', async (c) => {
     return c.html(
       '<!doctype html><html lang="en"><meta charset="utf-8"><title>Signed in</title><h1>Signed in to Cerin</h1><p>You can return to your workspace.</p></html>',
     )
-  } catch {
+  } catch (error) {
+    logEvent('warn', 'auth.social.callback_failed', {
+      provider,
+      step,
+      error_name: error instanceof Error ? error.name : 'Error',
+      error_message: error instanceof Error ? error.message : String(error),
+      has_native_handle: Boolean(attempt.handle),
+      provider_error: typeof input.error === 'string' ? input.error : undefined,
+      provider_error_description:
+        typeof input.error_description === 'string' ? input.error_description : undefined,
+      state_prefix: state.slice(0, 8),
+    })
     if (attempt.handle) await abandonNativeSession(attempt.handle)
     if (delivery) {
       const target = new URL(delivery.redirectUri)
