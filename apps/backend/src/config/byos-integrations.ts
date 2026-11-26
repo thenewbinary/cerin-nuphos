@@ -182,6 +182,7 @@ export function byosIntegrationsConfig() {
       // without their own Google OAuth client. Auth configs are found or created
       // on first use; Cloudflare uses a custom API-key config instead of OAuth.
       apiKey: optional('CERIN_COMPOSIO_API_KEY'),
+      apiBaseUrl: optional('CERIN_COMPOSIO_API_URL') ?? 'https://backend.composio.dev/api/v3.1',
     },
     linear: {
       // Signing secret of the Linear app's webhook. The /linear-app/webhook

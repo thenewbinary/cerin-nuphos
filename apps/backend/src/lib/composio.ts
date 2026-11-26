@@ -1,10 +1,8 @@
 import { config } from '@/config'
 import { AppError } from '@/lib/errors'
 
-const API = 'https://backend.composio.dev/api/v3.1'
-
 export async function composioRequest<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${API}${path}`, {
+  const res = await fetch(`${config.byos.composio.apiBaseUrl}${path}`, {
     method,
     headers: { 'x-api-key': config.byos.composio.apiKey ?? '', 'Content-Type': 'application/json' },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),

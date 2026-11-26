@@ -6,6 +6,7 @@ import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
 
 import { assertLoopbackOnly, backendEnv } from './backend-env.ts'
+import { startComposioStub } from './composio-stub.ts'
 import { startDiscordStub } from './discord-stub.ts'
 import { startInstaboxStub } from './instabox-stub.ts'
 import { artifacts, freePorts, frozen, signInCode, spawn, stop, until } from './processes.ts'
@@ -116,8 +117,8 @@ function cloudflarePending(uri: string): { _id?: string; share?: unknown } {
   const script = `
     import { MongoClient } from 'mongodb'
     const client = await new MongoClient(process.argv[1]).connect()
-    const [pending] = await client.db('cerin_e2e').collection('cloudflare_oauth_pending')
-      .find().sort({ expiresAt: -1 }).limit(1).toArray()
+    const [pending] = await client.db('cerin_e2e').collection('composio_connector_oauth_pending')
+      .find({ provider: 'cloudflare' }).sort({ expiresAt: -1 }).limit(1).toArray()
     await client.close()
     console.log(JSON.stringify(pending ?? {}))`
 
@@ -140,6 +141,7 @@ export async function startStack(
   const mongoUri = startMongo(mongoPort)
   const fakes = {
     ...(options.redis ? await startRedis() : {}),
+    ...(await startComposioStub()),
     ...(await startStorage(storagePort)),
     ...(await startInstaboxStub()),
     ...(await startSlackStub()),
@@ -152,7 +154,6 @@ export async function startStack(
   const acpLog = join(artifacts, 'acp.jsonl')
   const holdOpening = join(artifacts, 'hold-opening')
   const standIn = join(artifacts, 'stand-in')
-  // A file the fixture agent checks for, until the returned function removes it.
   const flag = (path: string) => () => {
     writeFileSync(path, '')
 
@@ -162,7 +163,6 @@ export async function startStack(
   const holdSessionOpening = flag(holdOpening)
 
   writeFileSync(acpLog, '')
-  // One OpenAB and isolated home per runtime; each fixture entry logs its agent.
   const startAgentHost = (agent = 'first', port = runtimePort, jobs = '') => {
     const config = join(artifacts, `openab-${agent}.toml`)
     const home = join(artifacts, `home-${agent}`)

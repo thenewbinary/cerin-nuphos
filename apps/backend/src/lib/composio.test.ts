@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, test } from 'bun:test'
 
+import { config } from '@/config'
+
 import { composioAuthConfigId, composioRequest } from './composio'
 import type { AppError } from './errors'
 
@@ -111,6 +113,27 @@ describe('composioAuthConfigId', () => {
 
     respond({ body: { items: [{ id: 'ac_drive', created_at: '2026-10-01T00:00:00Z' }] } })
     expect(await composioAuthConfigId('googledrive')).toBe('ac_drive')
+  })
+})
+
+describe('composioRequest', () => {
+  test('uses the configured API base URL', async () => {
+    const saved = config.byos.composio.apiBaseUrl
+    let requested = ''
+
+    config.byos.composio.apiBaseUrl = 'https://composio.e2e.test/api/v3.1'
+    globalThis.fetch = (async (input: string | URL | Request) => {
+      requested = input instanceof Request ? input.url : input.toString()
+
+      return Response.json({})
+    }) as typeof fetch
+
+    try {
+      await composioRequest('GET', '/connected_accounts/ca_e2e')
+      expect(requested).toBe('https://composio.e2e.test/api/v3.1/connected_accounts/ca_e2e')
+    } finally {
+      config.byos.composio.apiBaseUrl = saved
+    }
   })
 })
 
