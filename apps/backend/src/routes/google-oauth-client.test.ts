@@ -2,6 +2,7 @@ import { afterAll, beforeEach, describe, expect, spyOn, test } from 'bun:test'
 import { Hono } from 'hono'
 import { ObjectId } from 'mongodb'
 
+import { config } from '@/config'
 import { AppError } from '@/lib/errors'
 import { useByosSecrets } from '@/lib/test/doubles/byos-secrets'
 import { useModels } from '@/lib/test/doubles/models'
@@ -22,6 +23,9 @@ const TEAM = new ObjectId().toHexString()
 let doc: Record<string, unknown> | null = null
 let grants: Grant[] = []
 let failDelete = false
+const savedComposio = { ...config.byos.composio }
+
+afterAll(() => Object.assign(config.byos.composio, savedComposio))
 
 useModels({
   teamByosBindings: () =>
@@ -132,6 +136,7 @@ function grant(
 const remaining = () => grants.map((g) => `${g.userId}:${g.provider}`)
 
 beforeEach(() => {
+  Object.assign(config.byos.composio, { apiKey: undefined, googleEnabled: true })
   doc = null
   failDelete = false
   failRevoke = false
@@ -146,6 +151,16 @@ beforeEach(() => {
 })
 
 describe('team Google OAuth client', () => {
+  test.each([
+    { apiKey: undefined, googleEnabled: true, composio: false },
+    { apiKey: 'composio-key', googleEnabled: true, composio: true },
+    { apiKey: 'composio-key', googleEnabled: false, composio: false },
+  ])('reports Google Composio availability: %j', async ({ apiKey, googleEnabled, composio }) => {
+    Object.assign(config.byos.composio, { apiKey, googleEnabled })
+
+    expect(await (await app.request('/')).json()).toEqual({ clientId: null, composio })
+  })
+
   test('an admin saves it with the secret sealed, and no read returns the secret', async () => {
     const res = await put('ADMINISTRATOR', CLIENT)
 

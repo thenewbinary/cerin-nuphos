@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb'
 import { config } from '@/config'
 import { mintPreviewMcpToken } from '@/lib/claude-code-preview/mcp-token'
 import { AppError } from '@/lib/errors'
+import { GOOGLE_PROVIDERS } from '@/lib/personal-credentials/google'
 import { useAgentDb } from '@/lib/test/doubles/agent-db'
 import { useAuthMiddleware } from '@/lib/test/doubles/auth-middleware'
 import { useByosSecrets } from '@/lib/test/doubles/byos-secrets'
@@ -577,28 +578,65 @@ describe('Google token handout', () => {
     expect(await res.json()).toEqual({ code: 'google_oauth_client_not_configured' })
   })
 
-  test('a Composio grant needs no team Google client and points to Composio', async () => {
-    Object.assign(config.byos.composio, { apiKey: 'composio-key' })
-    teamClient = null
-    saved.length = 0
-    saved.push({
-      ...googleGrant('owner', 'gmail', 'owner-mail'),
-      composioAccountId: 'ca_owner',
-      encryptedAccessToken: null,
-      encryptedRefreshToken: null,
-    })
-    const res = await fetchToken('gmail', await turn('owner', true))
-
-    expect(res.status).toBe(409)
-    expect(await res.json()).toEqual({ code: 'personal_credential_via_composio' })
-  })
-
   test.each([undefined, 'composio-key'])(
-    '404 without a grant or team client, with Composio key %s',
+    'a Composio grant points to Composio with server key %s',
     async (apiKey) => {
       Object.assign(config.byos.composio, { apiKey })
       teamClient = null
-      const res = await fetchToken('google-drive', await turn('owner', true))
+      saved.length = 0
+      saved.push({
+        ...googleGrant('owner', 'gmail', 'owner-mail'),
+        composioAccountId: 'ca_owner',
+        encryptedAccessToken: null,
+        encryptedRefreshToken: null,
+      })
+      const res = await fetchToken('gmail', await turn('owner', true))
+
+      expect(res.status).toBe(409)
+      expect(await res.json()).toEqual({ code: 'personal_credential_via_composio' })
+    },
+  )
+
+  test.each([
+    {
+      apiKey: undefined,
+      googleEnabled: true,
+      status: 409,
+      code: 'google_oauth_client_not_configured',
+    },
+    {
+      apiKey: 'composio-key',
+      googleEnabled: false,
+      status: 409,
+      code: 'google_oauth_client_not_configured',
+    },
+    {
+      apiKey: 'composio-key',
+      googleEnabled: true,
+      status: 404,
+      code: 'personal_credential_not_connected',
+    },
+  ])('without a grant or team client: %j', async ({ apiKey, googleEnabled, status, code }) => {
+    Object.assign(config.byos.composio, { apiKey, googleEnabled })
+    teamClient = null
+    saved.length = 0
+
+    for (const provider of GOOGLE_PROVIDERS) {
+      conversation = { userId: 'owner', credentialAccess: { personalCredentialIds: [provider] } }
+      const res = await fetchToken(provider, await turn('owner', true))
+
+      expect(res.status).toBe(status)
+      expect(await res.json()).toEqual({ code })
+    }
+  })
+
+  test.each([...GOOGLE_PROVIDERS])(
+    '404 without a %s grant when the team client is configured',
+    async (provider) => {
+      Object.assign(config.byos.composio, { apiKey: 'composio-key', googleEnabled: false })
+      saved.length = 0
+      conversation = { userId: 'owner', credentialAccess: { personalCredentialIds: [provider] } }
+      const res = await fetchToken(provider, await turn('owner', true))
 
       expect(res.status).toBe(404)
       expect(await res.json()).toEqual({ code: 'personal_credential_not_connected' })

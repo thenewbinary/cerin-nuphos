@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
+import { needsTeamGoogleClient } from './googleClient.ts'
 import { MULTI_ACCOUNT_PROVIDERS, credentialsFor } from './personalAccounts.ts'
+import { personalConnectorOpens } from './personalConnectorOpens.ts'
 
 const account = (id: string, provider: 'github' | 'gmail', teamId: string | null = null) => ({
   id,
@@ -30,4 +32,19 @@ test('a Google grant belongs to its team alone', () => {
 
 test('only GitHub and Linear offer another account', () => {
   assert.deepEqual([...MULTI_ACCOUNT_PROVIDERS], ['github', 'linear'])
+})
+
+test('Google accounts show team setup and open settings when Google Composio is unavailable', () => {
+  for (const provider of ['gmail', 'google-drive', 'google-calendar'] as const) {
+    const unavailable = { clientId: null, composio: false }
+    const managed = { clientId: null, composio: true }
+    const teamClient = { clientId: 'team.apps.googleusercontent.com', composio: false }
+
+    assert.equal(needsTeamGoogleClient(provider, unavailable), true)
+    assert.equal(personalConnectorOpens(undefined, provider, unavailable), 'settings')
+    for (const available of [managed, teamClient]) {
+      assert.equal(needsTeamGoogleClient(provider, available), false)
+      assert.equal(personalConnectorOpens(undefined, provider, available), 'connect')
+    }
+  }
 })

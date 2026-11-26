@@ -10,7 +10,7 @@ import { personalCredentialPendingOAuth, personalCredentials } from '@/models'
 
 import { stagedComposioConnection, startComposioConnection } from './composio'
 import { callbackUrl, exchangeGrant, notConfigured } from './exchange'
-import { GOOGLE_PROVIDERS, googleTeamFor, isGoogleProvider } from './google'
+import { GOOGLE_PROVIDERS, googleComposioEnabled, googleTeamFor, isGoogleProvider } from './google'
 import { pkceFlow } from './pkce'
 import { revokeQuietly } from './revoke'
 import { seal } from './seal'
@@ -182,6 +182,7 @@ export async function claimPersonalCredential(
   if (!ready?.staged) {
     throw new AppError(404, 'oauth_not_ready', 'No approved connection is waiting for this request')
   }
+  if (ready.staged.composioAccountId && !googleComposioEnabled()) throw notConfigured(provider)
   const now = new Date()
   // Switching between a team-client grant and a Composio connection drops the other's fields.
   const other: Record<string, ''> = ready.staged.composioAccountId

@@ -6,6 +6,9 @@ import { composioAuthConfigId, composioRequest as call } from '@/lib/composio'
 import { AppError } from '@/lib/errors'
 import { personalCredentialPendingOAuth } from '@/models'
 
+import { notConfigured } from './exchange'
+import { googleComposioEnabled } from './google'
+
 import type { GoogleProvider } from './google'
 import type { PersonalCredentialPendingOAuth } from '@/models'
 
@@ -82,6 +85,7 @@ export async function createComposioLink(args: {
   composioUserId: string
   callbackUrl: string
 }): Promise<{ redirectUrl: string; connectedAccountId: string }> {
+  if (!googleComposioEnabled()) throw notConfigured(args.provider)
   const res = await call<{ redirect_url: string; connected_account_id: string }>(
     'POST',
     '/connected_accounts/link',
@@ -117,6 +121,7 @@ export async function composioConnection(
   connectedAccountId: string,
   composioUserId: string,
 ): Promise<{ login: string } | null> {
+  if (!googleComposioEnabled()) throw notConfigured(provider)
   const account = await call<{ status?: string }>(
     'GET',
     `/connected_accounts/${encodeURIComponent(connectedAccountId)}`,

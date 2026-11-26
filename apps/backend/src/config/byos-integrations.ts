@@ -178,11 +178,13 @@ export function byosIntegrationsConfig() {
     connectorOAuthDeferredBind: bool('CONNECTOR_OAUTH_DEFERRED_BIND', false),
     composio: {
       // A Composio project's API key enables Trello, Slack, Linear, Jira, Asana,
-      // Sentry, GitLab and Cloudflare, plus Gmail / Google Drive for teams
+      // Sentry, GitLab and Cloudflare, plus Gmail / Drive / Calendar for teams
       // without their own Google OAuth client. Auth configs are found or created
       // on first use; Cloudflare uses a custom API-key config instead of OAuth.
       apiKey: optional('CERIN_COMPOSIO_API_KEY'),
       apiBaseUrl: optional('CERIN_COMPOSIO_API_URL') ?? 'https://backend.composio.dev/api/v3.1',
+      // Keep Google on team OAuth clients independently of the other connectors.
+      googleEnabled: bool('CERIN_COMPOSIO_GOOGLE_ENABLED', true),
     },
     linear: {
       // Signing secret of the Linear app's webhook. The /linear-app/webhook

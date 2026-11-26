@@ -7,6 +7,7 @@ import * as composioClient from '@/lib/composio'
 import { mintPreviewMcpToken } from '@/lib/claude-code-preview/mcp-token'
 import { AppError } from '@/lib/errors'
 import { composioToolProvider } from '@/lib/personal-credentials/composio'
+import { GOOGLE_PROVIDERS } from '@/lib/personal-credentials/google'
 import { useAgentDb } from '@/lib/test/doubles/agent-db'
 import { useAuthMiddleware } from '@/lib/test/doubles/auth-middleware'
 import { useByosSecrets } from '@/lib/test/doubles/byos-secrets'
@@ -110,7 +111,7 @@ const saveConfig = {
   publicBackendUrl: config.agent.publicBackendUrl,
   linearKey: config.byos.linear.encryptionKey,
 }
-const COMPOSIO = { apiKey: 'composio-key' }
+const COMPOSIO = { apiKey: 'composio-key', googleEnabled: true }
 const noComposio = { apiKey: undefined }
 const authConfigSpy = spyOn(composioClient, 'composioAuthConfigId').mockImplementation(
   async (toolkit) => `ac_${toolkit}`,
@@ -356,16 +357,20 @@ describe('connecting through Composio', () => {
     )
   })
 
-  test('a team with its own Google client keeps using it', async () => {
-    teamClient = {
-      clientId: 'team.apps.googleusercontent.com',
-      encryptedClientSecret: fakeSeal('s'),
-    }
-    const { authorizeUrl } = (await (await start('gmail')).json()) as { authorizeUrl: string }
+  test.each([true, false])(
+    'a team with its own Google client keeps using it, Google Composio %s',
+    async (googleEnabled) => {
+      config.byos.composio.googleEnabled = googleEnabled
+      teamClient = {
+        clientId: 'team.apps.googleusercontent.com',
+        encryptedClientSecret: fakeSeal('s'),
+      }
+      const { authorizeUrl } = (await (await start('gmail')).json()) as { authorizeUrl: string }
 
-    expect(new URL(authorizeUrl).host).toBe('accounts.google.com')
-    expect(requests).toHaveLength(0)
-  })
+      expect(new URL(authorizeUrl).host).toBe('accounts.google.com')
+      expect(requests).toHaveLength(0)
+    },
+  )
 
   test('without the server key (self-hosted) a team without a client is told to add one', async () => {
     Object.assign(config.byos.composio, noComposio)
@@ -376,19 +381,67 @@ describe('connecting through Composio', () => {
     expect(requests).toHaveLength(0)
   })
 
-  test('disconnecting deletes the Composio connection, without a Google revoke', async () => {
-    saved.push(connection('alice', 'gmail', 'ca_1'), connection('alice', 'google-drive', 'ca_2'))
-    const res = await app.request(`/personal-credentials/gmail?teamId=${TEAM}`, {
-      method: 'DELETE',
+  test.each([...GOOGLE_PROVIDERS])(
+    '%s needs a team client when Google Composio is disabled',
+    async (provider) => {
+      config.byos.composio.googleEnabled = false
+      const res = await start(provider)
+
+      expect(res.status).toBe(409)
+      expect(await res.json()).toEqual({ code: 'google_oauth_client_not_configured' })
+      expect(requests).toHaveLength(0)
+      expect(pending).toHaveLength(0)
+    },
+  )
+
+  test('a pending Google Composio callback cannot stage a grant after Google Composio is disabled', async () => {
+    const { state } = (await (await start('gmail')).json()) as { state: string }
+
+    requests.length = 0
+    config.byos.composio.googleEnabled = false
+    const link = await callback('gmail', `state=${state}&status=success`)
+
+    expect(link.searchParams.get('error')).toBe('personal_credential_not_configured')
+    expect(link.searchParams.get('code')).toBeNull()
+    expect(requests).toHaveLength(0)
+    expect(saved).toHaveLength(0)
+  })
+
+  test('a staged Google Composio grant cannot be claimed after Google Composio is disabled', async () => {
+    const { state } = (await (await start('gmail')).json()) as { state: string }
+    const code = (await callback('gmail', `state=${state}&status=success`)).searchParams.get('code')
+
+    requests.length = 0
+    config.byos.composio.googleEnabled = false
+    const res = await app.request('/personal-credentials/gmail/complete', {
+      method: 'POST',
       headers: as('alice'),
+      body: JSON.stringify({ state, code }),
     })
 
-    expect(res.status).toBe(204)
-    expect(requests.map((r) => `${r.method} ${r.path}`)).toEqual([
-      'DELETE /connected_accounts/ca_1',
-    ])
-    expect(saved).toEqual([expect.objectContaining({ provider: 'google-drive' })])
+    expect(res.status).toBe(503)
+    expect(await res.json()).toEqual({ code: 'personal_credential_not_configured' })
+    expect(requests).toHaveLength(0)
+    expect(saved).toHaveLength(0)
   })
+
+  test.each([true, false])(
+    'disconnecting deletes the Composio connection, Google Composio %s',
+    async (googleEnabled) => {
+      config.byos.composio.googleEnabled = googleEnabled
+      saved.push(connection('alice', 'gmail', 'ca_1'), connection('alice', 'google-drive', 'ca_2'))
+      const res = await app.request(`/personal-credentials/gmail?teamId=${TEAM}`, {
+        method: 'DELETE',
+        headers: as('alice'),
+      })
+
+      expect(res.status).toBe(204)
+      expect(requests.map((r) => `${r.method} ${r.path}`)).toEqual([
+        'DELETE /connected_accounts/ca_1',
+      ])
+      expect(saved).toEqual([expect.objectContaining({ provider: 'google-drive' })])
+    },
+  )
 })
 
 // The conversation's selection, as its document stores it.
@@ -424,6 +477,30 @@ describe('agents running tools through Composio', () => {
     expect(res.status).toBe(409)
     expect(await res.json()).toEqual({ code: 'personal_credential_via_composio' })
   })
+
+  test.each([
+    { provider: 'gmail', tool: 'GMAIL_FETCH_EMAILS' },
+    { provider: 'google-drive', tool: 'GOOGLEDRIVE_FIND_FILE' },
+    { provider: 'google-calendar', tool: 'GOOGLECALENDAR_EVENTS_LIST' },
+  ] as const)(
+    'an existing $provider connection cannot run when Google Composio is disabled',
+    async ({ provider, tool }) => {
+      saved.length = 0
+      saved.push(connection('owner', provider, 'ca_owner'))
+      config.byos.composio.googleEnabled = false
+      const token = await turn('owner', true)
+      const handout = await app.request(`/personal-credentials/${provider}/token`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const res = await execute(token, { tool })
+
+      expect(handout.status).toBe(409)
+      expect(await handout.json()).toEqual({ code: 'personal_credential_via_composio' })
+      expect(res.status).toBe(503)
+      expect(await res.json()).toEqual({ code: 'personal_credential_not_configured' })
+      expect(requests).toHaveLength(0)
+    },
+  )
 
   test('a tool Composio does not know is a 404 for the caller, not a backend 502', async () => {
     const res = await execute(await turn('owner', true), { tool: 'GMAIL_NO_SUCH_TOOL' })

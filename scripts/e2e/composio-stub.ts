@@ -217,5 +217,7 @@ export async function startComposioStub(): Promise<Record<string, string>> {
   return {
     CERIN_COMPOSIO_API_KEY: 'e2e-composio-key-not-a-production-credential',
     CERIN_COMPOSIO_API_URL: `http://127.0.0.1:${String(port)}/api/v3.1`,
+    // This stub serves the team connectors; Google keeps the no-Composio path.
+    CERIN_COMPOSIO_GOOGLE_ENABLED: 'false',
   }
 }

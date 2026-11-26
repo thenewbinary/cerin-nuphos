@@ -243,6 +243,7 @@ app.route('/connector-oauth', connectorOAuthRoutes)
 const realFetch = globalThis.fetch
 const saved = {
   apiKey: config.byos.composio.apiKey,
+  googleEnabled: config.byos.composio.googleEnabled,
   publicBackendUrl: config.agent.publicBackendUrl,
   backendUrl: config.agent.backendUrl,
   podNamespace: config.otel.podNamespace,
@@ -293,6 +294,7 @@ beforeEach(() => {
   disconnectRace = false
   cleanupFails = false
   config.byos.composio.apiKey = 'fixture-key'
+  config.byos.composio.googleEnabled = false
   config.agent.publicBackendUrl = 'https://api.cerin.test'
   config.agent.backendUrl = undefined
   config.otel = { ...config.otel, podNamespace: undefined }
@@ -358,6 +360,7 @@ afterEach(() => {
 afterAll(() => {
   authConfigSpy.mockRestore()
   config.byos.composio.apiKey = saved.apiKey
+  config.byos.composio.googleEnabled = saved.googleEnabled
   config.agent.publicBackendUrl = saved.publicBackendUrl
   config.agent.backendUrl = saved.backendUrl
   config.otel = { ...config.otel, podNamespace: saved.podNamespace }

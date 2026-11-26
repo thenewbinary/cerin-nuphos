@@ -24,8 +24,12 @@ import {
   composioUserId,
   executeComposioTool,
 } from '@/lib/personal-credentials/composio'
-import { NAMES } from '@/lib/personal-credentials/exchange'
-import { isGoogleProvider, teamGoogleClient } from '@/lib/personal-credentials/google'
+import { NAMES, notConfigured } from '@/lib/personal-credentials/exchange'
+import {
+  googleComposioEnabled,
+  isGoogleProvider,
+  teamGoogleClient,
+} from '@/lib/personal-credentials/google'
 import { zv } from '@/lib/validate'
 import { requireAuth } from '@/middleware/auth'
 
@@ -211,21 +215,22 @@ personalCredentialTokenRoutes.get('/:provider/token', async (c) => {
     c.req.query('connectionId'),
   )
 
-  if (!credential) throw notConnected(NAMES[provider])
-  if (credential.composioAccountId) {
+  if (credential?.composioAccountId) {
     throw new AppError(
       409,
       'personal_credential_via_composio',
       'This member connected through Composio: run Google tools with POST /teams/:teamId/composio/execute',
     )
   }
-  if (!(await teamGoogleClient(teamId))) {
+  // Without a grant, direct OAuth still needs team setup before connecting can work.
+  if ((credential || !googleComposioEnabled()) && !(await teamGoogleClient(teamId))) {
     throw new AppError(
       409,
       'google_oauth_client_not_configured',
       'This team has not added a Google OAuth client. An administrator can add one in Team settings.',
     )
   }
+  if (!credential) throw notConnected(NAMES[provider])
   const personal = await personalGoogleTokenOf(credential)
 
   if (!personal) throw notConnected(NAMES[provider])
@@ -264,6 +269,7 @@ composioRoutes.post('/execute', zv('json', executeSchema), async (c) => {
   if (!credential?.composioAccountId) {
     throw notConnected(NAMES[provider])
   }
+  if (!googleComposioEnabled()) throw notConfigured(provider)
 
   return c.json(
     await executeComposioTool({
