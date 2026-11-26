@@ -10,6 +10,7 @@ import { createUserSession, revokeUserSession } from '@/lib/identity/sessions'
 import { signInSocial } from '@/lib/identity/social'
 import { registerNativeSession, redeemNativeSession } from '@/lib/native-auth'
 import { useDb } from '@/lib/test/doubles/db'
+import { real as realObservability, useObservability } from '@/lib/test/doubles/observability'
 import { socialAuth } from '@/routes/auth-social'
 import { createCliAuthRoutes } from '@/routes/cli-auth'
 import { createDeviceApproval } from '@/routes/device-approval'
@@ -17,6 +18,7 @@ import { createDeviceApproval } from '@/routes/device-approval'
 type Doc = Record<string, unknown>
 const app = new Hono().onError(errorHandler).route('/', socialAuth)
 const docs = new Map<string, Doc[]>()
+const logged: { level: string; event: string; properties?: Doc }[] = []
 const matches = (doc: Doc, filter: Doc) =>
   Object.entries(filter).every(([key, value]) => {
     if (value && typeof value === 'object' && '$gt' in value)
@@ -70,8 +72,15 @@ useDb({
     }),
   }),
 })
+useObservability({
+  logEvent: (level, event, properties) => {
+    logged.push({ level, event, properties })
+    realObservability.logEvent(level, event, properties)
+  },
+})
 beforeEach(() => {
   docs.clear()
+  logged.length = 0
   config.auth.apple.clientId = undefined
   config.auth.oidc.issuer = undefined
   config.auth.google.clientId = 'test-client'
@@ -125,8 +134,129 @@ test('browser correlation cookie is required; cancellation consumes state once',
   expect((await app.request(callback)).status).toBe(400)
   const headers = { cookie: `__Host-cerin-oauth=${state}` }
 
-  expect((await app.request(callback, { headers })).status).toBe(401)
+  expect(logged).toHaveLength(0)
+  const response = await app.request(callback, { headers })
+
+  expect(response.status).toBe(401)
+  expect(await response.json()).toEqual({
+    error: {
+      code: 'sign_in_failed',
+      message: 'Sign-in failed. Use your existing account method or try again.',
+    },
+  })
+  expect(logged).toHaveLength(1)
+  expect(logged[0]).toMatchObject({
+    level: 'warn',
+    event: 'auth.social.callback_failed',
+    properties: {
+      provider: 'google',
+      step: 'provider_response',
+      error_name: 'Error',
+      error_message: 'Provider sign-in was cancelled',
+      has_native_handle: false,
+      provider_error: 'access_denied',
+      state_prefix: state.slice(0, 8),
+    },
+  })
+  expect(JSON.stringify(logged)).not.toContain(state)
   expect((await app.request(callback, { headers })).status).toBe(400)
+  expect(logged).toHaveLength(1)
+})
+for (const method of ['GET', 'POST']) {
+  test(`native ${method} callback cancellation logs the reason without leaking credentials`, async () => {
+    const registration = await registerNativeSession({
+      redirectUri: 'http://127.0.0.1:49879/callback',
+      codeChallenge: createHash('sha256').update('v'.repeat(43)).digest('base64url'),
+      codeChallengeMethod: 'S256',
+      clientState: 'cli-state',
+    })
+    const start = await app.request(`/google/start?handle=${registration.handle}`)
+    const authorization = new URL(start.headers.get('location')!)
+    const state = authorization.searchParams.get('state')!
+    const code = 'authorization-code-must-not-be-logged'
+    const params = new URLSearchParams({
+      state,
+      code,
+      error: 'access_denied',
+      error_description: 'The user denied access',
+    })
+    const response = await app.request(
+      method === 'GET' ? `/google/callback?${params.toString()}` : '/google/callback',
+      {
+        method,
+        headers: {
+          cookie: `__Host-cerin-oauth=${state}`,
+          ...(method === 'POST' ? { 'content-type': 'application/x-www-form-urlencoded' } : {}),
+        },
+        ...(method === 'POST' ? { body: params.toString() } : {}),
+      },
+    )
+
+    expect(response.status).toBe(302)
+    expect(response.headers.get('location')).toBe(
+      'http://127.0.0.1:49879/callback?error=sign_in_failed&state=cli-state',
+    )
+    expect(response.headers.get('set-cookie')).toBe(
+      '__Host-cerin-oauth=; Max-Age=0; Path=/; Secure',
+    )
+    expect(docs.get('native_auth_sessions')).toHaveLength(0)
+    expect(docs.get('social_auth_attempts')).toHaveLength(0)
+    expect(logged).toHaveLength(1)
+    expect(logged[0]).toEqual({
+      level: 'warn',
+      event: 'auth.social.callback_failed',
+      properties: {
+        provider: 'google',
+        step: 'provider_response',
+        error_name: 'Error',
+        error_message: 'Provider sign-in was cancelled',
+        has_native_handle: true,
+        provider_error: 'access_denied',
+        provider_error_description: 'The user denied access',
+        state_prefix: state.slice(0, 8),
+      },
+    })
+    const serialized = JSON.stringify(logged)
+
+    for (const secret of [
+      code,
+      state,
+      registration.handle,
+      authorization.searchParams.get('nonce')!,
+      'cli-state',
+    ])
+      expect(serialized).not.toContain(secret)
+  })
+}
+test('code exchange failure logs the step and reason without the authorization code', async () => {
+  const start = await app.request('/google/start')
+  const state = new URL(start.headers.get('location')!).searchParams.get('state')!
+  const code = 'rejected-authorization-code-must-not-be-logged'
+
+  globalThis.fetch = ((_url: unknown) =>
+    Promise.resolve(Response.json({ error: 'invalid_grant' }, { status: 400 }))) as typeof fetch
+  const response = await app.request(`/google/callback?state=${state}&code=${code}`, {
+    headers: { cookie: `__Host-cerin-oauth=${state}` },
+  })
+
+  expect(response.status).toBe(401)
+  expect(logged).toHaveLength(1)
+  expect(logged[0]).toMatchObject({
+    level: 'warn',
+    event: 'auth.social.callback_failed',
+    properties: {
+      provider: 'google',
+      step: 'exchange_code',
+      error_name: 'Error',
+      error_message: 'Provider sign-in failed. Please try again.',
+      has_native_handle: false,
+      state_prefix: state.slice(0, 8),
+    },
+  })
+  expect(logged[0]?.properties?.provider_error).toBeUndefined()
+  expect(logged[0]?.properties?.provider_error_description).toBeUndefined()
+  expect(JSON.stringify(logged)).not.toContain(code)
+  expect(JSON.stringify(logged)).not.toContain(state)
 })
 test('start keeps the first-touch cookie, which a cross-site POST callback would not carry', async () => {
   const firstTouch = JSON.stringify({ channel: 'x' })
