@@ -22,10 +22,19 @@ struct AppIconPicker: View {
         #endif
     }
 
-    private static func resetRemovedAlternateIconIfNeeded() {
+    @MainActor private static var isResettingRemovedAlternateIcon = false
+
+    @MainActor
+    static func resetRemovedAlternateIconIfNeeded() {
         #if !CERIN_SHARE_EXTENSION
+        guard !isResettingRemovedAlternateIcon else { return }
         guard UIApplication.shared.alternateIconName?.hasPrefix("AppIcon-B") == true else { return }
-        UIApplication.shared.setAlternateIconName(nil) { _ in }
+        isResettingRemovedAlternateIcon = true
+        UIApplication.shared.setAlternateIconName(nil) { _ in
+            Task { @MainActor in
+                isResettingRemovedAlternateIcon = false
+            }
+        }
         #endif
     }
 

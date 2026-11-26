@@ -48,6 +48,8 @@ An intercepted iOS scheme callback cannot redeem without its verifier. An arbitr
 scheme/path cannot be registered. Prefer claimed HTTPS links in a future app-link
 migration; this change preserves the installed iOS scheme.
 
+Browser sign-ins use the same revocable server-side sessions and new-sign-in alerts as other authentication methods. Native callbacks create no session until the client redeems its one-time delivery code with PKCE.
+
 Provider subjects (`googleID`, `appleID`) identify accounts. Apple private relay
 addresses are accepted when verified, and repeat Apple sign-ins work without a
 new email/name claim. Matching email never silently links accounts in the new
@@ -100,13 +102,3 @@ mocked tests.
 - Android: `./gradlew testDebugUnitTest lintDebug assembleDebug` (requires Java/Android SDK)
 - CLI: `cargo check --locked`
 - Repository: `bun run check:cycles`, `bun run format:check`
-
-## Review screenshots
-
-Captured locally from the actual desktop `LoginView` component (with the Electron API stubbed) and the backend chooser response; these show the sign-in surfaces, not a live provider round trip.
-
-![Desktop sign-in entry](../images/social-login/desktop-entry.png)
-
-![Backend provider chooser](../images/social-login/provider-chooser.png)
-
-Browser sign-ins use the same revocable server-side sessions and new-sign-in alerts as other authentication methods. Native callbacks create no session until the client redeems its one-time delivery code with PKCE.
