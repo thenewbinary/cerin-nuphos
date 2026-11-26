@@ -123,6 +123,7 @@ useAuthMiddleware({
 const saveConfig = {
   github: { ...config.byos.github },
   linear: { ...config.byos.linear },
+  composio: { ...config.byos.composio },
   publicBackendUrl: config.agent.publicBackendUrl,
 }
 
@@ -140,6 +141,7 @@ Object.assign(config.byos.linear, { encryptionKey: 'k' })
 afterAll(() => {
   Object.assign(config.byos.github, saveConfig.github)
   Object.assign(config.byos.linear, saveConfig.linear)
+  Object.assign(config.byos.composio, saveConfig.composio)
   Object.assign(config.agent, { publicBackendUrl: saveConfig.publicBackendUrl })
 })
 
@@ -228,6 +230,7 @@ function complete(provider: string, userId: string, state: string, code: string)
 let googleUser = { id: 'g9', email: 'victim' }
 
 beforeEach(() => {
+  Object.assign(config.byos.composio, saveConfig.composio)
   googleUser = { id: 'g9', email: 'victim' }
   pending.length = 0
   saved.length = 0
@@ -555,12 +558,52 @@ describe('Google token handout', () => {
     expect(await res.json()).toEqual({ code: 'google_oauth_client_not_configured' })
   })
 
-  test('404 when the member has not connected the provider', async () => {
-    const res = await fetchToken('google-drive', await turn('owner', true))
+  test('a direct Calendar grant still needs the team’s client when Composio is configured', async () => {
+    Object.assign(config.byos.composio, { apiKey: 'composio-key' })
+    teamClient = null
+    saved.push({
+      ...googleGrant('owner', 'google-calendar', 'owner-calendar'),
+      encryptedAccessToken: null,
+      encryptedRefreshToken: null,
+      accessTokenExpiresAt: null,
+    })
+    conversation = {
+      userId: 'owner',
+      credentialAccess: { personalCredentialIds: ['google-calendar'] },
+    }
+    const res = await fetchToken('google-calendar', await turn('owner', true))
 
-    expect(res.status).toBe(404)
-    expect(await res.json()).toEqual({ code: 'personal_credential_not_connected' })
+    expect(res.status).toBe(409)
+    expect(await res.json()).toEqual({ code: 'google_oauth_client_not_configured' })
   })
+
+  test('a Composio grant needs no team Google client and points to Composio', async () => {
+    Object.assign(config.byos.composio, { apiKey: 'composio-key' })
+    teamClient = null
+    saved.length = 0
+    saved.push({
+      ...googleGrant('owner', 'gmail', 'owner-mail'),
+      composioAccountId: 'ca_owner',
+      encryptedAccessToken: null,
+      encryptedRefreshToken: null,
+    })
+    const res = await fetchToken('gmail', await turn('owner', true))
+
+    expect(res.status).toBe(409)
+    expect(await res.json()).toEqual({ code: 'personal_credential_via_composio' })
+  })
+
+  test.each([undefined, 'composio-key'])(
+    '404 without a grant or team client, with Composio key %s',
+    async (apiKey) => {
+      Object.assign(config.byos.composio, { apiKey })
+      teamClient = null
+      const res = await fetchToken('google-drive', await turn('owner', true))
+
+      expect(res.status).toBe(404)
+      expect(await res.json()).toEqual({ code: 'personal_credential_not_connected' })
+    },
+  )
 
   describe('a member with two Gmail accounts', () => {
     const accounts = () => {

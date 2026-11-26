@@ -1,7 +1,6 @@
 import { Hono } from 'hono'
 import { z } from 'zod'
 
-import { config } from '@/config'
 import { credentialSource, getConversationBySessionId } from '@/lib/agent/db'
 import { verifyPreviewMcpToken } from '@/lib/claude-code-preview/mcp-token'
 import { desktopCallbackResponse } from '@/lib/desktop-callback-page'
@@ -205,13 +204,6 @@ personalCredentialTokenRoutes.get('/:provider/token', async (c) => {
   // The conversation token is only valid under its own /teams/:teamId.
   const teamId = claims.tid
 
-  if (!config.byos.composio.apiKey && !(await teamGoogleClient(teamId))) {
-    throw new AppError(
-      409,
-      'google_oauth_client_not_configured',
-      'This team has not added a Google OAuth client. An administrator can add one in Team settings.',
-    )
-  }
   const credential = await googleCredentialFor(
     claims.own,
     provider,
@@ -219,14 +211,22 @@ personalCredentialTokenRoutes.get('/:provider/token', async (c) => {
     c.req.query('connectionId'),
   )
 
-  if (credential?.composioAccountId) {
+  if (!credential) throw notConnected(NAMES[provider])
+  if (credential.composioAccountId) {
     throw new AppError(
       409,
       'personal_credential_via_composio',
       'This member connected through Composio: run Google tools with POST /teams/:teamId/composio/execute',
     )
   }
-  const personal = credential && (await personalGoogleTokenOf(credential))
+  if (!(await teamGoogleClient(teamId))) {
+    throw new AppError(
+      409,
+      'google_oauth_client_not_configured',
+      'This team has not added a Google OAuth client. An administrator can add one in Team settings.',
+    )
+  }
+  const personal = await personalGoogleTokenOf(credential)
 
   if (!personal) throw notConnected(NAMES[provider])
 
