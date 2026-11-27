@@ -162,6 +162,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
     this.closeRetiredTransportIfDrained()
     if (requireDelivery && !delivered) throw new Error('Failed to send runtime cancellation')
   }
+
   close(): void {
     this.closeSocket()
   }
@@ -269,7 +270,14 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
   }
 
   private closeRetiredTransportIfDrained(): void {
-    if (this.hasRetired() && this.pending.size === 0) this.closeSocket()
+    if (
+      !this.hasRetired() ||
+      this.pending.size > 0 ||
+      this.disconnected ||
+      this.socketCloseRequested
+    )
+      return
+    this.closeSocket()
   }
 
   private closeSocket(): void {
