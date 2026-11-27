@@ -162,7 +162,7 @@ export function LoginView({ onLogin, accounts = [], notice, onCancel }: Props) {
             {notice ??
               (onCancel
                 ? t('You stay signed in to the others, and can switch back any time.')
-                : t('The open source Grok Bot alternative'))}
+                : t('Discernment for enterprise'))}
           </p>
           {step === 'start' && <LoginAccounts accounts={accounts} />}
 

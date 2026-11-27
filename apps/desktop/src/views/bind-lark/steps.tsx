@@ -28,7 +28,7 @@ export function CreateAppStep({ domain }: { domain: LarkDomain }) {
         <li>
           {rich(t('Set the app name to {name} and the description to {description}.'), {
             name: <WizardCopyableValue value="Cerin" />,
-            description: <WizardCopyableValue value="The open source Grok Bot alternative." />,
+            description: <WizardCopyableValue value="Discernment for enterprise." />,
           })}
         </li>
         <li>

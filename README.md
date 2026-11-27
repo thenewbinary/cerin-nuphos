@@ -1,6 +1,6 @@
 # Cerin
 
-**The open source Grok Bot alternative for teams.**
+**Discernment for enterprise.**
 
 <a href="https://platform.cerin.ai/download"><img alt="Download for macOS" src="assets/download-macos.svg" height="44"></a> <a href="https://apps.apple.com/app/cerin/id6812533633"><img alt="Download on the App Store" src="assets/download-app-store.svg" height="44"></a> <a href="https://play.google.com/store/apps/details?id=ai.cerin.android"><img alt="Get it on Google Play" src="assets/get-it-on-google-play.png" height="44"></a> <a href="https://x.com/CerinAI"><img alt="Follow on X" src="assets/follow-x.svg" height="44"></a> <a href="https://platform.cerin.ai/dc"><img alt="Join Discord" src="assets/join-discord.svg" height="44"></a>
 
