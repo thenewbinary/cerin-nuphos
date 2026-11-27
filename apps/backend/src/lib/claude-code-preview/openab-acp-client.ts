@@ -2,7 +2,7 @@ import { redactSignedTokens } from './mcp-token'
 import { connectOpenAbAcpSocket } from './openab-acp-connect.ts'
 import { OpenAbConnectionLostError, cancelSession, settlePendingCall } from './openab-acp-errors.ts'
 import { OpenAbAcpLifecycle, attachmentPrompt } from './openab-acp-lifecycle.ts'
-import { answerPermissionRequest } from './openab-acp-permission.ts'
+import { answerPermissionRequest, createPermissionToolCallReports } from './openab-acp-permission.ts'
 import {
   ACP_INITIALIZE_PARAMS,
   acceptRuntimePrompt,
@@ -40,6 +40,7 @@ type JsonRpcResult = Record<string, unknown>
 export class OpenAbAcpClient extends OpenAbAcpLifecycle {
   private nextId = 1
   private readonly pending = new Map<number, PendingCall>()
+  private readonly permissionToolCalls = createPermissionToolCallReports()
   private readonly sessionUpdateHandlers = new Map<
     string,
     Set<(update: OpenAbSessionUpdate) => void>
@@ -133,6 +134,8 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
     lead = '',
   ): Promise<JsonRpcResult> {
     this.cancelledSessions.delete(sessionId)
+    if (![...this.pending.values()].some((call) => call.sessionId === sessionId && call.onTextDelta))
+      this.permissionToolCalls.clearSession(sessionId)
     const meta = promptMeta(Boolean(onAccepted), context)
 
     return this.call(
@@ -152,13 +155,13 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
     )
   }
   cancel(sessionId: string, requireDelivery = false): void {
+    this.permissionToolCalls.clearSession(sessionId)
     if (this.sessionUpdateHandlers.has(sessionId)) this.cancelledSessions.add(sessionId)
     const delivered = cancelSession(this.socket, sessionId)
 
     this.closeRetiredTransportIfDrained()
     if (requireDelivery && !delivered) throw new Error('Failed to send runtime cancellation')
   }
-
   close(): void {
     this.closeSocket()
   }
@@ -215,6 +218,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
       return
     }
     if (message.method === 'session/update') {
+      this.permissionToolCalls.remember(message.params)
       refreshSessionTimers(this.pending.values(), message.params)
       rememberPushedRuntimeState(this, message.params)
       routeOpenAbSessionUpdate({
@@ -231,6 +235,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
       void answerPermissionRequest({
         params: message.params,
         targets: [...this.pending.values()].filter((call) => call.accepted !== false),
+        toolCallLookup: this.permissionToolCalls.get,
         sessionFallback: (sessionId) => this.sessionPermissionHandler(sessionId),
         send: (result) => {
           this.socket.send(JSON.stringify({ jsonrpc: '2.0', id: message.id, result }))
@@ -245,6 +250,8 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
 
     if (!pending) return
     this.pending.delete(message.id)
+    if (pending.sessionId && pending.onTextDelta && pending.accepted !== false && !message.error)
+      this.permissionToolCalls.clearSession(pending.sessionId)
     const observed = pending.sessionId && this.sessionUpdateHandlers.has(pending.sessionId)
 
     settlePendingCall(pending, message, observed ? this.cancelledSessions : undefined)
@@ -262,14 +269,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
   }
 
   private closeRetiredTransportIfDrained(): void {
-    if (
-      !this.hasRetired() ||
-      this.pending.size > 0 ||
-      this.disconnected ||
-      this.socketCloseRequested
-    )
-      return
-    this.closeSocket()
+    if (this.hasRetired() && this.pending.size === 0) this.closeSocket()
   }
 
   private closeSocket(): void {
@@ -290,6 +290,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
       pending.reject(new OpenAbConnectionLostError(event?.reason, pending.accepted === true))
     }
     this.pending.clear()
+    this.permissionToolCalls.clear()
     // Observers hear nothing: a lost transport is not the end of the agent's
     // turn, which goes on once the session reattaches (#704).
     this.sessionUpdateHandlers.clear()
