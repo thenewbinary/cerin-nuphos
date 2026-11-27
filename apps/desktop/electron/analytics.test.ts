@@ -60,7 +60,9 @@ test('a client that is off at launch is never built, so nothing can be sent', as
 
 test('without a build-time key, enabling the setting never builds a client or sends events', async () => {
   delete process.env.POSTHOG_KEY
-  const fresh = (await import(`./analytics.ts?without-key=${String(calls.length)}`)) as typeof Analytics
+  const fresh = (await import(
+    `./analytics.ts?without-key=${String(calls.length)}`
+  )) as typeof Analytics
   const callCount = calls.length
 
   fresh.setMainAnalyticsEnabled(true)
