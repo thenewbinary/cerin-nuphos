@@ -4,9 +4,11 @@ import { agentHostAway } from './openab-acp-connect'
 import { OpenAbConnectionLostError } from './openab-acp-errors'
 
 import type {
+  AcpSocket,
   OpenAbPermissionHandler,
   OpenAbPermissionOutcome,
   OpenAbPermissionRequest,
+  PendingCall,
 } from './openab-acp-session'
 
 type PermissionTarget = {
@@ -14,9 +16,113 @@ type PermissionTarget = {
   onPermissionRequest?: OpenAbPermissionHandler
 }
 
+type PermissionToolCall = { title?: string; rawInput?: unknown }
+type PermissionToolCallLookup = (
+  sessionId: string,
+  toolCallId: string,
+) => PermissionToolCall | undefined
+
+const permissionToolCallKey = (sessionId: string, toolCallId: string) =>
+  JSON.stringify([sessionId, toolCallId])
+
+function turnFinished(payload: Record<string, unknown>): boolean {
+  if (payload.sessionUpdate === 'openab_session_interrupted') return true
+  const snapshot = payload.snapshot
+
+  if (payload.sessionUpdate !== 'runtime_state' || !snapshot || typeof snapshot !== 'object')
+    return false
+
+  return ['idle', 'dormant', 'interrupted'].includes(
+    String((snapshot as Record<string, unknown>).state),
+  )
+}
+
+/** Correlates sparse ACP approvals with reports on this connection, bounded across sessions. */
+export function createPermissionToolCallReports() {
+  const reports = new Map<string, { sessionId: string; toolCall: PermissionToolCall }>()
+  const clearSession = (sessionId: string) => {
+    for (const [id, report] of reports) {
+      if (report.sessionId === sessionId) reports.delete(id)
+    }
+  }
+
+  return {
+    get: (sessionId: string, toolCallId: string) =>
+      reports.get(permissionToolCallKey(sessionId, toolCallId))?.toolCall,
+    clearSession,
+    startPrompt: (sessionId: string, pending: Iterable<PendingCall>) => {
+      if (![...pending].some((call) => call.sessionId === sessionId && call.onTextDelta))
+        clearSession(sessionId)
+    },
+    finishPrompt: (pending: PendingCall, message: Record<string, unknown>) => {
+      if (pending.sessionId && pending.onTextDelta && pending.accepted !== false && !message.error)
+        clearSession(pending.sessionId)
+    },
+    clear: () => {
+      reports.clear()
+    },
+    remember: (params: unknown) => {
+      if (!params || typeof params !== 'object') return
+      const { sessionId, update } = params as Record<string, unknown>
+
+      if (typeof sessionId !== 'string' || !update || typeof update !== 'object') return
+      const payload = update as Record<string, unknown>
+
+      if (turnFinished(payload)) {
+        clearSession(sessionId)
+
+        return
+      }
+      if (payload.sessionUpdate !== 'tool_call' && payload.sessionUpdate !== 'tool_call_update')
+        return
+      if (typeof payload.toolCallId !== 'string' || !payload.toolCallId) return
+      const id = permissionToolCallKey(sessionId, payload.toolCallId)
+      const previous =
+        payload.sessionUpdate === 'tool_call_update' ? reports.get(id)?.toolCall : undefined
+
+      reports.delete(id)
+      reports.set(id, {
+        sessionId,
+        toolCall: {
+          ...previous,
+          ...(typeof payload.title === 'string' ? { title: payload.title } : {}),
+          ...(payload.rawInput === undefined ? {} : { rawInput: payload.rawInput }),
+        },
+      })
+      // Eviction only loses context, so an evicted call still fails closed.
+      const oldest = reports.keys().next().value
+
+      if (reports.size > 512 && oldest !== undefined) reports.delete(oldest)
+    },
+  }
+}
+
+export function replyToPermission(
+  message: Record<string, unknown>,
+  pending: Iterable<PendingCall>,
+  socket: AcpSocket,
+  context: {
+    toolCallLookup: PermissionToolCallLookup
+    sessionFallback: (sessionId: string) => OpenAbPermissionHandler | undefined
+  },
+): void {
+  void answerPermissionRequest({
+    params: message.params,
+    targets: [...pending].filter((call) => call.accepted !== false),
+    toolCallLookup: context.toolCallLookup,
+    sessionFallback: context.sessionFallback,
+    send: (result) => {
+      socket.send(JSON.stringify({ jsonrpc: '2.0', id: message.id, result }))
+    },
+  })
+}
+
 const cancelled = (): OpenAbPermissionOutcome => ({ outcome: { outcome: 'cancelled' } })
 
-function parsePermissionRequest(params: unknown): OpenAbPermissionRequest | null {
+function parsePermissionRequest(
+  params: unknown,
+  lookup: PermissionToolCallLookup | undefined,
+): OpenAbPermissionRequest | null {
   if (!params || typeof params !== 'object') return null
   const value = params as Record<string, unknown>
   const toolCall = value.toolCall
@@ -30,6 +136,10 @@ function parsePermissionRequest(params: unknown): OpenAbPermissionRequest | null
   ) {
     return null
   }
+  const call = toolCall as Record<string, unknown> & { toolCallId: string }
+  const reported = lookup?.(value.sessionId, call.toolCallId)
+  const title = call.title === undefined ? reported?.title : call.title
+  const rawInput = call.rawInput === undefined ? reported?.rawInput : call.rawInput
   const options = value.options.flatMap((candidate) => {
     if (!candidate || typeof candidate !== 'object') return []
     const option = candidate as Record<string, unknown>
@@ -44,14 +154,9 @@ function parsePermissionRequest(params: unknown): OpenAbPermissionRequest | null
   return {
     sessionId: value.sessionId,
     toolCall: {
-      toolCallId: (toolCall as Record<string, unknown>).toolCallId as string,
-      title:
-        typeof (toolCall as Record<string, unknown>).title === 'string'
-          ? ((toolCall as Record<string, unknown>).title as string)
-          : 'OpenAB tool request',
-      ...((toolCall as Record<string, unknown>).rawInput === undefined
-        ? {}
-        : { rawInput: (toolCall as Record<string, unknown>).rawInput }),
+      toolCallId: call.toolCallId,
+      title: typeof title === 'string' ? title : 'OpenAB tool request',
+      ...(rawInput === undefined ? {} : { rawInput }),
     },
     options,
   }
@@ -60,6 +165,7 @@ function parsePermissionRequest(params: unknown): OpenAbPermissionRequest | null
 export async function answerPermissionRequest(args: {
   params: unknown
   targets: PermissionTarget[]
+  toolCallLookup?: PermissionToolCallLookup
   /**
    * Answers a request that belongs to no in-flight prompt. The runtime starts
    * turns on its own (a ScheduleWakeup firing, a background task reporting
@@ -69,7 +175,7 @@ export async function answerPermissionRequest(args: {
   sessionFallback?: (sessionId: string) => OpenAbPermissionHandler | undefined
   send: (result: OpenAbPermissionOutcome) => void
 }): Promise<void> {
-  const request = parsePermissionRequest(args.params)
+  const request = parsePermissionRequest(args.params, args.toolCallLookup)
   const pendingHandler = request
     ? args.targets.find(
         (target) => target.sessionId === request.sessionId && target.onPermissionRequest,

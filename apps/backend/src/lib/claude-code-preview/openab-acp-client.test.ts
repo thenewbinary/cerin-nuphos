@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 
 import { mintPreviewMcpToken } from './mcp-token'
 import { OpenAbAcpClient } from './openab-acp-client'
+import { handleOpenAbPermissionRequest } from './openab-permission-bridge'
 
 import type { OpenAbSessionUpdate } from './openab-acp-client'
 
@@ -96,6 +97,266 @@ function harness(autoOpen = true) {
     },
   }
 }
+
+describe('unattended Codex ACP permissions resolved from tool reports', () => {
+  const reportedCall = {
+    sessionUpdate: 'tool_call',
+    toolCallId: 'call-X',
+    title: 'mcp.cerin-tools.channel_post',
+    status: 'pending',
+    rawInput: {
+      server: 'cerin-tools',
+      tool: 'channel_post',
+      arguments: { channelId: 'woken-channel', text: 'hi' },
+    },
+  }
+  const sparseCall = { toolCallId: 'call-X', kind: 'execute', status: 'pending' }
+
+  test.each([
+    { name: 'allows the waking channel', report: reportedCall, call: sparseCall, allowed: true },
+    {
+      name: 'keeps reports when a competing prompt is rejected as busy',
+      report: reportedCall,
+      call: sparseCall,
+      busy: true,
+      allowed: true,
+    },
+    {
+      name: 'resolves a tool_call_update',
+      report: { ...reportedCall, sessionUpdate: 'tool_call_update' },
+      call: sparseCall,
+      allowed: true,
+    },
+    {
+      name: 'denies another channel',
+      report: {
+        ...reportedCall,
+        rawInput: { ...reportedCall.rawInput, arguments: { channelId: 'other-channel' } },
+      },
+      call: sparseCall,
+      allowed: false,
+    },
+    {
+      name: 'allows reading the waking channel',
+      report: {
+        ...reportedCall,
+        title: 'mcp.cerin-tools.channel_read',
+        rawInput: { ...reportedCall.rawInput, tool: 'channel_read' },
+      },
+      call: sparseCall,
+      allowed: true,
+    },
+    {
+      name: 'denies a tool outside the existing allowlist',
+      report: {
+        ...reportedCall,
+        title: 'mcp.cerin-tools.memory_get',
+        rawInput: { ...reportedCall.rawInput, tool: 'memory_get' },
+      },
+      call: sparseCall,
+      allowed: false,
+    },
+    {
+      name: 'denies another MCP server',
+      report: {
+        ...reportedCall,
+        title: 'mcp.other-server.channel_post',
+        rawInput: { ...reportedCall.rawInput, server: 'other-server' },
+      },
+      call: sparseCall,
+      allowed: false,
+    },
+    { name: 'denies an unknown id', report: undefined, call: sparseCall, allowed: false },
+    {
+      name: 'never uses another tool id',
+      report: { ...reportedCall, toolCallId: 'call-Y' },
+      call: sparseCall,
+      allowed: false,
+    },
+    {
+      name: 'never uses another session',
+      report: reportedCall,
+      reportSession: 'other-session',
+      call: sparseCall,
+      allowed: false,
+    },
+    {
+      name: 'keeps the request channel over the reported channel',
+      report: reportedCall,
+      call: {
+        ...sparseCall,
+        rawInput: { ...reportedCall.rawInput, arguments: { channelId: 'other-channel' } },
+      },
+      allowed: false,
+    },
+    {
+      name: 'keeps the request title over the reported title',
+      report: reportedCall,
+      call: { ...sparseCall, title: 'mcp.other-server.channel_post' },
+      allowed: false,
+    },
+    {
+      name: 'never fills a channel from a report over present input',
+      report: reportedCall,
+      call: { ...sparseCall, rawInput: {} },
+      allowed: false,
+    },
+    {
+      name: 'fills only the missing input',
+      report: reportedCall,
+      call: { ...sparseCall, title: reportedCall.title },
+      allowed: true,
+    },
+    {
+      name: 'fills only the missing title',
+      report: reportedCall,
+      call: { ...sparseCall, rawInput: reportedCall.rawInput },
+      allowed: true,
+    },
+  ])('$name', async ({ report, call, allowed, ...testCase }) => {
+    const h = harness()
+    const client = await OpenAbAcpClient.connect({
+      url: 'wss://openab.example/acp',
+      authKey: 'key',
+      socketFactory: h.connect,
+    })
+    const frames: Record<string, unknown>[] = []
+    const tools: Record<string, unknown>[] = []
+    const prompting = client.prompt(
+      'channel-session',
+      'answer the channel',
+      () => undefined,
+      undefined,
+      (request) =>
+        handleOpenAbPermissionRequest(
+          {
+            userId: 'owner',
+            conversationId: 'conversation',
+            request,
+            emit: (frame) => frames.push(frame),
+            handleTool: (update) => tools.push(update),
+            run: {
+              deadlineAt: 1,
+              channelIds: ['woken-channel'],
+              trace: { route: 'agent.resource' },
+            },
+          },
+          {
+            getSessionBypass: () => Promise.resolve(false),
+            registerWait: () => Promise.reject(new Error('must not ask a person')),
+            awaitDecision: () => Promise.reject(new Error('must not wait for a person')),
+          },
+        ),
+    )
+    const promptFrame = await nextSent(h.socket(), 0)
+
+    if (report) {
+      h.socket().receive({
+        method: 'session/update',
+        params: { sessionId: testCase.reportSession ?? 'channel-session', update: report },
+      })
+      // A status-only update must not erase the earlier title or input.
+      h.socket().receive({
+        method: 'session/update',
+        params: {
+          sessionId: testCase.reportSession ?? 'channel-session',
+          update: {
+            sessionUpdate: 'tool_call_update',
+            toolCallId: report.toolCallId,
+            status: 'in_progress',
+          },
+        },
+      })
+    }
+    if (testCase.busy) {
+      const rejected = client
+        .prompt('channel-session', 'competing turn', () => undefined)
+        .catch((error: unknown) => error)
+      const busyFrame = await nextSent(h.socket(), 1)
+
+      h.socket().receive({
+        id: busyFrame.id,
+        error: { code: -32001, message: 'Runtime session is busy' },
+      })
+      expect(await rejected).toMatchObject({ message: 'Runtime session is busy' })
+    }
+    h.socket().receive({
+      id: 77,
+      method: 'session/request_permission',
+      params: {
+        sessionId: 'channel-session',
+        toolCall: call,
+        _meta: { is_mcp_tool_approval: true },
+        options: [
+          { optionId: 'allow-once', name: 'Allow once', kind: 'allow_once' },
+          { optionId: 'reject-once', name: 'Reject', kind: 'reject_once' },
+        ],
+      },
+    })
+
+    expect(await nextSent(h.socket(), testCase.busy ? 2 : 1)).toEqual({
+      jsonrpc: '2.0',
+      id: 77,
+      result: {
+        outcome: allowed
+          ? { outcome: 'selected', optionId: 'allow-once' }
+          : { outcome: 'cancelled' },
+      },
+    })
+    expect(frames.some((frame) => frame.type === 'tool-approval-request')).toBe(false)
+    if (allowed) expect(tools[0]?.title).toBe(report?.title)
+    h.socket().receive({ id: promptFrame.id, result: { stopReason: 'end_turn' } })
+    await prompting
+    client.close()
+  })
+
+  test.each(['completed', 'cancelled'])(
+    'does not reuse a report after a turn is %s',
+    async (end) => {
+      const h = harness()
+      const client = await OpenAbAcpClient.connect({
+        url: 'wss://openab.example/acp',
+        authKey: 'key',
+        socketFactory: h.connect,
+      })
+      const first = client.prompt('channel-session', 'first turn', () => undefined)
+      const firstFrame = await nextSent(h.socket(), 0)
+      const requests: unknown[] = []
+
+      h.socket().receive({
+        method: 'session/update',
+        params: { sessionId: 'channel-session', update: reportedCall },
+      })
+      if (end === 'cancelled') client.cancel('channel-session')
+      else h.socket().receive({ id: firstFrame.id, result: { stopReason: 'end_turn' } })
+      client.onSessionPermission('channel-session', (request) => {
+        requests.push(request.toolCall)
+
+        return Promise.resolve({ outcome: { outcome: 'cancelled' } })
+      })
+      h.socket().receive({
+        id: 77,
+        method: 'session/request_permission',
+        params: {
+          sessionId: 'channel-session',
+          toolCall: sparseCall,
+          options: [{ optionId: 'allow-once', name: 'Allow once', kind: 'allow_once' }],
+        },
+      })
+      const responseIndex = end === 'cancelled' ? 2 : 1
+
+      expect(await nextSent(h.socket(), responseIndex)).toMatchObject({
+        id: 77,
+        result: { outcome: { outcome: 'cancelled' } },
+      })
+      expect(requests).toEqual([{ toolCallId: 'call-X', title: 'OpenAB tool request' }])
+      if (end === 'cancelled')
+        h.socket().receive({ id: firstFrame.id, result: { stopReason: 'cancelled' } })
+      await first
+      client.close()
+    },
+  )
+})
 
 async function nextSent(socket: FakeSocket, index: number) {
   for (let attempt = 0; attempt < 10 && socket.sent.length <= index; attempt++) {
