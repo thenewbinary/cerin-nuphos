@@ -1,7 +1,8 @@
-import { afterEach, beforeEach, expect, test } from 'bun:test'
+import { afterEach, beforeEach, expect, mock, test } from 'bun:test'
 import { createHash, generateKeyPairSync, sign } from 'node:crypto'
 
 import { Hono } from 'hono'
+import { ObjectId } from 'mongodb'
 
 import { config } from '@/config'
 import { errorHandler } from '@/lib/errors'
@@ -18,6 +19,7 @@ import { createDeviceApproval } from '@/routes/device-approval'
 type Doc = Record<string, unknown>
 const app = new Hono().onError(errorHandler).route('/', socialAuth)
 const docs = new Map<string, Doc[]>()
+const updateOne = mock(async () => ({ modifiedCount: 1 }))
 const logged: { level: string; event: string; properties?: Doc }[] = []
 const matches = (doc: Doc, filter: Doc) =>
   Object.entries(filter).every(([key, value]) => {
@@ -39,7 +41,7 @@ useDb({
           toArray: async () => (docs.get(name) ?? []).filter((doc) => matches(doc, filter)),
         }),
       }),
-      updateOne: async () => ({ modifiedCount: 1 }),
+      updateOne,
       deleteOne: async (filter: Doc) => {
         const list = docs.get(name) ?? []
         const index = list.findIndex((doc) => matches(doc, filter))
@@ -80,6 +82,7 @@ useObservability({
 })
 beforeEach(() => {
   docs.clear()
+  updateOne.mockClear()
   logged.length = 0
   config.auth.apple.clientId = undefined
   config.auth.oidc.issuer = undefined
@@ -296,6 +299,121 @@ test('same email does not silently link accounts', async () => {
   await expect(
     signInSocial('apple', { sub: 'apple-sub', email: 'person@example.com', email_verified: true }),
   ).rejects.toThrow('existing account')
+})
+function seedExistingUser() {
+  const user = {
+    _id: new ObjectId(),
+    email: 'person@example.com',
+    name: 'Existing user',
+    username: 'person',
+    avatarURL: '',
+    language: 'en-US',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }
+
+  docs.set('users', [user])
+
+  return user
+}
+for (const emailVerified of [true, 'true']) {
+  test(`Google links an existing account when email_verified is ${JSON.stringify(emailVerified)}`, async () => {
+    const existing = seedExistingUser()
+    const linked = await signInSocial('google', {
+      sub: 'google-sub',
+      email: 'Person@Example.com',
+      email_verified: emailVerified,
+      name: 'Google profile',
+    })
+
+    expect(linked.user.id).toBe(existing._id.toHexString())
+    expect(linked.user.name).toBe(existing.name)
+    expect(docs.get('users')).toHaveLength(1)
+    expect(updateOne).toHaveBeenCalledTimes(1)
+    expect(updateOne).toHaveBeenCalledWith(
+      { _id: existing._id },
+      { $set: { googleID: 'google-sub', updatedAt: expect.any(Date) } },
+    )
+    // updateOne records writes without persisting them in this double.
+    docs.get('users')![0]!.googleID = 'google-sub'
+    expect((await signInSocial('google', { sub: 'google-sub' })).user.id).toBe(linked.user.id)
+    expect(updateOne).toHaveBeenCalledTimes(1)
+    expect(logged).toEqual([
+      {
+        level: 'info',
+        event: 'auth.social.google_linked',
+        properties: { user_id: existing._id.toHexString() },
+      },
+    ])
+    expect(JSON.stringify(logged)).not.toContain(existing.email)
+    expect(JSON.stringify(logged)).not.toContain('google-sub')
+  })
+}
+for (const emailVerified of [false, 'false', undefined]) {
+  test(`Google rejects an existing account when email_verified is ${JSON.stringify(emailVerified)}`, async () => {
+    seedExistingUser()
+    await expect(
+      signInSocial('google', {
+        sub: 'google-sub',
+        email: 'Person@example.com',
+        email_verified: emailVerified,
+      }),
+    ).rejects.toMatchObject({
+      status: 409,
+      code: 'account_exists',
+      message: 'Sign in with the existing account method. Accounts are not linked by email.',
+    })
+    expect(updateOne).not.toHaveBeenCalled()
+    expect(docs.get('users')![0]!.googleID).toBeUndefined()
+    expect(logged).toHaveLength(0)
+  })
+}
+test('Google does not overwrite an existing different subject', async () => {
+  const existing = seedExistingUser()
+
+  docs.get('users')![0]!.googleID = 'original-google-sub'
+  await expect(
+    signInSocial('google', {
+      sub: 'other-google-sub',
+      email: existing.email,
+      email_verified: true,
+    }),
+  ).rejects.toMatchObject({ status: 409, code: 'account_exists' })
+  expect(updateOne).not.toHaveBeenCalled()
+  expect(docs.get('users')![0]!.googleID).toBe('original-google-sub')
+  expect(logged).toHaveLength(0)
+})
+test('Google does not link a deleted account', async () => {
+  const existing = seedExistingUser()
+
+  docs.get('users')![0]!.deletedAt = new Date()
+  await expect(
+    signInSocial('google', {
+      sub: 'google-sub',
+      email: existing.email,
+      email_verified: true,
+    }),
+  ).rejects.toMatchObject({ status: 409, code: 'account_exists' })
+  expect(updateOne).not.toHaveBeenCalled()
+  expect(docs.get('users')![0]!.googleID).toBeUndefined()
+  expect(logged).toHaveLength(0)
+})
+test('Google requires a verified email for a new account', async () => {
+  for (const claims of [
+    { sub: 'google-sub', email_verified: true },
+    { sub: 'google-sub', email: 'person@example.com' },
+    { sub: 'google-sub', email: 'person@example.com', email_verified: false },
+    { sub: 'google-sub', email: 'person@example.com', email_verified: 'false' },
+  ]) {
+    await expect(signInSocial('google', claims)).rejects.toMatchObject({
+      status: 401,
+      code: 'email_required',
+      message: 'A verified email is required for a new account',
+    })
+  }
+  expect(docs.get('users')).toBeUndefined()
+  expect(updateOne).not.toHaveBeenCalled()
+  expect(logged).toHaveLength(0)
 })
 test('OIDC links a verified email to an existing account, once', async () => {
   const existing = await signInSocial('google', {
