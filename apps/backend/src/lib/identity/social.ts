@@ -8,6 +8,7 @@ import { uniqueUsername } from '@/lib/identity/auth'
 import { discoverOidc, verifyOidcIdToken } from '@/lib/identity/oidc'
 import { mapUser, users } from '@/lib/identity/shared'
 import { safeEqualStr } from '@/lib/oauth/tokens'
+import { logEvent } from '@/lib/observability'
 
 import type { Endpoints } from '@/lib/identity/oidc'
 import type { webcrypto } from 'node:crypto'
@@ -226,20 +227,27 @@ export async function signInSocial(provider: SocialProvider, claims: SocialClaim
   let user = await users().findOne(query)
 
   if (!user) {
-    if (!claims.email || (claims.email_verified !== true && claims.email_verified !== 'true'))
-      throw new AppError(401, 'email_required', 'A verified email is required for a new account')
-    const email = claims.email.toLowerCase()
-    const existing = await users().findOne({ email })
+    const email = claims.email?.toLowerCase()
+    const emailVerified = claims.email_verified === true || claims.email_verified === 'true'
+    const existing =
+      email && (emailVerified || provider === 'google') ? await users().findOne({ email }) : null
 
-    // The operator's own identity provider is trusted to own its verified emails, so it
-    // links accounts made another way (e.g. by `cerin-admin bootstrap`).
-    if (existing && provider === 'oidc' && !existing.oidcID && !existing.deletedAt) {
+    // Google and the operator's OIDC provider can link accounts by verified email.
+    if (
+      existing &&
+      emailVerified &&
+      (provider === 'google' || provider === 'oidc') &&
+      !existing[field] &&
+      !existing.deletedAt
+    ) {
       await users().updateOne(
         { _id: existing._id },
-        { $set: { oidcID: claims.sub, updatedAt: new Date() } },
+        { $set: { [field]: claims.sub, updatedAt: new Date() } },
       )
+      if (provider === 'google')
+        logEvent('info', 'auth.social.google_linked', { user_id: existing._id.toHexString() })
 
-      return { user: mapUser({ ...existing, oidcID: claims.sub }) }
+      return { user: mapUser({ ...existing, [field]: claims.sub }) }
     }
     if (existing)
       throw new AppError(
@@ -247,6 +255,8 @@ export async function signInSocial(provider: SocialProvider, claims: SocialClaim
         'account_exists',
         'Sign in with the existing account method. Accounts are not linked by email.',
       )
+    if (!email || !emailVerified)
+      throw new AppError(401, 'email_required', 'A verified email is required for a new account')
     const now = new Date()
     const candidate = {
       _id: new ObjectId(),
