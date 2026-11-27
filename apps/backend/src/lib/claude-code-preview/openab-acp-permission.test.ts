@@ -2,7 +2,7 @@ import { afterAll, afterEach, expect, spyOn, test } from 'bun:test'
 
 import { OpenAbConnectError } from './openab-acp-connect'
 import { OpenAbConnectionLostError } from './openab-acp-errors'
-import { answerPermissionRequest } from './openab-acp-permission'
+import { answerPermissionRequest, createPermissionToolCallReports } from './openab-acp-permission'
 
 import type { OpenAbPermissionOutcome } from './openab-acp-session'
 
@@ -55,4 +55,50 @@ test('any other handler failure still cancels the request and is logged as an er
     { outcome: { outcome: 'cancelled' } },
   ])
   expect(logged(error).join()).toContain('agent.openab_permission.handler_failed')
+})
+
+test('tool reports are bounded across sessions and evict old context', () => {
+  const reports = createPermissionToolCallReports()
+
+  for (let index = 0; index <= 512; index++) {
+    reports.remember({
+      sessionId: `session-${String(index)}`,
+      update: { sessionUpdate: 'tool_call', toolCallId: 'call', title: `tool-${String(index)}` },
+    })
+  }
+  expect(reports.get('session-0', 'call')).toBeUndefined()
+  expect(reports.get('session-512', 'call')?.title).toBe('tool-512')
+})
+
+test.each([
+  { sessionUpdate: 'openab_session_interrupted' },
+  { sessionUpdate: 'runtime_state', snapshot: { state: 'idle' } },
+  { sessionUpdate: 'runtime_state', snapshot: { state: 'dormant' } },
+  { sessionUpdate: 'runtime_state', snapshot: { state: 'interrupted' } },
+])('clears only the finished session on $sessionUpdate', (update) => {
+  const reports = createPermissionToolCallReports()
+
+  for (const sessionId of ['finished', 'still-running']) {
+    reports.remember({
+      sessionId,
+      update: { sessionUpdate: 'tool_call', toolCallId: 'call', title: 'tool' },
+    })
+  }
+  reports.remember({ sessionId: 'finished', update })
+  expect(reports.get('finished', 'call')).toBeUndefined()
+  expect(reports.get('still-running', 'call')?.title).toBe('tool')
+})
+
+test('provider status and usage do not erase reports from a still-running turn', () => {
+  const reports = createPermissionToolCallReports()
+
+  for (const update of [
+    { sessionUpdate: 'tool_call', toolCallId: 'call', title: 'tool' },
+    { sessionUpdate: 'session_info_update', _meta: { codex: { threadStatus: { type: 'idle' } } } },
+    { sessionUpdate: 'usage_update', _meta: { '_claude/origin': { kind: 'task-notification' } } },
+    { sessionUpdate: 'runtime_state', snapshot: { state: 'active' } },
+  ]) {
+    reports.remember({ sessionId: 'session', update })
+  }
+  expect(reports.get('session', 'call')?.title).toBe('tool')
 })
