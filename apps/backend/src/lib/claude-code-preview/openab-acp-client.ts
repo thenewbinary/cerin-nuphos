@@ -2,10 +2,7 @@ import { redactSignedTokens } from './mcp-token'
 import { connectOpenAbAcpSocket } from './openab-acp-connect.ts'
 import { OpenAbConnectionLostError, cancelSession, settlePendingCall } from './openab-acp-errors.ts'
 import { OpenAbAcpLifecycle, attachmentPrompt } from './openab-acp-lifecycle.ts'
-import {
-  answerPermissionRequest,
-  createPermissionToolCallReports,
-} from './openab-acp-permission.ts'
+import { createPermissionToolCallReports, replyToPermission } from './openab-acp-permission.ts'
 import {
   ACP_INITIALIZE_PARAMS,
   acceptRuntimePrompt,
@@ -137,10 +134,7 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
     lead = '',
   ): Promise<JsonRpcResult> {
     this.cancelledSessions.delete(sessionId)
-    if (
-      ![...this.pending.values()].some((call) => call.sessionId === sessionId && call.onTextDelta)
-    )
-      this.permissionToolCalls.clearSession(sessionId)
+    this.permissionToolCalls.startPrompt(sessionId, this.pending.values())
     const meta = promptMeta(Boolean(onAccepted), context)
 
     return this.call(
@@ -237,27 +231,18 @@ export class OpenAbAcpClient extends OpenAbAcpLifecycle {
       return
     }
 
-    if (message.method === 'session/request_permission' && typeof message.id === 'number') {
-      void answerPermissionRequest({
-        params: message.params,
-        targets: [...this.pending.values()].filter((call) => call.accepted !== false),
+    if (message.method === 'session/request_permission' && typeof message.id === 'number')
+      return replyToPermission(message, this.pending.values(), this.socket, {
         toolCallLookup: this.permissionToolCalls.get,
         sessionFallback: (sessionId) => this.sessionPermissionHandler(sessionId),
-        send: (result) => {
-          this.socket.send(JSON.stringify({ jsonrpc: '2.0', id: message.id, result }))
-        },
       })
-
-      return
-    }
 
     if (typeof message.id !== 'number') return
     const pending = this.pending.get(message.id)
 
     if (!pending) return
     this.pending.delete(message.id)
-    if (pending.sessionId && pending.onTextDelta && pending.accepted !== false && !message.error)
-      this.permissionToolCalls.clearSession(pending.sessionId)
+    this.permissionToolCalls.finishPrompt(pending, message)
     const observed = pending.sessionId && this.sessionUpdateHandlers.has(pending.sessionId)
 
     settlePendingCall(pending, message, observed ? this.cancelledSessions : undefined)

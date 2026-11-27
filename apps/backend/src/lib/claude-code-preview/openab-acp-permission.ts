@@ -4,9 +4,11 @@ import { agentHostAway } from './openab-acp-connect'
 import { OpenAbConnectionLostError } from './openab-acp-errors'
 
 import type {
+  AcpSocket,
   OpenAbPermissionHandler,
   OpenAbPermissionOutcome,
   OpenAbPermissionRequest,
+  PendingCall,
 } from './openab-acp-session'
 
 type PermissionTarget = {
@@ -48,6 +50,14 @@ export function createPermissionToolCallReports() {
     get: (sessionId: string, toolCallId: string) =>
       reports.get(permissionToolCallKey(sessionId, toolCallId))?.toolCall,
     clearSession,
+    startPrompt: (sessionId: string, pending: Iterable<PendingCall>) => {
+      if (![...pending].some((call) => call.sessionId === sessionId && call.onTextDelta))
+        clearSession(sessionId)
+    },
+    finishPrompt: (pending: PendingCall, message: Record<string, unknown>) => {
+      if (pending.sessionId && pending.onTextDelta && pending.accepted !== false && !message.error)
+        clearSession(pending.sessionId)
+    },
     clear: () => {
       reports.clear()
     },
@@ -85,6 +95,26 @@ export function createPermissionToolCallReports() {
       if (reports.size > 512 && oldest !== undefined) reports.delete(oldest)
     },
   }
+}
+
+export function replyToPermission(
+  message: Record<string, unknown>,
+  pending: Iterable<PendingCall>,
+  socket: AcpSocket,
+  context: {
+    toolCallLookup: PermissionToolCallLookup
+    sessionFallback: (sessionId: string) => OpenAbPermissionHandler | undefined
+  },
+): void {
+  void answerPermissionRequest({
+    params: message.params,
+    targets: [...pending].filter((call) => call.accepted !== false),
+    toolCallLookup: context.toolCallLookup,
+    sessionFallback: context.sessionFallback,
+    send: (result) => {
+      socket.send(JSON.stringify({ jsonrpc: '2.0', id: message.id, result }))
+    },
+  })
 }
 
 const cancelled = (): OpenAbPermissionOutcome => ({ outcome: { outcome: 'cancelled' } })
