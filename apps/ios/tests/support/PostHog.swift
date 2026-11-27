@@ -1,12 +1,17 @@
 // Recording SDK boundary for AnalyticsTests. No networking or persistence.
 // The simulator build separately checks this contract against the real SDK.
 public final class PostHogConfig {
+    public let projectToken: String
+    public let host: String
     public var captureApplicationLifecycleEvents = true
     public var captureScreenViews = true
     public var enableSwizzling = true
     public var preloadFeatureFlags = true
     public var surveys = true
-    public init(projectToken: String, host: String) {}
+    public init(projectToken: String, host: String) {
+        self.projectToken = projectToken
+        self.host = host
+    }
 }
 
 public final class PostHogSDK {

@@ -10,18 +10,9 @@ import { sanitizeReportText } from './reportRedaction'
 
 import type { UserInfo } from '../types'
 
-// phc_ project keys are write-only ingest keys designed to ship inside client
-// apps (they're visible in any web app's network tab), so embedding a default
-// here is safe and guarantees telemetry works even if the build-time env var
-// is missing. Override per-build via VITE_POSTHOG_KEY.
-//
-// The default only applies to production builds: dev servers were polluting
-// the production PostHog project with localhost autocapture/pageviews
-//. Set VITE_POSTHOG_KEY explicitly to test telemetry in dev.
-const DEFAULT_KEY = 'phc_tD7X8fho5ug5BcC6zTZRWDn7wKFqGk3t3Y5bVE9Z67a9'
-const KEY =
-  (import.meta.env.VITE_POSTHOG_KEY as string | undefined) ||
-  (import.meta.env.PROD ? DEFAULT_KEY : undefined)
+// There is no built-in project key. Telemetry is off unless VITE_POSTHOG_KEY
+// is set for the build; an empty value is treated as unset.
+const KEY = (import.meta.env.VITE_POSTHOG_KEY as string | undefined)?.trim()
 const HOST = (import.meta.env.VITE_POSTHOG_HOST as string | undefined) || 'https://us.i.posthog.com'
 
 // Usage data is being sent. While it is not, nothing here calls into posthog-js.
@@ -132,7 +123,8 @@ export function initAnalytics(): void {
     // only with the setting on and Cerin Cloud as the backend. Opting out is
     // not enough, because identify and reset still ask the host for flags.
     window.api.onSendUsageDataChanged((send) => {
-      sending = send && posthog.__loaded
+      sending = Boolean(KEY && send && posthog.__loaded)
+      if (!KEY) return
       if (!posthog.__loaded) initAnalytics()
       else if (send) posthog.opt_in_capturing()
       else posthog.opt_out_capturing()

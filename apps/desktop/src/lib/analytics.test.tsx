@@ -72,7 +72,6 @@ for (const [key, value] of Object.entries({
   XMLHttpRequest: dom.XMLHttpRequest,
 }))
   Object.defineProperty(globalThis, key, { value, configurable: true })
-process.env.VITE_POSTHOG_KEY = 'phc_test'
 process.env.VITE_POSTHOG_HOST = HOST
 
 const user = {
@@ -100,7 +99,24 @@ const use = async (analytics: typeof Analytics) => {
   await settle()
 }
 
+test('without a build-time key, enabling the setting never initializes PostHog or sends events', async () => {
+  delete process.env.VITE_POSTHOG_KEY
+  const analytics = (await import(`./analytics?without-key=${String(usage)}`)) as typeof Analytics
+  const posthog = (await import('posthog-js')).default as PostHog
+
+  analytics.initAnalytics()
+  usage = true
+  changed(true)
+  await use(analytics)
+  analytics.resetAnalytics()
+
+  assert.equal(posthog.__loaded, false)
+  assert.deepEqual(requests, [])
+})
+
 test('usage analytics stays off a self-hosted backend, and clicks carry no text on Cloud', async () => {
+  process.env.VITE_POSTHOG_KEY = 'phc_test'
+  usage = false
   const analytics = await import('./analytics')
   const posthog = (await import('posthog-js')).default as PostHog
   const events: { event: string }[] = []

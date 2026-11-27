@@ -115,13 +115,16 @@ xcodebuild -exportArchive -archivePath build/cerin.xcarchive -exportOptionsPlist
 
 ## Product analytics
 
-Release builds using the default Cerin Cloud endpoint send curated events to
-PostHog project 439957, using the same backend user ID as Desktop. Debug builds
-(including preview fixtures), signed-out sessions and self-hosted endpoints do
-not capture events. PostHog Swift is pinned to 3.89.1. Automatic screen/tap
-capture, lifecycle events, feature flag preloading, surveys and replay are disabled;
-only explicitly named screens and properties are sent. No prompts, message
-text, attachment names/content, access tokens or backend URLs are recorded.
+Release builds using the default Cerin Cloud endpoint and a configured project
+token send curated events to the configured PostHog project, using the same
+backend user ID as Desktop. Debug builds (including preview fixtures),
+signed-out sessions and self-hosted endpoints do not capture events. PostHog
+Swift is pinned to 3.89.1. Automatic screen/tap capture, lifecycle events,
+feature flag preloading, surveys and replay are disabled; only explicitly named
+screens and properties are sent. No prompts, message text, attachment
+names/content, access tokens or backend URLs are recorded.
+
+Set `POSTHOG_PROJECT_TOKEN` via `xcodebuild POSTHOG_PROJECT_TOKEN=<token>` or an xcconfig; without it, PostHog stays off.
 
 - `app_active`: a verified signed-in user enters the foreground, or their
   session finishes restoring while already in the foreground.

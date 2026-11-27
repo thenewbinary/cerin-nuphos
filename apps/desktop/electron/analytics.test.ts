@@ -8,6 +8,7 @@ let analytics: typeof Analytics
 
 before(async () => {
   delete process.env.VITE_DEV_SERVER_URL
+  process.env.POSTHOG_KEY = 'phc_test'
   mock.module('posthog-node', {
     namedExports: {
       PostHog: class {
@@ -55,4 +56,19 @@ test('a client that is off at launch is never built, so nothing can be sent', as
   fresh.captureMain('app_launched')
   fresh.captureMainException(new Error('boom'))
   assert.equal(calls.length, before)
+})
+
+test('without a build-time key, enabling the setting never builds a client or sends events', async () => {
+  delete process.env.POSTHOG_KEY
+  const fresh = (await import(`./analytics.ts?without-key=${String(calls.length)}`)) as typeof Analytics
+  const callCount = calls.length
+
+  fresh.setMainAnalyticsEnabled(true)
+  fresh.initMainAnalytics()
+  fresh.setMainAnalyticsEnabled(false)
+  fresh.setMainAnalyticsEnabled(true)
+  fresh.setAnalyticsUser('user-1', { email: 'someone@example.com' })
+  fresh.captureMain('app_launched')
+  fresh.captureMainException(new Error('boom'))
+  assert.equal(calls.length, callCount)
 })
