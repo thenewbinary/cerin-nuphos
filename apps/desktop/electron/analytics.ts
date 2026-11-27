@@ -16,16 +16,10 @@ import { randomUUID } from 'node:crypto'
 
 import { PostHog } from 'posthog-node'
 
-import { isDev } from './main/env.ts'
-
-// phc_ project keys are public ingest keys (safe to embed in a shipped app).
-// Override per-build via POSTHOG_KEY.
-//
-// Like the renderer, the default key only applies outside dev so local runs
-// don't send app_launched/crash events to the production PostHog project
-//. Set POSTHOG_KEY explicitly to test telemetry in dev.
-const DEFAULT_KEY = 'phc_tD7X8fho5ug5BcC6zTZRWDn7wKFqGk3t3Y5bVE9Z67a9'
-const KEY = process.env.POSTHOG_KEY || (isDev ? undefined : DEFAULT_KEY)
+// There is no built-in project key. Telemetry is off unless POSTHOG_KEY is set
+// for the build; POSTHOG_KEY is inlined at build time by vite.config.ts, and an
+// empty value is treated as unset.
+const KEY = process.env.POSTHOG_KEY?.trim()
 const HOST = process.env.POSTHOG_HOST || 'https://us.i.posthog.com'
 
 let client: PostHog | null = null

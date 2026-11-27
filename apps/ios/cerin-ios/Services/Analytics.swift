@@ -7,10 +7,30 @@ import PostHog
 final class Analytics {
     static let shared = Analytics()
 
+    private let bundle: Bundle
     private var started = false
     private var userID: String?
     private var active = false
     private var currentScreen: (name: String, teamID: String?)?
+
+    init(bundle: Bundle = .main) {
+        self.bundle = bundle
+    }
+
+    private var projectToken: String? {
+        guard let value = bundle.object(forInfoDictionaryKey: "PostHogProjectToken") as? String else { return nil }
+        let token = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !token.isEmpty, !(token.hasPrefix("$(") && token.hasSuffix(")")) else { return nil }
+        return token
+    }
+
+    private var postHogHost: String {
+        guard let host = (bundle.object(forInfoDictionaryKey: "PostHogHost") as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines), !host.isEmpty else {
+            return "https://us.i.posthog.com"
+        }
+        return host
+    }
 
     private var enabled: Bool {
         #if DEBUG
@@ -22,14 +42,10 @@ final class Analytics {
     }
 
     func identify(_ user: CerinUser) {
-        guard enabled, !user.id.isEmpty else { reset(); return }
+        guard enabled, !user.id.isEmpty, let projectToken = projectToken else { reset(); return }
         guard userID != user.id else { return }
         if !started {
-            // Public, write-only project token, shared with Desktop.
-            let config = PostHogConfig(
-                projectToken: "phc_tD7X8fho5ug5BcC6zTZRWDn7wKFqGk3t3Y5bVE9Z67a9",
-                host: "https://us.i.posthog.com"
-            )
+            let config = PostHogConfig(projectToken: projectToken, host: postHogHost)
             config.captureApplicationLifecycleEvents = false
             config.captureScreenViews = false
             config.enableSwizzling = false
@@ -79,14 +95,14 @@ final class Analytics {
     }
 
     func screen(_ name: String, teamID: String? = nil) {
-        guard enabled, userID != nil else { return }
+        guard enabled, started, userID != nil else { return }
         guard currentScreen?.name != name || currentScreen?.teamID != teamID else { return }
         currentScreen = (name, teamID)
         if active { captureScreen(name, teamID: teamID) }
     }
 
     private func captureScreen(_ name: String, teamID: String?) {
-        guard enabled, userID != nil else { return }
+        guard enabled, started, userID != nil else { return }
         // Standard $screen feeds PostHog's existing pageview-or-screen DAU.
         PostHogSDK.shared.screen(name, properties: teamID.map { ["team_id": $0] })
     }
@@ -94,7 +110,7 @@ final class Analytics {
     /// Call sites pass only curated, non-content properties and explicit team
     /// context, so a delayed chat action cannot inherit another screen's team.
     func track(_ event: String, teamID: String? = nil, properties: [String: Any] = [:]) {
-        guard enabled, userID != nil else { return }
+        guard enabled, started, userID != nil else { return }
         var properties = properties
         if let teamID { properties["team_id"] = teamID }
         PostHogSDK.shared.capture(event, properties: properties)

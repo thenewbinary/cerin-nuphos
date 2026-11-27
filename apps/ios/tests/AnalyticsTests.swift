@@ -7,12 +7,44 @@ import PostHog
     static var baseURL = defaultBaseURL
 }
 
+private func makeAnalyticsBundle(token: String?, host: String? = nil) -> Bundle {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent("analytics-\(UUID().uuidString).bundle")
+    try! FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    var info: [String: Any] = ["CFBundleIdentifier": "ai.cerin.tests.analytics"]
+    if let token { info["PostHogProjectToken"] = token }
+    if let host { info["PostHogHost"] = host }
+    let data = try! PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0)
+    try! data.write(to: directory.appendingPathComponent("Info.plist"))
+    return Bundle(path: directory.path)!
+}
+
 @main struct AnalyticsTests {
     @MainActor static func main() {
-        let analytics = Analytics.shared
+        let unconfiguredBundles = [
+            makeAnalyticsBundle(token: nil),
+            makeAnalyticsBundle(token: ""),
+            makeAnalyticsBundle(token: "$(POSTHOG_PROJECT_TOKEN)"),
+        ]
+        let configuredBundle = makeAnalyticsBundle(token: "phc_test", host: "")
+        defer {
+            for bundle in unconfiguredBundles + [configuredBundle] {
+                try? FileManager.default.removeItem(at: bundle.bundleURL)
+            }
+        }
+        let analytics = Analytics(bundle: configuredBundle)
         let sdk = PostHogSDK.shared
         let alice = CerinUser(id: "alice", email: "private@example.com", name: "Private", username: "private", avatarURL: "")
         let bob = CerinUser(id: "bob", email: "", name: "", username: "", avatarURL: "")
+        for bundle in unconfiguredBundles {
+            let unconfigured = Analytics(bundle: bundle)
+            unconfigured.setActive(true)
+            unconfigured.identify(alice)
+            unconfigured.screen("agent")
+            unconfigured.track("agent_message_sent")
+            unconfigured.setActive(false)
+            unconfigured.reset()
+            precondition(sdk.configs.isEmpty && sdk.events.isEmpty, "Missing, empty and unexpanded tokens must stay offline")
+        }
         analytics.setActive(true)
         analytics.screen("agent")
         analytics.track("agent_message_sent")
@@ -32,6 +64,7 @@ import PostHog
         #else
         precondition(sdk.configs.count == 1)
         let config = sdk.configs[0]
+        precondition(config.projectToken == "phc_test" && config.host == "https://us.i.posthog.com")
         precondition(!config.captureApplicationLifecycleEvents && !config.captureScreenViews && !config.enableSwizzling)
         precondition(!config.preloadFeatureFlags)
         precondition(sdk.events.map(\.name) == ["app_active"] && sdk.events.last?.user == "alice", "Identify before foreground event")

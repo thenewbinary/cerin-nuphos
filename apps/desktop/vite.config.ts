@@ -48,6 +48,13 @@ export default defineConfig({
         onstart: ({ startup }) =>
           startup(process.platform === 'linux' ? ['.', '--no-sandbox'] : ['.']),
         vite: {
+          ...(process.env.POSTHOG_KEY
+            ? {
+                define: {
+                  'process.env.POSTHOG_KEY': JSON.stringify(process.env.POSTHOG_KEY),
+                },
+              }
+            : {}),
           build: {
             outDir: 'dist-electron',
             rollupOptions: {
