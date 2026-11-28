@@ -1,3 +1,6 @@
+import { homedir } from 'node:os'
+import { join } from 'node:path'
+
 import { cerinSessionHomeEnv } from '../session-home.mjs'
 
 // Applied to thread/start and thread/resume on every ACP new/load/resume.
@@ -67,7 +70,18 @@ export function cerinCodexSessionConfig(config, meta, processEnv = process.env) 
     skills: { ...config.skills, max_context_tokens: 10_000 },
     shell_environment_policy: {
       inherit: 'none',
-      set: { ...baseline, ...env, ...cerinSessionHomeEnv(env, processEnv) },
+      set: {
+        ...baseline,
+        ...env,
+        ...cerinSessionHomeEnv(env, processEnv),
+        // Nested Codex commands use the runtime's existing model login, just as
+        // Claude keeps CLAUDE_CONFIG_DIR when HOME becomes conversation-local.
+        // Only the trusted runtime chooses this path; actor metadata cannot
+        // select another login. Desktop supplies its isolated Codex home here.
+        CODEX_HOME:
+          processEnv.CODEX_HOME ||
+          join(processEnv.HOME || processEnv.USERPROFILE || homedir(), '.codex'),
+      },
     },
     // Codex's Browser plugin drives only the Codex App's own browser (`iab`), which
     // never exists here, so every call fails with "Browser is not available: iab".
