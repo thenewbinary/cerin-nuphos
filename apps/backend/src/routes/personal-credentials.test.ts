@@ -524,6 +524,30 @@ describe('Google token handout', () => {
     }
   })
 
+  test('All includes a Google credential connected after the selection was saved', async () => {
+    conversation = {
+      userId: 'owner',
+      credentialAccess: { allCredentials: true, personalCredentialIds: [] },
+    }
+    saved.push(googleGrant('owner', 'google-calendar', 'new-calendar'))
+    const res = await fetchToken('google-calendar', await turn('owner', true))
+
+    expect(res.status).toBe(200)
+    expect(await res.json()).toMatchObject({ token: 'new-calendar' })
+  })
+
+  test('All still refuses another human and an unconnected provider', async () => {
+    conversation = {
+      userId: 'owner',
+      credentialAccess: { allCredentials: true, personalCredentialIds: [] },
+    }
+    const teammate = await fetchToken('gmail', await turn('teammate', true))
+
+    expect(teammate.status).toBe(403)
+    expect(await teammate.json()).toEqual({ code: 'personal_credential_owner_only' })
+    expect((await fetchToken('google-calendar', await turn('owner', true))).status).toBe(404)
+  })
+
   test('the owner’s own and automated turns get the owner’s token', async () => {
     for (const humanTurn of [true, false]) {
       const res = await fetchToken('gmail', await turn('owner', humanTurn))

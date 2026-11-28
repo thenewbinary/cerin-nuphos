@@ -93,18 +93,29 @@ test('on macOS a session finds the account login Keychain, as it would without a
 })
 
 test('Claude and Codex receive the same isolated paths without moving the agent login store', (t) => {
-  const host = { ...runtime(t), CLAUDE_CONFIG_DIR: '/runtime/claude-login' }
+  const host = {
+    ...runtime(t),
+    CLAUDE_CONFIG_DIR: '/runtime/claude-login',
+    CODEX_HOME: '/runtime/codex-login',
+  }
   const context = {
     CERIN_SESSION_ID: 'conversation',
     CERIN_TOKEN: 'session-token',
     HOME: '/override',
+    CODEX_HOME: '/actor-supplied-login',
   }
   const claude = cerinClaudeSessionEnv({ ...host, ...context }, context, host)
   const codex = cerinCodexSessionConfig({}, { 'ai.cerin/codex': { env: context } }, host)
   assert.equal(claude.HOME, codex.shell_environment_policy.set.HOME)
   assert.equal(claude.CLAUDE_CONFIG_DIR, host.CLAUDE_CONFIG_DIR)
+  assert.equal(codex.shell_environment_policy.set.CODEX_HOME, host.CODEX_HOME)
   assert.notEqual(claude.HOME, context.HOME)
   assert.equal(claude.CERIN_TOKEN, 'session-token')
+  assert.equal(
+    cerinCodexSessionConfig({}, { 'ai.cerin/codex': { env: context } }, { HOME: host.HOME })
+      .shell_environment_policy.set.CODEX_HOME,
+    join(host.HOME, '.codex'),
+  )
   assert.equal(
     cerinClaudeSessionEnv({}, context, { HOME: host.HOME }).CLAUDE_CONFIG_DIR,
     join(host.HOME, '.claude'),
