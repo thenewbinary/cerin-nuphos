@@ -158,8 +158,13 @@ async function ownerClaims(authorization: string, provider: PersonalCredentialPr
   const access = conversation && (await credentialSource(conversation)).credentialAccess
   const ids = access?.personalCredentialIds
 
+  // All includes grants connected after this selection was saved. The provider
+  // lookup below still requires a live grant belonging to this owner and team.
   // As for connectors, a conversation with no list keeps its reach.
-  if (conversation?.userId !== claims.own || (ids && !ids.includes(provider))) {
+  if (
+    conversation?.userId !== claims.own ||
+    (!access?.allCredentials && ids && !ids.includes(provider))
+  ) {
     throw new AppError(
       403,
       'personal_credential_not_selected',
